@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SHDR Construction Manager</title>
+    <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="auth.js" defer></script>
+    <script src="app.js" defer></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .nav-item.active { background: #16a34a; color: white; }
+        .toast { animation: slideIn 0.3s ease, fadeOut 0.3s ease 2.7s; }
+        @keyframes slideIn { from { transform: translateY(-20px); opacity:0; } to { transform: translateY(0); opacity:1; } }
+        @keyframes fadeOut { from { opacity:1; } to { opacity:0; } }
+        .card-hover { transition: all 0.2s; }
+        .card-hover:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0,0.1); }
+        .fade-in { animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+        input, select, textarea { font-size: 16px !important; }
+        .modal-overlay { display: none; }
+        .modal-overlay.active { display: flex; }
+    </style>
+</head>
+<body class="h-full bg-slate-50 font-jakarta">
+    <div id="toast-container" class="fixed top-4 right-4 z-50 space-y-2"></div>
+
+    <div id="main-app" class="hidden h-full flex flex-col">
+        <header class="bg-white border-b border-slate-200 px-4 py-3 flex items-center justify-between shrink-0">
+            <div class="flex items-center gap-3">
+                <button id="menu-toggle" class="lg:hidden p-2 rounded-lg hover:bg-slate-100">
+                    <i data-lucide="menu" class="w-5 h-5"></i>
+                </button>
+                <div class="w-8 h-8 bg-green-600 rounded-lg flex items-center justify-center">
+                    <i data-lucide="building-2" class="w-4 h-4 text-white"></i>
+                </div>
+                <span id="header-title" class="font-bold text-slate-900 text-sm">SHDR Ltd</span>
+            </div>
+            <div class="flex items-center gap-2">
+                <span id="notification-badge" class="bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center hidden">0</span>
+                <span id="user-display" class="text-xs text-slate-500 hidden sm:block"></span>
+                <button id="logout-btn" class="p-2 rounded-lg hover:bg-slate-100 text-slate-500">
+                    <i data-lucide="log-out" class="w-4 h-4"></i>
+                </button>
+            </div>
+        </header>
+
+        <div class="flex flex-1 overflow-hidden">
+            <nav id="sidebar" class="hidden lg:flex flex-col w-56 bg-white border-r border-slate-200 p-3 shrink-0 overflow-y-auto">
+                <div id="nav-items" class="space-y-1"></div>
+            </nav>
+
+            <div id="sidebar-overlay" class="hidden fixed inset-0 z-40 bg-black/50 lg:hidden" onclick="closeMobileNav()"></div>
+            <nav id="mobile-sidebar" class="hidden fixed left-0 top-0 bottom-0 z-50 w-64 bg-white p-4 shadow-xl lg:hidden overflow-y-auto">
+                <div class="flex justify-between items-center mb-4">
+                    <span class="font-bold text-slate-900">Menu</span>
+                    <button onclick="closeMobileNav()" class="p-1 rounded hover:bg-slate-100">
+                        <i data-lucide="x" class="w-5 h-5"></i>
+                    </button>
+                </div>
+                <div id="mobile-nav-items" class="space-y-1"></div>
+            </nav>
+
+            <main id="content" class="flex-1 overflow-y-auto p-4 md:p-6"></main>
+            <div id="modal-overlay" class="modal-overlay fixed inset-0 z-50 bg-black/50 justify-center items-center"></div>
+        </div>
+
+        <nav id="bottom-nav" class="lg:hidden bg-white border-t border-slate-200 flex shrink-0 fixed bottom-0 left-0 right-0"></nav>
+    </div>
+</body>
+</html>

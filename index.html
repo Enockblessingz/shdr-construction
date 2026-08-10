@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#ffffff">
+    <meta name="description" content="SHDR — Construction Site Management">
+    
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="shdr_logo.jpg">
+    
+    <title>SHDR — Construction Management</title>
+    
+    <style>
+        :root {
+            --green: #059669;
+            --green-light: #ecfdf5;
+            --green-hover: #047857;
+            --text: #1a1a2e;
+            --text-light: #6b7280;
+            --bg: #ffffff;
+            --bg-secondary: #f9fafb;
+            --border: #e5e7eb;
+            --radius: 8px;
+            --max-width: 1200px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+            z-index: 100;
+            height: 64px;
+        }
+
+        .nav-inner {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            padding: 0 24px;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.25rem;
+            color: var(--text);
+            letter-spacing: -0.3px;
+        }
+
+        .logo img {
+            width: 36px;
+            height: 36px;
+            border-radius: 6px;
+            object-fit: cover;
+        }
+
+        .logo span {
+            color: var(--green);
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 28px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-light);
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: color 0.2s;
+            cursor: pointer;
+        }
+
+        .nav-links a:hover {
+            color: var(--text);
+        }
+
+        .btn {
+            padding: 8px 20px;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            border: none;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1.5px solid var(--border);
+            color: var(--text);
+        }
+
+        .btn-outline:hover {
+            border-color: #9ca3af;
+        }
+
+        .btn-primary {
+            background: var(--green);
+            color: #fff;
+        }
+
+        .btn-primary:hover {
+            background: var(--green-hover);
+        }
+
+        .mobile-toggle {
+            display: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 4px;
+        }
+
+        .mobile-toggle span {
+            display: block;
+            width: 22px;
+            height: 2px;
+            background: var(--text);
+            margin: 4px 0;
+            transition: 0.2s;
+        }
+
+        /* Hero - Full background image */
+        .hero {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .hero-bg {
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+        }
+
+        .hero-bg img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: brightness(0.55);
+        }
+
+        .hero-bg::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.7) 100%);
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            max-width: 700px;
+            padding: 0 24px;
+        }
+
+        .hero-content h1 {
+            font-size: 3.2rem;
+            font-weight: 700;
+            line-height: 1.15;
+            letter-spacing: -0.8px;
+            color: #ffffff;
+            margin-bottom: 20px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.4);
+        }
+
+        .hero-content h1 span {
+            color: #34d399;
+        }
+
+        .hero-content p {
+            color: rgba(255,255,255,0.85);
+            font-size: 1.1rem;
+            max-width: 500px;
+            margin: 0 auto 36px;
+            line-height: 1.7;
+            text-shadow: 0 1px 6px rgba(0,0,0,0.3);
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 14px;
+            justify-content: center;
+        }
+
+        .hero .btn-primary {
+            background: var(--green);
+            color: #fff;
+            padding: 12px 28px;
+            font-size: 0.95rem;
+            border-radius: 8px;
+        }
+
+        .hero .btn-primary:hover {
+            background: var(--green-hover);
+        }
+
+        .hero .btn-outline {
+            background: rgba(255,255,255,0.1);
+            border: 1.5px solid rgba(255,255,255,0.4);
+            color: #fff;
+            padding: 12px 28px;
+            font-size: 0.95rem;
+            border-radius: 8px;
+            backdrop-filter: blur(4px);
+        }
+
+        .hero .btn-outline:hover {
+            background: rgba(255,255,255,0.2);
+            border-color: rgba(255,255,255,0.6);
+        }
+
+        /* Accounts */
+        .section {
+            padding: 80px 24px;
+        }
+
+        .section-alt {
+            background: var(--bg-secondary);
+        }
+
+        .section-inner {
+            max-width: var(--max-width);
+            margin: 0 auto;
+        }
+
+        .section-label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--green);
+            margin-bottom: 12px;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            margin-bottom: 16px;
+        }
+
+        .section-desc {
+            color: var(--text-light);
+            max-width: 520px;
+            margin-bottom: 48px;
+            line-height: 1.7;
+        }
+
+        .accounts-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+
+        .account-card {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 32px;
+            transition: box-shadow 0.3s;
+        }
+
+        .account-card:hover {
+            box-shadow: 0 8px 30px rgba(0,0,0,0.06);
+        }
+
+        .account-card h3 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .account-card .role-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            margin-bottom: 16px;
+        }
+
+        .badge-owner {
+            background: #ecfdf5;
+            color: #059669;
+        }
+
+        .badge-manager {
+            background: #f0fdf4;
+            color: #16a34a;
+        }
+
+        .account-card ul {
+            list-style: none;
+            margin-bottom: 24px;
+        }
+
+        .account-card ul li {
+            padding: 6px 0;
+            font-size: 0.9rem;
+            color: var(--text-light);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .account-card ul li::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--green);
+            flex-shrink: 0;
+        }
+
+        .note {
+            background: #fffbeb;
+            border: 1px solid #fde68a;
+            border-radius: 8px;
+            padding: 14px 16px;
+            font-size: 0.85rem;
+            color: #92400e;
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+        }
+
+        /* Image section */
+        .image-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-top: 48px;
+        }
+
+        .image-row img {
+            width: 100%;
+            border-radius: 10px;
+            object-fit: cover;
+            aspect-ratio: 16/10;
+        }
+
+        .image-caption {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            margin-top: 8px;
+        }
+
+        /* Features */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .feature-item {
+            padding: 24px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            transition: box-shadow 0.2s;
+        }
+
+        .feature-item:hover {
+            box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+        }
+
+        .feature-item .icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            background: #ecfdf5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            margin-bottom: 14px;
+        }
+
+        .feature-item h4 {
+            font-weight: 600;
+            margin-bottom: 6px;
+            font-size: 0.95rem;
+        }
+
+        .feature-item p {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            line-height: 1.6;
+        }
+
+        /* CTA */
+        .cta {
+            text-align: center;
+            padding: 80px 24px;
+        }
+
+        .cta h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+            letter-spacing: -0.5px;
+        }
+
+        .cta p {
+            color: var(--text-light);
+            margin-bottom: 28px;
+        }
+
+        /* Footer */
+        footer {
+            border-top: 1px solid var(--border);
+            padding: 28px 24px;
+            text-align: center;
+        }
+
+        .footer-inner {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+            font-size: 0.85rem;
+            color: var(--text-light);
+        }
+
+        .footer-inner a {
+            color: var(--green);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .footer-inner a:hover {
+            text-decoration: underline;
+        }
+
+        /* Modals */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.4);
+            backdrop-filter: blur(4px);
+            z-index: 200;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: #fff;
+            border-radius: 14px;
+            padding: 36px 32px;
+            max-width: 420px;
+            width: 100%;
+            position: relative;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.15);
+            animation: modalIn 0.25s ease;
+        }
+
+        @keyframes modalIn {
+            from { opacity: 0; transform: translateY(16px) scale(0.97); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 14px;
+            right: 14px;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: none;
+            background: #f3f4f6;
+            cursor: pointer;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+        }
+
+        .modal-close:hover {
+            background: #e5e7eb;
+        }
+
+        .modal h3 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        .modal > p {
+            color: var(--text-light);
+            font-size: 0.88rem;
+            margin-bottom: 22px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin-bottom: 5px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1.5px solid var(--border);
+            border-radius: 8px;
+            font-size: 0.9rem;
+            transition: border 0.2s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--green);
+            box-shadow: 0 0 0 3px rgba(5,150,105,0.08);
+        }
+
+        .btn-full {
+            width: 100%;
+            margin-top: 4px;
+        }
+
+        .modal-footer-text {
+            text-align: center;
+            font-size: 0.8rem;
+            color: var(--text-light);
+            margin-top: 16px;
+        }
+
+        .modal-footer-text a {
+            color: var(--green);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .hero-content h1 {
+                font-size: 2.2rem;
+            }
+
+            .accounts-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .image-row {
+                grid-template-columns: 1fr;
+            }
+
+            .section-title {
+                font-size: 1.6rem;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .nav-links {
+                position: fixed;
+                top: 0;
+                right: -100%;
+                width: 80%;
+                max-width: 300px;
+                height: 100vh;
+                background: #fff;
+                flex-direction: column;
+                padding: 90px 28px 30px;
+                gap: 20px;
+                transition: right 0.3s;
+                box-shadow: -10px 0 30px rgba(0,0,0,0.1);
+            }
+
+            .nav-links.active {
+                right: 0;
+            }
+
+            .mobile-toggle {
+                display: block;
+                z-index: 101;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .hero-buttons {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .hero-buttons .btn {
+                width: 100%;
+            }
+
+            .hero-content h1 {
+                font-size: 1.8rem;
+            }
+
+            .modal {
+                padding: 28px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-inner">
+            <a href="#" class="logo">
+                <img src="shdr_logo.jpg" alt="SHDR" onerror="this.style.display='none'">
+                SH<span>DR</span>
+            </a>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#accounts">Accounts</a></li>
+                <li><a href="#features">Features</a></li>
+                <li><a onclick="redirectOwner()">Owner Dashboard</a></li>
+                <li><a onclick="redirectManager()">Manager Sign In</a></li>
+            </ul>
+            <button class="mobile-toggle" id="mobileToggle" aria-label="Menu">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Hero - Full background image -->
+    <section class="hero" id="home">
+        <div class="hero-bg">
+            <img src="https://cdn.pixabay.com/photo/2018/12/12/23/02/site-3871804_1280.jpg" alt="Construction site">
+        </div>
+        <div class="hero-content">
+            <h1>Construction site <span>management</span> Made Easier & Smarter!</h1>
+            <p>Connect owners and site managers. Track materials, workers, and progress with full transparency.</p>
+            <div class="hero-buttons">
+                <button class="btn btn-primary" onclick="redirectOwner()">Owner Dashboard</button>
+                <button class="btn btn-outline" onclick="redirectManager()">Manager Sign In</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Accounts Section -->
+    <section class="section section-alt" id="accounts">
+        <div class="section-inner">
+            <div class="section-label">Account Types</div>
+            <div class="section-title">Two roles, one system</div>
+            <p class="section-desc">SHDR is built for two distinct users. Understand how each works before you begin.</p>
+            
+            <div class="accounts-grid">
+                <!-- Owner -->
+                <div class="account-card">
+                    <span class="role-badge badge-owner">Owner / Admin</span>
+                    <h3>Full project control</h3>
+                    <ul>
+                        <li>Sign Up for your own account directly</li>
+                        <li>Create and manage multiple sites</li>
+                        <li>Assign managers to specific projects</li>
+                        <li>Receive complete reports for approval</li>
+                        <li>Grant and revoke access anytime</li>
+                    </ul>
+                    <button class="btn btn-primary btn-full" onclick="redirectOwner()">Go to Owner Dashboard →</button>
+                </div>
+                <!-- Manager -->
+                <div class="account-card">
+                    <span class="role-badge badge-manager">Site Manager</span>
+                    <h3>On-site recording</h3>
+                    <ul>
+                        <li>Access granted by owner only</li>
+                        <li>Cannot self-register — invitation required</li>
+                        <li>Record materials, workers, progress</li>
+                        <li>Submit daily updates and reports</li>
+                        <li>Sign in only — no account creation</li>
+                    </ul>
+                    <div class="note">
+                        ⚠️ Managers sign in only. Your credentials are provided by the project owner.
+                    </div>
+                    <button class="btn btn-outline btn-full" style="margin-top:14px; border-color:var(--green); color:var(--green);" onclick="redirectManager()">Sign In as Manager →</button>
+                </div>
+            </div>
+
+            <!-- Images -->
+            <div class="image-row">
+                <div>
+                    <img src="https://media.istockphoto.com/id/2187596750/photo/construction-worker-shaking-hands-with-foreman.jpg?s=2048x2048&w=is&k=20&c=Dgy4yOzJOwL21_oHIKW6woC242dMSY4KpDfz6YOfM0Y=" alt="Owner and manager collaboration" loading="lazy">
+                    <p class="image-caption">Seamless collaboration between owners and site managers</p>
+                </div>
+                <div>
+                    <img src="https://cdn.pixabay.com/photo/2016/02/01/21/15/excavator-1174428_1280.jpg" alt="Construction machinery" loading="lazy">
+                    <p class="image-caption">Full visibility over equipment and site operations</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features -->
+    <section class="section" id="features">
+        <div class="section-inner">
+            <div class="section-label">Features</div>
+            <div class="section-title">Everything tracked</div>
+            <p class="section-desc">All site data recorded by managers, visible to owners in real time.</p>
+            <div class="features-grid">
+                <div class="feature-item">
+                    <div class="icon">📦</div>
+                    <h4>Materials</h4>
+                    <p>Track cement, steel, wood, electrical, plumbing — with quantities and alerts.</p>
+                </div>
+                <div class="feature-item">
+                    <div class="icon">👷</div>
+                    <h4>Workers</h4>
+                    <p>Attendance, daily rates, and payroll calculated automatically.</p>
+                </div>
+                <div class="feature-item">
+                    <div class="icon">📊</div>
+                    <h4>Progress</h4>
+                    <p>Milestone timeline with percentage tracking and photo updates.</p>
+                </div>
+                <div class="feature-item">
+                    <div class="icon">📋</div>
+                    <h4>Reports</h4>
+                    <p>Auto-generated reports with full breakdown for owner approval.</p>
+                </div>
+                <div class="feature-item">
+                    <div class="icon">🔔</div>
+                    <h4>Alerts</h4>
+                    <p>Low stock, milestone completions, report submissions — stay informed.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta section-alt">
+        <div class="section-inner">
+            <h2>Ready to bring clarity to your project?</h2>
+            <p>Start managing your construction site with transparency.</p>
+            <button class="btn btn-primary" onclick="redirectOwner()">Create Owner Account</button>
+        </div>
+    </section>
+
+   <!-- Footer -->
+<footer>
+    <div class="footer-inner">
+        <span>
+            Powered by
+            <a href="https://wa.me/250790020086"
+               target="_blank"
+               rel="noopener noreferrer"
+               class="designer-name">
+                <strong>___Enock's___blessingz___</strong>
+            </a>
+        </span>
+
+        <span>
+            Designed by
+            <a href="https://pireactive.vercel.app/"
+               target="_blank"
+               rel="noopener noreferrer">
+                PIReactive
+            </a>
+        </span>
+    </div>
+</footer>
+
+    <script>
+        // Mobile menu
+        const toggle = document.getElementById('mobileToggle');
+        const navLinks = document.getElementById('navLinks');
+        toggle.addEventListener('click', () => {
+            toggle.classList.toggle('active');
+            navLinks.classList.toggle('active');
+        });
+        navLinks.querySelectorAll('a').forEach(el => {
+            el.addEventListener('click', () => {
+                toggle.classList.remove('active');
+                navLinks.classList.remove('active');
+            });
+        });
+
+        // Smooth scroll
+        document.querySelectorAll('a[href^="#"]').forEach(a => {
+            a.addEventListener('click', function(e) {
+                const id = this.getAttribute('href');
+                if (id === '#') return;
+                e.preventDefault();
+                const target = document.querySelector(id);
+                if (target) target.scrollIntoView({ behavior: 'smooth' });
+            });
+        });
+
+        // Redirects
+        function redirectOwner() {
+            window.location.href = 'owner.html';
+        }
+        function redirectManager() {
+            window.location.href = 'manager.html';
+        }
+    </script>
+</body>
+</html>

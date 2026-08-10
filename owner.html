@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#ffffff">
+    <meta name="description" content="SHDR Owner Portal — Login or register">
+    <title>SHDR Owner — Sign In / Register</title>
+
+    <style>
+        :root {
+            --green: #059669;
+            --green-hover: #047857;
+            --text: #1a1a2e;
+            --text-light: #6b7280;
+            --border: #e5e7eb;
+            --surface: #ffffff;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #f8fafc;
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .split-container { display: flex; width: 100%; min-height: 100vh; }
+
+        /* LEFT PANEL */
+        .brand-panel {
+            flex: 0 0 42%;
+            background: linear-gradient(135deg, #064e3b 0%, #047857 100%);
+            position: relative; overflow: hidden;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            padding: 40px; color: #fff; text-align: center;
+        }
+
+        .brand-panel::before {
+            content: '';
+            position: absolute; inset: 0;
+            background: url('https://cdn.pixabay.com/photo/2018/12/12/23/02/site-3871804_1280.jpg') center/cover no-repeat;
+            opacity: 0.12; z-index: 0;
+        }
+
+        .brand-content { position: relative; z-index: 2; max-width: 360px; }
+
+        .brand-logo {
+            width: 80px; height: 80px; border-radius: 20px;
+            background: rgba(255,255,255,0.15); backdrop-filter: blur(10px);
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 24px; font-size: 2rem; font-weight: 700;
+            color: #fff; border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .brand-logo img { width: 100%; height: 100%; border-radius: 20px; object-fit: cover; }
+
+        .brand-panel h2 { font-size: 2rem; font-weight: 700; margin-bottom: 16px; letter-spacing: -0.5px; }
+
+        .brand-panel p { font-size: 1rem; line-height: 1.7; opacity: 0.9; }
+
+        .brand-features { margin-top: 40px; display: flex; flex-direction: column; gap: 16px; text-align: left; width: 100%; max-width: 300px; }
+
+        .brand-feature { display: flex; align-items: center; gap: 12px; font-size: 0.9rem; opacity: 0.85; }
+
+        .brand-feature .icon {
+            width: 28px; height: 28px; background: rgba(255,255,255,0.15); border-radius: 8px;
+            display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+        }
+
+        /* RIGHT PANEL */
+        .form-panel { flex: 1; display: flex; align-items: center; justify-content: center; padding: 32px; background: #fff; }
+
+        .form-wrapper { width: 100%; max-width: 420px; }
+
+        .form-header { margin-bottom: 32px; text-align: center; }
+
+        .form-header h1 { font-size: 1.8rem; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 8px; }
+
+        .form-header p { color: var(--text-light); font-size: 0.95rem; }
+
+        .message { padding: 12px 16px; border-radius: 10px; font-size: 0.85rem; margin-bottom: 24px; display: none; line-height: 1.5; }
+
+        .message.error { background: #fef2f2; color: #991b1b; border: 1px solid #fecaca; }
+
+        .message.success { background: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; }
+
+        .form-group { margin-bottom: 18px; }
+
+        .form-group label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 6px; color: var(--text); }
+
+        .form-group input {
+            width: 100%; padding: 12px 16px; border: 1.5px solid var(--border);
+            border-radius: 10px; font-size: 0.95rem; transition: 0.2s; background: #f9fafb;
+        }
+
+        .form-group input:focus { outline: none; border-color: var(--green); box-shadow: 0 0 0 3px rgba(5,150,105,0.08); background: #fff; }
+
+        .password-wrap { position: relative; }
+
+        .password-wrap input { padding-right: 48px; }
+
+        .toggle-pw {
+            position: absolute; right: 14px; top: 50%; transform: translateY(-50%);
+            background: none; border: none; cursor: pointer; font-size: 1.1rem; color: #9ca3af;
+        }
+
+        .row-options { display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; margin-bottom: 24px; }
+
+        .row-options label { display: flex; align-items: center; gap: 6px; cursor: pointer; color: var(--text-light); }
+
+        .row-options a { color: var(--green); text-decoration: none; font-weight: 500; }
+
+        .btn {
+            width: 100%; padding: 13px; border-radius: 10px; border: none; font-weight: 600;
+            font-size: 0.95rem; cursor: pointer; transition: background 0.2s; background: var(--green); color: #fff;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+        }
+
+        .btn:hover { background: var(--green-hover); }
+
+        .btn:disabled { opacity: 0.7; cursor: not-allowed; }
+
+        .switch-text { text-align: center; margin-top: 24px; font-size: 0.9rem; color: var(--text-light); }
+
+        .switch-text button { background: none; border: none; color: var(--green); font-weight: 600; cursor: pointer; font-size: 0.9rem; }
+
+        .hidden { display: none !important; }
+
+        .footer-text { text-align: center; margin-top: 24px; font-size: 0.75rem; color: var(--text-light); display: flex; justify-content: center; align-items: center; gap: 6px; flex-wrap: wrap; }
+
+        .footer-text a { color: var(--green); text-decoration: none; font-weight: 500; }
+
+        .spinner {
+            display: inline-block; width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.3);
+            border-top: 2px solid #fff; border-radius: 50%; animation: spin 0.6s linear infinite;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        @media (max-width: 768px) {
+            .split-container { flex-direction: column; }
+            .brand-panel { flex: 0 0 auto; padding: 40px 24px; min-height: auto; text-align: center; }
+            .brand-panel h2 { font-size: 1.6rem; }
+            .brand-features { display: none; }
+            .brand-content { max-width: 100%; }
+            .form-panel { padding: 24px; flex: 1; align-items: flex-start; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="split-container">
+    <!-- Left: Branding -->
+    <div class="brand-panel">
+        <div class="brand-content">
+            <div class="brand-logo">
+                <img src="shdr_logo.jpg" alt="SHDR" onerror="this.style.display='none'; this.parentElement.textContent='SH';">
+            </div>
+            <h2>Owner Portal</h2>
+            <p>Manage your construction projects with complete visibility and control.</p>
+            <div class="brand-features">
+                <div class="brand-feature"><span class="icon">🏗️</span> Multiple sites, one dashboard</div>
+                <div class="brand-feature"><span class="icon">👥</span> Assign & manage site managers</div>
+                <div class="brand-feature"><span class="icon">📊</span> Real-time reports & approvals</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right: Forms -->
+    <div class="form-panel">
+        <div class="form-wrapper">
+            <div class="form-header">
+                <h1 id="form-title">Sign In</h1>
+                <p id="form-desc">Access your owner dashboard</p>
+            </div>
+
+            <div id="message" class="message"></div>
+
+            <!-- LOGIN FORM -->
+            <form id="login-form" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label for="login-email">Email Address</label>
+                    <input type="email" id="login-email" placeholder="owner@example.com" required autocomplete="email">
+                </div>
+                <div class="form-group">
+                    <label for="login-password">Password</label>
+                    <div class="password-wrap">
+                        <input type="password" id="login-password" placeholder="••••••••" required autocomplete="current-password">
+                        <button type="button" class="toggle-pw" onclick="togglePassword('login-password', 'login-eye')">
+                            <span id="login-eye">👁️</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="row-options">
+                    <label><input type="checkbox" id="login-remember"> Remember me</label>
+                    <a href="forgot-password.html">Forgot passcode?</a>
+                </div>
+                <button type="submit" id="login-btn" class="btn">Sign In</button>
+                <div class="switch-text">
+                    Don't have an account? 
+                    <button type="button" onclick="switchTo('signup')">Sign Up</button>
+                </div>
+            </form>
+
+            <!-- SIGN UP FORM (hidden) -->
+            <form id="signup-form" class="hidden" onsubmit="handleSignUp(event)">
+                <div class="form-group">
+                    <label for="signup-name">Full Name</label>
+                    <input type="text" id="signup-name" placeholder="Your full name" required>
+                </div>
+                <div class="form-group">
+                    <label for="signup-email">Email Address</label>
+                    <input type="email" id="signup-email" placeholder="owner@example.com" required>
+                </div>
+                <div class="form-group">
+                    <label for="signup-password">Passcode</label>
+                    <div class="password-wrap">
+                        <input type="password" id="signup-password" placeholder="Minimum 8 characters" minlength="8" required>
+                        <button type="button" class="toggle-pw" onclick="togglePassword('signup-password', 'signup-eye')">
+                            <span id="signup-eye">👁️</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="signup-confirm">Confirm Passcode</label>
+                    <input type="password" id="signup-confirm" placeholder="Confirm passcode" minlength="8" required>
+                </div>
+                <button type="submit" id="signup-btn" class="btn">Create Owner Account</button>
+                <div class="switch-text">
+                    Already have an account?
+                    <button type="button" onclick="switchTo('login')">Sign In</button>
+                </div>
+                <p class="switch-text" style="font-size:0.8rem; color:#b45309; margin-top:12px;">
+                    ⚠️ This portal is for owners only. Managers cannot register here.
+                </p>
+            </form>
+
+            <div class="footer-text">
+                <span>
+                        Powered by
+                        <a href="https://wa.me/250790020086"
+                           target="_blank"
+                           rel="noopener noreferrer"
+                           class="designer-name">
+                            <strong>___Enock's___blessingz___</strong>
+                        </a>
+                    </span></span>
+                <span>Designed by <a href="https://pireactive.vercel.app/" target="_blank" rel="noopener">PIReactive</a></span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
+    import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyC5Pk2WErZ-O4YM-I43x49dIKYFwDLPliA",
+        authDomain: "project-kng86.firebaseapp.com",
+        projectId: "project-kng86",
+        storageBucket: "project-kng86.firebasestorage.app",
+        messagingSenderId: "435202981721",
+        appId: "1:435202981721:web:fa7caa47213dbb14e9d648",
+        measurementId: "G-FBT74X36KJ"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    // ---- UI TOGGLES ----
+    function switchTo(form) {
+        document.getElementById('login-form').classList.toggle('hidden', form !== 'login');
+        document.getElementById('signup-form').classList.toggle('hidden', form !== 'signup');
+        document.getElementById('form-title').textContent = form === 'login' ? 'Sign In' : 'Register';
+        document.getElementById('form-desc').textContent = form === 'login' ? 'Access your owner dashboard' : 'Create your owner account';
+        hideMessage();
+    }
+    window.switchTo = switchTo;
+
+    function togglePassword(inputId, eyeId) {
+        const input = document.getElementById(inputId);
+        const eye = document.getElementById(eyeId);
+        input.type = input.type === 'password' ? 'text' : 'password';
+        eye.textContent = input.type === 'password' ? '👁️' : '🙈';
+    }
+    window.togglePassword = togglePassword;
+
+    function showMessage(text, isError = true) {
+        const msg = document.getElementById('message');
+        msg.textContent = text;
+        msg.classList.remove('error', 'success');
+        msg.classList.add(isError ? 'error' : 'success');
+        msg.style.display = 'block';
+    }
+
+    function hideMessage() {
+        const msg = document.getElementById('message');
+        msg.style.display = 'none';
+        msg.textContent = '';
+    }
+
+    function setButtonLoading(btn, loading) {
+        if (loading) {
+            btn.disabled = true;
+            btn.dataset.originalText = btn.textContent;
+            btn.innerHTML = `<span class="spinner"></span> Loading...`;
+        } else {
+            btn.disabled = false;
+            btn.textContent = btn.dataset.originalText || btn.textContent;
+        }
+    }
+
+    // ---- ERROR HANDLING ----
+    function getFriendlyErrorMessage(error) {
+        const code = error.code;
+        if (code === 'auth/invalid-email') return 'Invalid email address format.';
+        if (code === 'auth/user-disabled') return 'This account has been disabled.';
+        if (code === 'auth/user-not-found') return 'No account found with this email.';
+        if (code === 'auth/wrong-password') return 'Incorrect password. Please try again.';
+        if (code === 'auth/email-already-in-use') return 'An account with this email already exists.';
+        if (code === 'auth/weak-password') return 'Password must be at least 6 characters.';
+        if (code === 'auth/too-many-requests') return 'Too many attempts. Please wait a moment.';
+        if (code === 'auth/network-request-failed') return 'Network error. Check your connection.';
+        return error.message || 'An unexpected error occurred.';
+    }
+
+    // ---- SESSION CHECK ----
+    onAuthStateChanged(auth, async (user) => {
+        if (user) {
+            try {
+                const profileSnap = await getDoc(doc(db, 'profiles', user.uid));
+                if (profileSnap.exists() && profileSnap.data().role === 'owner') {
+                    window.location.href = 'owner/dashboard.html';
+                } else {
+                    await signOut(auth);
+                    showMessage('Access denied. This portal is for owners only.', true);
+                }
+            } catch (err) {
+                await signOut(auth);
+                showMessage('Error verifying account. Please try again.', true);
+            }
+        }
+    });
+
+    // Remember me (email only)
+    const remembered = localStorage.getItem('shdr_owner_remember');
+    if (remembered) {
+        document.getElementById('login-email').value = remembered;
+        document.getElementById('login-remember').checked = true;
+    }
+
+    // ---- LOGIN ----
+    window.handleLogin = async function(e) {
+        e.preventDefault();
+        const email = document.getElementById('login-email').value.trim();
+        const password = document.getElementById('login-password').value;
+        const remember = document.getElementById('login-remember').checked;
+        const btn = document.getElementById('login-btn');
+        hideMessage();
+
+        if (!email || !password) {
+            showMessage('Please fill in all fields.', true);
+            return;
+        }
+
+        setButtonLoading(btn, true);
+        try {
+            const userCredential = await signInWithEmailAndPassword(auth, email, password);
+            const user = userCredential.user;
+            const profileSnap = await getDoc(doc(db, 'profiles', user.uid));
+            if (!profileSnap.exists() || profileSnap.data().role !== 'owner') {
+                await signOut(auth);
+                throw { code: 'custom/not-owner', message: 'Access denied. This portal is for owners only.' };
+            }
+            if (remember) {
+                localStorage.setItem('shdr_owner_remember', email);
+            } else {
+                localStorage.removeItem('shdr_owner_remember');
+            }
+            window.location.href = 'owner/dashboard.html';
+        } catch (error) {
+            showMessage(getFriendlyErrorMessage(error), true);
+        } finally {
+            setButtonLoading(btn, false);
+        }
+    };
+
+    // ---- SIGN UP ----
+    window.handleSignUp = async function(e) {
+        e.preventDefault();
+        const name = document.getElementById('signup-name').value.trim();
+        const email = document.getElementById('signup-email').value.trim();
+        const password = document.getElementById('signup-password').value;
+        const confirm = document.getElementById('signup-confirm').value;
+        const btn = document.getElementById('signup-btn');
+        hideMessage();
+
+        if (!name || !email || !password || !confirm) {
+            showMessage('Please fill in all fields.', true);
+            return;
+        }
+        if (password !== confirm) {
+            showMessage('Passwords do not match.', true);
+            return;
+        }
+        if (password.length < 8) {
+            showMessage('Password must be at least 8 characters.', true);
+            return;
+        }
+
+        setButtonLoading(btn, true);
+        try {
+            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+            const user = userCredential.user;
+            await setDoc(doc(db, 'profiles', user.uid), {
+                email: email,
+                full_name: name,
+                role: 'owner',
+                phone: '',
+                assigned_sites: []
+            });
+            showMessage('Account created successfully! Redirecting...', false);
+            setTimeout(() => {
+                window.location.href = 'owner/dashboard.html';
+            }, 1500);
+        } catch (error) {
+            showMessage(getFriendlyErrorMessage(error), true);
+        } finally {
+            setButtonLoading(btn, false);
+        }
+    };
+</script>
+</body>
+</html>

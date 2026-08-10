@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#059669">
+    <title>SHDR Manager — Sign In</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Iconify -->
+    <script src="https://cdn.jsdelivr.net/npm/iconify-icon@2.3.0/dist/iconify-icon.min.js"></script>
+    <style>
+        * { font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { background: #f8fafc; }
+        .split-container { display: flex; min-height: 100vh; }
+        .brand-panel {
+            flex: 0 0 42%;
+            background: linear-gradient(135deg, #064e3b 0%, #047857 100%);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            color: #fff;
+            text-align: center;
+        }
+        .brand-panel::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: url('https://cdn.pixabay.com/photo/2018/12/12/23/02/site-3871804_1280.jpg') center/cover no-repeat;
+            opacity: 0.15;
+            z-index: 0;
+        }
+        .brand-content { position: relative; z-index: 2; max-width: 360px; }
+        .brand-logo {
+            width: 80px; height: 80px; border-radius: 20px;
+            background: rgba(255,255,255,0.15); backdrop-filter: blur(10px);
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 24px; font-size: 2rem; font-weight: 700;
+            color: #fff; border: 1px solid rgba(255,255,255,0.2);
+        }
+        .brand-logo img { width: 100%; height: 100%; border-radius: 20px; object-fit: cover; }
+        .form-panel {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 32px;
+            background: #fff;
+        }
+        .card {
+            width: 100%; max-width: 420px;
+        }
+        .btn-primary {
+            background: #059669; color: white; font-weight: 600; border-radius: 0.75rem;
+            padding: 0.75rem 1.5rem; transition: background 0.2s; width: 100%;
+            display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+        }
+        .btn-primary:hover { background: #047857; }
+        .btn-primary:disabled { opacity: 0.7; cursor: not-allowed; }
+        .spinner {
+            border: 3px solid #e2e8f0; border-top: 3px solid #059669; border-radius: 50%;
+            width: 24px; height: 24px; animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        @media (max-width: 768px) {
+            .split-container { flex-direction: column; }
+            .brand-panel { flex: 0 0 auto; padding: 40px 24px; min-height: auto; text-align: center; }
+            .brand-panel h2 { font-size: 1.6rem; }
+            .brand-content { max-width: 100%; }
+            .form-panel { padding: 24px; flex: 1; align-items: flex-start; }
+        }
+    </style>
+</head>
+<body>
+<div class="split-container">
+    <!-- Left Branding Panel -->
+    <div class="brand-panel">
+        <div class="brand-content">
+            <div class="brand-logo">
+                <img src="shdr.jpg" alt="SHDR"
+                     onerror="this.style.display='none'; this.parentElement.textContent='SH';">
+            </div>
+            <h2 class="text-2xl font-bold mb-4">Manager Access</h2>
+            <p class="opacity-90">Your assigned construction site is waiting. Sign in to get started.</p>
+        </div>
+    </div>
+
+    <!-- Right Form Panel (dynamic content) -->
+    <div class="form-panel">
+        <div class="card" id="dynamic-content">
+            <!-- Content rendered by JS -->
+        </div>
+    </div>
+</div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
+    import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
+
+    // Firebase config (same as owner)
+    const firebaseConfig = {
+        apiKey: "AIzaSyC5Pk2WErZ-O4YM-I43x49dIKYFwDLPliA",
+        authDomain: "project-kng86.firebaseapp.com",
+        projectId: "project-kng86",
+        storageBucket: "project-kng86.firebasestorage.app",
+        messagingSenderId: "435202981721",
+        appId: "1:435202981721:web:fa7caa47213dbb14e9d648",
+        measurementId: "G-FBT74X36KJ"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    const IMGBB_API_KEY = '6b1b5028aba07a31bf702efd9c0ef4fe';
+
+    let currentUser = null;
+    let managerProfile = null;
+    let assignedSite = null;
+    let currentState = 'login'; // 'login' | 'confirm-site' | 'setup-profile' | 'redirecting'
+
+    const container = document.getElementById('dynamic-content');
+
+    // Helpers
+    function showError(msg) {
+        const el = document.getElementById('error-msg');
+        if (el) { el.textContent = msg; el.classList.remove('hidden'); }
+    }
+    function clearError() {
+        const el = document.getElementById('error-msg');
+        if (el) { el.classList.add('hidden'); el.textContent = ''; }
+    }
+    function setButtonLoading(btn, loading) {
+        if (loading) {
+            btn.disabled = true;
+            btn.dataset.origHTML = btn.innerHTML;
+            btn.innerHTML = '<span class="spinner" style="width:1.2rem; height:1.2rem; border-width:2px;"></span> Loading...';
+        } else {
+            btn.disabled = false;
+            btn.innerHTML = btn.dataset.origHTML || 'Submit';
+        }
+    }
+
+    // Render based on state
+    function render() {
+        clearError();
+        switch (currentState) {
+            case 'login': renderLogin(); break;
+            case 'confirm-site': renderSiteConfirmation(); break;
+            case 'setup-profile': renderProfileSetup(); break;
+            case 'redirecting': renderRedirecting(); break;
+            default: renderLogin();
+        }
+    }
+
+    // ──── LOGIN FORM ────
+    function renderLogin() {
+        container.innerHTML = `
+            <div class="text-center mb-6">
+                <h1 class="text-2xl font-bold text-slate-900">Manager Sign In</h1>
+                <p class="text-slate-500 text-sm mt-2">Enter your credentials to access your site</p>
+            </div>
+            <div id="error-msg" class="hidden bg-red-50 text-red-700 p-3 rounded-lg text-sm mb-4"></div>
+            <form id="login-form" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-1">Email</label>
+                    <input type="email" id="login-email" placeholder="manager@example.com" required
+                           class="w-full border border-slate-200 rounded-lg p-3 focus:ring-2 focus:ring-emerald-500 outline-none">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-1">Passcode</label>
+                    <input type="password" id="login-password" placeholder="••••••••" required
+                           class="w-full border border-slate-200 rounded-lg p-3 focus:ring-2 focus:ring-emerald-500 outline-none">
+                </div>
+                <button type="submit" class="btn-primary">Sign In</button>
+            </form>
+            <p class="text-xs text-slate-500 text-center mt-6">
+                <span>
+    Powered by
+    <a href="https://wa.me/250790020086"
+       target="_blank"
+       rel="noopener noreferrer"
+       class="designer-name"
+       style="color:#059669; text-decoration:none;">
+        <strong>___Enock's___blessingz___</strong>
+    </a>
+</span>  Designed by <a href="https://pireactive.vercel.app/" target="_blank" class="text-emerald-600">PIReactive</a>
+            </p>
+        `;
+        document.getElementById('login-form').addEventListener('submit', handleLogin);
+    }
+
+    async function handleLogin(e) {
+        e.preventDefault();
+        const email = document.getElementById('login-email').value.trim();
+        const password = document.getElementById('login-password').value;
+        const btn = e.target.querySelector('button[type="submit"]');
+        setButtonLoading(btn, true);
+        clearError();
+        try {
+            await signInWithEmailAndPassword(auth, email, password);
+            // Auth state listener will handle the rest
+        } catch (err) {
+            const msg = err.code === 'auth/user-not-found' ? 'No account found with this email.' :
+                       err.code === 'auth/wrong-password' ? 'Incorrect password.' :
+                       err.code === 'auth/invalid-email' ? 'Invalid email format.' : err.message;
+            showError(msg);
+            setButtonLoading(btn, false);
+        }
+    }
+
+    // ──── AUTH STATE LISTENER ────
+    onAuthStateChanged(auth, async (user) => {
+        if (!user) {
+            currentState = 'login';
+            render();
+            return;
+        }
+        currentUser = user;
+        try {
+            // Fetch manager profile
+            const profileRef = doc(db, 'profiles', user.uid);
+            const profileSnap = await getDoc(profileRef);
+            if (!profileSnap.exists()) {
+                await signOut(auth);
+                currentState = 'login';
+                render();
+                showError('Manager profile not found. Contact admin.');
+                return;
+            }
+            managerProfile = profileSnap.data();
+            if (managerProfile.role !== 'manager') {
+                await signOut(auth);
+                currentState = 'login';
+                render();
+                showError('You are not registered as a manager.');
+                return;
+            }
+
+            // Fetch assigned site
+            const siteId = managerProfile.assigned_site;
+            if (!siteId) {
+                await signOut(auth);
+                currentState = 'login';
+                render();
+                showError('No site assigned to your account.');
+                return;
+            }
+            const siteRef = doc(db, 'sites', siteId);
+            const siteSnap = await getDoc(siteRef);
+            if (!siteSnap.exists()) {
+                await signOut(auth);
+                currentState = 'login';
+                render();
+                showError('Assigned site does not exist.');
+                return;
+            }
+            assignedSite = { id: siteSnap.id, ...siteSnap.data() };
+
+            // Determine state
+            if (!managerProfile.site_confirmed) {
+                currentState = 'confirm-site';
+            } else if (!managerProfile.phone || !managerProfile.image) {
+                currentState = 'setup-profile';
+            } else {
+                currentState = 'redirecting';
+                window.location.href = 'manager/dashboard.html';
+                return;
+            }
+            render();
+        } catch (err) {
+            console.error(err);
+            await signOut(auth);
+            currentState = 'login';
+            render();
+            showError('Failed to load profile. Please try again.');
+        }
+    });
+
+    // ──── SITE CONFIRMATION ────
+    function renderSiteConfirmation() {
+        const site = assignedSite;
+        container.innerHTML = `
+            <h1 class="text-xl font-bold text-slate-900 mb-4">Confirm Your Site</h1>
+            <div class="mb-6">
+                <img src="${site.images?.[0] || 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22200%22%3E%3Crect width=%22400%22 height=%22200%22 fill=%22%23e2e8f0%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%2394a3b8%22 font-size=%2220%22%3ENo Image%3C/text%3E%3C/svg%3E'}"
+                     class="w-full h-48 object-cover rounded-xl mb-4">
+                <h2 class="text-lg font-bold">${site.name}</h2>
+                <p class="text-slate-500">${site.location || 'No location'}</p>
+                <p class="text-sm text-slate-500 mt-1">Budget: ${(site.budget || 0).toLocaleString()} RWF</p>
+            </div>
+            <div id="error-msg" class="hidden bg-red-50 text-red-700 p-3 rounded-lg text-sm mb-4"></div>
+            <button id="confirm-btn" class="btn-primary mb-3">Yes, this is my site</button>
+            <button id="deny-btn" class="w-full py-3 text-red-600 hover:bg-red-50 rounded-xl text-sm">This is not my site</button>
+        `;
+
+        document.getElementById('confirm-btn').addEventListener('click', async () => {
+            const btn = document.getElementById('confirm-btn');
+            setButtonLoading(btn, true);
+            try {
+                await updateDoc(doc(db, 'profiles', currentUser.uid), { site_confirmed: true });
+                managerProfile.site_confirmed = true;
+                // Next step
+                if (!managerProfile.phone || !managerProfile.image) {
+                    currentState = 'setup-profile';
+                } else {
+                    window.location.href = 'manager/dashboard.html';
+                }
+                render();
+            } catch (err) {
+                showError('Failed to confirm. Try again.');
+                setButtonLoading(btn, false);
+            }
+        });
+
+        document.getElementById('deny-btn').addEventListener('click', async () => {
+            if (confirm('If this site is incorrect, please contact your administrator. You will be signed out.')) {
+                await signOut(auth);
+            }
+        });
+    }
+
+    // ──── PROFILE SETUP (phone + image) ────
+    function renderProfileSetup() {
+        container.innerHTML = `
+            <h1 class="text-xl font-bold text-slate-900 mb-4">Complete Your Profile</h1>
+            <p class="text-slate-500 mb-6">Please add your phone number and a profile photo. This step is required once.</p>
+            <div id="error-msg" class="hidden bg-red-50 text-red-700 p-3 rounded-lg text-sm mb-4"></div>
+            <form id="setup-form" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-1">Phone Number</label>
+                    <input type="tel" id="phone" placeholder="e.g. +250 78x xxx xxx" required
+                           class="w-full border border-slate-200 rounded-lg p-3 focus:ring-2 focus:ring-emerald-500 outline-none">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-1">Profile Image</label>
+                    <input type="file" id="image" accept="image/*" required
+                           class="w-full border border-slate-200 rounded-lg p-3 focus:ring-2 focus:ring-emerald-500 outline-none">
+                </div>
+                <button type="submit" class="btn-primary">Save & Continue</button>
+            </form>
+        `;
+
+        document.getElementById('setup-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const phone = document.getElementById('phone').value.trim();
+            const imageFile = document.getElementById('image').files[0];
+            const btn = e.target.querySelector('button[type="submit"]');
+            setButtonLoading(btn, true);
+            clearError();
+
+            if (!phone || !imageFile) {
+                showError('Both fields are required.');
+                setButtonLoading(btn, false);
+                return;
+            }
+
+            try {
+                // Upload image to imgbb
+                const formData = new FormData();
+                formData.append('image', imageFile);
+                const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, { method: 'POST', body: formData });
+                const json = await res.json();
+                if (!json.success) throw new Error('Image upload failed');
+                const imageUrl = json.data.url;
+
+                // Update Firestore
+                await updateDoc(doc(db, 'profiles', currentUser.uid), { phone, image: imageUrl });
+                managerProfile.phone = phone;
+                managerProfile.image = imageUrl;
+                window.location.href = 'manager/dashboard.html';
+            } catch (err) {
+                showError(err.message || 'Could not save profile.');
+                setButtonLoading(btn, false);
+            }
+        });
+    }
+
+    function renderRedirecting() {
+        container.innerHTML = `
+            <div class="text-center">
+                <div class="spinner mx-auto mb-4" style="width:2rem; height:2rem; border-width:3px;"></div>
+                <p class="text-slate-600">Redirecting to your dashboard...</p>
+            </div>
+        `;
+    }
+
+    // Initial render
+    render();
+</script>
+</body>
+</html>

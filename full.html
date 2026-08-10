@@ -1,0 +1,2227 @@
+<!doctype html>
+<html lang="en" class="h-full">
+ <head><script>window["__codeletBootstrap__"]=JSON.parse('{"A":"A","B":"20260701-23-dcbed8c"}');</script><script src="/_sdk/f432b76fb310b513.telemetry_sdk.js" integrity="sha512-9FJQ55EKmmqhyyik8BhrMVfm0+iYYfb8uOlRsjtkxJMEI97qOVEI4PnHohDjQAtvAep0IOEpdQ64eki0sz62ug=="></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SHDR Construction Manager</title>
+  <script src="/_sdk/8650958800d6c92a.element_sdk.js" integrity="sha512-zFMhEG5W24TdVhhc4yw+K4kKrl6mClLz7Nz7OlZcKY64bZTx26LpVI6mwMCarQMzfrHe8i4fBMu4fxoFej2m9g=="></script>
+  <script src="/_sdk/0179d719c431a79e.data_sdk.js" integrity="sha512-OsRvJkI5GkC3MJQcgotQYotpzrMSX415GiKKgvYdxQEEkzD/fdchShO2FMSy0PJr/tiINMXOk5Vl2zAgg6bUiA=="></script>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet">
+  <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { jakarta: ['Plus Jakarta Sans', 'sans-serif'] },
+                    colors: {
+                        brand: { 50:'#f0fdf4',100:'#dcfce7',200:'#bbf7d0',500:'#22c55e',600:'#16a34a',700:'#15803d',800:'#166534',900:'#14532d' },
+                        slate: { 50:'#f8fafc',100:'#f1f5f9',200:'#e2e8f0',300:'#cbd5e1',400:'#94a3b8',500:'#64748b',600:'#475569',700:'#334155',800:'#1e293b',900:'#0f172a' }
+                    }
+                }
+            }
+        }
+    </script>
+  <style>
+        * { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .nav-item.active { background: #16a34a; color: white; }
+        .toast { animation: slideIn 0.3s ease, fadeOut 0.3s ease 2.7s; }
+        @keyframes slideIn { from { transform: translateY(-20px); opacity:0; } to { transform: translateY(0); opacity:1; } }
+        @keyframes fadeOut { from { opacity:1; } to { opacity:0; } }
+        .card-hover { transition: all 0.2s; }
+        .card-hover:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0,0.1); }
+        .fade-in { animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+        input, select, textarea { font-size: 16px !important; }
+        .step-indicator { display: flex; gap: 0.5rem; align-items: center; }
+        .step-dot { width: 2rem; height: 2rem; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 0.75rem; }
+        .step-dot.active { background: #16a34a; color: white; }
+        .step-dot.done { background: #dcfce7; color: #16a34a; }
+        .step-dot.inactive { background: #e2e8f0; color: #94a3b8; }
+        .modal-overlay { display: none; }
+        .modal-overlay.active { display: flex; }
+        .chart-container { height: 300px; overflow-x: auto; }
+    </style>
+  <style>body { box-sizing: border-box; }</style>
+ </head>
+ <body class="h-full bg-slate-50 font-jakarta">
+<!-- LOGIN SCREEN -->
+<div id="login-screen" class="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 to-slate-800 p-4">
+  <div class="w-full max-w-md bg-white rounded-3xl shadow-2xl overflow-hidden">
+    <!-- Header -->
+    <div class="pt-10 pb-6 text-center">
+      <img src="shdr_logo.jpg" alt="SHDR Ltd Logo" class="w-24 h-24 mx-auto rounded-2xl shadow-lg object-contain bg-white p-2">
+      <h1 class="text-3xl font-bold text-slate-900 mt-6">SHDR Ltd</h1>
+      <p class="text-slate-500 text-sm mt-2">Sustainable Homes Design Rwanda</p>
+      <p class="text-slate-400 text-xs mt-1">Construction Site Management System</p>
+    </div>
+
+    <!-- Form Area -->
+    <div class="px-8 pb-8">
+      <div id="login-error" class="hidden mb-4 p-3 bg-red-50 border border-red-200 rounded-xl text-sm text-red-700"></div>
+
+      <form id="login-form" class="space-y-5" onsubmit="handleLogin(event)">
+        <div>
+  <label class="block text-sm font-semibold text-slate-700 mb-2">Email Address</label>
+  <input type="email" id="login-email" placeholder="admin@shdr.rw" required 
+         class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 focus:ring-2 focus:ring-brand-500 outline-none">
+</div>
+
+        <div>
+          <label class="block text-sm font-semibold text-slate-700 mb-2">Passcode</label>
+          <div class="relative">
+            <input type="password" id="login-password" placeholder="••••••••••" required 
+                   class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 focus:ring-2 focus:ring-brand-500 outline-none pr-12">
+            <button type="button" onclick="togglePasswordVisibility()" class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
+              <i id="password-toggle-icon" data-lucide="eye" class="w-5 h-5 text-slate-900 cursor-pointer"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="flex items-center justify-between text-sm">
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input type="checkbox" id="login-remember" class="w-4 h-4 accent-green-600">
+            <span class="text-slate-600">Remember me</span>
+          </label>
+<a href="/forgot-passcode"
+   onclick="showForgotPassword(event)"
+   class="text-brand-600 hover:text-brand-700 font-medium"
+   aria-label="Reset your passcode">
+    Forgot passcode?
+</a>        </div>
+
+        <button type="submit" class="w-full py-3.5 bg-gradient-to-r from-brand-500 to-brand-700 hover:from-brand-600 hover:to-brand-800 text-white font-semibold rounded-xl transition-all">
+          Sign In
+        </button>
+      </form>
+    </div>
+
+    <!-- Footer -->
+<div class="px-8 py-8 border-t border-slate-100 text-center text-xs text-slate-500 space-y-5">
+  <p>Secure Access • SHDR Ltd © 2026</p>
+  <p>
+    Powered by 
+    <a href="https://wa.me/250790020086" target="_blank" class="font-semibold text-brand-600 hover:text-brand-700">___Enock's___blessingz___</a>
+  </p>
+</div>
+  </div>
+</div>
+   <div id="main-app" class="hidden h-full flex flex-col">
+    <header class="bg-white border-b border-slate-200 px-4 py-3 flex items-center justify-between shrink-0">
+     <div class="flex items-center gap-3"><button id="menu-toggle" class="lg:hidden p-2 rounded-lg hover:bg-slate-100"><i data-lucide="menu" class="w-5 h-5"></i></button>
+      <div class="w-8 h-8 bg-brand-600 rounded-lg flex items-center justify-center"><i data-lucide="building-2" class="w-4 h-4 text-white"></i>
+      </div><span id="header-title" class="font-bold text-slate-900 text-sm">SHDR Ltd</span>
+     </div>
+     <div class="flex items-center gap-2"><span id="notification-badge" class="bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center hidden">0</span><span id="user-display" class="text-xs text-slate-500 hidden sm:block"></span><button id="logout-btn" class="p-2 rounded-lg hover:bg-slate-100 text-slate-500"><i data-lucide="log-out" class="w-4 h-4"></i></button>
+     </div>
+    </header>
+    <div class="flex flex-1 overflow-hidden">
+     <nav id="sidebar" class="hidden lg:flex flex-col w-56 bg-white border-r border-slate-200 p-3 shrink-0 overflow-y-auto">
+      <div id="nav-items" class="space-y-1"></div>
+     </nav>
+     <div id="sidebar-overlay" class="hidden fixed inset-0 z-40 bg-black/50 lg:hidden" onclick="closeMobileNav()"></div>
+     <nav id="mobile-sidebar" class="hidden fixed left-0 top-0 bottom-0 z-50 w-64 bg-white p-4 shadow-xl lg:hidden overflow-y-auto">
+      <div class="flex justify-between items-center mb-4"><span class="font-bold text-slate-900">Menu</span><button onclick="closeMobileNav()" class="p-1 rounded hover:bg-slate-100"><i data-lucide="x" class="w-5 h-5"></i></button>
+      </div>
+      <div id="mobile-nav-items" class="space-y-1"></div>
+     </nav>
+     <main id="content" class="flex-1 overflow-y-auto p-4 md:p-6"></main>
+     <div id="modal-overlay" class="modal-overlay fixed inset-0 z-50 bg-black/50 justify-center items-center"></div>
+    </div>
+    <nav id="bottom-nav" class="lg:hidden bg-white border-t border-slate-200 flex shrink-0 fixed bottom-0 left-0 right-0"></nav>
+   </div>
+  </div>
+  <script>
+// ===== STATE =====
+let currentUser = null;
+let currentView = 'dashboard';
+let allData = [];
+let sites = [];
+let materials = [];
+let workers = [];
+let dailyReports = [];
+let suppliers = [];
+let purchaseOrders = [];
+let photos = [];
+let notifications = [];
+let auditLogs = [];
+let dailyWorkerDeployments = [];
+let workerMaster = [];
+
+const defaultConfig = {
+    company_name: 'SHDR Ltd',
+    tagline: 'Construction Site Management',
+    background_color: '#f8fafc',
+    surface_color: '#ffffff',
+    text_color: '#0f172a',
+    primary_color: '#16a34a',
+    secondary_color: '#475569'
+};
+
+// ===== ELEMENT SDK =====
+window.elementSdk.init({
+    defaultConfig,
+    onConfigChange: async (config) => {
+        document.getElementById('login-title').textContent = config.company_name || defaultConfig.company_name;
+        document.getElementById('login-tagline').textContent = config.tagline || defaultConfig.tagline;
+        document.getElementById('header-title').textContent = config.company_name || defaultConfig.company_name;
+        document.body.style.backgroundColor = config.background_color || defaultConfig.background_color;
+        document.querySelectorAll('.brand-bg').forEach(el => el.style.backgroundColor = config.primary_color || defaultConfig.primary_color);
+    },
+    mapToCapabilities: (config) => ({
+        recolorables: [
+            { get: () => config.background_color || defaultConfig.background_color, set: (v) => { config.background_color = v; window.elementSdk.setConfig({ background_color: v }); }},
+            { get: () => config.surface_color || defaultConfig.surface_color, set: (v) => { config.surface_color = v; window.elementSdk.setConfig({ surface_color: v }); }},
+            { get: () => config.text_color || defaultConfig.text_color, set: (v) => { config.text_color = v; window.elementSdk.setConfig({ text_color: v }); }},
+            { get: () => config.primary_color || defaultConfig.primary_color, set: (v) => { config.primary_color = v; window.elementSdk.setConfig({ primary_color: v }); }},
+            { get: () => config.secondary_color || defaultConfig.secondary_color, set: (v) => { config.secondary_color = v; window.elementSdk.setConfig({ secondary_color: v }); }}
+        ],
+        borderables: [],
+        fontEditable: { get: () => config.font_family || defaultConfig.font_family, set: (v) => { config.font_family = v; window.elementSdk.setConfig({ font_family: v }); }},
+        fontSizeable: undefined
+    }),
+    mapToEditPanelValues: (config) => new Map([
+        ['company_name', config.company_name || defaultConfig.company_name],
+        ['tagline', config.tagline || defaultConfig.tagline]
+    ])
+});
+
+// ===== DATA SDK =====
+const dataHandler = {
+    onDataChanged(data) {
+        allData = data;
+        sites = data.filter(d => d.type === 'site');
+        materials = data.filter(d => d.type === 'material');
+        workers = data.filter(d => d.type === 'worker');
+        dailyReports = data.filter(d => d.type === 'daily_report');
+        suppliers = data.filter(d => d.type === 'supplier');
+        purchaseOrders = data.filter(d => d.type === 'purchase_order');
+        photos = data.filter(d => d.type === 'photo');
+        notifications = data.filter(d => d.type === 'notification');
+        auditLogs = data.filter(d => d.type === 'audit_log');
+        dailyWorkerDeployments = data.filter(d => d.type === 'daily_worker_deployment');
+        workerMaster = data.filter(d => d.type === 'worker_master');
+        updateNotificationBadge();
+        renderCurrentView();
+    }
+};
+
+(async () => {
+    const result = await window.dataSdk.init(dataHandler);
+    if (!result.isOk) console.error('Data SDK init failed');
+    
+    if (!initializeAuth()) {
+        lucide.createIcons();
+    }
+})();
+
+// ===== AUTHENTICATION =====
+const DEMO_ACCOUNTS = {
+    'admin@shdr.rw': { password: 'admin##2019', role: 'admin', name: 'Administrator' },
+    'manager@shdr.rw': { password: 'manager##2019', role: 'manager', name: 'Site Manager' }
+};
+
+function togglePasswordVisibility() {
+    const input = document.getElementById('login-password');
+    const icon = document.getElementById('password-toggle-icon');
+    const isPassword = input.type === 'password';
+    input.type = isPassword ? 'text' : 'password';
+    icon.setAttribute('data-lucide', isPassword ? 'eye-off' : 'eye');
+    lucide.createIcons();
+}
+
+function showForgotPassword(e) {
+    e.preventDefault();
+    showToast('Contact your SHDR administrator for password reset', 'success');
+}
+
+function handleLogin(e) {
+    e.preventDefault();
+    const email = document.getElementById('login-email').value.trim();
+    const password = document.getElementById('login-password').value;
+    const errorDiv = document.getElementById('login-error');
+    const btn = document.getElementById('login-btn');
+    const btnText = document.getElementById('login-btn-text');
+    const spinner = document.getElementById('login-spinner');
+
+    errorDiv.classList.add('hidden');
+
+    if (!email || !password) {
+        errorDiv.textContent = '❌ Please enter email and passcode';
+        errorDiv.classList.remove('hidden');
+        return;
+    }
+
+    btn.disabled = true;
+    spinner.classList.remove('hidden');
+
+    setTimeout(() => {
+        const account = DEMO_ACCOUNTS[email];
+        
+        if (!account || account.password !== password) {
+            errorDiv.textContent = '❌ Incorrect email or passcode. Try again!.';
+            errorDiv.classList.remove('hidden');
+            btn.disabled = false;
+            spinner.classList.add('hidden');
+            btnText.textContent = 'Sign In';
+            return;
+        }
+
+        currentUser = {
+            email,
+            name: account.name,
+            role: account.role,
+            loginTime: new Date().toISOString(),
+            lastActive: new Date().toISOString()
+        };
+
+        localStorage.setItem('shdr_user', JSON.stringify(currentUser));
+        if (document.getElementById('login-remember').checked) {
+            localStorage.setItem('shdr_remember', email);
+        }
+
+        document.getElementById('login-screen').classList.add('hidden');
+        document.getElementById('main-app').classList.remove('hidden');
+        document.getElementById('user-display').textContent = `${currentUser.name}`;
+        
+        buildNavigation();
+        navigateTo('dashboard');
+        showToast(` Welcome, ${currentUser.name}!`);
+        addNotification('login', 'Login Successful', `${currentUser.name} logged in at ${new Date().toLocaleTimeString()}`);
+        lucide.createIcons();
+    }, 500);
+}
+
+function initializeAuth() {
+    const remembered = localStorage.getItem('shdr_remember');
+    if (remembered) {
+        document.getElementById('login-email').value = remembered;
+        document.getElementById('login-remember').checked = true;
+    }
+    
+    const stored = localStorage.getItem('shdr_user');
+    if (stored) {
+        try {
+            currentUser = JSON.parse(stored);
+            document.getElementById('login-screen').classList.add('hidden');
+            document.getElementById('main-app').classList.remove('hidden');
+            document.getElementById('user-display').textContent = `${currentUser.name}`;
+            buildNavigation();
+            navigateTo('dashboard');
+            lucide.createIcons();
+            return true;
+        } catch (e) {
+            localStorage.removeItem('shdr_user');
+        }
+    }
+    return false;
+}
+
+document.getElementById('logout-btn').addEventListener('click', () => {
+    const userName = currentUser?.name || 'User';
+    currentUser = null;
+    localStorage.removeItem('shdr_user');
+    document.getElementById('main-app').classList.add('hidden');
+    document.getElementById('login-screen').classList.remove('hidden');
+    document.getElementById('login-email').value = '';
+    document.getElementById('login-password').value = '';
+    document.getElementById('login-error').classList.add('hidden');
+    showToast(`${userName} logged out`);
+    lucide.createIcons();
+});
+
+document.getElementById('menu-toggle').addEventListener('click', () => {
+    document.getElementById('sidebar-overlay').classList.remove('hidden');
+    document.getElementById('mobile-sidebar').classList.remove('hidden');
+});
+
+function closeMobileNav() {
+    document.getElementById('sidebar-overlay').classList.add('hidden');
+    document.getElementById('mobile-sidebar').classList.add('hidden');
+}
+
+// ===== NAVIGATION =====
+const adminNavConfig = [
+    { id:'dashboard', label:'Dashboard', icon:'layout-dashboard' },
+    { id:'sites', label:'Sites', icon:'building' },
+    { id:'materials', label:'Materials', icon:'package' },
+    { id:'workers', label:'Workers', icon:'hard-hat' },
+    { id:'daily-workers', label:'Daily Workers', icon:'users' },
+    { id:'suppliers', label:'Suppliers', icon:'truck' },
+    { id:'purchase-orders', label:'Purchase Orders', icon:'file-text' },
+    { id:'photos', label:'Photos', icon:'camera' },
+    { id:'reports', label:'Reports', icon:'bar-chart-3' },
+    { id:'audit-logs', label:'Audit Logs', icon:'shield-alert' }
+];
+
+const managerNavConfig = [
+    { id:'dashboard', label:'Dashboard', icon:'layout-dashboard' },
+    { id:'daily-entry', label:'Daily Entry', icon:'clipboard-list' },
+    { id:'materials', label:'Materials', icon:'package' },
+    { id:'daily-workers', label:'Daily Workers', icon:'users' },
+    { id:'photos', label:'Photos', icon:'camera' },
+    { id:'reports', label:'Reports', icon:'bar-chart-3' }
+];
+
+function isUserAuthorized(viewId) {
+    if (currentUser.role === 'admin') return true;
+    const allowedForManager = ['dashboard', 'daily-entry', 'materials', 'daily-workers', 'photos', 'reports'];
+    return allowedForManager.includes(viewId);
+}
+
+function buildNavigation() {
+    const navItems = currentUser.role === 'admin' ? adminNavConfig : managerNavConfig;
+    const makeItem = (item) => {
+        if (!isUserAuthorized(item.id)) return '';
+        return `<button onclick="navigateTo('${item.id}')" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-100 transition-colors ${currentView===item.id?'active':''}">
+            <i data-lucide="${item.icon}" class="w-4 h-4"></i><span>${item.label}</span>
+        </button>`;
+    };
+    const navHTML = navItems.map(makeItem).join('');
+    document.getElementById('nav-items').innerHTML = navHTML;
+    document.getElementById('mobile-nav-items').innerHTML = navHTML;
+    
+    const bottomItems = navItems.filter(i => isUserAuthorized(i.id)).slice(0,4);
+    document.getElementById('bottom-nav').innerHTML = bottomItems.map(item => `
+        <button onclick="navigateTo('${item.id}')" class="flex-1 flex flex-col items-center py-2 text-xs ${currentView===item.id?'text-brand-600 font-semibold':'text-slate-400'}">
+            <i data-lucide="${item.icon}" class="w-5 h-5 mb-0.5"></i><span class="text-xs">${item.label}</span>
+        </button>`).join('');
+    lucide.createIcons();
+}
+
+function navigateTo(view) {
+    currentView = view;
+    closeMobileNav();
+    buildNavigation();
+    renderCurrentView();
+}
+
+function renderCurrentView() {
+    if (!isUserAuthorized(currentView)) {
+        currentView = 'dashboard';
+    }
+    
+    const content = document.getElementById('content');
+    switch(currentView) {
+        case 'dashboard': content.innerHTML = renderDashboard(); break;
+        case 'sites': content.innerHTML = renderSites(); break;
+        case 'materials': content.innerHTML = renderMaterials(); break;
+        case 'workers': content.innerHTML = renderWorkers(); break;
+        case 'daily-workers': content.innerHTML = renderDailyWorkers(); break;
+        case 'daily-entry': content.innerHTML = renderDailyEntry(); break;
+        case 'suppliers': content.innerHTML = renderSuppliers(); break;
+        case 'purchase-orders': content.innerHTML = renderPurchaseOrders(); break;
+        case 'photos': content.innerHTML = renderPhotos(); break;
+        case 'reports': content.innerHTML = renderReports(); break;
+        case 'audit-logs': content.innerHTML = renderAuditLogs(); break;
+    }
+    lucide.createIcons();
+}
+
+// ===== TOAST =====
+function showToast(msg, type='success') {
+    const t = document.createElement('div');
+    t.className = `toast px-4 py-3 rounded-xl shadow-lg text-sm font-medium text-white ${type==='success'?'bg-brand-600':type==='error'?'bg-red-500':'bg-amber-500'}`;
+    t.textContent = msg;
+    document.getElementById('toast-container').appendChild(t);
+    setTimeout(() => t.remove(), 3000);
+}
+
+// ===== NOTIFICATIONS =====
+function updateNotificationBadge() {
+    const unread = notifications.filter(n => !n.is_read).length;
+    const badge = document.getElementById('notification-badge');
+    if (unread > 0) {
+        badge.textContent = unread;
+        badge.classList.remove('hidden');
+    } else {
+        badge.classList.add('hidden');
+    }
+}
+
+function addNotification(type, title, message) {
+    const notify = {
+        type: 'notification',
+        notification_type: type,
+        title,
+        message,
+        is_read: false,
+        created_at: new Date().toISOString()
+    };
+    window.dataSdk.create(notify);
+    showToast(message, 'success');
+}
+
+// ===== DASHBOARD =====
+function renderDashboard() {
+    const activeSites = sites.filter(s => s.status === 'ongoing').length;
+    const totalLaborCost = workers.reduce((s,w) => s + (w.total_cost||0), 0);
+    const today = new Date().toISOString().split('T')[0];
+    const todayMaterials = materials.filter(m => m.date === today).length;
+    const todayWorkers = workers.filter(w => w.date === today).length;
+    const todayLabor = workers.filter(w => w.date === today).reduce((s,w) => s + (w.total_cost||0), 0);
+    const monthWrk = workers.filter(w => (w.date||'').startsWith(today.slice(0,7)));
+
+    return `<div class="fade-in space-y-6 pb-20 lg:pb-0">
+        <div><h1 class="text-2xl font-bold text-slate-900">${currentUser.role === 'admin' ? 'Admin Dashboard' : 'Site Manager Dashboard'}</h1><p class="text-slate-500 text-sm">Welcome, ${currentUser?.name}</p></div>
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
+            ${statCard('Active Sites', activeSites, 'building', 'bg-blue-50 text-blue-600')}
+            ${statCard('Sites', sites.length, 'map-pin', 'bg-purple-50 text-purple-600')}
+            ${statCard("Today's Labor", todayLabor.toLocaleString() + ' RWF', 'wallet', 'bg-brand-50 text-brand-600')}
+            ${statCard('Month Labor', monthWrk.reduce((s,w)=>s+(w.total_cost||0),0).toLocaleString() + ' RWF', 'trending-up', 'bg-amber-50 text-amber-600')}
+        </div>
+        ${currentUser.role === 'admin' ? `
+            <div class="grid md:grid-cols-2 gap-4">
+                <div class="bg-white rounded-2xl p-5 border border-slate-200">
+                    <h3 class="font-semibold text-slate-900 mb-3">🔨 Top Active Sites</h3>
+                    ${sites.filter(s => s.status === 'ongoing').slice(0,5).map(s => `
+                        <div class="flex justify-between py-2 border-b border-slate-100 text-sm">
+                            <span class="text-slate-700 font-medium">${s.site_name}</span>
+                            <span class="text-slate-400">${s.manager || 'Unassigned'}</span>
+                        </div>
+                    `).join('') || '<p class="text-slate-400 text-sm">No active sites</p>'}
+                </div>
+                <div class="bg-white rounded-2xl p-5 border border-slate-200">
+                    <h3 class="font-semibold text-slate-900 mb-3"> Recent Notifications</h3>
+                    ${notifications.slice(-3).reverse().map(n => `<div class="py-2 border-b border-slate-100 text-sm"><p class="font-medium text-slate-700">${n.title}</p><p class="text-xs text-slate-400">${n.message}</p></div>`).join('') || '<p class="text-slate-400 text-sm">No notifications</p>'}
+                </div>
+            </div>
+        ` : `
+            <div class="bg-white rounded-2xl p-5 border border-slate-200">
+                <h3 class="font-semibold text-slate-900 mb-4">Today's Summary</h3>
+                <div class="grid grid-cols-2 gap-4 text-center">
+                    <div class="p-3 bg-slate-50 rounded-xl"><p class="text-2xl font-bold text-slate-900">${todayMaterials}</p><p class="text-xs text-slate-500">Materials Logged</p></div>
+                    <div class="p-3 bg-slate-50 rounded-xl"><p class="text-2xl font-bold text-slate-900">${todayWorkers}</p><p class="text-xs text-slate-500">Workers Deployed</p></div>
+                </div>
+            </div>
+        `}
+    </div>`;
+}
+
+function statCard(label, value, icon, colorClass) {
+    return `<div class="bg-white rounded-2xl p-4 border border-slate-200 card-hover">
+        <div class="w-10 h-10 rounded-xl ${colorClass} flex items-center justify-center mb-3"><i data-lucide="${icon}" class="w-5 h-5"></i></div>
+        <p class="text-lg font-bold text-slate-900">${value}</p>
+        <p class="text-xs text-slate-500 mt-0.5">${label}</p>
+    </div>`;
+}
+
+// ===== SITES =====
+function renderSites() {
+    return `<div class="fade-in space-y-4 pb-20 lg:pb-0">
+        <div class="flex justify-between items-center">
+            <h1 class="text-2xl font-bold text-slate-900">Construction Sites</h1>
+            ${currentUser.role === 'admin' ? `<button onclick="showSiteForm()" class="px-4 py-2.5 bg-brand-600 hover:bg-brand-700 text-white rounded-xl text-sm font-medium flex items-center gap-2"><i data-lucide="plus" class="w-4 h-4"></i>Add Site</button>` : ''}
+        </div>
+        <div id="site-form-area"></div>
+        <div class="grid gap-3">
+            ${sites.length ? sites.map(s => `
+                <div class="bg-white rounded-2xl p-4 border border-slate-200 card-hover">
+                    <div class="flex justify-between items-start">
+                        <div class="flex-1">
+                            <h3 class="font-semibold text-slate-900">${s.site_name}</h3>
+                            <p class="text-sm text-slate-500">${s.location || 'No location'}</p>
+                            <p class="text-xs text-slate-400 mt-1"> ${s.start_date || 'N/A'} → ${s.expected_end_date || 'Ongoing'}</p>
+                            ${s.manager ? `<p class="text-xs text-slate-500 mt-1">👤 Manager: ${s.manager}</p>` : ''}
+                        </div>
+                        <span class="px-2.5 py-1 rounded-full text-xs font-medium ${s.status==='ongoing'?'bg-green-100 text-green-700':'bg-slate-100 text-slate-600'}">${s.status}</span>
+                    </div>
+                </div>`).join('') : '<div class="text-center py-12"><p class="text-slate-400">No sites added yet</p></div>'}
+        </div>
+    </div>`;
+}
+
+function showSiteForm() {
+    document.getElementById('site-form-area').innerHTML = `
+        <form onsubmit="saveSite(event)" class="bg-white rounded-2xl p-5 border border-slate-200 space-y-3">
+            <h3 class="font-semibold text-slate-900">New Construction Site</h3>
+            <input id="sf-name" placeholder="Site Name *" required class="w-full px-3 py-2.5 rounded-xl border border-slate-200 bg-slate-50 outline-none focus:ring-2 focus:ring-brand-500">
+            <div class="grid grid-cols-2 gap-3">
+                <input id="sf-district" placeholder="District" class="px-3 py-2.5 rounded-xl border border-slate-200 bg-slate-50 outline-none focus:ring-2 focus:ring-brand-500">
+                <input id="sf-sector" placeholder="Sector" class="px-3 py-2.5 rounded-xl border border-slate-200 bg-slate-50 outline-none focus:ring-2 focus:ring-brand-500">
+            </div>
+            <input id="sf-location" placeholder="GPS Location / Address" class="w-full px-3 py-2.5 rounded-xl border border-slate-200 bg-slate-50 outline-none focus:ring-2 focus:ring-brand-500">
+            <input id="sf-client" placeholder="Client Name" class="w-full px-3 py-2.5 rounded-xl border border-slate-200 bg-slate-50 outline-none focus:ring-2 focus:ring-brand-500">
+            <input id="sf-contract" type="number" min="0" placeholder="Contract Value (RWF)" class="w-full px-3 py-2.5 rounded-xl border border-slate-200 bg-slate-50 outline-none focus:ring-2 focus:ring-brand-500">
+            <div class="grid grid-cols-2 gap-3">
+                <input id="sf-start" type="date" class="px-3 py-2.5 rounded-xl border border-slate-200 bg-slate-50 outline-none focus:ring-2 focus:ring-brand-500">
+                <input id="sf-end" type="date" class="px-3 py-2.5 rounded-xl border border-slate-200 bg-slate-50 outline-none focus:ring-2 focus:ring-brand-500">
+            </div>
+            <input id="sf-manager" placeholder="Assigned Manager" class="w-full px-3 py-2.5 rounded-xl border border-slate-200 bg-slate-50 outline-none focus:ring-2 focus:ring-brand-500">
+            <select id="sf-status" class="w-full px-3 py-2.5 rounded-xl border border-slate-200 bg-slate-50 outline-none focus:ring-2 focus:ring-brand-500">
+                <option value="ongoing">Ongoing</option><option value="planning">Planning</option><option value="on_hold">On Hold</option><option value="completed">Completed</option>
+            </select>
+            <div class="flex gap-2">
+                <button type="submit" class="px-5 py-2.5 bg-brand-600 hover:bg-brand-700 text-white rounded-xl text-sm font-medium">Save Site</button>
+                <button type="button" onclick="document.getElementById('site-form-area').innerHTML=''" class="px-5 py-2.5 bg-slate-100 text-slate-700 rounded-xl text-sm font-medium">Cancel</button>
+            </div>
+        </form>`;
+    lucide.createIcons();
+}
+
+async function saveSite(e) {
+    e.preventDefault();
+    if (allData.length >= 999) { showToast('Storage limit reached', 'error'); return; }
+    const btn = e.target.querySelector('button[type="submit"]');
+    btn.disabled = true;
+    const result = await window.dataSdk.create({
+        type: 'site',
+        site_code: 'SHDR-' + String(sites.length + 1).padStart(4, '0'),
+        site_name: document.getElementById('sf-name').value,
+        location: document.getElementById('sf-location').value,
+        district: document.getElementById('sf-district').value,
+        sector: document.getElementById('sf-sector').value,
+        client_name: document.getElementById('sf-client').value,
+        contract_value: parseFloat(document.getElementById('sf-contract').value || 0),
+        start_date: document.getElementById('sf-start').value,
+        expected_end_date: document.getElementById('sf-end').value,
+        manager: document.getElementById('sf-manager').value,
+        status: document.getElementById('sf-status').value,
+        created_at: new Date().toISOString(),
+        created_by: currentUser.name
+    });
+    if (result.isOk) {
+        showToast('Site created successfully!');
+        document.getElementById('site-form-area').innerHTML = '';
+    } else {
+        showToast('Failed to save site', 'error');
+        btn.disabled = false;
+    }
+}
+
+// ===== MATERIALS DATABASE =====
+const MATERIAL_MASTER = [
+    { name: 'Cement', category: 'Cement & Concrete', unit: 'bags', default_cost: 5500 },
+    { name: 'Sand', category: 'Aggregates', unit: 'tons', default_cost: 18000 },
+    { name: 'Aggregates (Gravel)', category: 'Aggregates', unit: 'tons', default_cost: 22000 },
+    { name: 'Clay Bricks', category: 'Bricks & Blocks', unit: 'pieces', default_cost: 50 },
+    { name: 'Steel Bars (10mm)', category: 'Steel & Metal', unit: 'kg', default_cost: 1200 },
+    { name: 'Steel Bars (12mm)', category: 'Steel & Metal', unit: 'kg', default_cost: 1400 },
+    { name: 'Roofing Sheets', category: 'Roofing', unit: 'sheets', default_cost: 45000 },
+    { name: 'Water', category: 'Other', unit: 'm³', default_cost: 3000 },
+    { name: 'Paint', category: 'Finishes', unit: 'litres', default_cost: 8500 },
+    { name: 'Tiles', category: 'Finishes', unit: 'm²', default_cost: 15000 },
+    { name: 'Timber', category: 'Other', unit: 'pieces', default_cost: 5000 },
+    { name: 'PVC Pipes', category: 'Plumbing', unit: 'meters', default_cost: 2500 },
+    { name: 'Nails', category: 'Hardware', unit: 'kg', default_cost: 3000 },
+    { name: 'Concrete Blocks', category: 'Bricks & Blocks', unit: 'pieces', default_cost: 800 }
+];
+
+// ===== MATERIALS =====
+function renderMaterials() {
+    const categories = [...new Set(MATERIAL_MASTER.map(m => m.category))];
+    
+    return `<div class="fade-in space-y-4 pb-20 lg:pb-0">
+        <div class="flex justify-between items-center">
+            <h1 class="text-2xl font-bold text-slate-900"> Materials Module</h1>
+            <button onclick="toggleBatchForm()" class="px-4 py-2.5 bg-brand-600 hover:bg-brand-700 text-white rounded-xl text-sm font-medium flex items-center gap-2 h-fit"><i data-lucide="plus" class="w-4 h-4"></i>Batch Entry</button>
+        </div>
+        
+        <div id="batch-form-container"></div>
+
+        <div class="grid md:grid-cols-2 gap-4">
+            <div class="bg-white rounded-2xl p-5 border border-slate-200">
+                <h3 class="font-semibold text-slate-900 mb-3"> Quick Stats</h3>
+                <div class="space-y-2">
+                    <div class="flex justify-between items-center p-2 bg-slate-50 rounded">
+                        <span class="text-sm text-slate-600">Total Entries</span>
+                        <span class="font-bold text-slate-900">${materials.length}</span>
+                    </div>
+                    <div class="flex justify-between items-center p-2 bg-slate-50 rounded">
+                        <span class="text-sm text-slate-600">Total Cost</span>
+                        <span class="font-bold text-brand-600">${materials.reduce((s,m)=>s+(m.total_material_cost||0),0).toLocaleString()} RWF</span>
+                    </div>
+                    <div class="flex justify-between items-center p-2 bg-slate-50 rounded">
+                        <span class="text-sm text-slate-600">Unique Materials</span>
+                        <span class="font-bold text-slate-900">${[...new Set(materials.map(m=>m.material_name))].length}</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-2xl p-5 border border-slate-200">
+                <h3 class="font-semibold text-slate-900 mb-3">🏗️ By Site</h3>
+                ${[...new Set(materials.map(m=>m.site_name))].slice(0,3).map(site => {
+                    const siteMats = materials.filter(m => m.site_name === site);
+                    const siteTotal = siteMats.reduce((s,m)=>s+(m.total_material_cost||0),0);
+                    return `<div class="text-sm mb-2"><p class="font-medium text-slate-700">${site}</p><p class="text-xs text-brand-600">${siteTotal.toLocaleString()} RWF • ${siteMats.length} entries</p></div>`;
+                }).join('') || '<p class="text-sm text-slate-400">No data</p>'}
+            </div>
+        </div>
+
+        <div class="bg-white rounded-2xl p-5 border border-slate-200">
+            <h3 class="font-semibold text-slate-900 mb-3"> Recent Entries</h3>
+            <div class="space-y-2 max-h-96 overflow-y-auto">
+                ${materials.length ? materials.slice().reverse().slice(0,25).map(m => `
+                    <div class="flex justify-between items-start p-3 bg-slate-50 rounded-lg">
+                        <div class="flex-1 min-w-0">
+                            <p class="font-medium text-slate-800 text-sm truncate">${m.material_name}</p>
+                            <p class="text-xs text-slate-500">${m.site_name} • ${m.date}</p>
+                            <p class="text-xs text-slate-600 mt-1"><span class="font-semibold">${m.quantity}</span> ${m.unit} ${m.unit_cost ? '@ ' + m.unit_cost.toLocaleString() + ' RWF' : ''}</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="font-bold text-brand-600">${(m.total_material_cost||0).toLocaleString()}</p>
+                            ${currentUser.role === 'admin' ? `<button onclick="deleteMaterial('${m.__backendId}')" class="text-xs text-red-500 hover:underline mt-1">Delete</button>` : ''}
+                        </div>
+                    </div>`).join('') : '<p class="text-slate-400 text-sm">No entries yet</p>'}
+            </div>
+        </div>
+    </div>`;
+}
+
+function toggleBatchForm() {
+    const container = document.getElementById('batch-form-container');
+    if (container.innerHTML) {
+        container.innerHTML = '';
+    } else {
+        renderBatchForm();
+    }
+}
+
+function renderBatchForm() {
+    const container = document.getElementById('batch-form-container');
+    const categories = [...new Set(MATERIAL_MASTER.map(m => m.category))];
+    
+    container.innerHTML = `
+        <div class="bg-white rounded-2xl p-5 border border-slate-200 space-y-4">
+            <h3 class="font-semibold text-slate-900"> Batch Material Entry</h3>
+            
+            <div class="grid md:grid-cols-2 gap-4">
+                <div>
+                    <label class="text-sm font-medium text-slate-700 block mb-1">Site *</label>
+                    <select id="bf-site" required class="w-full px-3 py-2.5 rounded-xl border border-slate-200 bg-slate-50 outline-none focus:ring-2 focus:ring-brand-500">
+                        <option value="">Select Site</option>
+                        ${sites.map(s => `<option value="${s.site_name}">${s.site_name}</option>`).join('')}
+                    </select>
+                </div>
+                <div>
+                    <label class="text-sm font-medium text-slate-700 block mb-1">Date *</label>
+                    <input id="bf-date" type="date" required value="${new Date().toISOString().split('T')[0]}" class="w-full px-3 py-2.5 rounded-xl border border-slate-200 bg-slate-50 outline-none focus:ring-2 focus:ring-brand-500">
+                </div>
+            </div>
+
+            <div>
+                <label class="text-sm font-medium text-slate-700 block mb-2">Select Materials to Log</label>
+                <div class="grid grid-cols-2 md:grid-cols-3 gap-2">
+                    ${MATERIAL_MASTER.map((m, i) => `
+                        <label class="flex items-center gap-2 p-2 bg-slate-50 rounded-lg cursor-pointer hover:bg-slate-100">
+                            <input type="checkbox" value="${m.name}" class="material-checkbox w-4 h-4 rounded" onchange="updateBatchTable()">
+                            <span class="text-xs text-slate-700">${m.name}</span>
+                        </label>
+                    `).join('')}
+                </div>
+            </div>
+
+            <div id="batch-table-container"></div>
+
+            <div class="flex gap-2">
+                <button type="button" onclick="saveBatch()" class="flex-1 py-2.5 bg-brand-600 hover:bg-brand-700 text-white rounded-xl font-medium">💾 Save Batch</button>
+                <button type="button" onclick="toggleBatchForm()" class="flex-1 py-2.5 bg-slate-100 text-slate-700 rounded-xl font-medium">Cancel</button>
+            </div>
+        </div>
+    `;
+    lucide.createIcons();
+}
+
+function updateBatchTable() {
+    const selected = [...document.querySelectorAll('.material-checkbox:checked')].map(c => c.value);
+    const container = document.getElementById('batch-table-container');
+    
+    if (selected.length === 0) {
+        container.innerHTML = '';
+        return;
+    }
+
+    let html = `
+        <div class="border border-slate-200 rounded-lg overflow-x-auto">
+            <table class="w-full text-sm">
+                <thead class="bg-slate-100 border-b border-slate-200">
+                    <tr>
+                        <th class="px-3 py-2 text-left font-semibold text-slate-700">Material</th>
+                        <th class="px-3 py-2 text-left font-semibold text-slate-700">Unit</th>
+                        <th class="px-3 py-2 text-right font-semibold text-slate-700">Qty</th>
+                        <th class="px-3 py-2 text-right font-semibold text-slate-700">Unit Cost</th>
+                        <th class="px-3 py-2 text-right font-semibold text-slate-700">Total</th>
+                        <th class="px-3 py-2 text-center">Notes</th>
+                    </tr>
+                </thead>
+                <tbody>`;
+
+    selected.forEach((matName, idx) => {
+        const matData = MATERIAL_MASTER.find(m => m.name === matName);
+        html += `
+            <tr class="border-b border-slate-200 hover:bg-slate-50">
+                <td class="px-3 py-2"><span class="font-medium text-slate-900">${matName}</span></td>
+                <td class="px-3 py-2 text-slate-600">${matData.unit}</td>
+                <td class="px-3 py-2"><input type="number" class="batch-qty w-full px-2 py-1 rounded border border-slate-200 text-right" min="0" step="0.1" data-idx="${idx}" onchange="updateBatchTotal()"></td>
+                <td class="px-3 py-2"><input type="number" class="batch-cost w-full px-2 py-1 rounded border border-slate-200 text-right" min="0" step="0.01" value="${matData.default_cost}" data-idx="${idx}" onchange="updateBatchTotal()"></td>
+                <td class="px-3 py-2 text-right"><span class="batch-total font-bold text-brand-600" data-idx="${idx}">0</span></td>
+                <td class="px-3 py-2"><input type="text" class="batch-notes w-full px-2 py-1 rounded border border-slate-200 text-xs" placeholder="Notes" data-idx="${idx}"></td>
+            </tr>`;
+    });
+
+    html += `</tbody>
+            <tfoot class="bg-brand-50 border-t-2 border-brand-200">
+                <tr>
+                    <td colspan="4" class="px-3 py-2 font-semibold text-slate-900">Grand Total:</td>
+                    <td class="px-3 py-2 text-right font-bold text-brand-600 text-lg"><span id="batch-grand-total">0</span></td>
+                    <td></td>
+                </tr>
+            </tfoot>
+        </table>
+        </div>`;
+
+    container.innerHTML = html;
+    updateBatchTotal();
+    lucide.createIcons();
+}
+
+function updateBatchTotal() {
+    let grand = 0;
+    document.querySelectorAll('.batch-qty').forEach(el => {
+        const idx = el.dataset.idx;
+        const qty = parseFloat(el.value) || 0;
+        const cost = parseFloat(document.querySelector(`.batch-cost[data-idx="${idx}"]`).value) || 0;
+        const total = qty * cost;
+        document.querySelector(`.batch-total[data-idx="${idx}"]`).textContent = total.toLocaleString();
+        grand += total;
+    });
+    const grandEl = document.getElementById('batch-grand-total');
+    if (grandEl) grandEl.textContent = grand.toLocaleString() + ' RWF';
+}
+
+async function saveBatch() {
+    const site = document.getElementById('bf-site')?.value;
+    const date = document.getElementById('bf-date')?.value;
+    const batchId = 'BATCH-' + Date.now();
+    
+    if (!site) { showToast('Select a site', 'error'); return; }
+    if (allData.length >= 999) { showToast('Storage limit reached', 'error'); return; }
+
+    const rows = [];
+    document.querySelectorAll('.batch-qty').forEach(el => {
+        const idx = el.dataset.idx;
+        const selected = [...document.querySelectorAll('.material-checkbox:checked')].map(c => c.value);
+        const matName = selected[parseInt(idx)];
+        const qty = parseFloat(el.value);
+        const cost = parseFloat(document.querySelector(`.batch-cost[data-idx="${idx}"]`).value) || 0;
+        const notes = document.querySelector(`.batch-notes[data-idx="${idx}"]`).value;
+        
+        if (qty > 0) {
+            rows.push({
+                type: 'material',
+                batch_id: batchId,
+                site_name: site,
+                date: date,
+                material_name: matName,
+                material_category: MATERIAL_MASTER.find(m => m.name === matName).category,
+                quantity: qty,
+                unit: MATERIAL_MASTER.find(m => m.name === matName).unit,
+                unit_cost: cost,
+                total_material_cost: qty * cost,
+                notes: notes,
+                created_at: new Date().toISOString(),
+                created_by: currentUser.name
+            });
+        }
+    });
+
+    if (rows.length === 0) { showToast('Add at least one material', 'error'); return; }
+
+    let saveCount = 0;
+    for (const row of rows) {
+        const result = await window.dataSdk.create(row);
+        if (result.isOk) saveCount++;
+    }
+
+    if (saveCount === rows.length) {
+        showToast(` Batch saved successfully! ${rows.length} materials logged.`);
+        document.getElementById('batch-form-container').innerHTML = '';
+    } else {
+        showToast(`Saved ${saveCount}/${rows.length} entries`, 'error');
+    }
+}
+
+async function deleteMaterial(id) {
+    const record = allData.find(d => d.__backendId === id);
+    if (!record) return;
+    const result = await window.dataSdk.delete(record);
+    if (result.isOk) showToast('Entry deleted');
+    else showToast('Failed to delete', 'error');
+}
+
+// ===== WORKERS =====
+function renderWorkers() {
+    const workerTypes = ['Mason','Aid-mason','Carpenter','Welder','Electrician','Plumber','Painter','Labourer','Supervisor','Other'];
+    const defaultWages = { 'Mason': 15000, 'Aid-mason': 8000, 'Carpenter': 12000, 'Welder': 14000, 'Electrician': 16000, 'Plumber': 14000, 'Painter': 10000, 'Labourer': 7000, 'Supervisor': 20000 };
+    
+    return `<div class="fade-in space-y-4 pb-20 lg:pb-0">
+        <div class="flex justify-between items-center">
+            <h1 class="text-2xl font-bold text-slate-900">Daily Workers</h1>
+            <button onclick="document.getElementById('wrk-form').classList.toggle('hidden')" class="px-4 py-2.5 bg-brand-600 hover:bg-brand-700 text-white rounded-xl text-sm font-medium flex items-center gap-2 h-fit"><i data-lucide="plus" class="w-4 h-4"></i>Log Workers</button>
+        </div>
+        <form id="wrk-form" class="hidden bg-white rounded-2xl p-5 border border-slate-200 space-y-3" onsubmit="saveWorker(event)">
+            <h3 class="font-semibold text-slate-900">Log Worker Deployment</h3>
+            <select id="wf-site" required class="w-full px-3 py-2.5 rounded-xl border border-slate-200 bg-slate-50 outline-none focus:ring-2 focus:ring-brand-500">
+                <option value="">Select Site *</option>
+                ${sites.map(s => `<option value="${s.site_name}">${s.site_name}</option>`).join('')}
+            </select>
+            <input id="wf-date" type="date" required value="${new Date().toISOString().split('T')[0]}" class="w-full px-3 py-2.5 rounded-xl border border-slate-200 bg-slate-50 outline-none focus:ring-2 focus:ring-brand-500">
+            <select id="wf-type" required onchange="autoFillWage()" class="w-full px-3 py-2.5 rounded-xl border border-slate-200 bg-slate-50 outline-none focus:ring-2 focus:ring-brand-500">
+                <option value="">Worker Type *</option>
+                ${workerTypes.map(w => `<option>${w}</option>`).join('')}
+            </select>
+            <div class="grid grid-cols-2 gap-3">
+                <input id="wf-num" type="number" min="1" placeholder="No. of Workers *" required oninput="calcWorkerCost()" class="px-3 py-2.5 rounded-xl border border-slate-200 bg-slate-50 outline-none focus:ring-2 focus:ring-brand-500">
+                <input id="wf-wage" type="number" min="0" placeholder="Daily Wage (RWF) *" required oninput="calcWorkerCost()" class="px-3 py-2.5 rounded-xl border border-slate-200 bg-slate-50 outline-none focus:ring-2 focus:ring-brand-500">
+            </div>
+            <input id="wf-hours" type="number" step="0.5" min="0" placeholder="Hours Worked (optional)" class="w-full px-3 py-2.5 rounded-xl border border-slate-200 bg-slate-50 outline-none focus:ring-2 focus:ring-brand-500">
+            <div class="p-3 bg-brand-50 rounded-xl text-sm text-brand-900">Total Cost: <span id="wf-total" class="font-bold">0 RWF</span></div>
+            <button type="submit" class="w-full py-2.5 bg-brand-600 hover:bg-brand-700 text-white rounded-xl text-sm font-medium">Save Entry</button>
+        </form>
+        <div class="space-y-2">
+            ${workers.length ? workers.slice().reverse().slice(0,20).map(w => `
+                <div class="bg-white rounded-xl p-3 border border-slate-200">
+                    <div class="flex justify-between items-start">
+                        <div class="flex-1">
+                            <p class="font-medium text-slate-800 text-sm">${w.worker_type} × ${w.num_workers} workers</p>
+                            <p class="text-xs text-slate-400">${w.site_name || ''} • ${w.date} ${w.hours_worked ? '• ' + w.hours_worked + ' hrs' : ''}</p>
+                            <p class="text-sm font-semibold text-brand-600 mt-1">${(w.total_cost||0).toLocaleString()} RWF</p>
+                        </div>
+                        ${currentUser.role === 'admin' ? `<button onclick="deleteWorker('${w.__backendId}')" class="p-1.5 rounded-lg text-slate-400 hover:text-red-500 hover:bg-red-50"><i data-lucide="trash-2" class="w-4 h-4"></i></button>` : ''}
+                    </div>
+                </div>`).join('') : '<div class="text-center py-8"><p class="text-slate-400">No worker entries yet</p></div>'}
+        </div>
+    </div>`;
+}
+
+function autoFillWage() {
+    const defaultWages = { 'Mason': 15000, 'Aid-mason': 8000, 'Carpenter': 12000, 'Welder': 14000, 'Electrician': 16000, 'Plumber': 14000, 'Painter': 10000, 'Labourer': 7000, 'Supervisor': 20000 };
+    const type = document.getElementById('wf-type')?.value;
+    if (type && defaultWages[type]) {
+        document.getElementById('wf-wage').value = defaultWages[type];
+    }
+    calcWorkerCost();
+}
+
+function calcWorkerCost() {
+    const n = parseFloat(document.getElementById('wf-num')?.value || 0);
+    const w = parseFloat(document.getElementById('wf-wage')?.value || 0);
+    const el = document.getElementById('wf-total');
+    if (el) el.textContent = (n * w).toLocaleString() + ' RWF';
+}
+
+async function saveWorker(e) {
+    e.preventDefault();
+    if (allData.length >= 999) { showToast('Storage limit reached', 'error'); return; }
+    const num = parseInt(document.getElementById('wf-num').value);
+    const wage = parseFloat(document.getElementById('wf-wage').value);
+    const btn = e.target.querySelector('button[type="submit"]');
+    btn.disabled = true;
+    const result = await window.dataSdk.create({
+        type: 'worker',
+        site_name: document.getElementById('wf-site').value,
+        date: document.getElementById('wf-date').value,
+        worker_type: document.getElementById('wf-type').value,
+        num_workers: num,
+        daily_wage: wage,
+        total_cost: num * wage,
+        hours_worked: document.getElementById('wf-hours').value || '',
+        created_at: new Date().toISOString(),
+        created_by: currentUser.name
+    });
+    if (result.isOk) {
+        showToast('Worker entry logged!');
+        e.target.reset();
+        document.getElementById('wf-date').value = new Date().toISOString().split('T')[0];
+    } else {
+        showToast('Failed to save', 'error');
+        btn.disabled = false;
+    }
+}
+
+async function deleteWorker(id) {
+    const record = allData.find(d => d.__backendId === id);
+    if (!record) return;
+    const result = await window.dataSdk.delete(record);
+    if (result.isOk) showToast('Worker entry deleted');
+    else showToast('Failed to delete', 'error');
+}
+
+// ===== DAILY ENTRY (Site Manager Only) =====
+function renderDailyEntry() {
+    const today = new Date().toISOString().split('T')[0];
+    const userSites = sites.filter(s => s.manager === currentUser.name || s.manager === '' || !s.manager);
+    const todayReport = dailyReports.find(r => r.date === today && userSites.some(s => s.site_name === r.site_name));
+    
+    return `<div class="fade-in space-y-4 pb-24">
+        <div><h1 class="text-2xl font-bold text-slate-900">Daily Entry</h1><p class="text-slate-500 text-sm">Submit today's site report for ${today}</p></div>
+        <form id="daily-entry-form" onsubmit="saveDailyReport(event)" class="bg-white rounded-2xl p-5 border border-slate-200 space-y-4">
+            <select id="de-site" required class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 outline-none focus:ring-2 focus:ring-brand-500">
+                <option value="">Select Your Site *</option>
+                ${userSites.map(s => `<option value="${s.site_name}">${s.site_name}</option>`).join('')}
+            </select>
+            
+            <div><label class="text-sm font-medium text-slate-700">Weather Conditions</label>
+            <select id="de-weather" class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 outline-none focus:ring-2 focus:ring-brand-500 mt-1">
+                <option value="">Select weather</option>
+                <option>Sunny</option><option>Cloudy</option><option>Rainy</option><option>Rainy - Work Halted</option>
+            </select></div>
+
+            <div><label class="text-sm font-medium text-slate-700">Work Progress</label>
+            <textarea id="de-progress" placeholder="Describe today's work activities..." class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 outline-none focus:ring-2 focus:ring-brand-500 resize-none" rows="3"></textarea></div>
+
+            <div><label class="text-sm font-medium text-slate-700">Challenges Encountered</label>
+            <textarea id="de-challenges" placeholder="Any issues or delays today?" class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 outline-none focus:ring-2 focus:ring-brand-500 resize-none" rows="2"></textarea></div>
+
+            <div><label class="text-sm font-medium text-slate-700">Next Day's Plan</label>
+            <textarea id="de-plan" placeholder="What's planned for tomorrow?" class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 outline-none focus:ring-2 focus:ring-brand-500 resize-none" rows="2"></textarea></div>
+
+            <button type="submit" class="w-full py-3.5 bg-brand-600 hover:bg-brand-700 text-white font-semibold rounded-xl text-lg">📤 Submit Daily Report</button>
+        </form>
+    </div>`;
+}
+
+async function saveDailyReport(e) {
+    e.preventDefault();
+    if (allData.length >= 999) { showToast('Storage limit reached', 'error'); return; }
+    const today = new Date().toISOString().split('T')[0];
+    const btn = e.target.querySelector('button[type="submit"]');
+    btn.disabled = true;
+    const result = await window.dataSdk.create({
+        type: 'daily_report',
+        site_name: document.getElementById('de-site').value,
+        report_date: today,
+        date: today,
+        weather: document.getElementById('de-weather').value,
+        work_progress: document.getElementById('de-progress').value,
+        challenges: document.getElementById('de-challenges').value,
+        next_day_plan: document.getElementById('de-plan').value,
+        is_submitted: true,
+        created_at: new Date().toISOString(),
+        created_by: currentUser.name
+    });
+    if (result.isOk) {
+        showToast('Daily report submitted successfully!');
+        e.target.reset();
+        addNotification('report_submitted', 'Daily Report Submitted', `${currentUser.name} submitted a daily report`);
+    } else {
+        showToast('Failed to submit report', 'error');
+        btn.disabled = false;
+    }
+}
+
+// ===== DAILY WORKERS (Enterprise Workforce Management) =====
+function renderDailyWorkers() {
+    const today = new Date().toISOString().split('T')[0];
+    const todayDeployments = dailyWorkerDeployments.filter(d => d.deployment_date === today);
+    const todayTotalCost = todayDeployments.reduce((s, d) => s + (d.payable_cost || 0), 0);
+    const todayTotalWorkers = todayDeployments.reduce((s, d) => s + (d.num_workers || 0), 0);
+    
+    return `<div class="fade-in space-y-6 pb-24 lg:pb-6">
+        <div>
+            <h1 class="text-2xl font-bold text-slate-900">Enterprise Workforce Management</h1>
+            <p class="text-slate-500 text-sm">Daily worker deployment & attendance tracking</p>
+        </div>
+
+        ${currentUser.role === 'admin' ? `<div class="grid md:grid-cols-4 gap-3">
+            ${statCard('Today Workers', todayTotalWorkers, 'users', 'bg-blue-50 text-blue-600')}
+            ${statCard('Today Labor Cost', todayTotalCost.toLocaleString() + ' RWF', 'wallet', 'bg-brand-50 text-brand-600')}
+            ${statCard('Active Deployments', todayDeployments.length, 'activity', 'bg-purple-50 text-purple-600')}
+            ${statCard('Worker Master DB', workerMaster.length, 'database', 'bg-amber-50 text-amber-600')}
+        </div>` : ''}
+
+        ${currentUser.role === 'admin' ? `<div class="flex gap-2 flex-wrap">
+            <button onclick="toggleWorkerDeploymentForm()" class="px-4 py-2.5 bg-brand-600 hover:bg-brand-700 text-white rounded-xl text-sm font-medium flex items-center gap-2"><i data-lucide="plus" class="w-4 h-4"></i>New Deployment</button>
+            <button onclick="toggleWorkerMasterForm()" class="px-4 py-2.5 bg-slate-600 hover:bg-slate-700 text-white rounded-xl text-sm font-medium flex items-center gap-2"><i data-lucide="users" class="w-4 h-4"></i>Manage Workers</button>
+        </div>` : ''}
+
+        <div id="worker-deployment-form"></div>
+        <div id="worker-master-form"></div>
+
+        <div class="bg-white rounded-2xl p-5 border border-slate-200">
+            <h3 class="font-bold text-slate-900 mb-3"> Today's Deployments (${today})</h3>
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead class="bg-slate-100 border-b">
+                        <tr>
+                            <th class="px-3 py-2 text-left">Worker Type</th>
+                            <th class="px-3 py-2 text-center"># Workers</th>
+                            <th class="px-3 py-2 text-right">Daily Wage</th>
+                            <th class="px-3 py-2 text-right">Hours</th>
+                            <th class="px-3 py-2 text-right">Cost</th>
+                            <th class="px-3 py-2 text-center">Status</th>
+                            ${currentUser.role === 'admin' ? '<th class="px-3 py-2 text-center">Actions</th>' : ''}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${todayDeployments.length ? todayDeployments.map(d => `
+                            <tr class="border-b hover:bg-slate-50">
+                                <td class="px-3 py-2 font-medium text-slate-900">${d.worker_type}</td>
+                                <td class="px-3 py-2 text-center font-semibold">${d.num_workers}</td>
+                                <td class="px-3 py-2 text-right">${(d.daily_wage || 0).toLocaleString()} RWF</td>
+                                <td class="px-3 py-2 text-right">${d.hours_worked || 8}h</td>
+                                <td class="px-3 py-2 text-right font-bold text-brand-600">${(d.payable_cost || 0).toLocaleString()} RWF</td>
+                                <td class="px-3 py-2 text-center">
+                                    <span class="px-2 py-1 rounded-full text-xs font-medium ${d.deployment_status === 'approved' ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700'}">${d.deployment_status || 'draft'}</span>
+                                </td>
+                                ${currentUser.role === 'admin' ? `<td class="px-3 py-2 text-center">
+                                    <button onclick="deleteDeployment('${d.__backendId}')" class="text-red-500 hover:text-red-700"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                                </td>` : ''}
+                            </tr>
+                        `).join('') : '<tr><td colspan="' + (currentUser.role === 'admin' ? 7 : 6) + '" class="px-3 py-4 text-center text-slate-400">No deployments for today</td></tr>'}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-4">
+            <div class="bg-gradient-to-br from-slate-50 to-slate-100 rounded-2xl p-5 border border-slate-200">
+                <h4 class="font-bold text-slate-900 mb-3"> Weekly Summary</h4>
+                ${(() => {
+                    const lastWeek = dailyWorkerDeployments.filter(d => {
+                        const dDate = new Date(d.deployment_date);
+                        const now = new Date();
+                        const daysDiff = (now - dDate) / (1000 * 60 * 60 * 24);
+                        return daysDiff <= 7;
+                    });
+                    const weekCost = lastWeek.reduce((s, d) => s + (d.payable_cost || 0), 0);
+                    const weekWorkers = lastWeek.reduce((s, d) => s + (d.num_workers || 0), 0);
+                    return `<div class="space-y-2"><p class="text-sm"><strong>Total Workers:</strong> ${weekWorkers}</p><p class="text-sm"><strong>Weekly Cost:</strong> <span class="text-brand-600 font-bold">${weekCost.toLocaleString()} RWF</span></p><p class="text-xs text-slate-500 mt-2">Last 7 days data</p></div>`;
+                })()}
+            </div>
+
+            <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl p-5 border border-blue-200">
+                <h4 class="font-bold text-blue-900 mb-3"> Monthly Summary</h4>
+                ${(() => {
+                    const thisMonth = new Date().toISOString().slice(0, 7);
+                    const monthDeps = dailyWorkerDeployments.filter(d => d.deployment_date.startsWith(thisMonth));
+                    const monthCost = monthDeps.reduce((s, d) => s + (d.payable_cost || 0), 0);
+                    const monthWorkers = monthDeps.reduce((s, d) => s + (d.num_workers || 0), 0);
+                    return `<div class="space-y-2"><p class="text-sm"><strong>Total Workers:</strong> ${monthWorkers}</p><p class="text-sm"><strong>Monthly Cost:</strong> <span class="text-blue-600 font-bold">${monthCost.toLocaleString()} RWF</span></p><p class="text-xs text-blue-600 mt-2">Current month (${thisMonth})</p></div>`;
+                })()}
+            </div>
+        </div>
+
+        <div class="bg-white rounded-2xl p-5 border border-slate-200">
+            <h3 class="font-bold text-slate-900 mb-3">Deployment History</h3>
+            <div class="space-y-2 max-h-96 overflow-y-auto">
+                ${dailyWorkerDeployments.length ? dailyWorkerDeployments.slice().reverse().slice(0, 20).map(d => `
+                    <div class="flex justify-between items-center p-3 bg-slate-50 rounded-lg">
+                        <div>
+                            <p class="font-medium text-slate-900">${d.worker_type} × ${d.num_workers}</p>
+                            <p class="text-xs text-slate-500">${d.deployment_date} • ${d.hours_worked || 8} hrs</p>
+                        </div>
+                        <p class="font-bold text-brand-600">${(d.payable_cost || 0).toLocaleString()} RWF</p>
+                    </div>
+                `).join('') : '<p class="text-slate-400 text-sm">No deployment history</p>'}
+            </div>
+        </div>
+    </div>`;
+}
+
+function toggleWorkerDeploymentForm() {
+    const container = document.getElementById('worker-deployment-form');
+    if (container.innerHTML) {
+        container.innerHTML = '';
+    } else {
+        renderWorkerDeploymentForm();
+    }
+}
+
+function renderWorkerDeploymentForm() {
+    const container = document.getElementById('worker-deployment-form');
+    const today = new Date().toISOString().split('T')[0];
+    const workerTypes = ['Mason', 'Assistant Mason', 'Carpenter', 'Electrician', 'Plumber', 'Welder', 'Painter', 'Steel Fixer', 'Driver', 'General Laborer', 'Site Supervisor'];
+    const defaultWages = { 'Mason': 15000, 'Assistant Mason': 8000, 'Carpenter': 12000, 'Welder': 14000, 'Electrician': 16000, 'Plumber': 14000, 'Painter': 10000, 'Steel Fixer': 13000, 'Driver': 9000, 'General Laborer': 7000, 'Site Supervisor': 20000 };
+    
+    container.innerHTML = `
+        <div class="bg-white rounded-2xl p-5 border border-slate-200 space-y-4">
+            <h3 class="font-bold text-slate-900 flex items-center gap-2"><i data-lucide="users" class="w-5 h-5"></i>Create Deployment</h3>
+            
+            <div class="grid md:grid-cols-3 gap-4">
+                <div>
+                    <label class="text-sm font-medium text-slate-700 block mb-1">Site *</label>
+                    <select id="deploy-site" required class="w-full px-3 py-2.5 rounded-xl border border-slate-200 bg-slate-50 outline-none focus:ring-2 focus:ring-brand-500">
+                        <option value="">Select Site</option>
+                        ${sites.map(s => `<option value="${s.site_name}">${s.site_name}</option>`).join('')}
+                    </select>
+                </div>
+                <div>
+                    <label class="text-sm font-medium text-slate-700 block mb-1">Date *</label>
+                    <input id="deploy-date" type="date" required value="${today}" class="w-full px-3 py-2.5 rounded-xl border border-slate-200 bg-slate-50 outline-none focus:ring-2 focus:ring-brand-500">
+                </div>
+                <div>
+                    <label class="text-sm font-medium text-slate-700 block mb-1">Supervisor</label>
+                    <input id="deploy-supervisor" type="text" placeholder="Supervisor name" class="w-full px-3 py-2.5 rounded-xl border border-slate-200 bg-slate-50 outline-none focus:ring-2 focus:ring-brand-500">
+                </div>
+            </div>
+
+            <div>
+                <label class="text-sm font-medium text-slate-700 block mb-2">Select Worker Types to Deploy</label>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
+                    ${workerTypes.map((wt, i) => `
+                        <label class="flex items-center gap-2 p-2 bg-slate-50 rounded-lg cursor-pointer hover:bg-slate-100">
+                            <input type="checkbox" value="${wt}" class="deploy-worker-checkbox w-4 h-4 rounded" onchange="updateDeploymentTable('${JSON.stringify(defaultWages).replace(/"/g, '&quot;')}')">
+                            <span class="text-xs text-slate-700">${wt}</span>
+                        </label>
+                    `).join('')}
+                </div>
+            </div>
+
+            <div id="deployment-table-container"></div>
+
+            <div class="flex gap-2">
+                <button type="button" onclick="saveDeploymentBatch()" class="flex-1 py-2.5 bg-brand-600 hover:bg-brand-700 text-white rounded-xl font-medium">✅ Save Deployment</button>
+                <button type="button" onclick="toggleWorkerDeploymentForm()" class="flex-1 py-2.5 bg-slate-100 text-slate-700 rounded-xl font-medium">Cancel</button>
+            </div>
+        </div>
+    `;
+    lucide.createIcons();
+}
+
+function updateDeploymentTable(defaultWagesJson) {
+    const selected = [...document.querySelectorAll('.deploy-worker-checkbox:checked')].map(c => c.value);
+    const defaultWages = JSON.parse(defaultWagesJson.replace(/&quot;/g, '"'));
+    const container = document.getElementById('deployment-table-container');
+    
+    if (selected.length === 0) {
+        container.innerHTML = '';
+        return;
+    }
+
+    let html = `
+        <div class="border border-slate-200 rounded-lg overflow-x-auto">
+            <table class="w-full text-sm">
+                <thead class="bg-slate-100 border-b">
+                    <tr>
+                        <th class="px-3 py-2 text-left">Worker Type</th>
+                        <th class="px-3 py-2 text-right"># Workers</th>
+                        <th class="px-3 py-2 text-right">Daily Wage</th>
+                        <th class="px-3 py-2 text-right">Hours</th>
+                        <th class="px-3 py-2 text-right">Total Cost</th>
+                        <th class="px-3 py-2">Notes</th>
+                    </tr>
+                </thead>
+                <tbody>`;
+
+    selected.forEach((wt, idx) => {
+        const defaultWage = defaultWages[wt] || 10000;
+        html += `
+            <tr class="border-b hover:bg-slate-50">
+                <td class="px-3 py-2 font-medium text-slate-900">${wt}</td>
+                <td class="px-3 py-2"><input type="number" class="deploy-qty w-full px-2 py-1 rounded border border-slate-200 text-right" min="1" value="1" data-idx="${idx}" onchange="calcDeploymentTotal()"></td>
+                <td class="px-3 py-2"><input type="number" class="deploy-wage w-full px-2 py-1 rounded border border-slate-200 text-right" min="0" value="${defaultWage}" data-idx="${idx}" onchange="calcDeploymentTotal()"></td>
+                <td class="px-3 py-2"><input type="number" class="deploy-hours w-full px-2 py-1 rounded border border-slate-200 text-right" min="0" step="0.5" value="8" data-idx="${idx}" onchange="calcDeploymentTotal()"></td>
+                <td class="px-3 py-2 text-right"><span class="deploy-cost font-bold text-brand-600" data-idx="${idx}">0</span></td>
+                <td class="px-3 py-2"><input type="text" class="deploy-notes w-full px-2 py-1 rounded border border-slate-200 text-xs" placeholder="Notes" data-idx="${idx}"></td>
+            </tr>`;
+    });
+
+    html += `</tbody>
+            <tfoot class="bg-brand-50 border-t-2 border-brand-200">
+                <tr>
+                    <td colspan="4" class="px-3 py-2 font-semibold text-slate-900">Total Deployment Cost:</td>
+                    <td colspan="2" class="px-3 py-2 text-right font-bold text-brand-600 text-lg"><span id="deploy-grand-total">0 RWF</span></td>
+                </tr>
+            </tfoot>
+        </table>
+        </div>`;
+
+    container.innerHTML = html;
+    calcDeploymentTotal();
+    lucide.createIcons();
+}
+
+function calcDeploymentTotal() {
+    let grand = 0;
+    document.querySelectorAll('.deploy-qty').forEach(el => {
+        const idx = el.dataset.idx;
+        const qty = parseFloat(el.value) || 0;
+        const wage = parseFloat(document.querySelector(`.deploy-wage[data-idx="${idx}"]`).value) || 0;
+        const hours = parseFloat(document.querySelector(`.deploy-hours[data-idx="${idx}"]`).value) || 8;
+        const total = qty * wage;
+        document.querySelector(`.deploy-cost[data-idx="${idx}"]`).textContent = total.toLocaleString();
+        grand += total;
+    });
+    const grandEl = document.getElementById('deploy-grand-total');
+    if (grandEl) grandEl.textContent = grand.toLocaleString() + ' RWF';
+}
+
+async function saveDeploymentBatch() {
+    const site = document.getElementById('deploy-site')?.value;
+    const date = document.getElementById('deploy-date')?.value;
+    const supervisor = document.getElementById('deploy-supervisor')?.value;
+    
+    if (!site || !date) {
+        showToast('Select site and date', 'error');
+        return;
+    }
+
+    if (allData.length >= 999) {
+        showToast('Storage limit reached', 'error');
+        return;
+    }
+
+    const selected = [...document.querySelectorAll('.deploy-worker-checkbox:checked')].map(c => c.value);
+    const deploymentBatchId = 'DEPLOY-' + Date.now();
+    let saveCount = 0;
+
+    for (let idx = 0; idx < selected.length; idx++) {
+        const qty = parseFloat(document.querySelector(`.deploy-qty[data-idx="${idx}"]`)?.value || 0);
+        if (qty <= 0) continue;
+
+        const wage = parseFloat(document.querySelector(`.deploy-wage[data-idx="${idx}"]`)?.value || 0);
+        const hours = parseFloat(document.querySelector(`.deploy-hours[data-idx="${idx}"]`)?.value || 8);
+        const notes = document.querySelector(`.deploy-notes[data-idx="${idx}"]`)?.value || '';
+
+        const result = await window.dataSdk.create({
+            type: 'daily_worker_deployment',
+            deployment_batch_id: deploymentBatchId,
+            site_name: site,
+            deployment_date: date,
+            supervisor_name: supervisor,
+            worker_type: selected[idx],
+            num_workers: qty,
+            daily_wage: wage,
+            hours_worked: hours,
+            payable_cost: qty * wage,
+            notes: notes,
+            deployment_status: 'submitted',
+            created_at: new Date().toISOString(),
+            created_by: currentUser.name
+        });
+
+        if (result.isOk) saveCount++;
+    }
+
+    if (saveCount > 0) {
+        showToast(` Deployment saved! ${saveCount} worker types logged.`);
+        document.getElementById('worker-deployment-form').innerHTML = '';
+        addNotification('deployment_created', 'Worker Deployment Created', `New deployment with ${saveCount} worker types created`);
+    } else {
+        showToast('Failed to save deployment', 'error');
+    }
+}
+
+async function deleteDeployment(id) {
+    const record = allData.find(d => d.__backendId === id);
+    if (!record) return;
+    const result = await window.dataSdk.delete(record);
+    if (result.isOk) {
+        showToast('Deployment deleted');
+        addAuditLog('delete', 'daily_worker_deployment', `Deleted worker deployment`);
+    } else {
+        showToast('Failed to delete', 'error');
+    }
+}
+
+function toggleWorkerMasterForm() {
+    const container = document.getElementById('worker-master-form');
+    if (container.innerHTML) {
+        container.innerHTML = '';
+    } else {
+        renderWorkerMasterForm();
+    }
+}
+
+function renderWorkerMasterForm() {
+    const container = document.getElementById('worker-master-form');
+    const skillLevels = ['Entry', 'Intermediate', 'Advanced', 'Expert', 'Supervisor'];
+    const employmentStatus = ['Active', 'Inactive', 'On Leave', 'Terminated'];
+    const workerTypes = ['Mason', 'Assistant Mason', 'Carpenter', 'Electrician', 'Plumber', 'Welder', 'Painter', 'Steel Fixer', 'Driver', 'General Laborer', 'Site Supervisor'];
+
+    container.innerHTML = `
+        <div class="bg-white rounded-2xl p-5 border border-slate-200 space-y-4">
+            <h3 class="font-bold text-slate-900 flex items-center gap-2"><i data-lucide="user-plus" class="w-5 h-5"></i>Add Worker to Master DB</h3>
+            
+            <div class="grid md:grid-cols-2 gap-4">
+                <input id="worker-name" placeholder="Full Name *" required class="px-3 py-2.5 rounded-xl border border-slate-200 bg-slate-50 outline-none focus:ring-2 focus:ring-brand-500">
+                <input id="worker-id" placeholder="Employee/National ID" class="px-3 py-2.5 rounded-xl border border-slate-200 bg-slate-50 outline-none focus:ring-2 focus:ring-brand-500">
+                <input id="worker-phone" placeholder="Phone Number" class="px-3 py-2.5 rounded-xl border border-slate-200 bg-slate-50 outline-none focus:ring-2 focus:ring-brand-500">
+                <select id="worker-type" class="px-3 py-2.5 rounded-xl border border-slate-200 bg-slate-50 outline-none focus:ring-2 focus:ring-brand-500">
+                    <option value="">Worker Type</option>
+                    ${workerTypes.map(wt => `<option>${wt}</option>`).join('')}
+                </select>
+                <select id="worker-skill" class="px-3 py-2.5 rounded-xl border border-slate-200 bg-slate-50 outline-none focus:ring-2 focus:ring-brand-500">
+                    <option value="">Skill Level</option>
+                    ${skillLevels.map(sl => `<option>${sl}</option>`).join('')}
+                </select>
+                <select id="worker-status" class="px-3 py-2.5 rounded-xl border border-slate-200 bg-slate-50 outline-none focus:ring-2 focus:ring-brand-500">
+                    <option value="">Employment Status</option>
+                    ${employmentStatus.map(es => `<option>${es}</option>`).join('')}
+                </select>
+            </div>
+
+            <div class="flex gap-2">
+                <button type="button" onclick="saveWorkerMaster()" class="flex-1 py-2.5 bg-brand-600 hover:bg-brand-700 text-white rounded-xl font-medium">➕ Add to Master DB</button>
+                <button type="button" onclick="toggleWorkerMasterForm()" class="flex-1 py-2.5 bg-slate-100 text-slate-700 rounded-xl font-medium">Cancel</button>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-2xl p-5 border border-slate-200">
+            <h3 class="font-bold text-slate-900 mb-3"> Worker Master Database</h3>
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead class="bg-slate-100 border-b">
+                        <tr>
+                            <th class="px-3 py-2 text-left">Name</th>
+                            <th class="px-3 py-2 text-left">Worker Type</th>
+                            <th class="px-3 py-2 text-left">Skill</th>
+                            <th class="px-3 py-2 text-left">Status</th>
+                            <th class="px-3 py-2 text-right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${workerMaster.length ? workerMaster.map(w => `
+                            <tr class="border-b hover:bg-slate-50">
+                                <td class="px-3 py-2 font-medium text-slate-900">${w.worker_name}</td>
+                                <td class="px-3 py-2 text-slate-700">${w.worker_type || 'N/A'}</td>
+                                <td class="px-3 py-2"><span class="px-2 py-1 bg-slate-100 rounded text-xs">${w.skill_level || 'N/A'}</span></td>
+                                <td class="px-3 py-2">
+                                    <span class="px-2 py-1 rounded-full text-xs font-medium ${w.employment_status === 'Active' ? 'bg-green-100 text-green-700' : 'bg-slate-100 text-slate-600'}">${w.employment_status || 'Unknown'}</span>
+                                </td>
+                                <td class="px-3 py-2 text-right">
+                                    <button onclick="deleteWorkerMaster('${w.__backendId}')" class="text-red-500 hover:text-red-700"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                                </td>
+                            </tr>
+                        `).join('') : '<tr><td colspan="5" class="px-3 py-4 text-center text-slate-400">No workers in master DB</td></tr>'}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    `;
+    lucide.createIcons();
+}
+
+async function saveWorkerMaster() {
+    const name = document.getElementById('worker-name')?.value.trim();
+    if (!name) {
+        showToast('Enter worker name', 'error');
+        return;
+    }
+
+    if (allData.length >= 999) {
+        showToast('Storage limit reached', 'error');
+        return;
+    }
+
+    const result = await window.dataSdk.create({
+        type: 'worker_master',
+        worker_name: name,
+        national_id: document.getElementById('worker-id')?.value || '',
+        phone: document.getElementById('worker-phone')?.value || '',
+        worker_type: document.getElementById('worker-type')?.value || '',
+        skill_level: document.getElementById('worker-skill')?.value || '',
+        employment_status: document.getElementById('worker-status')?.value || 'Active',
+        date_joined: new Date().toISOString().split('T')[0],
+        created_at: new Date().toISOString(),
+        created_by: currentUser.name
+    });
+
+    if (result.isOk) {
+        showToast(`✅ ${name} added to Worker Master DB`);
+        document.getElementById('worker-name').value = '';
+        document.getElementById('worker-id').value = '';
+        document.getElementById('worker-phone').value = '';
+        document.getElementById('worker-type').value = '';
+        document.getElementById('worker-skill').value = '';
+        document.getElementById('worker-status').value = '';
+    } else {
+        showToast('Failed to add worker', 'error');
+    }
+}
+
+async function deleteWorkerMaster(id) {
+    const record = allData.find(d => d.__backendId === id);
+    if (!record) return;
+    const result = await window.dataSdk.delete(record);
+    if (result.isOk) {
+        showToast('Worker removed from master DB');
+    } else {
+        showToast('Failed to delete', 'error');
+    }
+}
+
+// ===== AUDIT LOGS =====
+function renderAuditLogs() {
+    return `<div class="fade-in space-y-4 pb-20 lg:pb-0">
+        <div>
+            <h1 class="text-2xl font-bold text-slate-900">🛡️ Audit Logs</h1>
+            <p class="text-slate-500 text-sm">System activity & security logs</p>
+        </div>
+
+        <div class="bg-white rounded-2xl p-5 border border-slate-200 overflow-x-auto">
+            <table class="w-full text-sm">
+                <thead class="bg-slate-100 border-b">
+                    <tr>
+                        <th class="px-3 py-2 text-left">Timestamp</th>
+                        <th class="px-3 py-2 text-left">User</th>
+                        <th class="px-3 py-2 text-left">Action</th>
+                        <th class="px-3 py-2 text-left">Details</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${auditLogs.length ? auditLogs.slice().reverse().slice(0, 50).map(log => `
+                        <tr class="border-b hover:bg-slate-50">
+                            <td class="px-3 py-2 text-slate-600 text-xs">${log.audit_timestamp || new Date().toLocaleString()}</td>
+                            <td class="px-3 py-2 font-medium text-slate-900">${log.audit_user || 'System'}</td>
+                            <td class="px-3 py-2"><span class="px-2 py-1 bg-slate-100 rounded text-xs font-medium">${log.audit_action}</span></td>
+                            <td class="px-3 py-2 text-slate-600 text-xs">${log.audit_details || ''}</td>
+                        </tr>
+                    `).join('') : '<tr><td colspan="4" class="px-3 py-4 text-center text-slate-400">No audit logs</td></tr>'}
+                </tbody>
+            </table>
+        </div>
+    </div>`;
+}
+
+function addAuditLog(action, table, details) {
+    window.dataSdk.create({
+        type: 'audit_log',
+        audit_user: currentUser.name,
+        audit_role: currentUser.role,
+        audit_action: action,
+        audit_table: table,
+        audit_details: details,
+        audit_timestamp: new Date().toLocaleString(),
+        created_at: new Date().toISOString()
+    });
+}
+
+// ===== SUPPLIERS =====
+function renderSuppliers() {
+    return `<div class="fade-in space-y-4 pb-20 lg:pb-0">
+        <div class="flex justify-between items-center">
+            <h1 class="text-2xl font-bold text-slate-900">Supplier Management</h1>
+            <button onclick="document.getElementById('supplier-form').classList.toggle('hidden')" class="px-4 py-2.5 bg-brand-600 hover:bg-brand-700 text-white rounded-xl text-sm font-medium flex items-center gap-2"><i data-lucide="plus" class="w-4 h-4"></i>Add Supplier</button>
+        </div>
+        <form id="supplier-form" class="hidden bg-white rounded-2xl p-5 border border-slate-200 space-y-3" onsubmit="saveSupplier(event)">
+            <h3 class="font-semibold text-slate-900">New Supplier</h3>
+            <input id="sup-name" placeholder="Supplier Name *" required class="w-full px-3 py-2.5 rounded-xl border border-slate-200 bg-slate-50 outline-none focus:ring-2 focus:ring-brand-500">
+            <div class="grid grid-cols-2 gap-3">
+                <input id="sup-contact" placeholder="Contact Person" class="px-3 py-2.5 rounded-xl border border-slate-200 bg-slate-50 outline-none focus:ring-2 focus:ring-brand-500">
+                <input id="sup-phone" placeholder="Phone" class="px-3 py-2.5 rounded-xl border border-slate-200 bg-slate-50 outline-none focus:ring-2 focus:ring-brand-500">
+            </div>
+            <input id="sup-email" type="email" placeholder="Email" class="w-full px-3 py-2.5 rounded-xl border border-slate-200 bg-slate-50 outline-none focus:ring-2 focus:ring-brand-500">
+            <button type="submit" class="w-full py-2.5 bg-brand-600 hover:bg-brand-700 text-white rounded-xl text-sm font-medium">Save Supplier</button>
+        </form>
+        <div class="grid gap-3">
+            ${suppliers.length ? suppliers.map(s => `
+                <div class="bg-white rounded-2xl p-4 border border-slate-200">
+                    <h3 class="font-semibold text-slate-900">${s.supplier_name}</h3>
+                    <p class="text-sm text-slate-500">${s.supplier_phone || 'No phone'}</p>
+                    <p class="text-xs text-slate-400 mt-1">${s.supplier_contact || ''}</p>
+                </div>`).join('') : '<div class="text-center py-8"><p class="text-slate-400">No suppliers yet</p></div>'}
+        </div>
+    </div>`;
+}
+
+async function saveSupplier(e) {
+    e.preventDefault();
+    if (allData.length >= 999) { showToast('Storage limit reached', 'error'); return; }
+    const result = await window.dataSdk.create({
+        type: 'supplier',
+        supplier_name: document.getElementById('sup-name').value,
+        supplier_contact: document.getElementById('sup-contact').value,
+        supplier_phone: document.getElementById('sup-phone').value,
+        supplier_email: document.getElementById('sup-email').value,
+        created_at: new Date().toISOString()
+    });
+    if (result.isOk) {
+        showToast('Supplier added!');
+        document.getElementById('supplier-form').classList.add('hidden');
+        e.target.reset();
+    } else {
+        showToast('Failed to add supplier', 'error');
+    }
+}
+
+// ===== PURCHASE ORDERS =====
+function renderPurchaseOrders() {
+    return `<div class="fade-in space-y-4 pb-20 lg:pb-0">
+        <div class="flex justify-between items-center">
+            <h1 class="text-2xl font-bold text-slate-900">Purchase Orders</h1>
+            <button onclick="togglePOForm()" class="px-4 py-2.5 bg-brand-600 hover:bg-brand-700 text-white rounded-xl text-sm font-medium flex items-center gap-2"><i data-lucide="plus" class="w-4 h-4"></i>Create PO</button>
+        </div>
+
+        <div id="po-form-container"></div>
+
+        <div class="grid md:grid-cols-3 gap-3 mb-6">
+            <div class="bg-white rounded-2xl p-4 border border-slate-200">
+                <p class="text-xs text-slate-600 font-semibold">Total POs</p>
+                <p class="text-2xl font-bold text-slate-900 mt-1">${purchaseOrders.length}</p>
+            </div>
+            <div class="bg-white rounded-2xl p-4 border border-slate-200">
+                <p class="text-xs text-slate-600 font-semibold">Total PO Value</p>
+                <p class="text-2xl font-bold text-brand-600 mt-1">${purchaseOrders.reduce((s,p)=>s+(p.po_total||0),0).toLocaleString()} RWF</p>
+            </div>
+            <div class="bg-white rounded-2xl p-4 border border-slate-200">
+                <p class="text-xs text-slate-600 font-semibold">Pending</p>
+                <p class="text-2xl font-bold text-amber-600 mt-1">${purchaseOrders.filter(p=>p.po_status==='pending').length}</p>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-2xl p-5 border border-slate-200 overflow-x-auto">
+            <h3 class="font-semibold text-slate-900 mb-3">All Purchase Orders</h3>
+            <table class="w-full text-sm">
+                <thead class="bg-slate-100 border-b">
+                    <tr>
+                        <th class="px-3 py-2 text-left font-semibold">PO #</th>
+                        <th class="px-3 py-2 text-left font-semibold">Supplier</th>
+                        <th class="px-3 py-2 text-left font-semibold">Order Date</th>
+                        <th class="px-3 py-2 text-left font-semibold">Delivery</th>
+                        <th class="px-3 py-2 text-right font-semibold">Amount</th>
+                        <th class="px-3 py-2 text-center font-semibold">Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${purchaseOrders.length ? purchaseOrders.slice().reverse().map(p => `
+                        <tr class="border-b hover:bg-slate-50">
+                            <td class="px-3 py-2 font-medium text-slate-900">${p.po_number || p.po_code}</td>
+                            <td class="px-3 py-2 text-slate-700">${p.supplier_name}</td>
+                            <td class="px-3 py-2 text-slate-600">${p.order_date}</td>
+                            <td class="px-3 py-2 text-slate-600">${p.delivery_date}</td>
+                            <td class="px-3 py-2 text-right font-bold text-brand-600">${(p.po_total||0).toLocaleString()} RWF</td>
+                            <td class="px-3 py-2 text-center">
+                                <span class="px-2 py-1 rounded-full text-xs font-medium ${p.po_status==='pending'?'bg-amber-100 text-amber-700':p.po_status==='delivered'?'bg-green-100 text-green-700':'bg-slate-100 text-slate-600'}">${p.po_status}</span>
+                            </td>
+                        </tr>
+                    `).join('') : '<tr><td colspan="6" class="px-3 py-4 text-center text-slate-400">No purchase orders yet</td></tr>'}
+                </tbody>
+            </table>
+        </div>
+    </div>`;
+}
+
+function togglePOForm() {
+    const container = document.getElementById('po-form-container');
+    if (container.innerHTML) {
+        container.innerHTML = '';
+    } else {
+        renderPOForm();
+    }
+}
+
+function renderPOForm() {
+    const container = document.getElementById('po-form-container');
+    container.innerHTML = `
+        <form onsubmit="savePO(event)" class="bg-white rounded-2xl p-5 border border-slate-200 space-y-4">
+            <h3 class="font-semibold text-slate-900">Create Purchase Order</h3>
+            
+            <div class="grid md:grid-cols-2 gap-4">
+                <div>
+                    <label class="text-sm font-medium text-slate-700 block mb-1">Supplier *</label>
+                    <select id="po-supplier" required class="w-full px-3 py-2.5 rounded-xl border border-slate-200 bg-slate-50 outline-none focus:ring-2 focus:ring-brand-500">
+                        <option value="">Select Supplier</option>
+                        ${suppliers.map(s => `<option value="${s.supplier_name}">${s.supplier_name}</option>`).join('')}
+                    </select>
+                </div>
+                <div>
+                    <label class="text-sm font-medium text-slate-700 block mb-1">Order Date *</label>
+                    <input id="po-date" type="date" required value="${new Date().toISOString().split('T')[0]}" class="w-full px-3 py-2.5 rounded-xl border border-slate-200 bg-slate-50 outline-none focus:ring-2 focus:ring-brand-500">
+                </div>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-4">
+                <div>
+                    <label class="text-sm font-medium text-slate-700 block mb-1">Delivery Date *</label>
+                    <input id="po-delivery" type="date" required class="w-full px-3 py-2.5 rounded-xl border border-slate-200 bg-slate-50 outline-none focus:ring-2 focus:ring-brand-500">
+                </div>
+                <div>
+                    <label class="text-sm font-medium text-slate-700 block mb-1">PO Amount (RWF) *</label>
+                    <input id="po-amount" type="number" min="0" required placeholder="0" class="w-full px-3 py-2.5 rounded-xl border border-slate-200 bg-slate-50 outline-none focus:ring-2 focus:ring-brand-500">
+                </div>
+            </div>
+
+            <div>
+                <label class="text-sm font-medium text-slate-700 block mb-1">Description / Items</label>
+                <textarea id="po-description" placeholder="List of items/materials to order..." class="w-full px-3 py-2.5 rounded-xl border border-slate-200 bg-slate-50 outline-none focus:ring-2 focus:ring-brand-500 resize-none" rows="3"></textarea>
+            </div>
+
+            <div class="flex gap-2">
+                <button type="submit" class="flex-1 py-2.5 bg-brand-600 hover:bg-brand-700 text-white rounded-xl font-medium">📤 Create PO</button>
+                <button type="button" onclick="togglePOForm()" class="flex-1 py-2.5 bg-slate-100 text-slate-700 rounded-xl font-medium">Cancel</button>
+            </div>
+        </form>
+    `;
+    lucide.createIcons();
+}
+
+async function savePO(e) {
+    e.preventDefault();
+    if (allData.length >= 999) { showToast('Storage limit reached', 'error'); return; }
+    const poCode = 'PO-' + String(purchaseOrders.length + 1).padStart(5, '0');
+    const btn = e.target.querySelector('button[type="submit"]');
+    btn.disabled = true;
+    
+    const result = await window.dataSdk.create({
+        type: 'purchase_order',
+        po_code: poCode,
+        po_number: poCode,
+        supplier_name: document.getElementById('po-supplier').value,
+        order_date: document.getElementById('po-date').value,
+        delivery_date: document.getElementById('po-delivery').value,
+        po_total: parseFloat(document.getElementById('po-amount').value || 0),
+        po_description: document.getElementById('po-description').value,
+        po_status: 'pending',
+        created_at: new Date().toISOString(),
+        created_by: currentUser.name
+    });
+    
+    if (result.isOk) {
+        showToast('Purchase Order created: ' + poCode);
+        document.getElementById('po-form-container').innerHTML = '';
+        addNotification('po_created', 'Purchase Order Placed!', `PO ${poCode} has been placed`);
+    } else {
+        showToast('Failed to place Order', 'error');
+        btn.disabled = false;
+    }
+}
+
+// ===== PHOTOS MODULE =====
+function renderPhotos() {
+    const userSites = currentUser.role === 'admin' ? sites : sites.filter(s => s.manager === currentUser.name || currentUser.role === 'admin');
+    
+    return `<div class="fade-in space-y-4 pb-20 lg:pb-0">
+        <div class="flex justify-between items-center">
+            <h1 class="text-2xl font-bold text-slate-900">Site Photos</h1>
+            <button onclick="togglePhotoUpload()" class="px-4 py-2.5 bg-brand-600 hover:bg-brand-700 text-white rounded-xl text-sm font-medium flex items-center gap-2"><i data-lucide="camera" class="w-4 h-4"></i>Capture Photo</button>
+        </div>
+
+        <div id="photo-upload-container"></div>
+
+        <div class="grid md:grid-cols-3 gap-3 mb-6">
+            <div class="bg-white rounded-2xl p-4 border border-slate-200">
+                <p class="text-xs text-slate-600 font-semibold">Total Photos</p>
+                <p class="text-2xl font-bold text-slate-900 mt-1">${photos.length}</p>
+            </div>
+            <div class="bg-white rounded-2xl p-4 border border-slate-200">
+                <p class="text-xs text-slate-600 font-semibold">This Month</p>
+                <p class="text-2xl font-bold text-brand-600 mt-1">${photos.filter(p => (p.photo_date || '').startsWith(new Date().toISOString().slice(0,7))).length}</p>
+            </div>
+            <div class="bg-white rounded-2xl p-4 border border-slate-200">
+                <p class="text-xs text-slate-600 font-semibold">Unique Sites</p>
+                <p class="text-2xl font-bold text-slate-900 mt-1">${[...new Set(photos.map(p => p.photo_site))].length}</p>
+            </div>
+        </div>
+
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+            ${photos.length ? photos.slice().reverse().map(p => `
+                <div class="bg-white rounded-2xl overflow-hidden border border-slate-200 card-hover">
+                    <div class="w-full h-40 bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center">
+                        <div class="text-center">
+                            <i data-lucide="image" class="w-8 h-8 text-slate-400 mx-auto mb-2"></i>
+                            <p class="text-xs text-slate-500">Photo captured</p>
+                        </div>
+                    </div>
+                    <div class="p-3">
+                        <h4 class="font-semibold text-slate-900 text-sm">${p.photo_site}</h4>
+                        <p class="text-xs text-slate-500 mt-1">${p.photo_date}</p>
+                        <p class="text-xs text-slate-600 mt-2 line-clamp-2">${p.photo_description || 'No description'}</p>
+                        <p class="text-xs text-slate-400 mt-2"> by ${p.created_by || 'Unknown'}</p>
+                    </div>
+                </div>
+            `).join('') : '<div class="col-span-full text-center py-12"><i data-lucide="camera" class="w-12 h-12 text-slate-200 mx-auto mb-3"></i><p class="text-slate-400">No photos yet. Start capturing site progress!</p></div>'}
+        </div>
+    </div>`;
+}
+
+function togglePhotoUpload() {
+    const container = document.getElementById('photo-upload-container');
+    if (container.innerHTML) {
+        container.innerHTML = '';
+    } else {
+        renderPhotoUpload();
+    }
+}
+
+function renderPhotoUpload() {
+    const userSites = currentUser.role === 'admin' ? sites : sites.filter(s => s.manager === currentUser.name || currentUser.role === 'admin');
+    const container = document.getElementById('photo-upload-container');
+    
+    container.innerHTML = `
+        <form onsubmit="savePhoto(event)" class="bg-white rounded-2xl p-5 border border-slate-200 space-y-4">
+            <h3 class="font-semibold text-slate-900 flex items-center gap-2"><i data-lucide="camera" class="w-5 h-5"></i>Capture Site Progress Photo</h3>
+            
+            <div class="grid md:grid-cols-2 gap-4">
+                <div>
+                    <label class="text-sm font-medium text-slate-700 block mb-1">Site *</label>
+                    <select id="photo-site" required class="w-full px-3 py-2.5 rounded-xl border border-slate-200 bg-slate-50 outline-none focus:ring-2 focus:ring-brand-500">
+                        <option value="">Select Site</option>
+                        ${userSites.map(s => `<option value="${s.site_name}">${s.site_name}</option>`).join('')}
+                    </select>
+                </div>
+                <div>
+                    <label class="text-sm font-medium text-slate-700 block mb-1">Date Captured *</label>
+                    <input id="photo-date" type="date" required value="${new Date().toISOString().split('T')[0]}" class="w-full px-3 py-2.5 rounded-xl border border-slate-200 bg-slate-50 outline-none focus:ring-2 focus:ring-brand-500">
+                </div>
+            </div>
+
+            <div>
+                <label class="text-sm font-medium text-slate-700 block mb-1">Photo Source</label>
+                <div class="flex gap-2 mb-3">
+                    <button type="button" onclick="captureCamera()" class="flex-1 py-2.5 bg-blue-50 hover:bg-blue-100 border border-blue-200 rounded-xl text-sm font-medium text-blue-700 flex items-center justify-center gap-2">
+                        <i data-lucide="camera" class="w-4 h-4"></i>Camera
+                    </button>
+                    <button type="button" onclick="captureGPS()" class="flex-1 py-2.5 bg-green-50 hover:bg-green-100 border border-green-200 rounded-xl text-sm font-medium text-green-700 flex items-center justify-center gap-2">
+                        <i data-lucide="map-pin" class="w-4 h-4"></i>GPS Location
+                    </button>
+                </div>
+                <input id="photo-url" type="hidden">
+                <input id="photo-gps" type="hidden">
+            </div>
+
+            <div>
+                <label class="text-sm font-medium text-slate-700 block mb-1">Description / Details</label>
+                <textarea id="photo-description" placeholder="What does this photo show? Any notes about the work progress..." class="w-full px-3 py-2.5 rounded-xl border border-slate-200 bg-slate-50 outline-none focus:ring-2 focus:ring-brand-500 resize-none" rows="2"></textarea>
+            </div>
+
+            <div class="p-3 bg-slate-50 rounded-xl text-xs text-slate-600">
+                <p> <strong>Photo Info:</strong></p>
+                <p>GPS: <span id="photo-gps-display">Not captured</span></p>
+                <p>Camera: <span id="photo-camera-display">Not captured</span></p>
+            </div>
+
+            <div class="flex gap-2">
+                <button type="submit" class="flex-1 py-2.5 bg-brand-600 hover:bg-brand-700 text-white rounded-xl font-medium"> Save Photo Record</button>
+                <button type="button" onclick="togglePhotoUpload()" class="flex-1 py-2.5 bg-slate-100 text-slate-700 rounded-xl font-medium">Cancel</button>
+            </div>
+        </form>
+    `;
+    lucide.createIcons();
+}
+
+function captureCamera() {
+    showToast('Camera integration available on mobile devices with camera access', 'success');
+    document.getElementById('photo-camera-display').textContent = 'Ready (mobile)';
+}
+
+function captureGPS() {
+    if (!navigator.geolocation) {
+        showToast('GPS not available on this device', 'error');
+        return;
+    }
+    
+    navigator.geolocation.getCurrentPosition(
+        (position) => {
+            const lat = position.coords.latitude.toFixed(6);
+            const lng = position.coords.longitude.toFixed(6);
+            const accuracy = Math.round(position.coords.accuracy);
+            document.getElementById('photo-gps').value = lat + ',' + lng;
+            document.getElementById('photo-gps-display').textContent = `${lat}, ${lng} (±${accuracy}m)`;
+            showToast('📍 GPS location captured!');
+        },
+        (error) => {
+            showToast('GPS access denied or unavailable', 'error');
+        }
+    );
+}
+
+async function savePhoto(e) {
+    e.preventDefault();
+    if (allData.length >= 999) { showToast('Storage limit reached', 'error'); return; }
+    const btn = e.target.querySelector('button[type="submit"]');
+    btn.disabled = true;
+    
+    const result = await window.dataSdk.create({
+        type: 'photo',
+        photo_site: document.getElementById('photo-site').value,
+        photo_date: document.getElementById('photo-date').value,
+        photo_description: document.getElementById('photo-description').value,
+        gps_lat: document.getElementById('photo-gps').value.split(',')[0] || '',
+        gps_lng: document.getElementById('photo-gps').value.split(',')[1] || '',
+        gps_timestamp: document.getElementById('photo-date').value,
+        created_at: new Date().toISOString(),
+        created_by: currentUser.name
+    });
+    
+    if (result.isOk) {
+        showToast(' Photo record saved with metadata!');
+        document.getElementById('photo-upload-container').innerHTML = '';
+    } else {
+        showToast('Failed to save photo', 'error');
+        btn.disabled = false;
+    }
+}
+
+
+function renderReports() {
+    const today = new Date().toISOString().split('T')[0];
+    const thisMonth = today.slice(0,7);
+    const thisYear = today.slice(0,4);
+    
+    return `<div class="fade-in space-y-6 pb-20 lg:pb-0">
+        <div>
+            <h1 class="text-2xl font-bold text-slate-900"> Advanced Reports</h1>
+            <p class="text-slate-500 text-sm">Material usage analytics & insights with advanced filtering</p>
+        </div>
+
+        <div class="bg-white rounded-2xl p-4 border border-slate-200">
+            <h3 class="font-semibold text-slate-900 mb-3"> Advanced Filters</h3>
+            <div class="grid md:grid-cols-4 gap-3">
+                <div>
+                    <label class="text-xs font-medium text-slate-600 block mb-1">Site</label>
+                    <select id="filter-site" onchange="updateReportFilters()" class="w-full px-3 py-2 rounded-lg border border-slate-200 bg-slate-50 text-sm outline-none focus:ring-2 focus:ring-brand-500">
+                        <option value="">All Sites</option>
+                        ${sites.map(s => `<option value="${s.site_name}">${s.site_name}</option>`).join('')}
+                    </select>
+                </div>
+                <div>
+                    <label class="text-xs font-medium text-slate-600 block mb-1">From Date</label>
+                    <input id="filter-from" type="date" onchange="updateReportFilters()" class="w-full px-3 py-2 rounded-lg border border-slate-200 bg-slate-50 text-sm outline-none focus:ring-2 focus:ring-brand-500">
+                </div>
+                <div>
+                    <label class="text-xs font-medium text-slate-600 block mb-1">To Date</label>
+                    <input id="filter-to" type="date" onchange="updateReportFilters()" class="w-full px-3 py-2 rounded-lg border border-slate-200 bg-slate-50 text-sm outline-none focus:ring-2 focus:ring-brand-500">
+                </div>
+                <div>
+                    <label class="text-xs font-medium text-slate-600 block mb-1">Material Type</label>
+                    <select id="filter-material" onchange="updateReportFilters()" class="w-full px-3 py-2 rounded-lg border border-slate-200 bg-slate-50 text-sm outline-none focus:ring-2 focus:ring-brand-500">
+                        <option value="">All Materials</option>
+                        ${[...new Set(MATERIAL_MASTER.map(m => m.category))].map(cat => `<option value="${cat}">${cat}</option>`).join('')}
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex gap-2 flex-wrap">
+            <button onclick="switchReportTab('summary')" id="tab-summary" class="px-4 py-2.5 bg-brand-600 text-white rounded-xl text-sm font-medium">Summary</button>
+            <button onclick="switchReportTab('materials')" id="tab-materials" class="px-4 py-2.5 bg-slate-200 text-slate-700 rounded-xl text-sm font-medium">Material Usage</button>
+            <button onclick="switchReportTab('sites')" id="tab-sites" class="px-4 py-2.5 bg-slate-200 text-slate-700 rounded-xl text-sm font-medium">By Site</button>
+            <button onclick="switchReportTab('trends')" id="tab-trends" class="px-4 py-2.5 bg-slate-200 text-slate-700 rounded-xl text-sm font-medium">Trends</button>
+        </div>
+
+        <div id="report-content"></div>
+    </div>`;
+}
+
+function getFilteredMaterials() {
+    let filtered = materials;
+    const site = document.getElementById('filter-site')?.value;
+    const from = document.getElementById('filter-from')?.value;
+    const to = document.getElementById('filter-to')?.value;
+    const matCategory = document.getElementById('filter-material')?.value;
+
+    if (site) filtered = filtered.filter(m => m.site_name === site);
+    if (from) filtered = filtered.filter(m => (m.date || '') >= from);
+    if (to) filtered = filtered.filter(m => (m.date || '') <= to);
+    if (matCategory) filtered = filtered.filter(m => m.material_category === matCategory);
+    return filtered;
+}
+
+function updateReportFilters() {
+    switchReportTab('summary');
+}
+
+function switchReportTab(tab) {
+    document.querySelectorAll('[id^="tab-"]').forEach(b => b.className = b.className.replace('bg-brand-600 text-white', 'bg-slate-200 text-slate-700'));
+    document.getElementById('tab-' + tab).className = 'px-4 py-2.5 bg-brand-600 text-white rounded-xl text-sm font-medium';
+    
+    let content = '';
+    switch(tab) {
+        case 'summary': content = renderReportSummary(); break;
+        case 'materials': content = renderMaterialUsageReport(); break;
+        case 'sites': content = renderSiteReport(); break;
+        case 'trends': content = renderTrendsReport(); break;
+    }
+    document.getElementById('report-content').innerHTML = content;
+    lucide.createIcons();
+}
+
+function renderReportSummary() {
+    const today = new Date().toISOString().split('T')[0];
+    const thisMonth = today.slice(0,7);
+    const thisYear = today.slice(0,4);
+    
+    const filteredMats = getFilteredMaterials();
+    const dailyMat = filteredMats.filter(m => m.date === today);
+    const dailyWrk = workers.filter(m => m.date === today);
+    const monthMat = filteredMats.filter(m => (m.date||'').startsWith(thisMonth));
+    const monthWrk = workers.filter(m => (m.date||'').startsWith(thisMonth));
+    const yearMat = filteredMats.filter(m => (m.date||'').startsWith(thisYear));
+    const yearWrk = workers.filter(m => (m.date||'').startsWith(thisYear));
+    
+    const dailyMatCost = dailyMat.reduce((s,m)=>s+(m.total_material_cost||0),0);
+    const dailyLaborCost = dailyWrk.reduce((s,w)=>s+(w.total_cost||0),0);
+    const monthMatCost = monthMat.reduce((s,m)=>s+(m.total_material_cost||0),0);
+    const monthLaborCost = monthWrk.reduce((s,w)=>s+(w.total_cost||0),0);
+    const yearMatCost = yearMat.reduce((s,m)=>s+(m.total_material_cost||0),0);
+    const yearLaborCost = yearWrk.reduce((s,w)=>s+(w.total_cost||0),0);
+
+    return `
+        <div class="space-y-6">
+            <div><h3 class="font-bold text-slate-900 mb-3"> TODAY — ${today}</h3>
+            <div class="grid sm:grid-cols-2 gap-3">
+                <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl p-4 border border-blue-200">
+                    <p class="text-xs text-blue-600 font-semibold">MATERIALS COST</p>
+                    <p class="text-2xl font-bold text-blue-900 mt-1">${dailyMatCost.toLocaleString()} RWF</p>
+                    <p class="text-xs text-blue-600 mt-1">${dailyMat.length} entries</p>
+                </div>
+                <div class="bg-gradient-to-br from-amber-50 to-amber-100 rounded-2xl p-4 border border-amber-200">
+                    <p class="text-xs text-amber-600 font-semibold">LABOR COST</p>
+                    <p class="text-2xl font-bold text-amber-900 mt-1">${dailyLaborCost.toLocaleString()} RWF</p>
+                    <p class="text-xs text-amber-600 mt-1">${dailyWrk.length} entries</p>
+                </div>
+            </div>
+            <div class="bg-white rounded-2xl p-4 border border-slate-200">
+                <p class="text-sm font-semibold text-slate-700">Daily Total Cost</p>
+                <p class="text-3xl font-bold text-brand-600 mt-2">${(dailyMatCost + dailyLaborCost).toLocaleString()} RWF</p>
+            </div>
+            </div>
+
+            <div><h3 class="font-bold text-slate-900 mb-3">THIS MONTH — ${thisMonth}</h3>
+            <div class="grid sm:grid-cols-3 gap-3">
+                <div class="bg-slate-50 rounded-2xl p-4 border border-slate-200">
+                    <p class="text-xs text-slate-600 font-semibold">MATERIAL ENTRIES</p>
+                    <p class="text-2xl font-bold text-slate-900 mt-1">${monthMat.length}</p>
+                </div>
+                <div class="bg-slate-50 rounded-2xl p-4 border border-slate-200">
+                    <p class="text-xs text-slate-600 font-semibold">MATERIALS COST</p>
+                    <p class="text-2xl font-bold text-slate-900 mt-1">${monthMatCost.toLocaleString()} RWF</p>
+                </div>
+                <div class="bg-slate-50 rounded-2xl p-4 border border-slate-200">
+                    <p class="text-xs text-slate-600 font-semibold">LABOR COST</p>
+                    <p class="text-2xl font-bold text-slate-900 mt-1">${monthLaborCost.toLocaleString()} RWF</p>
+                </div>
+            </div>
+            <div class="bg-brand-50 rounded-2xl p-4 border border-brand-200">
+                <p class="text-sm font-semibold text-brand-900">Monthly Total</p>
+                <p class="text-3xl font-bold text-brand-600 mt-2">${(monthMatCost + monthLaborCost).toLocaleString()} RWF</p>
+            </div>
+            </div>
+
+            <div><h3 class="font-bold text-slate-900 mb-3"> THIS YEAR — ${thisYear}</h3>
+            <div class="grid sm:grid-cols-2 gap-3">
+                <div class="bg-green-50 rounded-2xl p-4 border border-green-200">
+                    <p class="text-xs text-green-600 font-semibold">ANNUAL MATERIAL COST</p>
+                    <p class="text-2xl font-bold text-green-900 mt-1">${yearMatCost.toLocaleString()} RWF</p>
+                    <p class="text-xs text-green-600 mt-1">${yearMat.length} total entries</p>
+                </div>
+                <div class="bg-green-50 rounded-2xl p-4 border border-green-200">
+                    <p class="text-xs text-green-600 font-semibold">ANNUAL LABOR COST</p>
+                    <p class="text-2xl font-bold text-green-900 mt-1">${yearLaborCost.toLocaleString()} RWF</p>
+                    <p class="text-xs text-green-600 mt-1">${yearWrk.length} total entries</p>
+                </div>
+            </div>
+            <div class="bg-green-100 rounded-2xl p-4 border border-green-300">
+                <p class="text-sm font-semibold text-green-900">Year-to-Date Total</p>
+                <p class="text-3xl font-bold text-green-700 mt-2">${(yearMatCost + yearLaborCost).toLocaleString()} RWF</p>
+            </div>
+            </div>
+
+            <div class="flex gap-2 flex-wrap">
+                <button onclick="exportCSV()" class="px-4 py-2.5 bg-slate-800 hover:bg-slate-900 text-white rounded-xl text-sm font-medium flex items-center gap-2"><i data-lucide="download" class="w-4 h-4"></i>Export CSV</button>
+                <button onclick="generatePDF()" class="px-4 py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-xl text-sm font-medium flex items-center gap-2"><i data-lucide="file-pdf" class="w-4 h-4"></i>Export PDF</button>
+            </div>
+        </div>
+    `;
+}
+
+function renderMaterialUsageReport() {
+    const filteredMats = getFilteredMaterials();
+    const materialSummary = {};
+    filteredMats.forEach(m => {
+        if (!materialSummary[m.material_name]) {
+            materialSummary[m.material_name] = { qty: 0, cost: 0, count: 0, category: m.material_category };
+        }
+        materialSummary[m.material_name].qty += m.quantity || 0;
+        materialSummary[m.material_name].cost += m.total_material_cost || 0;
+        materialSummary[m.material_name].count += 1;
+    });
+
+    const sorted = Object.entries(materialSummary).sort((a,b) => b[1].cost - a[1].cost);
+
+    return `
+        <div class="space-y-4">
+            <div class="bg-white rounded-2xl p-5 border border-slate-200 overflow-x-auto">
+                <h3 class="font-bold text-slate-900 mb-3"> Material Usage Ranking</h3>
+                <table class="w-full text-sm">
+                    <thead class="bg-slate-100 border-b">
+                        <tr>
+                            <th class="px-3 py-2 text-left font-semibold">Material</th>
+                            <th class="px-3 py-2 text-left font-semibold">Category</th>
+                            <th class="px-3 py-2 text-right font-semibold">Total Qty</th>
+                            <th class="px-3 py-2 text-right font-semibold">Total Cost</th>
+                            <th class="px-3 py-2 text-right font-semibold">Entries</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${sorted.map((item, i) => `
+                            <tr class="border-b hover:bg-slate-50">
+                                <td class="px-3 py-2 font-medium text-slate-900">${item[0]}</td>
+                                <td class="px-3 py-2 text-slate-600"><span class="px-2 py-1 bg-slate-100 rounded text-xs">${item[1].category}</span></td>
+                                <td class="px-3 py-2 text-right">${item[1].qty.toLocaleString()}</td>
+                                <td class="px-3 py-2 text-right font-bold text-brand-600">${item[1].cost.toLocaleString()} RWF</td>
+                                <td class="px-3 py-2 text-right text-slate-500">${item[1].count}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    `;
+}
+
+function renderSiteReport() {
+    const filteredMats = getFilteredMaterials();
+    const siteSummary = {};
+    filteredMats.forEach(m => {
+        if (!siteSummary[m.site_name]) {
+            siteSummary[m.site_name] = { qty: 0, cost: 0, entries: 0 };
+        }
+        siteSummary[m.site_name].qty += m.quantity || 0;
+        siteSummary[m.site_name].cost += m.total_material_cost || 0;
+        siteSummary[m.site_name].entries += 1;
+    });
+
+    const sorted = Object.entries(siteSummary).sort((a,b) => b[1].cost - a[1].cost);
+
+    return `
+        <div class="space-y-4">
+            <div class="grid md:grid-cols-2 gap-4">
+                ${sorted.map(item => `
+                    <div class="bg-white rounded-2xl p-5 border border-slate-200">
+                        <h4 class="font-bold text-slate-900 mb-3">${item[0]}</h4>
+                        <div class="space-y-2">
+                            <div class="flex justify-between"><span class="text-sm text-slate-600">Total Cost:</span><span class="font-bold text-brand-600">${item[1].cost.toLocaleString()} RWF</span></div>
+                            <div class="flex justify-between"><span class="text-sm text-slate-600">Total Quantity:</span><span class="font-bold text-slate-900">${item[1].qty.toLocaleString()}</span></div>
+                            <div class="flex justify-between"><span class="text-sm text-slate-600">Log Entries:</span><span class="font-bold text-slate-900">${item[1].entries}</span></div>
+                            <div class="pt-2 border-t"><p class="text-xs text-slate-500">Avg cost per entry: ${(item[1].cost/item[1].entries).toLocaleString()} RWF</p></div>
+                        </div>
+                    </div>
+                `).join('')}
+            </div>
+        </div>
+    `;
+}
+
+function renderTrendsReport() {
+    const filteredMats = getFilteredMaterials();
+    const dateGroups = {};
+    filteredMats.forEach(m => {
+        const date = m.date || 'Unknown';
+        if (!dateGroups[date]) {
+            dateGroups[date] = { qty: 0, cost: 0 };
+        }
+        dateGroups[date].qty += m.quantity || 0;
+        dateGroups[date].cost += m.total_material_cost || 0;
+    });
+
+    const sorted = Object.entries(dateGroups).sort();
+    const last30 = sorted.slice(-30);
+
+    return `
+        <div class="space-y-4">
+            <div class="bg-white rounded-2xl p-5 border border-slate-200">
+                <h3 class="font-bold text-slate-900 mb-4"> Last 30 Days Trend</h3>
+                <div class="space-y-2 max-h-96 overflow-y-auto">
+                    ${last30.map(item => {
+                        const pct = (item[1].cost / Math.max(...last30.map(x=>x[1].cost))) * 100;
+                        return `
+                            <div class="flex items-center gap-3">
+                                <div class="w-20 text-xs font-medium text-slate-600">${item[0]}</div>
+                                <div class="flex-1 h-6 bg-slate-100 rounded relative overflow-hidden">
+                                    <div class="h-full bg-gradient-to-r from-brand-400 to-brand-600" style="width: ${pct}%"></div>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-xs font-bold text-slate-900">${item[1].cost.toLocaleString()} RWF</p>
+                                    <p class="text-xs text-slate-500">${item[1].qty.toLocaleString()} units</p>
+                                </div>
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
+            </div>
+
+            <div class="bg-gradient-to-r from-slate-50 to-slate-100 rounded-2xl p-5 border border-slate-200">
+                <h4 class="font-bold text-slate-900 mb-3"> Key Insights</h4>
+                <div class="space-y-2 text-sm">
+                    <p class="text-slate-700">• <strong>Total Days:</strong> ${Object.keys(dateGroups).length} days tracked</p>
+                    <p class="text-slate-700">• <strong>Avg Daily Cost:</strong> ${(Object.values(dateGroups).reduce((s,d)=>s+d.cost,0)/Object.keys(dateGroups).length).toLocaleString()} RWF</p>
+                    <p class="text-slate-700">• <strong>Highest Cost Day:</strong> ${sorted.sort((a,b)=>b[1].cost-a[1].cost)[0]?sorted.sort((a,b)=>b[1].cost-a[1].cost)[0][0]:''} (${sorted.sort((a,b)=>b[1].cost-a[1].cost)[0]?sorted.sort((a,b)=>b[1].cost-a[1].cost)[0][1].cost.toLocaleString():'0'} RWF)</p>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+function exportCSV() {
+    let csv = 'SHDR Ltd Construction Report\\n' + new Date().toISOString().split('T')[0] + '\\n\\n';
+    csv += 'MATERIALS USAGE\\nSite,Date,Material,Quantity,Unit,Cost\\n';
+    materials.forEach(m => csv += `${m.site_name || ''},${m.date},${m.material_name},${m.quantity},${m.unit},${m.total_material_cost || ''}\\n`);
+    csv += '\\nWORKER DEPLOYMENT\\nSite,Date,Type,Count,Daily Wage,Total Cost\\n';
+    workers.forEach(w => csv += `${w.site_name || ''},${w.date},${w.worker_type},${w.num_workers},${w.daily_wage},${w.total_cost}\\n`);
+    const blob = new Blob([csv], {type:'text/csv'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `SHDR_Report_${new Date().toISOString().split('T')[0]}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+    showToast('CSV exported!');
+}
+
+function generatePDF() {
+    const today = new Date().toISOString().split('T')[0];
+    const element = document.createElement('div');
+    element.style.padding = '20px';
+    element.style.fontFamily = 'Arial, sans-serif';
+    element.innerHTML = `
+        <div style="text-align: center; margin-bottom: 30px; padding-bottom: 20px; border-bottom: 3px solid #16a34a;">
+            <h1 style="margin: 0; color: #16a34a;">SHDR Ltd</h1>
+            <p style="margin: 5px 0; color: #666;">Sustainable Homes Design Rwanda</p>
+            <p style="margin: 0; color: #999; font-size: 12px;">Construction Site Management Report</p>
+        </div>
+        <p><strong>Report Date:</strong> ${today}</p>
+        <p><strong>Total Sites:</strong> ${sites.length}</p>
+        
+        <h3 style="margin-top: 20px; color: #16a34a;">Materials Summary</h3>
+        <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
+            <tr style="background: #f0fdf4;">
+                <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Material</th>
+                <th style="border: 1px solid #ddd; padding: 8px; text-align: right;">Quantity</th>
+                <th style="border: 1px solid #ddd; padding: 8px; text-align: right;">Cost (RWF)</th>
+            </tr>
+            ${materials.slice(-10).reverse().map(m => `
+                <tr>
+                    <td style="border: 1px solid #ddd; padding: 8px;">${m.material_name}</td>
+                    <td style="border: 1px solid #ddd; padding: 8px; text-align: right;">${m.quantity} ${m.unit}</td>
+                    <td style="border: 1px solid #ddd; padding: 8px; text-align: right;">${(m.total_material_cost || 0).toLocaleString()}</td>
+                </tr>
+            `).join('')}
+        </table>
+
+        <h3 style="color: #16a34a;">Workers' Summary</h3>
+        <table style="width: 100%; border-collapse: collapse;">
+            <tr style="background: #f0fdf4;">
+                <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Type</th>
+                <th style="border: 1px solid #ddd; padding: 8px; text-align: right;">Count</th>
+                <th style="border: 1px solid #ddd; padding: 8px; text-align: right;">Daily Wage</th>
+                <th style="border: 1px solid #ddd; padding: 8px; text-align: right;">Total Cost</th>
+            </tr>
+            ${workers.slice(-10).reverse().map(w => `
+                <tr>
+                    <td style="border: 1px solid #ddd; padding: 8px;">${w.worker_type}</td>
+                    <td style="border: 1px solid #ddd; padding: 8px; text-align: right;">${w.num_workers}</td>
+                    <td style="border: 1px solid #ddd; padding: 8px; text-align: right;">${w.daily_wage.toLocaleString()}</td>
+                    <td style="border: 1px solid #ddd; padding: 8px; text-align: right;">${(w.total_cost || 0).toLocaleString()}</td>
+                </tr>
+            `).join('')}
+        </table>
+        
+        <p style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #ddd; font-size: 11px; color: #999; text-align: center;">
+            Generated by SHDR Construction Manager on ${new Date().toLocaleString()}
+        </p>
+    `;
+    
+    const opt = { margin: 10, filename: `SHDR_Report_${today}.pdf`, image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2 }, jsPDF: { orientation: 'portrait', unit: 'mm', format: 'a4' } };
+    html2pdf().set(opt).from(element).save();
+    showToast('PDF generated!');
+}
+
+lucide.createIcons();
+</script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a149f1fa03c773a7',t:'MTc4Mjk1NjQ1Ni4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();
+ </script></body>
+</html>
