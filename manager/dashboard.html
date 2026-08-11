@@ -84,7 +84,6 @@
             .table-cell { padding: 0.5rem; }
         }
 
-        /* Scrollable container for dynamic list */
         .material-entry { border-bottom: 1px solid #e5e7eb; padding-bottom: 1rem; margin-bottom: 1rem; }
         .material-entry:last-child { border-bottom: none; margin-bottom: 0; }
     </style>
@@ -168,27 +167,17 @@
     <div id="content-area" class="flex-1 p-4 sm:p-6"></div>
 
     <!-- Footer Card -->
-<footer class="bg-white border border-green-200 rounded-2xl shadow-md mx-4 mb-4">
-    <div class="relative flex items-center justify-center px-5 py-4">
-
-        <!-- Version - Left Corner -->
-        <span class="absolute left-5 text-xs font-medium text-green-600">
-            Version 1.0.0
-        </span>
-
-        <!-- Centered Branding -->
-        <div class="text-sm text-gray-600 text-center">
-            Powered by
-            <a href="https://wa.me/250790020086"
-               target="_blank"
-               rel="noopener noreferrer"
-               class="text-green-600 hover:text-green-700 no-underline">
-                <strong>___Enock's___blessingz___</strong>
-            </a>
+    <footer class="bg-white border border-green-200 rounded-2xl shadow-md mx-4 mb-4">
+        <div class="relative flex items-center justify-center px-5 py-4">
+            <span class="absolute left-5 text-xs font-medium text-green-600">Version 1.0.0</span>
+            <div class="text-sm text-gray-600 text-center">
+                Powered by
+                <a href="https://wa.me/250790020086" target="_blank" rel="noopener noreferrer" class="text-green-600 hover:text-green-700 no-underline">
+                    <strong>___Enock's___blessingz___</strong>
+                </a>
+            </div>
         </div>
-
-    </div>
-</footer>
+    </footer>
 </main>
 
 <!-- Bottom Navigation (mobile) -->
@@ -229,7 +218,7 @@
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
     import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
-    import { getFirestore, collection, query, where, onSnapshot, addDoc, updateDoc, doc, getDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
+    import { getFirestore, collection, query, where, onSnapshot, addDoc, updateDoc, doc, getDoc } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyC5Pk2WErZ-O4YM-I43x49dIKYFwDLPliA",
@@ -251,11 +240,12 @@
     let currentUser = null;
     let managerProfile = null;
     let assignedSites = [];
-    let currentSiteId = null; // selected site ID
-    let materialsData = [], siteWorkersData = [], progressTasks = [], expensesData = [], workerPositions = [], galleryData = [];
+    let currentSiteId = null;
+    let materialsData = [], siteWorkersData = [], progressTasks = [], workerPositions = [], galleryData = [];
     let unsubscribeSnapshots = [];
     let currentSection = 'dashboard';
-    let financeViewMode = 'monthly'; // 'daily' or 'monthly'
+    let financeViewMode = 'monthly';
+    let materialDateFilter = '';
 
     // ── Helpers ──
     function showLoading(show) { document.getElementById('global-loading').classList.toggle('hidden', !show); }
@@ -274,20 +264,47 @@
     }
     function getFormSubmitBtn(form) { return form.querySelector('button[type="submit"]'); }
 
-    // ── Auth & Init ──
+    function formatDate(dateStr) {
+        if (!dateStr) return '—';
+        try {
+            const d = new Date(dateStr);
+            if (isNaN(d.getTime())) return dateStr;
+            return d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+        } catch { return dateStr; }
+    }
+    function getTodayISO() { return new Date().toISOString().split('T')[0]; }
+
+    // ── Auth & Init (fixed redirect to login page) ──
     window.addEventListener('load', () => {
         onAuthStateChanged(auth, async (user) => {
-            if (!user) { window.location.href = '../manager.html'; return; }
+            if (!user) {
+                console.warn('No user signed in, redirecting to login...');
+                window.location.href = '../index.html'; // CHANGE to your actual login page
+                return;
+            }
+            console.log('User signed in:', user.uid);
             currentUser = user;
             try {
                 const profileRef = doc(db, 'profiles', user.uid);
                 const profileSnap = await getDoc(profileRef);
-                if (!profileSnap.exists() || profileSnap.data().role !== 'manager') {
+                console.log('Profile snapshot exists?', profileSnap.exists());
+                if (!profileSnap.exists()) {
+                    console.error('Profile document not found for user:', user.uid);
                     await signOut(auth);
-                    window.location.href = '../manager.html';
+                    alert('Your profile is not set up. Please contact admin.');
+                    window.location.href = '../index.html';
                     return;
                 }
-                managerProfile = profileSnap.data();
+                const profileData = profileSnap.data();
+                if (profileData.role !== 'manager') {
+                    console.error('User role is not "manager":', profileData.role);
+                    await signOut(auth);
+                    alert('You are not authorized as a manager.');
+                    window.location.href = '../index.html';
+                    return;
+                }
+                // Profile is valid
+                managerProfile = profileData;
                 document.getElementById('user-name').textContent = managerProfile.full_name || 'Manager';
                 document.getElementById('user-email').textContent = managerProfile.email || '';
                 document.getElementById('user-avatar').textContent = (managerProfile.full_name?.[0] || 'M').toUpperCase();
@@ -303,7 +320,6 @@
                     return;
                 }
 
-                // Fetch sites
                 const sitePromises = siteIds.map(id => getDoc(doc(db, 'sites', id)));
                 const siteSnaps = await Promise.all(sitePromises);
                 assignedSites = siteSnaps.filter(snap => snap.exists()).map(snap => ({ id: snap.id, ...snap.data() }));
@@ -313,10 +329,8 @@
                     return;
                 }
 
-                // Set current site to first
                 currentSiteId = assignedSites[0].id;
 
-                // Populate site selector
                 const selector = document.getElementById('site-selector');
                 if (assignedSites.length > 1) {
                     selector.classList.remove('hidden');
@@ -325,9 +339,15 @@
                     selector.classList.add('hidden');
                 }
 
+                materialDateFilter = getTodayISO();
                 attachListeners();
                 showSection('dashboard');
-            } catch (err) { showError('Failed to initialize: ' + err.message); }
+            } catch (err) {
+                console.error('Error during auth initialization:', err);
+                showError('Failed to load profile: ' + err.message);
+                await signOut(auth);
+                window.location.href = '../index.html';
+            }
         });
     });
 
@@ -335,30 +355,24 @@
         unsubscribeSnapshots.forEach(fn => fn());
         unsubscribeSnapshots = [];
         if (!currentSiteId) return;
-
         const siteId = currentSiteId;
 
-        // Materials
         const matQ = query(collection(db, 'materials'), where('site_id', '==', siteId));
         const unsubMat = onSnapshot(matQ, snap => { materialsData = snap.docs.map(d => ({ id: d.id, ...d.data() })); refreshCurrentSection(); });
         unsubscribeSnapshots.push(unsubMat);
 
-        // Site workers
         const workQ = query(collection(db, 'site_workers'), where('site_id', '==', siteId));
         const unsubWork = onSnapshot(workQ, snap => { siteWorkersData = snap.docs.map(d => ({ id: d.id, ...d.data() })); refreshCurrentSection(); });
         unsubscribeSnapshots.push(unsubWork);
 
-        // Progress tasks
         const progQ = query(collection(db, 'progress_tasks'), where('site_id', '==', siteId));
         const unsubProg = onSnapshot(progQ, snap => { progressTasks = snap.docs.map(d => ({ id: d.id, ...d.data() })); refreshCurrentSection(); });
         unsubscribeSnapshots.push(unsubProg);
 
-        // Worker positions (roles from owner)
         const posQ = query(collection(db, 'worker_positions'), where('site_id', 'in', [siteId, 'all']));
         const unsubPos = onSnapshot(posQ, snap => { workerPositions = snap.docs.map(d => ({ id: d.id, ...d.data() })); refreshCurrentSection(); });
         unsubscribeSnapshots.push(unsubPos);
 
-        // Gallery
         const galleryQ = query(collection(db, 'gallery'), where('site_id', '==', siteId));
         const unsubGallery = onSnapshot(galleryQ, snap => { galleryData = snap.docs.map(d => ({ id: d.id, ...d.data() })); refreshCurrentSection(); });
         unsubscribeSnapshots.push(unsubGallery);
@@ -419,7 +433,7 @@
         document.getElementById('modal-overlay').classList.add('active');
     };
 
-    // ── IMGBB Upload Helper ──
+    // ── IMGBB Upload ──
     async function uploadImageToImgbb(file) {
         const formData = new FormData();
         formData.append('image', file);
@@ -478,7 +492,7 @@
                     <h3 class="font-semibold text-sm mb-3">Recent Materials</h3>
                     <div class="space-y-1 text-sm">
                         ${materialsData.slice(-4).reverse().map(m => `
-                            <div class="flex justify-between"><span>${m.name}</span><span class="text-slate-400">${m.quantity_ordered || 0} ordered</span></div>
+                            <div class="flex justify-between"><span>${m.name}</span><span class="text-slate-400">${m.quantity_used || 0} used</span></div>
                         `).join('') || '<p class="text-slate-400">No materials recorded.</p>'}
                     </div>
                 </div>
@@ -494,244 +508,186 @@
         `;
     }
 
-    // =============== MATERIALS with Date Selector ===============
+    // =============== MATERIALS (grouped by date_used with filter) ===============
+    function renderMaterials(container) {
+        // Filter by date_used if a filter is set
+        let filtered = materialsData;
+        if (materialDateFilter) {
+            filtered = materialsData.filter(m => {
+                const dateField = m.date_used || m.created_at || '';
+                if (!dateField) return false;
+                const d = new Date(dateField);
+                const isoDate = d.toISOString().split('T')[0];
+                return isoDate === materialDateFilter;
+            });
+        }
 
-// Global state
-let materialDateFilter = ''; // empty = show all
-const PLACEHOLDER_IMG = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40"%3E%3Crect width="40" height="40" fill="%23e2e8f0"/%3E%3Ctext x="20" y="24" font-size="12" text-anchor="middle" fill="%2394a3b8"%3E📦%3C/text%3E%3C/svg%3E';
-
-function renderMaterials(container) {
-    // 1. Filter materials by date
-    let filtered = materialsData;
-    if (materialDateFilter) {
-        filtered = materialsData.filter(m => {
-            const dateField = m.created_at || m.date || '';
-            if (!dateField) return false;
-            // Compare only the date part (YYYY-MM-DD)
-            const d = new Date(dateField);
-            const isoDate = d.toISOString().split('T')[0];
-            return isoDate === materialDateFilter;
+        // Group by date_used (formatted)
+        const grouped = {};
+        filtered.forEach(m => {
+            const date = m.date_used ? new Date(m.date_used).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) : 'No date';
+            if (!grouped[date]) grouped[date] = [];
+            grouped[date].push(m);
         });
-    }
 
-    // 2. Sort newest first
-    filtered = [...filtered].sort((a, b) => {
-        const da = a.created_at || a.date || '';
-        const db = b.created_at || b.date || '';
-        return da < db ? 1 : -1;
-    });
+        const dateInputId = 'materialDateFilter_' + Date.now();
 
-    // 3. Build HTML with date selector
-    const dateInputId = 'materialDateFilter_' + Date.now();
+        let html = `
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-4 sm:mb-6">
+                <h2 class="text-xl sm:text-2xl font-bold">Materials Used</h2>
+                <div class="flex flex-wrap items-center gap-2">
+                    <!-- Date Selector -->
+                    <div class="flex items-center gap-2 bg-white border rounded-xl px-3 py-1.5 shadow-sm">
+                        <iconify-icon icon="material-symbols:calendar-today" class="text-slate-400 text-lg"></iconify-icon>
+                        <input type="date"
+                               id="${dateInputId}"
+                               value="${materialDateFilter}"
+                               onchange="handleMaterialDateChange(this.value)"
+                               class="text-sm bg-transparent outline-none border-none p-0 w-auto min-w-[130px] text-slate-700">
+                        ${materialDateFilter ? `
+                            <button onclick="clearMaterialDate()"
+                                    class="text-slate-400 hover:text-slate-600 text-sm transition"
+                                    title="Clear date filter">
+                                <iconify-icon icon="material-symbols:close"></iconify-icon>
+                            </button>
+                        ` : ''}
+                    </div>
 
-    container.innerHTML = `
-        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-4 sm:mb-6">
-            <h2 class="text-xl sm:text-2xl font-bold">Materials</h2>
+                    <button onclick="setMaterialDateToday()"
+                            class="px-3 py-1.5 text-sm bg-slate-100 hover:bg-slate-200 rounded-xl transition font-medium text-slate-700">
+                        Today
+                    </button>
 
-            <div class="flex flex-wrap items-center gap-2">
-                <!-- Date Selector -->
-                <div class="flex items-center gap-2 bg-white border rounded-xl px-3 py-1.5 shadow-sm">
-                    <iconify-icon icon="material-symbols:calendar-today" class="text-slate-400 text-lg"></iconify-icon>
-                    <input type="date"
-                           id="${dateInputId}"
-                           value="${materialDateFilter}"
-                           onchange="handleMaterialDateChange(this.value)"
-                           class="text-sm bg-transparent outline-none border-none p-0 w-auto min-w-[130px] text-slate-700">
-                    ${materialDateFilter ? `
-                        <button onclick="clearMaterialDate()"
-                                class="text-slate-400 hover:text-slate-600 text-sm transition"
-                                title="Clear date filter">
-                            <iconify-icon icon="material-symbols:close"></iconify-icon>
-                        </button>
-                    ` : ''}
+                    <button onclick="openAddMaterialModal()"
+                            class="px-3 py-2 bg-emerald-600 text-white rounded-xl hover:bg-emerald-700 flex items-center gap-2 text-sm shadow-sm transition">
+                        <iconify-icon icon="material-symbols:add"></iconify-icon> Record Usage
+                    </button>
                 </div>
-
-                <!-- Today Button -->
-                <button onclick="setMaterialDateToday()"
-                        class="px-3 py-1.5 text-sm bg-slate-100 hover:bg-slate-200 rounded-xl transition font-medium text-slate-700">
-                    Today
-                </button>
-
-                <!-- Record Button (unchanged) -->
-                <button onclick="openAddMaterialModal()"
-                        class="px-3 py-2 bg-emerald-600 text-white rounded-xl hover:bg-emerald-700 flex items-center gap-2 text-sm shadow-sm transition">
-                    <iconify-icon icon="material-symbols:add"></iconify-icon>
-                    Record
-                </button>
-            </div>
-        </div>
-
-        <!-- Table -->
-        <div class="bg-white rounded-2xl border overflow-hidden shadow-sm">
-            ${filtered.length ? `
-                <div class="overflow-x-auto">
-                    <table class="w-full text-sm">
-                        <thead class="bg-slate-50 uppercase text-xs text-slate-500">
-                            <tr>
-                                <th class="px-3 py-2 text-left">Image</th>
-                                <th class="px-3 py-2 text-left">Name</th>
-                                <th class="px-3 py-2 text-left">Qty Ordered</th>
-                                <th class="px-3 py-2 text-left">Amount</th>
-                                <th class="px-3 py-2 text-left">Date</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            ${filtered.map(m => `
-                                <tr class="border-t border-slate-100 hover:bg-slate-50 transition">
-                                    <td class="px-3 py-2">
-                                        <img src="${m.image || PLACEHOLDER_IMG}"
-                                             class="w-8 h-8 rounded-lg object-cover bg-slate-100"
-                                             alt="${m.name}">
-                                    </td>
-                                    <td class="px-3 py-2 font-medium text-slate-800">${m.name}</td>
-                                    <td class="px-3 py-2 text-slate-600">${m.quantity_ordered || 0}</td>
-                                    <td class="px-3 py-2 font-medium text-slate-800">${(m.amount || 0).toLocaleString()} RWF</td>
-                                    <td class="px-3 py-2 text-slate-500 text-xs">
-                                        ${formatDate(m.created_at || m.date || '')}
-                                    </td>
-                                </tr>
-                            `).join('')}
-                        </tbody>
-                    </table>
-                </div>
-                <div class="px-3 py-2 text-xs text-slate-400 border-t bg-slate-50 flex justify-between">
-                    <span>${filtered.length} record${filtered.length > 1 ? 's' : ''}</span>
-                    ${materialDateFilter ? `<span>Filtered: ${formatDate(materialDateFilter)}</span>` : ''}
-                </div>
-            ` : `
-                <div class="p-6 text-center text-slate-500">
-                    ${materialDateFilter
-                        ? `No materials recorded on <strong>${formatDate(materialDateFilter)}</strong>.`
-                        : 'No materials recorded yet.'}
-                </div>
-            `}
-        </div>
-    `;
-}
-
-// ========== Date helper functions ==========
-function formatDate(dateStr) {
-    if (!dateStr) return '—';
-    try {
-        const d = new Date(dateStr);
-        if (isNaN(d.getTime())) return dateStr;
-        return d.toLocaleDateString('en-GB', {
-            day: '2-digit',
-            month: 'short',
-            year: 'numeric'
-        });
-    } catch {
-        return dateStr;
-    }
-}
-
-function getTodayISO() {
-    return new Date().toISOString().split('T')[0];
-}
-
-// ========== Date controls ==========
-function handleMaterialDateChange(value) {
-    materialDateFilter = value || '';
-    // Re-render all materials containers
-    document.querySelectorAll('[data-materials-container]').forEach(c => renderMaterials(c));
-}
-
-function clearMaterialDate() {
-    materialDateFilter = '';
-    document.querySelectorAll('[data-materials-container]').forEach(c => {
-        const input = c.querySelector('input[type="date"]');
-        if (input) input.value = '';
-        renderMaterials(c);
-    });
-}
-
-function setMaterialDateToday() {
-    materialDateFilter = getTodayISO();
-    document.querySelectorAll('[data-materials-container]').forEach(c => {
-        const input = c.querySelector('input[type="date"]');
-        if (input) input.value = materialDateFilter;
-        renderMaterials(c);
-    });
-}
-
-// ========== Batch addition (unchanged) ==========
-window.openAddMaterialModal = () => {
-    let entryCount = 0;
-    const addEntry = () => {
-        entryCount++;
-        const container = document.getElementById('material-entries');
-        const entry = document.createElement('div');
-        entry.className = 'material-entry';
-        entry.innerHTML = `
-            <div class="grid grid-cols-2 gap-2">
-                <input class="border rounded-lg p-2 text-sm" placeholder="Material Name" name="mat-name-${entryCount}" required>
-                <input class="border rounded-lg p-2 text-sm" placeholder="Quantity" type="number" name="mat-ordered-${entryCount}" required>
-            </div>
-            <div class="grid grid-cols-2 gap-2 mt-2">
-                <input class="border rounded-lg p-2 text-sm" placeholder="Amount (RWF)" type="number" name="mat-amount-${entryCount}">
-                <input class="border rounded-lg p-2 text-sm" type="file" accept="image/*" name="mat-image-${entryCount}">
             </div>
         `;
-        container.appendChild(entry);
-    };
 
-    openModal('Record Materials (Batch)', `
-        <div id="material-entries"></div>
-        <button type="button" onclick="addMaterialEntry()" class="text-emerald-600 text-sm mt-2">+ Add another material</button>
-        <button onclick="submitBatchMaterials()" class="w-full bg-emerald-600 text-white py-2 rounded-xl mt-4">Save All Materials</button>
-    `);
+        if (Object.keys(grouped).length === 0) {
+            html += `<div class="bg-white rounded-2xl border p-6 text-center text-slate-500">
+                ${materialDateFilter ? `No materials used on <strong>${formatDate(materialDateFilter)}</strong>.` : 'No materials recorded yet.'}
+            </div>`;
+        } else {
+            // Sort dates descending (newest first)
+            const sortedDates = Object.keys(grouped).sort((a, b) => {
+                if (a === 'No date') return 1;
+                if (b === 'No date') return -1;
+                return new Date(b) - new Date(a);
+            });
 
-    addEntry();
-    window.addMaterialEntry = addEntry;
-
-    window.submitBatchMaterials = async () => {
-        const entries = document.querySelectorAll('#material-entries .material-entry');
-        const promises = [];
-        for (const entry of entries) {
-            const name = entry.querySelector('[name^="mat-name-"]').value.trim();
-            const ordered = parseFloat(entry.querySelector('[name^="mat-ordered-"]').value) || 0;
-            const amount = parseFloat(entry.querySelector('[name^="mat-amount-"]').value) || 0;
-            const imageFile = entry.querySelector('[name^="mat-image-"]').files[0];
-            if (!name) continue;
-            let imageUrl = '';
-            if (imageFile) {
-                try { imageUrl = await uploadImageToImgbb(imageFile); } catch (e) { alert('Image upload failed for ' + name); continue; }
-            }
-            promises.push(addDoc(collection(db, 'materials'), {
-                site_id: currentSiteId,
-                name,
-                quantity_ordered: ordered,
-                quantity_used: 0,
-                amount,
-                image: imageUrl,
-                created_at: new Date().toISOString()   // stores full timestamp
-            }));
+            sortedDates.forEach(date => {
+                html += `<div class="mb-4"><h3 class="font-bold text-sm text-slate-700 mb-2">${date}</h3><div class="bg-white rounded-2xl border overflow-hidden shadow-sm">`;
+                html += `<div class="overflow-x-auto"><table class="w-full text-sm"><thead class="bg-slate-50 uppercase text-xs text-slate-500"><tr><th class="px-3 py-2 text-left">Image</th><th class="px-3 py-2 text-left">Name</th><th class="px-3 py-2 text-left">Qty Used</th><th class="px-3 py-2 text-left">Amount</th></tr></thead><tbody>`;
+                grouped[date].forEach(m => {
+                    html += `<tr class="border-t border-slate-100 hover:bg-slate-50 transition">
+                        <td class="px-3 py-2"><img src="${m.image || PLACEHOLDER_IMG}" class="w-8 h-8 rounded-lg object-cover"></td>
+                        <td class="px-3 py-2 font-medium text-slate-800">${m.name}</td>
+                        <td class="px-3 py-2 text-slate-600">${m.quantity_used || 0}</td>
+                        <td class="px-3 py-2 font-medium text-slate-800">${(m.amount || 0).toLocaleString()} RWF</td>
+                    </tr>`;
+                });
+                html += `</tbody></table></div></div></div>`;
+            });
         }
-        if (promises.length === 0) return alert('No valid materials to save.');
-        try {
-            await Promise.all(promises);
-            closeModal();
-            // Refresh the materials list (re-fetch and re-render) – you need to implement this part
-            // e.g., await fetchMaterials(); renderMaterials(container);
-        } catch (err) { alert('Error: ' + err.message); }
-    };
-};
-
-// ========== Initialisation ==========
-function initMaterials() {
-    // Optionally set default filter to today
-    if (!materialDateFilter) {
-        materialDateFilter = getTodayISO();
+        container.innerHTML = html;
     }
-    document.querySelectorAll('[data-materials-container]').forEach(c => renderMaterials(c));
-}
 
-// Auto-init when DOM ready
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initMaterials);
-} else {
-    initMaterials();
-}
+    // ── Date controls ──
+    window.handleMaterialDateChange = (value) => {
+        materialDateFilter = value || '';
+        if (currentSection === 'materials') {
+            const container = document.getElementById('content-area');
+            renderMaterials(container);
+        }
+    };
+    window.clearMaterialDate = () => {
+        materialDateFilter = '';
+        if (currentSection === 'materials') {
+            const container = document.getElementById('content-area');
+            renderMaterials(container);
+        }
+    };
+    window.setMaterialDateToday = () => {
+        materialDateFilter = getTodayISO();
+        if (currentSection === 'materials') {
+            const container = document.getElementById('content-area');
+            renderMaterials(container);
+        }
+    };
+
+    // ── Batch Usage Modal (with date picker & type="button") ──
+    window.openAddMaterialModal = () => {
+        let entryCount = 0;
+        const addEntry = () => {
+            entryCount++;
+            const container = document.getElementById('material-entries');
+            const entry = document.createElement('div');
+            entry.className = 'material-entry';
+            entry.innerHTML = `
+                <div class="grid grid-cols-2 gap-2">
+                    <input class="border rounded-lg p-2 text-sm" placeholder="Material Name" name="mat-name-${entryCount}" required>
+                    <input class="border rounded-lg p-2 text-sm" placeholder="Quantity Used" type="number" name="mat-used-${entryCount}" required>
+                </div>
+                <div class="grid grid-cols-2 gap-2 mt-2">
+                    <input class="border rounded-lg p-2 text-sm" placeholder="Amount (RWF)" type="number" name="mat-amount-${entryCount}">
+                    <input class="border rounded-lg p-2 text-sm" type="file" accept="image/*" name="mat-image-${entryCount}">
+                </div>
+            `;
+            container.appendChild(entry);
+        };
+
+        const modalContent = `
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-slate-700 mb-1">Date of Usage</label>
+                <input type="date" id="usageDate" value="${getTodayISO()}" 
+                       class="border rounded-lg p-2 text-sm w-full" required>
+            </div>
+            <div id="material-entries"></div>
+            <button type="button" onclick="addMaterialEntry()" class="text-emerald-600 text-sm mt-2 block">+ Add another material</button>
+            <button type="button" onclick="submitBatchMaterials()" class="w-full bg-emerald-600 text-white py-2 rounded-xl mt-4">Save All Materials</button>
+        `;
+
+        openModal('Record Material Usage', modalContent);
+        addEntry();
+        window.addMaterialEntry = addEntry;
+
+        window.submitBatchMaterials = async () => {
+            const dateInput = document.getElementById('usageDate');
+            const selectedDate = dateInput ? dateInput.value : getTodayISO();
+            if (!selectedDate) return alert('Please select a date.');
+            const dateObj = new Date(selectedDate + 'T00:00:00.000Z');
+
+            const entries = document.querySelectorAll('#material-entries .material-entry');
+            const promises = [];
+            for (const entry of entries) {
+                const name = entry.querySelector('[name^="mat-name-"]').value.trim();
+                const used = parseFloat(entry.querySelector('[name^="mat-used-"]').value) || 0;
+                const amount = parseFloat(entry.querySelector('[name^="mat-amount-"]').value) || 0;
+                const imageFile = entry.querySelector('[name^="mat-image-"]').files[0];
+                if (!name) continue;
+                let imageUrl = '';
+                if (imageFile) imageUrl = await uploadImageToImgbb(imageFile);
+                promises.push(addDoc(collection(db, 'materials'), {
+                    site_id: currentSiteId,
+                    name,
+                    quantity_used: used,
+                    amount,
+                    image: imageUrl,
+                    date_used: dateObj.toISOString(),
+                    created_at: new Date().toISOString()
+                }));
+            }
+            if (!promises.length) return alert('No valid materials.');
+            try {
+                await Promise.all(promises);
+                closeModal();
+                alert('Usage saved!');
+            } catch (err) { alert('Error: ' + err.message); }
+        };
+    };
 
     // =============== WORKERS ===============
     function renderWorkers(container) {
@@ -767,8 +723,15 @@ if (document.readyState === 'loading') {
     }
 
     window.openAddWorkerModal = () => {
+        // Updated role list
+        const commonRoles = [
+            'Mason', 'Mason Helper', 'Carpenter', 'Carpenter Helper',
+            'Steel Fixer', 'Steel Fixer Helper', 'Plumber', 'Electrician',
+            'Welder', 'Painter', 'Tiler', 'Roofer', 'Concrete Worker',
+            'Excavation Worker', 'Equipment Operator', 'Truck Driver',
+            'Cleaner', 'Site Security Guard'
+        ];
         const allRoles = workerPositions.map(p => p.role);
-        const commonRoles = ['Mason', 'Carpenter', 'Electrician', 'Plumber', 'Foreman', 'Painter', 'Welder'];
         const uniqueRoles = [...new Set([...commonRoles, ...allRoles])].filter(Boolean);
         const roleOptions = uniqueRoles.map(r => `<div class="role-option px-3 py-2 cursor-pointer hover:bg-emerald-50" data-role="${r}">${r}</div>`).join('');
 
@@ -964,13 +927,13 @@ if (document.readyState === 'loading') {
 
         if (dept === 'all' || dept === 'materials') {
             let mats = materialsData;
-            mats = filterByDate(mats, 'created_at');
+            mats = filterByDate(mats, 'date_used');
             data = data.concat(mats.map(m => ({
                 Department: 'Materials',
                 Name: m.name,
-                'Qty Ordered': m.quantity_ordered,
+                'Qty Used': m.quantity_used,
                 Amount: m.amount,
-                Date: m.created_at ? new Date(m.created_at).toLocaleDateString() : ''
+                Date: m.date_used ? new Date(m.date_used).toLocaleDateString() : ''
             })));
         }
         if (dept === 'all' || dept === 'workers') {
@@ -985,7 +948,6 @@ if (document.readyState === 'loading') {
             })));
         }
         if (dept === 'all' || dept === 'finances') {
-            // Compute material costs
             const matCost = materialsData.reduce((sum, m) => sum + (m.amount || 0) * (m.quantity_used || 0), 0);
             const workerCost = siteWorkersData.reduce((sum, w) => sum + (w.salary || 0), 0);
             data.push({
@@ -1034,14 +996,12 @@ if (document.readyState === 'loading') {
 
     // =============== FINANCES ===============
     function renderFinances(container) {
-        // Calculate totals from materials and workers
         const matCost = materialsData.reduce((sum, m) => sum + (m.amount || 0) * (m.quantity_used || 0), 0);
         const workerCost = siteWorkersData.reduce((sum, w) => sum + (w.salary || 0), 0);
         const totalSpent = matCost + workerCost;
 
-        // Determine site creation date for daily/monthly calculation
         const site = assignedSites.find(s => s.id === currentSiteId);
-        let daysActive = 30; // fallback
+        let daysActive = 30;
         if (site && site.created_at) {
             const created = new Date(site.created_at);
             const now = new Date();
@@ -1050,7 +1010,6 @@ if (document.readyState === 'loading') {
 
         let dailySpending = totalSpent / daysActive;
         let monthlySpending = totalSpent / (daysActive / 30);
-
         const view = financeViewMode;
         const displayAmount = view === 'daily' ? dailySpending : monthlySpending;
 
@@ -1139,7 +1098,7 @@ if (document.readyState === 'loading') {
     // =============== LOGOUT ===============
     window.handleLogout = async () => {
         await signOut(auth);
-        window.location.href = '../manager.html';
+        window.location.href = '../index.html'; // redirect to login
     };
 </script>
 </body>
