@@ -1,0 +1,1165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#059669">
+    <title>SHDR Ltd. — Manager Dashboard</title>
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Iconify -->
+    <script src="https://cdn.jsdelivr.net/npm/iconify-icon@2.3.0/dist/iconify-icon.min.js"></script>
+
+    <style>
+        * { font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { background: #f8fafc; }
+        .sidebar-link.active { background: #ecfdf5; color: #059669; border-left: 3px solid #059669; }
+        .stat-card { transition: all 0.2s ease; }
+        .stat-card:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
+        .modal { display: none; }
+        .modal.active { display: flex; }
+        .spinner {
+            border: 3px solid #e2e8f0;
+            border-top: 3px solid #059669;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 0.8s linear infinite;
+        }
+        .btn-spinner {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-top: 2px solid #fff;
+            border-radius: 50%;
+            animation: spin 0.6s linear infinite;
+            vertical-align: middle;
+            margin-right: 6px;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .role-dropdown-item:hover { background: #ecfdf5; }
+
+        /* Bottom navigation – mobile only */
+        .bottom-nav {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            border-top: 1px solid #e2e8f0;
+            z-index: 40;
+            justify-content: space-around;
+            padding: 8px 0;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+        }
+        .bottom-nav a {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 0.6rem;
+            color: #6b7280;
+            text-decoration: none;
+            padding: 4px 8px;
+            border-radius: 8px;
+            transition: 0.2s;
+        }
+        .bottom-nav a.active {
+            color: #059669;
+            background: #ecfdf5;
+        }
+        .bottom-nav a iconify-icon { font-size: 1.3rem; }
+        @media (max-width: 1023px) {
+            .bottom-nav { display: flex; }
+            main { padding-bottom: 80px; }
+        }
+
+        @media (max-width: 640px) {
+            #content-area { padding: 1rem; }
+            .stat-card { padding: 1rem; }
+            .table-cell { padding: 0.5rem; }
+        }
+        .material-entry { border-bottom: 1px solid #e5e7eb; padding-bottom: 1rem; margin-bottom: 1rem; }
+        .material-entry:last-child { border-bottom: none; margin-bottom: 0; }
+        .tab-active { background: #059669; color: white; }
+        .tab-inactive { background: #f1f5f9; color: #334155; }
+        .tab-inactive:hover { background: #e2e8f0; }
+        .worker-checkbox:checked + label { background: #ecfdf5; }
+    </style>
+</head>
+<body class="min-h-screen flex">
+
+<!-- Mobile overlay -->
+<div id="sidebar-overlay" class="fixed inset-0 bg-black/40 z-40 hidden lg:hidden" onclick="toggleSidebar()"></div>
+
+<!-- Sidebar (desktop) -->
+<aside id="sidebar" class="fixed inset-y-0 left-0 w-64 bg-white border-r border-slate-200 z-50 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out flex flex-col shadow-sm">
+    <div class="p-6 border-b border-slate-100">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-lg bg-emerald-100 flex items-center justify-center overflow-hidden">
+                <img src="shdr.jpg" alt="SHDR" class="w-10 h-10 object-cover"
+                     onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                <span id="logo-fallback" class="hidden font-bold text-emerald-700 text-lg">SH</span>
+            </div>
+            <div>
+                <h1 class="font-bold text-slate-900">SHDR Ltd.</h1>
+                <p class="text-xs text-slate-500">Manager Panel</p>
+            </div>
+        </div>
+    </div>
+    <nav class="flex-1 p-4 space-y-1 overflow-y-auto">
+        <a href="#" onclick="showSection('dashboard')" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg text-slate-600 hover:bg-slate-50 transition-colors" data-section="dashboard">
+            <iconify-icon icon="material-symbols:dashboard-outline" width="20" height="20"></iconify-icon> Dashboard
+        </a>
+        <a href="#" onclick="showSection('materials')" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg text-slate-600 hover:bg-slate-50 transition-colors" data-section="materials">
+            <iconify-icon icon="material-symbols:package-2-outline" width="20" height="20"></iconify-icon> Materials
+        </a>
+        <a href="#" onclick="showSection('workers')" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg text-slate-600 hover:bg-slate-50 transition-colors" data-section="workers">
+            <iconify-icon icon="material-symbols:engineering-outline" width="20" height="20"></iconify-icon> Workers
+        </a>
+        <a href="#" onclick="showSection('progress')" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg text-slate-600 hover:bg-slate-50 transition-colors" data-section="progress">
+            <iconify-icon icon="material-symbols:trending-up-outline" width="20" height="20"></iconify-icon> Progress
+        </a>
+        <a href="#" onclick="showSection('reports')" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg text-slate-600 hover:bg-slate-50 transition-colors" data-section="reports">
+            <iconify-icon icon="material-symbols:description-outline" width="20" height="20"></iconify-icon> Reports
+        </a>
+        <a href="#" onclick="showSection('finances')" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg text-slate-600 hover:bg-slate-50 transition-colors" data-section="finances">
+            <iconify-icon icon="material-symbols:finance-outline" width="20" height="20"></iconify-icon> Finances
+        </a>
+        <a href="#" onclick="showSection('gallery')" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg text-slate-600 hover:bg-slate-50 transition-colors" data-section="gallery">
+            <iconify-icon icon="material-symbols:photo-library-outline" width="20" height="20"></iconify-icon> Gallery
+        </a>
+    </nav>
+    <div class="p-4 border-t border-slate-100">
+        <div class="flex items-center gap-3 px-4 py-3 rounded-lg bg-slate-50">
+            <div class="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-700 font-semibold text-sm" id="user-avatar">M</div>
+            <div class="flex-1 min-w-0">
+                <p class="text-sm font-medium text-slate-900 truncate" id="user-name">Manager</p>
+                <p class="text-xs text-slate-500 truncate" id="user-email"></p>
+            </div>
+        </div>
+        <button onclick="handleLogout()" class="mt-3 w-full py-2 px-4 text-sm text-red-600 hover:bg-red-50 rounded-lg transition-colors flex items-center gap-2 justify-center">
+            <iconify-icon icon="material-symbols:logout" width="18" height="18"></iconify-icon> Sign Out
+        </button>
+    </div>
+</aside>
+
+<!-- Main Content -->
+<main class="flex-1 lg:ml-64 min-h-screen flex flex-col">
+    <header class="bg-white border-b border-slate-200 px-4 py-3 flex items-center justify-between sticky top-0 z-30 shadow-sm">
+        <button class="lg:hidden text-slate-600 p-2 rounded-lg hover:bg-slate-100" onclick="toggleSidebar()">
+            <iconify-icon icon="material-symbols:menu" width="24" height="24"></iconify-icon>
+        </button>
+        <div class="flex items-center gap-3">
+            <h2 class="text-lg font-bold text-slate-900" id="page-title">Dashboard</h2>
+            <select id="site-selector" class="hidden border rounded-lg p-1 text-sm bg-slate-50" onchange="switchSite(this.value)"></select>
+        </div>
+        <span class="text-xs text-slate-500">Manager</span>
+    </header>
+
+    <!-- Loading & Error -->
+    <div id="global-loading" class="hidden p-6 flex justify-center"><div class="spinner"></div></div>
+    <div id="global-error" class="hidden p-6"><div class="bg-red-50 border border-red-200 rounded-2xl p-4 text-red-700"></div></div>
+
+    <!-- Content Area -->
+    <div id="content-area" class="flex-1 p-4 sm:p-6"></div>
+
+     <!-- Footer -->
+<footer>
+    <div class="footer-inner">
+        <span>
+            Powered by
+            <a href="https://wa.me/250790020086"
+               target="_blank"
+               rel="noopener noreferrer"
+               class="designer-name">
+                <strong>___Enock's___blessingz___</strong>
+            </a>
+        </span>
+
+        <span>
+            Designed by
+            <a href="https://pireactive.vercel.app/"
+               target="_blank"
+               rel="noopener noreferrer">
+                PIReactive
+            </a>
+        </span>
+    </div><span>Version 1.0.0</span>
+</footer>
+</main>
+
+<!-- Bottom Navigation (mobile) -->
+<div class="bottom-nav" id="bottom-nav">
+    <a href="#" onclick="showSection('dashboard')" class="active" data-section="dashboard">
+        <iconify-icon icon="material-symbols:dashboard-outline"></iconify-icon>
+        <span>Home</span>
+    </a>
+    <a href="#" onclick="showSection('materials')" data-section="materials">
+        <iconify-icon icon="material-symbols:package-2-outline"></iconify-icon>
+        <span>Materials</span>
+    </a>
+    <a href="#" onclick="showSection('workers')" data-section="workers">
+        <iconify-icon icon="material-symbols:engineering-outline"></iconify-icon>
+        <span>Workers</span>
+    </a>
+    <a href="#" onclick="showSection('reports')" data-section="reports">
+        <iconify-icon icon="material-symbols:description-outline"></iconify-icon>
+        <span>Reports</span>
+    </a>
+    <a href="#" onclick="showSection('gallery')" data-section="gallery">
+        <iconify-icon icon="material-symbols:photo-library-outline"></iconify-icon>
+        <span>Gallery</span>
+    </a>
+</div>
+
+<!-- Modals -->
+<div id="modal-overlay" class="modal fixed inset-0 bg-black/40 backdrop-blur-sm z-50 items-center justify-center p-4" onclick="closeModal()">
+    <div class="bg-white rounded-2xl p-6 w-full max-w-md shadow-xl max-h-[90vh] overflow-y-auto" onclick="event.stopPropagation()">
+        <div class="flex justify-between items-center mb-4">
+            <h3 id="modal-title" class="text-xl font-bold"></h3>
+            <button onclick="closeModal()" class="text-slate-400 hover:text-slate-600"><iconify-icon icon="material-symbols:close" width="24"></iconify-icon></button>
+        </div>
+        <div id="modal-body"></div>
+    </div>
+</div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
+    import { getFirestore, collection, query, where, onSnapshot, addDoc, updateDoc, doc, getDoc, deleteDoc, getDocs, writeBatch } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyC5Pk2WErZ-O4YM-I43x49dIKYFwDLPliA",
+        authDomain: "project-kng86.firebaseapp.com",
+        projectId: "project-kng86",
+        storageBucket: "project-kng86.firebasestorage.app",
+        messagingSenderId: "435202981721",
+        appId: "1:435202981721:web:fa7caa47213dbb14e9d648",
+        measurementId: "G-FBT74X36KJ"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+    const IMGBB_API_KEY = '6b1b5028aba07a31bf702efd9c0ef4fe';
+    const PLACEHOLDER_IMG = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="200"%3E%3Crect width="400" height="200" fill="%23e2e8f0"/%3E%3Ctext x="50%25" y="50%25" dominant-baseline="middle" text-anchor="middle" fill="%2394a3b8" font-size="20"%3ENo Image%3C/text%3E%3C/svg%3E';
+
+    // Global state
+    let currentUser = null;
+    let managerProfile = null;
+    let assignedSites = [];
+    let currentSiteId = null;
+    let materialsData = [], siteWorkersData = [], progressTasks = [], workerPositions = [], galleryData = [], attendanceData = [];
+    let unsubscribeSnapshots = [];
+    let currentSection = 'dashboard';
+    let financeViewMode = 'monthly';
+    let workersTab = 'view'; // 'view' or 'record'
+    let selectedWorkers = []; // array of worker IDs for attendance
+
+    // ── Helpers ──
+    function showLoading(show) { document.getElementById('global-loading').classList.toggle('hidden', !show); }
+    function showError(msg) { const el = document.getElementById('global-error'); el.classList.remove('hidden'); el.querySelector('div').textContent = msg; }
+    function clearError() { document.getElementById('global-error').classList.add('hidden'); }
+    function setButtonLoading(btn, loading) {
+        if (!btn) return;
+        if (loading) {
+            btn.disabled = true;
+            btn.dataset.origHTML = btn.innerHTML;
+            btn.innerHTML = '<span class="btn-spinner"></span> Loading...';
+        } else {
+            btn.disabled = false;
+            btn.innerHTML = btn.dataset.origHTML || 'Submit';
+        }
+    }
+    function getFormSubmitBtn(form) { return form.querySelector('button[type="submit"]'); }
+
+    // ── Auth & Init ──
+    window.addEventListener('load', () => {
+        onAuthStateChanged(auth, async (user) => {
+            if (!user) { window.location.href = '../manager.html'; return; }
+            currentUser = user;
+            try {
+                const profileRef = doc(db, 'profiles', user.uid);
+                const profileSnap = await getDoc(profileRef);
+                if (!profileSnap.exists() || profileSnap.data().role !== 'manager') {
+                    await signOut(auth);
+                    window.location.href = '../manager.html';
+                    return;
+                }
+                managerProfile = profileSnap.data();
+                document.getElementById('user-name').textContent = managerProfile.full_name || 'Manager';
+                document.getElementById('user-email').textContent = managerProfile.email || '';
+                document.getElementById('user-avatar').textContent = (managerProfile.full_name?.[0] || 'M').toUpperCase();
+
+                let siteIds = [];
+                if (managerProfile.assigned_sites && Array.isArray(managerProfile.assigned_sites)) {
+                    siteIds = managerProfile.assigned_sites;
+                } else if (managerProfile.assigned_site) {
+                    siteIds = [managerProfile.assigned_site];
+                } else {
+                    showError('No site assigned.');
+                    return;
+                }
+
+                const sitePromises = siteIds.map(id => getDoc(doc(db, 'sites', id)));
+                const siteSnaps = await Promise.all(sitePromises);
+                assignedSites = siteSnaps.filter(snap => snap.exists()).map(snap => ({ id: snap.id, ...snap.data() }));
+
+                if (assignedSites.length === 0) {
+                    showError('Assigned site(s) not found.');
+                    return;
+                }
+
+                currentSiteId = assignedSites[0].id;
+                const selector = document.getElementById('site-selector');
+                if (assignedSites.length > 1) {
+                    selector.classList.remove('hidden');
+                    selector.innerHTML = assignedSites.map(s => `<option value="${s.id}" ${s.id === currentSiteId ? 'selected' : ''}>${s.name}</option>`).join('');
+                } else {
+                    selector.classList.add('hidden');
+                }
+
+                attachListeners();
+                showSection('dashboard');
+            } catch (err) { showError('Failed to initialize: ' + err.message); }
+        });
+    });
+
+    function attachListeners() {
+        unsubscribeSnapshots.forEach(fn => fn());
+        unsubscribeSnapshots = [];
+        if (!currentSiteId) return;
+
+        const siteId = currentSiteId;
+
+        const matQ = query(collection(db, 'materials'), where('site_id', '==', siteId));
+        const unsubMat = onSnapshot(matQ, snap => { materialsData = snap.docs.map(d => ({ id: d.id, ...d.data() })); refreshCurrentSection(); });
+        unsubscribeSnapshots.push(unsubMat);
+
+        const workQ = query(collection(db, 'site_workers'), where('site_id', '==', siteId));
+        const unsubWork = onSnapshot(workQ, snap => { siteWorkersData = snap.docs.map(d => ({ id: d.id, ...d.data() })); refreshCurrentSection(); });
+        unsubscribeSnapshots.push(unsubWork);
+
+        const progQ = query(collection(db, 'progress_tasks'), where('site_id', '==', siteId));
+        const unsubProg = onSnapshot(progQ, snap => { progressTasks = snap.docs.map(d => ({ id: d.id, ...d.data() })); refreshCurrentSection(); });
+        unsubscribeSnapshots.push(unsubProg);
+
+        const posQ = query(collection(db, 'worker_positions'), where('site_id', 'in', [siteId, 'all']));
+        const unsubPos = onSnapshot(posQ, snap => { workerPositions = snap.docs.map(d => ({ id: d.id, ...d.data() })); refreshCurrentSection(); });
+        unsubscribeSnapshots.push(unsubPos);
+
+        const galleryQ = query(collection(db, 'gallery'), where('site_id', '==', siteId));
+        const unsubGallery = onSnapshot(galleryQ, snap => { galleryData = snap.docs.map(d => ({ id: d.id, ...d.data() })); refreshCurrentSection(); });
+        unsubscribeSnapshots.push(unsubGallery);
+
+        // Attendance listener
+        const attQ = query(collection(db, 'worker_attendance'), where('site_id', '==', siteId));
+        const unsubAtt = onSnapshot(attQ, snap => { attendanceData = snap.docs.map(d => ({ id: d.id, ...d.data() })); refreshCurrentSection(); });
+        unsubscribeSnapshots.push(unsubAtt);
+    }
+
+    function refreshCurrentSection() {
+        if (window._refreshing) return;
+        window._refreshing = true;
+        requestAnimationFrame(() => {
+            showSection(currentSection);
+            window._refreshing = false;
+        });
+    }
+
+    // ── UI Navigation ──
+    window.toggleSidebar = () => {
+        document.getElementById('sidebar').classList.toggle('-translate-x-full');
+        document.getElementById('sidebar-overlay').classList.toggle('hidden');
+    };
+
+    window.showSection = (section) => {
+        currentSection = section;
+        clearError();
+        document.getElementById('page-title').textContent = section.charAt(0).toUpperCase() + section.slice(1);
+        document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
+        document.querySelector(`[data-section="${section}"]`)?.classList.add('active');
+        document.querySelectorAll('#bottom-nav a').forEach(a => a.classList.remove('active'));
+        document.querySelector(`#bottom-nav a[data-section="${section}"]`)?.classList.add('active');
+
+        const container = document.getElementById('content-area');
+        container.innerHTML = '';
+        switch(section) {
+            case 'dashboard': renderDashboard(container); break;
+            case 'materials': renderMaterials(container); break;
+            case 'workers': renderWorkers(container); break;
+            case 'progress': renderProgress(container); break;
+            case 'reports': renderReports(container); break;
+            case 'finances': renderFinances(container); break;
+            case 'gallery': renderGallery(container); break;
+            default: renderDashboard(container);
+        }
+        if (window.innerWidth < 1024) {
+            document.getElementById('sidebar').classList.add('-translate-x-full');
+            document.getElementById('sidebar-overlay').classList.add('hidden');
+        }
+    };
+
+    window.switchSite = (siteId) => {
+        currentSiteId = siteId;
+        selectedWorkers = [];
+        attachListeners();
+        showSection(currentSection);
+    };
+
+    window.closeModal = () => document.getElementById('modal-overlay').classList.remove('active');
+    window.openModal = (title, bodyHTML) => {
+        document.getElementById('modal-title').textContent = title;
+        document.getElementById('modal-body').innerHTML = bodyHTML;
+        document.getElementById('modal-overlay').classList.add('active');
+    };
+
+    // ── IMGBB Upload Helper ──
+    async function uploadImageToImgbb(file) {
+        const formData = new FormData();
+        formData.append('image', file);
+        const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, { method: 'POST', body: formData });
+        const json = await res.json();
+        if (!json.success) throw new Error('Image upload failed');
+        return json.data.url;
+    }
+
+    // =============== DASHBOARD (unchanged) ===============
+    function renderDashboard(container) {
+        const site = assignedSites.find(s => s.id === currentSiteId);
+        if (!site) { container.innerHTML = '<p class="text-red-500">Site not found.</p>'; return; }
+        const totalWorkers = siteWorkersData.length;
+        const completedTasks = progressTasks.filter(t => t.status === 'completed').length;
+        const totalTasks = progressTasks.length;
+        const completionPercent = totalTasks ? Math.round((completedTasks / totalTasks) * 100) : 0;
+
+        container.innerHTML = `
+            <div class="bg-white rounded-2xl overflow-hidden shadow-sm mb-4 sm:mb-6">
+                <div class="relative h-48 md:h-64 bg-cover bg-center" style="background-image: url('${site.images?.[0] || PLACEHOLDER_IMG}');">
+                    <div class="absolute inset-0 bg-gradient-to-r from-emerald-900/80 to-emerald-800/40 flex items-center p-4 sm:p-6">
+                        <div>
+                            <h1 class="text-2xl sm:text-4xl font-bold text-white">${site.name}</h1>
+                            <p class="text-emerald-100 mt-2 text-sm sm:text-base">${site.location || ''}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-4 sm:p-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div><span class="text-sm text-slate-500">Status</span><p class="text-lg font-bold capitalize">${site.status || 'active'}</p></div>
+                    <div><span class="text-sm text-slate-500">Manager</span><p class="text-lg font-bold">${managerProfile.full_name || 'You'}</p></div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4 sm:mb-6">
+                <div class="stat-card bg-white rounded-2xl p-4 border border-slate-200 shadow-sm">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
+                            <iconify-icon icon="material-symbols:engineering" width="24" class="text-blue-700"></iconify-icon>
+                        </div>
+                        <div><p class="text-sm text-slate-500">Workers On Site</p><p class="text-2xl font-bold">${totalWorkers}</p></div>
+                    </div>
+                </div>
+                <div class="stat-card bg-white rounded-2xl p-4 border border-slate-200 shadow-sm">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 bg-amber-100 rounded-xl flex items-center justify-center">
+                            <iconify-icon icon="material-symbols:trending-up" width="24" class="text-amber-700"></iconify-icon>
+                        </div>
+                        <div><p class="text-sm text-slate-500">Progress</p><p class="text-2xl font-bold">${completionPercent}%</p></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="bg-white rounded-2xl border p-4 shadow-sm">
+                    <h3 class="font-semibold text-sm mb-3">Recent Materials</h3>
+                    <div class="space-y-1 text-sm">
+                        ${materialsData.slice(-4).reverse().map(m => `
+                            <div class="flex justify-between"><span>${m.name}</span><span class="text-slate-400">${m.quantity_used || 0} used</span></div>
+                        `).join('') || '<p class="text-slate-400">No materials recorded.</p>'}
+                    </div>
+                </div>
+                <div class="bg-white rounded-2xl border p-4 shadow-sm">
+                    <h3 class="font-semibold text-sm mb-3">Pending Tasks</h3>
+                    <div class="space-y-1 text-sm">
+                        ${progressTasks.filter(t => t.status === 'pending').slice(0,4).map(t => `
+                            <div class="flex justify-between"><span>${t.name}</span><span class="text-slate-400">Due: ${new Date(t.end_date).toLocaleDateString()}</span></div>
+                        `).join('') || '<p class="text-slate-400">No pending tasks.</p>'}
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    // =============== MATERIALS (with date_used and history grouping) ===============
+    function renderMaterials(container) {
+        // Group materials by date_used
+        const grouped = {};
+        materialsData.forEach(m => {
+            const date = m.date_used ? new Date(m.date_used).toLocaleDateString() : 'No date';
+            if (!grouped[date]) grouped[date] = [];
+            grouped[date].push(m);
+        });
+
+        let html = `
+            <div class="flex justify-between items-center mb-4 sm:mb-6">
+                <h2 class="text-xl sm:text-2xl font-bold">Materials Used</h2>
+                <button onclick="openAddMaterialModal()" class="px-3 py-2 bg-emerald-600 text-white rounded-xl hover:bg-emerald-700 flex items-center gap-2 text-sm">
+                    <iconify-icon icon="material-symbols:add"></iconify-icon> Record Usage
+                </button>
+            </div>
+        `;
+
+        if (Object.keys(grouped).length === 0) {
+            html += '<p class="text-slate-500">No materials recorded yet.</p>';
+        } else {
+            // Sort dates descending
+            const sortedDates = Object.keys(grouped).sort((a, b) => new Date(b) - new Date(a));
+            sortedDates.forEach(date => {
+                html += `<div class="mb-4"><h3 class="font-bold text-sm text-slate-700 mb-2">${date}</h3><div class="bg-white rounded-2xl border overflow-hidden shadow-sm">`;
+                html += `<table class="w-full text-sm"><thead class="bg-slate-50 uppercase text-xs"><tr><th class="px-3 py-2">Image</th><th class="px-3 py-2">Name</th><th class="px-3 py-2">Qty Used</th><th class="px-3 py-2">Amount</th></tr></thead><tbody>`;
+                grouped[date].forEach(m => {
+                    html += `<tr>
+                        <td class="px-3 py-2"><img src="${m.image || PLACEHOLDER_IMG}" class="w-8 h-8 rounded-lg object-cover"></td>
+                        <td class="px-3 py-2 font-medium">${m.name}</td>
+                        <td class="px-3 py-2">${m.quantity_used || 0}</td>
+                        <td class="px-3 py-2">${(m.amount || 0).toLocaleString()} RWF</td>
+                    </tr>`;
+                });
+                html += `</tbody></table></div></div>`;
+            });
+        }
+        container.innerHTML = html;
+    }
+
+    // Batch material addition with date_used auto-set to today
+    window.openAddMaterialModal = () => {
+        let entryCount = 0;
+        const addEntry = () => {
+            entryCount++;
+            const container = document.getElementById('material-entries');
+            const entry = document.createElement('div');
+            entry.className = 'material-entry';
+            entry.innerHTML = `
+                <div class="grid grid-cols-2 gap-2">
+                    <input class="border rounded-lg p-2 text-sm" placeholder="Material Name" name="mat-name-${entryCount}" required>
+                    <input class="border rounded-lg p-2 text-sm" placeholder="Quantity Used" type="number" name="mat-used-${entryCount}" required>
+                </div>
+                <div class="grid grid-cols-2 gap-2 mt-2">
+                    <input class="border rounded-lg p-2 text-sm" placeholder="Amount (RWF)" type="number" name="mat-amount-${entryCount}">
+                    <input class="border rounded-lg p-2 text-sm" type="file" accept="image/*" name="mat-image-${entryCount}">
+                </div>
+            `;
+            container.appendChild(entry);
+        };
+
+        openModal('Record Material Usage', `
+            <div id="material-entries"></div>
+            <button type="button" onclick="addMaterialEntry()" class="text-emerald-600 text-sm mt-2">+ Add another material</button>
+            <button onclick="submitBatchMaterials()" class="w-full bg-emerald-600 text-white py-2 rounded-xl mt-4">Save All Materials</button>
+        `);
+
+        addEntry();
+        window.addMaterialEntry = addEntry;
+
+        window.submitBatchMaterials = async () => {
+            const entries = document.querySelectorAll('#material-entries .material-entry');
+            const promises = [];
+            const today = new Date().toISOString();
+            for (const entry of entries) {
+                const name = entry.querySelector('[name^="mat-name-"]').value.trim();
+                const used = parseFloat(entry.querySelector('[name^="mat-used-"]').value) || 0;
+                const amount = parseFloat(entry.querySelector('[name^="mat-amount-"]').value) || 0;
+                const imageFile = entry.querySelector('[name^="mat-image-"]').files[0];
+                if (!name) continue;
+                let imageUrl = '';
+                if (imageFile) {
+                    try { imageUrl = await uploadImageToImgbb(imageFile); } catch (e) { alert('Image upload failed for ' + name); continue; }
+                }
+                promises.push(addDoc(collection(db, 'materials'), {
+                    site_id: currentSiteId,
+                    name,
+                    quantity_used: used,
+                    amount,
+                    image: imageUrl,
+                    date_used: today,
+                    created_at: today
+                }));
+            }
+            if (promises.length === 0) return alert('No valid materials to save.');
+            try {
+                await Promise.all(promises);
+                closeModal();
+            } catch (err) { alert('Error: ' + err.message); }
+        };
+    };
+
+    // =============== WORKERS (with tabs, attendance recording, history) ===============
+    function renderWorkers(container) {
+        const site = assignedSites.find(s => s.id === currentSiteId);
+        if (!site) { container.innerHTML = '<p class="text-red-500">Site not found.</p>'; return; }
+
+        // Tab bar
+        let html = `
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl sm:text-2xl font-bold">Workers</h2>
+                <button onclick="openAddWorkerModal()" class="px-3 py-2 bg-emerald-600 text-white rounded-xl hover:bg-emerald-700 flex items-center gap-2 text-sm">
+                    <iconify-icon icon="material-symbols:add"></iconify-icon> Add Worker
+                </button>
+            </div>
+            <div class="flex border-b border-slate-200 mb-4">
+                <button onclick="setWorkersTab('view')" class="px-4 py-2 text-sm font-medium ${workersTab === 'view' ? 'tab-active text-white' : 'tab-inactive'} rounded-t-lg transition-colors">View Workers</button>
+                <button onclick="setWorkersTab('record')" class="px-4 py-2 text-sm font-medium ${workersTab === 'record' ? 'tab-active text-white' : 'tab-inactive'} rounded-t-lg transition-colors">Record Attendance</button>
+            </div>
+        `;
+
+        if (workersTab === 'view') {
+            html += renderWorkersView();
+        } else {
+            html += renderWorkersRecord();
+        }
+
+        container.innerHTML = html;
+    }
+
+    function renderWorkersView() {
+        if (!siteWorkersData.length) {
+            return '<div class="bg-white rounded-2xl border p-4"><p class="text-slate-500">No workers added yet.</p></div>';
+        }
+        let html = '<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">';
+        siteWorkersData.forEach(w => {
+            html += `
+                <div class="bg-white rounded-2xl border overflow-hidden shadow-sm">
+                    <img src="${w.image || PLACEHOLDER_IMG}" class="w-full h-32 object-cover">
+                    <div class="p-3">
+                        <p class="font-medium">${w.name}</p>
+                        <p class="text-xs text-slate-500">${w.role}</p>
+                        <p class="text-xs text-slate-500">Salary: ${w.salary?.toLocaleString()} RWF (${w.payment_method || 'N/A'})</p>
+                        <p class="text-xs text-slate-500">Phone: ${w.phone || '—'}</p>
+                    </div>
+                </div>
+            `;
+        });
+        html += '</div>';
+        return html;
+    }
+
+    function renderWorkersRecord() {
+        if (!siteWorkersData.length) {
+            return '<div class="bg-white rounded-2xl border p-4"><p class="text-slate-500">No workers to record attendance for. Add workers first.</p></div>';
+        }
+
+        const today = new Date().toISOString().split('T')[0];
+        // Check if attendance already recorded for today
+        const alreadyRecorded = attendanceData.some(a => a.date === today && a.site_id === currentSiteId);
+
+        let html = `
+            <div class="bg-white rounded-2xl border p-4">
+                <div class="mb-4">
+                    <label class="block text-sm font-medium mb-1">Date</label>
+                    <input type="date" id="attendance-date" value="${today}" class="w-full border rounded-lg p-2 text-sm">
+                </div>
+                <div class="max-h-60 overflow-y-auto border rounded-lg p-2">
+                    ${siteWorkersData.map(w => `
+                        <div class="flex items-center gap-3 p-2 hover:bg-slate-50 rounded-lg worker-checkbox">
+                            <input type="checkbox" id="worker-${w.id}" value="${w.id}" class="w-4 h-4 text-emerald-600 rounded" ${alreadyRecorded ? 'disabled' : ''}>
+                            <label for="worker-${w.id}" class="flex-1 cursor-pointer">
+                                <span class="font-medium">${w.name}</span>
+                                <span class="text-xs text-slate-500 ml-2">${w.role}</span>
+                                <span class="text-xs text-slate-400 ml-2">${w.payment_method === 'daily' ? w.salary : Math.round(w.salary/30)} RWF/day</span>
+                            </label>
+                        </div>
+                    `).join('')}
+                </div>
+                ${alreadyRecorded ? '<p class="text-amber-600 text-sm mt-2">Attendance for today has already been recorded.</p>' : ''}
+                <div id="attendance-summary" class="mt-4 p-3 bg-slate-50 rounded-lg hidden">
+                    <p class="text-sm">Selected workers: <span id="selected-count">0</span></p>
+                    <p class="text-sm font-bold">Total daily cost: <span id="total-cost">0</span> RWF</p>
+                    <button onclick="submitAttendance()" class="mt-2 w-full bg-emerald-600 text-white py-2 rounded-xl text-sm">Assign as Worked</button>
+                </div>
+                <div id="attendance-history" class="mt-6">
+                    <h4 class="font-semibold text-sm mb-2">Attendance History</h4>
+                    ${attendanceData.length ? renderAttendanceHistory() : '<p class="text-slate-400 text-sm">No attendance records yet.</p>'}
+                </div>
+            </div>
+        `;
+        // Add event listeners for checkboxes after rendering
+        setTimeout(() => {
+            document.querySelectorAll('#attendance-date, input[type="checkbox"]').forEach(el => {
+                el.addEventListener('change', updateAttendanceSummary);
+            });
+            updateAttendanceSummary();
+        }, 100);
+        return html;
+    }
+
+    function renderAttendanceHistory() {
+        // Group by date
+        const groups = {};
+        attendanceData.forEach(a => {
+            const date = a.date || 'Unknown';
+            if (!groups[date]) groups[date] = [];
+            groups[date].push(a);
+        });
+        let html = '';
+        const sortedDates = Object.keys(groups).sort((a, b) => new Date(b) - new Date(a));
+        sortedDates.forEach(date => {
+            const total = groups[date].reduce((sum, a) => sum + (a.daily_rate || 0), 0);
+            html += `<div class="mb-3"><p class="text-sm font-medium">${date} (${groups[date].length} workers, total ${total.toLocaleString()} RWF)</p>`;
+            html += `<div class="flex flex-wrap gap-1 text-xs text-slate-600">`;
+            groups[date].forEach(a => {
+                html += `<span class="bg-slate-100 px-2 py-1 rounded">${a.name} (${a.role})</span>`;
+            });
+            html += `</div></div>`;
+        });
+        return html;
+    }
+
+    window.setWorkersTab = (tab) => {
+        workersTab = tab;
+        showSection('workers');
+    };
+
+    window.updateAttendanceSummary = () => {
+        const checkboxes = document.querySelectorAll('input[type="checkbox"]:checked');
+        const selectedIds = Array.from(checkboxes).map(cb => cb.value);
+        const selectedWorkersData = siteWorkersData.filter(w => selectedIds.includes(w.id));
+        const summary = document.getElementById('attendance-summary');
+        if (selectedIds.length === 0) {
+            summary.classList.add('hidden');
+            return;
+        }
+        summary.classList.remove('hidden');
+        document.getElementById('selected-count').textContent = selectedIds.length;
+
+        let totalCost = 0;
+        selectedWorkersData.forEach(w => {
+            const dailyRate = w.payment_method === 'daily' ? w.salary : Math.round(w.salary / 30);
+            totalCost += dailyRate;
+        });
+        document.getElementById('total-cost').textContent = totalCost.toLocaleString();
+        // Store selected worker IDs for submission
+        window._selectedWorkerIds = selectedIds;
+    };
+
+    window.submitAttendance = async () => {
+        const date = document.getElementById('attendance-date').value;
+        if (!date) { alert('Please select a date.'); return; }
+        const selectedIds = window._selectedWorkerIds || [];
+        if (selectedIds.length === 0) { alert('No workers selected.'); return; }
+
+        // Check if attendance already exists for this date
+        const existing = attendanceData.filter(a => a.date === date && a.site_id === currentSiteId);
+        if (existing.length > 0) {
+            if (!confirm('Attendance for this date already exists. Do you want to overwrite?')) return;
+            // Delete existing records for this date
+            const batch = writeBatch(db);
+            existing.forEach(a => batch.delete(doc(db, 'worker_attendance', a.id)));
+            await batch.commit();
+        }
+
+        const selectedWorkersData = siteWorkersData.filter(w => selectedIds.includes(w.id));
+        const promises = selectedWorkersData.map(w => {
+            const dailyRate = w.payment_method === 'daily' ? w.salary : Math.round(w.salary / 30);
+            return addDoc(collection(db, 'worker_attendance'), {
+                site_id: currentSiteId,
+                date: date,
+                worker_id: w.id,
+                name: w.name,
+                role: w.role,
+                daily_rate: dailyRate,
+                recorded_by: currentUser.uid,
+                recorded_at: new Date().toISOString()
+            });
+        });
+        try {
+            await Promise.all(promises);
+            alert('Attendance recorded successfully!');
+            // Reset selection
+            document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
+            updateAttendanceSummary();
+        } catch (err) {
+            alert('Error: ' + err.message);
+        }
+    };
+
+    // =============== PROGRESS (unchanged) ===============
+    function renderProgress(container) {
+        container.innerHTML = `
+            <h2 class="text-xl sm:text-2xl font-bold mb-4">Progress Tasks</h2>
+            <div class="bg-white rounded-2xl border overflow-hidden shadow-sm">
+                ${progressTasks.length ? `
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm">
+                        <thead class="bg-slate-50 uppercase text-xs">
+                            <tr>
+                                <th class="px-3 py-2 text-center">Action</th>
+                                <th class="px-3 py-2">Task</th>
+                                <th class="px-3 py-2">Start</th>
+                                <th class="px-3 py-2">End</th>
+                                <th class="px-3 py-2">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${progressTasks.map(t => `
+                                <tr>
+                                    <td class="px-3 py-2 text-center">
+                                        ${t.status !== 'completed' ?
+                                            `<button onclick="markTaskCompleted('${t.id}')" class="bg-gray-300 hover:bg-gray-400 text-white w-8 h-8 rounded-full inline-flex items-center justify-center transition-all" title="Mark as completed">
+                                                <iconify-icon icon="material-symbols:check" width="18" height="18"></iconify-icon>
+                                            </button>` :
+                                            `<span class="text-emerald-600"><iconify-icon icon="material-symbols:check-circle" width="20" height="20"></iconify-icon></span>`
+                                        }
+                                    </td>
+                                    <td class="px-3 py-2 font-medium">${t.name}</td>
+                                    <td class="px-3 py-2">${new Date(t.start_date).toLocaleDateString()}</td>
+                                    <td class="px-3 py-2">${new Date(t.end_date).toLocaleDateString()}</td>
+                                    <td class="px-3 py-2"><span class="px-2 py-1 rounded-full text-xs ${t.status === 'completed' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}">${t.status}</span></td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+                ` : '<p class="p-4 text-slate-500">No tasks assigned.</p>'}
+            </div>
+        `;
+    }
+
+    window.markTaskCompleted = async (taskId) => {
+        if (!confirm('Mark this task as completed?')) return;
+        try {
+            await updateDoc(doc(db, 'progress_tasks', taskId), { status: 'completed', updated_at: new Date().toISOString() });
+        } catch (err) { alert('Error: ' + err.message); }
+    };
+
+    // =============== REPORTS (with material amount fix and date filter) ===============
+    function renderReports(container) {
+        container.innerHTML = `
+            <h2 class="text-xl sm:text-2xl font-bold mb-4">Reports</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="bg-white rounded-2xl border p-4">
+                    <h3 class="font-semibold mb-3 text-sm">Generate Report</h3>
+                    <label class="block text-sm font-medium mb-1">Department</label>
+                    <select id="report-dept" class="w-full border p-2 rounded-lg mb-3 text-sm">
+                        <option value="all">All Departments</option>
+                        <option value="materials">Materials</option>
+                        <option value="workers">Workers</option>
+                        <option value="finances">Finances</option>
+                    </select>
+                    <div class="grid grid-cols-2 gap-2 mb-3">
+                        <div>
+                            <label class="block text-sm font-medium mb-1">Start Date</label>
+                            <input type="date" id="report-start" class="w-full border p-2 rounded-lg text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-1">End Date</label>
+                            <input type="date" id="report-end" class="w-full border p-2 rounded-lg text-sm">
+                        </div>
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="exportReport('csv')" class="flex-1 bg-emerald-600 text-white py-2 rounded-xl text-sm">Export CSV</button>
+                        <button onclick="exportReport('pdf')" class="flex-1 border border-emerald-600 text-emerald-600 py-2 rounded-xl text-sm">Print PDF</button>
+                    </div>
+                </div>
+                <div class="bg-white rounded-2xl border p-4">
+                    <h3 class="font-semibold mb-3 text-sm">Site Summary</h3>
+                    <p class="text-sm text-slate-500">Completed tasks: ${progressTasks.filter(t=>t.status==='completed').length}</p>
+                    <p class="text-sm text-slate-500">Materials recorded: ${materialsData.length}</p>
+                    <p class="text-sm text-slate-500">Workers: ${siteWorkersData.length}</p>
+                </div>
+            </div>
+        `;
+    }
+
+    window.exportReport = (format) => {
+        const dept = document.getElementById('report-dept').value;
+        const startDate = document.getElementById('report-start').value;
+        const endDate = document.getElementById('report-end').value;
+        const site = assignedSites.find(s => s.id === currentSiteId);
+        let data = [], filename = `SHDR_${site?.name || 'Site'}_${dept}`;
+
+        const filterByDate = (items, dateField) => {
+            if (!startDate && !endDate) return items;
+            return items.filter(item => {
+                const itemDate = new Date(item[dateField]);
+                if (startDate && itemDate < new Date(startDate)) return false;
+                if (endDate && itemDate > new Date(endDate)) return false;
+                return true;
+            });
+        };
+
+        if (dept === 'all' || dept === 'materials') {
+            let mats = materialsData;
+            mats = filterByDate(mats, 'date_used');
+            data = data.concat(mats.map(m => ({
+                Department: 'Materials',
+                Name: m.name,
+                'Qty Used': m.quantity_used || 0,
+                Amount: m.amount || 0,
+                Date: m.date_used ? new Date(m.date_used).toLocaleDateString() : ''
+            })));
+        }
+        if (dept === 'all' || dept === 'workers') {
+            let workers = siteWorkersData;
+            data = data.concat(workers.map(w => ({
+                Department: 'Workers',
+                Name: w.name,
+                Role: w.role,
+                Salary: w.salary,
+                Payment: w.payment_method,
+                Phone: w.phone
+            })));
+        }
+        if (dept === 'all' || dept === 'finances') {
+            // Use attendance data for actual costs
+            const attCost = attendanceData.reduce((sum, a) => sum + (a.daily_rate || 0), 0);
+            const matCost = materialsData.reduce((sum, m) => sum + (m.amount || 0), 0);
+            data.push({
+                Department: 'Finances',
+                Category: 'Materials',
+                Amount: matCost,
+                Description: 'Total material cost'
+            });
+            data.push({
+                Department: 'Finances',
+                Category: 'Workers (Attendance)',
+                Amount: attCost,
+                Description: 'Total worker attendance cost'
+            });
+        }
+
+        if (!data.length) { alert('No data for the selected filters.'); return; }
+
+        if (format === 'csv') {
+            const headers = Object.keys(data[0]);
+            const csvRows = [headers.join(',')];
+            for (const row of data) {
+                const values = headers.map(header => `"${String(row[header] ?? '').replace(/"/g, '""')}"`);
+                csvRows.push(values.join(','));
+            }
+            const csv = csvRows.join('\n');
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename + '.csv';
+            a.click();
+            URL.revokeObjectURL(url);
+        } else {
+            const headers = Object.keys(data[0]);
+            const tableRows = data.map(row => `<tr>${headers.map(h => `<td>${row[h] ?? ''}</td>`).join('')}</tr>`);
+            const tableHtml = `<table border="1" cellpadding="5" style="border-collapse:collapse;width:100%;">
+                <thead><tr>${headers.map(h => `<th>${h}</th>`).join('')}</tr></thead>
+                <tbody>${tableRows.join('')}</tbody></table>`;
+            const win = window.open('', '_blank', 'width=800,height=600');
+            win.document.write(`<html><head><title>${filename}</title><style>body{font-family:sans-serif;padding:20px;} th{background:#f0f0f0;}</style></head><body><h2>${filename}</h2>${tableHtml}</body></html>`);
+            win.document.close();
+            win.print();
+        }
+    };
+
+    // =============== FINANCES (updated to use attendance data) ===============
+    function renderFinances(container) {
+        // Calculate totals using attendance data for workers
+        const matCost = materialsData.reduce((sum, m) => sum + (m.amount || 0), 0);
+        const workerCost = attendanceData.reduce((sum, a) => sum + (a.daily_rate || 0), 0);
+        const totalSpent = matCost + workerCost;
+
+        const site = assignedSites.find(s => s.id === currentSiteId);
+        let daysActive = 30;
+        if (site && site.created_at) {
+            const created = new Date(site.created_at);
+            const now = new Date();
+            daysActive = Math.max(1, Math.floor((now - created) / (1000 * 60 * 60 * 24)));
+        }
+
+        let dailySpending = totalSpent / daysActive;
+        let monthlySpending = totalSpent / (daysActive / 30);
+
+        const view = financeViewMode;
+        const displayAmount = view === 'daily' ? dailySpending : monthlySpending;
+
+        container.innerHTML = `
+            <h2 class="text-xl sm:text-2xl font-bold mb-4">Finances</h2>
+            <div class="flex gap-2 mb-4">
+                <button onclick="setFinanceView('daily')" class="px-4 py-2 rounded-full text-sm ${view === 'daily' ? 'bg-emerald-600 text-white' : 'bg-slate-100 text-slate-600'}">Daily</button>
+                <button onclick="setFinanceView('monthly')" class="px-4 py-2 rounded-full text-sm ${view === 'monthly' ? 'bg-emerald-600 text-white' : 'bg-slate-100 text-slate-600'}">Monthly</button>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                <div class="bg-white rounded-2xl border p-4">
+                    <p class="text-sm text-slate-500">Total Spent</p>
+                    <p class="text-2xl font-bold">${totalSpent.toLocaleString()} RWF</p>
+                </div>
+                <div class="bg-white rounded-2xl border p-4">
+                    <p class="text-sm text-slate-500">Materials</p>
+                    <p class="text-2xl font-bold">${matCost.toLocaleString()} RWF</p>
+                </div>
+                <div class="bg-white rounded-2xl border p-4">
+                    <p class="text-sm text-slate-500">Workers (Attendance)</p>
+                    <p class="text-2xl font-bold">${workerCost.toLocaleString()} RWF</p>
+                </div>
+            </div>
+            <div class="bg-white rounded-2xl border p-4">
+                <p class="text-sm text-slate-500">${view === 'daily' ? 'Daily' : 'Monthly'} Average Spending</p>
+                <p class="text-3xl font-bold text-emerald-600">${displayAmount.toLocaleString()} RWF</p>
+                <p class="text-xs text-slate-400 mt-1">Based on ${daysActive} days active</p>
+            </div>
+        `;
+    }
+
+    window.setFinanceView = (mode) => {
+        financeViewMode = mode;
+        showSection('finances');
+    };
+
+    // =============== GALLERY (unchanged) ===============
+    function renderGallery(container) {
+        container.innerHTML = `
+            <h2 class="text-xl sm:text-2xl font-bold mb-4">Site Gallery</h2>
+            <div class="bg-white rounded-2xl border p-4 mb-4">
+                <h3 class="font-semibold text-sm mb-3">Upload New Image</h3>
+                <form onsubmit="handleGalleryUpload(event)" class="space-y-3">
+                    <input type="file" id="gallery-image" accept="image/*" required class="w-full border rounded-lg p-2 text-sm">
+                    <textarea id="gallery-description" placeholder="Description" rows="2" class="w-full border rounded-lg p-2 text-sm"></textarea>
+                    <button type="submit" class="w-full bg-emerald-600 text-white py-2 rounded-xl text-sm">Upload</button>
+                </form>
+            </div>
+            <div id="gallery-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                ${galleryData.length ? galleryData.map(item => `
+                    <div class="bg-white rounded-2xl border overflow-hidden shadow-sm">
+                        <img src="${item.image || PLACEHOLDER_IMG}" class="w-full h-40 object-cover" alt="Gallery image">
+                        <div class="p-3">
+                            <p class="text-sm text-slate-700">${item.description || 'No description'}</p>
+                            <p class="text-xs text-slate-400 mt-1">Uploaded: ${item.uploaded_at ? new Date(item.uploaded_at).toLocaleDateString() : ''}</p>
+                        </div>
+                    </div>
+                `).join('') : '<p class="text-slate-400 col-span-full text-sm">No images uploaded yet.</p>'}
+            </div>
+        `;
+    }
+
+    window.handleGalleryUpload = async (e) => {
+        e.preventDefault();
+        const form = e.target;
+        const btn = form.querySelector('button[type="submit"]');
+        setButtonLoading(btn, true);
+        try {
+            const imageFile = document.getElementById('gallery-image').files[0];
+            const description = document.getElementById('gallery-description').value.trim();
+            if (!imageFile) return alert('Please select an image.');
+            const imageUrl = await uploadImageToImgbb(imageFile);
+            await addDoc(collection(db, 'gallery'), {
+                site_id: currentSiteId,
+                image: imageUrl,
+                description: description || '',
+                uploaded_at: new Date().toISOString()
+            });
+            document.getElementById('gallery-image').value = '';
+            document.getElementById('gallery-description').value = '';
+        } catch (err) { alert('Error: ' + err.message); }
+        finally { setButtonLoading(btn, false); }
+    };
+
+    // =============== ADD WORKER (single salary field) ===============
+    window.openAddWorkerModal = () => {
+        const allRoles = workerPositions.map(p => p.role);
+        const commonRoles = ['Mason', 'Carpenter', 'Electrician', 'Plumber', 'Foreman', 'Painter', 'Welder'];
+        const uniqueRoles = [...new Set([...commonRoles, ...allRoles])].filter(Boolean);
+        const roleOptions = uniqueRoles.map(r => `<div class="role-option px-3 py-2 cursor-pointer hover:bg-emerald-50" data-role="${r}">${r}</div>`).join('');
+
+        openModal('Add Worker', `
+            <form onsubmit="handleAddWorker(event)" class="space-y-4">
+                <input class="w-full border rounded-lg p-3" placeholder="Full Name" id="worker-name" required>
+                <div class="relative">
+                    <label class="block text-sm font-medium mb-1">Role (select only)</label>
+                    <div id="role-selector" class="border rounded-lg p-3 bg-white flex items-center justify-between cursor-pointer" onclick="document.getElementById('role-dropdown').classList.toggle('hidden')">
+                        <span id="selected-role-text" class="text-slate-400">Choose a role...</span>
+                        <iconify-icon icon="material-symbols:arrow-drop-down" width="20"></iconify-icon>
+                    </div>
+                    <input type="hidden" id="worker-role" required>
+                    <div id="role-dropdown" class="hidden absolute z-10 w-full bg-white border rounded-lg mt-1 max-h-40 overflow-y-auto shadow-lg">
+                        <input type="text" id="role-search" class="w-full border-b p-2 sticky top-0 bg-white" placeholder="Filter roles..." oninput="filterRoleDropdown()">
+                        <div id="role-options-container">${roleOptions}</div>
+                    </div>
+                </div>
+                <select id="worker-payment" class="w-full border rounded-lg p-3" required>
+                    <option value="">Select Payment Method</option>
+                    <option value="daily">Daily</option>
+                    <option value="monthly">Monthly</option>
+                </select>
+                <input class="w-full border rounded-lg p-3" placeholder="Estimated Salary/Cost (RWF)" type="number" id="worker-salary" required>
+                <input class="w-full border rounded-lg p-3" placeholder="Phone Number" type="tel" id="worker-phone">
+                <div>
+                    <label class="text-sm font-medium">Photo (optional)</label>
+                    <input type="file" id="worker-image" accept="image/*" class="w-full mt-1">
+                </div>
+                <button type="submit" class="w-full bg-emerald-600 text-white py-3 rounded-xl">Save Worker</button>
+            </form>
+        `);
+
+        document.querySelectorAll('.role-option').forEach(item => {
+            item.addEventListener('click', () => {
+                const role = item.dataset.role;
+                document.getElementById('worker-role').value = role;
+                document.getElementById('selected-role-text').textContent = role;
+                document.getElementById('selected-role-text').classList.remove('text-slate-400');
+                document.getElementById('role-dropdown').classList.add('hidden');
+            });
+        });
+
+        window.filterRoleDropdown = () => {
+            const filter = document.getElementById('role-search').value.toLowerCase();
+            document.querySelectorAll('.role-option').forEach(opt => {
+                opt.style.display = opt.dataset.role.toLowerCase().includes(filter) ? '' : 'none';
+            });
+        };
+
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('#role-selector') && !e.target.closest('#role-dropdown')) {
+                const dropdown = document.getElementById('role-dropdown');
+                if (dropdown) dropdown.classList.add('hidden');
+            }
+        });
+    };
+
+    window.handleAddWorker = async (e) => {
+        e.preventDefault();
+        const form = e.target;
+        const btn = getFormSubmitBtn(form);
+        setButtonLoading(btn, true);
+        try {
+            const name = document.getElementById('worker-name').value.trim();
+            const role = document.getElementById('worker-role').value;
+            const payment = document.getElementById('worker-payment').value;
+            const salary = parseFloat(document.getElementById('worker-salary').value) || 0;
+            const phone = document.getElementById('worker-phone').value.trim();
+            const imageFile = document.getElementById('worker-image').files[0];
+            if (!name || !role || !payment || !salary) return alert('All fields required.');
+            let imageUrl = '';
+            if (imageFile) imageUrl = await uploadImageToImgbb(imageFile);
+            await addDoc(collection(db, 'site_workers'), {
+                site_id: currentSiteId,
+                name,
+                role,
+                payment_method: payment,
+                salary,
+                phone,
+                image: imageUrl,
+                added_by: currentUser.uid
+            });
+            closeModal();
+        } catch (err) { alert('Error: ' + err.message); }
+        finally { setButtonLoading(btn, false); }
+    };
+
+    // =============== LOGOUT ===============
+    window.handleLogout = async () => {
+        await signOut(auth);
+        window.location.href = '../manager.html';
+    };
+</script>
+</body>
+</html>
