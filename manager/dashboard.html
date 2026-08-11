@@ -245,7 +245,7 @@
     let unsubscribeSnapshots = [];
     let currentSection = 'dashboard';
     let financeViewMode = 'monthly';
-    let materialDateFilter = ''; // for filtering by date_used
+    let materialDateFilter = '';
 
     // ── Helpers ──
     function showLoading(show) { document.getElementById('global-loading').classList.toggle('hidden', !show); }
@@ -321,7 +321,7 @@
                     selector.classList.add('hidden');
                 }
 
-                materialDateFilter = getTodayISO(); // default filter to today
+                materialDateFilter = getTodayISO();
                 attachListeners();
                 showSection('dashboard');
             } catch (err) { showError('Failed to initialize: ' + err.message); }
@@ -550,7 +550,6 @@
         } else {
             // Sort dates descending (newest first)
             const sortedDates = Object.keys(grouped).sort((a, b) => {
-                // Handle "No date" at the end
                 if (a === 'No date') return 1;
                 if (b === 'No date') return -1;
                 return new Date(b) - new Date(a);
@@ -596,7 +595,7 @@
         }
     };
 
-    // ── Batch Usage Modal (with date picker) ──
+    // ── Batch Usage Modal (with date picker & type="button") ──
     window.openAddMaterialModal = () => {
         let entryCount = 0;
         const addEntry = () => {
@@ -625,7 +624,7 @@
             </div>
             <div id="material-entries"></div>
             <button type="button" onclick="addMaterialEntry()" class="text-emerald-600 text-sm mt-2 block">+ Add another material</button>
-            <button onclick="submitBatchMaterials()" class="w-full bg-emerald-600 text-white py-2 rounded-xl mt-4">Save All Materials</button>
+            <button type="button" onclick="submitBatchMaterials()" class="w-full bg-emerald-600 text-white py-2 rounded-xl mt-4">Save All Materials</button>
         `;
 
         openModal('Record Material Usage', modalContent);
