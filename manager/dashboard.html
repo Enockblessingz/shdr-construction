@@ -274,24 +274,47 @@
     }
     function getTodayISO() { return new Date().toISOString().split('T')[0]; }
 
-    // ── Auth & Init ──
+    // ── Auth & Init (FIXED: redirect to login page, not itself) ──
     window.addEventListener('load', () => {
         onAuthStateChanged(auth, async (user) => {
-            if (!user) { window.location.href = '../manager.html'; return; }
+            if (!user) {
+                console.warn('No user signed in, redirecting to login...');
+                window.location.href = '../index.html'; // CHANGE to your login page
+                return;
+            }
+
+            console.log('User signed in:', user.uid);
             currentUser = user;
+
             try {
                 const profileRef = doc(db, 'profiles', user.uid);
                 const profileSnap = await getDoc(profileRef);
-                if (!profileSnap.exists() || profileSnap.data().role !== 'manager') {
+
+                console.log('Profile snapshot exists?', profileSnap.exists());
+                if (!profileSnap.exists()) {
+                    console.error('Profile document not found for user:', user.uid);
                     await signOut(auth);
-                    window.location.href = '../manager.html';
+                    alert('Your profile is not set up. Please contact admin.');
+                    window.location.href = '../index.html';
                     return;
                 }
-                managerProfile = profileSnap.data();
+
+                const profileData = profileSnap.data();
+                if (profileData.role !== 'manager') {
+                    console.error('User role is not "manager":', profileData.role);
+                    await signOut(auth);
+                    alert('You are not authorized as a manager.');
+                    window.location.href = '../index.html';
+                    return;
+                }
+
+                // Profile is valid
+                managerProfile = profileData;
                 document.getElementById('user-name').textContent = managerProfile.full_name || 'Manager';
                 document.getElementById('user-email').textContent = managerProfile.email || '';
                 document.getElementById('user-avatar').textContent = (managerProfile.full_name?.[0] || 'M').toUpperCase();
 
+                // Get assigned site IDs
                 let siteIds = [];
                 if (managerProfile.assigned_sites && Array.isArray(managerProfile.assigned_sites)) {
                     siteIds = managerProfile.assigned_sites;
@@ -324,7 +347,13 @@
                 materialDateFilter = getTodayISO();
                 attachListeners();
                 showSection('dashboard');
-            } catch (err) { showError('Failed to initialize: ' + err.message); }
+            } catch (err) {
+                console.error('Error during auth initialization:', err);
+                showError('Failed to load profile: ' + err.message);
+                // Optionally sign out and redirect
+                await signOut(auth);
+                window.location.href = '../index.html';
+            }
         });
     });
 
@@ -1068,7 +1097,7 @@
     // =============== LOGOUT ===============
     window.handleLogout = async () => {
         await signOut(auth);
-        window.location.href = '../manager.html';
+        window.location.href = '../index.html'; // redirect to login
     };
 </script>
 </body>
