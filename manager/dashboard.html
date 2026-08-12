@@ -495,108 +495,161 @@
     }
 
    // =============== MATERIALS (with date_used and history grouping) ===============
-    function renderMaterials(container) {
-        // Group materials by date_used
-        const grouped = {};
-        materialsData.forEach(m => {
-            const date = m.date_used ? new Date(m.date_used).toLocaleDateString() : 'No date';
-            if (!grouped[date]) grouped[date] = [];
-            grouped[date].push(m);
-        });
+function renderMaterials(container) {
+    // Group materials by date_used
+    const grouped = {};
+    materialsData.forEach(m => {
+        const date = m.date_used ? new Date(m.date_used).toLocaleDateString() : 'No date';
+        if (!grouped[date]) grouped[date] = [];
+        grouped[date].push(m);
+    });
 
-        let html = `
-            <div class="flex justify-between items-center mb-4 sm:mb-6">
-                <h2 class="text-xl sm:text-2xl font-bold">Materials Used</h2>
-                <button onclick="openAddMaterialModal()" class="px-3 py-2 bg-emerald-600 text-white rounded-xl hover:bg-emerald-700 flex items-center gap-2 text-sm">
-                    <iconify-icon icon="material-symbols:add"></iconify-icon> Record Usage
-                </button>
+    let html = `
+        <div class="flex justify-between items-center mb-4 sm:mb-6">
+            <h2 class="text-xl sm:text-2xl font-bold">Materials Used</h2>
+            <button onclick="openAddMaterialModal()" class="px-3 py-2 bg-emerald-600 text-white rounded-xl hover:bg-emerald-700 flex items-center gap-2 text-sm">
+                <iconify-icon icon="material-symbols:add"></iconify-icon> Record Usage
+            </button>
+        </div>
+    `;
+
+    if (Object.keys(grouped).length === 0) {
+        html += '<p class="text-slate-500">No materials recorded yet.</p>';
+    } else {
+        // Sort dates descending
+        const sortedDates = Object.keys(grouped).sort((a, b) => new Date(b) - new Date(a));
+        sortedDates.forEach(date => {
+            html += `<div class="mb-4"><h3 class="font-bold text-sm text-slate-700 mb-2">${date}</h3><div class="bg-white rounded-2xl border overflow-hidden shadow-sm">`;
+            html += `<table class="w-full text-sm"><thead class="bg-slate-50 uppercase text-xs"><tr><th class="px-3 py-2">Image</th><th class="px-3 py-2">Name</th><th class="px-3 py-2">Qty Used</th><th class="px-3 py-2">Amount</th></tr></thead><tbody>`;
+            grouped[date].forEach(m => {
+                html += `<tr>
+                    <td class="px-3 py-2"><img src="${m.image || PLACEHOLDER_IMG}" class="w-8 h-8 rounded-lg object-cover"></td>
+                    <td class="px-3 py-2 font-medium">${m.name}</td>
+                    <td class="px-3 py-2">${m.quantity_used || 0}</td>
+                    <td class="px-3 py-2">${(m.amount || 0).toLocaleString()} RWF</td>
+                </tr>`;
+            });
+            html += `</tbody></table></div></div>`;
+        });
+    }
+    container.innerHTML = html;
+}
+
+// Batch material addition with date picker
+window.openAddMaterialModal = () => {
+    let entryCount = 0;
+    const addEntry = () => {
+        entryCount++;
+        const container = document.getElementById('material-entries');
+        const entry = document.createElement('div');
+        entry.className = 'material-entry';
+        entry.innerHTML = `
+            <div class="grid grid-cols-2 gap-2">
+                <input class="border rounded-lg p-2 text-sm" placeholder="Material Name" name="mat-name-${entryCount}" required>
+                <input class="border rounded-lg p-2 text-sm" placeholder="Quantity Used" type="number" name="mat-used-${entryCount}" required>
+            </div>
+            <div class="grid grid-cols-2 gap-2 mt-2">
+                <input class="border rounded-lg p-2 text-sm" placeholder="Amount (RWF)" type="number" name="mat-amount-${entryCount}">
+                <input class="border rounded-lg p-2 text-sm" type="file" accept="image/*" name="mat-image-${entryCount}">
             </div>
         `;
-
-        if (Object.keys(grouped).length === 0) {
-            html += '<p class="text-slate-500">No materials recorded yet.</p>';
-        } else {
-            // Sort dates descending
-            const sortedDates = Object.keys(grouped).sort((a, b) => new Date(b) - new Date(a));
-            sortedDates.forEach(date => {
-                html += `<div class="mb-4"><h3 class="font-bold text-sm text-slate-700 mb-2">${date}</h3><div class="bg-white rounded-2xl border overflow-hidden shadow-sm">`;
-                html += `<table class="w-full text-sm"><thead class="bg-slate-50 uppercase text-xs"><tr><th class="px-3 py-2">Image</th><th class="px-3 py-2">Name</th><th class="px-3 py-2">Qty Used</th><th class="px-3 py-2">Amount</th></tr></thead><tbody>`;
-                grouped[date].forEach(m => {
-                    html += `<tr>
-                        <td class="px-3 py-2"><img src="${m.image || PLACEHOLDER_IMG}" class="w-8 h-8 rounded-lg object-cover"></td>
-                        <td class="px-3 py-2 font-medium">${m.name}</td>
-                        <td class="px-3 py-2">${m.quantity_used || 0}</td>
-                        <td class="px-3 py-2">${(m.amount || 0).toLocaleString()} RWF</td>
-                    </tr>`;
-                });
-                html += `</tbody></table></div></div>`;
-            });
-        }
-        container.innerHTML = html;
-    }
-
-    // Batch material addition with date_used auto-set to today
-    window.openAddMaterialModal = () => {
-        let entryCount = 0;
-        const addEntry = () => {
-            entryCount++;
-            const container = document.getElementById('material-entries');
-            const entry = document.createElement('div');
-            entry.className = 'material-entry';
-            entry.innerHTML = `
-                <div class="grid grid-cols-2 gap-2">
-                    <input class="border rounded-lg p-2 text-sm" placeholder="Material Name" name="mat-name-${entryCount}" required>
-                    <input class="border rounded-lg p-2 text-sm" placeholder="Quantity Used" type="number" name="mat-used-${entryCount}" required>
-                </div>
-                <div class="grid grid-cols-2 gap-2 mt-2">
-                    <input class="border rounded-lg p-2 text-sm" placeholder="Amount (RWF)" type="number" name="mat-amount-${entryCount}">
-                    <input class="border rounded-lg p-2 text-sm" type="file" accept="image/*" name="mat-image-${entryCount}">
-                </div>
-            `;
-            container.appendChild(entry);
-        };
-
-        openModal('Record Material Usage', `
-            <div id="material-entries"></div>
-            <button type="button" onclick="addMaterialEntry()" class="text-emerald-600 text-sm mt-2">+ Add another material</button>
-            <button onclick="submitBatchMaterials()" class="w-full bg-emerald-600 text-white py-2 rounded-xl mt-4">Save All Materials</button>
-        `);
-
-        addEntry();
-        window.addMaterialEntry = addEntry;
-
-        window.submitBatchMaterials = async () => {
-            const entries = document.querySelectorAll('#material-entries .material-entry');
-            const promises = [];
-            const today = new Date().toISOString();
-            for (const entry of entries) {
-                const name = entry.querySelector('[name^="mat-name-"]').value.trim();
-                const used = parseFloat(entry.querySelector('[name^="mat-used-"]').value) || 0;
-                const amount = parseFloat(entry.querySelector('[name^="mat-amount-"]').value) || 0;
-                const imageFile = entry.querySelector('[name^="mat-image-"]').files[0];
-                if (!name) continue;
-                let imageUrl = '';
-                if (imageFile) {
-                    try { imageUrl = await uploadImageToImgbb(imageFile); } catch (e) { alert('Image upload failed for ' + name); continue; }
-                }
-                promises.push(addDoc(collection(db, 'materials'), {
-                    site_id: currentSiteId,
-                    name,
-                    quantity_used: used,
-                    amount,
-                    image: imageUrl,
-                    date_used: today,
-                    created_at: today
-                }));
-            }
-            if (promises.length === 0) return alert('No valid materials to save.');
-            try {
-                await Promise.all(promises);
-                closeModal();
-            } catch (err) { alert('Error: ' + err.message); }
-        };
+        container.appendChild(entry);
     };
 
+    // Build modal content with a date picker
+    const modalContent = `
+        <!-- Date selector for usage -->
+        <div class="mb-4">
+            <label class="block text-sm font-medium text-slate-700 mb-1">Date of Usage</label>
+            <input type="date" id="usageDate" value="${getTodayISO()}" 
+                   class="border rounded-lg p-2 text-sm w-full" required>
+        </div>
+
+        <div id="material-entries"></div>
+
+        <button type="button" onclick="addMaterialEntry()" 
+                class="text-emerald-600 text-sm mt-2">+ Add another material</button>
+
+        <button onclick="submitBatchMaterials()" 
+                class="w-full bg-emerald-600 text-white py-2 rounded-xl mt-4">Save All Materials</button>
+    `;
+
+    openModal('Record Material Usage', modalContent);
+
+    // Add first entry
+    addEntry();
+
+    // Expose add function globally
+    window.addMaterialEntry = addEntry;
+
+    // Submit handler – uses the selected date
+    window.submitBatchMaterials = async () => {
+        const dateInput = document.getElementById('usageDate');
+        const selectedDate = dateInput ? dateInput.value : getTodayISO();
+
+        if (!selectedDate) {
+            alert('Please select a date.');
+            return;
+        }
+
+        // Force UTC midnight to avoid timezone issues
+        const dateObj = new Date(selectedDate + 'T00:00:00.000Z');
+
+        const entries = document.querySelectorAll('#material-entries .material-entry');
+        const promises = [];
+
+        for (const entry of entries) {
+            const name = entry.querySelector('[name^="mat-name-"]').value.trim();
+            const used = parseFloat(entry.querySelector('[name^="mat-used-"]').value) || 0;
+            const amount = parseFloat(entry.querySelector('[name^="mat-amount-"]').value) || 0;
+            const imageFile = entry.querySelector('[name^="mat-image-"]').files[0];
+
+            if (!name) continue;
+
+            let imageUrl = '';
+            if (imageFile) {
+                try {
+                    imageUrl = await uploadImageToImgbb(imageFile);
+                } catch (e) {
+                    alert('Image upload failed for ' + name);
+                    continue;
+                }
+            }
+
+            // Use the selected date for date_used
+            const dateUsed = dateObj.toISOString();
+
+            promises.push(addDoc(collection(db, 'materials'), {
+                site_id: currentSiteId,
+                name,
+                quantity_used: used,
+                amount,
+                image: imageUrl,
+                date_used: dateUsed,
+                created_at: new Date().toISOString()
+            }));
+        }
+
+        if (promises.length === 0) {
+            alert('No valid materials to save.');
+            return;
+        }
+
+        try {
+            await Promise.all(promises);
+            closeModal();
+            alert('Materials saved successfully!');
+            // Refresh will happen automatically via snapshot listener
+        } catch (err) {
+            alert('Error saving materials: ' + err.message);
+        }
+    };
+};
+
+// Helper to get today's date in YYYY-MM-DD format (already defined elsewhere, but ensure it exists)
+function getTodayISO() {
+    return new Date().toISOString().split('T')[0];
+}
     // =============== WORKERS (with tabs, attendance recording, history) ===============
     function renderWorkers(container) {
         const site = assignedSites.find(s => s.id === currentSiteId);
