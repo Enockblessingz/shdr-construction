@@ -494,108 +494,224 @@
         `;
     }
 
-    // =============== MATERIALS (with date_used and history grouping) ===============
+  <!-- =============== MATERIALS with Date Selector =============== -->
+<script>
+    // ============================================================
+    // STATE
+    // ============================================================
+    let materialsData = [
+        // Example data — replace with your actual data
+        { id: 1, name: 'Cement', image: '', quantity_ordered: 50, amount: 250000, created_at: '2026-08-10' },
+        { id: 2, name: 'Steel Bars', image: '', quantity_ordered: 30, amount: 180000, created_at: '2026-08-10' },
+        { id: 3, name: 'Bricks', image: '', quantity_ordered: 200, amount: 120000, created_at: '2026-08-11' },
+        { id: 4, name: 'Sand', image: '', quantity_ordered: 10, amount: 45000, created_at: '2026-08-11' },
+        { id: 5, name: 'Paint', image: '', quantity_ordered: 5, amount: 75000, created_at: '2026-08-09' },
+    ];
+
+    let selectedMaterialDate = ''; // empty = show all
+    const PLACEHOLDER_IMG = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40"%3E%3Crect width="40" height="40" fill="%23e2e8f0"/%3E%3Ctext x="20" y="24" font-size="12" text-anchor="middle" fill="%2394a3b8"%3E📦%3C/text%3E%3C/svg%3E';
+
+    // ============================================================
+    // RENDER
+    // ============================================================
     function renderMaterials(container) {
-        // Group materials by date_used
-        const grouped = {};
-        materialsData.forEach(m => {
-            const date = m.date_used ? new Date(m.date_used).toLocaleDateString() : 'No date';
-            if (!grouped[date]) grouped[date] = [];
-            grouped[date].push(m);
+        // 1. Filter by date
+        let filtered = materialsData;
+        if (selectedMaterialDate) {
+            filtered = materialsData.filter(m => {
+                const dateField = m.created_at || m.date || '';
+                if (!dateField) return true; // keep items without date
+                const d = new Date(dateField);
+                const iso = d.toISOString().split('T')[0];
+                return iso === selectedMaterialDate;
+            });
+        }
+
+        // 2. Sort by date descending (newest first)
+        filtered = [...filtered].sort((a, b) => {
+            const da = a.created_at || a.date || '';
+            const db = b.created_at || b.date || '';
+            return da < db ? 1 : -1;
         });
 
-        let html = `
-            <div class="flex justify-between items-center mb-4 sm:mb-6">
-                <h2 class="text-xl sm:text-2xl font-bold">Materials Used</h2>
-                <button onclick="openAddMaterialModal()" class="px-3 py-2 bg-emerald-600 text-white rounded-xl hover:bg-emerald-700 flex items-center gap-2 text-sm">
-                    <iconify-icon icon="material-symbols:add"></iconify-icon> Record Usage
-                </button>
+        // 3. Build HTML
+        const dateInputId = 'materialDateFilter_' + Date.now();
+
+        container.innerHTML = `
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-4 sm:mb-6">
+                <h2 class="text-xl sm:text-2xl font-bold">Materials</h2>
+
+                <div class="flex flex-wrap items-center gap-2">
+                    <!-- DATE SELECTOR -->
+                    <div class="flex items-center gap-2 bg-white border rounded-xl px-3 py-1.5 shadow-sm">
+                        <iconify-icon icon="material-symbols:calendar-today" class="text-slate-400 text-lg"></iconify-icon>
+                        <input type="date"
+                               id="${dateInputId}"
+                               value="${selectedMaterialDate}"
+                               onchange="handleMaterialDateChange(this.value)"
+                               class="text-sm bg-transparent outline-none border-none p-0 w-auto min-w-[130px] text-slate-700">
+                        ${selectedMaterialDate ? `
+                            <button onclick="clearMaterialDate()"
+                                    class="text-slate-400 hover:text-slate-600 text-sm transition"
+                                    title="Clear date filter">
+                                <iconify-icon icon="material-symbols:close"></iconify-icon>
+                            </button>
+                        ` : ''}
+                    </div>
+
+                    <!-- TODAY BUTTON -->
+                    <button onclick="setMaterialDateToday()"
+                            class="px-3 py-1.5 text-sm bg-slate-100 hover:bg-slate-200 rounded-xl transition font-medium text-slate-700">
+                        Today
+                    </button>
+
+                    <!-- RECORD BUTTON -->
+                    <button onclick="openAddMaterialModal()"
+                            class="px-3 py-2 bg-emerald-600 text-white rounded-xl hover:bg-emerald-700 flex items-center gap-2 text-sm shadow-sm transition">
+                        <iconify-icon icon="material-symbols:add"></iconify-icon>
+                        Record
+                    </button>
+                </div>
+            </div>
+
+            <!-- TABLE -->
+            <div class="bg-white rounded-2xl border overflow-hidden shadow-sm">
+                ${filtered.length ? `
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm">
+                            <thead class="bg-slate-50 uppercase text-xs text-slate-500">
+                                <tr>
+                                    <th class="px-3 py-2 text-left">Image</th>
+                                    <th class="px-3 py-2 text-left">Name</th>
+                                    <th class="px-3 py-2 text-left">Qty Ordered</th>
+                                    <th class="px-3 py-2 text-left">Amount</th>
+                                    <th class="px-3 py-2 text-left">Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${filtered.map(m => `
+                                    <tr class="border-t border-slate-100 hover:bg-slate-50 transition">
+                                        <td class="px-3 py-2">
+                                            <img src="${m.image || PLACEHOLDER_IMG}"
+                                                 class="w-8 h-8 rounded-lg object-cover bg-slate-100"
+                                                 alt="${m.name}">
+                                        </td>
+                                        <td class="px-3 py-2 font-medium text-slate-800">${m.name}</td>
+                                        <td class="px-3 py-2 text-slate-600">${m.quantity_ordered || 0}</td>
+                                        <td class="px-3 py-2 font-medium text-slate-800">${(m.amount || 0).toLocaleString()} RWF</td>
+                                        <td class="px-3 py-2 text-slate-500 text-xs">
+                                            ${formatDate(m.created_at || m.date || '')}
+                                        </td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="px-3 py-2 text-xs text-slate-400 border-t bg-slate-50 flex justify-between">
+                        <span>${filtered.length} record${filtered.length > 1 ? 's' : ''}</span>
+                        ${selectedMaterialDate ? `<span>Filtered: ${formatDate(selectedMaterialDate)}</span>` : ''}
+                    </div>
+                ` : `
+                    <div class="p-6 text-center text-slate-500">
+                        ${selectedMaterialDate
+                            ? `No materials recorded on <strong>${formatDate(selectedMaterialDate)}</strong>.`
+                            : 'No materials recorded yet.'}
+                    </div>
+                `}
             </div>
         `;
 
-        if (Object.keys(grouped).length === 0) {
-            html += '<p class="text-slate-500">No materials recorded yet.</p>';
-        } else {
-            // Sort dates descending
-            const sortedDates = Object.keys(grouped).sort((a, b) => new Date(b) - new Date(a));
-            sortedDates.forEach(date => {
-                html += `<div class="mb-4"><h3 class="font-bold text-sm text-slate-700 mb-2">${date}</h3><div class="bg-white rounded-2xl border overflow-hidden shadow-sm">`;
-                html += `<table class="w-full text-sm"><thead class="bg-slate-50 uppercase text-xs"><tr><th class="px-3 py-2">Image</th><th class="px-3 py-2">Name</th><th class="px-3 py-2">Qty Used</th><th class="px-3 py-2">Amount</th></tr></thead><tbody>`;
-                grouped[date].forEach(m => {
-                    html += `<tr>
-                        <td class="px-3 py-2"><img src="${m.image || PLACEHOLDER_IMG}" class="w-8 h-8 rounded-lg object-cover"></td>
-                        <td class="px-3 py-2 font-medium">${m.name}</td>
-                        <td class="px-3 py-2">${m.quantity_used || 0}</td>
-                        <td class="px-3 py-2">${(m.amount || 0).toLocaleString()} RWF</td>
-                    </tr>`;
-                });
-                html += `</tbody></table></div></div>`;
-            });
-        }
-        container.innerHTML = html;
+        // Store the input ID for later use
+        container._dateInputId = dateInputId;
     }
 
-    // Batch material addition with date_used auto-set to today
-    window.openAddMaterialModal = () => {
-        let entryCount = 0;
-        const addEntry = () => {
-            entryCount++;
-            const container = document.getElementById('material-entries');
-            const entry = document.createElement('div');
-            entry.className = 'material-entry';
-            entry.innerHTML = `
-                <div class="grid grid-cols-2 gap-2">
-                    <input class="border rounded-lg p-2 text-sm" placeholder="Material Name" name="mat-name-${entryCount}" required>
-                    <input class="border rounded-lg p-2 text-sm" placeholder="Quantity Used" type="number" name="mat-used-${entryCount}" required>
-                </div>
-                <div class="grid grid-cols-2 gap-2 mt-2">
-                    <input class="border rounded-lg p-2 text-sm" placeholder="Amount (RWF)" type="number" name="mat-amount-${entryCount}">
-                    <input class="border rounded-lg p-2 text-sm" type="file" accept="image/*" name="mat-image-${entryCount}">
-                </div>
-            `;
-            container.appendChild(entry);
-        };
+    // ============================================================
+    // DATE HELPERS
+    // ============================================================
+    function formatDate(dateStr) {
+        if (!dateStr) return '—';
+        try {
+            const d = new Date(dateStr);
+            if (isNaN(d.getTime())) return dateStr;
+            return d.toLocaleDateString('en-GB', {
+                day: '2-digit',
+                month: 'short',
+                year: 'numeric'
+            });
+        } catch {
+            return dateStr;
+        }
+    }
 
-        openModal('Record Material Usage', `
-            <div id="material-entries"></div>
-            <button type="button" onclick="addMaterialEntry()" class="text-emerald-600 text-sm mt-2">+ Add another material</button>
-            <button onclick="submitBatchMaterials()" class="w-full bg-emerald-600 text-white py-2 rounded-xl mt-4">Save All Materials</button>
-        `);
+    function getTodayISO() {
+        return new Date().toISOString().split('T')[0];
+    }
 
-        addEntry();
-        window.addMaterialEntry = addEntry;
+    // ============================================================
+    // DATE CONTROLS (called from onchange / onclick)
+    // ============================================================
+    function handleMaterialDateChange(value) {
+        selectedMaterialDate = value || '';
+        rerenderMaterials();
+    }
 
-        window.submitBatchMaterials = async () => {
-            const entries = document.querySelectorAll('#material-entries .material-entry');
-            const promises = [];
-            const today = new Date().toISOString();
-            for (const entry of entries) {
-                const name = entry.querySelector('[name^="mat-name-"]').value.trim();
-                const used = parseFloat(entry.querySelector('[name^="mat-used-"]').value) || 0;
-                const amount = parseFloat(entry.querySelector('[name^="mat-amount-"]').value) || 0;
-                const imageFile = entry.querySelector('[name^="mat-image-"]').files[0];
-                if (!name) continue;
-                let imageUrl = '';
-                if (imageFile) {
-                    try { imageUrl = await uploadImageToImgbb(imageFile); } catch (e) { alert('Image upload failed for ' + name); continue; }
-                }
-                promises.push(addDoc(collection(db, 'materials'), {
-                    site_id: currentSiteId,
-                    name,
-                    quantity_used: used,
-                    amount,
-                    image: imageUrl,
-                    date_used: today,
-                    created_at: today
-                }));
-            }
-            if (promises.length === 0) return alert('No valid materials to save.');
-            try {
-                await Promise.all(promises);
-                closeModal();
-            } catch (err) { alert('Error: ' + err.message); }
-        };
-    };
+    function clearMaterialDate() {
+        selectedMaterialDate = '';
+        // Also clear the input field if it exists
+        const containers = document.querySelectorAll('[data-materials-container]');
+        containers.forEach(c => {
+            const input = c.querySelector('input[type="date"]');
+            if (input) input.value = '';
+        });
+        rerenderMaterials();
+    }
+
+    function setMaterialDateToday() {
+        selectedMaterialDate = getTodayISO();
+        // Update all date inputs in materials containers
+        const containers = document.querySelectorAll('[data-materials-container]');
+        containers.forEach(c => {
+            const input = c.querySelector('input[type="date"]');
+            if (input) input.value = selectedMaterialDate;
+        });
+        rerenderMaterials();
+    }
+
+    function rerenderMaterials() {
+        const containers = document.querySelectorAll('[data-materials-container]');
+        containers.forEach(c => renderMaterials(c));
+    }
+
+    // ============================================================
+    // OPEN ADD MODAL (placeholder — implement your own)
+    // ============================================================
+    function openAddMaterialModal() {
+        alert('Open your "Add Material" modal here.\n\nTip: When saving, include a "created_at" field with the selected date.');
+        // Example: your modal logic
+        // const date = document.querySelector('#materialDateFilter')?.value || getTodayISO();
+        // ... save with { ..., created_at: date }
+    }
+
+    // ============================================================
+    // INIT — call this when your page loads
+    // ============================================================
+    function initMaterials() {
+        // Default to today's date
+        if (!selectedMaterialDate) {
+            selectedMaterialDate = getTodayISO();
+        }
+        const containers = document.querySelectorAll('[data-materials-container]');
+        containers.forEach(c => renderMaterials(c));
+    }
+
+    // Auto-init if DOM is ready
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initMaterials);
+    } else {
+        initMaterials();
+    }
+</script>
+
 
     // =============== WORKERS (with tabs, attendance recording, history) ===============
     function renderWorkers(container) {
