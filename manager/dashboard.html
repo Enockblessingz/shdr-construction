@@ -251,14 +251,12 @@
     let currentUser = null;
     let managerProfile = null;
     let assignedSites = [];
-    let currentSiteId = null; // selected site ID
+    let currentSiteId = null;
     let materialsData = [], siteWorkersData = [], progressTasks = [], expensesData = [], workerPositions = [], galleryData = [];
     let unsubscribeSnapshots = [];
     let currentSection = 'dashboard';
-    let financeViewMode = 'monthly'; // 'daily' or 'monthly'
-
-    // ─── MATERIALS DATE FILTER STATE ───
-    let materialDateFilter = ''; // empty = show all
+    let financeViewMode = 'monthly';
+    let materialDateFilter = '';
 
     // ── Helpers ──
     function showLoading(show) { document.getElementById('global-loading').classList.toggle('hidden', !show); }
@@ -277,17 +275,12 @@
     }
     function getFormSubmitBtn(form) { return form.querySelector('button[type="submit"]'); }
 
-    // ── Date helper functions ──
     function formatDate(dateStr) {
         if (!dateStr) return '—';
         try {
             const d = new Date(dateStr);
             if (isNaN(d.getTime())) return dateStr;
-            return d.toLocaleDateString('en-GB', {
-                day: '2-digit',
-                month: 'short',
-                year: 'numeric'
-            });
+            return d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
         } catch {
             return dateStr;
         }
@@ -302,6 +295,7 @@
         onAuthStateChanged(auth, async (user) => {
             if (!user) { window.location.href = '../manager.html'; return; }
             currentUser = user;
+            showLoading(true);
             try {
                 const profileRef = doc(db, 'profiles', user.uid);
                 const profileSnap = await getDoc(profileRef);
@@ -315,45 +309,79 @@
                 document.getElementById('user-email').textContent = managerProfile.email || '';
                 document.getElementById('user-avatar').textContent = (managerProfile.full_name?.[0] || 'M').toUpperCase();
 
-                // Get assigned site IDs
+                console.log('Manager profile:', managerProfile);
+
+                // Get assigned site IDs — handle multiple possible field name variants
                 let siteIds = [];
-                if (managerProfile.assigned_sites && Array.isArray(managerProfile.assigned_sites)) {
+                if (Array.isArray(managerProfile.assigned_sites) && managerProfile.assigned_sites.length) {
                     siteIds = managerProfile.assigned_sites;
                 } else if (managerProfile.assigned_site) {
                     siteIds = [managerProfile.assigned_site];
-                } else {
-                    showError('No site assigned.');
+                } else if (Array.isArray(managerProfile.site_ids) && managerProfile.site_ids.length) {
+                    siteIds = managerProfile.site_ids;
+                } else if (managerProfile.site_id) {
+                    siteIds = [managerProfile.site_id];
+                }
+
+                console.log('Resolved site IDs:', siteIds);
+
+                if (!siteIds.length) {
+                    showLoading(false);
+                    showError('No site assigned to your account. Please contact the owner/admin.');
+                    document.getElementById('content-area').innerHTML = `
+                        <div class="bg-white rounded-2xl border p-8 text-center">
+                            <iconify-icon icon="material-symbols:location-off-outline" width="48" class="text-slate-300 mb-3"></iconify-icon>
+                            <p class="text-slate-500">No construction site has been assigned to your account yet.</p>
+                        </div>`;
                     return;
                 }
 
-                // Fetch sites
-                const sitePromises = siteIds.map(id => getDoc(doc(db, 'sites', id)));
+                // Fetch sites (filter out invalid IDs safely)
+                const sitePromises = siteIds
+                    .filter(id => typeof id === 'string' && id.trim() !== '')
+                    .map(id => getDoc(doc(db, 'sites', id)).catch(err => { console.error('Error fetching site', id, err); return null; }));
+
                 const siteSnaps = await Promise.all(sitePromises);
-                assignedSites = siteSnaps.filter(snap => snap.exists()).map(snap => ({ id: snap.id, ...snap.data() }));
+                assignedSites = siteSnaps
+                    .filter(snap => snap && snap.exists())
+                    .map(snap => ({ id: snap.id, ...snap.data() }));
+
+                console.log('Assigned sites resolved:', assignedSites);
+
+                showLoading(false);
 
                 if (assignedSites.length === 0) {
-                    showError('Assigned site(s) not found.');
+                    showError('Your assigned site(s) could not be found. They may have been deleted or the site ID is incorrect.');
+                    document.getElementById('content-area').innerHTML = `
+                        <div class="bg-white rounded-2xl border p-8 text-center">
+                            <iconify-icon icon="material-symbols:error-outline" width="48" class="text-red-300 mb-3"></iconify-icon>
+                            <p class="text-slate-500">We couldn't find the site(s) linked to your profile (ID: ${siteIds.join(', ')}).</p>
+                            <p class="text-slate-400 text-sm mt-2">Please ask the owner to verify your assigned site in the system.</p>
+                        </div>`;
                     return;
                 }
 
-                // Set current site to first
+                // Set current site to first valid one
                 currentSiteId = assignedSites[0].id;
 
                 // Populate site selector
                 const selector = document.getElementById('site-selector');
                 if (assignedSites.length > 1) {
                     selector.classList.remove('hidden');
-                    selector.innerHTML = assignedSites.map(s => `<option value="${s.id}" ${s.id === currentSiteId ? 'selected' : ''}>${s.name}</option>`).join('');
+                    selector.innerHTML = assignedSites.map(s => `<option value="${s.id}" ${s.id === currentSiteId ? 'selected' : ''}>${s.name || 'Unnamed Site'}</option>`).join('');
                 } else {
                     selector.classList.add('hidden');
                 }
 
-                // Set default date filter to today
                 materialDateFilter = getTodayISO();
 
                 attachListeners();
                 showSection('dashboard');
-            } catch (err) { showError('Failed to initialize: ' + err.message); }
+            } catch (err) {
+                showLoading(false);
+                console.error('Init error:', err);
+                showError('Failed to initialize: ' + err.message);
+            }
         });
     });
 
@@ -364,31 +392,24 @@
 
         const siteId = currentSiteId;
 
-        // Materials
         const matQ = query(collection(db, 'materials'), where('site_id', '==', siteId));
-        const unsubMat = onSnapshot(matQ, snap => { materialsData = snap.docs.map(d => ({ id: d.id, ...d.data() })); refreshCurrentSection(); });
+        const unsubMat = onSnapshot(matQ, snap => { materialsData = snap.docs.map(d => ({ id: d.id, ...d.data() })); refreshCurrentSection(); }, err => console.error('materials listener error', err));
         unsubscribeSnapshots.push(unsubMat);
 
-        // Site workers
         const workQ = query(collection(db, 'site_workers'), where('site_id', '==', siteId));
-        const unsubWork = onSnapshot(workQ, snap => { siteWorkersData = snap.docs.map(d => ({ id: d.id, ...d.data() })); refreshCurrentSection(); });
+        const unsubWork = onSnapshot(workQ, snap => { siteWorkersData = snap.docs.map(d => ({ id: d.id, ...d.data() })); refreshCurrentSection(); }, err => console.error('workers listener error', err));
         unsubscribeSnapshots.push(unsubWork);
 
-        // Progress tasks
         const progQ = query(collection(db, 'progress_tasks'), where('site_id', '==', siteId));
-        const unsubProg = onSnapshot(progQ, snap => { progressTasks = snap.docs.map(d => ({ id: d.id, ...d.data() })); refreshCurrentSection(); });
+        const unsubProg = onSnapshot(progQ, snap => { progressTasks = snap.docs.map(d => ({ id: d.id, ...d.data() })); refreshCurrentSection(); }, err => console.error('progress listener error', err));
         unsubscribeSnapshots.push(unsubProg);
 
-        // Worker positions (roles from owner)
         const posQ = query(collection(db, 'worker_positions'), where('site_id', 'in', [siteId, 'all']));
-        const unsubPos = onSnapshot(posQ, snap => { workerPositions = snap.docs.map(d => ({ id: d.id, ...d.data() })); refreshCurrentSection(); });
+        const unsubPos = onSnapshot(posQ, snap => { workerPositions = snap.docs.map(d => ({ id: d.id, ...d.data() })); refreshCurrentSection(); }, err => console.error('positions listener error', err));
         unsubscribeSnapshots.push(unsubPos);
 
-        // Gallery
         const galleryQ = query(collection(db, 'gallery'), where('site_id', '==', siteId));
-        const unsubGallery = onSnapshot(galleryQ, snap => { galleryData = snap.docs.map(d => ({ id: d.id, ...d.data() })); refreshCurrentSection(); });
-        unsubscribeSnapshots.push(unsubGallery);
-    }
+        const unsubGallery = onSnapshot(galleryQ, snap => { galleryData = snap.docs.map(d => ({ id: d.id, ...d.data() })); refreshCurrentSection(); }, err => console.error('gallery listener error', err));
 
     function refreshCurrentSection() {
         if (window._refreshing) return;
