@@ -446,9 +446,21 @@ function renderDashboard(container) {
     const totalAssignedWorkers = assignedWorkersData.length;
     const totalMatSpent = materialsData.reduce((sum, m) => sum + ((m.amount || 0) * (m.quantity_used || 0)), 0);
     
-    // 👇 First name only, uppercase — fallback with a space
     const fullName = currentUser?.displayName || (currentUser?.email?.split('@')[0] || 'Site Owner');
-    const firstName = fullName.trim().split(' ')[0] || 'Site Owner';
+    
+    // Try space first, then camelCase detection
+    let firstName = fullName.trim().split(' ')[0] || 'Site Owner';
+    
+    // If we got the whole thing (no space), try camelCase splitting
+    if (firstName === fullName.trim() && firstName !== 'Site Owner') {
+        const camelParts = firstName.match(/[A-Z][a-z]*|[a-z]+/g);
+        if (camelParts && camelParts.length > 1) {
+            firstName = camelParts[0]; // Take the first part as first name
+        } else {
+            firstName = 'SITE OWNER'; // Can't determine, use fallback
+        }
+    }
+    
     const displayName = firstName.toUpperCase();
 
     container.innerHTML = `
