@@ -173,29 +173,29 @@
     <!-- Content Area -->
     <div id="content-area" class="flex-1 p-4 sm:p-6"></div>
 
-<!-- Footer Card -->
 <footer class="bg-white border border-green-200 rounded-2xl shadow-md mx-4 mb-4">
-    <div class="relative flex items-center justify-center px-5 py-4">
+    <div class="px-5 py-4 flex flex-col sm:flex-row items-center justify-between gap-2 sm:gap-0">
 
-        <!-- Version - Left Corner -->
-        <span class="absolute left-5 text-xs font-medium text-green-600">
+        <!-- Version – moves to bottom on mobile -->
+        <span class="text-xs font-medium text-green-600 order-2 sm:order-1">
             Version 1.0.0
         </span>
 
-        <!-- Centered Branding -->
-        <div class="text-sm text-gray-600 text-center">
-           Designed & Powered by
+        <!-- Centered Branding – moves to top on mobile -->
+        <div class="text-sm text-gray-600 text-center order-1 sm:order-2">
+            Designed &amp; Powered by
             <a href="https://wa.me/250790020086"
                target="_blank"
                rel="noopener noreferrer"
-               class="text-green-600 hover:text-green-700 no-underline">
-                <strong>___Enock's___blessingz___</strong>
+               class="text-green-600 hover:text-green-700 no-underline font-semibold">
+                ___Enock's___blessingz___
             </a>
         </div>
 
+        <!-- Spacer to keep branding centered on desktop (hidden on mobile) -->
+        <div class="hidden sm:block w-16"></div>
     </div>
 </footer>
-</main>
     
 
 <!-- Bottom Navigation (mobile) -->
