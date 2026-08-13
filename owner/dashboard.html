@@ -446,21 +446,36 @@ function renderDashboard(container) {
     const totalAssignedWorkers = assignedWorkersData.length;
     const totalMatSpent = materialsData.reduce((sum, m) => sum + ((m.amount || 0) * (m.quantity_used || 0)), 0);
     
+    // Get raw name from user (or fallback)
     const fullName = currentUser?.displayName || (currentUser?.email?.split('@')[0] || 'Site Owner');
     
-    // Try space first, then camelCase detection
-    let firstName = fullName.trim().split(' ')[0] || 'Site Owner';
-    
-    // If we got the whole thing (no space), try camelCase splitting
-    if (firstName === fullName.trim() && firstName !== 'Site Owner') {
-        const camelParts = firstName.match(/[A-Z][a-z]*|[a-z]+/g);
+    // ----- Smart extraction: first name, or fallback with a space -----
+    function getDisplayName(raw) {
+        if (!raw) return 'SITE OWNER';
+        const trimmed = raw.trim();
+        
+        // 1. If there's a space, take the first word
+        if (trimmed.includes(' ')) {
+            return trimmed.split(' ')[0];
+        }
+        
+        // 2. No space → try camelCase (e.g., "EnockIrafasha" → ["Enock","Irafasha"])
+        const camelParts = trimmed.match(/[A-Z][a-z]*|[a-z]+/g);
         if (camelParts && camelParts.length > 1) {
-            firstName = camelParts[0]; // Take the first part as first name
-        } 
+            // We can display only the first name (preferred) OR join with a space.
+            // To follow your request ("if you can't display only one name, put space"),
+            // we'll use only the first name because we *can* detect it.
+            return camelParts[0];   // → "Enock"
+        }
+        
+        // 3. Can't detect first name → fallback with a space
+        return 'SITE OWNER';
     }
     
-    const displayName = firstName.toUpperCase();
-
+    const firstName = getDisplayName(fullName);
+    const displayName = firstName.toUpperCase();   // e.g., "ENOCK"
+    
+    // ----- Render the dashboard -----
     container.innerHTML = `
         <div class="bg-white rounded-2xl overflow-hidden shadow-sm mb-4 sm:mb-6">
             <div class="relative h-40 sm:h-64 bg-cover bg-center" style="background-image: url('https://cdn.pixabay.com/photo/2018/12/12/23/02/site-3871804_1280.jpg');">
