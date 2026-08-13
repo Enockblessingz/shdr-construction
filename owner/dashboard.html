@@ -443,18 +443,20 @@
    // =============== DASHBOARD ===============
 function renderDashboard(container) {
 
-    const site = assignedSites.find(s => s.id === currentSiteId);
-
-    if (!site) {
-        container.innerHTML = '<p class="text-red-500">Site not found.</p>';
-        return;
-    }
-
-    // Get manager's full name
-    const fullName = managerProfile?.full_name || 'Manager';
+    // Get the owner's full name from Firebase Auth
+    const fullName = currentUser?.displayName || 'Owner';
 
     // Extract ONLY the first name and convert it to uppercase
     const firstName = fullName.trim().split(/\s+/)[0].toUpperCase();
+
+    // Get first available site
+    const site = sitesData[0];
+
+    // Use site image if available, otherwise use placeholder
+    const siteImage = site?.images?.[0] || PLACEHOLDER_IMG;
+
+    // Site location or default message
+    const siteLocation = site?.location || "Here's your construction site overview";
 
     // ----- Render the dashboard -----
     container.innerHTML = `
@@ -462,7 +464,7 @@ function renderDashboard(container) {
             
             <div 
                 class="relative h-40 sm:h-64 bg-cover bg-center"
-                style="background-image: url('${site.images?.[0] || PLACEHOLDER_IMG}');"
+                style="background-image: url('${siteImage}');"
             >
                 <div class="absolute inset-0 bg-gradient-to-r from-emerald-900/80 to-emerald-800/40 flex items-center p-4 sm:p-6">
                     
@@ -472,7 +474,7 @@ function renderDashboard(container) {
                         </h1>
 
                         <p class="text-emerald-100 mt-2 text-sm sm:text-base">
-                            ${site.location || "Here's your construction site overview"}
+                            ${siteLocation}
                         </p>
                     </div>
 
@@ -482,7 +484,6 @@ function renderDashboard(container) {
         </div>
     `;
 }
-
     // =============== SITES ===============
     function renderSites(container) {
         container.innerHTML = `
