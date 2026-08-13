@@ -456,9 +456,7 @@ function renderDashboard(container) {
         const camelParts = firstName.match(/[A-Z][a-z]*|[a-z]+/g);
         if (camelParts && camelParts.length > 1) {
             firstName = camelParts[0]; // Take the first part as first name
-        } else {
-            firstName = 'SITE OWNER'; // Can't determine, use fallback
-        }
+        } 
     }
     
     const displayName = firstName.toUpperCase();
