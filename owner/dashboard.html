@@ -446,7 +446,7 @@ function renderDashboard(container) {
     const totalAssignedWorkers = assignedWorkersData.length;
     const totalMatSpent = materialsData.reduce((sum, m) => sum + ((m.amount || 0) * (m.quantity_used || 0)), 0);
 
-    // ---- Extract first name only ----
+    // ---- Helper: extract first name intelligently ----
     function getFirstName(raw) {
         if (!raw) return 'SITE OWNER';
         const trimmed = raw.trim();
@@ -462,14 +462,16 @@ function renderDashboard(container) {
             return camelParts[0];
         }
 
-        // Fallback: use the whole string
+        // Fallback: return the whole string
         return trimmed;
     }
 
+    // ---- Extract and format the name ----
     const rawName = currentUser?.displayName || (currentUser?.email?.split('@')[0] || 'Site Owner');
     const firstName = getFirstName(rawName);
     const displayName = firstName.toUpperCase();   // e.g., "IRAFASHA" or "SITE OWNER"
 
+    // ---- Render the dashboard ----
     container.innerHTML = `
         <div class="bg-white rounded-2xl overflow-hidden shadow-sm mb-4 sm:mb-6">
             <div class="relative h-40 sm:h-64 bg-cover bg-center" style="background-image: url('https://cdn.pixabay.com/photo/2018/12/12/23/02/site-3871804_1280.jpg');">
