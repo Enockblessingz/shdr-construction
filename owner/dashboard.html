@@ -447,9 +447,9 @@ function renderDashboard(container) {
     const totalMatSpent = materialsData.reduce((sum, m) => sum + ((m.amount || 0) * (m.quantity_used || 0)), 0);
     
     // 👇 NEW: First name only, uppercase
-const fullName = managerProfile?.full_name || 'Owner';
-const firstName = fullName.trim().split(' ')[0] || 'Owner';
-document.getElementById('user-name').textContent = firstName.toUpperCase();
+ const fullName = currentUser?.displayName || (currentUser?.email?.split('@')[0] || 'Owner');
+    const firstName = fullName.trim().split(' ')[0] || 'Owner';
+    const displayName = firstName.toUpperCase();
 
     container.innerHTML = `
         <div class="bg-white rounded-2xl overflow-hidden shadow-sm mb-4 sm:mb-6">
