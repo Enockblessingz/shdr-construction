@@ -440,50 +440,88 @@
         return json.data.url;
     }
 
-   // =============== DASHBOARD ===============
-function renderDashboard(container) {
+    // =============== DASHBOARD ===============
+    function renderDashboard(container) {
+        const totalSites = sitesData.length;
+        const totalAssignedWorkers = assignedWorkersData.length;
+        const totalMatSpent = materialsData.reduce((sum, m) => sum + ((m.amount || 0) * (m.quantity_used || 0)), 0);
+        const ownerName = currentUser?.displayName || (currentUser?.email?.split('@')[0] || 'Owner');
+        const displayName = truncate(ownerName, 15);
 
-    // Get the owner's full name from Firebase Auth
-    const fullName = currentUser?.displayName || 'Owner';
-
-    // Extract ONLY the first name and convert it to uppercase
-    const firstName = fullName.trim().split(/\s+/)[0].toUpperCase();
-
-    // Get first available site
-    const site = sitesData[0];
-
-    // Use site image if available, otherwise use placeholder
-    const siteImage = site?.images?.[0] || PLACEHOLDER_IMG;
-
-    // Site location or default message
-    const siteLocation = site?.location || "Here's your construction site overview";
-
-    // ----- Render the dashboard -----
-    container.innerHTML = `
-        <div class="bg-white rounded-2xl overflow-hidden shadow-sm mb-4 sm:mb-6">
-            
-            <div 
-                class="relative h-40 sm:h-64 bg-cover bg-center"
-                style="background-image: url('${siteImage}');"
-            >
-                <div class="absolute inset-0 bg-gradient-to-r from-emerald-900/80 to-emerald-800/40 flex items-center p-4 sm:p-6">
-                    
-                    <div>
-                        <h1 class="text-2xl sm:text-4xl font-bold text-white">
-                            Welcome back, ${firstName}
-                        </h1>
-
-                        <p class="text-emerald-100 mt-2 text-sm sm:text-base">
-                            ${siteLocation}
-                        </p>
+        container.innerHTML = `
+            <div class="bg-white rounded-2xl overflow-hidden shadow-sm mb-4 sm:mb-6">
+                <div class="relative h-40 sm:h-64 bg-cover bg-center" style="background-image: url('https://cdn.pixabay.com/photo/2018/12/12/23/02/site-3871804_1280.jpg');">
+                    <div class="absolute inset-0 bg-gradient-to-r from-emerald-900/80 to-emerald-800/40 flex items-center p-4 sm:p-6">
+                        <div>
+                            <h1 class="text-2xl sm:text-4xl font-bold text-white">Welcome back, ${displayName}</h1>
+                            <p class="text-emerald-100 mt-2 text-sm sm:text-base">Here's your construction overview</p>
+                        </div>
                     </div>
-
                 </div>
             </div>
 
-        </div>
-    `;
-}
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4 sm:mb-6">
+                <div class="bg-white rounded-2xl border p-4 shadow-sm">
+                    <h3 class="font-semibold text-slate-900 text-sm mb-2">Total Sites (${totalSites})</h3>
+                    <div class="scroll-box space-y-1 text-xs sm:text-sm">
+                        ${sitesData.map(s => `<div class="flex justify-between"><span>${s.name}</span><span class="text-slate-500">${s.location || '—'}</span></div>`).join('') || '<p class="text-slate-400">No sites</p>'}
+                    </div>
+                </div>
+                <div class="bg-white rounded-2xl border p-4 shadow-sm">
+                    <h3 class="font-semibold text-slate-900 text-sm mb-2">Workers (${totalAssignedWorkers})</h3>
+                    <div class="scroll-box space-y-1 text-xs sm:text-sm">
+                        ${(() => {
+                            const siteWorkerCounts = sitesData.map(site => {
+                                const count = assignedWorkersData.filter(w => w.site_id === site.id).length;
+                                return { site, count };
+                            }).filter(s => s.count > 0);
+                            if (siteWorkerCounts.length === 0) return '<p class="text-slate-400">No workers assigned</p>';
+                            return siteWorkerCounts.map(sw => {
+                                const pct = totalAssignedWorkers ? Math.round((sw.count / totalAssignedWorkers) * 100) : 0;
+                                return `<div class="flex justify-between"><span>${sw.site.name} (${sw.count})</span><span class="text-slate-500">${pct}%</span></div>`;
+                            }).join('');
+                        })()}
+                    </div>
+                </div>
+                <div class="bg-white rounded-2xl border p-4 shadow-sm">
+                    <h3 class="font-semibold text-slate-900 text-sm mb-2">Spent on Materials</h3>
+                    <div class="scroll-box space-y-1 text-xs sm:text-sm">
+                        ${sitesData.map(site => {
+                            const siteMat = materialsData.filter(m => m.site_id === site.id);
+                            const siteSpent = siteMat.reduce((s, m) => s + ((m.amount || 0) * (m.quantity_used || 0)), 0);
+                            const pct = totalMatSpent ? Math.round((siteSpent / totalMatSpent) * 100) : 0;
+                            return `<div class="flex justify-between"><span>${site.name}</span><span class="text-slate-500">${siteSpent.toLocaleString()} RWF (${pct}%)</span></div>`;
+                        }).join('') || '<p class="text-slate-400">No data</p>'}
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-2xl border p-4 shadow-sm">
+                <h3 class="font-semibold text-slate-900 text-sm mb-3">Recent Progress</h3>
+                <select id="progress-site-select" class="w-full border p-2 rounded-lg mb-3 text-sm" onchange="renderProgressBySite()">
+                    <option value="">Select a site</option>
+                    ${sitesData.map(s => `<option value="${s.id}">${s.name}</option>`).join('')}
+                </select>
+                <div id="progress-tasks-list" class="space-y-1 text-sm text-slate-600">
+                    <p class="text-slate-400">Select a site to view completed tasks.</p>
+                </div>
+            </div>
+        `;
+    }
+
+    window.renderProgressBySite = () => {
+        const siteId = document.getElementById('progress-site-select').value;
+        const list = document.getElementById('progress-tasks-list');
+        if (!siteId) { list.innerHTML = '<p class="text-slate-400">Select a site.</p>'; return; }
+        const tasks = progressTasks.filter(t => t.site_id === siteId && t.status === 'completed');
+        list.innerHTML = tasks.length ? tasks.map(t => `
+            <div class="flex justify-between items-center p-2 bg-slate-50 rounded-lg">
+                <span>${t.name}</span>
+                <span class="text-xs text-slate-500">End: ${new Date(t.end_date).toLocaleDateString()}</span>
+            </div>
+        `).join('') : '<p class="text-slate-400">No completed tasks for this site.</p>';
+    };
+
     // =============== SITES ===============
     function renderSites(container) {
         container.innerHTML = `
