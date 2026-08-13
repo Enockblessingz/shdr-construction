@@ -446,7 +446,7 @@ function renderDashboard(container) {
     const totalAssignedWorkers = assignedWorkersData.length;
     const totalMatSpent = materialsData.reduce((sum, m) => sum + ((m.amount || 0) * (m.quantity_used || 0)), 0);
 
-    // ---- Extract first name ----
+    // ---- Extract first name only ----
     function getFirstName(raw) {
         if (!raw) return 'SITE OWNER';
         const trimmed = raw.trim();
@@ -462,7 +462,7 @@ function renderDashboard(container) {
             return camelParts[0];
         }
 
-        // Fallback: use the whole string (but we'll uppercase it)
+        // Fallback: use the whole string
         return trimmed;
     }
 
@@ -530,7 +530,6 @@ function renderDashboard(container) {
         </div>
     `;
 }
-
     // =============== SITES ===============
     function renderSites(container) {
         container.innerHTML = `
