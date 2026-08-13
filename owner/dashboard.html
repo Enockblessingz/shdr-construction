@@ -441,35 +441,40 @@
     }
 
     // =============== DASHBOARD ===============
-function renderDashboard(container) {
-    const totalSites = sitesData.length;
-    const totalAssignedWorkers = assignedWorkersData.length;
-    const totalMatSpent = materialsData.reduce((sum, m) => sum + ((m.amount || 0) * (m.quantity_used || 0)), 0);
+// ---- Extract name to display ----
+function getFirstName(raw) {
+    if (!raw) return 'SITE OWNER';
 
-    // ---- Helper: extract first name intelligently ----
-    function getFirstName(raw) {
-        if (!raw) return 'SITE OWNER';
-        const trimmed = raw.trim();
+    const trimmed = raw.trim();
 
-        // If there's a space, take the first word
-        if (trimmed.includes(' ')) {
-            return trimmed.split(' ')[0];
-        }
-
-        // No space – try camelCase split (e.g., "EnockIrafasha" → "Enock")
-        const camelParts = trimmed.match(/[A-Z][a-z]*|[a-z]+/g);
-        if (camelParts && camelParts.length > 1) {
-            return camelParts[0];
-        }
-
-        // Fallback: return the whole string
-        return trimmed;
+    // If name contains spaces:
+    // "IRAFASHA Enock" → "IRAFASHA"
+    if (trimmed.includes(' ')) {
+        const parts = trimmed.split(/\s+/);
+        return parts[0];
     }
 
-    // ---- Extract and format the name ----
-    const rawName = currentUser?.displayName || (currentUser?.email?.split('@')[0] || 'Site Owner');
-    const firstName = getFirstName(rawName);
-    const displayName = firstName.toUpperCase();   // e.g., "IRAFASHA" or "SITE OWNER"
+    // Handle names joined together:
+    // "IRAFASHAEnock" → "IRAFASHA"
+    // "EnockIrafasha" → "Enock"
+    const match = trimmed.match(/^[A-Z]+(?=[A-Z][a-z]|$)/);
+
+    if (match) {
+        return match[0];
+    }
+
+    // Fallback
+    return trimmed;
+}
+
+const rawName =
+    currentUser?.displayName ||
+    currentUser?.email?.split('@')[0] ||
+    'SITE OWNER';
+
+const firstName = getFirstName(rawName);
+
+const displayName = firstName.toUpperCase();
 
     // ---- Render the dashboard ----
     container.innerHTML = `
