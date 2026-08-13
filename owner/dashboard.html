@@ -441,99 +441,332 @@
     }
 
     // =============== DASHBOARD ===============
-// ---- Extract name to display ----
-function getFirstName(raw) {
-    if (!raw) return 'SITE OWNER';
+function renderDashboard(container) {
 
-    const trimmed = raw.trim();
+    const totalSites = sitesData.length;
 
-    // If name contains spaces:
-    // "IRAFASHA Enock" → "IRAFASHA"
-    if (trimmed.includes(' ')) {
+    const totalAssignedWorkers = assignedWorkersData.length;
+
+    const totalMatSpent = materialsData.reduce(
+        (sum, m) =>
+            sum + ((m.amount || 0) * (m.quantity_used || 0)),
+        0
+    );
+
+
+    // ============================================================
+    // EXTRACT NAME TO DISPLAY
+    // ============================================================
+
+    function getFirstName(raw) {
+
+        if (!raw) {
+            return 'SITE OWNER';
+        }
+
+        const trimmed = raw.trim();
+
+        if (!trimmed) {
+            return 'SITE OWNER';
+        }
+
+        /*
+         * Your name format:
+         *
+         * IRAFASHA Enock
+         *
+         * We take the FIRST word:
+         *
+         * IRAFASHA
+         */
+
         const parts = trimmed.split(/\s+/);
+
         return parts[0];
     }
 
-    // Handle names joined together:
-    // "IRAFASHAEnock" → "IRAFASHA"
-    // "EnockIrafasha" → "Enock"
-    const match = trimmed.match(/^[A-Z]+(?=[A-Z][a-z]|$)/);
 
-    if (match) {
-        return match[0];
-    }
+    const rawName =
+        currentUser?.displayName ||
+        currentUser?.email?.split('@')[0] ||
+        'SITE OWNER';
 
-    // Fallback
-    return trimmed;
-}
 
-const rawName =
-    currentUser?.displayName ||
-    currentUser?.email?.split('@')[0] ||
-    'SITE OWNER';
+    // Get first part of the name
+    const firstName = getFirstName(rawName);
 
-const firstName = getFirstName(rawName);
 
-const displayName = firstName.toUpperCase();
+    // Convert to CAPITAL LETTERS
+    const displayName = firstName.toUpperCase();
 
-    // ---- Render the dashboard ----
+
+    // ============================================================
+    // RENDER DASHBOARD
+    // ============================================================
+
     container.innerHTML = `
+
         <div class="bg-white rounded-2xl overflow-hidden shadow-sm mb-4 sm:mb-6">
-            <div class="relative h-40 sm:h-64 bg-cover bg-center" style="background-image: url('https://cdn.pixabay.com/photo/2018/12/12/23/02/site-3871804_1280.jpg');">
-                <div class="absolute inset-0 bg-gradient-to-r from-emerald-900/80 to-emerald-800/40 flex items-center p-4 sm:p-6">
+
+            <div
+                class="relative h-40 sm:h-64 bg-cover bg-center"
+                style="
+                    background-image:
+                    url('https://cdn.pixabay.com/photo/2018/12/12/23/02/site-3871804_1280.jpg');
+                "
+            >
+
+                <div
+                    class="absolute inset-0
+                           bg-gradient-to-r
+                           from-emerald-900/80
+                           to-emerald-800/40
+                           flex items-center
+                           p-4 sm:p-6"
+                >
+
                     <div>
-                        <h1 class="text-2xl sm:text-4xl font-bold text-white">Welcome back, ${displayName}</h1>
-                        <p class="text-emerald-100 mt-2 text-sm sm:text-base">Here's your construction overview</p>
+
+                        <h1 class="text-2xl sm:text-4xl font-bold text-white">
+                            Welcome back, ${displayName}
+                        </h1>
+
+                        <p class="text-emerald-100 mt-2 text-sm sm:text-base">
+                            Here's your construction overview
+                        </p>
+
                     </div>
+
                 </div>
+
             </div>
+
         </div>
+
+
+        <!-- ======================================================
+             DASHBOARD STATISTICS
+        ======================================================= -->
 
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4 sm:mb-6">
+
+
+            <!-- TOTAL SITES -->
+
             <div class="bg-white rounded-2xl border p-4 shadow-sm">
-                <h3 class="font-semibold text-slate-900 text-sm mb-2">Total Sites (${totalSites})</h3>
+
+                <h3 class="font-semibold text-slate-900 text-sm mb-2">
+                    Total Sites (${totalSites})
+                </h3>
+
                 <div class="scroll-box space-y-1 text-xs sm:text-sm">
-                    ${sitesData.map(s => `<div class="flex justify-between"><span>${s.name}</span><span class="text-slate-500">${s.location || '—'}</span></div>`).join('') || '<p class="text-slate-400">No sites</p>'}
+
+                    ${
+                        sitesData.map(s => `
+                            <div class="flex justify-between">
+
+                                <span>${s.name}</span>
+
+                                <span class="text-slate-500">
+                                    ${s.location || '—'}
+                                </span>
+
+                            </div>
+                        `).join('')
+                        ||
+                        '<p class="text-slate-400">No sites</p>'
+                    }
+
                 </div>
+
             </div>
+
+
+            <!-- WORKERS -->
+
             <div class="bg-white rounded-2xl border p-4 shadow-sm">
-                <h3 class="font-semibold text-slate-900 text-sm mb-2">Workers (${totalAssignedWorkers})</h3>
+
+                <h3 class="font-semibold text-slate-900 text-sm mb-2">
+                    Workers (${totalAssignedWorkers})
+                </h3>
+
                 <div class="scroll-box space-y-1 text-xs sm:text-sm">
-                    ${(() => {
-                        const siteWorkerCounts = sitesData.map(site => {
-                            const count = assignedWorkersData.filter(w => w.site_id === site.id).length;
-                            return { site, count };
-                        }).filter(s => s.count > 0);
-                        if (siteWorkerCounts.length === 0) return '<p class="text-slate-400">No workers assigned</p>';
-                        return siteWorkerCounts.map(sw => {
-                            const pct = totalAssignedWorkers ? Math.round((sw.count / totalAssignedWorkers) * 100) : 0;
-                            return `<div class="flex justify-between"><span>${sw.site.name} (${sw.count})</span><span class="text-slate-500">${pct}%</span></div>`;
-                        }).join('');
-                    })()}
+
+                    ${
+                        (() => {
+
+                            const siteWorkerCounts =
+                                sitesData
+                                    .map(site => {
+
+                                        const count =
+                                            assignedWorkersData
+                                                .filter(w => w.site_id === site.id)
+                                                .length;
+
+                                        return {
+                                            site,
+                                            count
+                                        };
+
+                                    })
+                                    .filter(s => s.count > 0);
+
+
+                            if (siteWorkerCounts.length === 0) {
+
+                                return `
+                                    <p class="text-slate-400">
+                                        No workers assigned
+                                    </p>
+                                `;
+
+                            }
+
+
+                            return siteWorkerCounts
+                                .map(sw => {
+
+                                    const pct =
+                                        totalAssignedWorkers
+                                            ? Math.round(
+                                                (sw.count / totalAssignedWorkers) * 100
+                                            )
+                                            : 0;
+
+
+                                    return `
+                                        <div class="flex justify-between">
+
+                                            <span>
+                                                ${sw.site.name} (${sw.count})
+                                            </span>
+
+                                            <span class="text-slate-500">
+                                                ${pct}%
+                                            </span>
+
+                                        </div>
+                                    `;
+
+                                })
+                                .join('');
+
+                        })()
+                    }
+
                 </div>
+
             </div>
+
+
+            <!-- MATERIALS -->
+
             <div class="bg-white rounded-2xl border p-4 shadow-sm">
-                <h3 class="font-semibold text-slate-900 text-sm mb-2">Spent on Materials</h3>
+
+                <h3 class="font-semibold text-slate-900 text-sm mb-2">
+                    Spent on Materials
+                </h3>
+
                 <div class="scroll-box space-y-1 text-xs sm:text-sm">
-                    ${sitesData.map(site => {
-                        const siteMat = materialsData.filter(m => m.site_id === site.id);
-                        const siteSpent = siteMat.reduce((s, m) => s + ((m.amount || 0) * (m.quantity_used || 0)), 0);
-                        const pct = totalMatSpent ? Math.round((siteSpent / totalMatSpent) * 100) : 0;
-                        return `<div class="flex justify-between"><span>${site.name}</span><span class="text-slate-500">${siteSpent.toLocaleString()} RWF (${pct}%)</span></div>`;
-                    }).join('') || '<p class="text-slate-400">No data</p>'}
+
+                    ${
+                        sitesData.map(site => {
+
+                            const siteMat =
+                                materialsData.filter(
+                                    m => m.site_id === site.id
+                                );
+
+
+                            const siteSpent =
+                                siteMat.reduce(
+                                    (s, m) =>
+                                        s +
+                                        ((m.amount || 0) *
+                                         (m.quantity_used || 0)),
+                                    0
+                                );
+
+
+                            const pct =
+                                totalMatSpent
+                                    ? Math.round(
+                                        (siteSpent / totalMatSpent) * 100
+                                    )
+                                    : 0;
+
+
+                            return `
+                                <div class="flex justify-between">
+
+                                    <span>
+                                        ${site.name}
+                                    </span>
+
+                                    <span class="text-slate-500">
+                                        ${siteSpent.toLocaleString()} RWF
+                                        (${pct}%)
+                                    </span>
+
+                                </div>
+                            `;
+
+                        }).join('')
+                        ||
+                        '<p class="text-slate-400">No data</p>'
+                    }
+
                 </div>
+
             </div>
+
         </div>
 
+
+        <!-- ======================================================
+             RECENT PROGRESS
+        ======================================================= -->
+
         <div class="bg-white rounded-2xl border p-4 shadow-sm">
-            <h3 class="font-semibold text-slate-900 text-sm mb-3">Recent Progress</h3>
-            <select id="progress-site-select" class="w-full border p-2 rounded-lg mb-3 text-sm" onchange="renderProgressBySite()">
-                <option value="">Select a site</option>
-                ${sitesData.map(s => `<option value="${s.id}">${s.name}</option>`).join('')}
+
+            <h3 class="font-semibold text-slate-900 text-sm mb-3">
+                Recent Progress
+            </h3>
+
+
+            <select
+                id="progress-site-select"
+                class="w-full border p-2 rounded-lg mb-3 text-sm"
+                onchange="renderProgressBySite()"
+            >
+
+                <option value="">
+                    Select a site
+                </option>
+
+                ${
+                    sitesData.map(s => `
+                        <option value="${s.id}">
+                            ${s.name}
+                        </option>
+                    `).join('')
+                }
+
             </select>
-            <div id="progress-tasks-list" class="space-y-1 text-sm text-slate-600">
-                <p class="text-slate-400">Select a site to view completed tasks.</p>
+
+
+            <div
+                id="progress-tasks-list"
+                class="space-y-1 text-sm text-slate-600"
+            >
+
+                <p class="text-slate-400">
+                    Select a site to view completed tasks.
+                </p>
+
             </div>
+
         </div>
     `;
 }
