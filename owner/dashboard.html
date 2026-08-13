@@ -440,14 +440,16 @@
         return json.data.url;
     }
 
-    // =============== DASHBOARD ===============
+   // =============== DASHBOARD ===============
 function renderDashboard(container) {
     const totalSites = sitesData.length;
     const totalAssignedWorkers = assignedWorkersData.length;
     const totalMatSpent = materialsData.reduce((sum, m) => sum + ((m.amount || 0) * (m.quantity_used || 0)), 0);
     
-    // 👇 NEW: First name only, uppercase
- const displayName = firstName.charAt(0).toUpperCase() + firstName.slice(1).toLowerCase();
+    // 👇 First name only, uppercase — fallback with a space
+    const fullName = currentUser?.displayName || (currentUser?.email?.split('@')[0] || 'Site Owner');
+    const firstName = fullName.trim().split(' ')[0] || 'Site Owner';
+    const displayName = firstName.toUpperCase();
 
     container.innerHTML = `
         <div class="bg-white rounded-2xl overflow-hidden shadow-sm mb-4 sm:mb-6">
