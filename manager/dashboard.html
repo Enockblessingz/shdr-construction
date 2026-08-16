@@ -653,211 +653,792 @@ function getTodayISO() {
 
 
 
-// =============== WORKER IMAGE VIEWER ===============
+// =============== WORKERS (with tabs, attendance recording, history) ===============
 
-let workerViewerIndex = 0;
+function renderWorkersView() {
+    if (!siteWorkersData.length) {
+        return `
+            <div class="bg-white rounded-2xl border p-4">
+                <p class="text-slate-500">No workers added yet.</p>
+            </div>
+        `;
+    }
 
-window.openWorkerImage = (index) => {
-    if (!siteWorkersData.length) return;
-
-    workerViewerIndex = index;
-
-    // Remove existing viewer
-    document.getElementById('worker-image-viewer')?.remove();
-
-    const viewer = document.createElement('div');
-    viewer.id = 'worker-image-viewer';
-    viewer.className = `
-        fixed inset-0
-        z-[9999]
-        bg-black/95
-        backdrop-blur-sm
-        flex items-center justify-center
-        p-4
+    let html = `
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
     `;
 
-    viewer.innerHTML = `
-        <!-- CLOSE BUTTON -->
-        <button
-            onclick="closeWorkerImageViewer()"
-            class="
-                absolute top-4 right-4 sm:top-6 sm:right-6
-                z-50 w-11 h-11 rounded-full
-                bg-white/10 hover:bg-white/20
-                text-white flex items-center justify-center
-                transition
-            "
-            aria-label="Close"
-        >
-            <iconify-icon icon="material-symbols:close" class="text-3xl"></iconify-icon>
-        </button>
+    siteWorkersData.forEach((w, index) => {
 
-        <!-- COUNTER -->
-        <div
-            id="worker-viewer-counter"
-            class="
-                absolute top-5 left-1/2 -translate-x-1/2
-                bg-black/70 text-white
-                px-3 py-1.5 rounded-full text-sm
-                z-40
-            "
-        ></div>
+        const imageUrl = w.image || PLACEHOLDER_IMG;
 
-        <!-- PREVIOUS -->
-        <button
-            id="worker-prev"
-            onclick="previousWorkerImage(event)"
-            class="
-                absolute left-3 sm:left-6 top-1/2 -translate-y-1/2
-                z-40 w-12 h-12 sm:w-14 sm:h-14
-                rounded-full bg-white/10 hover:bg-white/25
-                text-white flex items-center justify-center
-                transition
-            "
-        >
-            <iconify-icon icon="material-symbols:chevron-left" class="text-4xl"></iconify-icon>
-        </button>
-
-        <!-- IMAGE & DETAILS -->
-        <div
-            class="
-                w-full h-full flex flex-col items-center justify-center
-                px-14 sm:px-20
-            "
-            onclick="event.stopPropagation()"
-        >
-            <img
-                id="worker-viewer-image"
-                src=""
-                class="
-                    max-w-full max-h-[60vh] object-contain
-                    rounded-xl shadow-2xl select-none
-                "
-                alt="Worker"
-            />
-
+        html += `
+            <!-- WORKER CARD -->
             <div
-                id="worker-viewer-details"
                 class="
-                    mt-6 text-white text-center max-w-2xl
-                    bg-black/40 rounded-xl p-4 backdrop-blur-sm
+                    bg-white
+                    rounded-2xl
+                    border
+                    overflow-hidden
+                    shadow-sm
+                    hover:shadow-md
+                    transition
                 "
             >
-                <p class="text-xl font-bold" id="worker-viewer-name"></p>
-                <p class="text-emerald-400" id="worker-viewer-role"></p>
-                <div class="mt-2 text-sm space-y-1 text-slate-300">
-                    <p><span class="text-slate-400">Salary:</span> <span id="worker-viewer-salary"></span></p>
-                    <p><span class="text-slate-400">Payment:</span> <span id="worker-viewer-payment"></span></p>
-                    <p><span class="text-slate-400">Phone:</span> <span id="worker-viewer-phone"></span></p>
+
+                <!-- WORKER IMAGE -->
+                <div
+                    class="
+                        relative
+                        w-full
+                        h-64
+                        overflow-hidden
+                        cursor-pointer
+                        group
+                        bg-slate-100
+                    "
+                    onclick="openWorkerImage(${index})"
+                >
+
+                    <img
+                        src="${imageUrl}"
+                        class="
+                            w-full
+                            h-full
+                            object-cover
+                            transition-transform
+                            duration-300
+                            group-hover:scale-105
+                        "
+                        alt="${w.name}"
+                        loading="lazy"
+                        onerror="this.src='${PLACEHOLDER_IMG}'"
+                    >
+
+                    <!-- ZOOM OVERLAY -->
+                    <div
+                        class="
+                            absolute
+                            inset-0
+                            bg-black/0
+                            group-hover:bg-black/30
+                            transition
+                            duration-300
+                            flex
+                            items-center
+                            justify-center
+                        "
+                    >
+                        <div
+                            class="
+                                opacity-0
+                                group-hover:opacity-100
+                                transition
+                                bg-white/90
+                                rounded-full
+                                p-3
+                                shadow-lg
+                            "
+                        >
+                            <iconify-icon
+                                icon="material-symbols:zoom-in"
+                                class="text-emerald-600 text-3xl"
+                            ></iconify-icon>
+                        </div>
+                    </div>
+
                 </div>
+
+
+                <!-- WORKER DETAILS -->
+                <div class="p-5">
+
+                    <!-- NAME + PAYMENT -->
+                    <div class="flex items-start justify-between gap-3">
+
+                        <div class="min-w-0">
+
+                            <p class="
+                                font-bold
+                                text-lg
+                                text-slate-800
+                                truncate
+                            ">
+                                ${w.name}
+                            </p>
+
+                            <p class="
+                                text-sm
+                                text-emerald-600
+                                font-medium
+                                mt-1
+                            ">
+                                ${w.role || 'Worker'}
+                            </p>
+
+                        </div>
+
+                        <span
+                            class="
+                                text-xs
+                                bg-emerald-50
+                                text-emerald-700
+                                px-2.5
+                                py-1
+                                rounded-full
+                                whitespace-nowrap
+                                capitalize
+                            "
+                        >
+                            ${w.payment_method || 'N/A'}
+                        </span>
+
+                    </div>
+
+
+                    <!-- WORKER INFORMATION -->
+                    <div class="mt-5 space-y-3">
+
+                        <!-- SALARY -->
+                        <div class="
+                            flex
+                            justify-between
+                            items-center
+                            text-sm
+                            border-b
+                            border-slate-100
+                            pb-2
+                        ">
+                            <span class="text-slate-500">
+                                Salary
+                            </span>
+
+                            <span class="font-semibold text-slate-700">
+                                ${(Number(w.salary) || 0).toLocaleString()} RWF
+                            </span>
+                        </div>
+
+
+                        <!-- PHONE -->
+                        <div class="
+                            flex
+                            justify-between
+                            items-center
+                            text-sm
+                        ">
+                            <span class="text-slate-500">
+                                Phone
+                            </span>
+
+                            <span class="font-medium text-slate-700">
+                                ${w.phone || '—'}
+                            </span>
+                        </div>
+
+                    </div>
+
+                </div>
+
             </div>
-        </div>
-
-        <!-- NEXT -->
-        <button
-            id="worker-next"
-            onclick="nextWorkerImage(event)"
-            class="
-                absolute right-3 sm:right-6 top-1/2 -translate-y-1/2
-                z-40 w-12 h-12 sm:w-14 sm:h-14
-                rounded-full bg-white/10 hover:bg-white/25
-                text-white flex items-center justify-center
-                transition
-            "
-        >
-            <iconify-icon icon="material-symbols:chevron-right" class="text-4xl"></iconify-icon>
-        </button>
-    `;
-
-    // Close on background click
-    viewer.addEventListener('click', (event) => {
-        if (event.target === viewer) closeWorkerImageViewer();
+        `;
     });
 
-    document.body.appendChild(viewer);
-    document.body.style.overflow = 'hidden';
+    html += `</div>`;
 
-    updateWorkerViewer();
-
-    // Keyboard controls
-    document.addEventListener('keydown', workerViewerKeyboard);
-};
-
-// =============== UPDATE VIEWER ===============
-
-function updateWorkerViewer() {
-    const worker = siteWorkersData[workerViewerIndex];
-    if (!worker) return;
-
-    const image = document.getElementById('worker-viewer-image');
-    const name = document.getElementById('worker-viewer-name');
-    const role = document.getElementById('worker-viewer-role');
-    const salary = document.getElementById('worker-viewer-salary');
-    const payment = document.getElementById('worker-viewer-payment');
-    const phone = document.getElementById('worker-viewer-phone');
-    const counter = document.getElementById('worker-viewer-counter');
-    const prevBtn = document.getElementById('worker-prev');
-    const nextBtn = document.getElementById('worker-next');
-
-    image.src = worker.image || PLACEHOLDER_IMG;
-    name.textContent = worker.name;
-    role.textContent = worker.role;
-    salary.textContent = (worker.salary || 0).toLocaleString() + ' RWF';
-    payment.textContent = worker.payment_method || 'N/A';
-    phone.textContent = worker.phone || '—';
-
-    counter.textContent = `${workerViewerIndex + 1} / ${siteWorkersData.length}`;
-
-    // Show/hide navigation
-    if (siteWorkersData.length <= 1) {
-        prevBtn.classList.add('hidden');
-        nextBtn.classList.add('hidden');
-        counter.classList.add('hidden');
-    } else {
-        prevBtn.classList.remove('hidden');
-        nextBtn.classList.remove('hidden');
-        counter.classList.remove('hidden');
-
-        prevBtn.classList.toggle('opacity-30', workerViewerIndex === 0);
-        nextBtn.classList.toggle('opacity-30', workerViewerIndex === siteWorkersData.length - 1);
-    }
+    return html;
 }
 
-// =============== NAVIGATION ===============
 
-window.previousWorkerImage = (event) => {
-    if (event) event.stopPropagation();
-    if (workerViewerIndex > 0) {
-        workerViewerIndex--;
-        updateWorkerViewer();
+// =============== RECORD ATTENDANCE ===============
+
+function renderWorkersRecord() {
+
+    if (!siteWorkersData.length) {
+        return `
+            <div class="bg-white rounded-2xl border p-4">
+                <p class="text-slate-500">
+                    No workers to record attendance for.
+                    Add workers first.
+                </p>
+            </div>
+        `;
     }
-};
 
-window.nextWorkerImage = (event) => {
-    if (event) event.stopPropagation();
-    if (workerViewerIndex < siteWorkersData.length - 1) {
-        workerViewerIndex++;
-        updateWorkerViewer();
-    }
-};
+    const today = new Date().toISOString().split('T')[0];
 
-window.closeWorkerImageViewer = () => {
-    document.getElementById('worker-image-viewer')?.remove();
-    document.body.style.overflow = '';
-    document.removeEventListener('keydown', workerViewerKeyboard);
-};
+    const alreadyRecorded = attendanceData.some(
+        a =>
+            a.date === today &&
+            a.site_id === currentSiteId
+    );
 
-// =============== KEYBOARD CONTROLS ===============
+    let html = `
+        <div class="bg-white rounded-2xl border p-4">
 
-function workerViewerKeyboard(event) {
-    if (event.key === 'Escape') {
-        closeWorkerImageViewer();
-    } else if (event.key === 'ArrowLeft') {
-        previousWorkerImage();
-    } else if (event.key === 'ArrowRight') {
-        nextWorkerImage();
-    }
+            <!-- DATE -->
+            <div class="mb-4">
+
+                <label class="block text-sm font-medium mb-1">
+                    Date
+                </label>
+
+                <input
+                    type="date"
+                    id="attendance-date"
+                    value="${today}"
+                    class="w-full border rounded-lg p-2 text-sm"
+                >
+
+            </div>
+
+
+            <!-- WORKER LIST -->
+            <div
+                class="
+                    max-h-60
+                    overflow-y-auto
+                    border
+                    rounded-lg
+                    p-2
+                "
+            >
+
+                ${siteWorkersData.map(w => {
+
+                    const dailyRate =
+                        w.payment_method === 'daily'
+                            ? Number(w.salary) || 0
+                            : Math.round((Number(w.salary) || 0) / 30);
+
+                    return `
+                        <div
+                            class="
+                                flex
+                                items-center
+                                gap-3
+                                p-3
+                                hover:bg-slate-50
+                                rounded-lg
+                                worker-checkbox
+                            "
+                        >
+
+                            <input
+                                type="checkbox"
+                                id="worker-${w.id}"
+                                value="${w.id}"
+                                class="
+                                    w-4
+                                    h-4
+                                    text-emerald-600
+                                    rounded
+                                "
+                                ${alreadyRecorded ? 'disabled' : ''}
+                            >
+
+                            <label
+                                for="worker-${w.id}"
+                                class="flex-1 cursor-pointer"
+                            >
+
+                                <span class="font-medium">
+                                    ${w.name}
+                                </span>
+
+                                <span class="
+                                    text-xs
+                                    text-slate-500
+                                    ml-2
+                                ">
+                                    ${w.role || 'Worker'}
+                                </span>
+
+                                <span class="
+                                    text-xs
+                                    text-slate-400
+                                    ml-2
+                                ">
+                                    ${dailyRate.toLocaleString()} RWF/day
+                                </span>
+
+                            </label>
+
+                        </div>
+                    `;
+                }).join('')}
+
+            </div>
+
+
+            ${
+                alreadyRecorded
+                    ? `
+                        <p class="text-amber-600 text-sm mt-2">
+                            Attendance for today has already been recorded!
+                        </p>
+                    `
+                    : ''
+            }
+
+
+            <!-- ATTENDANCE SUMMARY -->
+            <div
+                id="attendance-summary"
+                class="
+                    mt-4
+                    p-3
+                    bg-slate-50
+                    rounded-lg
+                    hidden
+                "
+            >
+
+                <p class="text-sm">
+                    Selected workers:
+                    <span
+                        id="selected-count"
+                        class="font-semibold"
+                    >
+                        0
+                    </span>
+                </p>
+
+                <p class="text-sm font-bold">
+                    Total daily cost:
+                    <span id="total-cost">
+                        0
+                    </span>
+                    RWF
+                </p>
+
+                <button
+                    onclick="submitAttendance()"
+                    class="
+                        mt-2
+                        w-full
+                        bg-emerald-600
+                        hover:bg-emerald-700
+                        text-white
+                        py-2
+                        rounded-xl
+                        text-sm
+                    "
+                >
+                    Assign as Worked
+                </button>
+
+            </div>
+
+
+            <!-- ATTENDANCE HISTORY -->
+            <div id="attendance-history" class="mt-6">
+
+                <h4 class="font-semibold text-sm mb-3">
+                    Attendance History
+                </h4>
+
+                ${
+                    attendanceData.length
+                        ? renderAttendanceHistory()
+                        : `
+                            <p class="text-slate-400 text-sm">
+                                No attendance records yet.
+                            </p>
+                        `
+                }
+
+            </div>
+
+        </div>
+    `;
+
+
+    // Attach listeners after HTML exists
+    setTimeout(() => {
+
+        const dateInput =
+            document.getElementById('attendance-date');
+
+        if (dateInput) {
+            dateInput.addEventListener(
+                'change',
+                updateAttendanceSummary
+            );
+        }
+
+        document
+            .querySelectorAll('.worker-checkbox input[type="checkbox"]')
+            .forEach(checkbox => {
+                checkbox.addEventListener(
+                    'change',
+                    updateAttendanceSummary
+                );
+            });
+
+        updateAttendanceSummary();
+
+    }, 50);
+
+    return html;
 }
+
+
+// =============== ATTENDANCE HISTORY ===============
+
+function renderAttendanceHistory() {
+
+    const groups = {};
+
+    attendanceData.forEach(a => {
+
+        const date = a.date || 'Unknown';
+
+        if (!groups[date]) {
+            groups[date] = [];
+        }
+
+        groups[date].push(a);
+
+    });
+
+
+    let html = '';
+
+    const sortedDates =
+        Object.keys(groups).sort(
+            (a, b) => new Date(b) - new Date(a)
+        );
+
+
+    sortedDates.forEach(date => {
+
+        const workers = groups[date];
+
+        const total = workers.reduce(
+            (sum, a) =>
+                sum + (Number(a.daily_rate) || 0),
+            0
+        );
+
+
+        html += `
+            <div
+                class="
+                    mb-4
+                    p-3
+                    bg-slate-50
+                    rounded-lg
+                    border
+                    border-slate-100
+                "
+            >
+
+                <div class="
+                    flex
+                    flex-wrap
+                    justify-between
+                    gap-2
+                    mb-2
+                ">
+
+                    <p class="text-sm font-semibold text-slate-700">
+                        ${date}
+                    </p>
+
+                    <p class="text-xs text-slate-500">
+                        ${workers.length} workers
+                        •
+                        ${total.toLocaleString()} RWF
+                    </p>
+
+                </div>
+
+
+                <div class="
+                    flex
+                    flex-wrap
+                    gap-1
+                ">
+
+                    ${workers.map(a => `
+                        <span
+                            class="
+                                bg-white
+                                border
+                                border-slate-200
+                                px-2
+                                py-1
+                                rounded
+                                text-xs
+                                text-slate-600
+                            "
+                        >
+                            ${a.name}
+                            (${a.role})
+                        </span>
+                    `).join('')}
+
+                </div>
+
+            </div>
+        `;
+    });
+
+
+    return html;
+}
+
+
+// =============== WORKERS TAB ===============
+
+window.setWorkersTab = (tab) => {
+
+    workersTab = tab;
+
+    showSection('workers');
+
+};
+
+
+// =============== ATTENDANCE SUMMARY ===============
+
+window.updateAttendanceSummary = () => {
+
+    const checkboxes =
+        document.querySelectorAll(
+            '.worker-checkbox input[type="checkbox"]:checked'
+        );
+
+    const selectedIds =
+        Array.from(checkboxes).map(
+            cb => cb.value
+        );
+
+
+    const selectedWorkersData =
+        siteWorkersData.filter(
+            w => selectedIds.includes(w.id)
+        );
+
+
+    const summary =
+        document.getElementById(
+            'attendance-summary'
+        );
+
+
+    if (!summary) return;
+
+
+    if (selectedIds.length === 0) {
+
+        summary.classList.add('hidden');
+
+        window._selectedWorkerIds = [];
+
+        return;
+    }
+
+
+    summary.classList.remove('hidden');
+
+
+    const selectedCount =
+        document.getElementById(
+            'selected-count'
+        );
+
+    const totalCost =
+        document.getElementById(
+            'total-cost'
+        );
+
+
+    if (selectedCount) {
+        selectedCount.textContent =
+            selectedIds.length;
+    }
+
+
+    let total = 0;
+
+
+    selectedWorkersData.forEach(w => {
+
+        const dailyRate =
+            w.payment_method === 'daily'
+                ? Number(w.salary) || 0
+                : Math.round(
+                    (Number(w.salary) || 0) / 30
+                );
+
+        total += dailyRate;
+
+    });
+
+
+    if (totalCost) {
+        totalCost.textContent =
+            total.toLocaleString();
+    }
+
+
+    window._selectedWorkerIds =
+        selectedIds;
+};
+
+
+// =============== SUBMIT ATTENDANCE ===============
+
+window.submitAttendance = async () => {
+
+    const dateInput =
+        document.getElementById(
+            'attendance-date'
+        );
+
+
+    const date =
+        dateInput?.value;
+
+
+    if (!date) {
+        alert('Please select a date.');
+        return;
+    }
+
+
+    const selectedIds =
+        window._selectedWorkerIds || [];
+
+
+    if (!selectedIds.length) {
+        alert('Please select at least one worker.');
+        return;
+    }
+
+
+    try {
+
+        // Check existing attendance
+        const existing =
+            attendanceData.filter(
+                a =>
+                    a.date === date &&
+                    a.site_id === currentSiteId
+            );
+
+
+        // Overwrite existing attendance
+        if (existing.length > 0) {
+
+            const confirmed =
+                confirm(
+                    'Attendance for this date already exists. Do you want to overwrite it?'
+                );
+
+
+            if (!confirmed) return;
+
+
+            const batch =
+                writeBatch(db);
+
+
+            existing.forEach(a => {
+
+                batch.delete(
+                    doc(
+                        db,
+                        'worker_attendance',
+                        a.id
+                    )
+                );
+
+            });
+
+
+            await batch.commit();
+        }
+
+
+        const selectedWorkersData =
+            siteWorkersData.filter(
+                w => selectedIds.includes(w.id)
+            );
+
+
+        const promises =
+            selectedWorkersData.map(w => {
+
+                const dailyRate =
+                    w.payment_method === 'daily'
+                        ? Number(w.salary) || 0
+                        : Math.round(
+                            (Number(w.salary) || 0) / 30
+                        );
+
+
+                return addDoc(
+                    collection(
+                        db,
+                        'worker_attendance'
+                    ),
+                    {
+                        site_id: currentSiteId,
+                        date: date,
+                        worker_id: w.id,
+                        name: w.name,
+                        role: w.role,
+                        daily_rate: dailyRate,
+                        recorded_by: currentUser.uid,
+                        recorded_at:
+                            new Date().toISOString()
+                    }
+                );
+
+            });
+
+
+        await Promise.all(promises);
+
+
+        alert(
+            'Attendance recorded successfully!'
+        );
+
+
+        // Clear selected workers
+        document
+            .querySelectorAll(
+                '.worker-checkbox input[type="checkbox"]'
+            )
+            .forEach(cb => {
+                cb.checked = false;
+            });
+
+
+        window._selectedWorkerIds = [];
+
+
+        updateAttendanceSummary();
+
+
+    } catch (err) {
+
+        console.error(
+            'Attendance error:',
+            err
+        );
+
+        alert(
+            'Error recording attendance: ' +
+            err.message
+        );
+
+    }
+
+};
 
     
     // =============== PROGRESS (unchanged) ===============
