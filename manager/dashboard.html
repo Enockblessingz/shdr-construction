@@ -1282,366 +1282,487 @@ window.exportReport = (format) => {
         showSection('finances');
     };
 
+
     // =============== GALLERY ===============
-let selectedGallerySite = null;
-
 function renderGallery(container) {
-    const siteOpts = sitesData
-        .map(s => `<option value="${s.id}">${s.name}</option>`)
-        .join('');
-
     container.innerHTML = `
-        <h2 class="text-xl sm:text-2xl font-bold mb-3">Site Gallery</h2>
+        <h2 class="text-xl sm:text-2xl font-bold mb-4">Site Gallery</h2>
 
-        <div class="mb-4">
-            <label class="block text-sm font-medium mb-1">
-                Select Site
-            </label>
+        <div class="bg-white rounded-2xl border p-4 mb-4">
+            <h3 class="font-semibold text-sm mb-3">Upload New Image</h3>
 
-            <select
-                id="gallery-site-select"
-                class="w-full border p-2 rounded-lg text-sm"
-                onchange="filterGallery()"
-            >
-                <option value="">All Sites</option>
-                ${siteOpts}
-            </select>
+            <form onsubmit="handleGalleryUpload(event)" class="space-y-3">
+                <input
+                    type="file"
+                    id="gallery-image"
+                    accept="image/*"
+                    required
+                    class="w-full border rounded-lg p-2 text-sm"
+                >
+
+                <textarea
+                    id="gallery-description"
+                    placeholder="Description"
+                    rows="2"
+                    class="w-full border rounded-lg p-2 text-sm"
+                ></textarea>
+
+                <button
+                    type="submit"
+                    class="w-full bg-emerald-600 text-white py-2 rounded-xl text-sm"
+                >
+                    Upload
+                </button>
+            </form>
         </div>
 
         <div
             id="gallery-container"
             class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
         >
-            <p class="text-slate-400 col-span-full text-sm">
-                Select a site to view images, or choose "All Sites" to see everything.
-            </p>
+            ${
+                galleryData.length
+                    ? galleryData.map((item, index) => `
+                        <div class="bg-white rounded-2xl border overflow-hidden shadow-sm">
+
+                            <!-- CLICKABLE IMAGE -->
+                            <div
+                                class="relative w-full h-40 overflow-hidden cursor-pointer group bg-slate-100"
+                                onclick="openGalleryImage(${index})"
+                            >
+                                <img
+                                    src="${item.image || PLACEHOLDER_IMG}"
+                                    class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                                    alt="Gallery image"
+                                    loading="lazy"
+                                    onerror="this.src='${PLACEHOLDER_IMG}'"
+                                >
+
+                                <!-- HOVER VIEW ICON -->
+                                <div class="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition duration-300 flex items-center justify-center">
+                                    <div class="opacity-0 group-hover:opacity-100 transition bg-white/90 rounded-full p-3 shadow-lg">
+                                        <iconify-icon
+                                            icon="material-symbols:zoom-in"
+                                            class="text-emerald-600 text-2xl"
+                                        ></iconify-icon>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="p-3">
+                                <p class="text-sm text-slate-700">
+                                    ${item.description || 'No description'}
+                                </p>
+
+                                <p class="text-xs text-slate-400 mt-1">
+                                    Uploaded:
+                                    ${
+                                        item.uploaded_at
+                                            ? new Date(item.uploaded_at).toLocaleDateString()
+                                            : ''
+                                    }
+                                </p>
+                            </div>
+
+                        </div>
+                    `).join('')
+                    : `
+                        <p class="text-slate-400 col-span-full text-sm">
+                            No images uploaded yet.
+                        </p>
+                    `
+            }
         </div>
     `;
-
-    if (selectedGallerySite) {
-        document.getElementById('gallery-site-select').value =
-            selectedGallerySite;
-    }
-
-    filterGallery();
 }
 
 
-window.filterGallery = () => {
-    const select =
-        document.getElementById('gallery-site-select');
+// =============== GALLERY IMAGE VIEWER ===============
 
-    if (!select) return;
+let galleryViewerIndex = 0;
 
-    const siteId = select.value;
+window.openGalleryImage = (index) => {
 
-    selectedGallerySite = siteId;
+    if (!galleryData.length) return;
 
-    const container =
-        document.getElementById('gallery-container');
+    galleryViewerIndex = index;
 
-    if (!container) return;
+    // Remove existing viewer
+    document.getElementById('gallery-image-viewer')?.remove();
 
-    let filtered = galleryData;
+    const viewer = document.createElement('div');
 
-    if (siteId) {
-        filtered = filtered.filter(
-            item => item.site_id === siteId
-        );
-    }
+    viewer.id = 'gallery-image-viewer';
 
-    if (!filtered.length) {
-        container.innerHTML = `
-            <p class="text-slate-400 col-span-full text-sm">
-                No gallery images
-                ${siteId ? 'for this site' : 'yet'}.
-            </p>
-        `;
-
-        return;
-    }
-
-
-    container.innerHTML = filtered.map(item => {
-
-        const imageUrl =
-            item.image || PLACEHOLDER_IMG;
-
-        const siteName =
-            sitesData.find(
-                s => s.id === item.site_id
-            )?.name || 'Unknown';
-
-        const description =
-            item.description || 'No description';
-
-        const uploadedDate =
-            item.uploaded_at
-                ? new Date(
-                    item.uploaded_at
-                ).toLocaleDateString()
-                : '';
-
-        return `
-            <div
-                class="bg-white rounded-2xl border overflow-hidden shadow-sm"
-            >
-
-                <!-- IMAGE -->
-                <div
-                    class="relative cursor-pointer group"
-                    onclick="openGalleryImage('${imageUrl.replace(/'/g, "\\'")}')"
-                >
-
-                    <img
-                        src="${imageUrl}"
-                        class="w-full h-40 object-cover transition duration-300 group-hover:scale-105"
-                        alt="${description}"
-                        loading="lazy"
-                        onerror="this.src='${PLACEHOLDER_IMG}'"
-                    >
-
-                    <!-- Preview overlay -->
-                    <div
-                        class="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition duration-300 flex items-center justify-center"
-                    >
-                        <span
-                            class="opacity-0 group-hover:opacity-100 transition text-white bg-black/50 rounded-full px-4 py-2 text-sm"
-                        >
-                            View Image
-                        </span>
-                    </div>
-
-                </div>
-
-
-                <!-- DETAILS -->
-                <div class="p-3">
-
-                    <p class="text-sm text-slate-700">
-                        ${description}
-                    </p>
-
-                    <p class="text-xs text-slate-500 mt-2">
-                        Site: ${siteName}
-                    </p>
-
-                    <p class="text-xs text-slate-400 mt-1">
-                        Uploaded: ${uploadedDate}
-                    </p>
-
-                </div>
-
-            </div>
-        `;
-    }).join('');
-};
-
-
-// =============== IMAGE LIGHTBOX ===============
-
-window.openGalleryImage = (imageUrl) => {
-
-    // Remove existing viewer if any
-    const existing =
-        document.getElementById('gallery-lightbox');
-
-    if (existing) {
-        existing.remove();
-    }
-
-
-    const viewer =
-        document.createElement('div');
-
-    viewer.id = 'gallery-lightbox';
-
-    viewer.className =
-        'fixed inset-0 z-[9999] bg-black/80 backdrop-blur-sm flex items-center justify-center p-4';
-
+    viewer.className = `
+        fixed inset-0
+        z-[9999]
+        bg-black/95
+        backdrop-blur-sm
+        flex items-center justify-center
+        p-4
+    `;
 
     viewer.innerHTML = `
 
         <!-- CLOSE BUTTON -->
         <button
-            onclick="closeGalleryImage()"
-            class="absolute top-5 right-6 text-white text-4xl font-light hover:text-emerald-400 transition z-10"
-            aria-label="Close image preview"
+            onclick="closeGalleryImageViewer()"
+            class="
+                absolute
+                top-4 right-4
+                sm:top-6 sm:right-6
+                z-50
+                w-11 h-11
+                rounded-full
+                bg-white/10
+                hover:bg-white/20
+                text-white
+                flex items-center justify-center
+                transition
+            "
+            aria-label="Close"
         >
-            &times;
+            <iconify-icon
+                icon="material-symbols:close"
+                class="text-3xl"
+            ></iconify-icon>
         </button>
 
 
-        <!-- IMAGE CONTAINER -->
+        <!-- IMAGE COUNTER -->
         <div
-            class="relative max-w-6xl max-h-[90vh] flex items-center justify-center"
+            id="gallery-viewer-counter"
+            class="
+                absolute
+                top-5 left-1/2
+                -translate-x-1/2
+                bg-black/70
+                text-white
+                px-3 py-1.5
+                rounded-full
+                text-sm
+                z-40
+            "
+        ></div>
+
+
+        <!-- PREVIOUS -->
+        <button
+            id="gallery-prev"
+            onclick="previousGalleryImage(event)"
+            class="
+                absolute
+                left-3 sm:left-6
+                top-1/2
+                -translate-y-1/2
+                z-40
+                w-12 h-12
+                sm:w-14 sm:h-14
+                rounded-full
+                bg-white/10
+                hover:bg-white/25
+                text-white
+                flex items-center justify-center
+                transition
+            "
+        >
+            <iconify-icon
+                icon="material-symbols:chevron-left"
+                class="text-4xl"
+            ></iconify-icon>
+        </button>
+
+
+        <!-- LARGE IMAGE -->
+        <div
+            class="
+                w-full h-full
+                flex flex-col
+                items-center
+                justify-center
+                px-14 sm:px-20
+            "
+            onclick="event.stopPropagation()"
         >
 
             <img
-                src="${imageUrl}"
-                class="max-w-full max-h-[90vh] object-contain rounded-xl shadow-2xl"
-                alt="SHDR Site Gallery Preview"
-                onerror="this.src='${PLACEHOLDER_IMG}'"
+                id="gallery-viewer-image"
+                src=""
+                class="
+                    max-w-full
+                    max-h-[82vh]
+                    object-contain
+                    rounded-xl
+                    shadow-2xl
+                    select-none
+                "
+                alt="SHDR Site Gallery"
             >
 
+            <!-- DESCRIPTION -->
+            <p
+                id="gallery-viewer-description"
+                class="
+                    text-white
+                    text-sm
+                    text-center
+                    mt-4
+                    max-w-2xl
+                "
+            ></p>
+
         </div>
+
+
+        <!-- NEXT -->
+        <button
+            id="gallery-next"
+            onclick="nextGalleryImage(event)"
+            class="
+                absolute
+                right-3 sm:right-6
+                top-1/2
+                -translate-y-1/2
+                z-40
+                w-12 h-12
+                sm:w-14 sm:h-14
+                rounded-full
+                bg-white/10
+                hover:bg-white/25
+                text-white
+                flex items-center justify-center
+                transition
+            "
+        >
+            <iconify-icon
+                icon="material-symbols:chevron-right"
+                class="text-4xl"
+            ></iconify-icon>
+        </button>
     `;
 
 
-    // Close when clicking dark background
-    viewer.addEventListener(
-        'click',
-        (event) => {
-
-            if (event.target === viewer) {
-                closeGalleryImage();
-            }
-
+    // Close when clicking background
+    viewer.addEventListener('click', (event) => {
+        if (event.target === viewer) {
+            closeGalleryImageViewer();
         }
-    );
+    });
 
 
     document.body.appendChild(viewer);
 
-
     // Prevent background scrolling
     document.body.style.overflow = 'hidden';
 
+    updateGalleryViewer();
 
-    // ESC key support
+    // Keyboard controls
     document.addEventListener(
         'keydown',
-        galleryLightboxEscHandler
+        galleryViewerKeyboard
     );
 };
 
 
-// =============== CLOSE LIGHTBOX ===============
+// =============== UPDATE VIEWER ===============
 
-window.closeGalleryImage = () => {
+function updateGalleryViewer() {
+
+    const item = galleryData[galleryViewerIndex];
+
+    if (!item) return;
+
+    const image =
+        document.getElementById('gallery-viewer-image');
+
+    const description =
+        document.getElementById('gallery-viewer-description');
+
+    const counter =
+        document.getElementById('gallery-viewer-counter');
+
+    const previous =
+        document.getElementById('gallery-prev');
+
+    const next =
+        document.getElementById('gallery-next');
+
+    if (!image) return;
+
+    image.src =
+        item.image || PLACEHOLDER_IMG;
+
+    description.textContent =
+        item.description || 'No description';
+
+    counter.textContent =
+        `${galleryViewerIndex + 1} / ${galleryData.length}`;
+
+
+    // Only one image
+    if (galleryData.length <= 1) {
+
+        previous.classList.add('hidden');
+        next.classList.add('hidden');
+        counter.classList.add('hidden');
+
+        return;
+    }
+
+
+    previous.classList.remove('hidden');
+    next.classList.remove('hidden');
+    counter.classList.remove('hidden');
+
+
+    // First image
+    if (galleryViewerIndex === 0) {
+        previous.classList.add('opacity-30');
+    } else {
+        previous.classList.remove('opacity-30');
+    }
+
+
+    // Last image
+    if (galleryViewerIndex === galleryData.length - 1) {
+        next.classList.add('opacity-30');
+    } else {
+        next.classList.remove('opacity-30');
+    }
+}
+
+
+// =============== PREVIOUS IMAGE ===============
+
+window.previousGalleryImage = (event) => {
+
+    if (event) {
+        event.stopPropagation();
+    }
+
+    if (galleryViewerIndex > 0) {
+
+        galleryViewerIndex--;
+
+        updateGalleryViewer();
+    }
+};
+
+
+// =============== NEXT IMAGE ===============
+
+window.nextGalleryImage = (event) => {
+
+    if (event) {
+        event.stopPropagation();
+    }
+
+    if (galleryViewerIndex < galleryData.length - 1) {
+
+        galleryViewerIndex++;
+
+        updateGalleryViewer();
+    }
+};
+
+
+// =============== CLOSE VIEWER ===============
+
+window.closeGalleryImageViewer = () => {
 
     const viewer =
-        document.getElementById(
-            'gallery-lightbox'
-        );
+        document.getElementById('gallery-image-viewer');
 
     if (viewer) {
         viewer.remove();
     }
 
-
-    // Restore page scrolling
+    // Restore scrolling
     document.body.style.overflow = '';
 
-
-    // Remove ESC listener
+    // Remove keyboard listener
     document.removeEventListener(
         'keydown',
-        galleryLightboxEscHandler
+        galleryViewerKeyboard
     );
 };
 
 
-// =============== ESC KEY ===============
+// =============== KEYBOARD CONTROLS ===============
 
-function galleryLightboxEscHandler(event) {
+function galleryViewerKeyboard(event) {
 
     if (event.key === 'Escape') {
-        closeGalleryImage();
+
+        closeGalleryImageViewer();
+
+    } else if (event.key === 'ArrowLeft') {
+
+        previousGalleryImage();
+
+    } else if (event.key === 'ArrowRight') {
+
+        nextGalleryImage();
+
     }
-}
+};
 
-    // =============== ADD WORKER (single salary field) ===============
-    window.openAddWorkerModal = () => {
-        const allRoles = workerPositions.map(p => p.role);
-        const commonRoles = ['Mason', 'Mason Helper', 'Carpenter', 'Carpenter Helper', 'Steel Fixer', 'Steel Fixer Helper', 'Plumber', 'Electrician', 'Welder', 'Painter', 'Tiler', 'Roofer', 'Concrete Worker', 'Excavation Worker', 'Truck Driver', 'Cleaner', 'Site Security Guard'];
-        const uniqueRoles = [...new Set([...commonRoles, ...allRoles])].filter(Boolean);
-        const roleOptions = uniqueRoles.map(r => `<div class="role-option px-3 py-2 cursor-pointer hover:bg-emerald-50" data-role="${r}">${r}</div>`).join('');
 
-        openModal('Add Worker', `
-            <form onsubmit="handleAddWorker(event)" class="space-y-4">
-                <input class="w-full border rounded-lg p-3" placeholder="Full Name" id="worker-name" required>
-                <div class="relative">
-                    <label class="block text-sm font-medium mb-1">Role (select only)</label>
-                    <div id="role-selector" class="border rounded-lg p-3 bg-white flex items-center justify-between cursor-pointer" onclick="document.getElementById('role-dropdown').classList.toggle('hidden')">
-                        <span id="selected-role-text" class="text-slate-400">Choose a role...</span>
-                        <iconify-icon icon="material-symbols:arrow-drop-down" width="20"></iconify-icon>
-                    </div>
-                    <input type="hidden" id="worker-role" required>
-                    <div id="role-dropdown" class="hidden absolute z-10 w-full bg-white border rounded-lg mt-1 max-h-40 overflow-y-auto shadow-lg">
-                        <input type="text" id="role-search" class="w-full border-b p-2 sticky top-0 bg-white" placeholder="Filter roles..." oninput="filterRoleDropdown()">
-                        <div id="role-options-container">${roleOptions}</div>
-                    </div>
-                </div>
-                <select id="worker-payment" class="w-full border rounded-lg p-3" required>
-                    <option value="">Select Payment Method</option>
-                    <option value="daily">Daily</option>
-                    <option value="monthly">Monthly</option>
-                </select>
-                <input class="w-full border rounded-lg p-3" placeholder="Estimated Salary/Cost (RWF)" type="number" id="worker-salary" required>
-                <input class="w-full border rounded-lg p-3" placeholder="Phone Number" type="tel" id="worker-phone">
-                <div>
-                    <label class="text-sm font-medium">Photo (optional)</label>
-                    <input type="file" id="worker-image" accept="image/*" class="w-full mt-1">
-                </div>
-                <button type="submit" class="w-full bg-emerald-600 text-white py-3 rounded-xl">Save Worker</button>
-            </form>
-        `);
+// =============== GALLERY UPLOAD ===============
 
-        document.querySelectorAll('.role-option').forEach(item => {
-            item.addEventListener('click', () => {
-                const role = item.dataset.role;
-                document.getElementById('worker-role').value = role;
-                document.getElementById('selected-role-text').textContent = role;
-                document.getElementById('selected-role-text').classList.remove('text-slate-400');
-                document.getElementById('role-dropdown').classList.add('hidden');
-            });
-        });
+window.handleGalleryUpload = async (e) => {
 
-        window.filterRoleDropdown = () => {
-            const filter = document.getElementById('role-search').value.toLowerCase();
-            document.querySelectorAll('.role-option').forEach(opt => {
-                opt.style.display = opt.dataset.role.toLowerCase().includes(filter) ? '' : 'none';
-            });
-        };
+    e.preventDefault();
 
-        document.addEventListener('click', (e) => {
-            if (!e.target.closest('#role-selector') && !e.target.closest('#role-dropdown')) {
-                const dropdown = document.getElementById('role-dropdown');
-                if (dropdown) dropdown.classList.add('hidden');
-            }
-        });
-    };
+    const form = e.target;
 
-    window.handleAddWorker = async (e) => {
-        e.preventDefault();
-        const form = e.target;
-        const btn = getFormSubmitBtn(form);
-        setButtonLoading(btn, true);
-        try {
-            const name = document.getElementById('worker-name').value.trim();
-            const role = document.getElementById('worker-role').value;
-            const payment = document.getElementById('worker-payment').value;
-            const salary = parseFloat(document.getElementById('worker-salary').value) || 0;
-            const phone = document.getElementById('worker-phone').value.trim();
-            const imageFile = document.getElementById('worker-image').files[0];
-            if (!name || !role || !payment || !salary) return alert('All fields required.');
-            let imageUrl = '';
-            if (imageFile) imageUrl = await uploadImageToImgbb(imageFile);
-            await addDoc(collection(db, 'site_workers'), {
+    const btn =
+        form.querySelector('button[type="submit"]');
+
+    setButtonLoading(btn, true);
+
+    try {
+
+        const imageFile =
+            document.getElementById('gallery-image').files[0];
+
+        const description =
+            document.getElementById('gallery-description')
+                .value
+                .trim();
+
+        if (!imageFile) {
+            return alert('Please select an image.');
+        }
+
+        const imageUrl =
+            await uploadImageToImgbb(imageFile);
+
+        await addDoc(
+            collection(db, 'gallery'),
+            {
                 site_id: currentSiteId,
-                name,
-                role,
-                payment_method: payment,
-                salary,
-                phone,
                 image: imageUrl,
-                added_by: currentUser.uid
-            });
-            closeModal();
-        } catch (err) { alert('Error: ' + err.message); }
-        finally { setButtonLoading(btn, false); }
-    };
+                description: description || '',
+                uploaded_at: new Date().toISOString()
+            }
+        );
+
+        document.getElementById('gallery-image').value = '';
+
+        document.getElementById('gallery-description').value = '';
+
+    } catch (err) {
+
+        alert('Error: ' + err.message);
+
+    } finally {
+
+        setButtonLoading(btn, false);
+    }
+};
 
     // =============== LOGOUT ===============
     window.handleLogout = async () => {
