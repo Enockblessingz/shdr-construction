@@ -1041,7 +1041,16 @@
             const phone = document.getElementById('edit-assigned-phone').value.trim();
 
             if (!name || !role || !site_id || isNaN(salary)) return alert('All required fields must be filled.');
-            await updateDoc(doc(db, 'assigned_workers', id), { name, role, site_id, salary, phone });
+            
+            // Uses setDoc with merge: true to avoid "No document to update" errors
+            await setDoc(doc(db, 'assigned_workers', id), { 
+                name, 
+                role, 
+                site_id, 
+                salary, 
+                phone 
+            }, { merge: true });
+
             closeModal();
             if (selectedWorkerViewSite) selectWorkerViewSite(selectedWorkerViewSite);
         } catch (err) { alert('Error: ' + getFriendlyError(err)); }
@@ -1142,7 +1151,6 @@
             deleteDoc(doc(db, 'worker_positions', id)).catch(err => alert('Error: ' + getFriendlyError(err)));
         }
     };
-
     
     // =============== PROGRESS ===============
     function renderProgress(container) {
