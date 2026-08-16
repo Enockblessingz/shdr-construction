@@ -1203,176 +1203,164 @@
         }
     };
 
-    // =============== REPORTS ===============
-    function renderReports(container) {
-        const siteOpts = sitesData.map(s => `<option value="${s.id}">${s.name}</option>`).join('');
-        container.innerHTML = `
-            <h2 class="text-xl sm:text-2xl font-bold mb-4">Reports</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="bg-white rounded-2xl border p-4">
-                    <h3 class="font-semibold mb-3 text-sm">Generate Report</h3>
-                    <label class="block text-sm font-medium mb-1">Select Site</label>
-                    <select id="report-site" class="w-full border p-2 rounded-lg mb-3 text-sm">
-                        <option value="all">All Sites</option>
-                        ${siteOpts}
-                    </select>
-                    <label class="block text-sm font-medium mb-1">Department</label>
-                    <select id="report-dept" class="w-full border p-2 rounded-lg mb-3 text-sm">
-                        <option value="all">All Departments</option>
-                        <option value="materials">Materials</option>
-                        <option value="workers">Workers</option>
-                        <option value="finances">Finances</option>
-                    </select>
-                    <div class="grid grid-cols-2 gap-2 mb-3">
-                        <div>
-                            <label class="block text-sm font-medium mb-1">Start Date</label>
-                            <input type="date" id="report-start" class="w-full border p-2 rounded-lg text-sm">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium mb-1">End Date</label>
-                            <input type="date" id="report-end" class="w-full border p-2 rounded-lg text-sm">
-                        </div>
-                    </div>
-                    <div class="flex gap-2">
-                        <button onclick="exportReport('csv')" class="flex-1 bg-emerald-600 text-white py-2 rounded-xl text-sm">Export CSV</button>
-                        <button onclick="exportReport('pdf')" class="flex-1 border border-emerald-600 text-emerald-600 py-2 rounded-xl text-sm">Print PDF</button>
-                    </div>
-                </div>
-                <div class="bg-white rounded-2xl border p-4">
-                    <h3 class="font-semibold mb-3 text-sm">Approved Reports History</h3>
-                    ${progressTasks.filter(t => t.status === 'completed').slice(0,5).map(t => `
-                        <div class="flex justify-between text-sm"><span>${t.name}</span><span class="text-slate-400 text-xs">${new Date(t.end_date).toLocaleDateString()}</span></div>
-                    `).join('') || '<p class="text-slate-400 text-sm">None</p>'}
-                </div>
-            </div>
-        `;
-    }
-    window.exportReport = (format) => {
-        const siteId = document.getElementById('report-site').value;
-        const dept = document.getElementById('report-dept').value;
-        const startDate = document.getElementById('report-start').value;
-        const endDate = document.getElementById('report-end').value;
+   window.exportReport = (format) => {
+    const siteId = document.getElementById('report-site').value;
+    const dept = document.getElementById('report-dept').value;
+    const startDate = document.getElementById('report-start').value;
+    const endDate = document.getElementById('report-end').value;
 
-        let data = [];
-        let filename = 'SHDR_Report';
+    let data = [];
+    let filename = 'SHDR_Report';
 
-        const filterByDate = (items, dateField) => {
-            if (!startDate && !endDate) return items;
-            return items.filter(item => {
-                const itemDate = new Date(item[dateField]);
-                if (startDate && itemDate < new Date(startDate)) return false;
-                if (endDate && itemDate > new Date(endDate)) return false;
-                return true;
-            });
-        };
+    // Company Header Info
+    const companyHeader = [
+        'SHDR Ltd',
+        'KG 11 Avenue, Gasabo District',
+        'Kigali City, Rwanda',
+        'Tel: +250 788 474 110'
+    ];
 
-        const getSiteName = (id) => sitesData.find(s => s.id === id)?.name || 'Unknown';
-
-        if (dept === 'all' || dept === 'materials') {
-            let mats = materialsData;
-            if (siteId !== 'all') mats = mats.filter(m => m.site_id === siteId);
-            mats = filterByDate(mats, 'created_at');
-            data = data.concat(mats.map(m => ({
-                Department: 'Materials',
-                Site: getSiteName(m.site_id),
-                Name: m.name,
-                'Quantity Used': m.quantity_used || 0,
-                'Unit Cost (RWF)': m.quantity_used > 0 ? ((m.amount || 0) / m.quantity_used) : 0,
-                'Total Amount (RWF)': m.amount || 0,
-                Date: m.created_at ? new Date(m.created_at).toLocaleDateString() : ''
-            })));
-        }
-        if (dept === 'all' || dept === 'workers') {
-            let assigned = assignedWorkersData;
-            if (siteId !== 'all') assigned = assigned.filter(w => w.site_id === siteId);
-            data = data.concat(assigned.map(w => ({
-                Department: 'Workers',
-                Site: getSiteName(w.site_id),
-                Name: w.name,
-                Role: w.role,
-                Salary: w.salary,
-                Phone: w.phone
-            })));
-            let positions = workersData;
-            if (siteId !== 'all') positions = positions.filter(p => p.site_id === siteId || p.site_id === 'all');
-            data = data.concat(positions.map(p => ({
-                Department: 'Worker Positions',
-                Site: p.site_id === 'all' ? 'All Sites' : getSiteName(p.site_id),
-                Role: p.role,
-                'Salary Type': p.salary_type,
-                'Est. Cost': p.estimated_cost
-            })));
-        }
-        if (dept === 'all' || dept === 'finances') {
-            let att = attendanceData;
-            if (siteId !== 'all') att = att.filter(a => a.site_id === siteId);
-            const totalWorkerCost = att.reduce((sum, a) => sum + (a.daily_rate || 0), 0);
-            let mats = materialsData;
-            if (siteId !== 'all') mats = mats.filter(m => m.site_id === siteId);
-            const totalMatCost = mats.reduce((sum, m) => sum + ((m.quantity_used || 0) * (m.amount || 0)), 0);
-            data.push({
-                Department: 'Finances',
-                Category: 'Materials (Used)',
-                Amount: totalMatCost,
-                Description: 'Total material cost from used quantities'
-            });
-            data.push({
-                Department: 'Finances',
-                Category: 'Workers (Attendance)',
-                Amount: totalWorkerCost,
-                Description: 'Total worker attendance cost'
-            });
-        }
-
-        if (!data.length) {
-            alert('No data found for the selected filters.');
-            return;
-        }
-
-        const siteLabel = siteId === 'all' ? 'AllSites' : (sitesData.find(s => s.id === siteId)?.name || 'Site');
-        const deptLabel = dept === 'all' ? 'All' : dept;
-        filename = `SHDR_${siteLabel}_${deptLabel}`;
-
-        if (format === 'csv') {
-            const headers = Object.keys(data[0]);
-            const csvRows = [headers.join(',')];
-            for (const row of data) {
-                const values = headers.map(header => {
-                    const val = row[header] ?? '';
-                    return `"${String(val).replace(/"/g, '""')}"`;
-                });
-                csvRows.push(values.join(','));
-            }
-            const csv = csvRows.join('\n');
-            const blob = new Blob([csv], { type: 'text/csv' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = filename + '.csv';
-            a.click();
-            URL.revokeObjectURL(url);
-        } else {
-            const headers = Object.keys(data[0]);
-            const tableRows = data.map(row => 
-                `<tr>${headers.map(h => `<td>${row[h] ?? ''}</td>`).join('')}</tr>`
-            );
-            const tableHtml = `
-                <table border="1" cellpadding="5" style="border-collapse:collapse;width:100%;">
-                    <thead><tr>${headers.map(h => `<th>${h}</th>`).join('')}</tr></thead>
-                    <tbody>${tableRows.join('')}</tbody>
-                </table>
-            `;
-            const win = window.open('', '_blank', 'width=800,height=600');
-            win.document.write(`
-                <html><head><title>${filename}</title>
-                <style>body{font-family:sans-serif;padding:20px;} th{background:#f0f0f0;}</style>
-                </head>
-                <body><h2>${filename}</h2>${tableHtml}</body></html>
-            `);
-            win.document.close();
-            win.print();
-        }
+    const filterByDate = (items, dateField) => {
+        if (!startDate && !endDate) return items;
+        return items.filter(item => {
+            const itemDate = new Date(item[dateField]);
+            if (startDate && itemDate < new Date(startDate)) return false;
+            if (endDate && itemDate > new Date(endDate)) return false;
+            return true;
+        });
     };
+
+    const getSiteName = (id) => sitesData.find(s => s.id === id)?.name || 'Unknown';
+
+    if (dept === 'all' || dept === 'materials') {
+        let mats = materialsData;
+        if (siteId !== 'all') mats = mats.filter(m => m.site_id === siteId);
+        mats = filterByDate(mats, 'created_at');
+        data = data.concat(mats.map(m => ({
+            Department: 'Materials',
+            Site: getSiteName(m.site_id),
+            Name: m.name,
+            'Quantity Used': m.quantity_used || 0,
+            'Unit Cost (RWF)': m.quantity_used > 0 ? ((m.amount || 0) / m.quantity_used) : 0,
+            'Total Amount (RWF)': m.amount || 0,
+            Date: m.created_at ? new Date(m.created_at).toLocaleDateString() : ''
+        })));
+    }
+    if (dept === 'all' || dept === 'workers') {
+        let assigned = assignedWorkersData;
+        if (siteId !== 'all') assigned = assigned.filter(w => w.site_id === siteId);
+        data = data.concat(assigned.map(w => ({
+            Department: 'Workers',
+            Site: getSiteName(w.site_id),
+            Name: w.name,
+            Role: w.role,
+            Salary: w.salary,
+            Phone: w.phone
+        })));
+        let positions = workersData;
+        if (siteId !== 'all') positions = positions.filter(p => p.site_id === siteId || p.site_id === 'all');
+        data = data.concat(positions.map(p => ({
+            Department: 'Worker Positions',
+            Site: p.site_id === 'all' ? 'All Sites' : getSiteName(p.site_id),
+            Role: p.role,
+            'Salary Type': p.salary_type,
+            'Est. Cost': p.estimated_cost
+        })));
+    }
+    if (dept === 'all' || dept === 'finances') {
+        let att = attendanceData;
+        if (siteId !== 'all') att = att.filter(a => a.site_id === siteId);
+        const totalWorkerCost = att.reduce((sum, a) => sum + (a.daily_rate || 0), 0);
+        let mats = materialsData;
+        if (siteId !== 'all') mats = mats.filter(m => m.site_id === siteId);
+        const totalMatCost = mats.reduce((sum, m) => sum + ((m.quantity_used || 0) * (m.amount || 0)), 0);
+        data.push({
+            Department: 'Finances',
+            Category: 'Materials (Used)',
+            Amount: totalMatCost,
+            Description: 'Total material cost from used quantities'
+        });
+        data.push({
+            Department: 'Finances',
+            Category: 'Workers (Attendance)',
+            Amount: totalWorkerCost,
+            Description: 'Total worker attendance cost'
+        });
+    }
+
+    if (!data.length) {
+        alert('No data found for the selected filters.');
+        return;
+    }
+
+    const siteLabel = siteId === 'all' ? 'AllSites' : (sitesData.find(s => s.id === siteId)?.name || 'Site');
+    const deptLabel = dept === 'all' ? 'All' : dept;
+    filename = `SHDR_${siteLabel}_${deptLabel}`;
+
+    if (format === 'csv') {
+        const headers = Object.keys(data[0]);
+        const csvRows = [
+            ...companyHeader.map(line => `"${line}"`),
+            '', // Blank line spacer
+            headers.join(',')
+        ];
+
+        for (const row of data) {
+            const values = headers.map(header => {
+                const val = row[header] ?? '';
+                return `"${String(val).replace(/"/g, '""')}"`;
+            });
+            csvRows.push(values.join(','));
+        }
+        const csv = csvRows.join('\n');
+        const blob = new Blob([csv], { type: 'text/csv' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename + '.csv';
+        a.click();
+        URL.revokeObjectURL(url);
+    } else {
+        const headers = Object.keys(data[0]);
+        const tableRows = data.map(row => 
+            `<tr>${headers.map(h => `<td>${row[h] ?? ''}</td>`).join('')}</tr>`
+        );
+        const tableHtml = `
+            <table border="1" cellpadding="5" style="border-collapse:collapse;width:100%;margin-top:15px;">
+                <thead><tr>${headers.map(h => `<th>${h}</th>`).join('')}</tr></thead>
+                <tbody>${tableRows.join('')}</tbody>
+            </table>
+        `;
+        const win = window.open('', '_blank', 'width=800,height=600');
+        win.document.write(`
+            <html>
+            <head>
+                <title>${filename}</title>
+                <style>
+                    body { font-family: sans-serif; padding: 20px; color: #333; }
+                    .header { margin-bottom: 20px; border-bottom: 2px solid #333; padding-bottom: 10px; }
+                    .header h1 { margin: 0 0 5px 0; font-size: 20px; color: #059669; }
+                    .header p { margin: 2px 0; font-size: 13px; color: #4b5563; }
+                    th { background: #f0f0f0; text-align: left; }
+                    table { font-size: 12px; }
+                </style>
+            </head>
+            <body>
+                <div class="header">
+                    <h1>SHDR Ltd</h1>
+                    <p>KG 11 Avenue, Gasabo District</p>
+                    <p>Kigali City, Rwanda</p>
+                    <p>Tel: +250 788 474 110</p>
+                </div>
+                <h2>${filename}</h2>
+                ${tableHtml}
+            </body>
+            </html>
+        `);
+        win.document.close();
+        win.print();
+    }
+};
 
     // =============== FINANCES ===============
     let selectedFinanceSite = null;
