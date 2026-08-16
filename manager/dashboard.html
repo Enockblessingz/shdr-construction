@@ -833,186 +833,307 @@ window.handleAddWorker = async (e) => {
             return html;
         }
 
-        // ── RECORD ATTENDANCE ──
-        function renderWorkersRecord() {
-            if (!siteWorkersData.length) {
-                return `
-                    <div class="bg-white rounded-2xl border p-4">
-                        <p class="text-slate-500">No workers to record attendance for. Add workers first.</p>
-                    </div>
-                `;
-            }
+       // ── RECORD ATTENDANCE (Special Edition) ──
 
-            const today = new Date().toISOString().split('T')[0];
-            const alreadyRecorded = attendanceData.some(a => a.date === today && a.site_id === currentSiteId);
+function renderWorkersRecord() {
+    if (!siteWorkersData.length) {
+        return `
+            <div class="bg-white rounded-2xl border p-8 text-center">
+                <iconify-icon icon="material-symbols:engineering-outline" class="text-5xl text-slate-300 mx-auto block mb-4"></iconify-icon>
+                <p class="text-slate-500">No workers yet. Add some to start recording attendance!</p>
+            </div>
+        `;
+    }
 
-            let html = `
-                <div class="bg-white rounded-2xl border p-4">
-                    <div class="mb-4">
-                        <label class="block text-sm font-medium mb-1">Date</label>
-                        <input type="date" id="attendance-date" value="${today}" class="w-full border rounded-lg p-2 text-sm">
+    const today = new Date().toISOString().split('T')[0];
+
+    // ---- HTML ----
+    let html = `
+        <div class="space-y-6">
+
+            <!-- HEADER WITH DATE NAVIGATION -->
+            <div class="bg-white rounded-2xl border p-4 shadow-sm">
+                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                    <div>
+                        <h3 class="text-sm font-semibold text-slate-600 flex items-center gap-2">
+                            <iconify-icon icon="material-symbols:calendar-today" class="text-emerald-600"></iconify-icon>
+                            Select Attendance Date
+                        </h3>
                     </div>
-                    <div class="max-h-60 overflow-y-auto border rounded-lg p-2">
-                        ${siteWorkersData.map(w => {
-                            const dailyRate = w.payment_method === 'daily' ? Number(w.salary) || 0 : Math.round((Number(w.salary) || 0) / 30);
-                            return `
-                                <div class="flex items-center gap-3 p-3 hover:bg-slate-50 rounded-lg worker-checkbox">
-                                    <input type="checkbox" id="worker-${w.id}" value="${w.id}" class="w-4 h-4 text-emerald-600 rounded" ${alreadyRecorded ? 'disabled' : ''}>
-                                    <label for="worker-${w.id}" class="flex-1 cursor-pointer">
-                                        <span class="font-medium">${w.name}</span>
-                                        <span class="text-xs text-slate-500 ml-2">${w.role || 'Worker'}</span>
-                                        <span class="text-xs text-slate-400 ml-2">${dailyRate.toLocaleString()} RWF/day</span>
-                                    </label>
-                                </div>
-                            `;
-                        }).join('')}
-                    </div>
-                    ${alreadyRecorded ? '<p class="text-amber-600 text-sm mt-2">Attendance for today has already been recorded!</p>' : ''}
-                    <div id="attendance-summary" class="mt-4 p-3 bg-slate-50 rounded-lg hidden">
-                        <p class="text-sm">Selected workers: <span id="selected-count" class="font-semibold">0</span></p>
-                        <p class="text-sm font-bold">Total daily cost: <span id="total-cost">0</span> RWF</p>
-                        <button onclick="submitAttendance()" class="mt-2 w-full bg-emerald-600 hover:bg-emerald-700 text-white py-2 rounded-xl text-sm">Assign as Worked</button>
-                    </div>
-                    <div id="attendance-history" class="mt-6">
-                        <h4 class="font-semibold text-sm mb-3">Attendance History</h4>
-                        ${attendanceData.length ? renderAttendanceHistory() : '<p class="text-slate-400 text-sm">No attendance records yet.</p>'}
+                    <div class="flex items-center gap-2">
+                        <button onclick="changeAttendanceDate(-1)" class="p-2 rounded-lg border hover:bg-slate-50 transition">
+                            <iconify-icon icon="material-symbols:chevron-left" class="text-slate-600"></iconify-icon>
+                        </button>
+                        <input type="date" id="attendance-date" value="${today}" class="border rounded-lg px-3 py-2 text-sm w-40 focus:ring-2 focus:ring-emerald-500 outline-none">
+                        <button onclick="changeAttendanceDate(0)" class="px-3 py-2 bg-emerald-50 text-emerald-700 rounded-lg text-sm font-medium hover:bg-emerald-100 transition">
+                            Today
+                        </button>
+                        <button onclick="changeAttendanceDate(1)" class="p-2 rounded-lg border hover:bg-slate-50 transition">
+                            <iconify-icon icon="material-symbols:chevron-right" class="text-slate-600"></iconify-icon>
+                        </button>
                     </div>
                 </div>
-            `;
 
-            setTimeout(() => {
-                const dateInput = document.getElementById('attendance-date');
-                if (dateInput) dateInput.addEventListener('change', updateAttendanceSummary);
-                document.querySelectorAll('.worker-checkbox input[type="checkbox"]').forEach(cb => cb.addEventListener('change', updateAttendanceSummary));
-                updateAttendanceSummary();
-            }, 50);
-
-            return html;
-        }
-
-        function renderAttendanceHistory() {
-            const groups = {};
-            attendanceData.forEach(a => {
-                const date = a.date || 'Unknown';
-                if (!groups[date]) groups[date] = [];
-                groups[date].push(a);
-            });
-
-            let html = '';
-            const sortedDates = Object.keys(groups).sort((a, b) => new Date(b) - new Date(a));
-            sortedDates.forEach(date => {
-                const workers = groups[date];
-                const total = workers.reduce((sum, a) => sum + (Number(a.daily_rate) || 0), 0);
-                html += `
-                    <div class="mb-4 p-3 bg-slate-50 rounded-lg border border-slate-100">
-                        <div class="flex flex-wrap justify-between gap-2 mb-2">
-                            <p class="text-sm font-semibold text-slate-700">${date}</p>
-                            <p class="text-xs text-slate-500">${workers.length} workers • ${total.toLocaleString()} RWF</p>
-                        </div>
-                        <div class="flex flex-wrap gap-1">
-                            ${workers.map(a => `
-                                <span class="bg-white border border-slate-200 px-2 py-1 rounded text-xs text-slate-600">${a.name} (${a.role})</span>
-                            `).join('')}
-                        </div>
+                <!-- ATTENDANCE STATUS BADGE -->
+                <div id="attendance-status-badge" class="mt-3 hidden">
+                    <div class="inline-flex items-center gap-2 bg-amber-50 text-amber-700 px-3 py-1.5 rounded-full text-xs font-medium border border-amber-200">
+                        <iconify-icon icon="material-symbols:info-outline" class="text-amber-500"></iconify-icon>
+                        Attendance for this date already exists. Submitting will overwrite.
                     </div>
-                `;
-            });
-            return html;
-        }
+                </div>
+            </div>
 
-        window.setWorkersTab = (tab) => {
-            workersTab = tab;
-            showSection('workers');
-        };
-
-        window.updateAttendanceSummary = () => {
-            const checkboxes = document.querySelectorAll('.worker-checkbox input[type="checkbox"]:checked');
-            const selectedIds = Array.from(checkboxes).map(cb => cb.value);
-            const selectedWorkersData = siteWorkersData.filter(w => selectedIds.includes(w.id));
-            const summary = document.getElementById('attendance-summary');
-            if (!summary) return;
-            if (selectedIds.length === 0) {
-                summary.classList.add('hidden');
-                window._selectedWorkerIds = [];
-                return;
-            }
-            summary.classList.remove('hidden');
-            document.getElementById('selected-count').textContent = selectedIds.length;
-            let total = 0;
-            selectedWorkersData.forEach(w => {
-                const dailyRate = w.payment_method === 'daily' ? Number(w.salary) || 0 : Math.round((Number(w.salary) || 0) / 30);
-                total += dailyRate;
-            });
-            document.getElementById('total-cost').textContent = total.toLocaleString();
-            window._selectedWorkerIds = selectedIds;
-        };
-
-        window.submitAttendance = async () => {
-            const dateInput = document.getElementById('attendance-date');
-            const date = dateInput?.value;
-            if (!date) { alert('Please select a date.'); return; }
-            const selectedIds = window._selectedWorkerIds || [];
-            if (!selectedIds.length) { alert('Please select at least one worker.'); return; }
-
-            try {
-                const existing = attendanceData.filter(a => a.date === date && a.site_id === currentSiteId);
-                if (existing.length > 0) {
-                    if (!confirm('Attendance for this date already exists. Do you want to overwrite it?')) return;
-                    const batch = writeBatch(db);
-                    existing.forEach(a => batch.delete(doc(db, 'worker_attendance', a.id)));
-                    await batch.commit();
-                }
-
-                const selectedWorkersData = siteWorkersData.filter(w => selectedIds.includes(w.id));
-                const promises = selectedWorkersData.map(w => {
-                    const dailyRate = w.payment_method === 'daily' ? Number(w.salary) || 0 : Math.round((Number(w.salary) || 0) / 30);
-                    return addDoc(collection(db, 'worker_attendance'), {
-                        site_id: currentSiteId,
-                        date: date,
-                        worker_id: w.id,
-                        name: w.name,
-                        role: w.role,
-                        daily_rate: dailyRate,
-                        recorded_by: currentUser.uid,
-                        recorded_at: new Date().toISOString()
-                    });
-                });
-                await Promise.all(promises);
-                alert('Attendance recorded successfully!');
-                document.querySelectorAll('.worker-checkbox input[type="checkbox"]').forEach(cb => cb.checked = false);
-                window._selectedWorkerIds = [];
-                updateAttendanceSummary();
-            } catch (err) {
-                console.error('Attendance error:', err);
-                alert('Error recording attendance: ' + err.message);
-            }
-        };
-
-        function renderWorkers(container) {
-            const site = assignedSites.find(s => s.id === currentSiteId);
-            if (!site) { container.innerHTML = '<p class="text-red-500">Site not found.</p>'; return; }
-
-            let html = `
-                <div class="flex justify-between items-center mb-4">
-                    <h2 class="text-xl sm:text-2xl font-bold">Workers</h2>
-                    <button onclick="openAddWorkerModal()" class="px-3 py-2 bg-emerald-600 text-white rounded-xl hover:bg-emerald-700 flex items-center gap-2 text-sm">
-                        <iconify-icon icon="material-symbols:add"></iconify-icon> Add Worker
+            <!-- WORKER CARDS GRID -->
+            <div class="bg-white rounded-2xl border p-4 shadow-sm">
+                <div class="flex items-center justify-between mb-4">
+                    <h4 class="text-sm font-medium text-slate-700 flex items-center gap-2">
+                        <iconify-icon icon="material-symbols:people" class="text-emerald-600"></iconify-icon>
+                        Workers on Site
+                        <span class="text-xs text-slate-400 font-normal">(${siteWorkersData.length})</span>
+                    </h4>
+                    <button onclick="toggleSelectAllWorkers()" id="select-all-btn" class="text-xs text-emerald-600 hover:text-emerald-800 font-medium flex items-center gap-1 transition">
+                        <iconify-icon icon="material-symbols:select-all" class="text-sm"></iconify-icon>
+                        <span>Select All</span>
                     </button>
                 </div>
-                <div class="flex border-b border-slate-200 mb-4">
-                    <button onclick="setWorkersTab('view')" class="px-4 py-2 text-sm font-medium ${workersTab === 'view' ? 'tab-active text-white' : 'tab-inactive'} rounded-t-lg transition-colors">View Workers</button>
-                    <button onclick="setWorkersTab('record')" class="px-4 py-2 text-sm font-medium ${workersTab === 'record' ? 'tab-active text-white' : 'tab-inactive'} rounded-t-lg transition-colors">Record Attendance</button>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 max-h-72 overflow-y-auto pr-1">
+                    ${siteWorkersData.map((w, index) => {
+                        const dailyRate = w.payment_method === 'daily' ? Number(w.salary) || 0 : Math.round((Number(w.salary) || 0) / 30);
+                        const initial = (w.name || 'W').charAt(0).toUpperCase();
+                        const imgSrc = w.image || null;
+                        return `
+                            <div class="worker-card relative bg-slate-50 border-2 border-transparent rounded-xl p-3 cursor-pointer transition-all duration-200 hover:shadow-md hover:border-emerald-200" data-worker-id="${w.id}" onclick="toggleWorkerSelection('${w.id}')">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-700 font-bold text-sm overflow-hidden flex-shrink-0">
+                                        ${imgSrc ? `<img src="${imgSrc}" class="w-full h-full object-cover" alt="${w.name}">` : initial}
+                                    </div>
+                                    <div class="flex-1 min-w-0">
+                                        <p class="text-sm font-medium text-slate-800 truncate">${w.name}</p>
+                                        <p class="text-xs text-slate-500 truncate">${w.role || 'Worker'}</p>
+                                    </div>
+                                    <div class="text-right flex-shrink-0">
+                                        <span class="text-xs font-semibold text-emerald-700">${dailyRate.toLocaleString()} RWF</span>
+                                        <span class="text-[10px] text-slate-400 block">/ day</span>
+                                    </div>
+                                </div>
+                                <!-- Selection checkmark (hidden by default) -->
+                                <div class="absolute top-2 right-2 w-5 h-5 rounded-full bg-emerald-600 text-white flex items-center justify-center opacity-0 scale-75 transition-all duration-200" data-checkmark>
+                                    <iconify-icon icon="material-symbols:check" class="text-xs"></iconify-icon>
+                                </div>
+                            </div>
+                        `;
+                    }).join('')}
                 </div>
-            `;
+            </div>
 
-            if (workersTab === 'view') {
-                html += renderWorkersView();
-            } else {
-                html += renderWorkersRecord();
-            }
+            <!-- SUMMARY BAR -->
+            <div id="attendance-summary" class="bg-white rounded-2xl border p-4 shadow-sm hidden">
+                <div class="flex flex-wrap items-center justify-between gap-4">
+                    <div class="flex items-center gap-6">
+                        <div>
+                            <p class="text-xs text-slate-500">Selected</p>
+                            <p class="text-2xl font-bold text-slate-800"><span id="selected-count">0</span> <span class="text-sm font-normal text-slate-400">/ ${siteWorkersData.length}</span></p>
+                        </div>
+                        <div class="h-10 w-px bg-slate-200"></div>
+                        <div>
+                            <p class="text-xs text-slate-500">Total Daily Cost</p>
+                            <p class="text-2xl font-bold text-emerald-600"><span id="total-cost">0</span> <span class="text-sm font-normal text-slate-400">RWF</span></p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <!-- Progress bar -->
+                        <div class="w-32 h-2 bg-slate-100 rounded-full overflow-hidden">
+                            <div id="selection-progress" class="h-full bg-emerald-500 rounded-full transition-all duration-500" style="width:0%"></div>
+                        </div>
+                        <button onclick="submitAttendance()" class="px-6 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-sm font-semibold shadow-md hover:shadow-lg transition-all flex items-center gap-2">
+                            <iconify-icon icon="material-symbols:save"></iconify-icon>
+                            Assign as Worked
+                        </button>
+                    </div>
+                </div>
+            </div>
 
-            container.innerHTML = html;
+            <!-- ATTENDANCE HISTORY -->
+            <div class="bg-white rounded-2xl border p-4 shadow-sm">
+                <h4 class="text-sm font-medium text-slate-700 flex items-center gap-2 mb-3">
+                    <iconify-icon icon="material-symbols:history" class="text-emerald-600"></iconify-icon>
+                    Attendance History
+                </h4>
+                <div id="attendance-history-container">
+                    ${attendanceData.length ? renderAttendanceHistory() : '<p class="text-sm text-slate-400">No records yet.</p>'}
+                </div>
+            </div>
+
+        </div>
+    `;
+
+    // ---- Post-render setup ----
+    setTimeout(() => {
+        const dateInput = document.getElementById('attendance-date');
+        if (dateInput) dateInput.addEventListener('change', updateAttendanceSummary);
+        // Attach click events to all worker cards (already have onclick inline)
+        // Re-run summary to reflect any pre-selected state (none initially)
+        updateAttendanceSummary();
+    }, 50);
+
+    return html;
+}
+
+// ── DATE NAVIGATION ──
+window.changeAttendanceDate = (delta) => {
+    const input = document.getElementById('attendance-date');
+    if (!input) return;
+    let date = new Date(input.value || new Date().toISOString().split('T')[0]);
+    if (delta === 0) {
+        date = new Date();
+    } else {
+        date.setDate(date.getDate() + delta);
+    }
+    const newVal = date.toISOString().split('T')[0];
+    input.value = newVal;
+    // Trigger change event manually
+    input.dispatchEvent(new Event('change'));
+};
+
+// ── TOGGLE WORKER SELECTION ──
+window.toggleWorkerSelection = (workerId) => {
+    const card = document.querySelector(`.worker-card[data-worker-id="${workerId}"]`);
+    if (!card) return;
+    const checkbox = document.getElementById(`worker-${workerId}`);
+    if (!checkbox) return;
+    // Toggle checkbox
+    checkbox.checked = !checkbox.checked;
+    // Update card visual
+    updateWorkerCardVisual(card, checkbox.checked);
+    // Update summary
+    updateAttendanceSummary();
+};
+
+// ── UPDATE CARD VISUAL ──
+function updateWorkerCardVisual(card, selected) {
+    if (selected) {
+        card.classList.add('border-emerald-500', 'bg-emerald-50', 'shadow-md');
+        card.classList.remove('border-transparent', 'bg-slate-50');
+        const checkmark = card.querySelector('[data-checkmark]');
+        if (checkmark) {
+            checkmark.classList.remove('opacity-0', 'scale-75');
+            checkmark.classList.add('opacity-100', 'scale-100');
         }
+    } else {
+        card.classList.remove('border-emerald-500', 'bg-emerald-50', 'shadow-md');
+        card.classList.add('border-transparent', 'bg-slate-50');
+        const checkmark = card.querySelector('[data-checkmark]');
+        if (checkmark) {
+            checkmark.classList.add('opacity-0', 'scale-75');
+            checkmark.classList.remove('opacity-100', 'scale-100');
+        }
+    }
+}
+
+// ── TOGGLE SELECT ALL ──
+let allSelected = false;
+window.toggleSelectAllWorkers = () => {
+    const checkboxes = document.querySelectorAll('.worker-checkbox input[type="checkbox"]');
+    allSelected = !allSelected;
+    checkboxes.forEach(cb => {
+        cb.checked = allSelected;
+        const card = document.querySelector(`.worker-card[data-worker-id="${cb.value}"]`);
+        if (card) updateWorkerCardVisual(card, allSelected);
+    });
+    // Update button text
+    const btn = document.getElementById('select-all-btn');
+    if (btn) {
+        btn.querySelector('span').textContent = allSelected ? 'Deselect All' : 'Select All';
+        btn.querySelector('iconify-icon').icon = allSelected ? 'material-symbols:deselect' : 'material-symbols:select-all';
+    }
+    updateAttendanceSummary();
+};
+
+// ── UPDATE SUMMARY ──
+window.updateAttendanceSummary = () => {
+    const dateInput = document.getElementById('attendance-date');
+    const selectedDate = dateInput ? dateInput.value : new Date().toISOString().split('T')[0];
+
+    // Check if attendance already exists for this date
+    const alreadyExists = attendanceData.some(a => a.date === selectedDate && a.site_id === currentSiteId);
+    const badge = document.getElementById('attendance-status-badge');
+    if (badge) {
+        badge.classList.toggle('hidden', !alreadyExists);
+    }
+
+    const checkboxes = document.querySelectorAll('.worker-checkbox input[type="checkbox"]:checked');
+    const selectedIds = Array.from(checkboxes).map(cb => cb.value);
+    const selectedWorkers = siteWorkersData.filter(w => selectedIds.includes(w.id));
+
+    const summary = document.getElementById('attendance-summary');
+    if (!summary) return;
+
+    if (selectedIds.length === 0) {
+        summary.classList.add('hidden');
+        window._selectedWorkerIds = [];
+        return;
+    }
+
+    summary.classList.remove('hidden');
+    document.getElementById('selected-count').textContent = selectedIds.length;
+
+    let total = 0;
+    selectedWorkers.forEach(w => {
+        const dailyRate = w.payment_method === 'daily' ? Number(w.salary) || 0 : Math.round((Number(w.salary) || 0) / 30);
+        total += dailyRate;
+    });
+
+    document.getElementById('total-cost').textContent = total.toLocaleString();
+
+    // Update progress bar
+    const progress = document.getElementById('selection-progress');
+    if (progress) {
+        const pct = siteWorkersData.length ? Math.round((selectedIds.length / siteWorkersData.length) * 100) : 0;
+        progress.style.width = pct + '%';
+    }
+
+    window._selectedWorkerIds = selectedIds;
+};
+
+// ── RENDER ATTENDANCE HISTORY (enhanced) ──
+function renderAttendanceHistory() {
+    const groups = {};
+    attendanceData.forEach(a => {
+        const date = a.date || 'Unknown';
+        if (!groups[date]) groups[date] = [];
+        groups[date].push(a);
+    });
+
+    let html = '';
+    const sortedDates = Object.keys(groups).sort((a, b) => new Date(b) - new Date(a));
+    sortedDates.forEach(date => {
+        const workers = groups[date];
+        const total = workers.reduce((sum, a) => sum + (Number(a.daily_rate) || 0), 0);
+        html += `
+            <div class="mb-3 last:mb-0 p-3 bg-slate-50 rounded-xl border border-slate-100 transition hover:shadow-sm">
+                <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
+                    <span class="text-sm font-semibold text-slate-700 flex items-center gap-2">
+                        <iconify-icon icon="material-symbols:calendar-month" class="text-emerald-500 text-sm"></iconify-icon>
+                        ${date}
+                    </span>
+                    <span class="text-xs text-slate-500">
+                        ${workers.length} worker${workers.length > 1 ? 's' : ''} • ${total.toLocaleString()} RWF
+                    </span>
+                </div>
+                <div class="flex flex-wrap gap-1">
+                    ${workers.map(a => `
+                        <span class="inline-flex items-center gap-1 bg-white border border-slate-200 px-2 py-0.5 rounded text-xs text-slate-600">
+                            ${a.name}
+                            <span class="text-[10px] text-slate-400">(${a.role})</span>
+                        </span>
+                    `).join('')}
+                </div>
+            </div>
+        `;
+    });
+    return html;
+}
 
         // =============== PROGRESS ===============
         function renderProgress(container) {
