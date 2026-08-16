@@ -1209,17 +1209,21 @@
     const startDate = document.getElementById('report-start').value;
     const endDate = document.getElementById('report-end').value;
 
-    let data = [];
-    let filename = 'SHDR_Report';
-
-    // Company Header Info
-    const companyHeader = [
-        'SHDR Ltd',
+    // ---- Company Address Header ----
+    const COMPANY_NAME = 'SHDR Ltd';
+    const COMPANY_ADDRESS = [
         'KG 11 Avenue, Gasabo District',
         'Kigali City, Rwanda',
         'Tel: +250 788 474 110'
-    ];
+    ].join('\n');
+    const reportDate = new Date().toLocaleDateString('en-RW', {
+        year: 'numeric', month: 'long', day: 'numeric'
+    });
 
+    let data = [];
+    let filename = 'SHDR_Report';
+
+    // (your existing filter logic remains unchanged)
     const filterByDate = (items, dateField) => {
         if (!startDate && !endDate) return items;
         return items.filter(item => {
@@ -1232,6 +1236,7 @@
 
     const getSiteName = (id) => sitesData.find(s => s.id === id)?.name || 'Unknown';
 
+    // ----- Data collection (unchanged) -----
     if (dept === 'all' || dept === 'materials') {
         let mats = materialsData;
         if (siteId !== 'all') mats = mats.filter(m => m.site_id === siteId);
@@ -1293,15 +1298,27 @@
         return;
     }
 
+    // ----- Build filename -----
     const siteLabel = siteId === 'all' ? 'AllSites' : (sitesData.find(s => s.id === siteId)?.name || 'Site');
     const deptLabel = dept === 'all' ? 'All' : dept;
-    filename = `SHDR_${siteLabel}_${deptLabel}`;
+    filename = `SHDR_${siteLabel}_${deptLabel}_${new Date().toISOString().slice(0,10)}`;
 
+    // ================ CSV EXPORT ================
     if (format === 'csv') {
+        // Prepare header rows as comments
+        const headerRows = [
+            `"Company: ${COMPANY_NAME}"`,
+            `"Address: ${COMPANY_ADDRESS.replace(/\n/g, '; ')}"`,  // flatten to one line
+            `"Report Date: ${reportDate}"`,
+            `"Site: ${siteId === 'all' ? 'All Sites' : getSiteName(siteId)}"`,
+            `"Department: ${dept === 'all' ? 'All' : dept}"`,
+            '' // blank row
+        ];
+
+        // Data headers
         const headers = Object.keys(data[0]);
         const csvRows = [
-            ...companyHeader.map(line => `"${line}"`),
-            '', // Blank line spacer
+            ...headerRows,
             headers.join(',')
         ];
 
@@ -1312,6 +1329,7 @@
             });
             csvRows.push(values.join(','));
         }
+
         const csv = csvRows.join('\n');
         const blob = new Blob([csv], { type: 'text/csv' });
         const url = URL.createObjectURL(blob);
@@ -1320,41 +1338,56 @@
         a.download = filename + '.csv';
         a.click();
         URL.revokeObjectURL(url);
-    } else {
+    }
+
+    // ================ PDF / PRINT EXPORT ================
+    else {
         const headers = Object.keys(data[0]);
         const tableRows = data.map(row => 
             `<tr>${headers.map(h => `<td>${row[h] ?? ''}</td>`).join('')}</tr>`
         );
+
+        // Build a formatted address block
+        const addressHtml = `
+            <div style="text-align:center; margin-bottom:20px;">
+                <h1 style="font-size:24px; margin:0;">${COMPANY_NAME}</h1>
+                <p style="margin:2px 0;">KG 11 Avenue, Gasabo District</p>
+                <p style="margin:2px 0;">Kigali City, Rwanda</p>
+                <p style="margin:2px 0;">Tel: +250 788 474 110</p>
+                <p style="margin-top:10px; font-weight:bold;">
+                    Report: ${siteId === 'all' ? 'All Sites' : getSiteName(siteId)} | ${dept === 'all' ? 'All Departments' : dept}
+                </p>
+                <p style="margin:2px 0;">Generated: ${reportDate}</p>
+                <hr style="margin:10px 0;" />
+            </div>
+        `;
+
         const tableHtml = `
-            <table border="1" cellpadding="5" style="border-collapse:collapse;width:100%;margin-top:15px;">
+            <table border="1" cellpadding="5" style="border-collapse:collapse;width:100%;">
                 <thead><tr>${headers.map(h => `<th>${h}</th>`).join('')}</tr></thead>
                 <tbody>${tableRows.join('')}</tbody>
             </table>
         `;
+
         const win = window.open('', '_blank', 'width=800,height=600');
         win.document.write(`
             <html>
-            <head>
-                <title>${filename}</title>
-                <style>
-                    body { font-family: sans-serif; padding: 20px; color: #333; }
-                    .header { margin-bottom: 20px; border-bottom: 2px solid #333; padding-bottom: 10px; }
-                    .header h1 { margin: 0 0 5px 0; font-size: 20px; color: #059669; }
-                    .header p { margin: 2px 0; font-size: 13px; color: #4b5563; }
-                    th { background: #f0f0f0; text-align: left; }
-                    table { font-size: 12px; }
-                </style>
-            </head>
-            <body>
-                <div class="header">
-                    <h1>SHDR Ltd</h1>
-                    <p>KG 11 Avenue, Gasabo District</p>
-                    <p>Kigali City, Rwanda</p>
-                    <p>Tel: +250 788 474 110</p>
-                </div>
-                <h2>${filename}</h2>
-                ${tableHtml}
-            </body>
+                <head>
+                    <title>${filename}</title>
+                    <style>
+                        body { font-family: 'Plus Jakarta Sans', sans-serif; padding: 30px; }
+                        th { background: #f0f0f0; }
+                        h1 { color: #059669; }
+                        hr { border: 1px solid #ddd; }
+                    </style>
+                </head>
+                <body>
+                    ${addressHtml}
+                    ${tableHtml}
+                    <p style="margin-top:20px; text-align:center; font-size:12px; color:#888;">
+                        This report is generated automatically by SHDR Ltd Management System.
+                    </p>
+                </body>
             </html>
         `);
         win.document.close();
