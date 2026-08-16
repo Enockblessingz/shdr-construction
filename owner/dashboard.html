@@ -1197,202 +1197,941 @@
         }
     };
 
-    // =============== REPORTS ===============
-    function renderReports(container) {
-        const siteOpts = sitesData.map(s => `<option value="${s.id}">${s.name}</option>`).join('');
-        container.innerHTML = `
-            <h2 class="text-xl sm:text-2xl font-bold mb-4">Export Reports</h2>
-            <div class="bg-white rounded-2xl border p-4 max-w-lg space-y-4">
-                <div>
-                    <label class="block text-sm font-medium mb-1">Select Site</label>
-                    <select id="report-site" class="w-full border rounded-lg p-3">
-                        <option value="all">All Sites</option>
-                        ${siteOpts}
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-sm font-medium mb-1">Select Department</label>
-                    <select id="report-dept" class="w-full border rounded-lg p-3">
-                        <option value="all">All Departments</option>
-                        <option value="materials">Materials</option>
-                        <option value="workers">Workers</option>
-                        <option value="finances">Finances</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-sm font-medium mb-1">Start Date</label>
-                    <input type="date" id="report-start" class="w-full border rounded-lg p-3">
-                </div>
-                <div>
-                    <label class="block text-sm font-medium mb-1">End Date</label>
-                    <input type="date" id="report-end" class="w-full border rounded-lg p-3">
-                </div>
-                <div class="flex gap-3">
-                    <button onclick="exportReport('csv')" class="flex-1 bg-emerald-600 text-white py-3 rounded-xl hover:bg-emerald-700">Export CSV</button>
-                    <button onclick="exportReport('print')" class="flex-1 bg-slate-800 text-white py-3 rounded-xl hover:bg-slate-900">Print / PDF</button>
-                </div>
+    ```javascript
+// =============== REPORTS ===============
+function renderReports(container) {
+    const siteOpts = sitesData
+        .map(s => `<option value="${s.id}">${s.name}</option>`)
+        .join('');
+
+    container.innerHTML = `
+        <h2 class="text-xl sm:text-2xl font-bold mb-4">Export Reports</h2>
+
+        <div class="bg-white rounded-2xl border p-4 max-w-lg space-y-4">
+
+            <div>
+                <label class="block text-sm font-medium mb-1">
+                    Select Site
+                </label>
+
+                <select id="report-site"
+                    class="w-full border rounded-lg p-3">
+
+                    <option value="all">All Sites</option>
+                    ${siteOpts}
+
+                </select>
             </div>
-        `;
-    }
 
-    window.exportReport = (format) => {
-        const siteId = document.getElementById('report-site').value;
-        const dept = document.getElementById('report-dept').value;
-        const startDate = document.getElementById('report-start').value;
-        const endDate = document.getElementById('report-end').value;
+            <div>
+                <label class="block text-sm font-medium mb-1">
+                    Select Department
+                </label>
 
-        let data = [];
-        let filename = 'SHDR_Report';
+                <select id="report-dept"
+                    class="w-full border rounded-lg p-3">
 
-        // Company Header Info
-        const companyHeader = [
-            'SHDR Ltd',
-            'KG 11 Avenue, Gasabo District',
-            'Kigali City, Rwanda',
-            'Tel: +250 788 474 110'
-        ];
+                    <option value="all">All Departments</option>
+                    <option value="materials">Materials</option>
+                    <option value="workers">Workers</option>
+                    <option value="finances">Finances</option>
 
-        const filterByDate = (items, dateField) => {
-            if (!startDate && !endDate) return items;
-            return items.filter(item => {
-                const itemDate = new Date(item[dateField]);
-                if (startDate && itemDate < new Date(startDate)) return false;
-                if (endDate && itemDate > new Date(endDate)) return false;
-                return true;
-            });
-        };
+                </select>
+            </div>
 
-        const getSiteName = (id) => sitesData.find(s => s.id === id)?.name || 'Unknown';
+            <div>
+                <label class="block text-sm font-medium mb-1">
+                    Start Date
+                </label>
 
-        if (dept === 'all' || dept === 'materials') {
-            let mats = materialsData;
-            if (siteId !== 'all') mats = mats.filter(m => m.site_id === siteId);
-            mats = filterByDate(mats, 'created_at');
-            data = data.concat(mats.map(m => ({
+                <input
+                    type="date"
+                    id="report-start"
+                    class="w-full border rounded-lg p-3"
+                >
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium mb-1">
+                    End Date
+                </label>
+
+                <input
+                    type="date"
+                    id="report-end"
+                    class="w-full border rounded-lg p-3"
+                >
+            </div>
+
+            <div class="flex gap-3">
+
+                <button
+                    onclick="exportReport('csv')"
+                    class="flex-1 bg-emerald-600 text-white py-3 rounded-xl hover:bg-emerald-700">
+                    Export CSV
+                </button>
+
+                <button
+                    onclick="exportReport('print')"
+                    class="flex-1 bg-slate-800 text-white py-3 rounded-xl hover:bg-slate-900">
+                    Print / PDF
+                </button>
+
+            </div>
+
+        </div>
+    `;
+}
+
+
+window.exportReport = (format) => {
+
+    const siteId = document.getElementById('report-site').value;
+    const dept = document.getElementById('report-dept').value;
+    const startDate = document.getElementById('report-start').value;
+    const endDate = document.getElementById('report-end').value;
+
+    let data = [];
+    let filename = 'SHDR_Report';
+
+
+    // ==========================================
+    // COMPANY INFORMATION
+    // ==========================================
+
+    const companyName = 'SHDR Ltd';
+    const companyAddress = 'KG 11 Avenue, Gasabo District';
+    const companyCity = 'Kigali City, Rwanda';
+    const companyPhone = '+250 788 474 110';
+
+
+    // ==========================================
+    // DATE FILTER
+    // ==========================================
+
+    const filterByDate = (items, dateField) => {
+
+        if (!startDate && !endDate) {
+            return items;
+        }
+
+        return items.filter(item => {
+
+            const itemDate = new Date(item[dateField]);
+
+            if (
+                startDate &&
+                itemDate < new Date(startDate)
+            ) {
+                return false;
+            }
+
+            if (
+                endDate &&
+                itemDate > new Date(endDate + 'T23:59:59')
+            ) {
+                return false;
+            }
+
+            return true;
+        });
+    };
+
+
+    // ==========================================
+    // SITE NAME
+    // ==========================================
+
+    const getSiteName = (id) =>
+        sitesData.find(s => s.id === id)?.name || 'Unknown';
+
+
+    // ==========================================
+    // MATERIALS
+    // ==========================================
+
+    if (dept === 'all' || dept === 'materials') {
+
+        let mats = materialsData;
+
+        if (siteId !== 'all') {
+            mats = mats.filter(m => m.site_id === siteId);
+        }
+
+        mats = filterByDate(mats, 'created_at');
+
+        data = data.concat(
+            mats.map(m => ({
                 Department: 'Materials',
                 Site: getSiteName(m.site_id),
                 Name: m.name,
                 'Quantity Used': m.quantity_used || 0,
-                'Unit Cost (RWF)': m.quantity_used > 0 ? ((m.amount || 0) / m.quantity_used) : 0,
+                'Unit Cost (RWF)': m.quantity_used > 0
+                    ? ((m.amount || 0) / m.quantity_used)
+                    : 0,
                 'Total Amount (RWF)': m.amount || 0,
-                Date: m.created_at ? new Date(m.created_at).toLocaleDateString() : ''
-            })));
+                Date: m.created_at
+                    ? new Date(m.created_at).toLocaleDateString()
+                    : ''
+            }))
+        );
+    }
+
+
+    // ==========================================
+    // WORKERS
+    // ==========================================
+
+    if (dept === 'all' || dept === 'workers') {
+
+        let assigned = assignedWorkersData;
+
+        if (siteId !== 'all') {
+            assigned = assigned.filter(
+                w => w.site_id === siteId
+            );
         }
-        if (dept === 'all' || dept === 'workers') {
-            let assigned = assignedWorkersData;
-            if (siteId !== 'all') assigned = assigned.filter(w => w.site_id === siteId);
-            data = data.concat(assigned.map(w => ({
+
+        data = data.concat(
+            assigned.map(w => ({
                 Department: 'Workers',
                 Site: getSiteName(w.site_id),
                 Name: w.name,
                 Role: w.role,
                 Salary: w.salary,
                 Phone: w.phone
-            })));
-            let positions = workersData;
-            if (siteId !== 'all') positions = positions.filter(p => p.site_id === siteId || p.site_id === 'all');
-            data = data.concat(positions.map(p => ({
+            }))
+        );
+
+
+        let positions = workersData;
+
+        if (siteId !== 'all') {
+            positions = positions.filter(
+                p =>
+                    p.site_id === siteId ||
+                    p.site_id === 'all'
+            );
+        }
+
+        data = data.concat(
+            positions.map(p => ({
                 Department: 'Worker Positions',
-                Site: p.site_id === 'all' ? 'All Sites' : getSiteName(p.site_id),
+                Site: p.site_id === 'all'
+                    ? 'All Sites'
+                    : getSiteName(p.site_id),
                 Role: p.role,
                 'Salary Type': p.salary_type,
                 'Est. Cost': p.estimated_cost
-            })));
-        }
-        if (dept === 'all' || dept === 'finances') {
-            let att = attendanceData;
-            if (siteId !== 'all') att = att.filter(a => a.site_id === siteId);
-            const totalWorkerCost = att.reduce((sum, a) => sum + (a.daily_rate || 0), 0);
-            let mats = materialsData;
-            if (siteId !== 'all') mats = mats.filter(m => m.site_id === siteId);
-            const totalMatCost = mats.reduce((sum, m) => sum + ((m.quantity_used || 0) * (m.amount || 0)), 0);
-            data.push({
-                Department: 'Finances',
-                Category: 'Materials (Used)',
-                Amount: totalMatCost,
-                Description: 'Total material cost from used quantities'
-            });
-            data.push({
-                Department: 'Finances',
-                Category: 'Workers (Attendance)',
-                Amount: totalWorkerCost,
-                Description: 'Total worker attendance cost'
-            });
-        }
+            }))
+        );
+    }
 
-        if (!data.length) {
-            alert('No data found for the selected filters.');
-            return;
-        }
 
-        const siteLabel = siteId === 'all' ? 'AllSites' : (sitesData.find(s => s.id === siteId)?.name || 'Site');
-        const deptLabel = dept === 'all' ? 'All' : dept;
-        filename = `SHDR_${siteLabel}_${deptLabel}`;
+    // ==========================================
+    // FINANCES
+    // ==========================================
 
-        if (format === 'csv') {
-            const headers = Object.keys(data[0]);
-            const csvRows = [
-                ...companyHeader.map(line => `"${line}"`),
-                '', // Blank line spacer
-                headers.join(',')
-            ];
+    if (dept === 'all' || dept === 'finances') {
 
-            for (const row of data) {
-                const values = headers.map(header => {
-                    const val = row[header] ?? '';
-                    return `"${String(val).replace(/"/g, '""')}"`;
-                });
-                csvRows.push(values.join(','));
-            }
-            const csv = csvRows.join('\n');
-            const blob = new Blob([csv], { type: 'text/csv' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = filename + '.csv';
-            a.click();
-            URL.revokeObjectURL(url);
-        } else {
-            const headers = Object.keys(data[0]);
-            const tableRows = data.map(row => 
-                `<tr>${headers.map(h => `<td>${row[h] ?? ''}</td>`).join('')}</tr>`
+        let att = attendanceData;
+
+        if (siteId !== 'all') {
+            att = att.filter(
+                a => a.site_id === siteId
             );
-            const tableHtml = `
-                <table border="1" cellpadding="5" style="border-collapse:collapse;width:100%;margin-top:15px;">
-                    <thead><tr>${headers.map(h => `<th>${h}</th>`).join('')}</tr></thead>
-                    <tbody>${tableRows.join('')}</tbody>
-                </table>
-            `;
-            const win = window.open('', '_blank', 'width=800,height=600');
-            win.document.write(`
-                <html>
-                <head>
-                    <title>${filename}</title>
-                    <style>
-                        body { font-family: sans-serif; padding: 20px; color: #333; }
-                        .header { margin-bottom: 20px; border-bottom: 2px solid #333; padding-bottom: 10px; }
-                        .header h1 { margin: 0 0 5px 0; font-size: 20px; color: #059669; }
-                        .header p { margin: 2px 0; font-size: 13px; color: #4b5563; }
-                        th { background: #f0f0f0; text-align: left; }
-                        table { font-size: 12px; }
-                    </style>
-                </head>
-                <body>
-                    <div class="header">
-                        <h1>SHDR Ltd</h1>
-                        <p>KG 11 Avenue, Gasabo District</p>
-                        <p>Kigali City, Rwanda</p>
-                        <p>Tel: +250 788 474 110</p>
-                    </div>
-                    <h2>${filename}</h2>
-                    ${tableHtml}
-                </body>
-                </html>
-            `);
-            win.document.close();
-            win.print();
         }
-    };
+
+        const totalWorkerCost =
+            att.reduce(
+                (sum, a) =>
+                    sum + (a.daily_rate || 0),
+                0
+            );
+
+
+        let mats = materialsData;
+
+        if (siteId !== 'all') {
+            mats = mats.filter(
+                m => m.site_id === siteId
+            );
+        }
+
+        const totalMatCost =
+            mats.reduce(
+                (sum, m) =>
+                    sum +
+                    (
+                        (m.quantity_used || 0) *
+                        (m.amount || 0)
+                    ),
+                0
+            );
+
+
+        data.push({
+            Department: 'Finances',
+            Category: 'Materials (Used)',
+            Amount: totalMatCost,
+            Description:
+                'Total material cost from used quantities'
+        });
+
+
+        data.push({
+            Department: 'Finances',
+            Category: 'Workers (Attendance)',
+            Amount: totalWorkerCost,
+            Description:
+                'Total worker attendance cost'
+        });
+    }
+
+
+    // ==========================================
+    // NO DATA
+    // ==========================================
+
+    if (!data.length) {
+
+        alert(
+            'No data found for the selected filters.'
+        );
+
+        return;
+    }
+
+
+    // ==========================================
+    // REPORT LABELS
+    // ==========================================
+
+    const siteLabel =
+        siteId === 'all'
+            ? 'All Sites'
+            : (
+                sitesData.find(
+                    s => s.id === siteId
+                )?.name || 'Site'
+            );
+
+
+    // FIXED SYNTAX ERROR HERE
+    const deptLabel =
+        dept === 'all'
+            ? 'All Departments'
+            : dept.charAt(0).toUpperCase() + dept.slice(1);
+
+
+    filename =
+        `SHDR_${siteLabel}_${deptLabel}`;
+
+
+    // ==========================================
+    // GENERATED DATE
+    // ==========================================
+
+    const generatedDate =
+        new Date().toLocaleString(
+            'en-GB',
+            {
+                day: '2-digit',
+                month: 'long',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            }
+        );
+
+
+    // ==========================================
+    // CSV EXPORT
+    // ==========================================
+
+    if (format === 'csv') {
+
+        const headers =
+            Object.keys(data[0]);
+
+
+        const csvRows = [
+
+            `"${companyName}"`,
+            `"${companyAddress}"`,
+            `"${companyCity}"`,
+            `"Tel: ${companyPhone}"`,
+            `"Generated: ${generatedDate}"`,
+            `"Report: ${siteLabel}"`,
+            `"Department: ${deptLabel}"`,
+            '',
+
+            headers.join(',')
+        ];
+
+
+        for (const row of data) {
+
+            const values =
+                headers.map(header => {
+
+                    const val =
+                        row[header] ?? '';
+
+                    return `"${String(val)
+                        .replace(/"/g, '""')}"`;
+                });
+
+            csvRows.push(
+                values.join(',')
+            );
+        }
+
+
+        const csv =
+            csvRows.join('\n');
+
+
+        const blob =
+            new Blob(
+                [csv],
+                {
+                    type: 'text/csv;charset=utf-8;'
+                }
+            );
+
+
+        const url =
+            URL.createObjectURL(blob);
+
+
+        const a =
+            document.createElement('a');
+
+        a.href = url;
+
+        a.download =
+            filename + '.csv';
+
+        document.body.appendChild(a);
+
+        a.click();
+
+        document.body.removeChild(a);
+
+        URL.revokeObjectURL(url);
+
+        return;
+    }
+
+
+    // ==========================================
+    // PRINT / PDF
+    // ==========================================
+
+    const headers =
+        Object.keys(data[0]);
+
+
+    const tableRows =
+        data.map(row => `
+            <tr>
+                ${headers.map(h => `
+                    <td>${row[h] ?? ''}</td>
+                `).join('')}
+            </tr>
+        `).join('');
+
+
+    const tableHtml = `
+        <table>
+
+            <thead>
+                <tr>
+                    ${headers.map(h => `
+                        <th>${h}</th>
+                    `).join('')}
+                </tr>
+            </thead>
+
+            <tbody>
+                ${tableRows}
+            </tbody>
+
+        </table>
+    `;
+
+
+    // ==========================================
+    // OPEN PRINT WINDOW
+    // ==========================================
+
+    const win =
+        window.open(
+            '',
+            '_blank',
+            'width=1000,height=700'
+        );
+
+
+    if (!win) {
+
+        alert(
+            'Please allow pop-ups to print the report.'
+        );
+
+        return;
+    }
+
+
+    win.document.write(`
+
+        <!DOCTYPE html>
+
+        <html>
+
+        <head>
+
+            <meta charset="UTF-8">
+
+            <title>
+                ${filename}
+            </title>
+
+
+            <style>
+
+                * {
+                    box-sizing: border-box;
+                }
+
+
+                body {
+
+                    font-family:
+                        Arial,
+                        Helvetica,
+                        sans-serif;
+
+                    padding: 30px;
+
+                    margin: 0;
+
+                    color: #1f2937;
+
+                    background: white;
+                }
+
+
+                /* ==========================
+                   COMPANY HEADER
+                ========================== */
+
+                .company-header {
+
+                    display: flex;
+
+                    align-items: center;
+
+                    justify-content:
+                        space-between;
+
+                    border-bottom:
+                        3px solid #059669;
+
+                    padding-bottom: 18px;
+
+                    margin-bottom: 20px;
+                }
+
+
+                .company-left {
+
+                    display: flex;
+
+                    align-items: center;
+
+                    gap: 15px;
+                }
+
+
+                .company-logo {
+
+                    width: 75px;
+
+                    height: 75px;
+
+                    object-fit: contain;
+
+                    border-radius: 8px;
+                }
+
+
+                .company-name {
+
+                    font-size: 25px;
+
+                    font-weight: 700;
+
+                    color: #059669;
+
+                    margin-bottom: 3px;
+                }
+
+
+                .company-subtitle {
+
+                    font-size: 12px;
+
+                    color: #6b7280;
+
+                    margin-bottom: 5px;
+                }
+
+
+                .company-details {
+
+                    font-size: 12px;
+
+                    line-height: 1.5;
+
+                    color: #374151;
+                }
+
+
+                /* ==========================
+                   REPORT TITLE
+                ========================== */
+
+                .report-title {
+
+                    text-align: right;
+                }
+
+
+                .report-title h2 {
+
+                    margin: 0;
+
+                    font-size: 21px;
+
+                    color: #111827;
+                }
+
+
+                .report-title p {
+
+                    margin:
+                        5px 0 0;
+
+                    font-size: 11px;
+
+                    color: #6b7280;
+                }
+
+
+                /* ==========================
+                   REPORT META
+                ========================== */
+
+                .report-meta {
+
+                    background: #f0fdf4;
+
+                    border:
+                        1px solid #bbf7d0;
+
+                    border-radius: 8px;
+
+                    padding: 12px 15px;
+
+                    margin-bottom: 20px;
+
+                    font-size: 12px;
+
+                    line-height: 1.6;
+                }
+
+
+                .report-meta strong {
+
+                    color: #111827;
+                }
+
+
+                /* ==========================
+                   TABLE
+                ========================== */
+
+                table {
+
+                    border-collapse:
+                        collapse;
+
+                    width: 100%;
+
+                    font-size: 11px;
+                }
+
+
+                th {
+
+                    background: #059669;
+
+                    color: white;
+
+                    font-weight: 600;
+
+                    padding: 9px;
+
+                    border:
+                        1px solid #047857;
+
+                    text-align: left;
+                }
+
+
+                td {
+
+                    padding: 8px;
+
+                    border:
+                        1px solid #d1d5db;
+                }
+
+
+                tr:nth-child(even) {
+
+                    background: #f9fafb;
+                }
+
+
+                /* ==========================
+                   FOOTER
+                ========================== */
+
+                .report-footer {
+
+                    margin-top: 30px;
+
+                    padding-top: 12px;
+
+                    border-top:
+                        1px solid #d1d5db;
+
+                    text-align: center;
+
+                    font-size: 11px;
+
+                    color: #6b7280;
+
+                    line-height: 1.6;
+                }
+
+
+                .footer-system {
+
+                    font-weight: 600;
+
+                    color: #374151;
+                }
+
+
+                .footer-copy {
+
+                    font-size: 10px;
+
+                    color: #9ca3af;
+                }
+
+
+                /* ==========================
+                   PRINT
+                ========================== */
+
+                @media print {
+
+                    body {
+                        padding: 15px;
+                    }
+
+
+                    .company-header {
+
+                        break-inside:
+                            avoid;
+                    }
+
+
+                    table {
+
+                        page-break-inside:
+                            auto;
+                    }
+
+
+                    tr {
+
+                        page-break-inside:
+                            avoid;
+                    }
+
+
+                    thead {
+
+                        display:
+                            table-header-group;
+                    }
+
+
+                    .report-footer {
+
+                        page-break-inside:
+                            avoid;
+                    }
+                }
+
+            </style>
+
+        </head>
+
+
+        <body>
+
+
+            <!-- ==========================
+                 COMPANY HEADER
+            ========================== -->
+
+            <div class="company-header">
+
+                <div class="company-left">
+
+                    <img
+                        src="/shdr_logo.jpg"
+                        alt="SHDR Ltd Logo"
+                        class="company-logo"
+                    >
+
+
+                    <div>
+
+                        <div class="company-name">
+                            ${companyName}
+                        </div>
+
+
+                        <div class="company-subtitle">
+                            Construction Management System
+                        </div>
+
+
+                        <div class="company-details">
+
+                            ${companyAddress}<br>
+
+                            ${companyCity}<br>
+
+                            <strong>Tel:</strong>
+                            ${companyPhone}
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="report-title">
+
+                    <h2>
+                        Management Report
+                    </h2>
+
+                    <p>
+                        Official Company Report
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- ==========================
+                 REPORT INFORMATION
+            ========================== -->
+
+            <div class="report-meta">
+
+                <strong>Report:</strong>
+                ${siteLabel}
+
+                &nbsp; | &nbsp;
+
+                <strong>Department:</strong>
+                ${deptLabel}
+
+                <br>
+
+                <strong>Generated:</strong>
+                ${generatedDate}
+
+            </div>
+
+
+            <!-- ==========================
+                 DATA TABLE
+            ========================== -->
+
+            ${tableHtml}
+
+
+            <!-- ==========================
+                 FOOTER
+            ========================== -->
+
+            <div class="report-footer">
+
+                <div class="footer-system">
+
+                    This report is generated automatically
+                    by SHDR Ltd Management System.
+
+                </div>
+
+
+                <div class="footer-copy">
+
+                    © ${new Date().getFullYear()}
+                    SHDR Ltd — All rights reserved.
+
+                </div>
+
+            </div>
+
+
+        </body>
+
+        </html>
+
+    `);
+
+
+    win.document.close();
+
+    win.focus();
+
+
+    // Wait for logo/content to load
+    setTimeout(() => {
+
+        win.print();
+
+    }, 800);
+
+};
+```
+
 
     // =============== FINANCES ===============
     let selectedFinanceSite = null;
