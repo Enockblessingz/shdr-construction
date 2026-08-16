@@ -790,103 +790,140 @@
     };
 
     // =============== MATERIALS ===============
-    let selectedMatSite = null;
-    function renderMaterials(container) {
-        container.innerHTML = `
-            <h2 class="text-xl sm:text-2xl font-bold mb-3">Materials</h2>
-            <div class="flex gap-2 overflow-x-auto pb-2 site-selector mb-4">
-                ${sitesData.map(s => `<button onclick="selectMaterialSite('${s.id}')" class="px-3 py-1 rounded-full whitespace-nowrap text-sm ${selectedMatSite === s.id ? 'bg-emerald-600 text-white' : 'bg-slate-100 text-slate-600'}">${s.name}</button>`).join('')}
-            </div>
-            <div id="materials-table"></div>
-        `;
-        if (selectedMatSite) renderMaterialTable();
-    }
-    window.selectMaterialSite = (id) => {
-        selectedMatSite = id;
-        renderMaterials(document.getElementById('content-area'));
-    };
-    function renderMaterialTable() {
-        const table = document.getElementById('materials-table');
-        if (!table) return;
-        const siteMats = materialsData.filter(m => m.site_id === selectedMatSite);
-        if (!siteMats.length) { table.innerHTML = '<p class="text-slate-500">No materials recorded.</p>'; return; }
-        table.innerHTML = `
-            <div class="overflow-x-auto bg-white rounded-2xl border">
-                <table class="w-full text-sm">
-                    <thead class="bg-slate-50 uppercase text-xs">
-                        <tr>
-                            <th class="px-3 py-2">Image</th>
-                            <th class="px-3 py-2">Name</th>
-                            <th class="px-3 py-2">Quantity Used</th>
-                            <th class="px-3 py-2">Unit Cost (RWF)</th>
-                            <th class="px-3 py-2">Total Amount (RWF)</th>
-                            <th class="px-3 py-2">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${siteMats.map(m => {
-                            const qty = m.quantity_used || 0;
-                            const total = m.amount || 0;
-                            const unitCost = qty > 0 ? total / qty : 0;
-                            return `
-                            <tr>
-                                <td class="px-3 py-2"><img src="${m.image || PLACEHOLDER_IMG}" class="w-8 h-8 rounded-lg object-cover"></td>
-                                <td class="px-3 py-2 font-medium">${m.name}</td>
-                                <td class="px-3 py-2">${qty}</td>
-                                <td class="px-3 py-2">${unitCost.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</td>
-                                <td class="px-3 py-2">${total.toLocaleString()}</td>
-                                <td class="px-3 py-2 flex gap-2">
-                                    <button onclick="editMaterial('${m.id}')" class="text-emerald-600 hover:text-emerald-800 text-xs">Edit</button>
-                                    <button onclick="deleteMaterial('${m.id}')" class="text-red-500 hover:text-red-700 text-xs">Delete</button>
-                                </td>
-                            </tr>
-                        `}).join('')}
-                    </tbody>
-                </table>
-            </div>
-        `;
+    // =============== MATERIALS (Card View) ===============
+
+let selectedMatSite = null;
+
+function renderMaterials(container) {
+    container.innerHTML = `
+        <h2 class="text-xl sm:text-2xl font-bold mb-3">Materials</h2>
+        <div class="flex gap-2 overflow-x-auto pb-2 site-selector mb-4">
+            ${sitesData.map(s => `
+                <button onclick="selectMaterialSite('${s.id}')"
+                    class="px-3 py-1 rounded-full whitespace-nowrap text-sm
+                    ${selectedMatSite === s.id ? 'bg-emerald-600 text-white' : 'bg-slate-100 text-slate-600'}">
+                    ${s.name}
+                </button>
+            `).join('')}
+        </div>
+        <div id="materials-container"></div>
+    `;
+    if (selectedMatSite) renderMaterialCards();
+}
+
+window.selectMaterialSite = (id) => {
+    selectedMatSite = id;
+    renderMaterials(document.getElementById('content-area'));
+};
+
+function renderMaterialCards() {
+    const container = document.getElementById('materials-container');
+    if (!container) return;
+
+    const siteMats = materialsData.filter(m => m.site_id === selectedMatSite);
+    if (!siteMats.length) {
+        container.innerHTML = `<p class="text-slate-500 text-sm">No materials recorded for this site.</p>`;
+        return;
     }
 
-    window.editMaterial = (id) => {
-        const mat = materialsData.find(m => m.id === id);
-        if (!mat) return;
-        openModal('Edit Material', `
-            <form onsubmit="handleEditMaterial(event, '${id}')" class="space-y-4">
-                <input class="w-full border rounded-lg p-3" value="${mat.name}" id="edit-mat-name" required>
-                <input class="w-full border rounded-lg p-3" value="${mat.quantity_used || 0}" type="number" id="edit-mat-used" required step="0.01" placeholder="Quantity Used">
-                <input class="w-full border rounded-lg p-3" value="${mat.amount || 0}" type="number" id="edit-mat-total" required step="0.01" placeholder="Total Amount (RWF)">
-                <div>
-                    <label class="text-sm font-medium">New Image (optional)</label>
-                    <input type="file" id="edit-mat-image" accept="image/*" class="w-full mt-1">
+    let html = `<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">`;
+
+    siteMats.forEach(m => {
+        const qty = m.quantity_used || 0;
+        const total = m.amount || 0;
+        const unitCost = qty > 0 ? total / qty : 0;
+        const imageUrl = m.image || PLACEHOLDER_IMG;
+
+        html += `
+            <div class="bg-white rounded-2xl border overflow-hidden shadow-sm hover:shadow-md transition">
+                <!-- Material Image -->
+                <div class="relative w-full h-48 overflow-hidden bg-slate-100">
+                    <img src="${imageUrl}" class="w-full h-full object-cover" alt="${m.name}" loading="lazy" onerror="this.src='${PLACEHOLDER_IMG}'">
                 </div>
-                <button type="submit" class="w-full bg-emerald-600 text-white py-3 rounded-xl">Update Material</button>
-            </form>
-        `);
-    };
-    window.handleEditMaterial = async (e, id) => {
-        e.preventDefault();
-        const form = e.target;
-        const btn = getFormSubmitBtn(form);
-        setButtonLoading(btn, true);
-        try {
-            const name = document.getElementById('edit-mat-name').value.trim();
-            const used = parseFloat(document.getElementById('edit-mat-used').value) || 0;
-            const total = parseFloat(document.getElementById('edit-mat-total').value) || 0;
-            const imageFile = document.getElementById('edit-mat-image').files[0];
-            let imageUrl = '';
-            if (imageFile) imageUrl = await uploadImageToImgbb(imageFile);
-            const updateData = { name, quantity_used: used, amount: total };
-            if (imageUrl) updateData.image = imageUrl;
-            await updateDoc(doc(db, 'materials', id), updateData);
-            closeModal();
-        } catch (err) { alert('Error: ' + getFriendlyError(err)); }
-        finally { setButtonLoading(btn, false); }
-    };
-    window.deleteMaterial = (id) => {
-        if (confirm('Delete this material?')) {
-            deleteDoc(doc(db, 'materials', id)).catch(err => alert('Error: ' + getFriendlyError(err)));
-        }
-    };
+
+                <!-- Material Details -->
+                <div class="p-5">
+                    <h3 class="font-bold text-lg text-slate-800 truncate">${m.name}</h3>
+
+                    <div class="mt-4 space-y-2">
+                        <div class="flex justify-between text-sm border-b border-slate-100 pb-2">
+                            <span class="text-slate-500">Quantity Used</span>
+                            <span class="font-semibold text-slate-700">${qty}</span>
+                        </div>
+                        <div class="flex justify-between text-sm border-b border-slate-100 pb-2">
+                            <span class="text-slate-500">Unit Cost</span>
+                            <span class="font-semibold text-slate-700">${unitCost.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",")} RWF</span>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span class="text-slate-500">Total Amount</span>
+                            <span class="font-bold text-emerald-600">${total.toLocaleString()} RWF</span>
+                        </div>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="mt-4 pt-3 border-t border-slate-100 flex justify-end gap-3">
+                        <button onclick="editMaterial('${m.id}')" class="text-sm text-emerald-600 hover:text-emerald-800 font-medium flex items-center gap-1 transition">
+                            <iconify-icon icon="material-symbols:edit" width="16" height="16"></iconify-icon>
+                            Edit
+                        </button>
+                        <button onclick="deleteMaterial('${m.id}')" class="text-sm text-red-500 hover:text-red-700 font-medium flex items-center gap-1 transition">
+                            <iconify-icon icon="material-symbols:delete" width="16" height="16"></iconify-icon>
+                            Delete
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+    });
+
+    html += `</div>`;
+    container.innerHTML = html;
+}
+
+// ── Edit & Delete functions (unchanged, but included for completeness) ──
+
+window.editMaterial = (id) => {
+    const mat = materialsData.find(m => m.id === id);
+    if (!mat) return;
+    openModal('Edit Material', `
+        <form onsubmit="handleEditMaterial(event, '${id}')" class="space-y-4">
+            <input class="w-full border rounded-lg p-3" value="${mat.name}" id="edit-mat-name" required>
+            <input class="w-full border rounded-lg p-3" value="${mat.quantity_used || 0}" type="number" id="edit-mat-used" required step="0.01" placeholder="Quantity Used">
+            <input class="w-full border rounded-lg p-3" value="${mat.amount || 0}" type="number" id="edit-mat-total" required step="0.01" placeholder="Total Amount (RWF)">
+            <div>
+                <label class="text-sm font-medium">New Image (optional)</label>
+                <input type="file" id="edit-mat-image" accept="image/*" class="w-full mt-1">
+            </div>
+            <button type="submit" class="w-full bg-emerald-600 text-white py-3 rounded-xl">Update Material</button>
+        </form>
+    `);
+};
+
+window.handleEditMaterial = async (e, id) => {
+    e.preventDefault();
+    const form = e.target;
+    const btn = getFormSubmitBtn(form);
+    setButtonLoading(btn, true);
+    try {
+        const name = document.getElementById('edit-mat-name').value.trim();
+        const used = parseFloat(document.getElementById('edit-mat-used').value) || 0;
+        const total = parseFloat(document.getElementById('edit-mat-total').value) || 0;
+        const imageFile = document.getElementById('edit-mat-image').files[0];
+        let imageUrl = '';
+        if (imageFile) imageUrl = await uploadImageToImgbb(imageFile);
+        const updateData = { name, quantity_used: used, amount: total };
+        if (imageUrl) updateData.image = imageUrl;
+        await updateDoc(doc(db, 'materials', id), updateData);
+        closeModal();
+    } catch (err) { alert('Error: ' + getFriendlyError(err)); }
+    finally { setButtonLoading(btn, false); }
+};
+
+window.deleteMaterial = (id) => {
+    if (confirm('Delete this material?')) {
+        deleteDoc(doc(db, 'materials', id)).catch(err => alert('Error: ' + getFriendlyError(err)));
+    }
+};
 
 // =============== WORKERS ===============
     let selectedWorkerViewSite = null;
