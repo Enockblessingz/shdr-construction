@@ -1323,24 +1323,12 @@ window.openAddMaterialModal = () => {
             } catch (err) { alert('Error: ' + err.message); }
         };
 
-        // =============== REPORTS (UPDATED – matches owner's format) ===============
+        // =============== REPORTS (no site selector) ===============
         function renderReports(container) {
-            const siteOpts = assignedSites
-                .map(s => `<option value="${s.id}">${s.name}</option>`)
-                .join('');
-
             container.innerHTML = `
                 <h2 class="text-xl sm:text-2xl font-bold mb-4">Generate Reports</h2>
 
                 <div class="bg-white rounded-2xl border p-4 max-w-lg space-y-4">
-
-                    <div>
-                        <label class="block text-sm font-medium mb-1">Select Site</label>
-                        <select id="report-site" class="w-full border rounded-lg p-3">
-                            <option value="all">All Sites</option>
-                            ${siteOpts}
-                        </select>
-                    </div>
 
                     <div>
                         <label class="block text-sm font-medium mb-1">Department</label>
@@ -1376,10 +1364,10 @@ window.openAddMaterialModal = () => {
         }
 
         window.exportReport = (format) => {
-            const siteId = document.getElementById('report-site').value;
             const dept = document.getElementById('report-dept').value;
             const startDate = document.getElementById('report-start').value;
             const endDate = document.getElementById('report-end').value;
+            const site = assignedSites.find(s => s.id === currentSiteId);
 
             let data = [];
             let filename = 'SHDR_Report';
@@ -1401,18 +1389,13 @@ window.openAddMaterialModal = () => {
                 });
             };
 
-            const getSiteName = (id) =>
-                assignedSites.find(s => s.id === id)?.name || 'Unknown';
-
             // ----- Materials -----
             if (dept === 'all' || dept === 'materials') {
-                let mats = materialsData;
-                if (siteId !== 'all') mats = mats.filter(m => m.site_id === siteId);
+                let mats = materialsData.filter(m => m.site_id === currentSiteId);
                 mats = filterByDate(mats, 'date_used');
                 data = data.concat(
                     mats.map(m => ({
                         Department: 'Materials',
-                        Site: getSiteName(m.site_id),
                         Name: m.name,
                         'Quantity Used': m.quantity_used || 0,
                         'Unit Cost (RWF)': m.quantity_used > 0 ? ((m.amount || 0) / m.quantity_used) : 0,
@@ -1424,12 +1407,10 @@ window.openAddMaterialModal = () => {
 
             // ----- Workers -----
             if (dept === 'all' || dept === 'workers') {
-                let workers = siteWorkersData;
-                if (siteId !== 'all') workers = workers.filter(w => w.site_id === siteId);
+                let workers = siteWorkersData.filter(w => w.site_id === currentSiteId);
                 data = data.concat(
                     workers.map(w => ({
                         Department: 'Workers',
-                        Site: getSiteName(w.site_id),
                         Name: w.name,
                         Role: w.role,
                         Salary: w.salary,
@@ -1437,12 +1418,10 @@ window.openAddMaterialModal = () => {
                     }))
                 );
 
-                let positions = workerPositions;
-                if (siteId !== 'all') positions = positions.filter(p => p.site_id === siteId || p.site_id === 'all');
+                let positions = workerPositions.filter(p => p.site_id === currentSiteId || p.site_id === 'all');
                 data = data.concat(
                     positions.map(p => ({
                         Department: 'Worker Positions',
-                        Site: p.site_id === 'all' ? 'All Sites' : getSiteName(p.site_id),
                         Role: p.role,
                         'Salary Type': p.salary_type,
                         'Est. Cost': p.estimated_cost
@@ -1452,12 +1431,10 @@ window.openAddMaterialModal = () => {
 
             // ----- Finances -----
             if (dept === 'all' || dept === 'finances') {
-                let att = attendanceData;
-                if (siteId !== 'all') att = att.filter(a => a.site_id === siteId);
+                let att = attendanceData.filter(a => a.site_id === currentSiteId);
                 const totalWorkerCost = att.reduce((sum, a) => sum + (a.daily_rate || 0), 0);
 
-                let mats = materialsData;
-                if (siteId !== 'all') mats = mats.filter(m => m.site_id === siteId);
+                let mats = materialsData.filter(m => m.site_id === currentSiteId);
                 const totalMatCost = mats.reduce((sum, m) => sum + ((m.quantity_used || 0) * (m.amount || 0)), 0);
 
                 data.push({
@@ -1480,11 +1457,9 @@ window.openAddMaterialModal = () => {
             }
 
             // ----- Labels & filename -----
-            const siteLabel = siteId === 'all'
-                ? 'All Sites'
-                : (assignedSites.find(s => s.id === siteId)?.name || 'Site');
+            const siteName = site?.name || 'Site';
             const deptLabel = dept === 'all' ? 'All Departments' : dept.charAt(0).toUpperCase() + dept.slice(1);
-            filename = `SHDR_${siteLabel}_${deptLabel}`;
+            filename = `SHDR_${siteName}_${deptLabel}`;
 
             const generatedDate = new Date().toLocaleString('en-US', {
                 month: 'long', day: 'numeric', year: 'numeric',
@@ -1501,7 +1476,7 @@ window.openAddMaterialModal = () => {
                     `"${companyCity}"`,
                     `"Tel: ${companyPhone}"`,
                     `"Generated: ${generatedDate}"`,
-                    `"Report: ${siteLabel}"`,
+                    `"Report: ${siteName}"`,
                     `"Department: ${deptLabel}"`,
                     '',
                     headers.join(',')
@@ -1679,7 +1654,7 @@ window.openAddMaterialModal = () => {
                     </div>
 
                     <div class="report-meta">
-                        <strong>Site Name:</strong> ${siteLabel} &nbsp;|&nbsp;
+                        <strong>Site Name:</strong> ${siteName} &nbsp;|&nbsp;
                         <strong>Department:</strong> ${deptLabel}<br>
                         <strong>Generated:</strong> ${generatedDate}
                     </div>
