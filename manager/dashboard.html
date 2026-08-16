@@ -596,96 +596,139 @@
 
         // =============== WORKERS ===============
 
-        // ── ADD WORKER MODAL ──
-        window.openAddWorkerModal = () => {
-            // Get roles from workerPositions (filtered by current site or 'all')
-            const availableRoles = workerPositions
-                .filter(p => p.site_id === currentSiteId || p.site_id === 'all')
-                .map(p => p.role);
-            // Remove duplicates
-            const uniqueRoles = [...new Set(availableRoles)].filter(Boolean);
+        // ── ADD WORKER MODAL (with searchable role dropdown) ──
+window.openAddWorkerModal = () => {
+    // Combine roles from workerPositions (filtered by current site or 'all')
+    const allRoles = workerPositions
+        .filter(p => p.site_id === currentSiteId || p.site_id === 'all')
+        .map(p => p.role);
 
-            let roleOptions = '';
-            if (uniqueRoles.length) {
-                roleOptions = uniqueRoles.map(role => `<option value="${role}">${role}</option>`).join('');
-            } else {
-                roleOptions = `<option value="">No roles defined</option>`;
-            }
+    const commonRoles = [
+        'Mason', 'Mason Helper', 'Carpenter', 'Carpenter Helper',
+        'Steel Fixer', 'Steel Fixer Helper', 'Plumber', 'Electrician',
+        'Welder', 'Painter', 'Tiler', 'Roofer', 'Concrete Worker',
+        'Excavation Worker', 'Truck Driver', 'Cleaner', 'Site Security Guard'
+    ];
 
-            const modalContent = `
-                <form onsubmit="handleAddWorker(event)" class="space-y-4">
-                    <input class="w-full border rounded-lg p-3" placeholder="Full Name" id="worker-name" required>
-                    <select class="w-full border rounded-lg p-3" id="worker-role" required>
-                        <option value="">Select Role</option>
-                        ${roleOptions}
-                    </select>
-                    <select class="w-full border rounded-lg p-3" id="worker-payment" required>
-                        <option value="">Payment Method</option>
-                        <option value="daily">Daily</option>
-                        <option value="monthly">Monthly</option>
-                    </select>
-                    <input class="w-full border rounded-lg p-3" placeholder="Salary (RWF)" type="number" id="worker-salary" required min="0">
-                    <input class="w-full border rounded-lg p-3" placeholder="Phone Number" type="tel" id="worker-phone">
-                    <div>
-                        <label class="text-sm font-medium">Photo (optional)</label>
-                        <input type="file" id="worker-image" accept="image/*" class="w-full mt-1">
-                    </div>
-                    <button type="submit" class="w-full bg-emerald-600 text-white py-3 rounded-xl">Save Worker</button>
-                </form>
-            `;
+    const uniqueRoles = [...new Set([...commonRoles, ...allRoles])].filter(Boolean);
+    const roleOptions = uniqueRoles.map(r =>
+        `<div class="role-option px-3 py-2 cursor-pointer hover:bg-emerald-50" data-role="${r}">${r}</div>`
+    ).join('');
 
-            openModal('Add Worker', modalContent);
-        };
+    const modalContent = `
+        <form onsubmit="handleAddWorker(event)" class="space-y-4">
+            <input class="w-full border rounded-lg p-3" placeholder="Full Name" id="worker-name" required>
 
-        window.handleAddWorker = async (e) => {
-            e.preventDefault();
-            const form = e.target;
-            const btn = getFormSubmitBtn(form);
-            setButtonLoading(btn, true);
+            <div class="relative">
+                <label class="block text-sm font-medium mb-1">Role (select only)</label>
+                <div id="role-selector" class="border rounded-lg p-3 bg-white flex items-center justify-between cursor-pointer" onclick="document.getElementById('role-dropdown').classList.toggle('hidden')">
+                    <span id="selected-role-text" class="text-slate-400">Choose a role...</span>
+                    <iconify-icon icon="material-symbols:arrow-drop-down" width="20"></iconify-icon>
+                </div>
+                <input type="hidden" id="worker-role" required>
+                <div id="role-dropdown" class="hidden absolute z-10 w-full bg-white border rounded-lg mt-1 max-h-40 overflow-y-auto shadow-lg">
+                    <input type="text" id="role-search" class="w-full border-b p-2 sticky top-0 bg-white" placeholder="Filter roles..." oninput="filterRoleDropdown()">
+                    <div id="role-options-container">${roleOptions}</div>
+                </div>
+            </div>
 
+            <select id="worker-payment" class="w-full border rounded-lg p-3" required>
+                <option value="">Select Payment Method</option>
+                <option value="daily">Daily</option>
+                <option value="monthly">Monthly</option>
+            </select>
+
+            <input class="w-full border rounded-lg p-3" placeholder="Salary (RWF)" type="number" id="worker-salary" required min="0">
+            <input class="w-full border rounded-lg p-3" placeholder="Phone Number" type="tel" id="worker-phone">
+
+            <div>
+                <label class="text-sm font-medium">Photo (optional)</label>
+                <input type="file" id="worker-image" accept="image/*" class="w-full mt-1">
+            </div>
+
+            <button type="submit" class="w-full bg-emerald-600 text-white py-3 rounded-xl">Save Worker</button>
+        </form>
+    `;
+
+    openModal('Add Worker', modalContent);
+
+    // ── Role option click handler ──
+    document.querySelectorAll('.role-option').forEach(item => {
+        item.addEventListener('click', () => {
+            const role = item.dataset.role;
+            document.getElementById('worker-role').value = role;
+            document.getElementById('selected-role-text').textContent = role;
+            document.getElementById('selected-role-text').classList.remove('text-slate-400');
+            document.getElementById('role-dropdown').classList.add('hidden');
+        });
+    });
+
+    // ── Global filter function (so it stays available) ──
+    window.filterRoleDropdown = () => {
+        const filter = document.getElementById('role-search').value.toLowerCase();
+        document.querySelectorAll('.role-option').forEach(opt => {
+            opt.style.display = opt.dataset.role.toLowerCase().includes(filter) ? '' : 'none';
+        });
+    };
+
+    // ── Close dropdown when clicking outside ──
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('#role-selector') && !e.target.closest('#role-dropdown')) {
+            const dropdown = document.getElementById('role-dropdown');
+            if (dropdown) dropdown.classList.add('hidden');
+        }
+    });
+};
+
+window.handleAddWorker = async (e) => {
+    e.preventDefault();
+    const form = e.target;
+    const btn = getFormSubmitBtn(form);
+    setButtonLoading(btn, true);
+
+    try {
+        const name = document.getElementById('worker-name').value.trim();
+        const role = document.getElementById('worker-role').value;
+        const payment = document.getElementById('worker-payment').value;
+        const salary = parseFloat(document.getElementById('worker-salary').value) || 0;
+        const phone = document.getElementById('worker-phone').value.trim();
+        const imageFile = document.getElementById('worker-image').files[0];
+
+        if (!name || !role || !payment) {
+            alert('Name, Role and Payment Method are required.');
+            return;
+        }
+
+        let imageUrl = '';
+        if (imageFile) {
             try {
-                const name = document.getElementById('worker-name').value.trim();
-                const role = document.getElementById('worker-role').value;
-                const payment = document.getElementById('worker-payment').value;
-                const salary = parseFloat(document.getElementById('worker-salary').value) || 0;
-                const phone = document.getElementById('worker-phone').value.trim();
-                const imageFile = document.getElementById('worker-image').files[0];
-
-                if (!name || !role || !payment) {
-                    alert('Name, Role and Payment Method are required.');
-                    return;
-                }
-
-                let imageUrl = '';
-                if (imageFile) {
-                    try {
-                        imageUrl = await uploadImageToImgbb(imageFile);
-                    } catch (err) {
-                        alert('Image upload failed: ' + err.message);
-                        return;
-                    }
-                }
-
-                await addDoc(collection(db, 'site_workers'), {
-                    site_id: currentSiteId,
-                    name,
-                    role,
-                    payment_method: payment,
-                    salary,
-                    phone,
-                    image: imageUrl,
-                    added_by: currentUser.uid,
-                    added_at: new Date().toISOString()
-                });
-
-                closeModal();
-                alert('Worker added successfully!');
+                imageUrl = await uploadImageToImgbb(imageFile);
             } catch (err) {
-                alert('Error adding worker: ' + err.message);
-            } finally {
-                setButtonLoading(btn, false);
+                alert('Image upload failed: ' + err.message);
+                return;
             }
-        };
+        }
+
+        await addDoc(collection(db, 'site_workers'), {
+            site_id: currentSiteId,
+            name,
+            role,
+            payment_method: payment,
+            salary,
+            phone,
+            image: imageUrl,
+            added_by: currentUser.uid,
+            added_at: new Date().toISOString()
+        });
+
+        closeModal();
+        alert('Worker added successfully!');
+    } catch (err) {
+        alert('Error adding worker: ' + err.message);
+    } finally {
+        setButtonLoading(btn, false);
+    }
+};
 
         // ── WORKER IMAGE VIEWER ──
         window.openWorkerImage = (index) => {
