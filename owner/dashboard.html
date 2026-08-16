@@ -1530,17 +1530,15 @@ window.exportReport = (format) => {
     // GENERATED DATE
     // ==========================================
 
-    const generatedDate =
-        new Date().toLocaleString(
-            'en-GB',
-            {
-                day: '2-digit',
-                month: 'long',
-                year: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit'
-            }
-        );
+const generatedDate = new Date().toLocaleString('en-US', {
+    month: 'long',
+    day: 'numeric',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: false
+}).replace(',', ' at');
 
 
     // ==========================================
