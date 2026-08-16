@@ -1197,8 +1197,7 @@
         }
     };
 
-    ```javascript
-// =============== REPORTS ===============
+   // =============== REPORTS ===============
 function renderReports(container) {
     const siteOpts = sitesData
         .map(s => `<option value="${s.id}">${s.name}</option>`)
@@ -1517,7 +1516,6 @@ window.exportReport = (format) => {
             );
 
 
-    // FIXED SYNTAX ERROR HERE
     const deptLabel =
         dept === 'all'
             ? 'All Departments'
@@ -2008,9 +2006,10 @@ window.exportReport = (format) => {
                 <div class="company-left">
 
                     <img
-                        src="/shdr_logo.jpg"
+                        src="shdr.jpg"
                         alt="SHDR Ltd Logo"
                         class="company-logo"
+                        onerror="this.style.display='none'"
                     >
 
 
@@ -2130,8 +2129,6 @@ window.exportReport = (format) => {
     }, 800);
 
 };
-```
-
 
     // =============== FINANCES ===============
     let selectedFinanceSite = null;
