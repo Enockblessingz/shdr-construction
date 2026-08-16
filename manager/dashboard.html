@@ -127,7 +127,6 @@
         <a href="#" onclick="showSection('reports')" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg text-slate-600 hover:bg-slate-50 transition-colors" data-section="reports">
             <iconify-icon icon="material-symbols:description-outline" width="20" height="20"></iconify-icon> Reports
         </a>
-        <!-- ❌ Finances link removed -->
         <a href="#" onclick="showSection('gallery')" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg text-slate-600 hover:bg-slate-50 transition-colors" data-section="gallery">
             <iconify-icon icon="material-symbols:photo-library-outline" width="20" height="20"></iconify-icon> Gallery
         </a>
@@ -267,7 +266,6 @@
                 btn.innerHTML = btn.dataset.origHTML || 'Submit';
             }
         }
-        function getFormSubmitBtn(form) { return form.querySelector('button[type="submit"]'); }
 
         // ── Auth & Init ──
         window.addEventListener('load', () => {
@@ -385,7 +383,6 @@
                 case 'workers': renderWorkers(container); break;
                 case 'progress': renderProgress(container); break;
                 case 'reports': renderReports(container); break;
-                // ❌ case 'finances' removed
                 case 'gallery': renderGallery(container); break;
                 default: renderDashboard(container);
             }
@@ -626,6 +623,83 @@
             container.innerHTML = html;
         }
 
+        window.openAddWorkerModal = () => {
+            const modalContent = `
+                <form id="add-worker-form" onsubmit="handleAddWorker(event)" class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Full Name</label>
+                        <input type="text" id="worker-name" required class="w-full border rounded-lg p-2 text-sm" placeholder="e.g. John Doe">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Role / Position</label>
+                        <input type="text" id="worker-role" required class="w-full border rounded-lg p-2 text-sm" placeholder="e.g. Mason, Electrician">
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1">Payment Type</label>
+                            <select id="worker-payment" class="w-full border rounded-lg p-2 text-sm">
+                                <option value="daily">Daily</option>
+                                <option value="monthly">Monthly</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1">Rate / Salary (RWF)</label>
+                            <input type="number" id="worker-salary" required class="w-full border rounded-lg p-2 text-sm" placeholder="0">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Phone Number</label>
+                        <input type="tel" id="worker-phone" class="w-full border rounded-lg p-2 text-sm" placeholder="0788000000">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Worker Photo</label>
+                        <input type="file" id="worker-image" accept="image/*" class="w-full border rounded-lg p-2 text-sm">
+                    </div>
+                    <button type="submit" class="w-full bg-emerald-600 text-white py-2 rounded-xl text-sm font-semibold">Save Worker</button>
+                </form>
+            `;
+
+            openModal('Add New Worker', modalContent);
+        };
+
+        window.handleAddWorker = async (e) => {
+            e.preventDefault();
+            const btn = e.target.querySelector('button[type="submit"]');
+            setButtonLoading(btn, true);
+
+            try {
+                const name = document.getElementById('worker-name').value.trim();
+                const role = document.getElementById('worker-role').value.trim();
+                const payment_method = document.getElementById('worker-payment').value;
+                const salary = parseFloat(document.getElementById('worker-salary').value) || 0;
+                const phone = document.getElementById('worker-phone').value.trim();
+                const imageFile = document.getElementById('worker-image').files[0];
+
+                let imageUrl = '';
+                if (imageFile) {
+                    imageUrl = await uploadImageToImgbb(imageFile);
+                }
+
+                await addDoc(collection(db, 'site_workers'), {
+                    site_id: currentSiteId,
+                    name,
+                    role,
+                    payment_method,
+                    salary,
+                    phone,
+                    image: imageUrl,
+                    created_at: new Date().toISOString()
+                });
+
+                closeModal();
+                alert('Worker added successfully!');
+            } catch (err) {
+                alert('Error adding worker: ' + err.message);
+            } finally {
+                setButtonLoading(btn, false);
+            }
+        };
+
         function renderWorkersView() {
             if (!siteWorkersData.length) {
                 return `
@@ -674,6 +748,126 @@
 
             html += `</div>`;
             return html;
+        }
+
+        // =============== WORKER IMAGE VIEWER ===============
+        let workerViewerIndex = 0;
+
+        window.openWorkerImage = (index) => {
+            if (!siteWorkersData.length) return;
+            workerViewerIndex = index;
+
+            document.getElementById('worker-image-viewer')?.remove();
+
+            const viewer = document.createElement('div');
+            viewer.id = 'worker-image-viewer';
+            viewer.className = `fixed inset-0 z-[9999] bg-black/95 backdrop-blur-sm flex items-center justify-center p-4`;
+            
+            viewer.innerHTML = `
+                <button onclick="closeWorkerImageViewer()" class="absolute top-4 right-4 sm:top-6 sm:right-6 z-50 w-11 h-11 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition" aria-label="Close">
+                    <iconify-icon icon="material-symbols:close" class="text-3xl"></iconify-icon>
+                </button>
+
+                <div id="worker-viewer-counter" class="absolute top-5 left-1/2 -translate-x-1/2 bg-black/70 text-white px-3 py-1.5 rounded-full text-sm z-40"></div>
+
+                <button id="worker-prev" onclick="previousWorkerImage(event)" class="absolute left-3 sm:left-6 top-1/2 -translate-y-1/2 z-40 w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-white/10 hover:bg-white/25 text-white flex items-center justify-center transition">
+                    <iconify-icon icon="material-symbols:chevron-left" class="text-4xl"></iconify-icon>
+                </button>
+
+                <div class="w-full h-full flex flex-col items-center justify-center px-14 sm:px-20" onclick="event.stopPropagation()">
+                    <img id="worker-viewer-image" src="" class="max-w-full max-h-[60vh] object-contain rounded-xl shadow-2xl select-none" alt="Worker" />
+                    <div id="worker-viewer-details" class="mt-6 text-white text-center max-w-2xl bg-black/40 rounded-xl p-4 backdrop-blur-sm">
+                        <p class="text-xl font-bold" id="worker-viewer-name"></p>
+                        <p class="text-emerald-400" id="worker-viewer-role"></p>
+                        <div class="mt-2 text-sm space-y-1 text-slate-300">
+                            <p><span class="text-slate-400">Salary:</span> <span id="worker-viewer-salary"></span></p>
+                            <p><span class="text-slate-400">Payment:</span> <span id="worker-viewer-payment"></span></p>
+                            <p><span class="text-slate-400">Phone:</span> <span id="worker-viewer-phone"></span></p>
+                        </div>
+                    </div>
+                </div>
+
+                <button id="worker-next" onclick="nextWorkerImage(event)" class="absolute right-3 sm:right-6 top-1/2 -translate-y-1/2 z-40 w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-white/10 hover:bg-white/25 text-white flex items-center justify-center transition">
+                    <iconify-icon icon="material-symbols:chevron-right" class="text-4xl"></iconify-icon>
+                </button>
+            `;
+
+            viewer.addEventListener('click', (event) => {
+                if (event.target === viewer) closeWorkerImageViewer();
+            });
+
+            document.body.appendChild(viewer);
+            document.body.style.overflow = 'hidden';
+            updateWorkerViewer();
+
+            document.addEventListener('keydown', workerViewerKeyboard);
+        };
+
+        function updateWorkerViewer() {
+            const worker = siteWorkersData[workerViewerIndex];
+            if (!worker) return;
+
+            const image = document.getElementById('worker-viewer-image');
+            const name = document.getElementById('worker-viewer-name');
+            const role = document.getElementById('worker-viewer-role');
+            const salary = document.getElementById('worker-viewer-salary');
+            const payment = document.getElementById('worker-viewer-payment');
+            const phone = document.getElementById('worker-viewer-phone');
+            const counter = document.getElementById('worker-viewer-counter');
+            const prevBtn = document.getElementById('worker-prev');
+            const nextBtn = document.getElementById('worker-next');
+
+            image.src = worker.image || PLACEHOLDER_IMG;
+            name.textContent = worker.name || 'Worker';
+            role.textContent = worker.role || '—';
+            salary.textContent = (Number(worker.salary) || 0).toLocaleString() + ' RWF';
+            payment.textContent = worker.payment_method || 'N/A';
+            phone.textContent = worker.phone || '—';
+            counter.textContent = `${workerViewerIndex + 1} / ${siteWorkersData.length}`;
+
+            if (siteWorkersData.length <= 1) {
+                prevBtn.classList.add('hidden');
+                nextBtn.classList.add('hidden');
+                counter.classList.add('hidden');
+            } else {
+                prevBtn.classList.remove('hidden');
+                nextBtn.classList.remove('hidden');
+                counter.classList.remove('hidden');
+                prevBtn.classList.toggle('opacity-30', workerViewerIndex === 0);
+                nextBtn.classList.toggle('opacity-30', workerViewerIndex === siteWorkersData.length - 1);
+            }
+        }
+
+        window.previousWorkerImage = (event) => {
+            if (event) event.stopPropagation();
+            if (workerViewerIndex > 0) {
+                workerViewerIndex--;
+                updateWorkerViewer();
+            }
+        };
+
+        window.nextWorkerImage = (event) => {
+            if (event) event.stopPropagation();
+            if (workerViewerIndex < siteWorkersData.length - 1) {
+                workerViewerIndex++;
+                updateWorkerViewer();
+            }
+        };
+
+        window.closeWorkerImageViewer = () => {
+            document.getElementById('worker-image-viewer')?.remove();
+            document.body.style.overflow = '';
+            document.removeEventListener('keydown', workerViewerKeyboard);
+        };
+
+        function workerViewerKeyboard(event) {
+            if (event.key === 'Escape') {
+                closeWorkerImageViewer();
+            } else if (event.key === 'ArrowLeft') {
+                previousWorkerImage();
+            } else if (event.key === 'ArrowRight') {
+                nextWorkerImage();
+            }
         }
 
         function renderWorkersRecord() {
