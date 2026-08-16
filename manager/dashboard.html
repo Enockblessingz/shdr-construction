@@ -41,7 +41,7 @@
             margin-right: 6px;
         }
         @keyframes spin { to { transform: rotate(360deg); } }
-        .role-dropdown-item:hover { background: #ecfdf5; }
+        .role-option:hover { background: #ecfdf5; }
 
         /* Bottom navigation – mobile only */
         .bottom-nav {
@@ -88,7 +88,6 @@
         .tab-active { background: #059669; color: white; }
         .tab-inactive { background: #f1f5f9; color: #334155; }
         .tab-inactive:hover { background: #e2e8f0; }
-        .worker-checkbox:checked + label { background: #ecfdf5; }
     </style>
 </head>
 <body class="min-h-screen flex">
@@ -264,6 +263,7 @@
             }
         }
         function getFormSubmitBtn(form) { return form.querySelector('button[type="submit"]'); }
+        function getTodayISO() { return new Date().toISOString().split('T')[0]; }
 
         // ── Auth & Init ──
         window.addEventListener('load', () => {
@@ -592,145 +592,176 @@
             };
         };
 
-        function getTodayISO() { return new Date().toISOString().split('T')[0]; }
-
-        // =============== WORKERS ===============
-
-        // ── ADD WORKER MODAL (with searchable role dropdown) ──
-window.openAddWorkerModal = () => {
-    // Combine roles from workerPositions (filtered by current site or 'all')
-    const allRoles = workerPositions
-        .filter(p => p.site_id === currentSiteId || p.site_id === 'all')
-        .map(p => p.role);
-
-    const commonRoles = [
-        'Mason', 'Mason Helper', 'Carpenter', 'Carpenter Helper',
-        'Steel Fixer', 'Steel Fixer Helper', 'Plumber', 'Electrician',
-        'Welder', 'Painter', 'Tiler', 'Roofer', 'Concrete Worker',
-        'Excavation Worker', 'Truck Driver', 'Cleaner', 'Site Security Guard'
-    ];
-
-    const uniqueRoles = [...new Set([...commonRoles, ...allRoles])].filter(Boolean);
-    const roleOptions = uniqueRoles.map(r =>
-        `<div class="role-option px-3 py-2 cursor-pointer hover:bg-emerald-50" data-role="${r}">${r}</div>`
-    ).join('');
-
-    const modalContent = `
-        <form onsubmit="handleAddWorker(event)" class="space-y-4">
-            <input class="w-full border rounded-lg p-3" placeholder="Full Name" id="worker-name" required>
-
-            <div class="relative">
-                <label class="block text-sm font-medium mb-1">Role (select only)</label>
-                <div id="role-selector" class="border rounded-lg p-3 bg-white flex items-center justify-between cursor-pointer" onclick="document.getElementById('role-dropdown').classList.toggle('hidden')">
-                    <span id="selected-role-text" class="text-slate-400">Choose a role...</span>
-                    <iconify-icon icon="material-symbols:arrow-drop-down" width="20"></iconify-icon>
+        // =============== WORKERS SECTION ===============
+        function renderWorkers(container) {
+            container.innerHTML = `
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+                    <div class="flex gap-2 p-1 bg-slate-200/60 rounded-xl">
+                        <button onclick="switchWorkersTab('view')" class="px-4 py-2 rounded-lg text-sm font-semibold transition ${workersTab === 'view' ? 'tab-active shadow-sm' : 'tab-inactive'}" id="tab-btn-view">
+                            <iconify-icon icon="material-symbols:grid-view" class="inline mr-1"></iconify-icon> All Workers
+                        </button>
+                        <button onclick="switchWorkersTab('record')" class="px-4 py-2 rounded-lg text-sm font-semibold transition ${workersTab === 'record' ? 'tab-active shadow-sm' : 'tab-inactive'}" id="tab-btn-record">
+                            <iconify-icon icon="material-symbols:edit-calendar" class="inline mr-1"></iconify-icon> Record Attendance
+                        </button>
+                    </div>
+                    ${workersTab === 'view' ? `
+                        <button onclick="openAddWorkerModal()" class="px-4 py-2 bg-emerald-600 text-white rounded-xl hover:bg-emerald-700 flex items-center gap-2 text-sm font-medium shadow-sm">
+                            <iconify-icon icon="material-symbols:person-add-outline"></iconify-icon> Add New Worker
+                        </button>
+                    ` : ''}
                 </div>
-                <input type="hidden" id="worker-role" required>
-                <div id="role-dropdown" class="hidden absolute z-10 w-full bg-white border rounded-lg mt-1 max-h-40 overflow-y-auto shadow-lg">
-                    <input type="text" id="role-search" class="w-full border-b p-2 sticky top-0 bg-white" placeholder="Filter roles..." oninput="filterRoleDropdown()">
-                    <div id="role-options-container">${roleOptions}</div>
+                <div id="workers-content">
+                    ${workersTab === 'view' ? renderWorkersView() : renderWorkersRecord()}
                 </div>
-            </div>
-
-            <select id="worker-payment" class="w-full border rounded-lg p-3" required>
-                <option value="">Select Payment Method</option>
-                <option value="daily">Daily</option>
-                <option value="monthly">Monthly</option>
-            </select>
-
-            <input class="w-full border rounded-lg p-3" placeholder="Salary (RWF)" type="number" id="worker-salary" required min="0">
-            <input class="w-full border rounded-lg p-3" placeholder="Phone Number" type="tel" id="worker-phone">
-
-            <div>
-                <label class="text-sm font-medium">Photo (optional)</label>
-                <input type="file" id="worker-image" accept="image/*" class="w-full mt-1">
-            </div>
-
-            <button type="submit" class="w-full bg-emerald-600 text-white py-3 rounded-xl">Save Worker</button>
-        </form>
-    `;
-
-    openModal('Add Worker', modalContent);
-
-    // ── Role option click handler ──
-    document.querySelectorAll('.role-option').forEach(item => {
-        item.addEventListener('click', () => {
-            const role = item.dataset.role;
-            document.getElementById('worker-role').value = role;
-            document.getElementById('selected-role-text').textContent = role;
-            document.getElementById('selected-role-text').classList.remove('text-slate-400');
-            document.getElementById('role-dropdown').classList.add('hidden');
-        });
-    });
-
-    // ── Global filter function (so it stays available) ──
-    window.filterRoleDropdown = () => {
-        const filter = document.getElementById('role-search').value.toLowerCase();
-        document.querySelectorAll('.role-option').forEach(opt => {
-            opt.style.display = opt.dataset.role.toLowerCase().includes(filter) ? '' : 'none';
-        });
-    };
-
-    // ── Close dropdown when clicking outside ──
-    document.addEventListener('click', (e) => {
-        if (!e.target.closest('#role-selector') && !e.target.closest('#role-dropdown')) {
-            const dropdown = document.getElementById('role-dropdown');
-            if (dropdown) dropdown.classList.add('hidden');
-        }
-    });
-};
-
-window.handleAddWorker = async (e) => {
-    e.preventDefault();
-    const form = e.target;
-    const btn = getFormSubmitBtn(form);
-    setButtonLoading(btn, true);
-
-    try {
-        const name = document.getElementById('worker-name').value.trim();
-        const role = document.getElementById('worker-role').value;
-        const payment = document.getElementById('worker-payment').value;
-        const salary = parseFloat(document.getElementById('worker-salary').value) || 0;
-        const phone = document.getElementById('worker-phone').value.trim();
-        const imageFile = document.getElementById('worker-image').files[0];
-
-        if (!name || !role || !payment) {
-            alert('Name, Role and Payment Method are required.');
-            return;
-        }
-
-        let imageUrl = '';
-        if (imageFile) {
-            try {
-                imageUrl = await uploadImageToImgbb(imageFile);
-            } catch (err) {
-                alert('Image upload failed: ' + err.message);
-                return;
+            `;
+            if (workersTab === 'record') {
+                updateAttendanceSummary();
             }
         }
 
-        await addDoc(collection(db, 'site_workers'), {
-            site_id: currentSiteId,
-            name,
-            role,
-            payment_method: payment,
-            salary,
-            phone,
-            image: imageUrl,
-            added_by: currentUser.uid,
-            added_at: new Date().toISOString()
-        });
+        window.switchWorkersTab = (tab) => {
+            workersTab = tab;
+            showSection('workers');
+        };
 
-        closeModal();
-        alert('Worker added successfully!');
-    } catch (err) {
-        alert('Error adding worker: ' + err.message);
-    } finally {
-        setButtonLoading(btn, false);
-    }
-};
+        window.openAddWorkerModal = () => {
+            const allRoles = workerPositions
+                .filter(p => p.site_id === currentSiteId || p.site_id === 'all')
+                .map(p => p.role);
 
-        // ── WORKER IMAGE VIEWER ──
+            const commonRoles = [
+                'Mason', 'Mason Helper', 'Carpenter', 'Carpenter Helper',
+                'Steel Fixer', 'Steel Fixer Helper', 'Plumber', 'Electrician',
+                'Welder', 'Painter', 'Tiler', 'Roofer', 'Concrete Worker',
+                'Excavation Worker', 'Truck Driver', 'Cleaner', 'Site Security Guard'
+            ];
+
+            const uniqueRoles = [...new Set([...commonRoles, ...allRoles])].filter(Boolean);
+            const roleOptions = uniqueRoles.map(r =>
+                `<div class="role-option px-3 py-2 cursor-pointer transition-colors" data-role="${r}">${r}</div>`
+            ).join('');
+
+            const modalContent = `
+                <form onsubmit="handleAddWorker(event)" class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Full Name</label>
+                        <input class="w-full border rounded-lg p-2.5 text-sm" placeholder="Worker full name" id="worker-name" required>
+                    </div>
+
+                    <div class="relative">
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Role (select option)</label>
+                        <div id="role-selector" class="border rounded-lg p-2.5 bg-white flex items-center justify-between cursor-pointer text-sm" onclick="document.getElementById('role-dropdown').classList.toggle('hidden')">
+                            <span id="selected-role-text" class="text-slate-400">Choose worker role...</span>
+                            <iconify-icon icon="material-symbols:arrow-drop-down" width="20"></iconify-icon>
+                        </div>
+                        <input type="hidden" id="worker-role" required>
+                        <div id="role-dropdown" class="hidden absolute z-20 w-full bg-white border rounded-lg mt-1 max-h-48 overflow-y-auto shadow-lg">
+                            <input type="text" id="role-search" class="w-full border-b p-2 text-sm sticky top-0 bg-white" placeholder="Search role..." oninput="filterRoleDropdown()">
+                            <div id="role-options-container">${roleOptions}</div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1">Payment Type</label>
+                            <select id="worker-payment" class="w-full border rounded-lg p-2.5 text-sm" required>
+                                <option value="">Select...</option>
+                                <option value="daily">Daily Rate</option>
+                                <option value="monthly">Monthly Salary</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1">Salary / Rate (RWF)</label>
+                            <input class="w-full border rounded-lg p-2.5 text-sm" placeholder="e.g. 5000" type="number" id="worker-salary" required min="0">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Phone Number</label>
+                        <input class="w-full border rounded-lg p-2.5 text-sm" placeholder="078XXXXXXX" type="tel" id="worker-phone">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Photo (Optional)</label>
+                        <input type="file" id="worker-image" accept="image/*" class="w-full text-sm">
+                    </div>
+
+                    <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-3 rounded-xl transition">
+                        Save Worker
+                    </button>
+                </form>
+            `;
+
+            openModal('Add New Worker', modalContent);
+
+            document.querySelectorAll('.role-option').forEach(item => {
+                item.addEventListener('click', () => {
+                    const role = item.dataset.role;
+                    document.getElementById('worker-role').value = role;
+                    document.getElementById('selected-role-text').textContent = role;
+                    document.getElementById('selected-role-text').classList.remove('text-slate-400');
+                    document.getElementById('role-dropdown').classList.add('hidden');
+                });
+            });
+
+            window.filterRoleDropdown = () => {
+                const filter = document.getElementById('role-search').value.toLowerCase();
+                document.querySelectorAll('.role-option').forEach(opt => {
+                    opt.style.display = opt.dataset.role.toLowerCase().includes(filter) ? '' : 'none';
+                });
+            };
+        };
+
+        window.handleAddWorker = async (e) => {
+            e.preventDefault();
+            const form = e.target;
+            const btn = getFormSubmitBtn(form);
+            setButtonLoading(btn, true);
+
+            try {
+                const name = document.getElementById('worker-name').value.trim();
+                const role = document.getElementById('worker-role').value;
+                const payment = document.getElementById('worker-payment').value;
+                const salary = parseFloat(document.getElementById('worker-salary').value) || 0;
+                const phone = document.getElementById('worker-phone').value.trim();
+                const imageFile = document.getElementById('worker-image').files[0];
+
+                if (!name || !role || !payment) {
+                    alert('Name, Role, and Payment Method are required.');
+                    return;
+                }
+
+                let imageUrl = '';
+                if (imageFile) {
+                    try {
+                        imageUrl = await uploadImageToImgbb(imageFile);
+                    } catch (err) {
+                        alert('Image upload failed: ' + err.message);
+                        return;
+                    }
+                }
+
+                await addDoc(collection(db, 'site_workers'), {
+                    site_id: currentSiteId,
+                    name,
+                    role,
+                    payment_method: payment,
+                    salary,
+                    phone,
+                    image: imageUrl,
+                    added_by: currentUser.uid,
+                    added_at: new Date().toISOString()
+                });
+
+                closeModal();
+                alert('Worker added successfully!');
+            } catch (err) {
+                alert('Error adding worker: ' + err.message);
+            } finally {
+                setButtonLoading(btn, false);
+            }
+        };
+
         window.openWorkerImage = (index) => {
             const worker = siteWorkersData[index];
             if (!worker) return;
@@ -757,7 +788,6 @@ window.handleAddWorker = async (e) => {
             });
         };
 
-        // ── VIEW WORKER DETAILS ──
         window.viewWorkerDetail = (id) => {
             const worker = siteWorkersData.find(w => w.id === id);
             if (!worker) return;
@@ -776,11 +806,10 @@ window.handleAddWorker = async (e) => {
             openModal('Worker Details', details);
         };
 
-        // ── RENDER WORKERS VIEW ──
         function renderWorkersView() {
             if (!siteWorkersData.length) {
                 return `
-                    <div class="bg-white rounded-2xl border p-4">
+                    <div class="bg-white rounded-2xl border p-6 text-center">
                         <p class="text-slate-500">No workers added yet.</p>
                     </div>
                 `;
@@ -833,307 +862,315 @@ window.handleAddWorker = async (e) => {
             return html;
         }
 
-       // ── RECORD ATTENDANCE (Special Edition) ──
-
-function renderWorkersRecord() {
-    if (!siteWorkersData.length) {
-        return `
-            <div class="bg-white rounded-2xl border p-8 text-center">
-                <iconify-icon icon="material-symbols:engineering-outline" class="text-5xl text-slate-300 mx-auto block mb-4"></iconify-icon>
-                <p class="text-slate-500">No workers yet. Add some to start recording attendance!</p>
-            </div>
-        `;
-    }
-
-    const today = new Date().toISOString().split('T')[0];
-
-    // ---- HTML ----
-    let html = `
-        <div class="space-y-6">
-
-            <!-- HEADER WITH DATE NAVIGATION -->
-            <div class="bg-white rounded-2xl border p-4 shadow-sm">
-                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                    <div>
-                        <h3 class="text-sm font-semibold text-slate-600 flex items-center gap-2">
-                            <iconify-icon icon="material-symbols:calendar-today" class="text-emerald-600"></iconify-icon>
-                            Select Attendance Date
-                        </h3>
+        function renderWorkersRecord() {
+            if (!siteWorkersData.length) {
+                return `
+                    <div class="bg-white rounded-2xl border p-8 text-center">
+                        <iconify-icon icon="material-symbols:engineering-outline" class="text-5xl text-slate-300 mx-auto block mb-4"></iconify-icon>
+                        <p class="text-slate-500">No workers yet. Add workers to record daily attendance.</p>
                     </div>
-                    <div class="flex items-center gap-2">
-                        <button onclick="changeAttendanceDate(-1)" class="p-2 rounded-lg border hover:bg-slate-50 transition">
-                            <iconify-icon icon="material-symbols:chevron-left" class="text-slate-600"></iconify-icon>
-                        </button>
-                        <input type="date" id="attendance-date" value="${today}" class="border rounded-lg px-3 py-2 text-sm w-40 focus:ring-2 focus:ring-emerald-500 outline-none">
-                        <button onclick="changeAttendanceDate(0)" class="px-3 py-2 bg-emerald-50 text-emerald-700 rounded-lg text-sm font-medium hover:bg-emerald-100 transition">
-                            Today
-                        </button>
-                        <button onclick="changeAttendanceDate(1)" class="p-2 rounded-lg border hover:bg-slate-50 transition">
-                            <iconify-icon icon="material-symbols:chevron-right" class="text-slate-600"></iconify-icon>
-                        </button>
+                `;
+            }
+
+            const today = getTodayISO();
+
+            return `
+                <div class="space-y-6">
+                    <!-- HEADER WITH DATE NAVIGATION -->
+                    <div class="bg-white rounded-2xl border p-4 shadow-sm">
+                        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                            <div>
+                                <h3 class="text-sm font-semibold text-slate-600 flex items-center gap-2">
+                                    <iconify-icon icon="material-symbols:calendar-today" class="text-emerald-600"></iconify-icon>
+                                    Attendance Date
+                                </h3>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <button onclick="changeAttendanceDate(-1)" class="p-2 rounded-lg border hover:bg-slate-50 transition">
+                                    <iconify-icon icon="material-symbols:chevron-left" class="text-slate-600"></iconify-icon>
+                                </button>
+                                <input type="date" id="attendance-date" value="${today}" class="border rounded-lg px-3 py-2 text-sm w-40 focus:ring-2 focus:ring-emerald-500 outline-none" onchange="updateAttendanceSummary()">
+                                <button onclick="changeAttendanceDate(0)" class="px-3 py-2 bg-emerald-50 text-emerald-700 rounded-lg text-sm font-medium hover:bg-emerald-100 transition">
+                                    Today
+                                </button>
+                                <button onclick="changeAttendanceDate(1)" class="p-2 rounded-lg border hover:bg-slate-50 transition">
+                                    <iconify-icon icon="material-symbols:chevron-right" class="text-slate-600"></iconify-icon>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div id="attendance-status-badge" class="mt-3 hidden">
+                            <div class="inline-flex items-center gap-2 bg-amber-50 text-amber-700 px-3 py-1.5 rounded-full text-xs font-medium border border-amber-200">
+                                <iconify-icon icon="material-symbols:info-outline" class="text-amber-500"></iconify-icon>
+                                Attendance for this date is already recorded. Submitting will update existing records.
+                            </div>
+                        </div>
                     </div>
-                </div>
 
-                <!-- ATTENDANCE STATUS BADGE -->
-                <div id="attendance-status-badge" class="mt-3 hidden">
-                    <div class="inline-flex items-center gap-2 bg-amber-50 text-amber-700 px-3 py-1.5 rounded-full text-xs font-medium border border-amber-200">
-                        <iconify-icon icon="material-symbols:info-outline" class="text-amber-500"></iconify-icon>
-                        Attendance for this date already exists. Submitting will overwrite.
+                    <!-- WORKER CARDS GRID -->
+                    <div class="bg-white rounded-2xl border p-4 shadow-sm">
+                        <div class="flex items-center justify-between mb-4">
+                            <h4 class="text-sm font-medium text-slate-700 flex items-center gap-2">
+                                <iconify-icon icon="material-symbols:people" class="text-emerald-600"></iconify-icon>
+                                Select Present Workers
+                                <span class="text-xs text-slate-400 font-normal">(${siteWorkersData.length})</span>
+                            </h4>
+                            <button onclick="toggleSelectAllWorkers()" id="select-all-btn" class="text-xs text-emerald-600 hover:text-emerald-800 font-medium flex items-center gap-1 transition">
+                                <iconify-icon icon="material-symbols:select-all" class="text-sm"></iconify-icon>
+                                <span>Select All</span>
+                            </button>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 max-h-80 overflow-y-auto pr-1">
+                            ${siteWorkersData.map(w => {
+                                const dailyRate = w.payment_method === 'daily' ? Number(w.salary) || 0 : Math.round((Number(w.salary) || 0) / 30);
+                                const initial = (w.name || 'W').charAt(0).toUpperCase();
+                                return `
+                                    <div class="worker-card relative bg-slate-50 border-2 border-transparent rounded-xl p-3 cursor-pointer transition-all duration-200 hover:shadow-md hover:border-emerald-200" data-worker-id="${w.id}" onclick="toggleWorkerSelection('${w.id}')">
+                                        <input type="checkbox" id="worker-chk-${w.id}" value="${w.id}" class="hidden worker-checkbox-input">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-700 font-bold text-sm overflow-hidden flex-shrink-0">
+                                                ${w.image ? `<img src="${w.image}" class="w-full h-full object-cover" alt="${w.name}">` : initial}
+                                            </div>
+                                            <div class="flex-1 min-w-0">
+                                                <p class="text-sm font-medium text-slate-800 truncate">${w.name}</p>
+                                                <p class="text-xs text-slate-500 truncate">${w.role || 'Worker'}</p>
+                                            </div>
+                                            <div class="text-right flex-shrink-0">
+                                                <span class="text-xs font-semibold text-emerald-700">${dailyRate.toLocaleString()} RWF</span>
+                                                <span class="text-[10px] text-slate-400 block">/ day</span>
+                                            </div>
+                                        </div>
+                                        <div class="absolute top-2 right-2 w-5 h-5 rounded-full bg-emerald-600 text-white flex items-center justify-center opacity-0 scale-75 transition-all duration-200" data-checkmark>
+                                            <iconify-icon icon="material-symbols:check" class="text-xs"></iconify-icon>
+                                        </div>
+                                    </div>
+                                `;
+                            }).join('')}
+                        </div>
                     </div>
-                </div>
-            </div>
 
-            <!-- WORKER CARDS GRID -->
-            <div class="bg-white rounded-2xl border p-4 shadow-sm">
-                <div class="flex items-center justify-between mb-4">
-                    <h4 class="text-sm font-medium text-slate-700 flex items-center gap-2">
-                        <iconify-icon icon="material-symbols:people" class="text-emerald-600"></iconify-icon>
-                        Workers on Site
-                        <span class="text-xs text-slate-400 font-normal">(${siteWorkersData.length})</span>
-                    </h4>
-                    <button onclick="toggleSelectAllWorkers()" id="select-all-btn" class="text-xs text-emerald-600 hover:text-emerald-800 font-medium flex items-center gap-1 transition">
-                        <iconify-icon icon="material-symbols:select-all" class="text-sm"></iconify-icon>
-                        <span>Select All</span>
-                    </button>
-                </div>
-
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 max-h-72 overflow-y-auto pr-1">
-                    ${siteWorkersData.map((w, index) => {
-                        const dailyRate = w.payment_method === 'daily' ? Number(w.salary) || 0 : Math.round((Number(w.salary) || 0) / 30);
-                        const initial = (w.name || 'W').charAt(0).toUpperCase();
-                        const imgSrc = w.image || null;
-                        return `
-                            <div class="worker-card relative bg-slate-50 border-2 border-transparent rounded-xl p-3 cursor-pointer transition-all duration-200 hover:shadow-md hover:border-emerald-200" data-worker-id="${w.id}" onclick="toggleWorkerSelection('${w.id}')">
-                                <div class="flex items-center gap-3">
-                                    <div class="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-700 font-bold text-sm overflow-hidden flex-shrink-0">
-                                        ${imgSrc ? `<img src="${imgSrc}" class="w-full h-full object-cover" alt="${w.name}">` : initial}
-                                    </div>
-                                    <div class="flex-1 min-w-0">
-                                        <p class="text-sm font-medium text-slate-800 truncate">${w.name}</p>
-                                        <p class="text-xs text-slate-500 truncate">${w.role || 'Worker'}</p>
-                                    </div>
-                                    <div class="text-right flex-shrink-0">
-                                        <span class="text-xs font-semibold text-emerald-700">${dailyRate.toLocaleString()} RWF</span>
-                                        <span class="text-[10px] text-slate-400 block">/ day</span>
-                                    </div>
+                    <!-- SUMMARY BAR -->
+                    <div id="attendance-summary" class="bg-white rounded-2xl border p-4 shadow-sm hidden">
+                        <div class="flex flex-wrap items-center justify-between gap-4">
+                            <div class="flex items-center gap-6">
+                                <div>
+                                    <p class="text-xs text-slate-500">Selected</p>
+                                    <p class="text-2xl font-bold text-slate-800"><span id="selected-count">0</span> <span class="text-sm font-normal text-slate-400">/ ${siteWorkersData.length}</span></p>
                                 </div>
-                                <!-- Selection checkmark (hidden by default) -->
-                                <div class="absolute top-2 right-2 w-5 h-5 rounded-full bg-emerald-600 text-white flex items-center justify-center opacity-0 scale-75 transition-all duration-200" data-checkmark>
-                                    <iconify-icon icon="material-symbols:check" class="text-xs"></iconify-icon>
+                                <div class="h-10 w-px bg-slate-200"></div>
+                                <div>
+                                    <p class="text-xs text-slate-500">Total Daily Cost</p>
+                                    <p class="text-2xl font-bold text-emerald-600"><span id="total-cost">0</span> <span class="text-sm font-normal text-slate-400">RWF</span></p>
                                 </div>
                             </div>
-                        `;
-                    }).join('')}
-                </div>
-            </div>
-
-            <!-- SUMMARY BAR -->
-            <div id="attendance-summary" class="bg-white rounded-2xl border p-4 shadow-sm hidden">
-                <div class="flex flex-wrap items-center justify-between gap-4">
-                    <div class="flex items-center gap-6">
-                        <div>
-                            <p class="text-xs text-slate-500">Selected</p>
-                            <p class="text-2xl font-bold text-slate-800"><span id="selected-count">0</span> <span class="text-sm font-normal text-slate-400">/ ${siteWorkersData.length}</span></p>
-                        </div>
-                        <div class="h-10 w-px bg-slate-200"></div>
-                        <div>
-                            <p class="text-xs text-slate-500">Total Daily Cost</p>
-                            <p class="text-2xl font-bold text-emerald-600"><span id="total-cost">0</span> <span class="text-sm font-normal text-slate-400">RWF</span></p>
+                            <div class="flex items-center gap-3">
+                                <div class="w-32 h-2 bg-slate-100 rounded-full overflow-hidden">
+                                    <div id="selection-progress" class="h-full bg-emerald-500 rounded-full transition-all duration-500" style="width:0%"></div>
+                                </div>
+                                <button onclick="submitAttendance(this)" class="px-6 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-sm font-semibold shadow-md transition-all flex items-center gap-2">
+                                    <iconify-icon icon="material-symbols:save"></iconify-icon> Save Attendance
+                                </button>
+                            </div>
                         </div>
                     </div>
-                    <div class="flex items-center gap-3">
-                        <!-- Progress bar -->
-                        <div class="w-32 h-2 bg-slate-100 rounded-full overflow-hidden">
-                            <div id="selection-progress" class="h-full bg-emerald-500 rounded-full transition-all duration-500" style="width:0%"></div>
+
+                    <!-- ATTENDANCE HISTORY -->
+                    <div class="bg-white rounded-2xl border p-4 shadow-sm">
+                        <h4 class="text-sm font-medium text-slate-700 flex items-center gap-2 mb-3">
+                            <iconify-icon icon="material-symbols:history" class="text-emerald-600"></iconify-icon>
+                            Attendance Logs
+                        </h4>
+                        <div id="attendance-history-container">
+                            ${attendanceData.length ? renderAttendanceHistory() : '<p class="text-sm text-slate-400">No records found.</p>'}
                         </div>
-                        <button onclick="submitAttendance()" class="px-6 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-sm font-semibold shadow-md hover:shadow-lg transition-all flex items-center gap-2">
-                            <iconify-icon icon="material-symbols:save"></iconify-icon>
-                            Assign as Worked
-                        </button>
                     </div>
                 </div>
-            </div>
-
-            <!-- ATTENDANCE HISTORY -->
-            <div class="bg-white rounded-2xl border p-4 shadow-sm">
-                <h4 class="text-sm font-medium text-slate-700 flex items-center gap-2 mb-3">
-                    <iconify-icon icon="material-symbols:history" class="text-emerald-600"></iconify-icon>
-                    Attendance History
-                </h4>
-                <div id="attendance-history-container">
-                    ${attendanceData.length ? renderAttendanceHistory() : '<p class="text-sm text-slate-400">No records yet.</p>'}
-                </div>
-            </div>
-
-        </div>
-    `;
-
-    // ---- Post-render setup ----
-    setTimeout(() => {
-        const dateInput = document.getElementById('attendance-date');
-        if (dateInput) dateInput.addEventListener('change', updateAttendanceSummary);
-        // Attach click events to all worker cards (already have onclick inline)
-        // Re-run summary to reflect any pre-selected state (none initially)
-        updateAttendanceSummary();
-    }, 50);
-
-    return html;
-}
-
-// ── DATE NAVIGATION ──
-window.changeAttendanceDate = (delta) => {
-    const input = document.getElementById('attendance-date');
-    if (!input) return;
-    let date = new Date(input.value || new Date().toISOString().split('T')[0]);
-    if (delta === 0) {
-        date = new Date();
-    } else {
-        date.setDate(date.getDate() + delta);
-    }
-    const newVal = date.toISOString().split('T')[0];
-    input.value = newVal;
-    // Trigger change event manually
-    input.dispatchEvent(new Event('change'));
-};
-
-// ── TOGGLE WORKER SELECTION ──
-window.toggleWorkerSelection = (workerId) => {
-    const card = document.querySelector(`.worker-card[data-worker-id="${workerId}"]`);
-    if (!card) return;
-    const checkbox = document.getElementById(`worker-${workerId}`);
-    if (!checkbox) return;
-    // Toggle checkbox
-    checkbox.checked = !checkbox.checked;
-    // Update card visual
-    updateWorkerCardVisual(card, checkbox.checked);
-    // Update summary
-    updateAttendanceSummary();
-};
-
-// ── UPDATE CARD VISUAL ──
-function updateWorkerCardVisual(card, selected) {
-    if (selected) {
-        card.classList.add('border-emerald-500', 'bg-emerald-50', 'shadow-md');
-        card.classList.remove('border-transparent', 'bg-slate-50');
-        const checkmark = card.querySelector('[data-checkmark]');
-        if (checkmark) {
-            checkmark.classList.remove('opacity-0', 'scale-75');
-            checkmark.classList.add('opacity-100', 'scale-100');
+            `;
         }
-    } else {
-        card.classList.remove('border-emerald-500', 'bg-emerald-50', 'shadow-md');
-        card.classList.add('border-transparent', 'bg-slate-50');
-        const checkmark = card.querySelector('[data-checkmark]');
-        if (checkmark) {
-            checkmark.classList.add('opacity-0', 'scale-75');
-            checkmark.classList.remove('opacity-100', 'scale-100');
+
+        window.changeAttendanceDate = (delta) => {
+            const input = document.getElementById('attendance-date');
+            if (!input) return;
+            let date = new Date(input.value || getTodayISO());
+            if (delta === 0) {
+                date = new Date();
+            } else {
+                date.setDate(date.getDate() + delta);
+            }
+            input.value = date.toISOString().split('T')[0];
+            updateAttendanceSummary();
+        };
+
+        window.toggleWorkerSelection = (workerId) => {
+            const card = document.querySelector(`.worker-card[data-worker-id="${workerId}"]`);
+            const checkbox = document.getElementById(`worker-chk-${workerId}`);
+            if (!card || !checkbox) return;
+
+            checkbox.checked = !checkbox.checked;
+            updateWorkerCardVisual(card, checkbox.checked);
+            updateAttendanceSummary();
+        };
+
+        function updateWorkerCardVisual(card, selected) {
+            if (selected) {
+                card.classList.add('border-emerald-500', 'bg-emerald-50', 'shadow-md');
+                card.classList.remove('border-transparent', 'bg-slate-50');
+                const checkmark = card.querySelector('[data-checkmark]');
+                if (checkmark) {
+                    checkmark.classList.remove('opacity-0', 'scale-75');
+                    checkmark.classList.add('opacity-100', 'scale-100');
+                }
+            } else {
+                card.classList.remove('border-emerald-500', 'bg-emerald-50', 'shadow-md');
+                card.classList.add('border-transparent', 'bg-slate-50');
+                const checkmark = card.querySelector('[data-checkmark]');
+                if (checkmark) {
+                    checkmark.classList.add('opacity-0', 'scale-75');
+                    checkmark.classList.remove('opacity-100', 'scale-100');
+                }
+            }
         }
-    }
-}
 
-// ── TOGGLE SELECT ALL ──
-let allSelected = false;
-window.toggleSelectAllWorkers = () => {
-    const checkboxes = document.querySelectorAll('.worker-checkbox input[type="checkbox"]');
-    allSelected = !allSelected;
-    checkboxes.forEach(cb => {
-        cb.checked = allSelected;
-        const card = document.querySelector(`.worker-card[data-worker-id="${cb.value}"]`);
-        if (card) updateWorkerCardVisual(card, allSelected);
-    });
-    // Update button text
-    const btn = document.getElementById('select-all-btn');
-    if (btn) {
-        btn.querySelector('span').textContent = allSelected ? 'Deselect All' : 'Select All';
-        btn.querySelector('iconify-icon').icon = allSelected ? 'material-symbols:deselect' : 'material-symbols:select-all';
-    }
-    updateAttendanceSummary();
-};
+        let allWorkersSelected = false;
+        window.toggleSelectAllWorkers = () => {
+            allWorkersSelected = !allWorkersSelected;
+            const checkboxes = document.querySelectorAll('.worker-checkbox-input');
+            checkboxes.forEach(cb => {
+                cb.checked = allWorkersSelected;
+                const card = document.querySelector(`.worker-card[data-worker-id="${cb.value}"]`);
+                if (card) updateWorkerCardVisual(card, allWorkersSelected);
+            });
 
-// ── UPDATE SUMMARY ──
-window.updateAttendanceSummary = () => {
-    const dateInput = document.getElementById('attendance-date');
-    const selectedDate = dateInput ? dateInput.value : new Date().toISOString().split('T')[0];
+            const btn = document.getElementById('select-all-btn');
+            if (btn) {
+                btn.querySelector('span').textContent = allWorkersSelected ? 'Deselect All' : 'Select All';
+                btn.querySelector('iconify-icon').icon = allWorkersSelected ? 'material-symbols:deselect' : 'material-symbols:select-all';
+            }
+            updateAttendanceSummary();
+        };
 
-    // Check if attendance already exists for this date
-    const alreadyExists = attendanceData.some(a => a.date === selectedDate && a.site_id === currentSiteId);
-    const badge = document.getElementById('attendance-status-badge');
-    if (badge) {
-        badge.classList.toggle('hidden', !alreadyExists);
-    }
+        window.updateAttendanceSummary = () => {
+            const dateInput = document.getElementById('attendance-date');
+            const selectedDate = dateInput ? dateInput.value : getTodayISO();
 
-    const checkboxes = document.querySelectorAll('.worker-checkbox input[type="checkbox"]:checked');
-    const selectedIds = Array.from(checkboxes).map(cb => cb.value);
-    const selectedWorkers = siteWorkersData.filter(w => selectedIds.includes(w.id));
+            const existingRecords = attendanceData.filter(a => a.date === selectedDate && a.site_id === currentSiteId);
+            const badge = document.getElementById('attendance-status-badge');
+            if (badge) badge.classList.toggle('hidden', existingRecords.length === 0);
 
-    const summary = document.getElementById('attendance-summary');
-    if (!summary) return;
+            const checkedBoxes = document.querySelectorAll('.worker-checkbox-input:checked');
+            const selectedIds = Array.from(checkedBoxes).map(cb => cb.value);
+            const selectedWorkersData = siteWorkersData.filter(w => selectedIds.includes(w.id));
 
-    if (selectedIds.length === 0) {
-        summary.classList.add('hidden');
-        window._selectedWorkerIds = [];
-        return;
-    }
+            const summary = document.getElementById('attendance-summary');
+            if (!summary) return;
 
-    summary.classList.remove('hidden');
-    document.getElementById('selected-count').textContent = selectedIds.length;
+            if (selectedIds.length === 0) {
+                summary.classList.add('hidden');
+                return;
+            }
 
-    let total = 0;
-    selectedWorkers.forEach(w => {
-        const dailyRate = w.payment_method === 'daily' ? Number(w.salary) || 0 : Math.round((Number(w.salary) || 0) / 30);
-        total += dailyRate;
-    });
+            summary.classList.remove('hidden');
+            document.getElementById('selected-count').textContent = selectedIds.length;
 
-    document.getElementById('total-cost').textContent = total.toLocaleString();
+            let totalCost = 0;
+            selectedWorkersData.forEach(w => {
+                const dailyRate = w.payment_method === 'daily' ? Number(w.salary) || 0 : Math.round((Number(w.salary) || 0) / 30);
+                totalCost += dailyRate;
+            });
 
-    // Update progress bar
-    const progress = document.getElementById('selection-progress');
-    if (progress) {
-        const pct = siteWorkersData.length ? Math.round((selectedIds.length / siteWorkersData.length) * 100) : 0;
-        progress.style.width = pct + '%';
-    }
+            document.getElementById('total-cost').textContent = totalCost.toLocaleString();
 
-    window._selectedWorkerIds = selectedIds;
-};
+            const progress = document.getElementById('selection-progress');
+            if (progress) {
+                const pct = siteWorkersData.length ? Math.round((selectedIds.length / siteWorkersData.length) * 100) : 0;
+                progress.style.width = pct + '%';
+            }
+        };
 
-// ── RENDER ATTENDANCE HISTORY (enhanced) ──
-function renderAttendanceHistory() {
-    const groups = {};
-    attendanceData.forEach(a => {
-        const date = a.date || 'Unknown';
-        if (!groups[date]) groups[date] = [];
-        groups[date].push(a);
-    });
+        window.submitAttendance = async (btn) => {
+            const dateInput = document.getElementById('attendance-date');
+            const selectedDate = dateInput ? dateInput.value : getTodayISO();
+            const checkedBoxes = document.querySelectorAll('.worker-checkbox-input:checked');
+            const selectedIds = Array.from(checkedBoxes).map(cb => cb.value);
 
-    let html = '';
-    const sortedDates = Object.keys(groups).sort((a, b) => new Date(b) - new Date(a));
-    sortedDates.forEach(date => {
-        const workers = groups[date];
-        const total = workers.reduce((sum, a) => sum + (Number(a.daily_rate) || 0), 0);
-        html += `
-            <div class="mb-3 last:mb-0 p-3 bg-slate-50 rounded-xl border border-slate-100 transition hover:shadow-sm">
-                <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
-                    <span class="text-sm font-semibold text-slate-700 flex items-center gap-2">
-                        <iconify-icon icon="material-symbols:calendar-month" class="text-emerald-500 text-sm"></iconify-icon>
-                        ${date}
-                    </span>
-                    <span class="text-xs text-slate-500">
-                        ${workers.length} worker${workers.length > 1 ? 's' : ''} • ${total.toLocaleString()} RWF
-                    </span>
-                </div>
-                <div class="flex flex-wrap gap-1">
-                    ${workers.map(a => `
-                        <span class="inline-flex items-center gap-1 bg-white border border-slate-200 px-2 py-0.5 rounded text-xs text-slate-600">
-                            ${a.name}
-                            <span class="text-[10px] text-slate-400">(${a.role})</span>
-                        </span>
-                    `).join('')}
-                </div>
-            </div>
-        `;
-    });
-    return html;
-}
+            if (selectedIds.length === 0) {
+                alert('Select at least one worker.');
+                return;
+            }
+
+            setButtonLoading(btn, true);
+
+            try {
+                const existingSnap = await getDocs(query(collection(db, 'worker_attendance'), where('site_id', '==', currentSiteId), where('date', '==', selectedDate)));
+                const batch = writeBatch(db);
+
+                existingSnap.docs.forEach(d => batch.delete(d.ref));
+
+                selectedIds.forEach(id => {
+                    const w = siteWorkersData.find(item => item.id === id);
+                    if (!w) return;
+                    const dailyRate = w.payment_method === 'daily' ? Number(w.salary) || 0 : Math.round((Number(w.salary) || 0) / 30);
+                    const newDocRef = doc(collection(db, 'worker_attendance'));
+                    batch.set(newDocRef, {
+                        site_id: currentSiteId,
+                        worker_id: w.id,
+                        name: w.name,
+                        role: w.role || 'Worker',
+                        daily_rate: dailyRate,
+                        date: selectedDate,
+                        status: 'present',
+                        recorded_by: currentUser.uid,
+                        recorded_at: new Date().toISOString()
+                    });
+                });
+
+                await batch.commit();
+                alert(`Attendance saved for ${selectedIds.length} worker(s) on ${selectedDate}.`);
+            } catch (err) {
+                alert('Error saving attendance: ' + err.message);
+            } finally {
+                setButtonLoading(btn, false);
+            }
+        };
+
+        function renderAttendanceHistory() {
+            const groups = {};
+            attendanceData.forEach(a => {
+                const date = a.date || 'Unknown';
+                if (!groups[date]) groups[date] = [];
+                groups[date].push(a);
+            });
+
+            let html = '';
+            const sortedDates = Object.keys(groups).sort((a, b) => new Date(b) - new Date(a));
+            sortedDates.forEach(date => {
+                const workers = groups[date];
+                const total = workers.reduce((sum, a) => sum + (Number(a.daily_rate) || 0), 0);
+                html += `
+                    <div class="mb-3 last:mb-0 p-3 bg-slate-50 rounded-xl border border-slate-100 transition hover:shadow-sm">
+                        <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
+                            <span class="text-sm font-semibold text-slate-700 flex items-center gap-2">
+                                <iconify-icon icon="material-symbols:calendar-month" class="text-emerald-500 text-sm"></iconify-icon>
+                                ${date}
+                            </span>
+                            <span class="text-xs text-slate-500">
+                                ${workers.length} worker${workers.length > 1 ? 's' : ''} • ${total.toLocaleString()} RWF
+                            </span>
+                        </div>
+                        <div class="flex flex-wrap gap-1">
+                            ${workers.map(a => `
+                                <span class="inline-flex items-center gap-1 bg-white border border-slate-200 px-2 py-0.5 rounded text-xs text-slate-600">
+                                    ${a.name}
+                                    <span class="text-[10px] text-slate-400">(${a.role})</span>
+                                </span>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            });
+            return html;
+        }
 
         // =============== PROGRESS ===============
         function renderProgress(container) {
@@ -1208,15 +1245,15 @@ function renderAttendanceHistory() {
                             </div>
                         </div>
                         <div class="flex gap-2">
-                            <button onclick="exportReport('csv')" class="flex-1 bg-emerald-600 text-white py-2 rounded-xl text-sm">Export CSV</button>
-                            <button onclick="exportReport('pdf')" class="flex-1 border border-emerald-600 text-emerald-600 py-2 rounded-xl text-sm">Print PDF</button>
+                            <button onclick="exportReport('csv')" class="flex-1 bg-emerald-600 text-white py-2 rounded-xl text-sm font-medium">Export CSV</button>
+                            <button onclick="exportReport('pdf')" class="flex-1 border border-emerald-600 text-emerald-600 py-2 rounded-xl text-sm font-medium">Print PDF</button>
                         </div>
                     </div>
                     <div class="bg-white rounded-2xl border p-4">
                         <h3 class="font-semibold mb-3 text-sm">Site Summary</h3>
-                        <p class="text-sm text-slate-500">Completed tasks: ${progressTasks.filter(t=>t.status==='completed').length}</p>
-                        <p class="text-sm text-slate-500">Materials recorded: ${materialsData.length}</p>
-                        <p class="text-sm text-slate-500">Workers: ${siteWorkersData.length}</p>
+                        <p class="text-sm text-slate-500 mb-1">Completed tasks: ${progressTasks.filter(t=>t.status==='completed').length}</p>
+                        <p class="text-sm text-slate-500 mb-1">Materials recorded: ${materialsData.length}</p>
+                        <p class="text-sm text-slate-500">Workers on site: ${siteWorkersData.length}</p>
                     </div>
                 </div>
             `;
@@ -1227,7 +1264,7 @@ function renderAttendanceHistory() {
             const startDate = document.getElementById('report-start').value;
             const endDate = document.getElementById('report-end').value;
             const site = assignedSites.find(s => s.id === currentSiteId);
-            let data = [], filename = `SHDR_${site?.name || 'Site'}_${dept}`;
+            let data = [];
 
             const companyName = 'SHDR Ltd';
             const companyAddress = 'KG 11 Avenue, Gasabo District';
@@ -1245,8 +1282,7 @@ function renderAttendanceHistory() {
             };
 
             if (dept === 'all' || dept === 'materials') {
-                let mats = materialsData;
-                mats = filterByDate(mats, 'date_used');
+                let mats = filterByDate(materialsData, 'date_used');
                 data = data.concat(mats.map(m => ({
                     Department: 'Materials',
                     Name: m.name,
@@ -1256,8 +1292,7 @@ function renderAttendanceHistory() {
                 })));
             }
             if (dept === 'all' || dept === 'workers') {
-                let workers = siteWorkersData;
-                data = data.concat(workers.map(w => ({
+                data = data.concat(siteWorkersData.map(w => ({
                     Department: 'Workers',
                     Name: w.name,
                     Role: w.role,
@@ -1269,34 +1304,16 @@ function renderAttendanceHistory() {
             if (dept === 'all' || dept === 'finances') {
                 const attCost = attendanceData.reduce((sum, a) => sum + (a.daily_rate || 0), 0);
                 const matCost = materialsData.reduce((sum, m) => sum + (m.amount || 0), 0);
-                data.push({
-                    Department: 'Finances',
-                    Category: 'Materials',
-                    Amount: matCost,
-                    Description: 'Total material cost'
-                });
-                data.push({
-                    Department: 'Finances',
-                    Category: 'Workers (Attendance)',
-                    Amount: attCost,
-                    Description: 'Total worker attendance cost'
-                });
+                data.push({ Department: 'Finances', Category: 'Materials', Amount: matCost, Description: 'Total material cost' });
+                data.push({ Department: 'Finances', Category: 'Workers (Attendance)', Amount: attCost, Description: 'Total worker attendance cost' });
             }
 
             if (!data.length) { alert('No data for the selected filters.'); return; }
 
             const siteName = site?.name || 'Site';
             const deptLabel = dept === 'all' ? 'All Departments' : dept.charAt(0).toUpperCase() + dept.slice(1);
-            const generatedDate = new Date().toLocaleString('en-US', {
-                month: 'long',
-                day: 'numeric',
-                year: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit',
-                second: '2-digit',
-                hour12: false
-            }).replace(',', ', ');
-            filename = `SHDR_${siteName}_${deptLabel}`;
+            const generatedDate = new Date().toLocaleString('en-US');
+            const filename = `SHDR_${siteName}_${deptLabel}`;
 
             if (format === 'csv') {
                 const headers = Object.keys(data[0]);
@@ -1333,13 +1350,6 @@ function renderAttendanceHistory() {
                 `<tr>${headers.map(h => `<td>${row[h] ?? ''}</td>`).join('')}</tr>`
             ).join('');
 
-            const tableHtml = `
-                <table>
-                    <thead><tr>${headers.map(h => `<th>${h}</th>`).join('')}</tr></thead>
-                    <tbody>${tableRows}</tbody>
-                </table>
-            `;
-
             const win = window.open('', '_blank', 'width=1000,height=700');
             if (!win) { alert('Please allow pop-ups to print the report.'); return; }
 
@@ -1350,155 +1360,35 @@ function renderAttendanceHistory() {
                     <meta charset="UTF-8">
                     <title>${filename}</title>
                     <style>
-                        * { box-sizing: border-box; }
-                        body {
-                            font-family: Arial, Helvetica, sans-serif;
-                            padding: 30px;
-                            margin: 0;
-                            color: #1f2937;
-                            background: white;
-                        }
-                        .company-header {
-                            display: flex;
-                            align-items: center;
-                            justify-content: space-between;
-                            border-bottom: 3px solid #059669;
-                            padding-bottom: 18px;
-                            margin-bottom: 20px;
-                        }
-                        .company-left {
-                            display: flex;
-                            align-items: center;
-                            gap: 15px;
-                        }
-                        .company-logo {
-                            width: 75px;
-                            height: 75px;
-                            object-fit: contain;
-                            border-radius: 8px;
-                        }
-                        .company-name {
-                            font-size: 25px;
-                            font-weight: 700;
-                            color: #059669;
-                            margin-bottom: 3px;
-                        }
-                        .company-subtitle {
-                            font-size: 12px;
-                            color: #6b7280;
-                            margin-bottom: 5px;
-                        }
-                        .company-details {
-                            font-size: 12px;
-                            line-height: 1.5;
-                            color: #374151;
-                        }
-                        .report-title { text-align: right; }
-                        .report-title h2 {
-                            margin: 0;
-                            font-size: 21px;
-                            color: #111827;
-                        }
-                        .report-title p {
-                            margin: 5px 0 0;
-                            font-size: 11px;
-                            color: #6b7280;
-                        }
-                        .report-meta {
-                            background: #f0fdf4;
-                            border: 1px solid #bbf7d0;
-                            border-radius: 8px;
-                            padding: 12px 15px;
-                            margin-bottom: 20px;
-                            font-size: 12px;
-                            line-height: 1.6;
-                        }
-                        .report-meta strong { color: #111827; }
-                        table {
-                            border-collapse: collapse;
-                            width: 100%;
-                            font-size: 11px;
-                        }
-                        th {
-                            background: #059669;
-                            color: white;
-                            font-weight: 600;
-                            padding: 9px;
-                            border: 1px solid #047857;
-                            text-align: left;
-                        }
-                        td {
-                            padding: 8px;
-                            border: 1px solid #d1d5db;
-                        }
+                        body { font-family: Arial, sans-serif; padding: 30px; color: #1f2937; }
+                        .company-header { display: flex; justify-content: space-between; border-bottom: 3px solid #059669; padding-bottom: 18px; margin-bottom: 20px; }
+                        .company-name { font-size: 24px; font-weight: bold; color: #059669; }
+                        table { border-collapse: collapse; width: 100%; font-size: 11px; margin-top: 15px; }
+                        th { background: #059669; color: white; padding: 8px; text-align: left; }
+                        td { border: 1px solid #d1d5db; padding: 8px; }
                         tr:nth-child(even) { background: #f9fafb; }
-                        .report-footer {
-                            margin-top: 30px;
-                            padding-top: 12px;
-                            border-top: 1px solid #d1d5db;
-                            text-align: center;
-                            font-size: 11px;
-                            color: #6b7280;
-                            line-height: 1.6;
-                        }
-                        .footer-system {
-                            font-weight: 600;
-                            color: #374151;
-                        }
-                        .footer-copy {
-                            font-size: 10px;
-                            color: #9ca3af;
-                        }
-                        @media print {
-                            body { padding: 15px; }
-                            .company-header { break-inside: avoid; }
-                            table { page-break-inside: auto; }
-                            tr { page-break-inside: avoid; }
-                            thead { display: table-header-group; }
-                            .report-footer { page-break-inside: avoid; }
-                        }
                     </style>
                 </head>
                 <body>
                     <div class="company-header">
-                        <div class="company-left">
-                            <img src="shdr.jpg" alt="SHDR Ltd Logo" class="company-logo" onerror="this.style.display='none'">
-                            <div>
-                                <div class="company-name">${companyName}</div>
-                                <div class="company-subtitle">Construction Management System</div>
-                                <div class="company-details">
-                                    ${companyAddress}<br>
-                                    ${companyCity}<br>
-                                    <strong>Tel:</strong> ${companyPhone}
-                                </div>
-                            </div>
+                        <div>
+                            <div class="company-name">${companyName}</div>
+                            <div>${companyAddress}, ${companyCity}</div>
+                            <div>Tel: ${companyPhone}</div>
                         </div>
-                        <div class="report-title">
+                        <div style="text-align: right;">
                             <h2>Management Report</h2>
-                            <p>Official Company Report</p>
+                            <p>${siteName} — ${deptLabel}</p>
+                            <p style="font-size: 11px; color: #6b7280;">Generated: ${generatedDate}</p>
                         </div>
                     </div>
-
-                    <div class="report-meta">
-                        <strong>Site Name:</strong> ${siteName} &nbsp;|&nbsp;
-                        <strong>Department:</strong> ${deptLabel}<br>
-                        <strong>Generated:</strong> ${generatedDate}
-                    </div>
-
-                    ${tableHtml}
-
-                    <div class="report-footer">
-                        <div class="footer-system">
-                            This report is generated automatically by SHDR Ltd Management System.
-                        </div>
-                        <div class="footer-copy">
-                            © ${new Date().getFullYear()} SHDR Ltd — All rights reserved.
-                        </div>
-                    </div>
+                    <table>
+                        <thead><tr>${headers.map(h => `<th>${h}</th>`).join('')}</tr></thead>
+                        <tbody>${tableRows}</tbody>
+                    </table>
                 </body>
                 </html>
             `);
-
             win.document.close();
             win.focus();
             setTimeout(() => { win.print(); }, 800);
@@ -1514,7 +1404,7 @@ function renderAttendanceHistory() {
                     <form onsubmit="handleGalleryUpload(event)" class="space-y-3">
                         <input type="file" id="gallery-image" accept="image/*" required class="w-full border rounded-lg p-2 text-sm">
                         <textarea id="gallery-description" placeholder="Description" rows="2" class="w-full border rounded-lg p-2 text-sm"></textarea>
-                        <button type="submit" class="w-full bg-emerald-600 text-white py-2 rounded-xl text-sm">Upload</button>
+                        <button type="submit" class="w-full bg-emerald-600 text-white py-2 rounded-xl text-sm font-medium">Upload</button>
                     </form>
                 </div>
 
@@ -1539,7 +1429,6 @@ function renderAttendanceHistory() {
             `;
         }
 
-        // =============== GALLERY IMAGE VIEWER ===============
         let galleryViewerIndex = 0;
 
         window.openGalleryImage = (index) => {
