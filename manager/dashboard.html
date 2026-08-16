@@ -479,119 +479,221 @@
             `;
         }
 
-        // =============== MATERIALS ===============
-        function renderMaterials(container) {
-            const grouped = {};
-            materialsData.forEach(m => {
-                const date = m.date_used ? new Date(m.date_used).toLocaleDateString() : 'No date';
-                if (!grouped[date]) grouped[date] = [];
-                grouped[date].push(m);
-            });
 
-            let html = `
-                <div class="flex justify-between items-center mb-4 sm:mb-6">
-                    <h2 class="text-xl sm:text-2xl font-bold">Materials Used</h2>
-                    <button onclick="openAddMaterialModal()" class="px-3 py-2 bg-emerald-600 text-white rounded-xl hover:bg-emerald-700 flex items-center gap-2 text-sm">
-                        <iconify-icon icon="material-symbols:add"></iconify-icon> Record Usage
-                    </button>
-                </div>
+
+// =============== MATERIALS (Card View, Grouped by Date) ===============
+
+function renderMaterials(container) {
+    const grouped = {};
+    materialsData.forEach(m => {
+        const date = m.date_used ? new Date(m.date_used).toLocaleDateString() : 'No date';
+        if (!grouped[date]) grouped[date] = [];
+        grouped[date].push(m);
+    });
+
+    // Get current site name
+    const currentSite = assignedSites.find(s => s.id === currentSiteId);
+    const siteName = currentSite ? currentSite.name : 'Unknown Site';
+
+    let html = `
+        <div class="flex justify-between items-center mb-4 sm:mb-6">
+            <h2 class="text-xl sm:text-2xl font-bold">Materials Used</h2>
+            <button onclick="openAddMaterialModal()" class="px-3 py-2 bg-emerald-600 text-white rounded-xl hover:bg-emerald-700 flex items-center gap-2 text-sm">
+                <iconify-icon icon="material-symbols:add"></iconify-icon> Record Usage
+            </button>
+        </div>
+    `;
+
+    if (Object.keys(grouped).length === 0) {
+        html += '<p class="text-slate-500">No materials recorded yet.</p>';
+    } else {
+        const sortedDates = Object.keys(grouped).sort((a, b) => new Date(b) - new Date(a));
+        sortedDates.forEach(date => {
+            const materials = grouped[date];
+            html += `
+                <div class="mb-6">
+                    <h3 class="font-bold text-sm text-slate-700 mb-3 flex items-center gap-2">
+                        <iconify-icon icon="material-symbols:calendar-month" class="text-emerald-500"></iconify-icon>
+                        ${date}
+                    </h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             `;
+            materials.forEach(m => {
+                const qty = m.quantity_used || 0;
+                const total = m.amount || 0;
+                const imageUrl = m.image || PLACEHOLDER_IMG;
 
-            if (Object.keys(grouped).length === 0) {
-                html += '<p class="text-slate-500">No materials recorded yet.</p>';
-            } else {
-                const sortedDates = Object.keys(grouped).sort((a, b) => new Date(b) - new Date(a));
-                sortedDates.forEach(date => {
-                    html += `<div class="mb-4"><h3 class="font-bold text-sm text-slate-700 mb-2">${date}</h3><div class="bg-white rounded-2xl border overflow-hidden shadow-sm">`;
-                    html += `<table class="w-full text-sm"><thead class="bg-slate-50 uppercase text-xs"><tr><th class="px-3 py-2">Image</th><th class="px-3 py-2">Name</th><th class="px-3 py-2">Qty Used</th><th class="px-3 py-2">Amount</th></tr></thead><tbody>`;
-                    grouped[date].forEach(m => {
-                        html += `<tr>
-                            <td class="px-3 py-2"><img src="${m.image || PLACEHOLDER_IMG}" class="w-8 h-8 rounded-lg object-cover"></td>
-                            <td class="px-3 py-2 font-medium">${m.name}</td>
-                            <td class="px-3 py-2">${m.quantity_used || 0}</td>
-                            <td class="px-3 py-2">${(m.amount || 0).toLocaleString()} RWF</td>
-                        </tr>`;
-                    });
-                    html += `</tbody></table></div></div>`;
-                });
-            }
-            container.innerHTML = html;
-        }
-
-        window.openAddMaterialModal = () => {
-            let entryCount = 0;
-            const addEntry = () => {
-                entryCount++;
-                const container = document.getElementById('material-entries');
-                const entry = document.createElement('div');
-                entry.className = 'material-entry';
-                entry.innerHTML = `
-                    <div class="grid grid-cols-2 gap-2">
-                        <input class="border rounded-lg p-2 text-sm" placeholder="Material Name" name="mat-name-${entryCount}" required>
-                        <input class="border rounded-lg p-2 text-sm" placeholder="Quantity Used" type="number" name="mat-used-${entryCount}" required>
-                    </div>
-                    <div class="grid grid-cols-2 gap-2 mt-2">
-                        <input class="border rounded-lg p-2 text-sm" placeholder="Amount (RWF)" type="number" name="mat-amount-${entryCount}">
-                        <input class="border rounded-lg p-2 text-sm" type="file" accept="image/*" name="mat-image-${entryCount}">
+                html += `
+                    <div class="bg-white rounded-2xl border overflow-hidden shadow-sm hover:shadow-md transition">
+                        <div class="relative w-full h-48 overflow-hidden bg-slate-100">
+                            <img src="${imageUrl}" class="w-full h-full object-cover" alt="${m.name}" loading="lazy" onerror="this.src='${PLACEHOLDER_IMG}'">
+                            <!-- Site Badge -->
+                            <div class="absolute top-3 left-3 bg-emerald-600/90 text-white text-xs font-medium px-2.5 py-1 rounded-full backdrop-blur-sm">
+                                <iconify-icon icon="material-symbols:location-on" class="inline text-xs mr-1"></iconify-icon>
+                                ${siteName}
+                            </div>
+                        </div>
+                        <div class="p-5">
+                            <h3 class="font-bold text-lg text-slate-800 truncate">${m.name}</h3>
+                            <div class="mt-4 space-y-2">
+                                <div class="flex justify-between text-sm border-b border-slate-100 pb-2">
+                                    <span class="text-slate-500">Qty Used</span>
+                                    <span class="font-semibold text-slate-700">${qty}</span>
+                                </div>
+                                <div class="flex justify-between text-sm border-b border-slate-100 pb-2">
+                                    <span class="text-slate-500">Unit Cost</span>
+                                    <span class="font-semibold text-slate-700">${qty > 0 ? (total / qty).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : '0.00'} RWF</span>
+                                </div>
+                                <div class="flex justify-between text-sm">
+                                    <span class="text-slate-500">Total Amount</span>
+                                    <span class="font-bold text-emerald-600">${total.toLocaleString()} RWF</span>
+                                </div>
+                            </div>
+                            <div class="mt-4 pt-3 border-t border-slate-100 flex justify-end gap-3">
+                                <button onclick="editMaterial('${m.id}')" class="text-sm text-emerald-600 hover:text-emerald-800 font-medium flex items-center gap-1 transition">
+                                    <iconify-icon icon="material-symbols:edit" width="16" height="16"></iconify-icon>
+                                    Edit
+                                </button>
+                                <button onclick="deleteMaterial('${m.id}')" class="text-sm text-red-500 hover:text-red-700 font-medium flex items-center gap-1 transition">
+                                    <iconify-icon icon="material-symbols:delete" width="16" height="16"></iconify-icon>
+                                    Delete
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 `;
-                container.appendChild(entry);
-            };
+            });
+            html += `</div></div>`;
+        });
+    }
 
-            const modalContent = `
-                <div class="mb-4">
-                    <label class="block text-sm font-medium text-slate-700 mb-1">Date of Usage</label>
-                    <input type="date" id="usageDate" value="${getTodayISO()}" class="border rounded-lg p-2 text-sm w-full" required>
-                </div>
-                <div id="material-entries"></div>
-                <button type="button" onclick="addMaterialEntry()" class="text-emerald-600 text-sm mt-2">+ Add another material</button>
-                <button onclick="submitBatchMaterials()" class="w-full bg-emerald-600 text-white py-2 rounded-xl mt-4">Save All Materials</button>
-            `;
+    container.innerHTML = html;
+}
 
-            openModal('Record Material Usage', modalContent);
-            addEntry();
+// ── Edit & Delete functions (keep these – they are unchanged) ──
 
-            window.addMaterialEntry = addEntry;
+window.editMaterial = (id) => {
+    const mat = materialsData.find(m => m.id === id);
+    if (!mat) return;
+    openModal('Edit Material', `
+        <form onsubmit="handleEditMaterial(event, '${id}')" class="space-y-4">
+            <input class="w-full border rounded-lg p-3" value="${mat.name}" id="edit-mat-name" required>
+            <input class="w-full border rounded-lg p-3" value="${mat.quantity_used || 0}" type="number" id="edit-mat-used" required step="0.01" placeholder="Quantity Used">
+            <input class="w-full border rounded-lg p-3" value="${mat.amount || 0}" type="number" id="edit-mat-total" required step="0.01" placeholder="Total Amount (RWF)">
+            <div>
+                <label class="text-sm font-medium">New Image (optional)</label>
+                <input type="file" id="edit-mat-image" accept="image/*" class="w-full mt-1">
+            </div>
+            <button type="submit" class="w-full bg-emerald-600 text-white py-3 rounded-xl">Update Material</button>
+        </form>
+    `);
+};
 
-            window.submitBatchMaterials = async () => {
-                const dateInput = document.getElementById('usageDate');
-                const selectedDate = dateInput ? dateInput.value : getTodayISO();
-                if (!selectedDate) { alert('Please select a date.'); return; }
-                const dateObj = new Date(selectedDate + 'T00:00:00.000Z');
-                const entries = document.querySelectorAll('#material-entries .material-entry');
-                const promises = [];
+window.handleEditMaterial = async (e, id) => {
+    e.preventDefault();
+    const form = e.target;
+    const btn = getFormSubmitBtn(form);
+    setButtonLoading(btn, true);
+    try {
+        const name = document.getElementById('edit-mat-name').value.trim();
+        const used = parseFloat(document.getElementById('edit-mat-used').value) || 0;
+        const total = parseFloat(document.getElementById('edit-mat-total').value) || 0;
+        const imageFile = document.getElementById('edit-mat-image').files[0];
+        let imageUrl = '';
+        if (imageFile) imageUrl = await uploadImageToImgbb(imageFile);
+        const updateData = { name, quantity_used: used, amount: total };
+        if (imageUrl) updateData.image = imageUrl;
+        await updateDoc(doc(db, 'materials', id), updateData);
+        closeModal();
+    } catch (err) { alert('Error: ' + getFriendlyError(err)); }
+    finally { setButtonLoading(btn, false); }
+};
 
-                for (const entry of entries) {
-                    const name = entry.querySelector('[name^="mat-name-"]').value.trim();
-                    const used = parseFloat(entry.querySelector('[name^="mat-used-"]').value) || 0;
-                    const amount = parseFloat(entry.querySelector('[name^="mat-amount-"]').value) || 0;
-                    const imageFile = entry.querySelector('[name^="mat-image-"]').files[0];
-                    if (!name) continue;
-                    let imageUrl = '';
-                    if (imageFile) {
-                        try { imageUrl = await uploadImageToImgbb(imageFile); }
-                        catch (e) { alert('Image upload failed for ' + name); continue; }
-                    }
-                    promises.push(addDoc(collection(db, 'materials'), {
-                        site_id: currentSiteId,
-                        name,
-                        quantity_used: used,
-                        amount,
-                        image: imageUrl,
-                        date_used: dateObj.toISOString(),
-                        created_at: new Date().toISOString()
-                    }));
-                }
+window.deleteMaterial = (id) => {
+    if (confirm('Delete this material?')) {
+        deleteDoc(doc(db, 'materials', id)).catch(err => alert('Error: ' + getFriendlyError(err)));
+    }
+};
 
-                if (promises.length === 0) { alert('No valid materials to save.'); return; }
-                try {
-                    await Promise.all(promises);
-                    closeModal();
-                    alert('Materials saved successfully!');
-                } catch (err) { alert('Error saving materials: ' + err.message); }
-            };
-        };
+// ── Add Material Modal (unchanged – included for completeness) ──
 
+window.openAddMaterialModal = () => {
+    let entryCount = 0;
+    const addEntry = () => {
+        entryCount++;
+        const container = document.getElementById('material-entries');
+        const entry = document.createElement('div');
+        entry.className = 'material-entry';
+        entry.innerHTML = `
+            <div class="grid grid-cols-2 gap-2">
+                <input class="border rounded-lg p-2 text-sm" placeholder="Material Name" name="mat-name-${entryCount}" required>
+                <input class="border rounded-lg p-2 text-sm" placeholder="Quantity Used" type="number" name="mat-used-${entryCount}" required>
+            </div>
+            <div class="grid grid-cols-2 gap-2 mt-2">
+                <input class="border rounded-lg p-2 text-sm" placeholder="Amount (RWF)" type="number" name="mat-amount-${entryCount}">
+                <input class="border rounded-lg p-2 text-sm" type="file" accept="image/*" name="mat-image-${entryCount}">
+            </div>
+        `;
+        container.appendChild(entry);
+    };
+
+    const modalContent = `
+        <div class="mb-4">
+            <label class="block text-sm font-medium text-slate-700 mb-1">Date of Usage</label>
+            <input type="date" id="usageDate" value="${getTodayISO()}" class="border rounded-lg p-2 text-sm w-full" required>
+        </div>
+        <div id="material-entries"></div>
+        <button type="button" onclick="addMaterialEntry()" class="text-emerald-600 text-sm mt-2">+ Add another material</button>
+        <button onclick="submitBatchMaterials()" class="w-full bg-emerald-600 text-white py-2 rounded-xl mt-4">Save All Materials</button>
+    `;
+
+    openModal('Record Material Usage', modalContent);
+    addEntry();
+
+    window.addMaterialEntry = addEntry;
+
+    window.submitBatchMaterials = async () => {
+        const dateInput = document.getElementById('usageDate');
+        const selectedDate = dateInput ? dateInput.value : getTodayISO();
+        if (!selectedDate) { alert('Please select a date.'); return; }
+        const dateObj = new Date(selectedDate + 'T00:00:00.000Z');
+        const entries = document.querySelectorAll('#material-entries .material-entry');
+        const promises = [];
+
+        for (const entry of entries) {
+            const name = entry.querySelector('[name^="mat-name-"]').value.trim();
+            const used = parseFloat(entry.querySelector('[name^="mat-used-"]').value) || 0;
+            const amount = parseFloat(entry.querySelector('[name^="mat-amount-"]').value) || 0;
+            const imageFile = entry.querySelector('[name^="mat-image-"]').files[0];
+            if (!name) continue;
+            let imageUrl = '';
+            if (imageFile) {
+                try { imageUrl = await uploadImageToImgbb(imageFile); }
+                catch (e) { alert('Image upload failed for ' + name); continue; }
+            }
+            promises.push(addDoc(collection(db, 'materials'), {
+                site_id: currentSiteId,
+                name,
+                quantity_used: used,
+                amount,
+                image: imageUrl,
+                date_used: dateObj.toISOString(),
+                created_at: new Date().toISOString()
+            }));
+        }
+
+        if (promises.length === 0) { alert('No valid materials to save.'); return; }
+        try {
+            await Promise.all(promises);
+            closeModal();
+            alert('Materials saved successfully!');
+        } catch (err) { alert('Error saving materials: ' + err.message); }
+    };
+};
+
+
+
+        
         // =============== WORKERS SECTION ===============
         function renderWorkers(container) {
             container.innerHTML = `
