@@ -1243,99 +1243,99 @@
             })();
         };
 
-        // =============== STOCK (Owner View) ===============
-        function renderStock(container) {
-            if (!stockData.length) {
-                container.innerHTML = `
-                    <div class="bg-white rounded-2xl border p-8 text-center">
-                        <iconify-icon icon="material-symbols:inventory-2-outline" class="text-5xl text-slate-300 mx-auto block mb-4"></iconify-icon>
-                        <p class="text-slate-600 font-medium">No stock records found.</p>
-                        <p class="text-sm text-slate-400 mt-1">Managers will add stock when they receive materials at sites.</p>
+       // =============== STOCK (Owner View) ===============
+function renderStock(container) {
+    if (!stockData.length) {
+        container.innerHTML = `
+            <div class="bg-white rounded-2xl border p-8 text-center">
+                <iconify-icon icon="material-symbols:inventory-2-outline" class="text-5xl text-slate-300 mx-auto block mb-4"></iconify-icon>
+                <p class="text-slate-600 font-medium">No stock records found.</p>
+                <p class="text-sm text-slate-400 mt-1">Managers will add stock when they receive materials at sites.</p>
+            </div>
+        `;
+        return;
+    }
+
+    const siteGroups = {};
+    stockData.forEach(item => {
+        const site = sitesData.find(s => s.id === item.site_id);
+        const siteName = site ? site.name : 'Unknown Site';
+        if (!siteGroups[siteName]) siteGroups[siteName] = [];
+        siteGroups[siteName].push(item);
+    });
+
+    let html = `
+        <h2 class="text-xl sm:text-2xl font-bold mb-4">Stock Overview</h2>
+        <div class="space-y-6">
+    `;
+
+    for (const [siteName, items] of Object.entries(siteGroups)) {
+        html += `
+            <div class="bg-white rounded-2xl border p-4 shadow-sm">
+                <h3 class="font-semibold text-sm text-slate-700 mb-3">${siteName}</h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        `;
+        items.forEach(item => {
+            const status = item.quantity <= 0 ? 'Out of Stock' :
+                         (item.minimum_quantity && item.quantity <= item.minimum_quantity ? 'Low Stock' : 'Normal');
+            const statusClass = status === 'Normal' ? 'stock-status-normal' :
+                               status === 'Low Stock' ? 'stock-status-low' : 'stock-status-out';
+            const unitCost = materialsData.filter(m => m.site_id === item.site_id && m.name === item.material_name).pop()?.unit_cost || 0;
+            const stockValue = item.quantity * unitCost;
+            html += `
+                <div class="bg-slate-50 rounded-xl p-3 border border-slate-200">
+                    <div class="flex justify-between items-start">
+                        <p class="font-medium text-slate-800">${item.material_name}</p>
+                        <span class="text-xs font-medium px-2 py-0.5 rounded-full ${statusClass}">${status}</span>
                     </div>
-                `;
-                return;
-            }
-
-            const siteGroups = {};
-            stockData.forEach(item => {
-                const site = sitesData.find(s => s.id === item.site_id);
-                const siteName = site ? site.name : 'Unknown Site';
-                if (!siteGroups[siteName]) siteGroups[siteName] = [];
-                siteGroups[siteName].push(item);
-            });
-
-            let html = `
-                <h2 class="text-xl sm:text-2xl font-bold mb-4">Stock Overview</h2>
-                <div class="space-y-6">
+                    <p class="text-sm text-slate-600">${item.quantity} ${item.unit || 'units'}</p>
+                    <p class="text-xs text-slate-400">Unit Cost: ${unitCost.toFixed(2)} RWF</p>
+                    <p class="text-xs text-slate-600 font-medium">Value: ${stockValue.toFixed(2)} RWF</p>
+                    ${item.minimum_quantity ? `<p class="text-xs text-slate-400">Min: ${item.minimum_quantity}</p>` : ''}
+                    <p class="text-xs text-slate-400">Updated: ${formatDate(item.updated_at)}</p>
+                </div>
             `;
+        });
+        html += `</div></div>`;
+    }
 
-            for (const [siteName, items] of Object.entries(siteGroups)) {
-                html += `
-                    <div class="bg-white rounded-2xl border p-4 shadow-sm">
-                        <h3 class="font-semibold text-sm text-slate-700 mb-3">${siteName}</h3>
-                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                `;
-                items.forEach(item => {
-                    const status = item.quantity <= 0 ? 'Out of Stock' :
-                                 (item.minimum_quantity && item.quantity <= item.minimum_quantity ? 'Low Stock' : 'Normal');
-                    const statusClass = status === 'Normal' ? 'stock-status-normal' :
-                                       status === 'Low Stock' ? 'stock-status-low' : 'stock-status-out';
-                    const unitCost = materialsData.filter(m => m.site_id === item.site_id && m.name === item.material_name).pop()?.unit_cost || 0;
-                    const stockValue = item.quantity * unitCost;
-                    html += `
-                        <div class="bg-slate-50 rounded-xl p-3 border border-slate-200">
-                            <div class="flex justify-between items-start">
-                                <p class="font-medium text-slate-800">${item.material_name}</p>
-                                <span class="text-xs font-medium px-2 py-0.5 rounded-full ${statusClass}">${status}</span>
-                            </div>
-                            <p class="text-sm text-slate-600">${item.quantity} ${item.unit || 'units'}</p>
-                            <p class="text-xs text-slate-400">Unit Cost: ${unitCost.toFixed(2)} RWF</p>
-                            <p class="text-xs text-slate-600 font-medium">Value: ${stockValue.toFixed(2)} RWF</p>
-                            ${item.minimum_quantity ? `<p class="text-xs text-slate-400">Min: ${item.minimum_quantity}</p>` : ''}
-                            <p class="text-xs text-slate-400">Updated: ${item.updated_at ? new Date(item.updated_at).toLocaleDateString() : '—'}</p>
-                        </div>
-                    `;
-                });
-                html += `</div></div>`;
-            }
+    // Recent transactions
+    const recent = stockTransactions.slice(0, 20);
+    if (recent.length) {
+        html += `
+            <div class="bg-white rounded-2xl border p-4 shadow-sm">
+                <h3 class="font-semibold text-sm mb-3">Recent Stock Transactions</h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm">
+                        <thead class="bg-slate-50 text-xs">
+                            <tr><th class="px-3 py-2">Date</th><th class="px-3 py-2">Site</th><th class="px-3 py-2">Material</th><th class="px-3 py-2">Type</th><th class="px-3 py-2">Qty</th><th class="px-3 py-2">Notes</th></tr>
+                        </thead>
+                        <tbody>
+                            ${recent.map(t => {
+                                const site = sitesData.find(s => s.id === t.site_id);
+                                const siteName = site ? site.name : 'Unknown';
+                                const sign = (t.transaction_type === 'STOCK_ADDED' || t.transaction_type === 'STOCK_ADJUSTMENT' && t.quantity > 0) ? '+' : '-';
+                                return `
+                                    <tr>
+                                        <td class="px-3 py-2">${formatDate(t.created_at)}</td>
+                                        <td class="px-3 py-2">${siteName}</td>
+                                        <td class="px-3 py-2">${t.material_name}</td>
+                                        <td class="px-3 py-2">${t.transaction_type.replace('_', ' ')}</td>
+                                        <td class="px-3 py-2">${sign} ${t.quantity} ${t.unit || ''}</td>
+                                        <td class="px-3 py-2 text-xs text-slate-500">${t.notes || ''}</td>
+                                    </tr>
+                                `;
+                            }).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        `;
+    }
 
-            // Recent transactions
-            const recent = stockTransactions.slice(0, 20);
-            if (recent.length) {
-                html += `
-                    <div class="bg-white rounded-2xl border p-4 shadow-sm">
-                        <h3 class="font-semibold text-sm mb-3">Recent Stock Transactions</h3>
-                        <div class="overflow-x-auto">
-                            <table class="w-full text-sm">
-                                <thead class="bg-slate-50 text-xs">
-                                    <tr><th class="px-3 py-2">Date</th><th class="px-3 py-2">Site</th><th class="px-3 py-2">Material</th><th class="px-3 py-2">Type</th><th class="px-3 py-2">Qty</th><th class="px-3 py-2">Notes</th></tr>
-                                </thead>
-                                <tbody>
-                                    ${recent.map(t => {
-                                        const site = sitesData.find(s => s.id === t.site_id);
-                                        const siteName = site ? site.name : 'Unknown';
-                                        const sign = (t.transaction_type === 'STOCK_ADDED' || t.transaction_type === 'STOCK_ADJUSTMENT' && t.quantity > 0) ? '+' : '-';
-                                        return `
-                                            <tr>
-                                                <td class="px-3 py-2">${new Date(t.created_at).toLocaleDateString()}</td>
-                                                <td class="px-3 py-2">${siteName}</td>
-                                                <td class="px-3 py-2">${t.material_name}</td>
-                                                <td class="px-3 py-2">${t.transaction_type.replace('_', ' ')}</td>
-                                                <td class="px-3 py-2">${sign} ${t.quantity} ${t.unit || ''}</td>
-                                                <td class="px-3 py-2 text-xs text-slate-500">${t.notes || ''}</td>
-                                            </tr>
-                                        `;
-                                    }).join('')}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                `;
-            }
-
-            html += `</div>`;
-            container.innerHTML = html;
-        }
+    html += `</div>`;
+    container.innerHTML = html;
+}
 
         // =============== WORKERS ===============
         let selectedWorkerViewSite = null;
