@@ -1719,10 +1719,12 @@
 function getCompanyDetails() {
     return {
         name: 'SHDR Ltd',
-        address: 'KG 11 Avenue, Gasabo District',
+        address: 'KG 11 Avenue, Kimironko, Gasabo District',
+        location: 'Yussa Plaza, 1st Floor',
         city: 'Kigali City, Rwanda',
         phone: '+250 788 474 110',
-        logo: 'shdr.jpg' // relative path to your logo image
+        email: 'sustainablehomedesign@gmail.com',
+        logo: 'shdr.jpg'
     };
 }
 
@@ -1958,7 +1960,7 @@ window.exportPayrollReport = (format) => {
 
     const company = getCompanyDetails();
     const generatedDate = new Date().toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false }).replace(',', ', ');
-    const siteName = siteId === 'all' ? 'All Sites' : (sitesData.find(s => s.id === siteId)?.name || 'Site Name');
+    const siteName = siteId === 'all' ? 'All Sites' : (sitesData.find(s => s.id === siteId)?.name || 'Site');
     const period = startDate && endDate ? `${startDate} to ${endDate}` : (startDate || endDate || 'All Time');
 
     if (format === 'csv') {
