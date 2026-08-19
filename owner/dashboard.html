@@ -96,6 +96,173 @@
         .stock-status-normal { background: #dcfce7; color: #166534; }
         .stock-status-low { background: #fef9c3; color: #854d0e; }
         .stock-status-out { background: #fee2e2; color: #991b1b; }
+
+        /* ── Settings specific ── */
+        .settings-tab-btn {
+            transition: all 0.2s;
+        }
+        .settings-tab-btn.active {
+            background: #059669;
+            color: white;
+            box-shadow: 0 4px 10px rgba(5, 150, 105, 0.2);
+        }
+        .settings-tab-btn:not(.active):hover {
+            background: #f1f5f9;
+        }
+        .settings-section {
+            display: none;
+        }
+        .settings-section.active {
+            display: block;
+        }
+        .profile-avatar-wrapper {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            margin: 0 auto;
+        }
+        .profile-avatar-wrapper img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid white;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+        .profile-avatar-wrapper .change-photo-btn {
+            position: absolute;
+            bottom: 4px;
+            right: 4px;
+            background: #059669;
+            color: white;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border: 2px solid white;
+            transition: 0.2s;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+        .profile-avatar-wrapper .change-photo-btn:hover {
+            background: #047857;
+            transform: scale(1.05);
+        }
+        .settings-card {
+            background: white;
+            border-radius: 16px;
+            border: 1px solid #e5e7eb;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .settings-card h3 {
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: #1e293b;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .settings-card .field-group {
+            margin-bottom: 1.25rem;
+        }
+        .settings-card label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #475569;
+            margin-bottom: 0.3rem;
+        }
+        .settings-card input, .settings-card select {
+            width: 100%;
+            padding: 0.6rem 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            transition: border 0.2s;
+            background: white;
+        }
+        .settings-card input:focus, .settings-card select:focus {
+            outline: none;
+            border-color: #059669;
+            box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.2);
+        }
+        .settings-card .readonly-field {
+            background: #f1f5f9;
+            color: #475569;
+            padding: 0.6rem 0.75rem;
+            border-radius: 8px;
+            font-size: 0.95rem;
+        }
+        .settings-card .save-btn {
+            background: #059669;
+            color: white;
+            padding: 0.6rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .settings-card .save-btn:hover {
+            background: #047857;
+        }
+        .settings-card .save-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        .settings-card .remove-photo-btn {
+            color: #ef4444;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: 0.2s;
+            background: none;
+            border: none;
+            padding: 0.2rem 0.5rem;
+        }
+        .settings-card .remove-photo-btn:hover {
+            color: #dc2626;
+            text-decoration: underline;
+        }
+        @media (max-width: 640px) {
+            .settings-card { padding: 1rem; }
+        }
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: #1e293b;
+            color: #fff;
+            padding: 14px 24px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 500;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.20);
+            transform: translateY(80px);
+            opacity: 0;
+            transition: all 0.4s ease;
+            z-index: 999;
+            max-width: 400px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        .toast.success {
+            border-left: 4px solid #059669;
+        }
+        .toast.error {
+            border-left: 4px solid #ef4444;
+        }
+        .toast.info {
+            border-left: 4px solid #3b82f6;
+        }
     </style>
 </head>
 <body class="min-h-screen flex">
@@ -108,7 +275,7 @@
     <div class="p-6 border-b border-slate-100">
         <div class="flex items-center gap-3">
             <div class="w-10 h-10 rounded-lg bg-emerald-100 flex items-center justify-center overflow-hidden">
-                <img src="shdr.jpg" alt="SHDR" class="w-10 h-10 object-cover"
+                <img id="sidebar-avatar-img" src="shdr.jpg" alt="SHDR" class="w-10 h-10 object-cover"
                      onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
                 <span id="logo-fallback" class="hidden font-bold text-emerald-700 text-lg">SH</span>
             </div>
@@ -152,10 +319,17 @@
         <a href="#" onclick="showSection('office')" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg text-slate-600 hover:bg-slate-50 transition-colors" data-section="office">
             <iconify-icon icon="material-symbols:business-center-outline" width="20" height="20"></iconify-icon> Office Management
         </a>
+        <!-- NEW: Settings -->
+        <a href="#" onclick="showSection('settings')" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg text-slate-600 hover:bg-slate-50 transition-colors" data-section="settings">
+            <iconify-icon icon="material-symbols:settings-outline" width="20" height="20"></iconify-icon> Settings
+        </a>
     </nav>
     <div class="p-4 border-t border-slate-100">
         <div class="flex items-center gap-3 px-4 py-3 rounded-lg bg-slate-50">
-            <div class="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-700 font-semibold text-sm" id="user-avatar">O</div>
+            <div class="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-700 font-semibold text-sm overflow-hidden" id="user-avatar">
+                <img id="sidebar-user-avatar-img" src="" alt="" class="w-full h-full object-cover" style="display:none;">
+                <span id="user-avatar-text">O</span>
+            </div>
             <div class="flex-1 min-w-0">
                 <p class="text-sm font-medium text-slate-900 truncate" id="user-name">Owner</p>
                 <p class="text-xs text-slate-500 truncate" id="user-email"></p>
@@ -214,6 +388,10 @@
         <a href="#" onclick="showSection('gallery')" data-section="gallery">
             <iconify-icon icon="material-symbols:photo-library-outline"></iconify-icon> <span>Gallery</span>
         </a>
+        <!-- NEW: Settings -->
+        <a href="#" onclick="showSection('settings')" data-section="settings">
+            <iconify-icon icon="material-symbols:settings-outline"></iconify-icon> <span>Settings</span>
+        </a>
     </div>
 
     <!-- Modals -->
@@ -227,9 +405,12 @@
         </div>
     </div>
 
+    <!-- Toast Container -->
+    <div id="toast" class="toast"></div>
+
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
-        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
+        import { getAuth, onAuthStateChanged, signOut, reauthenticateWithCredential, EmailAuthProvider, updatePassword, updateEmail, sendEmailVerification } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
         import { 
             getFirestore, 
             collection, query, where, 
@@ -259,12 +440,22 @@
 
         // Global state
         let currentUser = null;
+        let ownerProfile = null;
         let sitesData = [], materialsData = [], workersData = [], progressTasks = [], expensesData = [], managersData = [], assignedWorkersData = [], galleryData = [], attendanceData = [];
         let stockData = [], stockTransactions = [];
         let unsubscribeSnapshots = [];
         let searchTimeout = null;
         let currentSection = 'dashboard';
         let reportType = 'general';
+        let selectedMatSite = null;
+        let selectedWorkerViewSite = null;
+        let selectedFinanceSite = null;
+        let selectedGallerySite = null;
+
+        // ── Settings specific state ──
+        let settingsTab = 'profile';
+        let hasUnsavedChanges = false;
+        let _profilePhotoFile = null;
 
         // ── Helpers ──
         function showLoading(show) { document.getElementById('global-loading').classList.toggle('hidden', !show); }
@@ -290,6 +481,19 @@
             return form.querySelector('button[type="submit"]');
         }
 
+        // ── Toast ──
+        function showToast(message, type = 'info') {
+            const toast = document.getElementById('toast');
+            const iconMap = { success: '✅', error: '❌', info: 'ℹ️' };
+            toast.innerHTML = `<span>${iconMap[type] || 'ℹ️'}</span> ${message}`;
+            toast.className = 'toast ' + (type || 'info');
+            toast.classList.add('show');
+            clearTimeout(toast._hideTimer);
+            toast._hideTimer = setTimeout(() => {
+                toast.classList.remove('show');
+            }, 5000);
+        }
+
         // ── Auth & Init ──
         window.addEventListener('load', () => {
             onAuthStateChanged(auth, async (user) => {
@@ -310,13 +514,47 @@
                         });
                     }
                     const profile = snap.data() || { full_name: 'Owner', email: user.email };
-                    document.getElementById('user-name').textContent = profile.full_name || 'Owner';
-                    document.getElementById('user-email').textContent = profile.email || '';
-                    document.getElementById('user-avatar').textContent = (profile.full_name?.[0] || 'O').toUpperCase();
+                    ownerProfile = profile;
+                    updateProfileUI(profile);
+
+                    // Real-time profile listener
+                    onSnapshot(profileRef, (snap) => {
+                        if (snap.exists()) {
+                            ownerProfile = snap.data();
+                            updateProfileUI(ownerProfile);
+                            if (currentSection === 'settings') {
+                                populateSettingsForms();
+                            }
+                        }
+                    });
+
                     attachListeners();
+                    showSection('dashboard');
                 } catch (err) { showError('Failed to load profile: ' + getFriendlyError(err)); }
             });
         });
+
+        function updateProfileUI(profile) {
+            if (!profile) return;
+            const name = profile.full_name || 'Owner';
+            const email = profile.email || '';
+            const photo = profile.profile_picture || '';
+
+            const avatarContainer = document.getElementById('user-avatar');
+            const avatarImg = document.getElementById('sidebar-user-avatar-img');
+            const avatarText = document.getElementById('user-avatar-text');
+            if (photo) {
+                avatarImg.src = photo;
+                avatarImg.style.display = 'block';
+                avatarText.style.display = 'none';
+            } else {
+                avatarImg.style.display = 'none';
+                avatarText.style.display = 'flex';
+                avatarText.textContent = name.charAt(0).toUpperCase();
+            }
+            document.getElementById('user-name').textContent = name;
+            document.getElementById('user-email').textContent = email;
+        }
 
         function attachListeners() {
             unsubscribeSnapshots.forEach(fn => fn());
@@ -382,7 +620,7 @@
         }
 
         function refreshCurrentSection() {
-            if (currentSection && ['dashboard','sites','materials','workers','progress','reports','finances','managers','gallery','stock','office'].includes(currentSection)) {
+            if (currentSection && ['dashboard','sites','materials','workers','progress','reports','finances','managers','gallery','stock','office','settings'].includes(currentSection)) {
                 if (window._refreshing) return;
                 window._refreshing = true;
                 requestAnimationFrame(() => {
@@ -398,7 +636,17 @@
             document.getElementById('sidebar-overlay').classList.toggle('hidden');
         };
 
+        function setUnsavedChanges(value) {
+            hasUnsavedChanges = value;
+        }
+
         window.showSection = (section) => {
+            if (currentSection === 'settings' && hasUnsavedChanges) {
+                if (!confirm('You have unsaved changes. Leave without saving?')) {
+                    return;
+                }
+                hasUnsavedChanges = false;
+            }
             currentSection = section;
             clearError();
             document.getElementById('page-title').textContent = section.charAt(0).toUpperCase() + section.slice(1);
@@ -421,6 +669,7 @@
                 case 'managers': renderManagers(container); break;
                 case 'gallery': renderGallery(container); break;
                 case 'office': renderOfficeHub(container); break;
+                case 'settings': renderSettings(container); break;
                 default: renderDashboard(container);
             }
             if (window.innerWidth < 1024) {
@@ -766,8 +1015,6 @@
         };
 
         // =============== MATERIALS ===============
-        let selectedMatSite = null;
-
         function renderMaterials(container) {
             container.innerHTML = `
                 <h2 class="text-xl sm:text-2xl font-bold mb-3">Materials</h2>
@@ -1084,7 +1331,6 @@
         }
 
         // =============== WORKERS (unchanged) ===============
-        let selectedWorkerViewSite = null;
         function renderWorkers(container) {
             container.innerHTML = `
                 <div class="flex justify-between items-center mb-4">
@@ -2008,7 +2254,6 @@
         };
 
         // =============== GALLERY ===============
-        let selectedGallerySite = null;
         function renderGallery(container) {
             const siteOpts = sitesData.map(s => `<option value="${s.id}">${s.name}</option>`).join('');
             container.innerHTML = `
@@ -2081,12 +2326,415 @@
             `;
         }
 
-        // =============== LOGOUT ===============
+        // ──────────────────────────────────────────────────────────────
+        // ─── SETTINGS MODULE (NEW) ──────────────────────────────────
+        // ──────────────────────────────────────────────────────────────
+
+        function renderSettings(container) {
+            container.innerHTML = `
+                <h2 class="text-xl sm:text-2xl font-bold mb-6">Settings</h2>
+                <div class="flex flex-wrap gap-2 mb-6 p-1 bg-slate-200/60 rounded-xl">
+                    <button class="settings-tab-btn px-4 py-2 rounded-lg text-sm font-semibold transition ${settingsTab === 'profile' ? 'active' : ''}" onclick="switchSettingsTab('profile')">
+                        <iconify-icon icon="material-symbols:person-outline" class="inline mr-1"></iconify-icon> Profile
+                    </button>
+                    <button class="settings-tab-btn px-4 py-2 rounded-lg text-sm font-semibold transition ${settingsTab === 'account' ? 'active' : ''}" onclick="switchSettingsTab('account')">
+                        <iconify-icon icon="material-symbols:account-box-outline" class="inline mr-1"></iconify-icon> Account
+                    </button>
+                    <button class="settings-tab-btn px-4 py-2 rounded-lg text-sm font-semibold transition ${settingsTab === 'security' ? 'active' : ''}" onclick="switchSettingsTab('security')">
+                        <iconify-icon icon="material-symbols:lock-outline" class="inline mr-1"></iconify-icon> Security
+                    </button>
+                    <button class="settings-tab-btn px-4 py-2 rounded-lg text-sm font-semibold transition ${settingsTab === 'preferences' ? 'active' : ''}" onclick="switchSettingsTab('preferences')">
+                        <iconify-icon icon="material-symbols:settings-outline" class="inline mr-1"></iconify-icon> Preferences
+                    </button>
+                </div>
+                <div class="settings-sections">
+                    <div id="settings-profile" class="settings-section ${settingsTab === 'profile' ? 'active' : ''}">
+                        ${renderProfileSection()}
+                    </div>
+                    <div id="settings-account" class="settings-section ${settingsTab === 'account' ? 'active' : ''}">
+                        ${renderAccountSection()}
+                    </div>
+                    <div id="settings-security" class="settings-section ${settingsTab === 'security' ? 'active' : ''}">
+                        ${renderSecuritySection()}
+                    </div>
+                    <div id="settings-preferences" class="settings-section ${settingsTab === 'preferences' ? 'active' : ''}">
+                        ${renderPreferencesSection()}
+                    </div>
+                </div>
+            `;
+            populateSettingsForms();
+            attachSettingsChangeListeners();
+        }
+
+        function renderProfileSection() {
+            const profile = ownerProfile || {};
+            const photo = profile.profile_picture || PLACEHOLDER_IMG;
+            return `
+                <div class="settings-card">
+                    <h3><iconify-icon icon="material-symbols:person-outline" class="text-emerald-600"></iconify-icon> Profile Information</h3>
+                    <form id="profile-form" onsubmit="handleProfileSave(event)">
+                        <div class="field-group text-center">
+                            <div class="profile-avatar-wrapper">
+                                <img id="settings-profile-photo-img" src="${photo}" alt="Profile Photo">
+                                <label class="change-photo-btn" title="Change Photo">
+                                    <iconify-icon icon="material-symbols:photo-camera" width="20"></iconify-icon>
+                                    <input type="file" id="settings-profile-photo-input" accept="image/*" style="display:none;" onchange="previewProfilePhoto(event)">
+                                </label>
+                            </div>
+                            <button type="button" id="settings-remove-photo-btn" class="remove-photo-btn mt-2" onclick="removeProfilePhoto()">Remove Photo</button>
+                        </div>
+                        <div class="field-group">
+                            <label for="settings-full-name">Full Name</label>
+                            <input type="text" id="settings-full-name" placeholder="Your full name" value="${profile.full_name || ''}">
+                        </div>
+                        <div class="field-group">
+                            <label for="settings-phone">Phone Number</label>
+                            <input type="tel" id="settings-phone" placeholder="+250 7XX XXX XXX" value="${profile.phone || ''}">
+                        </div>
+                        <div class="field-group">
+                            <label for="settings-email">Email Address</label>
+                            <input type="email" id="settings-email" placeholder="example@email.com" value="${profile.email || ''}">
+                        </div>
+                        <button type="submit" class="save-btn">Save Profile Changes</button>
+                    </form>
+                </div>
+            `;
+        }
+
+        function renderAccountSection() {
+            const profile = ownerProfile || {};
+            return `
+                <div class="settings-card">
+                    <h3><iconify-icon icon="material-symbols:account-box-outline" class="text-emerald-600"></iconify-icon> Account Information</h3>
+                    <div class="field-group">
+                        <label>Account Name</label>
+                        <div class="readonly-field">${profile.full_name || 'N/A'}</div>
+                    </div>
+                    <div class="field-group">
+                        <label>Role</label>
+                        <div class="readonly-field" id="settings-role">${profile.role || 'Owner'}</div>
+                    </div>
+                    <div class="field-group">
+                        <label>Email</label>
+                        <div class="readonly-field">${profile.email || 'N/A'}</div>
+                    </div>
+                    <div class="field-group">
+                        <label>Phone</label>
+                        <div class="readonly-field">${profile.phone || 'N/A'}</div>
+                    </div>
+                    <div class="field-group">
+                        <label>Account Status</label>
+                        <div class="readonly-field" id="settings-status">${profile.status || 'Active'}</div>
+                    </div>
+                    <div class="field-group">
+                        <label>Member Since</label>
+                        <div class="readonly-field" id="settings-since">${profile.created_at ? new Date(profile.created_at).toLocaleDateString() : 'N/A'}</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderSecuritySection() {
+            return `
+                <div class="settings-card">
+                    <h3><iconify-icon icon="material-symbols:lock-outline" class="text-emerald-600"></iconify-icon> Change Password</h3>
+                    <form id="security-form" onsubmit="handlePasswordChange(event)">
+                        <div class="field-group">
+                            <label for="current-password">Current Password</label>
+                            <input type="password" id="current-password" placeholder="Enter current password" required>
+                        </div>
+                        <div class="field-group">
+                            <label for="new-password">New Password</label>
+                            <input type="password" id="new-password" placeholder="Enter new password" required minlength="6">
+                        </div>
+                        <div class="field-group">
+                            <label for="confirm-password">Confirm New Password</label>
+                            <input type="password" id="confirm-password" placeholder="Confirm new password" required>
+                        </div>
+                        <button type="submit" class="save-btn">Change Password</button>
+                    </form>
+                </div>
+            `;
+        }
+
+        function renderPreferencesSection() {
+            const profile = ownerProfile || {};
+            const prefs = profile.preferences || {};
+            return `
+                <div class="settings-card">
+                    <h3><iconify-icon icon="material-symbols:settings-outline" class="text-emerald-600"></iconify-icon> Preferences</h3>
+                    <form id="preferences-form" onsubmit="handlePreferencesSave(event)">
+                        <div class="field-group">
+                            <label for="settings-language">Language</label>
+                            <select id="settings-language">
+                                <option value="en">English</option>
+                                <option value="fr">French</option>
+                                <option value="rw">Kinyarwanda</option>
+                            </select>
+                        </div>
+                        <div class="field-group">
+                            <label for="settings-currency">Currency</label>
+                            <select id="settings-currency">
+                                <option value="RWF">RWF — Rwandan Franc</option>
+                                <option value="USD">USD — US Dollar</option>
+                                <option value="EUR">EUR — Euro</option>
+                            </select>
+                        </div>
+                        <div class="field-group">
+                            <label for="settings-date-format">Date Format</label>
+                            <select id="settings-date-format">
+                                <option value="DD/MM/YYYY">DD/MM/YYYY</option>
+                                <option value="MM/DD/YYYY">MM/DD/YYYY</option>
+                                <option value="YYYY-MM-DD">YYYY-MM-DD</option>
+                            </select>
+                        </div>
+                        <div class="field-group flex items-center gap-3">
+                            <input type="checkbox" id="settings-notifications" class="w-5 h-5 text-emerald-600">
+                            <label for="settings-notifications" class="mb-0">Enable Notifications</label>
+                        </div>
+                        <button type="submit" class="save-btn">Save Preferences</button>
+                    </form>
+                </div>
+            `;
+        }
+
+        function populateSettingsForms() {
+            const profile = ownerProfile || {};
+            const nameInput = document.getElementById('settings-full-name');
+            if (nameInput) nameInput.value = profile.full_name || '';
+            const phoneInput = document.getElementById('settings-phone');
+            if (phoneInput) phoneInput.value = profile.phone || '';
+            const emailInput = document.getElementById('settings-email');
+            if (emailInput) emailInput.value = profile.email || '';
+            const photoImg = document.getElementById('settings-profile-photo-img');
+            if (photoImg) photoImg.src = profile.profile_picture || PLACEHOLDER_IMG;
+
+            const roleDisplay = document.getElementById('settings-role');
+            if (roleDisplay) roleDisplay.textContent = profile.role || 'Owner';
+            const statusDisplay = document.getElementById('settings-status');
+            if (statusDisplay) statusDisplay.textContent = profile.status || 'Active';
+            const sinceDisplay = document.getElementById('settings-since');
+            if (sinceDisplay) sinceDisplay.textContent = profile.created_at ? new Date(profile.created_at).toLocaleDateString() : 'N/A';
+
+            const langSelect = document.getElementById('settings-language');
+            if (langSelect) langSelect.value = profile.preferences?.language || 'en';
+            const currencySelect = document.getElementById('settings-currency');
+            if (currencySelect) currencySelect.value = profile.preferences?.currency || 'RWF';
+            const dateFormatSelect = document.getElementById('settings-date-format');
+            if (dateFormatSelect) dateFormatSelect.value = profile.preferences?.dateFormat || 'DD/MM/YYYY';
+            const notifToggle = document.getElementById('settings-notifications');
+            if (notifToggle) notifToggle.checked = profile.preferences?.notifications !== false;
+        }
+
+        function attachSettingsChangeListeners() {
+            const inputs = document.querySelectorAll('#settings-profile input, #settings-preferences input, #settings-preferences select, #settings-security input');
+            inputs.forEach(el => {
+                el.addEventListener('input', () => { if (!hasUnsavedChanges) hasUnsavedChanges = true; });
+                el.addEventListener('change', () => { if (!hasUnsavedChanges) hasUnsavedChanges = true; });
+            });
+            const fileInput = document.getElementById('settings-profile-photo-input');
+            if (fileInput) fileInput.addEventListener('change', () => { hasUnsavedChanges = true; });
+            const removeBtn = document.getElementById('settings-remove-photo-btn');
+            if (removeBtn) removeBtn.addEventListener('click', () => { hasUnsavedChanges = true; });
+        }
+
+        window.switchSettingsTab = (tab) => {
+            if (hasUnsavedChanges) {
+                if (!confirm('You have unsaved changes. Switch tab without saving?')) return;
+                hasUnsavedChanges = false;
+            }
+            settingsTab = tab;
+            document.querySelectorAll('.settings-tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelector(`.settings-tab-btn[onclick*="${tab}"]`)?.classList.add('active');
+            document.querySelectorAll('.settings-section').forEach(el => el.classList.remove('active'));
+            document.getElementById(`settings-${tab}`)?.classList.add('active');
+            populateSettingsForms();
+            attachSettingsChangeListeners();
+        };
+
+        window.previewProfilePhoto = (event) => {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const img = document.getElementById('settings-profile-photo-img');
+                if (img) img.src = e.target.result;
+                _profilePhotoFile = file;
+                hasUnsavedChanges = true;
+            };
+            reader.readAsDataURL(file);
+        };
+
+        window.removeProfilePhoto = () => {
+            if (!confirm('Remove your profile picture?')) return;
+            const img = document.getElementById('settings-profile-photo-img');
+            if (img) img.src = PLACEHOLDER_IMG;
+            _profilePhotoFile = null;
+            const input = document.getElementById('settings-profile-photo-input');
+            if (input) input.value = '';
+            hasUnsavedChanges = true;
+        };
+
+        window.handleProfileSave = async (e) => {
+            e.preventDefault();
+            const form = e.target;
+            const btn = form.querySelector('.save-btn');
+            setButtonLoading(btn, true);
+
+            try {
+                const name = document.getElementById('settings-full-name').value.trim();
+                const phone = document.getElementById('settings-phone').value.trim();
+                const email = document.getElementById('settings-email').value.trim();
+
+                if (!name) {
+                    alert('Full name is required.');
+                    setButtonLoading(btn, false);
+                    return;
+                }
+                if (phone && !/^\+?[0-9\s-]{7,15}$/.test(phone)) {
+                    alert('Please enter a valid phone number.');
+                    setButtonLoading(btn, false);
+                    return;
+                }
+                if (email && !/^\S+@\S+\.\S+$/.test(email)) {
+                    alert('Please enter a valid email address.');
+                    setButtonLoading(btn, false);
+                    return;
+                }
+
+                if (email && email !== ownerProfile.email) {
+                    const usersQuery = query(collection(db, 'profiles'), where('email', '==', email));
+                    const snap = await getDocs(usersQuery);
+                    if (!snap.empty && snap.docs[0].id !== currentUser.uid) {
+                        alert('Email address is already in use by another account.');
+                        setButtonLoading(btn, false);
+                        return;
+                    }
+                }
+
+                const updateData = {
+                    full_name: name,
+                    phone: phone,
+                    email: email,
+                    updated_at: new Date().toISOString()
+                };
+
+                if (_profilePhotoFile) {
+                    try {
+                        const photoUrl = await uploadImageToImgbb(_profilePhotoFile);
+                        updateData.profile_picture = photoUrl;
+                        _profilePhotoFile = null;
+                    } catch (err) {
+                        alert('Failed to upload profile picture: ' + err.message);
+                        setButtonLoading(btn, false);
+                        return;
+                    }
+                } else {
+                    const currentImg = document.getElementById('settings-profile-photo-img').src;
+                    if (currentImg === PLACEHOLDER_IMG && ownerProfile.profile_picture) {
+                        updateData.profile_picture = '';
+                    }
+                }
+
+                const profileRef = doc(db, 'profiles', currentUser.uid);
+                await updateDoc(profileRef, updateData);
+
+                if (email && email !== currentUser.email) {
+                    const password = prompt('For security, please enter your current password to change email:');
+                    if (!password) {
+                        alert('Email change cancelled.');
+                        setButtonLoading(btn, false);
+                        return;
+                    }
+                    const credential = EmailAuthProvider.credential(currentUser.email, password);
+                    await reauthenticateWithCredential(currentUser, credential);
+                    await updateEmail(currentUser, email);
+                    await sendEmailVerification(currentUser);
+                    alert('Email updated. Verification email sent to your new address.');
+                }
+
+                ownerProfile = { ...ownerProfile, ...updateData };
+                updateProfileUI(ownerProfile);
+                hasUnsavedChanges = false;
+                showToast('Profile updated successfully!', 'success');
+                populateSettingsForms();
+            } catch (err) {
+                showToast('Unable to update profile: ' + err.message, 'error');
+            } finally {
+                setButtonLoading(btn, false);
+            }
+        };
+
+        window.handlePasswordChange = async (e) => {
+            e.preventDefault();
+            const form = e.target;
+            const btn = form.querySelector('.save-btn');
+            setButtonLoading(btn, true);
+
+            const current = document.getElementById('current-password').value;
+            const newPass = document.getElementById('new-password').value;
+            const confirm = document.getElementById('confirm-password').value;
+
+            if (newPass !== confirm) {
+                alert('New passwords do not match.');
+                setButtonLoading(btn, false);
+                return;
+            }
+            if (newPass.length < 6) {
+                alert('Password must be at least 6 characters.');
+                setButtonLoading(btn, false);
+                return;
+            }
+
+            try {
+                const credential = EmailAuthProvider.credential(currentUser.email, current);
+                await reauthenticateWithCredential(currentUser, credential);
+                await updatePassword(currentUser, newPass);
+                showToast('Password changed successfully!', 'success');
+                form.reset();
+                hasUnsavedChanges = false;
+            } catch (err) {
+                alert('Failed to change password: ' + err.message);
+            } finally {
+                setButtonLoading(btn, false);
+            }
+        };
+
+        window.handlePreferencesSave = async (e) => {
+            e.preventDefault();
+            const form = e.target;
+            const btn = form.querySelector('.save-btn');
+            setButtonLoading(btn, true);
+
+            try {
+                const language = document.getElementById('settings-language').value;
+                const currency = document.getElementById('settings-currency').value;
+                const dateFormat = document.getElementById('settings-date-format').value;
+                const notifications = document.getElementById('settings-notifications').checked;
+
+                const prefs = { language, currency, dateFormat, notifications };
+                const profileRef = doc(db, 'profiles', currentUser.uid);
+                await updateDoc(profileRef, { preferences: prefs, updated_at: new Date().toISOString() });
+
+                ownerProfile.preferences = prefs;
+                hasUnsavedChanges = false;
+                showToast('Preferences saved successfully!', 'success');
+            } catch (err) {
+                showToast('Failed to save preferences: ' + err.message, 'error');
+            } finally {
+                setButtonLoading(btn, false);
+            }
+        };
+
+        // ──────────────────────────────────────────────────────────────
+        // LOGOUT (unchanged)
+        // ──────────────────────────────────────────────────────────────
         window.handleLogout = async () => {
             await signOut(auth);
             window.location.href = 'https://shdr-construction.vercel.app/index.html';
         };
 
+        // Ensure payroll report updates when switching to reports tab
         const originalShowSection = window.showSection;
         window.showSection = (section) => {
             originalShowSection(section);
