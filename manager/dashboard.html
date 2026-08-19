@@ -258,7 +258,7 @@
         let currentSection = 'dashboard';
         let workersTab = 'view';
         let selectedWorkers = [];
-        let reportType = 'general';
+        let reportType = 'general'; // 'general', 'payroll'
 
         // ── Helpers ──
         function showLoading(show) { document.getElementById('global-loading').classList.toggle('hidden', !show); }
@@ -277,8 +277,7 @@
         }
         function getFormSubmitBtn(form) { return form.querySelector('button[type="submit"]'); }
         function getTodayISO() { return new Date().toISOString().split('T')[0]; }
-        // Calculate total amount from quantity and unit cost
-        function calculateTotal(quantity, unitCost) { return (quantity || 0) * (unitCost || 0); }
+        function calculateTotal(qty, unitCost) { return (qty || 0) * (unitCost || 0); }
 
         // ── Auth & Init ──
         window.addEventListener('load', () => {
@@ -506,7 +505,6 @@
 
         // =============== MATERIALS (with stock deduction) ===============
         function renderMaterials(container) {
-            // Group materials by date
             const grouped = {};
             materialsData.forEach(m => {
                 const date = m.date_used ? new Date(m.date_used).toLocaleDateString() : 'No date';
@@ -621,31 +619,14 @@
                 const newUnitCost = parseFloat(document.getElementById('edit-mat-unit-cost').value) || 0;
                 const imageFile = document.getElementById('edit-mat-image').files[0];
 
-                // Find the existing material record
                 const oldMat = materialsData.find(m => m.id === id);
                 if (!oldMat) throw new Error('Material record not found');
 
                 const oldUsed = oldMat.quantity_used || 0;
-                const oldUnitCost = oldMat.unit_cost || 0;
-                const oldSiteId = oldMat.site_id;
+                const siteId = oldMat.site_id;
 
-                // If site changed, we need to handle stock differently.
-                // We'll assume site doesn't change (current implementation doesn't allow editing site).
-                // For simplicity, we'll keep site as is (current site).
-                const siteId = currentSiteId;
-
-                // Find stock item for this site + material (using old material name, but if name changed, we'd need to handle)
-                // We'll assume material name doesn't change either.
-                // For robust solution, we should also handle material name change, but we'll keep it simple.
-
-                // Current stock item for this site and material (old material name)
                 let stockItem = stockData.find(s => s.site_id === siteId && s.material_name === oldMat.name);
-
-                // If stock doesn't exist, we can't restore.
-                // We'll create a stock record if missing (shouldn't happen if stock is managed).
-                // But we'll handle gracefully.
                 if (!stockItem) {
-                    // If no stock exists, we'll create one with zero and then adjust.
                     const ref = await addDoc(collection(db, 'stock'), {
                         site_id: siteId,
                         material_name: oldMat.name,
@@ -657,45 +638,34 @@
                     stockItem = { id: ref.id, quantity: 0, material_name: oldMat.name };
                 }
 
-                // Step 1: restore old quantity to stock
                 const restoredQuantity = stockItem.quantity + oldUsed;
-                // Step 2: validate new usage doesn't exceed available (restored)
                 if (newUsed > restoredQuantity) {
                     alert(`Insufficient stock. Only ${restoredQuantity} units of ${oldMat.name} are available.`);
                     return;
                 }
-                // Step 3: calculate new stock after deducting new usage
                 const newStockQty = restoredQuantity - newUsed;
 
-                // Begin batch transaction
                 const batch = writeBatch(db);
 
-                // Update material usage
                 const matRef = doc(db, 'materials', id);
                 batch.update(matRef, {
                     name: name,
                     quantity_used: newUsed,
                     unit_cost: newUnitCost,
-                    // total will be calculated in reports/dashboard, not stored
                     image: imageFile ? await uploadImageToImgbb(imageFile) : oldMat.image,
                     updated_at: new Date().toISOString()
                 });
 
-                // Update stock
                 const stockRef = doc(db, 'stock', stockItem.id);
-                batch.update(stockRef, {
-                    quantity: newStockQty,
-                    updated_at: new Date().toISOString()
-                });
+                batch.update(stockRef, { quantity: newStockQty, updated_at: new Date().toISOString() });
 
-                // Record stock transaction
                 const transRef = doc(collection(db, 'stock_transactions'));
                 batch.set(transRef, {
                     site_id: siteId,
                     stock_id: stockItem.id,
                     material_name: oldMat.name,
                     transaction_type: 'MATERIAL_USAGE_EDITED',
-                    quantity: newUsed - oldUsed, // negative if reduced usage
+                    quantity: newUsed - oldUsed,
                     previous_quantity: stockItem.quantity,
                     new_quantity: newStockQty,
                     unit: stockItem.unit || 'units',
@@ -722,22 +692,19 @@
 
             (async () => {
                 try {
-                    const siteId = mat.site_id || currentSiteId;
+                    const siteId = mat.site_id;
                     const stockItem = stockData.find(s => s.site_id === siteId && s.material_name === mat.name);
                     if (!stockItem) {
-                        // If no stock, just delete material without restoring.
                         await deleteDoc(doc(db, 'materials', id));
                         alert('Material deleted (no stock record found).');
                         return;
                     }
 
-                    // Restore quantity
                     const newQty = stockItem.quantity + (mat.quantity_used || 0);
                     const batch = writeBatch(db);
                     batch.update(doc(db, 'stock', stockItem.id), { quantity: newQty, updated_at: new Date().toISOString() });
                     batch.delete(doc(db, 'materials', id));
 
-                    // Record transaction
                     const transRef = doc(collection(db, 'stock_transactions'));
                     batch.set(transRef, {
                         site_id: siteId,
@@ -828,7 +795,7 @@
                 return;
             }
 
-            // Check stock for each entry and ensure enough quantity
+            // Check stock
             const stockChecks = [];
             for (const entry of usageEntries) {
                 const stockItem = stockData.find(s => s.site_id === currentSiteId && s.material_name === entry.name);
@@ -839,8 +806,6 @@
                     }
                     stockChecks.push({ stockItem, entry });
                 } else {
-                    // If no stock record, we can still allow usage (maybe not tracked)
-                    // But we'll inform the user.
                     if (!confirm(`No stock record found for ${entry.name}. Continuing will record usage without stock deduction.`)) {
                         return;
                     }
@@ -850,7 +815,6 @@
             try {
                 const batch = writeBatch(db);
 
-                // Save material usage records
                 const materialPromises = usageEntries.map(async (entry) => {
                     let imageUrl = '';
                     if (entry.imageFile) {
@@ -867,7 +831,6 @@
                         name: entry.name,
                         quantity_used: entry.used,
                         unit_cost: entry.unitCost,
-                        // total is calculated on the fly, not stored
                         image: imageUrl,
                         date_used: dateObj.toISOString(),
                         created_at: new Date().toISOString()
@@ -877,7 +840,6 @@
 
                 await Promise.all(materialPromises);
 
-                // Deduct stock for each entry that has a stock record
                 for (const { stockItem, entry } of stockChecks) {
                     const newQuantity = stockItem.quantity - entry.used;
                     const stockRef = doc(db, 'stock', stockItem.id);
@@ -885,7 +847,6 @@
                         quantity: newQuantity,
                         updated_at: new Date().toISOString()
                     });
-                    // Record transaction
                     const transRef = doc(collection(db, 'stock_transactions'));
                     batch.set(transRef, {
                         site_id: currentSiteId,
@@ -939,13 +900,7 @@
                                  (item.minimum_quantity && item.quantity <= item.minimum_quantity ? 'Low Stock' : 'Normal');
                     const statusClass = status === 'Normal' ? 'stock-status-normal' :
                                        status === 'Low Stock' ? 'stock-status-low' : 'stock-status-out';
-                    // Calculate stock value (current qty * unit cost)
-                    // unit cost from material usage? We'll use the latest unit cost from usage or from stock.
-                    // For simplicity, we'll fetch unit cost from material usage records.
-                    // If not available, we'll use 0.
-                    // We'll compute average or latest unit cost from usage.
-                    const relatedUsage = materialsData.filter(m => m.site_id === currentSiteId && m.name === item.material_name);
-                    const unitCost = relatedUsage.length ? relatedUsage[relatedUsage.length-1].unit_cost || 0 : 0;
+                    const unitCost = materialsData.filter(m => m.site_id === currentSiteId && m.name === item.material_name).pop()?.unit_cost || 0;
                     const stockValue = item.quantity * unitCost;
                     html += `
                         <div class="bg-white rounded-2xl border overflow-hidden shadow-sm hover:shadow-md transition">
@@ -973,7 +928,6 @@
                 html += `</div>`;
             }
 
-            // Recent transactions
             const recentTrans = stockTransactions.slice(0, 10);
             if (recentTrans.length) {
                 html += `
@@ -998,7 +952,7 @@
             container.innerHTML = html;
         }
 
-        // ── Add Stock (receive) ──
+        // ── Add Stock ──
         window.openAddStockModal = () => {
             const materialNames = [...new Set(materialsData.map(m => m.name).filter(Boolean))];
             const materialOptions = materialNames.map(name => `<option value="${name}">${name}</option>`).join('');
@@ -1006,29 +960,11 @@
 
             const modalContent = `
                 <form onsubmit="handleAddStock(event)" class="space-y-4">
-                    <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-1">Material Name</label>
-                        <input list="material-list" class="w-full border rounded-lg p-2.5 text-sm" id="stock-material" placeholder="Material name" required>
-                        <datalist id="material-list">${materialOptions}</datalist>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-1">Quantity</label>
-                        <input type="number" step="0.01" class="w-full border rounded-lg p-2.5 text-sm" id="stock-quantity" placeholder="e.g. 100" required min="0">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-1">Unit</label>
-                        <select class="w-full border rounded-lg p-2.5 text-sm" id="stock-unit">
-                            ${units.map(u => `<option value="${u}">${u}</option>`).join('')}
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-1">Minimum Stock Level (optional)</label>
-                        <input type="number" step="0.01" class="w-full border rounded-lg p-2.5 text-sm" id="stock-min" placeholder="e.g. 20">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-1">Notes (optional)</label>
-                        <input class="w-full border rounded-lg p-2.5 text-sm" id="stock-notes" placeholder="Any notes about this stock">
-                    </div>
+                    <div><label class="block text-sm font-medium text-slate-700 mb-1">Material Name</label><input list="material-list" class="w-full border rounded-lg p-2.5 text-sm" id="stock-material" placeholder="Material name" required><datalist id="material-list">${materialOptions}</datalist></div>
+                    <div><label class="block text-sm font-medium text-slate-700 mb-1">Quantity</label><input type="number" step="0.01" class="w-full border rounded-lg p-2.5 text-sm" id="stock-quantity" placeholder="e.g. 100" required min="0"></div>
+                    <div><label class="block text-sm font-medium text-slate-700 mb-1">Unit</label><select class="w-full border rounded-lg p-2.5 text-sm" id="stock-unit">${units.map(u => `<option value="${u}">${u}</option>`).join('')}</select></div>
+                    <div><label class="block text-sm font-medium text-slate-700 mb-1">Minimum Stock Level (optional)</label><input type="number" step="0.01" class="w-full border rounded-lg p-2.5 text-sm" id="stock-min" placeholder="e.g. 20"></div>
+                    <div><label class="block text-sm font-medium text-slate-700 mb-1">Notes (optional)</label><input class="w-full border rounded-lg p-2.5 text-sm" id="stock-notes" placeholder="Any notes about this stock"></div>
                     <button type="submit" class="w-full bg-emerald-600 text-white py-3 rounded-xl">Add Stock</button>
                 </form>
             `;
@@ -1105,28 +1041,11 @@
             if (!item) return;
             const modalContent = `
                 <form onsubmit="handleEditStock(event, '${id}')" class="space-y-4">
-                    <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-1">Material Name</label>
-                        <input class="w-full border rounded-lg p-2.5 text-sm" id="edit-stock-material" value="${item.material_name || ''}" required>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-1">Current Quantity</label>
-                        <input type="number" step="0.01" class="w-full border rounded-lg p-2.5 text-sm" id="edit-stock-quantity" value="${item.quantity || 0}" required min="0">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-1">Unit</label>
-                        <select class="w-full border rounded-lg p-2.5 text-sm" id="edit-stock-unit">
-                            ${['bags','tons','kg','litres','pieces','rolls','cubic meters'].map(u => `<option value="${u}" ${u === item.unit ? 'selected' : ''}>${u}</option>`).join('')}
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-1">Minimum Stock Level</label>
-                        <input type="number" step="0.01" class="w-full border rounded-lg p-2.5 text-sm" id="edit-stock-min" value="${item.minimum_quantity || ''}">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-1">Notes</label>
-                        <input class="w-full border rounded-lg p-2.5 text-sm" id="edit-stock-notes" value="${item.notes || ''}">
-                    </div>
+                    <div><label class="block text-sm font-medium text-slate-700 mb-1">Material Name</label><input class="w-full border rounded-lg p-2.5 text-sm" id="edit-stock-material" value="${item.material_name || ''}" required></div>
+                    <div><label class="block text-sm font-medium text-slate-700 mb-1">Current Quantity</label><input type="number" step="0.01" class="w-full border rounded-lg p-2.5 text-sm" id="edit-stock-quantity" value="${item.quantity || 0}" required min="0"></div>
+                    <div><label class="block text-sm font-medium text-slate-700 mb-1">Unit</label><select class="w-full border rounded-lg p-2.5 text-sm" id="edit-stock-unit">${['bags','tons','kg','litres','pieces','rolls','cubic meters'].map(u => `<option value="${u}" ${u === item.unit ? 'selected' : ''}>${u}</option>`).join('')}</select></div>
+                    <div><label class="block text-sm font-medium text-slate-700 mb-1">Minimum Stock Level</label><input type="number" step="0.01" class="w-full border rounded-lg p-2.5 text-sm" id="edit-stock-min" value="${item.minimum_quantity || ''}"></div>
+                    <div><label class="block text-sm font-medium text-slate-700 mb-1">Notes</label><input class="w-full border rounded-lg p-2.5 text-sm" id="edit-stock-notes" value="${item.notes || ''}"></div>
                     <button type="submit" class="w-full bg-emerald-600 text-white py-3 rounded-xl">Update Stock</button>
                 </form>
             `;
@@ -1202,20 +1121,510 @@
             openModal('Stock History', html);
         };
 
-        // =============== WORKERS (full implementation from earlier) ===============
-        // For brevity, we'll include a placeholder, but in final file it's fully included.
+        // =============== WORKERS (Full Implementation) ===============
         function renderWorkers(container) {
-            // ... (full workers code from earlier)
-            container.innerHTML = `<p>Workers section (full code in final file).</p>`;
+            container.innerHTML = `
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+                    <div class="flex gap-2 p-1 bg-slate-200/60 rounded-xl">
+                        <button onclick="switchWorkersTab('view')" class="px-4 py-2 rounded-lg text-sm font-semibold transition ${workersTab === 'view' ? 'tab-active shadow-sm' : 'tab-inactive'}" id="tab-btn-view">
+                            <iconify-icon icon="material-symbols:grid-view" class="inline mr-1"></iconify-icon> All Workers
+                        </button>
+                        <button onclick="switchWorkersTab('record')" class="px-4 py-2 rounded-lg text-sm font-semibold transition ${workersTab === 'record' ? 'tab-active shadow-sm' : 'tab-inactive'}" id="tab-btn-record">
+                            <iconify-icon icon="material-symbols:edit-calendar" class="inline mr-1"></iconify-icon> Record Attendance
+                        </button>
+                    </div>
+                    ${workersTab === 'view' ? `
+                        <button onclick="openAddWorkerModal()" class="px-4 py-2 bg-emerald-600 text-white rounded-xl hover:bg-emerald-700 flex items-center gap-2 text-sm font-medium shadow-sm">
+                            <iconify-icon icon="material-symbols:person-add-outline"></iconify-icon> Add New Worker
+                        </button>
+                    ` : ''}
+                </div>
+                <div id="workers-content">
+                    ${workersTab === 'view' ? renderWorkersView() : renderWorkersRecord()}
+                </div>
+            `;
+            if (workersTab === 'record') {
+                setTimeout(updateAttendanceSummary, 100);
+            }
+        }
+
+        window.switchWorkersTab = (tab) => {
+            workersTab = tab;
+            showSection('workers');
+        };
+
+        // ── Add Worker Modal ──
+        window.openAddWorkerModal = () => {
+            const allRoles = workerPositions
+                .filter(p => p.site_id === currentSiteId || p.site_id === 'all')
+                .map(p => p.role);
+
+            const commonRoles = [
+                'Mason', 'Mason Helper', 'Carpenter', 'Carpenter Helper',
+                'Steel Fixer', 'Steel Fixer Helper', 'Plumber', 'Electrician',
+                'Welder', 'Painter', 'Tiler', 'Roofer', 'Concrete Worker',
+                'Excavation Worker', 'Truck Driver', 'Cleaner', 'Site Security Guard'
+            ];
+
+            const uniqueRoles = [...new Set([...commonRoles, ...allRoles])].filter(Boolean);
+            const roleOptions = uniqueRoles.map(r =>
+                `<div class="role-option px-3 py-2 cursor-pointer transition-colors" data-role="${r}">${r}</div>`
+            ).join('');
+
+            const modalContent = `
+                <form onsubmit="handleAddWorker(event)" class="space-y-4">
+                    <div><label class="block text-sm font-medium text-slate-700 mb-1">Full Name</label><input class="w-full border rounded-lg p-2.5 text-sm" placeholder="Worker full name" id="worker-name" required></div>
+                    <div class="relative">
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Role (select option)</label>
+                        <div id="role-selector" class="border rounded-lg p-2.5 bg-white flex items-center justify-between cursor-pointer text-sm" onclick="document.getElementById('role-dropdown').classList.toggle('hidden')">
+                            <span id="selected-role-text" class="text-slate-400">Choose worker role...</span>
+                            <iconify-icon icon="material-symbols:arrow-drop-down" width="20"></iconify-icon>
+                        </div>
+                        <input type="hidden" id="worker-role" required>
+                        <div id="role-dropdown" class="hidden absolute z-20 w-full bg-white border rounded-lg mt-1 max-h-48 overflow-y-auto shadow-lg">
+                            <input type="text" id="role-search" class="w-full border-b p-2 text-sm sticky top-0 bg-white" placeholder="Search role..." oninput="filterRoleDropdown()">
+                            <div id="role-options-container">${roleOptions}</div>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div><label class="block text-sm font-medium text-slate-700 mb-1">Payment Type</label><select id="worker-payment" class="w-full border rounded-lg p-2.5 text-sm" required><option value="">Select...</option><option value="daily">Daily Rate</option><option value="monthly">Monthly Salary</option></select></div>
+                        <div><label class="block text-sm font-medium text-slate-700 mb-1">Salary / Rate (RWF)</label><input class="w-full border rounded-lg p-2.5 text-sm" placeholder="e.g. 5000" type="number" id="worker-salary" required min="0"></div>
+                    </div>
+                    <div><label class="block text-sm font-medium text-slate-700 mb-1">Phone Number</label><input class="w-full border rounded-lg p-2.5 text-sm" placeholder="078XXXXXXX" type="tel" id="worker-phone"></div>
+                    <div><label class="block text-sm font-medium text-slate-700 mb-1">Photo (Optional)</label><input type="file" id="worker-image" accept="image/*" class="w-full text-sm"></div>
+                    <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-3 rounded-xl transition">Save Worker</button>
+                </form>
+            `;
+
+            openModal('Add New Worker', modalContent);
+
+            document.querySelectorAll('.role-option').forEach(item => {
+                item.addEventListener('click', () => {
+                    const role = item.dataset.role;
+                    document.getElementById('worker-role').value = role;
+                    document.getElementById('selected-role-text').textContent = role;
+                    document.getElementById('selected-role-text').classList.remove('text-slate-400');
+                    document.getElementById('role-dropdown').classList.add('hidden');
+                });
+            });
+
+            window.filterRoleDropdown = () => {
+                const filter = document.getElementById('role-search').value.toLowerCase();
+                document.querySelectorAll('.role-option').forEach(opt => {
+                    opt.style.display = opt.dataset.role.toLowerCase().includes(filter) ? '' : 'none';
+                });
+            };
+        };
+
+        window.handleAddWorker = async (e) => {
+            e.preventDefault();
+            const form = e.target;
+            const btn = getFormSubmitBtn(form);
+            setButtonLoading(btn, true);
+
+            try {
+                const name = document.getElementById('worker-name').value.trim();
+                const role = document.getElementById('worker-role').value;
+                const payment = document.getElementById('worker-payment').value;
+                const salary = parseFloat(document.getElementById('worker-salary').value) || 0;
+                const phone = document.getElementById('worker-phone').value.trim();
+                const imageFile = document.getElementById('worker-image').files[0];
+
+                if (!name || !role || !payment) {
+                    alert('Name, Role, and Payment Method are required.');
+                    return;
+                }
+
+                let imageUrl = '';
+                if (imageFile) {
+                    try {
+                        imageUrl = await uploadImageToImgbb(imageFile);
+                    } catch (err) {
+                        alert('Image upload failed: ' + err.message);
+                        return;
+                    }
+                }
+
+                await addDoc(collection(db, 'site_workers'), {
+                    site_id: currentSiteId,
+                    name,
+                    role,
+                    payment_method: payment,
+                    salary,
+                    phone,
+                    image: imageUrl,
+                    added_by: currentUser.uid,
+                    added_at: new Date().toISOString()
+                });
+
+                closeModal();
+                alert('Worker added successfully!');
+            } catch (err) {
+                alert('Error adding worker: ' + err.message);
+            } finally {
+                setButtonLoading(btn, false);
+            }
+        };
+
+        // ── View Workers ──
+        window.openWorkerImage = (index) => {
+            const worker = siteWorkersData[index];
+            if (!worker) return;
+            const imageUrl = worker.image || PLACEHOLDER_IMG;
+
+            const viewer = document.createElement('div');
+            viewer.className = `fixed inset-0 z-[9999] bg-black/95 backdrop-blur-sm flex items-center justify-center p-4`;
+            viewer.innerHTML = `
+                <button onclick="this.parentElement.remove(); document.body.style.overflow='';" class="absolute top-4 right-4 z-50 w-11 h-11 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition" aria-label="Close">
+                    <iconify-icon icon="material-symbols:close" class="text-3xl"></iconify-icon>
+                </button>
+                <div class="w-full h-full flex items-center justify-center px-4" onclick="event.stopPropagation()">
+                    <img src="${imageUrl}" class="max-w-full max-h-[90vh] object-contain rounded-xl shadow-2xl" alt="${worker.name}">
+                </div>
+                <div class="absolute bottom-8 left-1/2 -translate-x-1/2 text-white bg-black/60 px-4 py-2 rounded-lg text-sm">
+                    ${worker.name} — ${worker.role || 'Worker'}
+                </div>
+            `;
+            document.body.appendChild(viewer);
+            document.body.style.overflow = 'hidden';
+            viewer.addEventListener('click', () => {
+                viewer.remove();
+                document.body.style.overflow = '';
+            });
+        };
+
+        window.viewWorkerDetail = (id) => {
+            const worker = siteWorkersData.find(w => w.id === id);
+            if (!worker) return;
+
+            const details = `
+                <div class="space-y-2 text-sm">
+                    <p><strong>Name:</strong> ${worker.name}</p>
+                    <p><strong>Role:</strong> ${worker.role || '—'}</p>
+                    <p><strong>Payment Method:</strong> ${worker.payment_method || '—'}</p>
+                    <p><strong>Salary:</strong> ${(Number(worker.salary) || 0).toLocaleString()} RWF</p>
+                    <p><strong>Phone:</strong> ${worker.phone || '—'}</p>
+                    <p><strong>ID:</strong> ${worker.id}</p>
+                    <p><strong>Added:</strong> ${worker.added_at ? new Date(worker.added_at).toLocaleString() : 'Unknown'}</p>
+                </div>
+            `;
+            openModal('Worker Details', details);
+        };
+
+        function renderWorkersView() {
+            if (!siteWorkersData.length) {
+                return `<div class="bg-white rounded-2xl border p-6 text-center"><p class="text-slate-500">No workers added yet.</p></div>`;
+            }
+
+            let html = `<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">`;
+
+            siteWorkersData.forEach((w, index) => {
+                const imageUrl = w.image || PLACEHOLDER_IMG;
+                html += `
+                    <div class="bg-white rounded-2xl border overflow-hidden shadow-sm hover:shadow-md transition">
+                        <div class="relative w-full h-64 overflow-hidden cursor-pointer group bg-slate-100" onclick="openWorkerImage(${index})">
+                            <img src="${imageUrl}" class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" alt="${w.name}" loading="lazy" onerror="this.src='${PLACEHOLDER_IMG}'">
+                            <div class="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition duration-300 flex items-center justify-center">
+                                <div class="opacity-0 group-hover:opacity-100 transition bg-white/90 rounded-full p-3 shadow-lg">
+                                    <iconify-icon icon="material-symbols:zoom-in" class="text-emerald-600 text-3xl"></iconify-icon>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-5">
+                            <div class="flex items-start justify-between gap-3">
+                                <div class="min-w-0"><p class="font-bold text-lg text-slate-800 truncate">${w.name}</p><p class="text-sm text-emerald-600 font-medium mt-1">${w.role || 'Worker'}</p></div>
+                                <span class="text-xs bg-emerald-50 text-emerald-700 px-2.5 py-1 rounded-full whitespace-nowrap capitalize">${w.payment_method || 'N/A'}</span>
+                            </div>
+                            <div class="mt-5 space-y-3">
+                                <div class="flex justify-between items-center text-sm border-b border-slate-100 pb-2"><span class="text-slate-500">Salary</span><span class="font-semibold text-slate-700">${(Number(w.salary) || 0).toLocaleString()} RWF</span></div>
+                                <div class="flex justify-between items-center text-sm"><span class="text-slate-500">Phone</span><span class="font-medium text-slate-700">${w.phone || '—'}</span></div>
+                            </div>
+                            <div class="mt-4 pt-3 border-t border-slate-100 flex justify-end">
+                                <button onclick="viewWorkerDetail('${w.id}')" class="text-xs text-emerald-600 hover:text-emerald-800 font-medium flex items-center gap-1 transition">
+                                    <iconify-icon icon="material-symbols:info" width="14" height="14"></iconify-icon>
+                                    View Details
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            html += `</div>`;
+            return html;
+        }
+
+        // ── Record Attendance ──
+        function renderWorkersRecord() {
+            if (!siteWorkersData.length) {
+                return `<div class="bg-white rounded-2xl border p-8 text-center"><iconify-icon icon="material-symbols:engineering-outline" class="text-5xl text-slate-300 mx-auto block mb-4"></iconify-icon><p class="text-slate-500">No workers yet. Add workers to record daily attendance.</p></div>`;
+            }
+
+            const today = getTodayISO();
+
+            return `
+                <div class="space-y-6">
+                    <div class="bg-white rounded-2xl border p-4 shadow-sm">
+                        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                            <div><h3 class="text-sm font-semibold text-slate-600 flex items-center gap-2"><iconify-icon icon="material-symbols:calendar-today" class="text-emerald-600"></iconify-icon> Attendance Date</h3></div>
+                            <div class="flex items-center gap-2">
+                                <button onclick="changeAttendanceDate(-1)" class="p-2 rounded-lg border hover:bg-slate-50 transition"><iconify-icon icon="material-symbols:chevron-left" class="text-slate-600"></iconify-icon></button>
+                                <input type="date" id="attendance-date" value="${today}" class="border rounded-lg px-3 py-2 text-sm w-40 focus:ring-2 focus:ring-emerald-500 outline-none" onchange="updateAttendanceSummary()">
+                                <button onclick="changeAttendanceDate(0)" class="px-3 py-2 bg-emerald-50 text-emerald-700 rounded-lg text-sm font-medium hover:bg-emerald-100 transition">Today</button>
+                                <button onclick="changeAttendanceDate(1)" class="p-2 rounded-lg border hover:bg-slate-50 transition"><iconify-icon icon="material-symbols:chevron-right" class="text-slate-600"></iconify-icon></button>
+                            </div>
+                        </div>
+                        <div id="attendance-status-badge" class="mt-3 hidden"><div class="inline-flex items-center gap-2 bg-amber-50 text-amber-700 px-3 py-1.5 rounded-full text-xs font-medium border border-amber-200"><iconify-icon icon="material-symbols:info-outline" class="text-amber-500"></iconify-icon> Attendance for this date is already recorded. Submitting will update existing records.</div></div>
+                    </div>
+
+                    <div class="bg-white rounded-2xl border p-4 shadow-sm">
+                        <div class="flex items-center justify-between mb-4">
+                            <h4 class="text-sm font-medium text-slate-700 flex items-center gap-2"><iconify-icon icon="material-symbols:people" class="text-emerald-600"></iconify-icon> Select Present Workers <span class="text-xs text-slate-400 font-normal">(${siteWorkersData.length})</span></h4>
+                            <button onclick="toggleSelectAllWorkers()" id="select-all-btn" class="text-xs text-emerald-600 hover:text-emerald-800 font-medium flex items-center gap-1 transition"><iconify-icon icon="material-symbols:select-all" class="text-sm"></iconify-icon><span>Select All</span></button>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 max-h-80 overflow-y-auto pr-1">
+                            ${siteWorkersData.map(w => {
+                                const dailyRate = w.payment_method === 'daily' ? Number(w.salary) || 0 : Math.round((Number(w.salary) || 0) / 30);
+                                const initial = (w.name || 'W').charAt(0).toUpperCase();
+                                return `
+                                    <div class="worker-card relative bg-slate-50 border-2 border-transparent rounded-xl p-3 cursor-pointer transition-all duration-200 hover:shadow-md hover:border-emerald-200" data-worker-id="${w.id}" onclick="toggleWorkerSelection('${w.id}')">
+                                        <input type="checkbox" id="worker-chk-${w.id}" value="${w.id}" class="hidden worker-checkbox-input">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-700 font-bold text-sm overflow-hidden flex-shrink-0">${w.image ? `<img src="${w.image}" class="w-full h-full object-cover" alt="${w.name}">` : initial}</div>
+                                            <div class="flex-1 min-w-0"><p class="text-sm font-medium text-slate-800 truncate">${w.name}</p><p class="text-xs text-slate-500 truncate">${w.role || 'Worker'}</p></div>
+                                            <div class="text-right flex-shrink-0"><span class="text-xs font-semibold text-emerald-700">${dailyRate.toLocaleString()} RWF</span><span class="text-[10px] text-slate-400 block">/ day</span></div>
+                                        </div>
+                                        <div class="absolute top-2 right-2 w-5 h-5 rounded-full bg-emerald-600 text-white flex items-center justify-center opacity-0 scale-75 transition-all duration-200" data-checkmark><iconify-icon icon="material-symbols:check" class="text-xs"></iconify-icon></div>
+                                    </div>
+                                `;
+                            }).join('')}
+                        </div>
+                    </div>
+
+                    <div id="attendance-summary" class="bg-white rounded-2xl border p-4 shadow-sm hidden">
+                        <div class="flex flex-wrap items-center justify-between gap-4">
+                            <div class="flex items-center gap-6">
+                                <div><p class="text-xs text-slate-500">Selected</p><p class="text-2xl font-bold text-slate-800"><span id="selected-count">0</span> <span class="text-sm font-normal text-slate-400">/ ${siteWorkersData.length}</span></p></div>
+                                <div class="h-10 w-px bg-slate-200"></div>
+                                <div><p class="text-xs text-slate-500">Total Daily Cost</p><p class="text-2xl font-bold text-emerald-600"><span id="total-cost">0</span> <span class="text-sm font-normal text-slate-400">RWF</span></p></div>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <div class="w-32 h-2 bg-slate-100 rounded-full overflow-hidden"><div id="selection-progress" class="h-full bg-emerald-500 rounded-full transition-all duration-500" style="width:0%"></div></div>
+                                <button onclick="submitAttendance(this)" class="px-6 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-sm font-semibold shadow-md transition-all flex items-center gap-2"><iconify-icon icon="material-symbols:save"></iconify-icon> Save Attendance</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-2xl border p-4 shadow-sm">
+                        <h4 class="text-sm font-medium text-slate-700 flex items-center gap-2 mb-3"><iconify-icon icon="material-symbols:history" class="text-emerald-600"></iconify-icon> Attendance Logs</h4>
+                        <div id="attendance-history-container">${attendanceData.length ? renderAttendanceHistory() : '<p class="text-sm text-slate-400">No records found.</p>'}</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        window.changeAttendanceDate = (delta) => {
+            const input = document.getElementById('attendance-date');
+            if (!input) return;
+            let date = new Date(input.value || getTodayISO());
+            if (delta === 0) { date = new Date(); }
+            else { date.setDate(date.getDate() + delta); }
+            input.value = date.toISOString().split('T')[0];
+            updateAttendanceSummary();
+        };
+
+        window.toggleWorkerSelection = (workerId) => {
+            const card = document.querySelector(`.worker-card[data-worker-id="${workerId}"]`);
+            const checkbox = document.getElementById(`worker-chk-${workerId}`);
+            if (!card || !checkbox) return;
+            checkbox.checked = !checkbox.checked;
+            updateWorkerCardVisual(card, checkbox.checked);
+            updateAttendanceSummary();
+        };
+
+        function updateWorkerCardVisual(card, selected) {
+            if (selected) {
+                card.classList.add('border-emerald-500', 'bg-emerald-50', 'shadow-md');
+                card.classList.remove('border-transparent', 'bg-slate-50');
+                const checkmark = card.querySelector('[data-checkmark]');
+                if (checkmark) {
+                    checkmark.classList.remove('opacity-0', 'scale-75');
+                    checkmark.classList.add('opacity-100', 'scale-100');
+                }
+            } else {
+                card.classList.remove('border-emerald-500', 'bg-emerald-50', 'shadow-md');
+                card.classList.add('border-transparent', 'bg-slate-50');
+                const checkmark = card.querySelector('[data-checkmark]');
+                if (checkmark) {
+                    checkmark.classList.add('opacity-0', 'scale-75');
+                    checkmark.classList.remove('opacity-100', 'scale-100');
+                }
+            }
+        }
+
+        let allWorkersSelected = false;
+        window.toggleSelectAllWorkers = () => {
+            allWorkersSelected = !allWorkersSelected;
+            const checkboxes = document.querySelectorAll('.worker-checkbox-input');
+            checkboxes.forEach(cb => {
+                cb.checked = allWorkersSelected;
+                const card = document.querySelector(`.worker-card[data-worker-id="${cb.value}"]`);
+                if (card) updateWorkerCardVisual(card, allWorkersSelected);
+            });
+            const btn = document.getElementById('select-all-btn');
+            if (btn) {
+                btn.querySelector('span').textContent = allWorkersSelected ? 'Deselect All' : 'Select All';
+                btn.querySelector('iconify-icon').icon = allWorkersSelected ? 'material-symbols:deselect' : 'material-symbols:select-all';
+            }
+            updateAttendanceSummary();
+        };
+
+        window.updateAttendanceSummary = () => {
+            const dateInput = document.getElementById('attendance-date');
+            const selectedDate = dateInput ? dateInput.value : getTodayISO();
+
+            const existingRecords = attendanceData.filter(a => a.date === selectedDate && a.site_id === currentSiteId);
+            const badge = document.getElementById('attendance-status-badge');
+            if (badge) badge.classList.toggle('hidden', existingRecords.length === 0);
+
+            const checkedBoxes = document.querySelectorAll('.worker-checkbox-input:checked');
+            const selectedIds = Array.from(checkedBoxes).map(cb => cb.value);
+            const selectedWorkersData = siteWorkersData.filter(w => selectedIds.includes(w.id));
+
+            const summary = document.getElementById('attendance-summary');
+            if (!summary) return;
+
+            if (selectedIds.length === 0) {
+                summary.classList.add('hidden');
+                return;
+            }
+
+            summary.classList.remove('hidden');
+            document.getElementById('selected-count').textContent = selectedIds.length;
+
+            let totalCost = 0;
+            selectedWorkersData.forEach(w => {
+                const dailyRate = w.payment_method === 'daily' ? Number(w.salary) || 0 : Math.round((Number(w.salary) || 0) / 30);
+                totalCost += dailyRate;
+            });
+
+            document.getElementById('total-cost').textContent = totalCost.toLocaleString();
+
+            const progress = document.getElementById('selection-progress');
+            if (progress) {
+                const pct = siteWorkersData.length ? Math.round((selectedIds.length / siteWorkersData.length) * 100) : 0;
+                progress.style.width = pct + '%';
+            }
+        };
+
+        window.submitAttendance = async (btn) => {
+            const dateInput = document.getElementById('attendance-date');
+            const selectedDate = dateInput ? dateInput.value : getTodayISO();
+            const checkedBoxes = document.querySelectorAll('.worker-checkbox-input:checked');
+            const selectedIds = Array.from(checkedBoxes).map(cb => cb.value);
+
+            if (selectedIds.length === 0) {
+                alert('Select at least one worker.');
+                return;
+            }
+
+            setButtonLoading(btn, true);
+
+            try {
+                const existingSnap = await getDocs(query(collection(db, 'worker_attendance'), where('site_id', '==', currentSiteId), where('date', '==', selectedDate)));
+                const batch = writeBatch(db);
+
+                existingSnap.docs.forEach(d => batch.delete(d.ref));
+
+                selectedIds.forEach(id => {
+                    const w = siteWorkersData.find(item => item.id === id);
+                    if (!w) return;
+                    const dailyRate = w.payment_method === 'daily' ? Number(w.salary) || 0 : Math.round((Number(w.salary) || 0) / 30);
+                    const newDocRef = doc(collection(db, 'worker_attendance'));
+                    batch.set(newDocRef, {
+                        site_id: currentSiteId,
+                        worker_id: w.id,
+                        name: w.name,
+                        role: w.role || 'Worker',
+                        daily_rate: dailyRate,
+                        date: selectedDate,
+                        status: 'present',
+                        recorded_by: currentUser.uid,
+                        recorded_at: new Date().toISOString()
+                    });
+                });
+
+                await batch.commit();
+                alert(`Attendance saved for ${selectedIds.length} worker(s) on ${selectedDate}.`);
+                if (currentSection === 'reports' && reportType === 'payroll') {
+                    setTimeout(updatePayrollReport, 300);
+                }
+            } catch (err) {
+                alert('Error saving attendance: ' + err.message);
+            } finally {
+                setButtonLoading(btn, false);
+            }
+        };
+
+        function renderAttendanceHistory() {
+            const groups = {};
+            attendanceData.forEach(a => {
+                const date = a.date || 'Unknown';
+                if (!groups[date]) groups[date] = [];
+                groups[date].push(a);
+            });
+
+            let html = '';
+            const sortedDates = Object.keys(groups).sort((a, b) => new Date(b) - new Date(a));
+            sortedDates.forEach(date => {
+                const workers = groups[date];
+                const total = workers.reduce((sum, a) => sum + (Number(a.daily_rate) || 0), 0);
+                html += `
+                    <div class="mb-3 last:mb-0 p-3 bg-slate-50 rounded-xl border border-slate-100 transition hover:shadow-sm">
+                        <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
+                            <span class="text-sm font-semibold text-slate-700 flex items-center gap-2"><iconify-icon icon="material-symbols:calendar-month" class="text-emerald-500 text-sm"></iconify-icon> ${date}</span>
+                            <span class="text-xs text-slate-500">${workers.length} worker${workers.length > 1 ? 's' : ''} • ${total.toLocaleString()} RWF</span>
+                        </div>
+                        <div class="flex flex-wrap gap-1">${workers.map(a => `<span class="inline-flex items-center gap-1 bg-white border border-slate-200 px-2 py-0.5 rounded text-xs text-slate-600">${a.name} <span class="text-[10px] text-slate-400">(${a.role})</span></span>`).join('')}</div>
+                    </div>
+                `;
+            });
+            return html;
         }
 
         // =============== PROGRESS ===============
         function renderProgress(container) {
-            // ... (full progress code)
-            container.innerHTML = `<p>Progress section.</p>`;
+            container.innerHTML = `
+                <h2 class="text-xl sm:text-2xl font-bold mb-4">Progress Tasks</h2>
+                <div class="bg-white rounded-2xl border overflow-hidden shadow-sm">
+                    ${progressTasks.length ? `
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm">
+                            <thead class="bg-slate-50 uppercase text-xs"><tr><th class="px-3 py-2 text-center">Action</th><th class="px-3 py-2">Task</th><th class="px-3 py-2">Start</th><th class="px-3 py-2">End</th><th class="px-3 py-2">Status</th></tr></thead>
+                            <tbody>${progressTasks.map(t => `
+                                <tr>
+                                    <td class="px-3 py-2 text-center">${t.status !== 'completed' ? `<button onclick="markTaskCompleted('${t.id}')" class="bg-gray-300 hover:bg-gray-400 text-white w-8 h-8 rounded-full inline-flex items-center justify-center transition-all" title="Mark as completed"><iconify-icon icon="material-symbols:check" width="18" height="18"></iconify-icon></button>` : `<span class="text-emerald-600"><iconify-icon icon="material-symbols:check-circle" width="20" height="20"></iconify-icon></span>`}</td>
+                                    <td class="px-3 py-2 font-medium">${t.name}</td>
+                                    <td class="px-3 py-2">${new Date(t.start_date).toLocaleDateString()}</td>
+                                    <td class="px-3 py-2">${new Date(t.end_date).toLocaleDateString()}</td>
+                                    <td class="px-3 py-2"><span class="px-2 py-1 rounded-full text-xs ${t.status === 'completed' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}">${t.status}</span></td>
+                                </tr>
+                            `).join('')}</tbody>
+                        </table>
+                    </div>
+                    ` : '<p class="p-4 text-slate-500">No tasks assigned.</p>'}
+                </div>
+            `;
         }
 
-        // =============== REPORTS ===============
+        window.markTaskCompleted = async (taskId) => {
+            if (!confirm('Mark this task as completed?')) return;
+            try {
+                await updateDoc(doc(db, 'progress_tasks', taskId), { status: 'completed', updated_at: new Date().toISOString() });
+            } catch (err) { alert('Error: ' + err.message); }
+        };
+
+        // =============== REPORTS (with General & Payroll) ===============
         function renderReports(container) {
             container.innerHTML = `
                 <h2 class="text-xl sm:text-2xl font-bold mb-4">Reports</h2>
@@ -1226,12 +1635,9 @@
                     <button onclick="setReportType('payroll')" class="flex-1 px-4 py-2 rounded-lg text-sm font-semibold transition ${reportType === 'payroll' ? 'report-tab-active' : 'report-tab-inactive'}">
                         <iconify-icon icon="material-symbols:payments" class="inline mr-1"></iconify-icon> Worker Payroll
                     </button>
-                    <button onclick="setReportType('stock')" class="flex-1 px-4 py-2 rounded-lg text-sm font-semibold transition ${reportType === 'stock' ? 'report-tab-active' : 'report-tab-inactive'}">
-                        <iconify-icon icon="material-symbols:inventory-2" class="inline mr-1"></iconify-icon> Stock
-                    </button>
                 </div>
                 <div id="report-content">
-                    ${reportType === 'general' ? renderGeneralReport() : reportType === 'payroll' ? renderPayrollReport() : renderStockReport()}
+                    ${reportType === 'general' ? renderGeneralReport() : renderPayrollReport()}
                 </div>
             `;
         }
@@ -1268,98 +1674,391 @@
             `;
         }
 
-        function renderStockReport() {
-            return `
-                <div class="bg-white rounded-2xl border p-4 max-w-lg space-y-4">
-                    <p class="text-sm text-slate-600">Current stock for your site.</p>
-                    <button onclick="exportStockReport('csv')" class="w-full bg-emerald-600 text-white py-2 rounded-xl">Export CSV</button>
-                    <button onclick="exportStockReport('print')" class="w-full bg-slate-800 text-white py-2 rounded-xl mt-2">Print / PDF</button>
-                </div>
-            `;
-        }
-
-        // ── Payroll report functions (simplified) ──
+        // ── Payroll update ──
         window.updatePayrollReport = () => {
-            // ... (same as earlier)
-        };
-        window.exportPayrollReport = (format) => {
-            // ... (same as earlier)
+            const startDate = document.getElementById('payroll-start')?.value || '';
+            const endDate = document.getElementById('payroll-end')?.value || '';
+            const workerSearch = document.getElementById('payroll-worker-search')?.value?.toLowerCase() || '';
+
+            let filtered = attendanceData.filter(a => a.site_id === currentSiteId);
+            if (startDate) filtered = filtered.filter(a => a.date >= startDate);
+            if (endDate) filtered = filtered.filter(a => a.date <= endDate);
+            if (workerSearch) filtered = filtered.filter(a => a.name.toLowerCase().includes(workerSearch));
+
+            const workerMap = {};
+            filtered.forEach(rec => {
+                const key = rec.worker_id || rec.id;
+                if (!workerMap[key]) {
+                    workerMap[key] = { id: key, name: rec.name, role: rec.role, dailyRate: rec.daily_rate || 0, days: [], totalPayable: 0 };
+                }
+                workerMap[key].days.push(rec.date);
+                workerMap[key].totalPayable += (rec.daily_rate || 0);
+            });
+
+            const workers = Object.values(workerMap);
+            const totalWorkers = workers.length;
+            const totalDays = workers.reduce((sum, w) => sum + w.days.length, 0);
+            const totalPayroll = workers.reduce((sum, w) => sum + w.totalPayable, 0);
+            const avgDaily = totalDays > 0 ? totalPayroll / totalDays : 0;
+
+            const cardsContainer = document.getElementById('payroll-summary-cards');
+            if (cardsContainer) {
+                cardsContainer.innerHTML = `
+                    <div class="payroll-card bg-white rounded-2xl border p-4 shadow-sm"><p class="text-xs text-slate-500">Total Workers</p><p class="text-2xl font-bold text-slate-800">${totalWorkers}</p></div>
+                    <div class="payroll-card bg-white rounded-2xl border p-4 shadow-sm"><p class="text-xs text-slate-500">Worker-Days</p><p class="text-2xl font-bold text-slate-800">${totalDays}</p></div>
+                    <div class="payroll-card bg-white rounded-2xl border p-4 shadow-sm"><p class="text-xs text-slate-500">Total Payroll</p><p class="text-2xl font-bold text-emerald-600">${totalPayroll.toLocaleString()} RWF</p></div>
+                    <div class="payroll-card bg-white rounded-2xl border p-4 shadow-sm"><p class="text-xs text-slate-500">Avg. Daily Labor Cost</p><p class="text-2xl font-bold text-slate-800">${avgDaily.toLocaleString()} RWF</p></div>
+                `;
+            }
+
+            const tableContainer = document.getElementById('payroll-table-container');
+            if (tableContainer) {
+                if (!workers.length) {
+                    tableContainer.innerHTML = `<div class="p-4 text-slate-500 text-sm">No attendance records found for the selected filters.</div>`;
+                    return;
+                }
+                tableContainer.innerHTML = `
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm">
+                            <thead class="bg-slate-50 uppercase text-xs"><tr><th class="px-3 py-2 text-left">Worker</th><th class="px-3 py-2 text-left">Position</th><th class="px-3 py-2 text-center">Days Worked</th><th class="px-3 py-2 text-right">Daily Rate</th><th class="px-3 py-2 text-right">Total Payable</th></tr></thead>
+                            <tbody>${workers.map(w => `<tr><td class="px-3 py-2 font-medium">${w.name}</td><td class="px-3 py-2">${w.role || '—'}</td><td class="px-3 py-2 text-center">${w.days.length}</td><td class="px-3 py-2 text-right">${w.dailyRate.toLocaleString()} RWF</td><td class="px-3 py-2 text-right font-semibold text-emerald-600">${w.totalPayable.toLocaleString()} RWF</td></tr>`).join('')}</tbody>
+                            <tfoot class="bg-slate-50 font-bold"><tr><td colspan="2" class="px-3 py-2 text-right">Total</td><td class="px-3 py-2 text-center">${totalDays}</td><td class="px-3 py-2 text-right"></td><td class="px-3 py-2 text-right text-emerald-600">${totalPayroll.toLocaleString()} RWF</td></tr></tfoot>
+                        </table>
+                    </div>
+                `;
+            }
         };
 
-        // ── Stock Report Export ──
-        window.exportStockReport = (format) => {
-            // Get current site stock data
-            const siteStock = stockData.filter(s => s.site_id === currentSiteId);
-            if (!siteStock.length) {
-                alert('No stock data for this site.');
-                return;
-            }
+        // ── Export Payroll ──
+        window.exportPayrollReport = (format) => {
+            const startDate = document.getElementById('payroll-start')?.value || '';
+            const endDate = document.getElementById('payroll-end')?.value || '';
+            const workerSearch = document.getElementById('payroll-worker-search')?.value?.toLowerCase() || '';
+
+            let filtered = attendanceData.filter(a => a.site_id === currentSiteId);
+            if (startDate) filtered = filtered.filter(a => a.date >= startDate);
+            if (endDate) filtered = filtered.filter(a => a.date <= endDate);
+            if (workerSearch) filtered = filtered.filter(a => a.name.toLowerCase().includes(workerSearch));
+
+            const workerMap = {};
+            filtered.forEach(rec => {
+                const key = rec.worker_id || rec.id;
+                if (!workerMap[key]) {
+                    workerMap[key] = { id: key, name: rec.name, role: rec.role, dailyRate: rec.daily_rate || 0, days: [], totalPayable: 0 };
+                }
+                workerMap[key].days.push(rec.date);
+                workerMap[key].totalPayable += (rec.daily_rate || 0);
+            });
+
+            const workers = Object.values(workerMap);
+            const totalDays = workers.reduce((sum, w) => sum + w.days.length, 0);
+            const totalPayroll = workers.reduce((sum, w) => sum + w.totalPayable, 0);
+
             const site = assignedSites.find(s => s.id === currentSiteId);
+            const siteName = site?.name || 'Site';
             const companyName = 'SHDR Ltd';
-            const generatedDate = new Date().toLocaleString();
+            const companyAddress = 'KG 11 Avenue, Gasabo District';
+            const companyCity = 'Kigali City, Rwanda';
+            const companyPhone = '+250 788 474 110';
+            const generatedDate = new Date().toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false }).replace(',', ', ');
+            const period = startDate && endDate ? `${startDate} to ${endDate}` : (startDate || endDate || 'All Time');
 
             if (format === 'csv') {
-                const headers = ['Material', 'Quantity', 'Unit', 'Minimum Stock', 'Unit Cost (RWF)', 'Stock Value (RWF)', 'Status', 'Last Updated'];
-                const rows = siteStock.map(item => {
-                    const unitCost = materialsData.filter(m => m.site_id === currentSiteId && m.name === item.material_name).pop()?.unit_cost || 0;
-                    const stockValue = item.quantity * unitCost;
-                    const status = item.quantity <= 0 ? 'Out of Stock' : (item.minimum_quantity && item.quantity <= item.minimum_quantity ? 'Low Stock' : 'Normal');
-                    return [item.material_name, item.quantity, item.unit || 'units', item.minimum_quantity || '', unitCost.toFixed(2), stockValue.toFixed(2), status, item.updated_at ? new Date(item.updated_at).toLocaleDateString() : ''];
-                });
-                const csvContent = [
-                    `"Company: ${companyName}"`,
-                    `"Site: ${site?.name}"`,
-                    `"Generated: ${generatedDate}"`,
-                    '',
-                    headers.join(','),
-                    ...rows.map(row => row.join(','))
-                ].join('\n');
-                const blob = new Blob([csvContent], { type: 'text/csv' });
+                const headers = ['Worker', 'Position', 'Days Worked', 'Daily Rate (RWF)', 'Total Payable (RWF)'];
+                const csvRows = [
+                    `"${companyName}"`, `"${companyAddress}"`, `"${companyCity}"`, `"Tel: ${companyPhone}"`,
+                    `"Generated: ${generatedDate}"`, `"Report: Worker Payroll"`, `"Site: ${siteName}"`, `"Period: ${period}"`, '',
+                    headers.join(',')
+                ];
+                for (const w of workers) {
+                    csvRows.push([w.name, w.role || '—', w.days.length, w.dailyRate.toLocaleString(), w.totalPayable.toLocaleString()].map(v => `"${v}"`).join(','));
+                }
+                csvRows.push(`"Total","",${totalDays},"",${totalPayroll.toLocaleString()}`);
+                const csv = csvRows.join('\n');
+                const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = url;
-                a.download = `Stock_${site?.name || 'Site'}_${new Date().toISOString().slice(0,10)}.csv`;
+                a.download = `SHDR_Payroll_${siteName}_${new Date().toISOString().slice(0,10)}.csv`;
                 a.click();
                 URL.revokeObjectURL(url);
                 return;
             }
 
-            // PDF / Print
-            const htmlContent = `
-                <html>
-                <head><title>Stock Report</title>
-                <style>body { font-family: Arial, sans-serif; padding: 30px; } table { border-collapse: collapse; width: 100%; } th { background: #059669; color: white; padding: 8px; } td { border: 1px solid #ddd; padding: 8px; } .footer { margin-top: 30px; text-align: center; font-size: 12px; color: #6b7280; }</style>
-                </head>
-                <body>
-                <h2>${companyName}</h2>
-                <h3>Stock Report - ${site?.name}</h3>
-                <p>Generated: ${generatedDate}</p>
-                <table>
-                    <thead><tr><th>Material</th><th>Quantity</th><th>Unit</th><th>Min Stock</th><th>Unit Cost</th><th>Stock Value</th><th>Status</th><th>Updated</th></tr></thead>
-                    <tbody>
-                        ${siteStock.map(item => {
-                            const unitCost = materialsData.filter(m => m.site_id === currentSiteId && m.name === item.material_name).pop()?.unit_cost || 0;
-                            const stockValue = item.quantity * unitCost;
-                            const status = item.quantity <= 0 ? 'Out of Stock' : (item.minimum_quantity && item.quantity <= item.minimum_quantity ? 'Low Stock' : 'Normal');
-                            return `<tr><td>${item.material_name}</td><td>${item.quantity}</td><td>${item.unit || 'units'}</td><td>${item.minimum_quantity || '-'}</td><td>${unitCost.toFixed(2)}</td><td>${stockValue.toFixed(2)}</td><td>${status}</td><td>${item.updated_at ? new Date(item.updated_at).toLocaleDateString() : '-'}</td></tr>`;
-                        }).join('')}
-                    </tbody>
-                </table>
-                <div class="footer">This report is generated automatically by SHDR Ltd Management System.</div>
-                </body>
-                </html>
-            `;
-            const win = window.open('', '_blank', 'width=800,height=600');
-            win.document.write(htmlContent);
+            const headers = ['Worker', 'Position', 'Days Worked', 'Daily Rate (RWF)', 'Total Payable (RWF)'];
+            const tableRows = workers.map(w => `
+                <tr><td>${w.name}</td><td>${w.role || '—'}</td><td style="text-align:center">${w.days.length}</td><td style="text-align:right">${w.dailyRate.toLocaleString()} RWF</td><td style="text-align:right">${w.totalPayable.toLocaleString()} RWF</td></tr>
+            `).join('');
+
+            const win = window.open('', '_blank', 'width=1000,height=700');
+            if (!win) { alert('Please allow pop-ups to print the report.'); return; }
+            win.document.write(`
+                <!DOCTYPE html>
+                <html><head><meta charset="UTF-8"><title>Worker Payroll Report</title>
+                <style>body{font-family:Arial,sans-serif;padding:30px;color:#1f2937}.header{border-bottom:3px solid #059669;padding-bottom:15px;margin-bottom:20px}.company-name{font-size:24px;font-weight:bold;color:#059669}.meta{background:#f0fdf4;padding:12px;border-radius:8px;margin-bottom:20px}table{border-collapse:collapse;width:100%;margin-top:15px}th{background:#059669;color:#fff;padding:8px;text-align:left}td{border:1px solid #d1d5db;padding:8px}tr:nth-child(even){background:#f9fafb}tfoot td{background:#f0fdf4;font-weight:bold}.footer{margin-top:30px;text-align:center;font-size:12px;color:#6b7280;border-top:1px solid #e5e7eb;padding-top:15px}</style>
+                </head><body>
+                <div class="header"><div class="company-name">${companyName}</div><div>${companyAddress}, ${companyCity}</div><div>Tel: ${companyPhone}</div></div>
+                <h2>Worker Payroll Report</h2>
+                <div class="meta"><strong>Site:</strong> ${siteName} &nbsp;|&nbsp; <strong>Period:</strong> ${period} &nbsp;|&nbsp; <strong>Generated:</strong> ${generatedDate}</div>
+                <table><thead><tr>${headers.map(h => `<th>${h}</th>`).join('')}</tr></thead><tbody>${tableRows}</tbody><tfoot><tr><td colspan="2" style="text-align:right"><strong>Total</strong></td><td style="text-align:center"><strong>${totalDays}</strong></td><td></td><td style="text-align:right"><strong>${totalPayroll.toLocaleString()} RWF</strong></td></tr></tfoot></table>
+                <div class="footer">This report is generated automatically by SHDR Ltd Management System.<br>© ${new Date().getFullYear()} SHDR Ltd — All rights reserved.</div>
+                </body></html>
+            `);
+            win.document.close();
+            setTimeout(() => win.print(), 500);
+        };
+
+        // ── General Report Export ──
+        window.exportReport = (format) => {
+            const dept = document.getElementById('report-dept').value;
+            const startDate = document.getElementById('report-start').value;
+            const endDate = document.getElementById('report-end').value;
+            const site = assignedSites.find(s => s.id === currentSiteId);
+
+            let data = [];
+            const companyName = 'SHDR Ltd';
+            const companyAddress = 'KG 11 Avenue, Gasabo District';
+            const companyCity = 'Kigali City, Rwanda';
+            const companyPhone = '+250 788 474 110';
+
+            const filterByDate = (items, dateField) => {
+                if (!startDate && !endDate) return items;
+                return items.filter(item => {
+                    const itemDate = new Date(item[dateField]);
+                    if (startDate && itemDate < new Date(startDate)) return false;
+                    if (endDate && itemDate > new Date(endDate + 'T23:59:59')) return false;
+                    return true;
+                });
+            };
+
+            if (dept === 'all' || dept === 'materials') {
+                let mats = materialsData.filter(m => m.site_id === currentSiteId);
+                mats = filterByDate(mats, 'date_used');
+                data = data.concat(mats.map(m => ({
+                    Department: 'Materials',
+                    Name: m.name,
+                    'Quantity Used': m.quantity_used || 0,
+                    'Unit Cost (RWF)': m.unit_cost || 0,
+                    'Total Amount (RWF)': calculateTotal(m.quantity_used || 0, m.unit_cost || 0),
+                    Date: m.date_used ? new Date(m.date_used).toLocaleDateString() : ''
+                })));
+            }
+            if (dept === 'all' || dept === 'workers') {
+                let workers = siteWorkersData;
+                data = data.concat(workers.map(w => ({
+                    Department: 'Workers',
+                    Name: w.name,
+                    Role: w.role,
+                    Salary: w.salary,
+                    Phone: w.phone
+                })));
+            }
+            if (dept === 'all' || dept === 'finances') {
+                const attCost = attendanceData.reduce((sum, a) => sum + (a.daily_rate || 0), 0);
+                const matCost = materialsData.reduce((sum, m) => sum + (m.amount || 0), 0);
+                data.push({
+                    Department: 'Finances',
+                    Category: 'Materials',
+                    Amount: matCost,
+                    Description: 'Total material cost'
+                });
+                data.push({
+                    Department: 'Finances',
+                    Category: 'Workers (Attendance)',
+                    Amount: attCost,
+                    Description: 'Total worker attendance cost'
+                });
+            }
+
+            if (!data.length) { alert('No data for the selected filters.'); return; }
+
+            const siteName = site?.name || 'Site';
+            const deptLabel = dept === 'all' ? 'All Departments' : dept.charAt(0).toUpperCase() + dept.slice(1);
+            const generatedDate = new Date().toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false }).replace(',', ', ');
+            const filename = `SHDR_${siteName}_${deptLabel}`;
+
+            if (format === 'csv') {
+                const headers = Object.keys(data[0]);
+                const csvRows = [
+                    `"${companyName}"`, `"${companyAddress}"`, `"${companyCity}"`, `"Tel: ${companyPhone}"`,
+                    `"Generated: ${generatedDate}"`, `"Report: ${siteName}"`, `"Department: ${deptLabel}"`, '',
+                    headers.join(',')
+                ];
+                for (const row of data) {
+                    const values = headers.map(h => `"${String(row[h] ?? '').replace(/"/g, '""')}"`);
+                    csvRows.push(values.join(','));
+                }
+                const csv = csvRows.join('\n');
+                const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = filename + '.csv';
+                a.click();
+                URL.revokeObjectURL(url);
+                return;
+            }
+
+            const headers = Object.keys(data[0]);
+            const tableRows = data.map(row => `<tr>${headers.map(h => `<td>${row[h] ?? ''}</td>`).join('')}</tr>`).join('');
+
+            const win = window.open('', '_blank', 'width=1000,height=700');
+            if (!win) { alert('Please allow pop-ups to print the report.'); return; }
+            win.document.write(`
+                <!DOCTYPE html>
+                <html><head><meta charset="UTF-8"><title>${filename}</title>
+                <style>body{font-family:Arial,sans-serif;padding:30px;margin:0;color:#1f2937;background:#fff}.company-header{display:flex;align-items:center;justify-content:space-between;border-bottom:3px solid #059669;padding-bottom:18px;margin-bottom:20px}.company-left{display:flex;align-items:center;gap:15px}.company-logo{width:75px;height:75px;object-fit:contain;border-radius:8px}.company-name{font-size:25px;font-weight:700;color:#059669;margin-bottom:3px}.company-subtitle{font-size:12px;color:#6b7280;margin-bottom:5px}.company-details{font-size:12px;line-height:1.5;color:#374151}.report-title{text-align:right}.report-title h2{margin:0;font-size:21px;color:#111827}.report-title p{margin:5px 0 0;font-size:11px;color:#6b7280}.report-meta{background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:12px 15px;margin-bottom:20px;font-size:12px;line-height:1.6}table{border-collapse:collapse;width:100%;font-size:11px}th{background:#059669;color:#fff;font-weight:600;padding:9px;border:1px solid #047857;text-align:left}td{padding:8px;border:1px solid #d1d5db}tr:nth-child(even){background:#f9fafb}.report-footer{margin-top:30px;padding-top:12px;border-top:1px solid #d1d5db;text-align:center;font-size:11px;color:#6b7280;line-height:1.6}.footer-system{font-weight:600;color:#374151}.footer-copy{font-size:10px;color:#9ca3af}</style>
+                </head><body>
+                <div class="company-header"><div class="company-left"><img src="shdr.jpg" alt="SHDR Ltd Logo" class="company-logo" onerror="this.style.display='none'"><div><div class="company-name">${companyName}</div><div class="company-subtitle">Construction Management System</div><div class="company-details">${companyAddress}<br>${companyCity}<br><strong>Tel:</strong> ${companyPhone}</div></div></div><div class="report-title"><h2>Management Report</h2><p>Official Company Report</p></div></div>
+                <div class="report-meta"><strong>Site Name:</strong> ${siteName} &nbsp;|&nbsp; <strong>Department:</strong> ${deptLabel}<br><strong>Generated:</strong> ${generatedDate}</div>
+                <table><thead><tr>${headers.map(h => `<th>${h}</th>`).join('')}</tr></thead><tbody>${tableRows}</tbody></table>
+                <div class="report-footer"><div class="footer-system">This report is generated automatically by SHDR Ltd Management System.</div><div class="footer-copy">© ${new Date().getFullYear()} SHDR Ltd — All rights reserved.</div></div>
+                </body></html>
+            `);
             win.document.close();
             setTimeout(() => win.print(), 500);
         };
 
         // =============== GALLERY ===============
         function renderGallery(container) {
-            // Full gallery code from earlier
-            container.innerHTML = `<p>Gallery section.</p>`;
+            container.innerHTML = `
+                <h2 class="text-xl sm:text-2xl font-bold mb-4">Site Gallery</h2>
+                <div class="bg-white rounded-2xl border p-4 mb-4">
+                    <h3 class="font-semibold text-sm mb-3">Upload New Image</h3>
+                    <form onsubmit="handleGalleryUpload(event)" class="space-y-3">
+                        <input type="file" id="gallery-image" accept="image/*" required class="w-full border rounded-lg p-2 text-sm">
+                        <textarea id="gallery-description" placeholder="Description" rows="2" class="w-full border rounded-lg p-2 text-sm"></textarea>
+                        <button type="submit" class="w-full bg-emerald-600 text-white py-2 rounded-xl text-sm font-medium">Upload</button>
+                    </form>
+                </div>
+                <div id="gallery-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    ${galleryData.length ? galleryData.map((item, index) => `
+                        <div class="bg-white rounded-2xl border overflow-hidden shadow-sm">
+                            <div class="relative w-full h-40 overflow-hidden cursor-pointer group bg-slate-100" onclick="openGalleryImage(${index})">
+                                <img src="${item.image || PLACEHOLDER_IMG}" class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" alt="Gallery image" loading="lazy" onerror="this.src='${PLACEHOLDER_IMG}'">
+                                <div class="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition duration-300 flex items-center justify-center">
+                                    <div class="opacity-0 group-hover:opacity-100 transition bg-white/90 rounded-full p-3 shadow-lg">
+                                        <iconify-icon icon="material-symbols:zoom-in" class="text-emerald-600 text-2xl"></iconify-icon>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="p-3">
+                                <p class="text-sm text-slate-700">${item.description || 'No description'}</p>
+                                <p class="text-xs text-slate-400 mt-1">Uploaded: ${item.uploaded_at ? new Date(item.uploaded_at).toLocaleDateString() : ''}</p>
+                            </div>
+                        </div>
+                    `).join('') : `<p class="text-slate-400 col-span-full text-sm">No images uploaded yet.</p>`}
+                </div>
+            `;
         }
+
+        let galleryViewerIndex = 0;
+
+        window.openGalleryImage = (index) => {
+            if (!galleryData.length) return;
+            galleryViewerIndex = index;
+            document.getElementById('gallery-image-viewer')?.remove();
+
+            const viewer = document.createElement('div');
+            viewer.id = 'gallery-image-viewer';
+            viewer.className = `fixed inset-0 z-[9999] bg-black/95 backdrop-blur-sm flex items-center justify-center p-4`;
+
+            viewer.innerHTML = `
+                <button onclick="closeGalleryImageViewer()" class="absolute top-4 right-4 sm:top-6 sm:right-6 z-50 w-11 h-11 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition" aria-label="Close">
+                    <iconify-icon icon="material-symbols:close" class="text-3xl"></iconify-icon>
+                </button>
+                <div id="gallery-viewer-counter" class="absolute top-5 left-1/2 -translate-x-1/2 bg-black/70 text-white px-3 py-1.5 rounded-full text-sm z-40"></div>
+                <button id="gallery-prev" onclick="previousGalleryImage(event)" class="absolute left-3 sm:left-6 top-1/2 -translate-y-1/2 z-40 w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-white/10 hover:bg-white/25 text-white flex items-center justify-center transition">
+                    <iconify-icon icon="material-symbols:chevron-left" class="text-4xl"></iconify-icon>
+                </button>
+                <div class="w-full h-full flex flex-col items-center justify-center px-14 sm:px-20" onclick="event.stopPropagation()">
+                    <img id="gallery-viewer-image" src="" class="max-w-full max-h-[82vh] object-contain rounded-xl shadow-2xl select-none" alt="SHDR Site Gallery">
+                    <p id="gallery-viewer-description" class="text-white text-sm text-center mt-4 max-w-2xl"></p>
+                </div>
+                <button id="gallery-next" onclick="nextGalleryImage(event)" class="absolute right-3 sm:right-6 top-1/2 -translate-y-1/2 z-40 w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-white/10 hover:bg-white/25 text-white flex items-center justify-center transition">
+                    <iconify-icon icon="material-symbols:chevron-right" class="text-4xl"></iconify-icon>
+                </button>
+            `;
+
+            viewer.addEventListener('click', (event) => {
+                if (event.target === viewer) closeGalleryImageViewer();
+            });
+
+            document.body.appendChild(viewer);
+            document.body.style.overflow = 'hidden';
+            updateGalleryViewer();
+            document.addEventListener('keydown', galleryViewerKeyboard);
+        };
+
+        function updateGalleryViewer() {
+            const item = galleryData[galleryViewerIndex];
+            if (!item) return;
+            const image = document.getElementById('gallery-viewer-image');
+            const description = document.getElementById('gallery-viewer-description');
+            const counter = document.getElementById('gallery-viewer-counter');
+            const previous = document.getElementById('gallery-prev');
+            const next = document.getElementById('gallery-next');
+
+            image.src = item.image || PLACEHOLDER_IMG;
+            description.textContent = item.description || 'No description';
+            counter.textContent = `${galleryViewerIndex + 1} / ${galleryData.length}`;
+
+            if (galleryData.length <= 1) {
+                previous.classList.add('hidden');
+                next.classList.add('hidden');
+                counter.classList.add('hidden');
+                return;
+            }
+            previous.classList.remove('hidden');
+            next.classList.remove('hidden');
+            counter.classList.remove('hidden');
+            previous.classList.toggle('opacity-30', galleryViewerIndex === 0);
+            next.classList.toggle('opacity-30', galleryViewerIndex === galleryData.length - 1);
+        }
+
+        window.previousGalleryImage = (event) => {
+            if (event) event.stopPropagation();
+            if (galleryViewerIndex > 0) { galleryViewerIndex--; updateGalleryViewer(); }
+        };
+
+        window.nextGalleryImage = (event) => {
+            if (event) event.stopPropagation();
+            if (galleryViewerIndex < galleryData.length - 1) { galleryViewerIndex++; updateGalleryViewer(); }
+        };
+
+        window.closeGalleryImageViewer = () => {
+            document.getElementById('gallery-image-viewer')?.remove();
+            document.body.style.overflow = '';
+            document.removeEventListener('keydown', galleryViewerKeyboard);
+        };
+
+        function galleryViewerKeyboard(event) {
+            if (event.key === 'Escape') closeGalleryImageViewer();
+            else if (event.key === 'ArrowLeft') previousGalleryImage();
+            else if (event.key === 'ArrowRight') nextGalleryImage();
+        }
+
+        window.handleGalleryUpload = async (e) => {
+            e.preventDefault();
+            const form = e.target;
+            const btn = form.querySelector('button[type="submit"]');
+            setButtonLoading(btn, true);
+            try {
+                const imageFile = document.getElementById('gallery-image').files[0];
+                const description = document.getElementById('gallery-description').value.trim();
+                if (!imageFile) return alert('Please select an image.');
+                const imageUrl = await uploadImageToImgbb(imageFile);
+                await addDoc(collection(db, 'gallery'), {
+                    site_id: currentSiteId,
+                    image: imageUrl,
+                    description: description || '',
+                    uploaded_at: new Date().toISOString()
+                });
+                document.getElementById('gallery-image').value = '';
+                document.getElementById('gallery-description').value = '';
+            } catch (err) { alert('Error: ' + err.message); }
+            finally { setButtonLoading(btn, false); }
+        };
 
         // =============== LOGOUT ===============
         window.handleLogout = async () => {
