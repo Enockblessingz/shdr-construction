@@ -453,6 +453,14 @@
         const IMGBB_API_KEY = '6b1b5028aba07a31bf702efd9c0ef4fe';
         const PLACEHOLDER_IMG = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="200"%3E%3Crect width="400" height="200" fill="%23e2e8f0"/%3E%3Ctext x="50%25" y="50%25" dominant-baseline="middle" text-anchor="middle" fill="%2394a3b8" font-size="20"%3ENo Image%3C/text%3E%3C/svg%3E';
 
+        // ── Date formatter (unified) ──
+        function formatDate(dateValue) {
+            if (!dateValue) return '—';
+            const date = typeof dateValue === 'string' ? new Date(dateValue) : dateValue;
+            if (isNaN(date.getTime())) return '—';
+            return date.toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+        }
+
         // Global state
         let currentUser = null;
         let managerProfile = null;
@@ -704,7 +712,7 @@
         }
 
         // ──────────────────────────────────────────────────────────────
-        // DASHBOARD (unchanged)
+        // DASHBOARD
         // ──────────────────────────────────────────────────────────────
         function renderDashboard(container) {
             const site = assignedSites.find(s => s.id === currentSiteId);
@@ -760,7 +768,7 @@
                         <h3 class="font-semibold text-sm mb-3">Pending Tasks</h3>
                         <div class="space-y-1 text-sm">
                             ${progressTasks.filter(t => t.status === 'pending').slice(0,4).map(t => `
-                                <div class="flex justify-between"><span>${t.name}</span><span class="text-slate-400">Due: ${new Date(t.end_date).toLocaleDateString()}</span></div>
+                                <div class="flex justify-between"><span>${t.name}</span><span class="text-slate-400">Due: ${formatDate(t.end_date)}</span></div>
                             `).join('') || '<p class="text-slate-400">No pending tasks.</p>'}
                         </div>
                     </div>
@@ -769,12 +777,12 @@
         }
 
         // ──────────────────────────────────────────────────────────────
-        // MATERIALS (unchanged)
+        // MATERIALS
         // ──────────────────────────────────────────────────────────────
         function renderMaterials(container) {
             const grouped = {};
             materialsData.forEach(m => {
-                const date = m.date_used ? new Date(m.date_used).toLocaleDateString() : 'No date';
+                const date = m.date_used ? formatDate(m.date_used) : 'No date';
                 if (!grouped[date]) grouped[date] = [];
                 grouped[date].push(m);
             });
@@ -1134,7 +1142,7 @@
         };
 
         // ──────────────────────────────────────────────────────────────
-        // STOCK (unchanged)
+        // STOCK
         // ──────────────────────────────────────────────────────────────
         function renderStock(container) {
             const site = assignedSites.find(s => s.id === currentSiteId);
@@ -1178,7 +1186,7 @@
                                     <p><strong>Minimum Stock:</strong> ${item.minimum_quantity || 'Not set'} ${item.unit || ''}</p>
                                     <p><strong>Unit Cost (avg):</strong> ${unitCost.toFixed(2)} RWF</p>
                                     <p><strong>Stock Value:</strong> ${stockValue.toFixed(2)} RWF</p>
-                                    <p><strong>Last Updated:</strong> ${item.updated_at ? new Date(item.updated_at).toLocaleString() : '—'}</p>
+                                    <p><strong>Last Updated:</strong> ${formatDate(item.updated_at)}</p>
                                     ${item.notes ? `<p><strong>Notes:</strong> ${item.notes}</p>` : ''}
                                 </div>
                                 <div class="mt-4 flex gap-2">
@@ -1205,7 +1213,7 @@
                                         <span class="text-xs text-slate-500 ml-2">${t.transaction_type === 'STOCK_ADDED' ? '+' : ''} ${t.quantity} ${t.unit || ''}</span>
                                         <span class="text-xs text-slate-400 ml-2">${t.notes || ''}</span>
                                     </div>
-                                    <span class="text-xs text-slate-400">${t.created_at ? new Date(t.created_at).toLocaleDateString() : ''}</span>
+                                    <span class="text-xs text-slate-400">${formatDate(t.created_at)}</span>
                                 </div>
                             `).join('')}
                         </div>
@@ -1376,7 +1384,7 @@
                 html += `
                     <div class="flex justify-between text-sm border-b border-slate-100 pb-2">
                         <span>${sign} ${t.quantity} ${t.unit || ''} — ${t.notes || ''}</span>
-                        <span class="text-slate-400 text-xs">${new Date(t.created_at).toLocaleDateString()}</span>
+                        <span class="text-slate-400 text-xs">${formatDate(t.created_at)}</span>
                     </div>
                 `;
             });
@@ -1385,7 +1393,7 @@
         };
 
         // ──────────────────────────────────────────────────────────────
-        // WORKERS (unchanged)
+        // WORKERS
         // ──────────────────────────────────────────────────────────────
         function renderWorkers(container) {
             container.innerHTML = `
@@ -1568,7 +1576,7 @@
                     <p><strong>Salary:</strong> ${(Number(worker.salary) || 0).toLocaleString()} RWF</p>
                     <p><strong>Phone:</strong> ${worker.phone || '—'}</p>
                     <p><strong>ID:</strong> ${worker.id}</p>
-                    <p><strong>Added:</strong> ${worker.added_at ? new Date(worker.added_at).toLocaleString() : 'Unknown'}</p>
+                    <p><strong>Added:</strong> ${formatDate(worker.added_at)}</p>
                 </div>
             `;
             openModal('Worker Details', details);
@@ -1855,7 +1863,7 @@
         }
 
         // ──────────────────────────────────────────────────────────────
-        // PROGRESS (unchanged)
+        // PROGRESS
         // ──────────────────────────────────────────────────────────────
         function renderProgress(container) {
             container.innerHTML = `
@@ -1869,8 +1877,8 @@
                                 <tr>
                                     <td class="px-3 py-2 text-center">${t.status !== 'completed' ? `<button onclick="markTaskCompleted('${t.id}')" class="bg-gray-300 hover:bg-gray-400 text-white w-8 h-8 rounded-full inline-flex items-center justify-center transition-all" title="Mark as completed"><iconify-icon icon="material-symbols:check" width="18" height="18"></iconify-icon></button>` : `<span class="text-emerald-600"><iconify-icon icon="material-symbols:check-circle" width="20" height="20"></iconify-icon></span>`}</td>
                                     <td class="px-3 py-2 font-medium">${t.name}</td>
-                                    <td class="px-3 py-2">${new Date(t.start_date).toLocaleDateString()}</td>
-                                    <td class="px-3 py-2">${new Date(t.end_date).toLocaleDateString()}</td>
+                                    <td class="px-3 py-2">${formatDate(t.start_date)}</td>
+                                    <td class="px-3 py-2">${formatDate(t.end_date)}</td>
                                     <td class="px-3 py-2"><span class="px-2 py-1 rounded-full text-xs ${t.status === 'completed' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}">${t.status}</span></td>
                                 </tr>
                             `).join('')}</tbody>
@@ -1889,7 +1897,7 @@
         };
 
         // ──────────────────────────────────────────────────────────────
-        // REPORTS (unchanged)
+        // REPORTS (General & Payroll only)
         // ──────────────────────────────────────────────────────────────
         function renderReports(container) {
             container.innerHTML = `
@@ -2025,7 +2033,7 @@
             const companyCity = 'Kigali City, Rwanda';
             const companyPhone = '+250 788 474 110';
             const generatedDate = new Date().toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false }).replace(',', ', ');
-            const period = startDate && endDate ? `${startDate} to ${endDate}` : (startDate || endDate || 'All Time');
+            const period = startDate && endDate ? `${formatDate(startDate)} to ${formatDate(endDate)}` : (startDate || endDate || 'All Time');
 
             if (format === 'csv') {
                 const headers = ['Worker', 'Position', 'Days Worked', 'Daily Rate (RWF)', 'Total Payable (RWF)'];
@@ -2169,7 +2177,7 @@
                     'Quantity Used': m.quantity_used || 0,
                     'Unit Cost (RWF)': m.unit_cost || 0,
                     'Total Amount (RWF)': (m.quantity_used || 0) * (m.unit_cost || 0),
-                    Date: m.date_used ? new Date(m.date_used).toLocaleDateString() : ''
+                    Date: formatDate(m.date_used)
                 })));
             }
 
@@ -2326,7 +2334,7 @@
         };
 
         // ──────────────────────────────────────────────────────────────
-        // GALLERY (unchanged)
+        // GALLERY
         // ──────────────────────────────────────────────────────────────
         function renderGallery(container) {
             container.innerHTML = `
@@ -2352,7 +2360,7 @@
                             </div>
                             <div class="p-3">
                                 <p class="text-sm text-slate-700">${item.description || 'No description'}</p>
-                                <p class="text-xs text-slate-400 mt-1">Uploaded: ${item.uploaded_at ? new Date(item.uploaded_at).toLocaleDateString() : ''}</p>
+                                <p class="text-xs text-slate-400 mt-1">Uploaded: ${formatDate(item.uploaded_at)}</p>
                             </div>
                         </div>
                     `).join('') : `<p class="text-slate-400 col-span-full text-sm">No images uploaded yet.</p>`}
@@ -2469,7 +2477,7 @@
         };
 
         // ──────────────────────────────────────────────────────────────
-        // ─── SETTINGS MODULE (NEW) ──────────────────────────────────
+        // ─── SETTINGS MODULE ─────────────────────────────────────────
         // ──────────────────────────────────────────────────────────────
 
         function renderSettings(container) {
@@ -2570,7 +2578,7 @@
                     </div>
                     <div class="field-group">
                         <label>Member Since</label>
-                        <div class="readonly-field" id="settings-since">${profile.created_at ? new Date(profile.created_at).toLocaleDateString() : 'N/A'}</div>
+                        <div class="readonly-field" id="settings-since">${formatDate(profile.created_at)}</div>
                     </div>
                 </div>
             `;
@@ -2656,7 +2664,7 @@
             const statusDisplay = document.getElementById('settings-status');
             if (statusDisplay) statusDisplay.textContent = profile.status || 'Active';
             const sinceDisplay = document.getElementById('settings-since');
-            if (sinceDisplay) sinceDisplay.textContent = profile.created_at ? new Date(profile.created_at).toLocaleDateString() : 'N/A';
+            if (sinceDisplay) sinceDisplay.textContent = formatDate(profile.created_at);
 
             const langSelect = document.getElementById('settings-language');
             if (langSelect) langSelect.value = profile.preferences?.language || 'en';
@@ -2869,7 +2877,7 @@
         };
 
         // ──────────────────────────────────────────────────────────────
-        // LOGOUT (unchanged)
+        // LOGOUT
         // ──────────────────────────────────────────────────────────────
         window.handleLogout = async () => {
             await signOut(auth);
