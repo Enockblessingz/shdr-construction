@@ -1729,7 +1729,7 @@
             }
         };
 
-        // ── Export Payroll ──
+       // ── Export Payroll ──
 window.exportPayrollReport = (format) => {
     const startDate = document.getElementById('payroll-start')?.value || '';
     const endDate = document.getElementById('payroll-end')?.value || '';
@@ -1785,9 +1785,16 @@ window.exportPayrollReport = (format) => {
         return;
     }
 
+    // ── PDF / Print ──
     const headers = ['Worker', 'Position', 'Days Worked', 'Daily Rate (RWF)', 'Total Payable (RWF)'];
     const tableRows = workers.map(w => `
-        <tr><td>${w.name}</td><td>${w.role || '—'}</td><td style="text-align:center">${w.days.length}</td><td style="text-align:right">${w.dailyRate.toLocaleString()} RWF</td><td style="text-align:right">${w.totalPayable.toLocaleString()} RWF</td></tr>
+        <tr>
+            <td>${w.name}</td>
+            <td>${w.role || '—'}</td>
+            <td style="text-align:center">${w.days.length}</td>
+            <td style="text-align:right">${w.dailyRate.toLocaleString()} RWF</td>
+            <td style="text-align:right">${w.totalPayable.toLocaleString()} RWF</td>
+        </tr>
     `).join('');
 
     const win = window.open('', '_blank', 'width=1000,height=700');
@@ -1942,9 +1949,13 @@ window.exportPayrollReport = (format) => {
             <!-- DATA TABLE -->
             <table>
                 <thead>
-                    <tr>${headers.map(h => `<th>${h}</th>`).join('')}</tr>
+                    <tr>
+                        ${headers.map(h => `<th>${h}</th>`).join('')}
+                    </tr>
                 </thead>
-                <tbody>${tableRows}</tbody>
+                <tbody>
+                    ${tableRows}
+                </tbody>
                 <tfoot>
                     <tr>
                         <td colspan="2" style="text-align:right"><strong>Total</strong></td>
