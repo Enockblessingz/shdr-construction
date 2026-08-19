@@ -2069,7 +2069,7 @@ window.exportStockReport = (format) => {
         return `<tr><td>${siteName}</td><td>${item.material_name}</td><td>${item.quantity}</td><td>${item.unit || 'units'}</td><td>${item.minimum_quantity || '-'}</td><td>${unitCost.toFixed(2)}</td><td>${stockValue.toFixed(2)}</td><td>${status}</td><td>${item.updated_at ? new Date(item.updated_at).toLocaleDateString() : '-'}</td></tr>`;
     }).join('');
 
-    const meta = `<strong>Site:</strong> ${siteLabel} &nbsp;|&nbsp; <strong>Generated:</strong> ${generatedDate}`;
+    const meta = `<strong>Site Name:</strong> ${siteLabel} &nbsp;|&nbsp; <strong>Generated:</strong> ${generatedDate}`;
     const bodyHTML = `<table><thead><tr>${headers.map(h => `<th>${h}</th>`).join('')}</tr></thead><tbody>${rows}</tbody></table>`;
     const fullHTML = generateReportHTML('Stock Report', bodyHTML, meta);
     const win = window.open('', '_blank', 'width=1000,height=700');
@@ -2125,8 +2125,8 @@ window.exportGeneralReport = (format) => {
         const totalWorkerCost = att.reduce((sum, a) => sum + (a.daily_rate || 0), 0);
         let mats = siteId !== 'all' ? materialsData.filter(m => m.site_id === siteId) : materialsData;
         const totalMatCost = mats.reduce((sum, m) => sum + calculateTotal(m.quantity_used || 0, m.unit_cost || 0), 0);
-        data.push({ Department: 'Finances', Category: 'Materials (Used)', Amount: totalMatCost, Description: 'Total material cost from used quantities' });
-        data.push({ Department: 'Finances', Category: 'Workers (Attendance)', Amount: totalWorkerCost, Description: 'Total worker attendance cost' });
+        data.push({ Department: 'Finances', Category: 'Materials Used', Amount: totalMatCost, Description: 'Total material cost from used quantities' });
+        data.push({ Department: 'Finances', Category: "Workers' Attendance", Amount: totalWorkerCost, Description: "Total workers' attendance cost" });
     }
 
     if (!data.length) { alert('No data found for the selected filters.'); return; }
