@@ -4,10 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#059669">
-    <title>SHDR Ltd. — Owner Dashboard</title>
+    <title>SHDR_Ltd Construction Sites Management</title>
+
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+    <!-- Google Font -->
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Iconify -->
     <script src="https://cdn.jsdelivr.net/npm/iconify-icon@2.3.0/dist/iconify-icon.min.js"></script>
+
     <style>
         * { font-family: 'Plus Jakarta Sans', sans-serif; }
         body { background: #f8fafc; }
@@ -36,6 +41,10 @@
             margin-right: 6px;
         }
         @keyframes spin { to { transform: rotate(360deg); } }
+        .site-selector::-webkit-scrollbar { height: 4px; }
+        .site-selector::-webkit-scrollbar-thumb { background: #059669; border-radius: 2px; }
+        .scroll-box { max-height: 140px; overflow-y: auto; }
+
         .bottom-nav {
             display: none;
             position: fixed;
@@ -60,36 +69,33 @@
             border-radius: 8px;
             transition: 0.2s;
         }
-        .bottom-nav a.active { color: #059669; background: #ecfdf5; }
+        .bottom-nav a.active {
+            color: #059669;
+            background: #ecfdf5;
+        }
         .bottom-nav a iconify-icon { font-size: 1.3rem; }
         @media (max-width: 1023px) {
             .bottom-nav { display: flex; }
             main { padding-bottom: 80px; }
         }
+
         @media (max-width: 640px) {
             #content-area { padding: 1rem; }
+            .card-title { font-size: 1.1rem; }
             .stat-card { padding: 1rem; }
             .table-cell { padding: 0.5rem; }
+            .sidebar-link { padding: 0.5rem; font-size: 0.85rem; }
         }
-        .material-entry { border-bottom: 1px solid #e5e7eb; padding-bottom: 1rem; margin-bottom: 1rem; }
-        .material-entry:last-child { border-bottom: none; margin-bottom: 0; }
-        .tab-active { background: #059669; color: white; }
-        .tab-inactive { background: #f1f5f9; color: #334155; }
-        .tab-inactive:hover { background: #e2e8f0; }
+        tbody tr:nth-child(even) { background: #f9fafb; }
+        tbody tr:hover { background: #f1f5f9; }
+        .payroll-card { transition: all 0.2s; }
+        .payroll-card:hover { transform: translateY(-2px); }
         .report-tab-active { background: #059669; color: white; }
         .report-tab-inactive { background: #f1f5f9; color: #334155; }
         .report-tab-inactive:hover { background: #e2e8f0; }
-        .payroll-card { transition: all 0.2s; }
-        .payroll-card:hover { transform: translateY(-2px); }
         .stock-status-normal { background: #dcfce7; color: #166534; }
         .stock-status-low { background: #fef9c3; color: #854d0e; }
         .stock-status-out { background: #fee2e2; color: #991b1b; }
-        .plan-card { transition: all 0.3s ease; }
-        .plan-card:hover { transform: translateY(-4px); box-shadow: 0 20px 40px rgba(0,0,0,0.1); }
-        .plan-popular { border-color: #059669; border-width: 2px; }
-        .paywall { background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); }
-        .disabled-btn { opacity: 0.5; cursor: not-allowed; }
-        .scroll-box { max-height: 140px; overflow-y: auto; }
     </style>
 </head>
 <body class="min-h-screen flex">
@@ -97,12 +103,13 @@
 <!-- Mobile overlay -->
 <div id="sidebar-overlay" class="fixed inset-0 bg-black/40 z-40 hidden lg:hidden" onclick="toggleSidebar()"></div>
 
-<!-- Sidebar -->
+<!-- Sidebar (desktop) -->
 <aside id="sidebar" class="fixed inset-y-0 left-0 w-64 bg-white border-r border-slate-200 z-50 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out flex flex-col shadow-sm">
     <div class="p-6 border-b border-slate-100">
         <div class="flex items-center gap-3">
             <div class="w-10 h-10 rounded-lg bg-emerald-100 flex items-center justify-center overflow-hidden">
-                <img src="shdr.jpg" alt="SHDR" class="w-10 h-10 object-cover" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                <img src="shdr.jpg" alt="SHDR" class="w-10 h-10 object-cover"
+                     onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
                 <span id="logo-fallback" class="hidden font-bold text-emerald-700 text-lg">SH</span>
             </div>
             <div>
@@ -143,10 +150,7 @@
             <iconify-icon icon="material-symbols:photo-library-outline" width="20" height="20"></iconify-icon> Gallery
         </a>
         <a href="#" onclick="showSection('office')" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg text-slate-600 hover:bg-slate-50 transition-colors" data-section="office">
-            <iconify-icon icon="material-symbols:business-center-outline" width="20" height="20"></iconify-icon> Office
-        </a>
-        <a href="#" onclick="showSection('subscription')" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg text-slate-600 hover:bg-slate-50 transition-colors" data-section="subscription">
-            <iconify-icon icon="material-symbols:subscriptions-outline" width="20" height="20"></iconify-icon> Subscription
+            <iconify-icon icon="material-symbols:business-center-outline" width="20" height="20"></iconify-icon> Office Management
         </a>
     </nav>
     <div class="p-4 border-t border-slate-100">
@@ -173,9 +177,11 @@
         <span class="text-xs text-slate-500">Owner</span>
     </header>
 
+    <!-- Loading & Error -->
     <div id="global-loading" class="hidden p-6 flex justify-center"><div class="spinner"></div></div>
     <div id="global-error" class="hidden p-6"><div class="bg-red-50 border border-red-200 rounded-2xl p-4 text-red-700"></div></div>
 
+    <!-- Content Area -->
     <div id="content-area" class="flex-1 p-4 sm:p-6"></div>
 
     <footer class="bg-white border border-green-200 rounded-2xl shadow-md mx-4 mb-4">
@@ -191,6 +197,7 @@
         </div>
     </footer>
 
+    <!-- Bottom Navigation (mobile) -->
     <div class="bottom-nav" id="bottom-nav">
         <a href="#" onclick="showSection('dashboard')" class="active" data-section="dashboard">
             <iconify-icon icon="material-symbols:dashboard-outline"></iconify-icon> <span>Home</span>
@@ -209,6 +216,7 @@
         </a>
     </div>
 
+    <!-- Modals -->
     <div id="modal-overlay" class="modal fixed inset-0 bg-black/40 backdrop-blur-sm z-50 items-center justify-center p-4" onclick="closeModal()">
         <div class="bg-white rounded-2xl p-6 w-full max-w-md shadow-xl max-h-[90vh] overflow-y-auto" onclick="event.stopPropagation()">
             <div class="flex justify-between items-center mb-4">
@@ -222,7 +230,15 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
         import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
-        import { getFirestore, collection, query, where, onSnapshot, addDoc, updateDoc, doc, getDoc, deleteDoc, getDocs, writeBatch, orderBy, setDoc } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
+        import { 
+            getFirestore, 
+            collection, query, where, 
+            onSnapshot, 
+            addDoc, updateDoc, deleteDoc, 
+            doc, getDoc, setDoc, 
+            getDocs, writeBatch,
+            orderBy
+        } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBVTLxC6nWpWL6a4BLI3xghdgUoR_cgGzw",
@@ -241,19 +257,14 @@
         const IMGBB_API_KEY = '6b1b5028aba07a31bf702efd9c0ef4fe';
         const PLACEHOLDER_IMG = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="200"%3E%3Crect width="400" height="200" fill="%23e2e8f0"/%3E%3Ctext x="50%25" y="50%25" dominant-baseline="middle" text-anchor="middle" fill="%2394a3b8" font-size="20"%3ENo Image%3C/text%3E%3C/svg%3E';
 
-        // ── Global State ──
+        // Global state
         let currentUser = null;
         let sitesData = [], materialsData = [], workersData = [], progressTasks = [], expensesData = [], managersData = [], assignedWorkersData = [], galleryData = [], attendanceData = [];
         let stockData = [], stockTransactions = [];
-        let subscriptionPlans = [], siteSubscriptions = [];
         let unsubscribeSnapshots = [];
         let searchTimeout = null;
         let currentSection = 'dashboard';
         let reportType = 'general';
-        let selectedMatSite = null;
-        let selectedFinanceSite = null;
-        let selectedWorkerViewSite = null;
-        let selectedGallerySite = null;
 
         // ── Helpers ──
         function showLoading(show) { document.getElementById('global-loading').classList.toggle('hidden', !show); }
@@ -274,40 +285,29 @@
                 btn.innerHTML = btn.dataset.originalHTML || 'Submit';
             }
         }
-        function getFormSubmitBtn(form) { return form.querySelector('button[type="submit"]'); }
-        function getTodayISO() { return new Date().toISOString().split('T')[0]; }
 
-        // ── Subscription Helpers ──
-        function getOwnerSubscription() {
-            const active = siteSubscriptions.filter(s => s.status === 'active' && s.owner_id === currentUser?.uid);
-            if (!active.length) return null;
-            // Pick the one with highest max_sites
-            return active.sort((a,b) => (b.max_sites || 0) - (a.max_sites || 0))[0];
-        }
-
-        function getMaxSites() {
-            const sub = getOwnerSubscription();
-            return sub?.max_sites || 0;
-        }
-
-        function getSiteLimitStatus() {
-            const maxSites = getMaxSites();
-            const current = sitesData.length;
-            const isAtLimit = maxSites > 0 && current >= maxSites;
-            const remaining = maxSites > 0 ? maxSites - current : Infinity;
-            return { maxSites, current, isAtLimit, remaining };
+        function getFormSubmitBtn(form) {
+            return form.querySelector('button[type="submit"]');
         }
 
         // ── Auth & Init ──
         window.addEventListener('load', () => {
             onAuthStateChanged(auth, async (user) => {
-                if (!user) { window.location.href = 'https://shdr-construction.vercel.app/owner.html'; return; }
+                if (!user) {
+                    window.location.href = 'https://shdr-construction.vercel.app/owner.html';
+                    return;
+                }
                 currentUser = user;
                 try {
                     const profileRef = doc(db, 'profiles', user.uid);
                     const snap = await getDoc(profileRef);
                     if (!snap.exists()) {
-                        await setDoc(profileRef, { email: user.email, full_name: user.displayName || 'Owner', role: 'owner', phone: '' });
+                        await setDoc(profileRef, {
+                            email: user.email,
+                            full_name: user.displayName || 'Owner',
+                            role: 'owner',
+                            phone: ''
+                        });
                     }
                     const profile = snap.data() || { full_name: 'Owner', email: user.email };
                     document.getElementById('user-name').textContent = profile.full_name || 'Owner';
@@ -330,14 +330,6 @@
                 refreshCurrentSection();
             }, err => showError('Sites error: ' + getFriendlyError(err)));
             unsubscribeSnapshots.push(unsubSites);
-
-            const plansQ = query(collection(db, 'subscription_plans'));
-            const unsubPlans = onSnapshot(plansQ, snap => { subscriptionPlans = snap.docs.map(d => ({ id: d.id, ...d.data() })); refreshCurrentSection(); });
-            unsubscribeSnapshots.push(unsubPlans);
-
-            const subsQ = query(collection(db, 'subscriptions'), where('owner_id', '==', currentUser.uid));
-            const unsubSubs = onSnapshot(subsQ, snap => { siteSubscriptions = snap.docs.map(d => ({ id: d.id, ...d.data() })); refreshCurrentSection(); });
-            unsubscribeSnapshots.push(unsubSubs);
         }
 
         function reloadRelated() {
@@ -379,6 +371,7 @@
             const unsubAtt = onSnapshot(attQ, snap => { attendanceData = snap.docs.map(d => ({ id: d.id, ...d.data() })); refreshCurrentSection(); });
             unsubscribeSnapshots.push(unsubAtt);
 
+            // Stock
             const stockQ = query(collection(db, 'stock'), where('site_id', 'in', siteIds));
             const unsubStock = onSnapshot(stockQ, snap => { stockData = snap.docs.map(d => ({ id: d.id, ...d.data() })); refreshCurrentSection(); });
             unsubscribeSnapshots.push(unsubStock);
@@ -389,15 +382,17 @@
         }
 
         function refreshCurrentSection() {
-            if (window._refreshing) return;
-            window._refreshing = true;
-            requestAnimationFrame(() => {
-                showSection(currentSection);
-                window._refreshing = false;
-            });
+            if (currentSection && ['dashboard','sites','materials','workers','progress','reports','finances','managers','gallery','stock','office'].includes(currentSection)) {
+                if (window._refreshing) return;
+                window._refreshing = true;
+                requestAnimationFrame(() => {
+                    showSection(currentSection);
+                    window._refreshing = false;
+                });
+            }
         }
 
-        // ── Navigation ──
+        // ── UI Navigation ──
         window.toggleSidebar = () => {
             document.getElementById('sidebar').classList.toggle('-translate-x-full');
             document.getElementById('sidebar-overlay').classList.toggle('hidden');
@@ -426,7 +421,6 @@
                 case 'managers': renderManagers(container); break;
                 case 'gallery': renderGallery(container); break;
                 case 'office': renderOfficeHub(container); break;
-                case 'subscription': renderSubscription(container); break;
                 default: renderDashboard(container);
             }
             if (window.innerWidth < 1024) {
@@ -442,6 +436,7 @@
             document.getElementById('modal-overlay').classList.add('active');
         };
 
+        // ── IMGBB Upload Helper ──
         async function uploadImageToImgbb(file) {
             const formData = new FormData();
             formData.append('image', file);
@@ -454,9 +449,8 @@
         // =============== DASHBOARD ===============
         function renderDashboard(container) {
             const totalSites = sitesData.length;
-            const totalWorkers = assignedWorkersData.length;
+            const totalAssignedWorkers = assignedWorkersData.length;
             const totalMatSpent = materialsData.reduce((sum, m) => sum + calculateTotal(m.quantity_used || 0, m.unit_cost || 0), 0);
-            const { maxSites, current, isAtLimit, remaining } = getSiteLimitStatus();
 
             function getDashboardName(raw) {
                 if (!raw) return 'SITE OWNER';
@@ -476,71 +470,62 @@
             const rawName = currentUser?.displayName || document.getElementById('user-name')?.textContent || currentUser?.email?.split('@')[0] || 'SITE OWNER';
             const displayName = getDashboardName(rawName).toUpperCase();
 
-            const ownerSub = getOwnerSubscription();
-
             container.innerHTML = `
                 <div class="bg-white rounded-2xl overflow-hidden shadow-sm mb-4 sm:mb-6">
                     <div class="relative h-40 sm:h-64 bg-cover bg-center" style="background-image: url('https://cdn.pixabay.com/photo/2018/12/12/23/02/site-3871804_1280.jpg');">
                         <div class="absolute inset-0 bg-gradient-to-r from-emerald-900/80 to-emerald-800/40 flex items-center p-4 sm:p-6">
                             <div>
                                 <h1 class="text-2xl sm:text-4xl font-bold text-white">Welcome back, ${displayName}</h1>
-                                <p class="text-emerald-100 mt-2 text-sm sm:text-base">Here's your construction overview</p>
+                                <p class="text-emerald-100 mt-2 text-sm sm:text-base">Here's your construction site overview</p>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-4 gap-4 mb-4">
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4 sm:mb-6">
                     <div class="bg-white rounded-2xl border p-4 shadow-sm">
-                        <p class="text-xs text-slate-500">Sites</p>
-                        <p class="text-2xl font-bold">${totalSites}</p>
-                        ${maxSites > 0 ? `
-                            <p class="text-xs ${isAtLimit ? 'text-red-500' : 'text-emerald-600'}">${isAtLimit ? '⚠️ Limit reached' : `${remaining} remaining`}</p>
-                            <div class="mt-1 w-full bg-slate-200 rounded-full h-1.5">
-                                <div class="bg-emerald-500 h-1.5 rounded-full" style="width: ${Math.min((totalSites / maxSites) * 100, 100)}%"></div>
-                            </div>
-                        ` : `<p class="text-xs text-slate-400">Unlimited</p>`}
-                    </div>
-                    <div class="bg-white rounded-2xl border p-4 shadow-sm">
-                        <p class="text-xs text-slate-500">Workers</p>
-                        <p class="text-2xl font-bold">${totalWorkers}</p>
-                    </div>
-                    <div class="bg-white rounded-2xl border p-4 shadow-sm">
-                        <p class="text-xs text-slate-500">Materials Spent</p>
-                        <p class="text-2xl font-bold text-emerald-600">${totalMatSpent.toLocaleString()} RWF</p>
-                    </div>
-                    <div class="bg-white rounded-2xl border p-4 shadow-sm">
-                        <p class="text-xs text-slate-500">Active Subscriptions</p>
-                        <p class="text-2xl font-bold">${siteSubscriptions.filter(s => s.status === 'active').length}</p>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div class="bg-white rounded-2xl border p-4 shadow-sm">
-                        <h3 class="font-semibold text-sm mb-3">Recent Progress</h3>
-                        <select id="progress-site-select" class="w-full border p-2 rounded-lg mb-3 text-sm" onchange="renderProgressBySite()">
-                            <option value="">Select a site</option>
-                            ${sitesData.map(s => `<option value="${s.id}">${s.name}</option>`).join('')}
-                        </select>
-                        <div id="progress-tasks-list" class="space-y-1 text-sm text-slate-600">
-                            <p class="text-slate-400">Select a site to view completed tasks.</p>
+                        <h3 class="font-semibold text-slate-900 text-sm mb-2">Total Sites (${totalSites})</h3>
+                        <div class="scroll-box space-y-1 text-xs sm:text-sm">
+                            ${sitesData.map(s => `<div class="flex justify-between"><span>${s.name}</span><span class="text-slate-500">${s.location || '—'}</span></div>`).join('') || '<p class="text-slate-400">No sites</p>'}
                         </div>
                     </div>
                     <div class="bg-white rounded-2xl border p-4 shadow-sm">
-                        <h3 class="font-semibold text-sm mb-3">Subscription Status</h3>
-                        ${ownerSub ? `
-                            <div class="bg-emerald-50 border border-emerald-200 rounded-lg p-3">
-                                <p class="font-medium text-emerald-700">${ownerSub.plan_name}</p>
-                                <p class="text-sm text-slate-600">${ownerSub.price?.toLocaleString()} RWF / ${ownerSub.billing_period}</p>
-                                <p class="text-xs text-slate-500">Expires: ${ownerSub.end_date ? new Date(ownerSub.end_date).toLocaleDateString() : 'N/A'}</p>
-                                <p class="text-xs text-slate-500">Sites: ${totalSites} / ${ownerSub.max_sites || '∞'}</p>
-                            </div>
-                        ` : `
-                            <div class="bg-amber-50 border border-amber-200 rounded-lg p-3 text-amber-700">
-                                <p>No active subscription plan.</p>
-                                <button onclick="showSection('subscription')" class="mt-2 text-sm text-emerald-600 hover:underline">Manage Subscription →</button>
-                            </div>
-                        `}
+                        <h3 class="font-semibold text-slate-900 text-sm mb-2">Workers (${totalAssignedWorkers})</h3>
+                        <div class="scroll-box space-y-1 text-xs sm:text-sm">
+                            ${(() => {
+                                const siteWorkerCounts = sitesData.map(site => {
+                                    const count = assignedWorkersData.filter(w => w.site_id === site.id).length;
+                                    return { site, count };
+                                }).filter(s => s.count > 0);
+                                if (siteWorkerCounts.length === 0) return '<p class="text-slate-400">No workers assigned</p>';
+                                return siteWorkerCounts.map(sw => {
+                                    const pct = totalAssignedWorkers ? Math.round((sw.count / totalAssignedWorkers) * 100) : 0;
+                                    return `<div class="flex justify-between"><span>${sw.site.name} (${sw.count})</span><span class="text-slate-500">${pct}%</span></div>`;
+                                }).join('');
+                            })()}
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-2xl border p-4 shadow-sm">
+                        <h3 class="font-semibold text-slate-900 text-sm mb-2">Spent on Materials</h3>
+                        <div class="scroll-box space-y-1 text-xs sm:text-sm">
+                            ${sitesData.map(site => {
+                                const siteMat = materialsData.filter(m => m.site_id === site.id);
+                                const siteSpent = siteMat.reduce((s, m) => s + calculateTotal(m.quantity_used || 0, m.unit_cost || 0), 0);
+                                const pct = totalMatSpent ? Math.round((siteSpent / totalMatSpent) * 100) : 0;
+                                return `<div class="flex justify-between"><span>${site.name}</span><span class="text-slate-500">${siteSpent.toLocaleString()} RWF (${pct}%)</span></div>`;
+                            }).join('') || '<p class="text-slate-400">No data</p>'}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-2xl border p-4 shadow-sm">
+                    <h3 class="font-semibold text-slate-900 text-sm mb-3">Recent Progress</h3>
+                    <select id="progress-site-select" class="w-full border p-2 rounded-lg mb-3 text-sm" onchange="renderProgressBySite()">
+                        <option value="">Select a site</option>
+                        ${sitesData.map(s => `<option value="${s.id}">${s.name}</option>`).join('')}
+                    </select>
+                    <div id="progress-tasks-list" class="space-y-1 text-sm text-slate-600">
+                        <p class="text-slate-400">Select a site to view completed tasks.</p>
                     </div>
                 </div>
             `;
@@ -559,81 +544,49 @@
             `).join('') : '<p class="text-slate-400">No completed tasks for this site.</p>';
         };
 
-        // =============== SITES ===============
+        // =============== SITES (unchanged) ===============
         function renderSites(container) {
-            const { maxSites, current, isAtLimit, remaining } = getSiteLimitStatus();
-
-            let html = `
+            container.innerHTML = `
                 <div class="flex justify-between items-center mb-4 sm:mb-6">
-                    <div>
-                        <h2 class="text-xl sm:text-2xl font-bold">Your Sites</h2>
-                        ${maxSites > 0 ? `
-                            <p class="text-sm text-slate-500 mt-1">
-                                ${current} / ${maxSites} sites used
-                                <span class="ml-2 text-xs font-medium ${isAtLimit ? 'text-red-500' : 'text-emerald-600'}">
-                                    ${isAtLimit ? '⚠️ Limit reached' : `${remaining} remaining`}
-                                </span>
-                            </p>
-                            <div class="mt-1 w-48 bg-slate-200 rounded-full h-1.5">
-                                <div class="bg-emerald-500 h-1.5 rounded-full" style="width: ${Math.min((current / maxSites) * 100, 100)}%"></div>
-                            </div>
-                        ` : `<p class="text-sm text-slate-500 mt-1">Unlimited sites</p>`}
-                    </div>
-                    <button onclick="openAddSiteModal()" 
-                        class="px-3 py-2 ${isAtLimit ? 'bg-slate-300 cursor-not-allowed disabled-btn' : 'bg-emerald-600 hover:bg-emerald-700'} text-white rounded-xl flex items-center gap-2 text-sm"
-                        ${isAtLimit ? 'disabled' : ''}>
+                    <h2 class="text-xl sm:text-2xl font-bold">Your Sites</h2>
+                    <button onclick="openAddSiteModal()" class="px-3 py-2 bg-emerald-600 text-white rounded-xl hover:bg-emerald-700 flex items-center gap-2 text-sm">
                         <iconify-icon icon="material-symbols:add"></iconify-icon> Add Site
                     </button>
                 </div>
-                ${isAtLimit ? `
-                    <div class="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-4 text-amber-700 text-sm flex items-center gap-3">
-                        <iconify-icon icon="material-symbols:warning" class="text-xl flex-shrink-0"></iconify-icon>
-                        <div>
-                            <strong>Site limit reached.</strong> You have used ${current} out of ${maxSites} sites.
-                            <a href="#" onclick="showSection('subscription')" class="text-emerald-600 hover:underline font-medium ml-1">Upgrade your plan</a> to add more sites.
-                        </div>
-                    </div>
-                ` : ''}
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            `;
-
-            if (!sitesData.length) {
-                html += '<p class="text-slate-500 col-span-full">No sites yet. Click "Add Site" to create your first site.</p>';
-            } else {
-                sitesData.forEach(site => {
-                    let status = site.status || 'active';
-                    if (site.start_date && site.end_date) {
-                        const today = new Date();
-                        const start = new Date(site.start_date);
-                        const end = new Date(site.end_date);
-                        if (today < start) status = 'Not Started';
-                        else if (today > end) status = 'Completed';
-                        else status = 'In Progress';
-                    }
-                    html += `
-                    <div class="bg-white rounded-2xl border overflow-hidden shadow-sm">
-                        <img src="${site.images?.[0] || PLACEHOLDER_IMG}" class="w-full h-40 object-cover" alt="${site.name}">
-                        <div class="p-3">
-                            <h3 class="font-bold text-base">${site.name}</h3>
-                            <p class="text-xs text-slate-500">${site.location || 'No location'}</p>
-                            ${site.district ? `<p class="text-xs text-slate-500">District: ${site.district}</p>` : ''}
-                            ${site.sector ? `<p class="text-xs text-slate-500">Sector: ${site.sector}</p>` : ''}
-                            ${site.client_name ? `<p class="text-xs text-slate-500">Client: ${site.client_name}</p>` : ''}
-                            <p class="text-xs text-slate-500">Budget: ${(site.budget || 0).toLocaleString()} RWF</p>
-                            ${site.start_date ? `<p class="text-xs text-slate-500">Start: ${new Date(site.start_date).toLocaleDateString()}</p>` : ''}
-                            ${site.end_date ? `<p class="text-xs text-slate-500">End: ${new Date(site.end_date).toLocaleDateString()}</p>` : ''}
-                            <p class="text-xs font-medium ${status === 'Completed' ? 'text-green-600' : status === 'Not Started' ? 'text-amber-600' : 'text-blue-600'}">Status: ${status}</p>
-                            <div class="mt-2 flex gap-2 flex-wrap">
-                                <button onclick="markSiteFinished('${site.id}')" class="text-xs bg-green-100 text-green-700 px-3 py-1 rounded-full">Mark Finished</button>
-                                <button onclick="editSite('${site.id}')" class="text-xs text-emerald-600">Edit</button>
-                                <button onclick="deleteSite('${site.id}')" class="text-xs bg-red-100 text-red-700 px-3 py-1 rounded-full">Delete</button>
+                    ${sitesData.map(site => {
+                        let status = site.status || 'active';
+                        if (site.start_date && site.end_date) {
+                            const today = new Date();
+                            const start = new Date(site.start_date);
+                            const end = new Date(site.end_date);
+                            if (today < start) status = 'Not Started';
+                            else if (today > end) status = 'Completed';
+                            else status = 'In Progress';
+                        }
+                        return `
+                        <div class="bg-white rounded-2xl border overflow-hidden shadow-sm">
+                            <img src="${site.images?.[0] || PLACEHOLDER_IMG}" class="w-full h-40 object-cover" alt="${site.name}">
+                            <div class="p-3">
+                                <h3 class="font-bold text-base">${site.name}</h3>
+                                <p class="text-xs text-slate-500">${site.location || 'No location'}</p>
+                                ${site.district ? `<p class="text-xs text-slate-500">District: ${site.district}</p>` : ''}
+                                ${site.sector ? `<p class="text-xs text-slate-500">Sector: ${site.sector}</p>` : ''}
+                                ${site.client_name ? `<p class="text-xs text-slate-500">Client: ${site.client_name}</p>` : ''}
+                                <p class="text-xs text-slate-500">Budget: ${(site.budget || 0).toLocaleString()} RWF</p>
+                                ${site.start_date ? `<p class="text-xs text-slate-500">Start: ${new Date(site.start_date).toLocaleDateString()}</p>` : ''}
+                                ${site.end_date ? `<p class="text-xs text-slate-500">End: ${new Date(site.end_date).toLocaleDateString()}</p>` : ''}
+                                <p class="text-xs font-medium ${status === 'Completed' ? 'text-green-600' : status === 'Not Started' ? 'text-amber-600' : 'text-blue-600'}">Status: ${status}</p>
+                                <div class="mt-2 flex gap-2 flex-wrap">
+                                    <button onclick="markSiteFinished('${site.id}')" class="text-xs bg-green-100 text-green-700 px-3 py-1 rounded-full">Mark Finished</button>
+                                    <button onclick="editSite('${site.id}')" class="text-xs text-emerald-600">Edit</button>
+                                    <button onclick="deleteSite('${site.id}')" class="text-xs bg-red-100 text-red-700 px-3 py-1 rounded-full">Delete</button>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                `});
-            }
-            html += `</div>`;
-            container.innerHTML = html;
+                    `}).join('') || '<p class="text-slate-500 col-span-full">No sites yet.</p>'}
+                </div>
+            `;
         }
 
         window.markSiteFinished = async (id) => {
@@ -644,10 +597,14 @@
                 const mgrQuery = query(collection(db, 'profiles'), where('assigned_site', '==', id));
                 const mgrSnap = await getDocs(mgrQuery);
                 const batch = writeBatch(db);
-                mgrSnap.docs.forEach(docSnap => batch.update(docSnap.ref, { assigned_site: '' }));
+                mgrSnap.docs.forEach(docSnap => {
+                    batch.update(docSnap.ref, { assigned_site: '' });
+                });
                 await batch.commit();
                 alert('Site marked as finished and any assigned managers have been unassigned.');
-            } catch (err) { alert('Error: ' + getFriendlyError(err)); }
+            } catch (err) {
+                alert('Error: ' + getFriendlyError(err));
+            }
         };
 
         window.deleteSite = async (id) => {
@@ -693,7 +650,9 @@
 
                 await deleteDoc(doc(db, 'sites', id));
                 alert('Site and all associated data have been deleted.');
-            } catch (err) { alert('Error during deletion: ' + getFriendlyError(err)); }
+            } catch (err) {
+                alert('Error during deletion: ' + getFriendlyError(err));
+            }
         };
 
         window.editSite = (id) => {
@@ -735,12 +694,6 @@
         };
 
         window.openAddSiteModal = () => {
-            const { isAtLimit, maxSites, current } = getSiteLimitStatus();
-            if (isAtLimit) {
-                alert(`❌ Site limit reached.\n\nYou have used ${current} out of ${maxSites} sites.\nPlease upgrade your plan to add more sites.`);
-                return;
-            }
-
             openModal('Add Site', `
                 <form onsubmit="handleAddSite(event)" class="space-y-4">
                     <input class="w-full border rounded-lg p-3" placeholder="Site Name" id="site-name" required>
@@ -778,13 +731,6 @@
             const btn = getFormSubmitBtn(form);
             setButtonLoading(btn, true);
             try {
-                // ── Check site limit ──
-                const { isAtLimit, maxSites, current } = getSiteLimitStatus();
-                if (isAtLimit) {
-                    alert(`❌ Site limit reached.\n\nYou have used ${current} out of ${maxSites} sites.\nPlease upgrade your plan to add more sites.`);
-                    return;
-                }
-
                 const name = document.getElementById('site-name').value.trim();
                 const location = document.getElementById('site-location').value.trim();
                 const district = document.getElementById('site-district').value.trim();
@@ -802,23 +748,248 @@
                 }
                 await addDoc(collection(db, 'sites'), {
                     owner_id: currentUser.uid,
-                    name, location, district, sector, client_name, budget, start_date, end_date,
-                    images: imageUrls, status: 'active', manager_name: ''
+                    name,
+                    location,
+                    district,
+                    sector,
+                    client_name,
+                    budget,
+                    start_date,
+                    end_date,
+                    images: imageUrls,
+                    status: 'active',
+                    manager_name: ''
                 });
                 closeModal();
             } catch (err) { alert('Error: ' + getFriendlyError(err)); }
             finally { setButtonLoading(btn, false); }
         };
 
-        // =============== MATERIALS (same as manager) ===============
+        // =============== MATERIALS ===============
+        let selectedMatSite = null;
+
         function renderMaterials(container) {
-            // Same as manager – we reuse the same code.
-            // For brevity, we'll reuse the logic from the manager version.
-            // In the final file, this will be fully implemented.
-            container.innerHTML = `<p class="text-slate-500">Materials (full implementation)</p>`;
+            container.innerHTML = `
+                <h2 class="text-xl sm:text-2xl font-bold mb-3">Materials</h2>
+                <div class="flex gap-2 overflow-x-auto pb-2 site-selector mb-4">
+                    ${sitesData.map(s => `
+                        <button onclick="selectMaterialSite('${s.id}')"
+                            class="px-3 py-1 rounded-full whitespace-nowrap text-sm
+                            ${selectedMatSite === s.id ? 'bg-emerald-600 text-white' : 'bg-slate-100 text-slate-600'}">
+                            ${s.name}
+                        </button>
+                    `).join('')}
+                </div>
+                <div id="materials-container"></div>
+            `;
+            if (selectedMatSite) renderMaterialCards();
         }
 
-        // =============== STOCK ===============
+        window.selectMaterialSite = (id) => {
+            selectedMatSite = id;
+            renderMaterials(document.getElementById('content-area'));
+        };
+
+        function renderMaterialCards() {
+            const container = document.getElementById('materials-container');
+            if (!container) return;
+
+            const siteMats = materialsData.filter(m => m.site_id === selectedMatSite);
+            if (!siteMats.length) {
+                container.innerHTML = `<p class="text-slate-500 text-sm">No materials recorded for this site.</p>`;
+                return;
+            }
+
+            let html = `<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">`;
+
+            siteMats.forEach(m => {
+                const qty = m.quantity_used || 0;
+                const unitCost = m.unit_cost || 0;
+                const total = calculateTotal(qty, unitCost);
+                const imageUrl = m.image || PLACEHOLDER_IMG;
+
+                html += `
+                    <div class="bg-white rounded-2xl border overflow-hidden shadow-sm hover:shadow-md transition">
+                        <div class="relative w-full h-48 overflow-hidden bg-slate-100">
+                            <img src="${imageUrl}" class="w-full h-full object-cover" alt="${m.name}" loading="lazy" onerror="this.src='${PLACEHOLDER_IMG}'">
+                        </div>
+                        <div class="p-5">
+                            <h3 class="font-bold text-lg text-slate-800 truncate">${m.name}</h3>
+                            <div class="mt-4 space-y-2">
+                                <div class="flex justify-between text-sm border-b border-slate-100 pb-2">
+                                    <span class="text-slate-500">Quantity Used</span>
+                                    <span class="font-semibold text-slate-700">${qty}</span>
+                                </div>
+                                <div class="flex justify-between text-sm border-b border-slate-100 pb-2">
+                                    <span class="text-slate-500">Unit Cost</span>
+                                    <span class="font-semibold text-slate-700">${unitCost.toFixed(2)} RWF</span>
+                                </div>
+                                <div class="flex justify-between text-sm">
+                                    <span class="text-slate-500">Total Amount</span>
+                                    <span class="font-bold text-emerald-600">${total.toFixed(2)} RWF</span>
+                                </div>
+                            </div>
+                            <div class="mt-4 pt-3 border-t border-slate-100 flex justify-end gap-3">
+                                <button onclick="editMaterial('${m.id}')" class="text-sm text-emerald-600 hover:text-emerald-800 font-medium flex items-center gap-1 transition">
+                                    <iconify-icon icon="material-symbols:edit" width="16" height="16"></iconify-icon>
+                                    Edit
+                                </button>
+                                <button onclick="deleteMaterial('${m.id}')" class="text-sm text-red-500 hover:text-red-700 font-medium flex items-center gap-1 transition">
+                                    <iconify-icon icon="material-symbols:delete" width="16" height="16"></iconify-icon>
+                                    Delete
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            html += `</div>`;
+            container.innerHTML = html;
+        }
+
+        // ── Edit Material (with stock restoration) ──
+        window.editMaterial = (id) => {
+            const mat = materialsData.find(m => m.id === id);
+            if (!mat) return;
+            openModal('Edit Material', `
+                <form onsubmit="handleEditMaterial(event, '${id}')" class="space-y-4">
+                    <input class="w-full border rounded-lg p-3" value="${mat.name}" id="edit-mat-name" required>
+                    <input class="w-full border rounded-lg p-3" value="${mat.quantity_used || 0}" type="number" id="edit-mat-used" required step="0.01" placeholder="Quantity Used">
+                    <input class="w-full border rounded-lg p-3" value="${mat.unit_cost || 0}" type="number" id="edit-mat-unit-cost" required step="0.01" placeholder="Unit Cost (RWF)">
+                    <div>
+                        <label class="text-sm font-medium">New Image (optional)</label>
+                        <input type="file" id="edit-mat-image" accept="image/*" class="w-full mt-1">
+                    </div>
+                    <button type="submit" class="w-full bg-emerald-600 text-white py-3 rounded-xl">Update Material</button>
+                </form>
+            `);
+        };
+
+        window.handleEditMaterial = async (e, id) => {
+            e.preventDefault();
+            const form = e.target;
+            const btn = getFormSubmitBtn(form);
+            setButtonLoading(btn, true);
+            try {
+                const name = document.getElementById('edit-mat-name').value.trim();
+                const newUsed = parseFloat(document.getElementById('edit-mat-used').value) || 0;
+                const newUnitCost = parseFloat(document.getElementById('edit-mat-unit-cost').value) || 0;
+                const imageFile = document.getElementById('edit-mat-image').files[0];
+
+                const oldMat = materialsData.find(m => m.id === id);
+                if (!oldMat) throw new Error('Material record not found');
+
+                const oldUsed = oldMat.quantity_used || 0;
+                const oldUnitCost = oldMat.unit_cost || 0;
+                const siteId = oldMat.site_id;
+
+                // Find stock item
+                let stockItem = stockData.find(s => s.site_id === siteId && s.material_name === oldMat.name);
+                if (!stockItem) {
+                    // Create stock record if missing
+                    const ref = await addDoc(collection(db, 'stock'), {
+                        site_id: siteId,
+                        material_name: oldMat.name,
+                        quantity: 0,
+                        unit: 'units',
+                        created_at: new Date().toISOString(),
+                        updated_at: new Date().toISOString()
+                    });
+                    stockItem = { id: ref.id, quantity: 0, material_name: oldMat.name };
+                }
+
+                // Restore old quantity, then deduct new
+                const restoredQuantity = stockItem.quantity + oldUsed;
+                if (newUsed > restoredQuantity) {
+                    alert(`Insufficient stock. Only ${restoredQuantity} units of ${oldMat.name} are available.`);
+                    return;
+                }
+                const newStockQty = restoredQuantity - newUsed;
+
+                const batch = writeBatch(db);
+
+                const matRef = doc(db, 'materials', id);
+                batch.update(matRef, {
+                    name: name,
+                    quantity_used: newUsed,
+                    unit_cost: newUnitCost,
+                    image: imageFile ? await uploadImageToImgbb(imageFile) : oldMat.image,
+                    updated_at: new Date().toISOString()
+                });
+
+                const stockRef = doc(db, 'stock', stockItem.id);
+                batch.update(stockRef, { quantity: newStockQty, updated_at: new Date().toISOString() });
+
+                const transRef = doc(collection(db, 'stock_transactions'));
+                batch.set(transRef, {
+                    site_id: siteId,
+                    stock_id: stockItem.id,
+                    material_name: oldMat.name,
+                    transaction_type: 'MATERIAL_USAGE_EDITED',
+                    quantity: newUsed - oldUsed,
+                    previous_quantity: stockItem.quantity,
+                    new_quantity: newStockQty,
+                    unit: stockItem.unit || 'units',
+                    notes: `Material usage edited: ${oldUsed} → ${newUsed}`,
+                    recorded_by: currentUser.uid,
+                    created_at: new Date().toISOString()
+                });
+
+                await batch.commit();
+                closeModal();
+                alert('Material updated and stock adjusted successfully.');
+            } catch (err) {
+                alert('Error: ' + err.message);
+            } finally {
+                setButtonLoading(btn, false);
+            }
+        };
+
+        window.deleteMaterial = (id) => {
+            if (!confirm('Delete this material usage? Stock will be restored.')) return;
+            const mat = materialsData.find(m => m.id === id);
+            if (!mat) { alert('Material not found'); return; }
+
+            (async () => {
+                try {
+                    const siteId = mat.site_id;
+                    const stockItem = stockData.find(s => s.site_id === siteId && s.material_name === mat.name);
+                    if (!stockItem) {
+                        await deleteDoc(doc(db, 'materials', id));
+                        alert('Material deleted (no stock record found).');
+                        return;
+                    }
+
+                    const newQty = stockItem.quantity + (mat.quantity_used || 0);
+                    const batch = writeBatch(db);
+                    batch.update(doc(db, 'stock', stockItem.id), { quantity: newQty, updated_at: new Date().toISOString() });
+                    batch.delete(doc(db, 'materials', id));
+
+                    const transRef = doc(collection(db, 'stock_transactions'));
+                    batch.set(transRef, {
+                        site_id: siteId,
+                        stock_id: stockItem.id,
+                        material_name: mat.name,
+                        transaction_type: 'MATERIAL_USAGE_DELETED',
+                        quantity: mat.quantity_used || 0,
+                        previous_quantity: stockItem.quantity,
+                        new_quantity: newQty,
+                        unit: stockItem.unit || 'units',
+                        notes: `Material usage deleted, quantity restored.`,
+                        recorded_by: currentUser.uid,
+                        created_at: new Date().toISOString()
+                    });
+
+                    await batch.commit();
+                    alert('Material deleted and stock restored.');
+                } catch (err) {
+                    alert('Error deleting material: ' + err.message);
+                }
+            })();
+        };
+
+        // =============== STOCK (Owner View) ===============
         function renderStock(container) {
             if (!stockData.length) {
                 container.innerHTML = `
@@ -874,6 +1045,7 @@
                 html += `</div></div>`;
             }
 
+            // Recent transactions
             const recent = stockTransactions.slice(0, 20);
             if (recent.length) {
                 html += `
@@ -911,29 +1083,868 @@
             container.innerHTML = html;
         }
 
-        // =============== WORKERS (same as manager) ===============
+        // =============== WORKERS (unchanged) ===============
+        let selectedWorkerViewSite = null;
         function renderWorkers(container) {
-            // For brevity, we'll reuse the manager code.
-            container.innerHTML = `<p class="text-slate-500">Workers (full implementation)</p>`;
-        }
+            container.innerHTML = `
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-xl sm:text-2xl font-bold">Workers</h2>
+                    <button onclick="openAddWorkerModal()" class="px-3 py-2 bg-emerald-600 text-white rounded-xl hover:bg-emerald-700 text-sm">
+                        <iconify-icon icon="material-symbols:add"></iconify-icon> Add Position
+                    </button>
+                </div>
+                <div class="bg-white rounded-2xl border overflow-hidden shadow-sm mb-4">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm">
+                            <thead class="bg-slate-50 uppercase text-xs">
+                                <tr><th class="px-3 py-2">Role</th><th class="px-3 py-2">Site</th><th class="px-3 py-2">Salary Type</th><th class="px-3 py-2">Est. Cost</th><th class="px-3 py-2">Actions</th></tr>
+                            </thead>
+                            <tbody>
+                                ${workersData.map(w => `
+                                    <tr>
+                                        <td class="px-3 py-2 font-medium">${w.role}</td>
+                                        <td class="px-3 py-2">${w.site_id === 'all' ? 'All Sites' : sitesData.find(s => s.id === w.site_id)?.name || '—'}</td>
+                                        <td class="px-3 py-2">${w.salary_type || 'Daily'}</td>
+                                        <td class="px-3 py-2">${w.estimated_cost?.toLocaleString() || '—'}</td>
+                                        <td class="px-3 py-2 flex gap-2">
+                                            <button onclick="editWorkerPosition('${w.id}')" class="text-emerald-600 hover:text-emerald-800 text-xs">Edit</button>
+                                            <button onclick="deleteWorkerPosition('${w.id}')" class="text-red-500 hover:text-red-700 text-xs">Delete</button>
+                                        </td>
+                                    </tr>
+                                `).join('') || '<tr><td colspan="5" class="p-4 text-slate-500">No positions defined.</td></tr>'}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
 
-        // =============== PROGRESS (same as manager) ===============
+                <div class="bg-white rounded-2xl border p-4 shadow-sm">
+                    <h3 class="font-semibold text-sm mb-3">Actual Workers Assigned by Managers</h3>
+                    <select class="w-full border rounded-lg p-2 mb-3 text-sm" onchange="selectWorkerViewSite(this.value)">
+                        <option value="">Select a site</option>
+                        ${sitesData.map(s => `<option value="${s.id}">${s.name}</option>`).join('')}
+                    </select>
+                    <div id="assigned-workers-container">
+                        <p class="text-slate-400 text-sm">Select a site to view assigned workers.</p>
+                    </div>
+                </div>
+            `;
+        }
+        window.selectWorkerViewSite = (siteId) => {
+            selectedWorkerViewSite = siteId;
+            const container = document.getElementById('assigned-workers-container');
+            if (!siteId) { container.innerHTML = '<p class="text-slate-400 text-sm">Select a site.</p>'; return; }
+            const workersOnSite = assignedWorkersData.filter(w => w.site_id === siteId);
+            if (!workersOnSite.length) {
+                container.innerHTML = '<p class="text-slate-400 text-sm">No workers assigned by managers for this site.</p>';
+                return;
+            }
+            container.innerHTML = `
+                <div class="relative mb-3">
+                    <input type="text" placeholder="Search by name..." class="w-full border rounded-lg p-2 pl-8 text-sm" oninput="searchAssignedWorkers(event, '${siteId}')">
+                    <iconify-icon icon="material-symbols:search" class="absolute left-2 top-1/2 -translate-y-1/2 text-slate-400" width="16"></iconify-icon>
+                </div>
+                <div id="workers-search-results" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    ${renderAssignedWorkerCards(workersOnSite)}
+                </div>
+            `;
+        };
+        function renderAssignedWorkerCards(workers) {
+            return workers.map(w => `
+                <div class="bg-slate-50 rounded-xl p-3 hover:shadow-md flex items-center justify-between">
+                    <div class="flex items-center gap-3 cursor-pointer flex-1" onclick="viewWorkerDetail('${w.id}')">
+                        <img src="${w.image || PLACEHOLDER_IMG}" class="w-10 h-10 rounded-full object-cover">
+                        <div>
+                            <p class="font-medium text-sm">${w.name}</p>
+                            <p class="text-xs text-slate-500">${w.role}</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="editAssignedWorker('${w.id}')" class="text-emerald-600 hover:text-emerald-800 text-xs px-2 py-1 bg-emerald-50 rounded-lg">Edit</button>
+                        <button onclick="deleteAssignedWorker('${w.id}')" class="text-red-500 hover:text-red-700 text-xs px-2 py-1 bg-red-50 rounded-lg">Delete</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+        window.searchAssignedWorkers = (event, siteId) => {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                const queryText = event.target.value.toLowerCase();
+                const filtered = assignedWorkersData.filter(w => w.site_id === siteId && w.name.toLowerCase().includes(queryText));
+                const resultsContainer = document.getElementById('workers-search-results');
+                if (resultsContainer) {
+                    resultsContainer.innerHTML = filtered.length ? renderAssignedWorkerCards(filtered) : '<p class="text-slate-400 col-span-full text-sm">No matching workers.</p>';
+                }
+            }, 300);
+        };
+
+        window.viewWorkerDetail = (id) => {
+            const w = assignedWorkersData.find(a => a.id === id);
+            if (!w) return;
+            const siteName = sitesData.find(s => s.id === w.site_id)?.name || '—';
+            openModal('Worker Details', `
+                <div class="space-y-3">
+                    <div class="flex items-center gap-4">
+                        <img src="${w.image || PLACEHOLDER_IMG}" class="w-16 h-16 rounded-full object-cover">
+                        <div>
+                            <h3 class="font-bold text-lg">${w.name}</h3>
+                            <p class="text-sm text-slate-500">${w.role}</p>
+                        </div>
+                    </div>
+                    <div class="bg-slate-50 p-3 rounded-xl space-y-2 text-sm">
+                        <p><strong>Site:</strong> ${siteName}</p>
+                        <p><strong>Salary:</strong> ${w.salary?.toLocaleString() || '0'} RWF</p>
+                        <p><strong>Phone:</strong> ${w.phone || '—'}</p>
+                    </div>
+                    <div class="flex gap-2 pt-2">
+                        <button onclick="closeModal(); editAssignedWorker('${w.id}')" class="flex-1 bg-emerald-600 text-white py-2 rounded-xl text-sm">Edit</button>
+                        <button onclick="closeModal(); deleteAssignedWorker('${w.id}')" class="flex-1 bg-red-100 text-red-600 py-2 rounded-xl text-sm">Delete</button>
+                    </div>
+                </div>
+            `);
+        };
+
+        window.editAssignedWorker = (id) => {
+            const w = assignedWorkersData.find(item => item.id === id);
+            if (!w) return;
+            const siteOpts = sitesData.map(s => `<option value="${s.id}" ${s.id === w.site_id ? 'selected' : ''}>${s.name}</option>`).join('');
+            openModal('Edit Assigned Worker', `
+                <form onsubmit="handleEditAssignedWorker(event, '${id}')" class="space-y-4">
+                    <input class="w-full border rounded-lg p-3 text-sm" value="${w.name}" id="edit-assigned-name" placeholder="Full Name" required>
+                    <input class="w-full border rounded-lg p-3 text-sm" value="${w.role}" id="edit-assigned-role" placeholder="Role" required>
+                    <select class="w-full border rounded-lg p-3 text-sm" id="edit-assigned-site" required>
+                        ${siteOpts}
+                    </select>
+                    <input class="w-full border rounded-lg p-3 text-sm" value="${w.salary || ''}" type="number" id="edit-assigned-salary" placeholder="Salary (RWF)" required>
+                    <input class="w-full border rounded-lg p-3 text-sm" value="${w.phone || ''}" id="edit-assigned-phone" placeholder="Phone Number">
+                    <button type="submit" class="w-full bg-emerald-600 text-white py-3 rounded-xl">Update Worker</button>
+                </form>
+            `);
+        };
+
+        window.handleEditAssignedWorker = async (e, id) => {
+            e.preventDefault();
+            const form = e.target;
+            const btn = getFormSubmitBtn(form);
+            setButtonLoading(btn, true);
+            try {
+                const name = document.getElementById('edit-assigned-name').value.trim();
+                const role = document.getElementById('edit-assigned-role').value.trim();
+                const site_id = document.getElementById('edit-assigned-site').value;
+                const salary = parseFloat(document.getElementById('edit-assigned-salary').value);
+                const phone = document.getElementById('edit-assigned-phone').value.trim();
+
+                if (!name || !role || !site_id || isNaN(salary)) return alert('All required fields must be filled.');
+                await setDoc(doc(db, 'assigned_workers', id), { name, role, site_id, salary, phone }, { merge: true });
+                closeModal();
+                if (selectedWorkerViewSite) selectWorkerViewSite(selectedWorkerViewSite);
+            } catch (err) { alert('Error: ' + getFriendlyError(err)); }
+            finally { setButtonLoading(btn, false); }
+        };
+
+        window.deleteAssignedWorker = async (id) => {
+            if (confirm('Are you sure you want to delete this assigned worker?')) {
+                try {
+                    await deleteDoc(doc(db, 'assigned_workers', id));
+                    if (selectedWorkerViewSite) selectWorkerViewSite(selectedWorkerViewSite);
+                } catch (err) { alert('Error: ' + getFriendlyError(err)); }
+            }
+        };
+
+        window.openAddWorkerModal = () => {
+            const siteOpts = sitesData.map(s => `<option value="${s.id}">${s.name}</option>`).join('');
+            openModal('Add Worker Position', `
+                <form onsubmit="handleAddWorker(event)" class="space-y-4">
+                    <input class="w-full border rounded-lg p-3" placeholder="Role name" id="work-role" required>
+                    <select class="w-full border rounded-lg p-3" id="work-site" required>
+                        <option value="">Select site</option>
+                        <option value="all">All Sites</option>
+                        ${siteOpts}
+                    </select>
+                    <select class="w-full border rounded-lg p-3" id="salary-type">
+                        <option value="daily">Daily</option>
+                        <option value="monthly">Monthly</option>
+                    </select>
+                    <input class="w-full border rounded-lg p-3" placeholder="Estimated salary/cost (RWF)" type="number" id="est-cost" required>
+                    <button type="submit" class="w-full bg-emerald-600 text-white py-3 rounded-xl">Save Position</button>
+                </form>
+            `);
+        };
+        window.handleAddWorker = async (e) => {
+            e.preventDefault();
+            const form = e.target;
+            const btn = getFormSubmitBtn(form);
+            setButtonLoading(btn, true);
+            try {
+                const role = document.getElementById('work-role').value.trim();
+                const site_id = document.getElementById('work-site').value;
+                const salary_type = document.getElementById('salary-type').value;
+                const estimated_cost = parseFloat(document.getElementById('est-cost').value);
+                if (!role || !site_id || isNaN(estimated_cost)) return alert('All fields required.');
+                await addDoc(collection(db, 'worker_positions'), { site_id, role, salary_type, estimated_cost, status: 'open' });
+                closeModal();
+            } catch (err) { alert('Error: ' + getFriendlyError(err)); }
+            finally { setButtonLoading(btn, false); }
+        };
+
+        window.editWorkerPosition = (id) => {
+            const pos = workersData.find(w => w.id === id);
+            if (!pos) return;
+            const siteOpts = sitesData.map(s => `<option value="${s.id}" ${s.id === pos.site_id ? 'selected' : ''}>${s.name}</option>`).join('');
+            openModal('Edit Worker Position', `
+                <form onsubmit="handleEditWorkerPosition(event, '${id}')" class="space-y-4">
+                    <input class="w-full border rounded-lg p-3" value="${pos.role}" id="edit-work-role" required>
+                    <select class="w-full border rounded-lg p-3" id="edit-work-site" required>
+                        <option value="all" ${pos.site_id === 'all' ? 'selected' : ''}>All Sites</option>
+                        ${siteOpts}
+                    </select>
+                    <select class="w-full border rounded-lg p-3" id="edit-salary-type">
+                        <option value="daily" ${pos.salary_type === 'daily' ? 'selected' : ''}>Daily</option>
+                        <option value="monthly" ${pos.salary_type === 'monthly' ? 'selected' : ''}>Monthly</option>
+                    </select>
+                    <input class="w-full border rounded-lg p-3" value="${pos.estimated_cost || ''}" type="number" id="edit-est-cost" required>
+                    <button type="submit" class="w-full bg-emerald-600 text-white py-3 rounded-xl">Update Position</button>
+                </form>
+            `);
+        };
+        window.handleEditWorkerPosition = async (e, id) => {
+            e.preventDefault();
+            const form = e.target;
+            const btn = getFormSubmitBtn(form);
+            setButtonLoading(btn, true);
+            try {
+                const role = document.getElementById('edit-work-role').value.trim();
+                const site_id = document.getElementById('edit-work-site').value;
+                const salary_type = document.getElementById('edit-salary-type').value;
+                const estimated_cost = parseFloat(document.getElementById('edit-est-cost').value);
+                if (!role || !site_id || isNaN(estimated_cost)) return alert('All fields required.');
+                await updateDoc(doc(db, 'worker_positions', id), { role, site_id, salary_type, estimated_cost });
+                closeModal();
+            } catch (err) { alert('Error: ' + getFriendlyError(err)); }
+            finally { setButtonLoading(btn, false); }
+        };
+        window.deleteWorkerPosition = (id) => {
+            if (confirm('Delete this worker position?')) {
+                deleteDoc(doc(db, 'worker_positions', id)).catch(err => alert('Error: ' + getFriendlyError(err)));
+            }
+        };
+
+        // =============== PROGRESS ===============
         function renderProgress(container) {
-            // For brevity, we'll reuse the manager code.
-            container.innerHTML = `<p class="text-slate-500">Progress (full implementation)</p>`;
+            container.innerHTML = `
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-xl sm:text-2xl font-bold">Progress Tasks</h2>
+                    <button onclick="openAddTaskModal()" class="px-3 py-2 bg-emerald-600 text-white rounded-xl hover:bg-emerald-700 text-sm">
+                        <iconify-icon icon="material-symbols:add"></iconify-icon> Add Task
+                    </button>
+                </div>
+                <div class="bg-white rounded-2xl border overflow-hidden shadow-sm">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm">
+                            <thead class="bg-slate-50 uppercase text-xs">
+                                <tr><th class="px-3 py-2">Task</th><th class="px-3 py-2">Site</th><th class="px-3 py-2">Start</th><th class="px-3 py-2">End</th><th class="px-3 py-2">Status</th><th class="px-3 py-2">Actions</th></tr>
+                            </thead>
+                            <tbody>
+                                ${progressTasks.map(t => `
+                                    <tr>
+                                        <td class="px-3 py-2 font-medium">${t.name}</td>
+                                        <td class="px-3 py-2">${sitesData.find(s => s.id === t.site_id)?.name || '—'}</td>
+                                        <td class="px-3 py-2">${new Date(t.start_date).toLocaleDateString()}</td>
+                                        <td class="px-3 py-2">${new Date(t.end_date).toLocaleDateString()}</td>
+                                        <td class="px-3 py-2">${t.status || 'pending'}</td>
+                                        <td class="px-3 py-2 flex gap-2">
+                                            <button onclick="editTask('${t.id}')" class="text-emerald-600 hover:text-emerald-800 text-xs">Edit</button>
+                                            <button onclick="deleteTask('${t.id}')" class="text-red-500 hover:text-red-700 text-xs">Delete</button>
+                                        </td>
+                                    </tr>
+                                `).join('') || '<tr><td colspan="6" class="p-4 text-slate-500">No tasks yet.</td></tr>'}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            `;
         }
 
-        // =============== REPORTS (same as manager) ===============
+        window.openAddTaskModal = () => {
+            const siteOpts = sitesData.map(s => `<option value="${s.id}">${s.name}</option>`).join('');
+            openModal('Add Progress Task', `
+                <form onsubmit="handleAddTask(event)" class="space-y-4">
+                    <input class="w-full border rounded-lg p-3" placeholder="Task name" id="task-name" required>
+                    <select class="w-full border rounded-lg p-3" id="task-site" required><option value="">Select site</option>${siteOpts}</select>
+                    <input class="w-full border rounded-lg p-3" type="date" id="task-start" required>
+                    <div class="flex gap-2">
+                        <input class="w-1/2 border rounded-lg p-3" placeholder="Period number" type="number" id="task-period-num" min="1" required>
+                        <select class="w-1/2 border rounded-lg p-3" id="task-period-unit">
+                            <option value="days">Days</option>
+                            <option value="weeks">Weeks</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="w-full bg-emerald-600 text-white py-3 rounded-xl">Save Task</button>
+                </form>
+            `);
+        };
+        window.handleAddTask = async (e) => {
+            e.preventDefault();
+            const form = e.target;
+            const btn = getFormSubmitBtn(form);
+            setButtonLoading(btn, true);
+            try {
+                const name = document.getElementById('task-name').value.trim();
+                const site_id = document.getElementById('task-site').value;
+                const start_date = document.getElementById('task-start').value;
+                const periodNum = parseInt(document.getElementById('task-period-num').value);
+                const periodUnit = document.getElementById('task-period-unit').value;
+                if (!name || !site_id || !start_date) return alert('All fields required.');
+                const start = new Date(start_date);
+                let end = new Date(start);
+                if (periodUnit === 'days') end.setDate(end.getDate() + periodNum);
+                else end.setDate(end.getDate() + periodNum * 7);
+                await addDoc(collection(db, 'progress_tasks'), {
+                    site_id,
+                    name,
+                    start_date: start.toISOString(),
+                    end_date: end.toISOString(),
+                    status: 'pending'
+                });
+                closeModal();
+            } catch (err) { alert('Error: ' + getFriendlyError(err)); }
+            finally { setButtonLoading(btn, false); }
+        };
+
+        window.editTask = (id) => {
+            const task = progressTasks.find(t => t.id === id);
+            if (!task) return;
+            const siteOpts = sitesData.map(s => `<option value="${s.id}" ${s.id === task.site_id ? 'selected' : ''}>${s.name}</option>`).join('');
+            openModal('Edit Progress Task', `
+                <form onsubmit="handleEditTask(event, '${id}')" class="space-y-4">
+                    <input class="w-full border rounded-lg p-3" value="${task.name}" id="edit-task-name" required>
+                    <select class="w-full border rounded-lg p-3" id="edit-task-site" required>
+                        ${siteOpts}
+                    </select>
+                    <input class="w-full border rounded-lg p-3" type="date" value="${task.start_date ? new Date(task.start_date).toISOString().split('T')[0] : ''}" id="edit-task-start" required>
+                    <input class="w-full border rounded-lg p-3" type="date" value="${task.end_date ? new Date(task.end_date).toISOString().split('T')[0] : ''}" id="edit-task-end" required>
+                    <select class="w-full border rounded-lg p-3" id="edit-task-status">
+                        <option value="pending" ${task.status === 'pending' ? 'selected' : ''}>Pending</option>
+                        <option value="completed" ${task.status === 'completed' ? 'selected' : ''}>Completed</option>
+                    </select>
+                    <button type="submit" class="w-full bg-emerald-600 text-white py-3 rounded-xl">Update Task</button>
+                </form>
+            `);
+        };
+        window.handleEditTask = async (e, id) => {
+            e.preventDefault();
+            const form = e.target;
+            const btn = getFormSubmitBtn(form);
+            setButtonLoading(btn, true);
+            try {
+                const name = document.getElementById('edit-task-name').value.trim();
+                const site_id = document.getElementById('edit-task-site').value;
+                const start_date = document.getElementById('edit-task-start').value;
+                const end_date = document.getElementById('edit-task-end').value;
+                const status = document.getElementById('edit-task-status').value;
+                if (!name || !site_id || !start_date || !end_date) return alert('All fields required.');
+                await updateDoc(doc(db, 'progress_tasks', id), {
+                    name,
+                    site_id,
+                    start_date: new Date(start_date).toISOString(),
+                    end_date: new Date(end_date).toISOString(),
+                    status
+                });
+                closeModal();
+            } catch (err) { alert('Error: ' + getFriendlyError(err)); }
+            finally { setButtonLoading(btn, false); }
+        };
+        window.deleteTask = (id) => {
+            if (confirm('Delete this task?')) {
+                deleteDoc(doc(db, 'progress_tasks', id)).catch(err => alert('Error: ' + getFriendlyError(err)));
+            }
+        };
+
+        // =============== REPORTS (with Stock tab) ===============
         function renderReports(container) {
-            // For brevity, we'll reuse the manager code.
-            container.innerHTML = `<p class="text-slate-500">Reports (full implementation)</p>`;
+            const siteOpts = sitesData.map(s => `<option value="${s.id}">${s.name}</option>`).join('');
+
+            container.innerHTML = `
+                <h2 class="text-xl sm:text-2xl font-bold mb-4">Reports</h2>
+
+                <div class="flex gap-2 p-1 bg-slate-200/60 rounded-xl mb-6 max-w-md">
+                    <button onclick="setReportType('general')" class="flex-1 px-4 py-2 rounded-lg text-sm font-semibold transition ${reportType === 'general' ? 'report-tab-active' : 'report-tab-inactive'}">
+                        <iconify-icon icon="material-symbols:description" class="inline mr-1"></iconify-icon> General
+                    </button>
+                    <button onclick="setReportType('payroll')" class="flex-1 px-4 py-2 rounded-lg text-sm font-semibold transition ${reportType === 'payroll' ? 'report-tab-active' : 'report-tab-inactive'}">
+                        <iconify-icon icon="material-symbols:payments" class="inline mr-1"></iconify-icon> Worker Payroll
+                    </button>
+                    <button onclick="setReportType('stock')" class="flex-1 px-4 py-2 rounded-lg text-sm font-semibold transition ${reportType === 'stock' ? 'report-tab-active' : 'report-tab-inactive'}">
+                        <iconify-icon icon="material-symbols:inventory-2" class="inline mr-1"></iconify-icon> Stock
+                    </button>
+                </div>
+
+                <div id="report-content">
+                    ${reportType === 'general' ? renderGeneralReport(siteOpts) : reportType === 'payroll' ? renderPayrollReport(siteOpts) : renderStockReport(siteOpts)}
+                </div>
+            `;
         }
 
-        // =============== FINANCES (same as manager) ===============
-        function renderFinances(container) {
-            // For brevity, we'll reuse the manager code.
-            container.innerHTML = `<p class="text-slate-500">Finances (full implementation)</p>`;
+        window.setReportType = (type) => {
+            reportType = type;
+            showSection('reports');
+        };
+
+        function renderGeneralReport(siteOpts) {
+            return `
+                <div class="bg-white rounded-2xl border p-4 max-w-lg space-y-4">
+                    <div><label class="block text-sm font-medium mb-1">Select Site</label><select id="report-site" class="w-full border rounded-lg p-3"><option value="all">All Sites</option>${siteOpts}</select></div>
+                    <div><label class="block text-sm font-medium mb-1">Department</label><select id="report-dept" class="w-full border rounded-lg p-3"><option value="all">All Departments</option><option value="materials">Materials</option><option value="workers">Workers</option><option value="finances">Finances</option></select></div>
+                    <div><label class="block text-sm font-medium mb-1">Start Date</label><input type="date" id="report-start" class="w-full border rounded-lg p-3"></div>
+                    <div><label class="block text-sm font-medium mb-1">End Date</label><input type="date" id="report-end" class="w-full border rounded-lg p-3"></div>
+                    <div class="flex gap-3"><button onclick="exportGeneralReport('csv')" class="flex-1 bg-emerald-600 text-white py-3 rounded-xl">Export CSV</button><button onclick="exportGeneralReport('print')" class="flex-1 bg-slate-800 text-white py-3 rounded-xl">Print / PDF</button></div>
+                </div>
+            `;
         }
+
+        function renderPayrollReport(siteOpts) {
+            if (!attendanceData.length) {
+                return `
+                    <div class="bg-white rounded-2xl border p-8 text-center">
+                        <iconify-icon icon="material-symbols:info-outline" class="text-5xl text-slate-300 mx-auto block mb-4"></iconify-icon>
+                        <p class="text-slate-600 font-medium">No attendance records found.</p>
+                        <p class="text-sm text-slate-400 mt-1">Please ensure managers have recorded attendance for the workers.</p>
+                    </div>
+                `;
+            }
+
+            return `
+                <div class="space-y-6">
+                    <div class="bg-white rounded-2xl border p-4 grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div><label class="block text-sm font-medium mb-1">Site</label><select id="payroll-site" class="w-full border rounded-lg p-2.5 text-sm" onchange="updatePayrollReport()"><option value="all">All Sites</option>${siteOpts}</select></div>
+                        <div><label class="block text-sm font-medium mb-1">Start Date</label><input type="date" id="payroll-start" class="w-full border rounded-lg p-2.5 text-sm" onchange="updatePayrollReport()"></div>
+                        <div><label class="block text-sm font-medium mb-1">End Date</label><input type="date" id="payroll-end" class="w-full border rounded-lg p-2.5 text-sm" onchange="updatePayrollReport()"></div>
+                        <div><label class="block text-sm font-medium mb-1">Worker</label><input type="text" id="payroll-worker-search" class="w-full border rounded-lg p-2.5 text-sm" placeholder="Search worker..." oninput="updatePayrollReport()"></div>
+                        <div><label class="block text-sm font-medium mb-1">Position</label><select id="payroll-position" class="w-full border rounded-lg p-2.5 text-sm" onchange="updatePayrollReport()"><option value="all">All Positions</option>${[...new Set(assignedWorkersData.map(w => w.role).filter(Boolean))].map(role => `<option value="${role}">${role}</option>`).join('')}</select></div>
+                        <div><label class="block text-sm font-medium mb-1">Payment Status</label><select id="payroll-status" class="w-full border rounded-lg p-2.5 text-sm" onchange="updatePayrollReport()"><option value="all">All (Unpaid)</option><option value="paid">Paid</option><option value="unpaid">Unpaid</option></select></div>
+                    </div>
+                    <div id="payroll-summary-cards" class="grid grid-cols-2 md:grid-cols-4 gap-4"></div>
+                    <div id="payroll-table-container" class="bg-white rounded-2xl border overflow-hidden shadow-sm"></div>
+                    <div class="flex gap-3 justify-end"><button onclick="exportPayrollReport('csv')" class="px-6 py-2 bg-emerald-600 text-white rounded-xl">Export CSV</button><button onclick="exportPayrollReport('print')" class="px-6 py-2 bg-slate-800 text-white rounded-xl">Print / PDF</button></div>
+                </div>
+            `;
+        }
+
+        function renderStockReport(siteOpts) {
+            return `
+                <div class="bg-white rounded-2xl border p-4 max-w-lg space-y-4">
+                    <div><label class="block text-sm font-medium mb-1">Select Site</label><select id="stock-report-site" class="w-full border rounded-lg p-3"><option value="all">All Sites</option>${siteOpts}</select></div>
+                    <div class="flex gap-3"><button onclick="exportStockReport('csv')" class="flex-1 bg-emerald-600 text-white py-3 rounded-xl">Export CSV</button><button onclick="exportStockReport('print')" class="flex-1 bg-slate-800 text-white py-3 rounded-xl">Print / PDF</button></div>
+                </div>
+            `;
+        }
+
+        // ── Update Payroll ──
+        window.updatePayrollReport = () => {
+            const siteId = document.getElementById('payroll-site')?.value || 'all';
+            const startDate = document.getElementById('payroll-start')?.value || '';
+            const endDate = document.getElementById('payroll-end')?.value || '';
+            const workerSearch = document.getElementById('payroll-worker-search')?.value?.toLowerCase() || '';
+            const position = document.getElementById('payroll-position')?.value || 'all';
+
+            let filtered = attendanceData;
+            if (siteId !== 'all') filtered = filtered.filter(a => a.site_id === siteId);
+            if (startDate) filtered = filtered.filter(a => a.date >= startDate);
+            if (endDate) filtered = filtered.filter(a => a.date <= endDate);
+            if (workerSearch) filtered = filtered.filter(a => a.name.toLowerCase().includes(workerSearch));
+            if (position !== 'all') filtered = filtered.filter(a => a.role === position);
+
+            const workerMap = {};
+            filtered.forEach(rec => {
+                const key = rec.worker_id || rec.id;
+                if (!workerMap[key]) {
+                    workerMap[key] = { id: key, name: rec.name, role: rec.role, dailyRate: rec.daily_rate || 0, days: [], totalPayable: 0 };
+                }
+                workerMap[key].days.push(rec.date);
+                workerMap[key].totalPayable += (rec.daily_rate || 0);
+            });
+
+            const workers = Object.values(workerMap);
+            const totalWorkers = workers.length;
+            const totalDays = workers.reduce((sum, w) => sum + w.days.length, 0);
+            const totalPayroll = workers.reduce((sum, w) => sum + w.totalPayable, 0);
+            const avgDaily = totalDays > 0 ? totalPayroll / totalDays : 0;
+
+            const cardsContainer = document.getElementById('payroll-summary-cards');
+            if (cardsContainer) {
+                cardsContainer.innerHTML = `
+                    <div class="payroll-card bg-white rounded-2xl border p-4 shadow-sm"><p class="text-xs text-slate-500">Total Workers</p><p class="text-2xl font-bold text-slate-800">${totalWorkers}</p></div>
+                    <div class="payroll-card bg-white rounded-2xl border p-4 shadow-sm"><p class="text-xs text-slate-500">Worker-Days</p><p class="text-2xl font-bold text-slate-800">${totalDays}</p></div>
+                    <div class="payroll-card bg-white rounded-2xl border p-4 shadow-sm"><p class="text-xs text-slate-500">Total Payroll</p><p class="text-2xl font-bold text-emerald-600">${totalPayroll.toLocaleString()} RWF</p></div>
+                    <div class="payroll-card bg-white rounded-2xl border p-4 shadow-sm"><p class="text-xs text-slate-500">Avg. Daily Labor Cost</p><p class="text-2xl font-bold text-slate-800">${avgDaily.toLocaleString()} RWF</p></div>
+                `;
+            }
+
+            const tableContainer = document.getElementById('payroll-table-container');
+            if (tableContainer) {
+                if (!workers.length) {
+                    tableContainer.innerHTML = `<div class="p-4 text-slate-500 text-sm">No attendance records found for the selected filters.</div>`;
+                    return;
+                }
+                tableContainer.innerHTML = `
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm">
+                            <thead class="bg-slate-50 uppercase text-xs"><tr><th class="px-3 py-2 text-left">Worker</th><th class="px-3 py-2 text-left">Position</th><th class="px-3 py-2 text-center">Days Worked</th><th class="px-3 py-2 text-right">Daily Rate</th><th class="px-3 py-2 text-right">Total Payable</th></tr></thead>
+                            <tbody>${workers.map(w => `<tr><td class="px-3 py-2 font-medium">${w.name}</td><td class="px-3 py-2">${w.role || '—'}</td><td class="px-3 py-2 text-center">${w.days.length}</td><td class="px-3 py-2 text-right">${w.dailyRate.toLocaleString()} RWF</td><td class="px-3 py-2 text-right font-semibold text-emerald-600">${w.totalPayable.toLocaleString()} RWF</td></tr>`).join('')}</tbody>
+                            <tfoot class="bg-slate-50 font-bold"><tr><td colspan="2" class="px-3 py-2 text-right">Total</td><td class="px-3 py-2 text-center">${totalDays}</td><td class="px-3 py-2 text-right"></td><td class="px-3 py-2 text-right text-emerald-600">${totalPayroll.toLocaleString()} RWF</td></tr></tfoot>
+                        </table>
+                    </div>
+                `;
+            }
+        };
+
+        // ── Export Payroll ──
+        window.exportPayrollReport = (format) => {
+            const siteId = document.getElementById('payroll-site')?.value || 'all';
+            const startDate = document.getElementById('payroll-start')?.value || '';
+            const endDate = document.getElementById('payroll-end')?.value || '';
+            const workerSearch = document.getElementById('payroll-worker-search')?.value?.toLowerCase() || '';
+            const position = document.getElementById('payroll-position')?.value || 'all';
+
+            let filtered = attendanceData;
+            if (siteId !== 'all') filtered = filtered.filter(a => a.site_id === siteId);
+            if (startDate) filtered = filtered.filter(a => a.date >= startDate);
+            if (endDate) filtered = filtered.filter(a => a.date <= endDate);
+            if (workerSearch) filtered = filtered.filter(a => a.name.toLowerCase().includes(workerSearch));
+            if (position !== 'all') filtered = filtered.filter(a => a.role === position);
+
+            const workerMap = {};
+            filtered.forEach(rec => {
+                const key = rec.worker_id || rec.id;
+                if (!workerMap[key]) {
+                    workerMap[key] = { id: key, name: rec.name, role: rec.role, dailyRate: rec.daily_rate || 0, days: [], totalPayable: 0 };
+                }
+                workerMap[key].days.push(rec.date);
+                workerMap[key].totalPayable += (rec.daily_rate || 0);
+            });
+
+            const workers = Object.values(workerMap);
+            const totalDays = workers.reduce((sum, w) => sum + w.days.length, 0);
+            const totalPayroll = workers.reduce((sum, w) => sum + w.totalPayable, 0);
+
+            const companyName = 'SHDR Ltd';
+            const companyAddress = 'KG 11 Avenue, Gasabo District';
+            const companyCity = 'Kigali City, Rwanda';
+            const companyPhone = '+250 788 474 110';
+            const generatedDate = new Date().toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false }).replace(',', ', ');
+            const siteName = siteId === 'all' ? 'All Sites' : (sitesData.find(s => s.id === siteId)?.name || 'Site');
+            const period = startDate && endDate ? `${startDate} to ${endDate}` : (startDate || endDate || 'All Time');
+
+            if (format === 'csv') {
+                const headers = ['Worker', 'Position', 'Days Worked', 'Daily Rate (RWF)', 'Total Payable (RWF)'];
+                const csvRows = [
+                    `"${companyName}"`, `"${companyAddress}"`, `"${companyCity}"`, `"Tel: ${companyPhone}"`,
+                    `"Generated: ${generatedDate}"`, `"Report: Worker Attendance & Payroll"`, `"Site: ${siteName}"`, `"Period: ${period}"`, '',
+                    headers.join(',')
+                ];
+                for (const w of workers) {
+                    csvRows.push([w.name, w.role || '—', w.days.length, w.dailyRate.toLocaleString(), w.totalPayable.toLocaleString()].map(v => `"${v}"`).join(','));
+                }
+                csvRows.push(`"Total","",${totalDays},"",${totalPayroll.toLocaleString()}`);
+                const csv = csvRows.join('\n');
+                const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `SHDR_Payroll_${siteName}_${new Date().toISOString().slice(0,10)}.csv`;
+                a.click();
+                URL.revokeObjectURL(url);
+                return;
+            }
+
+            const headers = ['Worker', 'Position', 'Days Worked', 'Daily Rate (RWF)', 'Total Payable (RWF)'];
+            const tableRows = workers.map(w => `
+                <tr><td>${w.name}</td><td>${w.role || '—'}</td><td style="text-align:center">${w.days.length}</td><td style="text-align:right">${w.dailyRate.toLocaleString()} RWF</td><td style="text-align:right">${w.totalPayable.toLocaleString()} RWF</td></tr>
+            `).join('');
+
+            const win = window.open('', '_blank', 'width=1000,height=700');
+            if (!win) { alert('Please allow pop-ups to print the report.'); return; }
+            win.document.write(`
+                <!DOCTYPE html>
+                <html><head><meta charset="UTF-8"><title>Worker Payroll Report</title>
+                <style>body{font-family:Arial,sans-serif;padding:30px;color:#1f2937}.header{border-bottom:3px solid #059669;padding-bottom:15px;margin-bottom:20px}.company-name{font-size:24px;font-weight:bold;color:#059669}.meta{background:#f0fdf4;padding:12px;border-radius:8px;margin-bottom:20px}table{border-collapse:collapse;width:100%;margin-top:15px}th{background:#059669;color:#fff;padding:8px;text-align:left}td{border:1px solid #d1d5db;padding:8px}tr:nth-child(even){background:#f9fafb}tfoot td{background:#f0fdf4;font-weight:bold}.footer{margin-top:30px;text-align:center;font-size:12px;color:#6b7280;border-top:1px solid #e5e7eb;padding-top:15px}</style>
+                </head><body>
+                <div class="header"><div class="company-name">${companyName}</div><div>${companyAddress}, ${companyCity}</div><div>Tel: ${companyPhone}</div></div>
+                <h2>Worker Attendance & Payroll Report</h2>
+                <div class="meta"><strong>Site:</strong> ${siteName} &nbsp;|&nbsp; <strong>Period:</strong> ${period} &nbsp;|&nbsp; <strong>Generated:</strong> ${generatedDate}</div>
+                <table><thead><tr>${headers.map(h => `<th>${h}</th>`).join('')}</tr></thead><tbody>${tableRows}</tbody><tfoot><tr><td colspan="2" style="text-align:right"><strong>Total</strong></td><td style="text-align:center"><strong>${totalDays}</strong></td><td></td><td style="text-align:right"><strong>${totalPayroll.toLocaleString()} RWF</strong></td></tr></tfoot></table>
+                <div class="footer">This report is generated automatically by SHDR Ltd Management System.<br>© ${new Date().getFullYear()} SHDR Ltd — All rights reserved.</div>
+                </body></html>
+            `);
+            win.document.close();
+            setTimeout(() => win.print(), 500);
+        };
+
+        // ── Export Stock Report ──
+        window.exportStockReport = (format) => {
+            const siteId = document.getElementById('stock-report-site')?.value || 'all';
+            let filteredStock = siteId === 'all' ? stockData : stockData.filter(s => s.site_id === siteId);
+
+            if (!filteredStock.length) {
+                alert('No stock data for the selected filters.');
+                return;
+            }
+
+            const companyName = 'SHDR Ltd';
+            const generatedDate = new Date().toLocaleString();
+
+            if (format === 'csv') {
+                const headers = ['Site', 'Material', 'Quantity', 'Unit', 'Min Stock', 'Unit Cost (RWF)', 'Stock Value (RWF)', 'Status', 'Last Updated'];
+                const rows = filteredStock.map(item => {
+                    const site = sitesData.find(s => s.id === item.site_id);
+                    const siteName = site ? site.name : 'Unknown';
+                    const unitCost = materialsData.filter(m => m.site_id === item.site_id && m.name === item.material_name).pop()?.unit_cost || 0;
+                    const stockValue = item.quantity * unitCost;
+                    const status = item.quantity <= 0 ? 'Out of Stock' : (item.minimum_quantity && item.quantity <= item.minimum_quantity ? 'Low Stock' : 'Normal');
+                    return [siteName, item.material_name, item.quantity, item.unit || 'units', item.minimum_quantity || '', unitCost.toFixed(2), stockValue.toFixed(2), status, item.updated_at ? new Date(item.updated_at).toLocaleDateString() : ''];
+                });
+                const csvContent = [
+                    `"${companyName}"`, `"Generated: ${generatedDate}"`, '',
+                    headers.join(','),
+                    ...rows.map(row => row.join(','))
+                ].join('\n');
+                const blob = new Blob([csvContent], { type: 'text/csv' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `Stock_Report_${new Date().toISOString().slice(0,10)}.csv`;
+                a.click();
+                URL.revokeObjectURL(url);
+                return;
+            }
+
+            // PDF
+            const win = window.open('', '_blank', 'width=1000,height=700');
+            if (!win) { alert('Please allow pop-ups to print the report.'); return; }
+            const rows = filteredStock.map(item => {
+                const site = sitesData.find(s => s.id === item.site_id);
+                const siteName = site ? site.name : 'Unknown';
+                const unitCost = materialsData.filter(m => m.site_id === item.site_id && m.name === item.material_name).pop()?.unit_cost || 0;
+                const stockValue = item.quantity * unitCost;
+                const status = item.quantity <= 0 ? 'Out of Stock' : (item.minimum_quantity && item.quantity <= item.minimum_quantity ? 'Low Stock' : 'Normal');
+                return `<tr><td>${siteName}</td><td>${item.material_name}</td><td>${item.quantity}</td><td>${item.unit || 'units'}</td><td>${item.minimum_quantity || '-'}</td><td>${unitCost.toFixed(2)}</td><td>${stockValue.toFixed(2)}</td><td>${status}</td><td>${item.updated_at ? new Date(item.updated_at).toLocaleDateString() : '-'}</td></tr>`;
+            }).join('');
+
+            win.document.write(`
+                <!DOCTYPE html>
+                <html><head><meta charset="UTF-8"><title>Stock Report</title>
+                <style>body{font-family:Arial,sans-serif;padding:30px}table{border-collapse:collapse;width:100%}th{background:#059669;color:#fff;padding:8px}td{border:1px solid #ddd;padding:8px}.footer{margin-top:30px;text-align:center;font-size:12px;color:#6b7280}</style>
+                </head><body>
+                <h2>${companyName}</h2>
+                <h3>Stock Report</h3>
+                <p>Generated: ${generatedDate}</p>
+                <table><thead><tr><th>Site</th><th>Material</th><th>Qty</th><th>Unit</th><th>Min</th><th>Unit Cost</th><th>Stock Value</th><th>Status</th><th>Updated</th></tr></thead><tbody>${rows}</tbody></table>
+                <div class="footer">This report is generated automatically by SHDR Ltd Management System.</div>
+                </body></html>
+            `);
+            win.document.close();
+            setTimeout(() => win.print(), 500);
+        };
+
+        // ── Export General Report ──
+        window.exportGeneralReport = (format) => {
+            const siteId = document.getElementById('report-site').value;
+            const dept = document.getElementById('report-dept').value;
+            const startDate = document.getElementById('report-start').value;
+            const endDate = document.getElementById('report-end').value;
+
+            let data = [];
+            const companyName = 'SHDR Ltd';
+            const companyAddress = 'KG 11 Avenue, Gasabo District';
+            const companyCity = 'Kigali City, Rwanda';
+            const companyPhone = '+250 788 474 110';
+
+            const filterByDate = (items, dateField) => {
+                if (!startDate && !endDate) return items;
+                return items.filter(item => {
+                    const itemDate = new Date(item[dateField]);
+                    if (startDate && itemDate < new Date(startDate)) return false;
+                    if (endDate && itemDate > new Date(endDate + 'T23:59:59')) return false;
+                    return true;
+                });
+            };
+
+            const getSiteName = (id) => sitesData.find(s => s.id === id)?.name || 'Unknown';
+
+            if (dept === 'all' || dept === 'materials') {
+                let mats = siteId !== 'all' ? materialsData.filter(m => m.site_id === siteId) : materialsData;
+                mats = filterByDate(mats, 'created_at');
+                data = data.concat(mats.map(m => ({
+                    Department: 'Materials',
+                    Site: getSiteName(m.site_id),
+                    Name: m.name,
+                    'Quantity Used': m.quantity_used || 0,
+                    'Unit Cost (RWF)': m.unit_cost || 0,
+                    'Total Amount (RWF)': calculateTotal(m.quantity_used || 0, m.unit_cost || 0),
+                    Date: m.created_at ? new Date(m.created_at).toLocaleDateString() : ''
+                })));
+            }
+            if (dept === 'all' || dept === 'workers') {
+                let assigned = siteId !== 'all' ? assignedWorkersData.filter(w => w.site_id === siteId) : assignedWorkersData;
+                data = data.concat(assigned.map(w => ({ Department: 'Workers', Site: getSiteName(w.site_id), Name: w.name, Role: w.role, Salary: w.salary, Phone: w.phone })));
+                let positions = siteId !== 'all' ? workersData.filter(p => p.site_id === siteId || p.site_id === 'all') : workersData;
+                data = data.concat(positions.map(p => ({ Department: 'Worker Positions', Site: p.site_id === 'all' ? 'All Sites' : getSiteName(p.site_id), Role: p.role, 'Salary Type': p.salary_type, 'Est. Cost': p.estimated_cost })));
+            }
+            if (dept === 'all' || dept === 'finances') {
+                let att = siteId !== 'all' ? attendanceData.filter(a => a.site_id === siteId) : attendanceData;
+                const totalWorkerCost = att.reduce((sum, a) => sum + (a.daily_rate || 0), 0);
+                let mats = siteId !== 'all' ? materialsData.filter(m => m.site_id === siteId) : materialsData;
+                const totalMatCost = mats.reduce((sum, m) => sum + calculateTotal(m.quantity_used || 0, m.unit_cost || 0), 0);
+                data.push({ Department: 'Finances', Category: 'Materials (Used)', Amount: totalMatCost, Description: 'Total material cost from used quantities' });
+                data.push({ Department: 'Finances', Category: 'Workers (Attendance)', Amount: totalWorkerCost, Description: 'Total worker attendance cost' });
+            }
+
+            if (!data.length) { alert('No data found for the selected filters.'); return; }
+
+            const siteLabel = siteId === 'all' ? 'All Sites' : (sitesData.find(s => s.id === siteId)?.name || 'Site');
+            const deptLabel = dept === 'all' ? 'All Departments' : dept.charAt(0).toUpperCase() + dept.slice(1);
+            const generatedDate = new Date().toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false }).replace(',', ', ');
+            const filename = `SHDR_${siteLabel}_${deptLabel}`;
+
+            if (format === 'csv') {
+                const headers = Object.keys(data[0]);
+                const csvRows = [
+                    `"${companyName}"`, `"${companyAddress}"`, `"${companyCity}"`, `"Tel: ${companyPhone}"`,
+                    `"Generated: ${generatedDate}"`, `"Report: ${siteLabel}"`, `"Department: ${deptLabel}"`, '',
+                    headers.join(',')
+                ];
+                for (const row of data) {
+                    const values = headers.map(h => `"${String(row[h] ?? '').replace(/"/g, '""')}"`);
+                    csvRows.push(values.join(','));
+                }
+                const csv = csvRows.join('\n');
+                const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = filename + '.csv';
+                a.click();
+                URL.revokeObjectURL(url);
+                return;
+            }
+
+            const headers = Object.keys(data[0]);
+            const tableRows = data.map(row => `<tr>${headers.map(h => `<td>${row[h] ?? ''}</td>`).join('')}</tr>`).join('');
+
+            const win = window.open('', '_blank', 'width=1000,height=700');
+            if (!win) { alert('Please allow pop-ups to print the report.'); return; }
+            win.document.write(`
+                <!DOCTYPE html>
+                <html><head><meta charset="UTF-8"><title>${filename}</title>
+                <style>body{font-family:Arial,sans-serif;padding:30px;margin:0;color:#1f2937;background:#fff}.company-header{display:flex;align-items:center;justify-content:space-between;border-bottom:3px solid #059669;padding-bottom:18px;margin-bottom:20px}.company-left{display:flex;align-items:center;gap:15px}.company-logo{width:75px;height:75px;object-fit:contain;border-radius:8px}.company-name{font-size:25px;font-weight:700;color:#059669;margin-bottom:3px}.company-subtitle{font-size:12px;color:#6b7280;margin-bottom:5px}.company-details{font-size:12px;line-height:1.5;color:#374151}.report-title{text-align:right}.report-title h2{margin:0;font-size:21px;color:#111827}.report-title p{margin:5px 0 0;font-size:11px;color:#6b7280}.report-meta{background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:12px 15px;margin-bottom:20px;font-size:12px;line-height:1.6}table{border-collapse:collapse;width:100%;font-size:11px}th{background:#059669;color:#fff;font-weight:600;padding:9px;border:1px solid #047857;text-align:left}td{padding:8px;border:1px solid #d1d5db}tr:nth-child(even){background:#f9fafb}.report-footer{margin-top:30px;padding-top:12px;border-top:1px solid #d1d5db;text-align:center;font-size:11px;color:#6b7280;line-height:1.6}.footer-system{font-weight:600;color:#374151}.footer-copy{font-size:10px;color:#9ca3af}</style>
+                </head><body>
+                <div class="company-header"><div class="company-left"><img src="shdr.jpg" alt="SHDR Ltd Logo" class="company-logo" onerror="this.style.display='none'"><div><div class="company-name">${companyName}</div><div class="company-subtitle">Construction Management System</div><div class="company-details">${companyAddress}<br>${companyCity}<br><strong>Tel:</strong> ${companyPhone}</div></div></div><div class="report-title"><h2>Management Report</h2><p>Official Company Report</p></div></div>
+                <div class="report-meta"><strong>Site Name:</strong> ${siteLabel} &nbsp;|&nbsp; <strong>Department:</strong> ${deptLabel}<br><strong>Generated:</strong> ${generatedDate}</div>
+                <table><thead><tr>${headers.map(h => `<th>${h}</th>`).join('')}</tr></thead><tbody>${tableRows}</tbody></table>
+                <div class="report-footer"><div class="footer-system">This report is generated automatically by SHDR Ltd Management System.</div><div class="footer-copy">© ${new Date().getFullYear()} SHDR Ltd — All rights reserved.</div></div>
+                </body></html>
+            `);
+            win.document.close();
+            setTimeout(() => win.print(), 500);
+        };
+
+        // =============== FINANCES ===============
+        let selectedFinanceSite = null;
+        function renderFinances(container) {
+            container.innerHTML = `
+                <h2 class="text-xl sm:text-2xl font-bold mb-3">Finances</h2>
+                <div class="flex gap-2 overflow-x-auto pb-2 site-selector mb-4">
+                    ${sitesData.map(s => `<button onclick="selectFinanceSite('${s.id}')" class="px-3 py-1 rounded-full whitespace-nowrap text-sm ${selectedFinanceSite === s.id ? 'bg-emerald-600 text-white' : 'bg-slate-100 text-slate-600'}">${s.name}</button>`).join('')}
+                </div>
+                <div id="finance-content"></div>
+            `;
+            if (selectedFinanceSite) renderFinanceContent();
+        }
+        window.selectFinanceSite = (id) => {
+            selectedFinanceSite = id;
+            renderFinances(document.getElementById('content-area'));
+        };
+
+        function renderFinanceContent() {
+            const site = sitesData.find(s => s.id === selectedFinanceSite);
+            if (!site) return;
+
+            const siteMaterials = materialsData.filter(m => m.site_id === selectedFinanceSite);
+            const matSpent = siteMaterials.reduce((sum, m) => sum + calculateTotal(m.quantity_used || 0, m.unit_cost || 0), 0);
+
+            const siteAttendance = attendanceData.filter(a => a.site_id === selectedFinanceSite);
+            const workerSpent = siteAttendance.reduce((sum, a) => sum + (a.daily_rate || 0), 0);
+
+            const totalSpent = matSpent + workerSpent;
+            const budget = site.budget || 0;
+            const remaining = budget - totalSpent;
+            const loss = remaining < 0;
+
+            let daysActive = 30;
+            if (site.created_at) {
+                const created = new Date(site.created_at);
+                const now = new Date();
+                daysActive = Math.max(1, Math.floor((now - created) / (1000 * 60 * 60 * 24)));
+            }
+            const dailyAvg = totalSpent / daysActive;
+            const monthlyAvg = totalSpent / (daysActive / 30);
+
+            document.getElementById('finance-content').innerHTML = `
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                    <div class="bg-white rounded-2xl border p-4">
+                        <div class="flex justify-between items-start">
+                            <div><h3 class="font-semibold text-sm mb-3">Site Info</h3><p class="text-sm"><strong>Name:</strong> ${site.name}</p><p class="text-sm"><strong>Location:</strong> ${site.location || '—'}</p>${site.district ? `<p class="text-sm"><strong>District:</strong> ${site.district}</p>` : ''}${site.sector ? `<p class="text-sm"><strong>Sector:</strong> ${site.sector}</p>` : ''}${site.client_name ? `<p class="text-sm"><strong>Client:</strong> ${site.client_name}</p>` : ''}</div>
+                            <button onclick="openAddBudgetModal('${site.id}')" class="text-xs bg-emerald-100 text-emerald-700 px-3 py-1 rounded-full hover:bg-emerald-200"><iconify-icon icon="material-symbols:add" width="16" height="16"></iconify-icon> Add Budget</button>
+                        </div>
+                        <img src="${site.images?.[0] || PLACEHOLDER_IMG}" class="w-full h-32 object-cover rounded-lg mt-2">
+                    </div>
+                    <div class="bg-white rounded-2xl border p-4">
+                        <h3 class="font-semibold text-sm mb-3">Financial Overview</h3>
+                        <div class="space-y-1 text-sm">
+                            <p><strong>Budget:</strong> ${budget.toLocaleString()} RWF</p>
+                            <p><strong>Total Spent:</strong> ${totalSpent.toLocaleString()} RWF</p>
+                            <p><strong>Materials Cost:</strong> ${matSpent.toLocaleString()} RWF</p>
+                            <p><strong>Workers Cost:</strong> ${workerSpent.toLocaleString()} RWF</p>
+                            <p><strong>Remaining:</strong> <span class="${loss ? 'text-red-600' : 'text-emerald-600'}">${remaining.toLocaleString()} RWF</span></p>
+                            ${loss ? '<p class="text-red-600 font-medium">⚠️ Budget exceeded!</p>' : ''}
+                            <div class="border-t pt-2 mt-2"><p class="text-xs text-slate-500">Daily average: ${dailyAvg.toLocaleString()} RWF</p><p class="text-xs text-slate-500">Monthly average: ${monthlyAvg.toLocaleString()} RWF</p></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white rounded-2xl border p-4">
+                    <h3 class="font-semibold text-sm mb-3">Daily AI Resume</h3>
+                    <div class="text-sm space-y-1">
+                        <p>✅ <strong>Good:</strong> Site status: ${site.status === 'finished' ? 'Completed' : 'Ongoing'}. Tasks completed: ${progressTasks.filter(t => t.site_id === selectedFinanceSite && t.status === 'completed').length}.</p>
+                        <p>❌ <strong>Negative:</strong> ${loss ? 'Budget overrun.' : 'No major issues.'} ${site.status !== 'finished' && progressTasks.filter(t => t.site_id === selectedFinanceSite && t.status === 'pending').length ? 'Pending tasks may delay completion.' : ''}</p>
+                        <p>⚠️ <strong>Issues:</strong> ${loss ? 'Cost control needed.' : 'None significant.'}</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        window.openAddBudgetModal = (siteId) => {
+            const site = sitesData.find(s => s.id === siteId);
+            if (!site) return;
+            openModal('Add Budget', `
+                <form onsubmit="handleAddBudget(event, '${siteId}')" class="space-y-4">
+                    <p class="text-sm text-slate-600">Current budget: ${(site.budget || 0).toLocaleString()} RWF</p>
+                    <input class="w-full border rounded-lg p-3" type="number" placeholder="New Budget Amount (RWF)" id="new-budget" min="0" required>
+                    <button type="submit" class="w-full bg-emerald-600 text-white py-3 rounded-xl">Update Budget</button>
+                </form>
+            `);
+        };
+        window.handleAddBudget = async (e, siteId) => {
+            e.preventDefault();
+            const form = e.target;
+            const btn = getFormSubmitBtn(form);
+            setButtonLoading(btn, true);
+            try {
+                const newBudget = parseFloat(document.getElementById('new-budget').value) || 0;
+                if (newBudget < 0) { alert('Budget must be a positive number.'); return; }
+                await updateDoc(doc(db, 'sites', siteId), { budget: newBudget });
+                closeModal();
+            } catch (err) { alert('Error: ' + getFriendlyError(err)); }
+            finally { setButtonLoading(btn, false); }
+        };
 
         // =============== MANAGERS ===============
         function renderManagers(container) {
@@ -997,12 +2008,59 @@
         };
 
         // =============== GALLERY ===============
+        let selectedGallerySite = null;
         function renderGallery(container) {
-            // Same as manager
-            container.innerHTML = `<p class="text-slate-500">Gallery (full implementation)</p>`;
+            const siteOpts = sitesData.map(s => `<option value="${s.id}">${s.name}</option>`).join('');
+            container.innerHTML = `
+                <h2 class="text-xl sm:text-2xl font-bold mb-3">Site Gallery</h2>
+                <div class="mb-4"><label class="block text-sm font-medium mb-1">Select Site</label><select id="gallery-site-select" class="w-full border p-2 rounded-lg text-sm" onchange="filterGallery()"><option value="">All Sites</option>${siteOpts}</select></div>
+                <div id="gallery-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"><p class="text-slate-400 col-span-full text-sm">Select a site to view images, or choose "All Sites" to see everything.</p></div>
+            `;
+            if (selectedGallerySite) document.getElementById('gallery-site-select').value = selectedGallerySite;
+            filterGallery();
         }
 
-        // =============== OFFICE ===============
+        window.filterGallery = () => {
+            const select = document.getElementById('gallery-site-select');
+            if (!select) return;
+            const siteId = select.value;
+            selectedGallerySite = siteId;
+            const container = document.getElementById('gallery-container');
+            if (!container) return;
+            let filtered = siteId ? galleryData.filter(item => item.site_id === siteId) : galleryData;
+            if (!filtered.length) {
+                container.innerHTML = `<p class="text-slate-400 col-span-full text-sm">No gallery images ${siteId ? 'for this site' : 'yet'}.</p>`;
+                return;
+            }
+            container.innerHTML = filtered.map(item => {
+                const imageUrl = item.image || PLACEHOLDER_IMG;
+                const siteName = sitesData.find(s => s.id === item.site_id)?.name || 'Unknown';
+                return `<div class="bg-white rounded-2xl border overflow-hidden shadow-sm"><div class="relative cursor-pointer group" onclick="openGalleryImage('${imageUrl.replace(/'/g, "\\'")}')"><img src="${imageUrl}" class="w-full h-40 object-cover transition duration-300 group-hover:scale-105" alt="${item.description || 'No description'}" loading="lazy" onerror="this.src='${PLACEHOLDER_IMG}'"><div class="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition duration-300 flex items-center justify-center"><span class="opacity-0 group-hover:opacity-100 transition text-white bg-black/50 rounded-full px-4 py-2 text-sm">View Image</span></div></div><div class="p-3"><p class="text-sm text-slate-700">${item.description || 'No description'}</p><p class="text-xs text-slate-500 mt-2">Site: ${siteName}</p><p class="text-xs text-slate-400 mt-1">Uploaded: ${item.uploaded_at ? new Date(item.uploaded_at).toLocaleDateString() : ''}</p></div></div>`;
+            }).join('');
+        };
+
+        window.openGalleryImage = (imageUrl) => {
+            const existing = document.getElementById('gallery-lightbox');
+            if (existing) existing.remove();
+            const viewer = document.createElement('div');
+            viewer.id = 'gallery-lightbox';
+            viewer.className = 'fixed inset-0 z-[9999] bg-black/80 backdrop-blur-sm flex items-center justify-center p-4';
+            viewer.innerHTML = `<button onclick="closeGalleryImage()" class="absolute top-5 right-6 text-white text-4xl font-light hover:text-emerald-400 transition z-10">&times;</button><div class="relative max-w-6xl max-h-[90vh] flex items-center justify-center"><img src="${imageUrl}" class="max-w-full max-h-[90vh] object-contain rounded-xl shadow-2xl" alt="SHDR Site Gallery Preview" onerror="this.src='${PLACEHOLDER_IMG}'"></div>`;
+            viewer.addEventListener('click', (event) => { if (event.target === viewer) closeGalleryImage(); });
+            document.body.appendChild(viewer);
+            document.body.style.overflow = 'hidden';
+            document.addEventListener('keydown', galleryLightboxEscHandler);
+        };
+
+        window.closeGalleryImage = () => {
+            document.getElementById('gallery-lightbox')?.remove();
+            document.body.style.overflow = '';
+            document.removeEventListener('keydown', galleryLightboxEscHandler);
+        };
+
+        function galleryLightboxEscHandler(event) { if (event.key === 'Escape') closeGalleryImage(); }
+
+        // =============== OFFICE MANAGEMENT HUB ===============
         function renderOfficeHub(container) {
             container.innerHTML = `
                 <div class="max-w-4xl mx-auto">
@@ -1011,328 +2069,17 @@
                         <h1 class="text-2xl font-bold text-slate-900 mb-2">Office Management Hub</h1>
                         <p class="text-sm text-slate-500 mb-4">Coming Soon (v2.0.0)</p>
                         <div class="text-left bg-slate-50 rounded-xl p-4 space-y-4 text-sm">
-                            <div><h3 class="font-semibold text-emerald-700 mb-2">Design & Technical Control</h3><ul><li>Architectural Documents</li><li>Structural Analysis</li><li>MEP Coordination</li></ul></div>
-                            <div><h3 class="font-semibold text-emerald-700 mb-2">Financial & Cost Control</h3><ul><li>Cost Estimation</li><li>Budget Review & Tracking</li></ul></div>
-                            <div><h3 class="font-semibold text-emerald-700 mb-2">Document Workflow Center</h3><ul><li>Certification Management</li><li>Submission Queue</li><li>Review & Verification</li></ul></div>
-                            <div><h3 class="font-semibold text-emerald-700 mb-2">Approval & Decision Center</h3><ul><li>Approved Documents</li><li>Pending Approvals</li><li>Rejected / Revision Required</li></ul></div>
-                            <div><h3 class="font-semibold text-emerald-700 mb-2">Permit & Compliance Center</h3><ul><li>Permit Management</li><li>Approved Permits</li><li>Rejected Permits</li></ul></div>
-                            <div><h3 class="font-semibold text-emerald-700 mb-2">Submission Control Center</h3><ul><li>New Submissions</li><li>Submission Tracking</li><li>Submission History</li></ul></div>
+                            <div><h3 class="font-semibold text-emerald-700 mb-2">Design & Technical Control</h3><ul class="list-disc list-inside text-slate-600 space-y-1"><li>Architectural Documents</li><li>Structural Analysis</li><li>MEP Coordination</li></ul></div>
+                            <div><h3 class="font-semibold text-emerald-700 mb-2">Financial & Cost Control</h3><ul class="list-disc list-inside text-slate-600 space-y-1"><li>Cost Estimation</li><li>Budget Review & Tracking</li></ul></div>
+                            <div><h3 class="font-semibold text-emerald-700 mb-2">Document Workflow Center</h3><ul class="list-disc list-inside text-slate-600 space-y-1"><li>Certification Management</li><li>Submission Queue</li><li>Review & Verification</li></ul></div>
+                            <div><h3 class="font-semibold text-emerald-700 mb-2">Approval & Decision Center</h3><ul class="list-disc list-inside text-slate-600 space-y-1"><li>Approved Documents</li><li>Pending Approvals</li><li>Rejected / Revision Required</li></ul></div>
+                            <div><h3 class="font-semibold text-emerald-700 mb-2">Permit & Compliance Center</h3><ul class="list-disc list-inside text-slate-600 space-y-1"><li>Permit Management</li><li>Approved Permits</li><li>Rejected Permits</li></ul></div>
+                            <div><h3 class="font-semibold text-emerald-700 mb-2">Submission Control Center</h3><ul class="list-disc list-inside text-slate-600 space-y-1"><li>New Submissions</li><li>Submission Tracking</li><li>Submission History</li></ul></div>
                         </div>
                     </div>
                 </div>
             `;
         }
-
-        // =============== SUBSCRIPTION (Full Management) ===============
-        function renderSubscription(container) {
-            const ownerSub = getOwnerSubscription();
-
-            let html = `
-                <div class="flex justify-between items-center mb-4">
-                    <h2 class="text-xl sm:text-2xl font-bold">Subscription Management</h2>
-                    <button onclick="openCreatePlanModal()" class="px-3 py-2 bg-emerald-600 text-white rounded-xl hover:bg-emerald-700 flex items-center gap-2 text-sm">
-                        <iconify-icon icon="material-symbols:add"></iconify-icon> Create Plan
-                    </button>
-                </div>
-
-                ${ownerSub ? `
-                    <div class="bg-emerald-50 border border-emerald-200 rounded-xl p-4 mb-6 flex flex-wrap justify-between items-center">
-                        <div>
-                            <p class="font-medium text-emerald-700">Current Plan: ${ownerSub.plan_name}</p>
-                            <p class="text-sm text-slate-600">${ownerSub.price?.toLocaleString()} RWF / ${ownerSub.billing_period}</p>
-                            <p class="text-xs text-slate-500">Expires: ${ownerSub.end_date ? new Date(ownerSub.end_date).toLocaleDateString() : 'N/A'}</p>
-                        </div>
-                        <div>
-                            <span class="text-sm text-slate-500">Sites used:</span>
-                            <span class="font-bold">${sitesData.length}</span>
-                            <span class="text-sm text-slate-500"> / ${ownerSub.max_sites || '∞'}</span>
-                        </div>
-                    </div>
-                ` : `
-                    <div class="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-6 text-amber-700">
-                        <p>No active subscription plan. Create a plan and assign it to your account.</p>
-                    </div>
-                `}
-
-                <!-- Plans Grid -->
-                <div class="bg-white rounded-2xl border p-4 shadow-sm mb-6">
-                    <h3 class="font-semibold text-sm mb-3">Your Plans</h3>
-                    <div id="plans-container" class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        ${subscriptionPlans.map(p => `
-                            <div class="border rounded-xl p-4 hover:shadow-md transition">
-                                <div class="flex justify-between items-start">
-                                    <div>
-                                        <h4 class="font-bold">${p.name}</h4>
-                                        <p class="text-sm text-slate-500">${p.description || ''}</p>
-                                    </div>
-                                    <div class="flex gap-2">
-                                        <button onclick="editPlan('${p.id}')" class="text-emerald-600 text-xs">Edit</button>
-                                        <button onclick="deletePlan('${p.id}')" class="text-red-500 text-xs">Delete</button>
-                                    </div>
-                                </div>
-                                <div class="mt-2">
-                                    <span class="text-xl font-bold text-emerald-600">${p.price?.toLocaleString()}</span>
-                                    <span class="text-sm text-slate-500"> RWF / ${p.billing_period || 'month'}</span>
-                                </div>
-                                <div class="mt-2 text-xs space-y-1">
-                                    <div class="flex items-center gap-1"><iconify-icon icon="material-symbols:check-circle" class="text-emerald-500 text-sm"></iconify-icon> Max Sites: ${p.max_sites || '∞'}</div>
-                                    ${p.features ? p.features.map(f => `<div class="flex items-center gap-1"><iconify-icon icon="material-symbols:check-circle" class="text-emerald-500 text-sm"></iconify-icon> ${f}</div>`).join('') : ''}
-                                </div>
-                            </div>
-                        `).join('') || '<p class="text-slate-500">No plans created yet.</p>'}
-                    </div>
-                </div>
-
-                <!-- Site Subscriptions -->
-                <div class="bg-white rounded-2xl border p-4 shadow-sm">
-                    <div class="flex justify-between items-center mb-3">
-                        <h3 class="font-semibold text-sm">Site Subscriptions</h3>
-                        <button onclick="openAssignPlanModal()" class="px-3 py-1.5 bg-emerald-600 text-white rounded-lg text-sm hover:bg-emerald-700">
-                            Assign Plan to Site
-                        </button>
-                    </div>
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-sm">
-                            <thead class="bg-slate-50 text-xs">
-                                <tr><th class="px-3 py-2">Site</th><th class="px-3 py-2">Plan</th><th class="px-3 py-2">Price</th><th class="px-3 py-2">Start</th><th class="px-3 py-2">End</th><th class="px-3 py-2">Status</th><th class="px-3 py-2">Actions</th></tr>
-                            </thead>
-                            <tbody>
-                                ${siteSubscriptions.map(sub => {
-                                    const site = sitesData.find(s => s.id === sub.site_id);
-                                    const statusClass = sub.status === 'active' ? 'text-green-600' : 'text-red-600';
-                                    return `
-                                        <tr>
-                                            <td class="px-3 py-2">${site?.name || 'Unknown'}</td>
-                                            <td class="px-3 py-2">${sub.plan_name}</td>
-                                            <td class="px-3 py-2">${sub.price?.toLocaleString()} RWF</td>
-                                            <td class="px-3 py-2">${sub.start_date ? new Date(sub.start_date).toLocaleDateString() : '-'}</td>
-                                            <td class="px-3 py-2">${sub.end_date ? new Date(sub.end_date).toLocaleDateString() : '-'}</td>
-                                            <td class="px-3 py-2 font-medium ${statusClass}">${sub.status}</td>
-                                            <td class="px-3 py-2 flex gap-2">
-                                                <button onclick="editSiteSubscription('${sub.id}')" class="text-emerald-600 text-xs">Edit</button>
-                                                <button onclick="deleteSiteSubscription('${sub.id}')" class="text-red-500 text-xs">Delete</button>
-                                            </td>
-                                        </tr>
-                                    `;
-                                }).join('') || '<tr><td colspan="7" class="p-4 text-slate-500 text-center">No subscriptions assigned.</td></tr>'}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            `;
-            container.innerHTML = html;
-        }
-
-        // ── Plan CRUD ──
-        window.openCreatePlanModal = () => {
-            openModal('Create Plan', `
-                <form onsubmit="handleCreatePlan(event)" class="space-y-4">
-                    <input class="w-full border rounded-lg p-2.5" placeholder="Plan Name" id="plan-name" required>
-                    <textarea class="w-full border rounded-lg p-2.5" placeholder="Description" id="plan-description" rows="2"></textarea>
-                    <div class="grid grid-cols-2 gap-3">
-                        <input class="w-full border rounded-lg p-2.5" type="number" placeholder="Price (RWF)" id="plan-price" required>
-                        <select class="w-full border rounded-lg p-2.5" id="plan-period">
-                            <option value="monthly">Monthly</option>
-                            <option value="yearly">Yearly</option>
-                        </select>
-                    </div>
-                    <input class="w-full border rounded-lg p-2.5" type="number" placeholder="Max Sites (0 = unlimited)" id="plan-max-sites" min="0">
-                    <div>
-                        <label class="text-sm font-medium">Features (one per line)</label>
-                        <textarea class="w-full border rounded-lg p-2.5" placeholder="5 construction sites&#10;50 workers&#10;100GB storage" id="plan-features" rows="4"></textarea>
-                    </div>
-                    <button type="submit" class="w-full bg-emerald-600 text-white py-3 rounded-xl">Create Plan</button>
-                </form>
-            `);
-        };
-
-        window.handleCreatePlan = async (e) => {
-            e.preventDefault();
-            const btn = getFormSubmitBtn(e.target);
-            setButtonLoading(btn, true);
-            try {
-                const name = document.getElementById('plan-name').value.trim();
-                const description = document.getElementById('plan-description').value.trim();
-                const price = parseFloat(document.getElementById('plan-price').value);
-                const billing_period = document.getElementById('plan-period').value;
-                const max_sites = parseInt(document.getElementById('plan-max-sites').value) || 0;
-                const featuresText = document.getElementById('plan-features').value.trim();
-                const features = featuresText ? featuresText.split('\n').filter(Boolean) : [];
-
-                if (!name || !price) return alert('Name and price are required.');
-                await addDoc(collection(db, 'subscription_plans'), {
-                    name, description, price, currency: 'RWF', billing_period, max_sites, features,
-                    status: 'active', created_at: new Date().toISOString(), updated_at: new Date().toISOString()
-                });
-                closeModal();
-                alert('Plan created successfully!');
-            } catch (err) { alert('Error: ' + err.message); }
-            finally { setButtonLoading(btn, false); }
-        };
-
-        window.editPlan = (id) => {
-            const plan = subscriptionPlans.find(p => p.id === id);
-            if (!plan) return;
-            openModal('Edit Plan', `
-                <form onsubmit="handleEditPlan(event, '${id}')" class="space-y-4">
-                    <input class="w-full border rounded-lg p-2.5" value="${plan.name}" id="edit-plan-name" required>
-                    <textarea class="w-full border rounded-lg p-2.5" id="edit-plan-description" rows="2">${plan.description || ''}</textarea>
-                    <div class="grid grid-cols-2 gap-3">
-                        <input class="w-full border rounded-lg p-2.5" type="number" value="${plan.price}" id="edit-plan-price" required>
-                        <select class="w-full border rounded-lg p-2.5" id="edit-plan-period">
-                            <option value="monthly" ${plan.billing_period === 'monthly' ? 'selected' : ''}>Monthly</option>
-                            <option value="yearly" ${plan.billing_period === 'yearly' ? 'selected' : ''}>Yearly</option>
-                        </select>
-                    </div>
-                    <input class="w-full border rounded-lg p-2.5" type="number" value="${plan.max_sites || 0}" id="edit-plan-max-sites" min="0">
-                    <div>
-                        <label class="text-sm font-medium">Features (one per line)</label>
-                        <textarea class="w-full border rounded-lg p-2.5" id="edit-plan-features" rows="4">${plan.features ? plan.features.join('\n') : ''}</textarea>
-                    </div>
-                    <button type="submit" class="w-full bg-emerald-600 text-white py-3 rounded-xl">Update Plan</button>
-                </form>
-            `);
-        };
-
-        window.handleEditPlan = async (e, id) => {
-            e.preventDefault();
-            const btn = getFormSubmitBtn(e.target);
-            setButtonLoading(btn, true);
-            try {
-                const name = document.getElementById('edit-plan-name').value.trim();
-                const description = document.getElementById('edit-plan-description').value.trim();
-                const price = parseFloat(document.getElementById('edit-plan-price').value);
-                const billing_period = document.getElementById('edit-plan-period').value;
-                const max_sites = parseInt(document.getElementById('edit-plan-max-sites').value) || 0;
-                const featuresText = document.getElementById('edit-plan-features').value.trim();
-                const features = featuresText ? featuresText.split('\n').filter(Boolean) : [];
-
-                await updateDoc(doc(db, 'subscription_plans', id), {
-                    name, description, price, billing_period, max_sites, features,
-                    updated_at: new Date().toISOString()
-                });
-                closeModal();
-                alert('Plan updated.');
-            } catch (err) { alert('Error: ' + err.message); }
-            finally { setButtonLoading(btn, false); }
-        };
-
-        window.deletePlan = (id) => {
-            if (confirm('Delete this plan?')) {
-                deleteDoc(doc(db, 'subscription_plans', id)).catch(err => alert('Error: ' + err.message));
-            }
-        };
-
-        // ── Assign Plan ──
-        window.openAssignPlanModal = () => {
-            const siteOpts = sitesData.map(s => `<option value="${s.id}">${s.name}</option>`).join('');
-            const planOpts = subscriptionPlans.filter(p => p.status === 'active').map(p => `<option value="${p.id}">${p.name} (${p.max_sites || '∞'} sites, ${p.price} RWF)</option>`).join('');
-
-            openModal('Assign Plan to Site', `
-                <form onsubmit="handleAssignPlan(event)" class="space-y-4">
-                    <select class="w-full border rounded-lg p-2.5" id="assign-site" required>
-                        <option value="">Select Site</option>
-                        ${siteOpts}
-                    </select>
-                    <select class="w-full border rounded-lg p-2.5" id="assign-plan" required>
-                        <option value="">Select Plan</option>
-                        ${planOpts}
-                    </select>
-                    <div class="grid grid-cols-2 gap-3">
-                        <input class="w-full border rounded-lg p-2.5" type="date" id="assign-start" required>
-                        <input class="w-full border rounded-lg p-2.5" type="date" id="assign-end" required>
-                    </div>
-                    <select class="w-full border rounded-lg p-2.5" id="assign-status">
-                        <option value="active">Active</option>
-                        <option value="pending">Pending</option>
-                        <option value="trial">Trial</option>
-                    </select>
-                    <button type="submit" class="w-full bg-emerald-600 text-white py-3 rounded-xl">Assign Subscription</button>
-                </form>
-            `);
-        };
-
-        window.handleAssignPlan = async (e) => {
-            e.preventDefault();
-            const btn = getFormSubmitBtn(e.target);
-            setButtonLoading(btn, true);
-            try {
-                const site_id = document.getElementById('assign-site').value;
-                const plan_id = document.getElementById('assign-plan').value;
-                const start_date = document.getElementById('assign-start').value;
-                const end_date = document.getElementById('assign-end').value;
-                const status = document.getElementById('assign-status').value;
-
-                const plan = subscriptionPlans.find(p => p.id === plan_id);
-                if (!plan) throw new Error('Plan not found');
-
-                await addDoc(collection(db, 'subscriptions'), {
-                    site_id, plan_id, plan_name: plan.name, price: plan.price,
-                    currency: plan.currency || 'RWF', billing_period: plan.billing_period || 'monthly',
-                    max_sites: plan.max_sites || 0, start_date, end_date, status,
-                    features: plan.features || [], owner_id: currentUser.uid,
-                    assigned_by: currentUser.uid,
-                    created_at: new Date().toISOString(), updated_at: new Date().toISOString()
-                });
-                closeModal();
-                alert('Subscription assigned successfully!');
-            } catch (err) { alert('Error: ' + err.message); }
-            finally { setButtonLoading(btn, false); }
-        };
-
-        window.editSiteSubscription = (id) => {
-            const sub = siteSubscriptions.find(s => s.id === id);
-            if (!sub) return;
-            const planOpts = subscriptionPlans.filter(p => p.status === 'active').map(p => `<option value="${p.id}" ${p.id === sub.plan_id ? 'selected' : ''}>${p.name}</option>`).join('');
-            openModal('Edit Subscription', `
-                <form onsubmit="handleEditSiteSubscription(event, '${id}')" class="space-y-4">
-                    <select class="w-full border rounded-lg p-2.5" id="edit-sub-plan" required>${planOpts}</select>
-                    <div class="grid grid-cols-2 gap-3">
-                        <input class="w-full border rounded-lg p-2.5" type="date" value="${sub.start_date || ''}" id="edit-sub-start" required>
-                        <input class="w-full border rounded-lg p-2.5" type="date" value="${sub.end_date || ''}" id="edit-sub-end" required>
-                    </div>
-                    <select class="w-full border rounded-lg p-2.5" id="edit-sub-status">
-                        <option value="active" ${sub.status === 'active' ? 'selected' : ''}>Active</option>
-                        <option value="pending" ${sub.status === 'pending' ? 'selected' : ''}>Pending</option>
-                        <option value="trial" ${sub.status === 'trial' ? 'selected' : ''}>Trial</option>
-                        <option value="expired" ${sub.status === 'expired' ? 'selected' : ''}>Expired</option>
-                        <option value="cancelled" ${sub.status === 'cancelled' ? 'selected' : ''}>Cancelled</option>
-                    </select>
-                    <button type="submit" class="w-full bg-emerald-600 text-white py-3 rounded-xl">Update</button>
-                </form>
-            `);
-        };
-
-        window.handleEditSiteSubscription = async (e, id) => {
-            e.preventDefault();
-            const btn = getFormSubmitBtn(e.target);
-            setButtonLoading(btn, true);
-            try {
-                const plan_id = document.getElementById('edit-sub-plan').value;
-                const start_date = document.getElementById('edit-sub-start').value;
-                const end_date = document.getElementById('edit-sub-end').value;
-                const status = document.getElementById('edit-sub-status').value;
-
-                const plan = subscriptionPlans.find(p => p.id === plan_id);
-                if (!plan) throw new Error('Plan not found');
-
-                await updateDoc(doc(db, 'subscriptions', id), {
-                    plan_id, plan_name: plan.name, price: plan.price,
-                    max_sites: plan.max_sites || 0, features: plan.features || [],
-                    start_date, end_date, status,
-                    updated_at: new Date().toISOString()
-                });
-                closeModal();
-                alert('Subscription updated.');
-            } catch (err) { alert('Error: ' + err.message); }
-            finally { setButtonLoading(btn, false); }
-        };
-
-        window.deleteSiteSubscription = (id) => {
-            if (confirm('Delete this subscription?')) {
-                deleteDoc(doc(db, 'subscriptions', id)).catch(err => alert('Error: ' + err.message));
-            }
-        };
 
         // =============== LOGOUT ===============
         window.handleLogout = async () => {
@@ -1340,14 +2087,11 @@
             window.location.href = 'https://shdr-construction.vercel.app/index.html';
         };
 
-        // ── Override showSection to refresh reports ──
         const originalShowSection = window.showSection;
         window.showSection = (section) => {
             originalShowSection(section);
             if (section === 'reports' && reportType === 'payroll') {
-                setTimeout(() => {
-                    // Simple refresh placeholder
-                }, 100);
+                setTimeout(updatePayrollReport, 100);
             }
         };
     </script>
