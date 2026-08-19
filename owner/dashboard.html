@@ -318,7 +318,7 @@
             <iconify-icon icon="material-symbols:photo-library-outline" width="20" height="20"></iconify-icon> Gallery
         </a>
         <a href="#" onclick="showSection('office')" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg text-slate-600 hover:bg-slate-50 transition-colors" data-section="office">
-            <iconify-icon icon="material-symbols:business-center-outline" width="20" height="20"></iconify-icon> Office Management
+            <iconify-icon icon="material-symbols:business-center-outline" width="20" height="20"></iconify-icon> Office Hub
         </a>
         <!-- NEW: Settings -->
         <a href="#" onclick="showSection('settings')" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg text-slate-600 hover:bg-slate-50 transition-colors" data-section="settings">
@@ -2390,11 +2390,11 @@
                                     <input type="file" id="settings-profile-photo-input" accept="image/*" style="display:none;" onchange="previewProfilePhoto(event)">
                                 </label>
                             </div>
-                            <button type="button" id="settings-remove-photo-btn" class="remove-photo-btn mt-2" onclick="removeProfilePhoto()">Remove Photo</button>
+                            <button type="button" id="settings-remove-photo-btn" class="remove-photo-btn mt-2" onclick="removeProfilePhoto()">Erase Photo</button>
                         </div>
                         <div class="field-group">
                             <label for="settings-full-name">Full Name</label>
-                            <input type="text" id="settings-full-name" placeholder="Your full name" value="${profile.full_name || ''}">
+                            <input type="text" id="settings-full-name" placeholder="Type your full name" value="${profile.full_name || ''}">
                         </div>
                         <div class="field-group">
                             <label for="settings-phone">Phone Number</label>
@@ -2404,7 +2404,7 @@
                             <label for="settings-email">Email Address</label>
                             <input type="email" id="settings-email" placeholder="example@email.com" value="${profile.email || ''}">
                         </div>
-                        <button type="submit" class="save-btn">Save Profile Changes</button>
+                        <button type="submit" class="save-btn">Save Changes</button>
                     </form>
                 </div>
             `;
@@ -2446,21 +2446,21 @@
         function renderSecuritySection() {
             return `
                 <div class="settings-card">
-                    <h3><iconify-icon icon="material-symbols:lock-outline" class="text-emerald-600"></iconify-icon> Change Password</h3>
-                    <form id="security-form" onsubmit="handlePasswordChange(event)">
+                    <h3><iconify-icon icon="material-symbols:lock-outline" class="text-emerald-600"></iconify-icon> Change Passcode</h3>
+                    <form id="security-form" onsubmit="handlePasscodeChange(event)">
                         <div class="field-group">
-                            <label for="current-password">Current Password</label>
-                            <input type="password" id="current-password" placeholder="Enter current password" required>
+                            <label for="current-password">Current Passcode</label>
+                            <input type="password" id="current-password" placeholder="Enter current passcode" required>
                         </div>
                         <div class="field-group">
-                            <label for="new-password">New Password</label>
-                            <input type="password" id="new-password" placeholder="Enter new password" required minlength="6">
+                            <label for="new-password">New Passcode</label>
+                            <input type="password" id="new-password" placeholder="Enter new passcode" required minlength="6">
                         </div>
                         <div class="field-group">
-                            <label for="confirm-password">Confirm New Password</label>
-                            <input type="password" id="confirm-password" placeholder="Confirm new password" required>
+                            <label for="confirm-password">Confirm New Passcode</label>
+                            <input type="password" id="confirm-password" placeholder="Confirm new passcode" required>
                         </div>
-                        <button type="submit" class="save-btn">Change Password</button>
+                        <button type="submit" class="save-btn">Change Passcode</button>
                     </form>
                 </div>
             `;
