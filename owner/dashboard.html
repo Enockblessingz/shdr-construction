@@ -1794,7 +1794,7 @@ function renderReports(container) {
     const siteOpts = sitesData.map(s => `<option value="${s.id}">${s.name}</option>`).join('');
 
     container.innerHTML = `
-        <h2 class="text-xl sm:text-2xl font-bold mb-4">Reports</h2>
+        <h2 class="text-xl sm:text-2xl font-bold mb-4">Generate Reports</h2>
 
         <div class="flex gap-2 p-1 bg-slate-200/60 rounded-xl mb-6 max-w-md">
             <button onclick="setReportType('general')" class="flex-1 px-4 py-2 rounded-lg text-sm font-semibold transition ${reportType === 'general' ? 'report-tab-active' : 'report-tab-inactive'}">
@@ -1965,7 +1965,7 @@ window.exportPayrollReport = (format) => {
         const headers = ['Worker', 'Position', 'Days Worked', 'Daily Rate (RWF)', 'Total Payable (RWF)'];
         const csvRows = [
             `"${company.name}"`, `"${company.address}"`, `"${company.city}"`, `"Tel: ${company.phone}"`,
-            `"Generated: ${generatedDate}"`, `"Report: Worker Attendance & Payroll"`, `"Site: ${siteName}"`, `"Period: ${period}"`, '',
+            `"Generated: ${generatedDate}"`, `"Report: Workers' Attendance & Payroll"`, `"Site: ${siteName}"`, `"Period: ${period}"`, '',
             headers.join(',')
         ];
         for (const w of workers) {
