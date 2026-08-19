@@ -2010,7 +2010,7 @@ window.exportPayrollReport = (format) => {
             </tfoot>
         </table>
     `;
-    const fullHTML = generateReportHTML('Worker Attendance & Payroll Report', bodyHTML, meta);
+    const fullHTML = generateReportHTML("Workers' Attendance & Payroll Report", bodyHTML, meta);
     const win = window.open('', '_blank', 'width=1000,height=700');
     if (!win) { alert('Please allow pop-ups to print the report.'); return; }
     win.document.write(fullHTML);
@@ -2044,7 +2044,7 @@ window.exportStockReport = (format) => {
         });
         const csvContent = [
             `"${company.name}"`, `"${company.address}"`, `"${company.city}"`, `"Tel: ${company.phone}"`,
-            `"Generated: ${generatedDate}"`, `"Report: Stock Overview"`, `"Site: ${siteLabel}"`, '',
+            `"Generated: ${generatedDate}"`, `"Report: Stock Overview"`, `"Site Name: ${siteLabel}"`, '',
             headers.join(','),
             ...rows.map(row => row.join(','))
         ].join('\n');
