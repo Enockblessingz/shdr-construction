@@ -5,14 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#059669">
     <title>SHDR Ltd. — Manager Dashboard</title>
-
-    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com/3.4.17"></script>
-    <!-- Google Font -->
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <!-- Iconify -->
     <script src="https://cdn.jsdelivr.net/npm/iconify-icon@2.3.0/dist/iconify-icon.min.js"></script>
-
     <style>
         * { font-family: 'Plus Jakarta Sans', sans-serif; }
         body { background: #f8fafc; }
@@ -42,7 +37,6 @@
         }
         @keyframes spin { to { transform: rotate(360deg); } }
         .role-option:hover { background: #ecfdf5; }
-
         .bottom-nav {
             display: none;
             position: fixed;
@@ -67,16 +61,12 @@
             border-radius: 8px;
             transition: 0.2s;
         }
-        .bottom-nav a.active {
-            color: #059669;
-            background: #ecfdf5;
-        }
+        .bottom-nav a.active { color: #059669; background: #ecfdf5; }
         .bottom-nav a iconify-icon { font-size: 1.3rem; }
         @media (max-width: 1023px) {
             .bottom-nav { display: flex; }
             main { padding-bottom: 80px; }
         }
-
         @media (max-width: 640px) {
             #content-area { padding: 1rem; }
             .stat-card { padding: 1rem; }
@@ -98,9 +88,8 @@
         .plan-card { transition: all 0.3s ease; }
         .plan-card:hover { transform: translateY(-4px); box-shadow: 0 20px 40px rgba(0,0,0,0.1); }
         .plan-popular { border-color: #059669; border-width: 2px; }
-        .paywall {
-            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
-        }
+        .paywall { background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); }
+        .disabled-btn { opacity: 0.5; cursor: not-allowed; }
     </style>
 </head>
 <body class="min-h-screen flex">
@@ -108,7 +97,7 @@
 <!-- Mobile overlay -->
 <div id="sidebar-overlay" class="fixed inset-0 bg-black/40 z-40 hidden lg:hidden" onclick="toggleSidebar()"></div>
 
-<!-- Sidebar (desktop) -->
+<!-- Sidebar -->
 <aside id="sidebar" class="fixed inset-y-0 left-0 w-64 bg-white border-r border-slate-200 z-50 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out flex flex-col shadow-sm">
     <div class="p-6 border-b border-slate-100">
         <div class="flex items-center gap-3">
@@ -176,18 +165,14 @@
         <span class="text-xs text-slate-500">Manager</span>
     </header>
 
-    <!-- Loading & Error -->
     <div id="global-loading" class="hidden p-6 flex justify-center"><div class="spinner"></div></div>
     <div id="global-error" class="hidden p-6"><div class="bg-red-50 border border-red-200 rounded-2xl p-4 text-red-700"></div></div>
 
-    <!-- Content Area -->
     <div id="content-area" class="flex-1 p-4 sm:p-6"></div>
 
     <footer class="bg-white border border-green-200 rounded-2xl shadow-md mx-4 mb-4">
         <div class="px-5 py-4 flex flex-col sm:flex-row items-center justify-between gap-2 sm:gap-0">
-            <span class="text-xs font-medium text-green-600 order-2 sm:order-1">
-                Version 1.0.0
-            </span>
+            <span class="text-xs font-medium text-green-600 order-2 sm:order-1">Version 1.0.0</span>
             <div class="text-sm text-gray-600 text-center order-1 sm:order-2">
                 Designed &amp; Powered by
                 <a href="https://wa.me/250790020086" target="_blank" rel="noopener noreferrer" class="text-green-600 hover:text-green-700 no-underline font-semibold">
@@ -198,7 +183,6 @@
         </div>
     </footer>
 
-    <!-- Bottom Navigation (mobile) -->
     <div class="bottom-nav" id="bottom-nav">
         <a href="#" onclick="showSection('dashboard')" class="active" data-section="dashboard">
             <iconify-icon icon="material-symbols:dashboard-outline"></iconify-icon> <span>Home</span>
@@ -217,7 +201,6 @@
         </a>
     </div>
 
-    <!-- Modals -->
     <div id="modal-overlay" class="modal fixed inset-0 bg-black/40 backdrop-blur-sm z-50 items-center justify-center p-4" onclick="closeModal()">
         <div class="bg-white rounded-2xl p-6 w-full max-w-md shadow-xl max-h-[90vh] overflow-y-auto" onclick="event.stopPropagation()">
             <div class="flex justify-between items-center mb-4">
@@ -261,7 +244,6 @@
         let unsubscribeSnapshots = [];
         let currentSection = 'dashboard';
         let workersTab = 'view';
-        let selectedWorkers = [];
         let reportType = 'general';
 
         // ── Helpers ──
@@ -286,26 +268,53 @@
         // ── Subscription Check ──
         function hasActiveSubscription(siteId) {
             if (!siteId) return false;
-            return siteSubscriptions.some(sub => sub.site_id === siteId && sub.status === 'active');
+            const now = new Date();
+            return siteSubscriptions.some(sub => {
+                if (sub.site_id !== siteId) return false;
+                if (sub.status !== 'active') return false;
+                if (sub.end_date) {
+                    const endDate = new Date(sub.end_date);
+                    if (endDate < now) return false;
+                }
+                return true;
+            });
         }
 
-        // ── Paywall Renderer ──
-        function renderPaywall(container) {
+        function getCurrentSubscription(siteId) {
+            if (!siteId) return null;
+            return siteSubscriptions.find(sub => {
+                if (sub.site_id !== siteId) return false;
+                if (sub.status !== 'active') return false;
+                if (sub.end_date) {
+                    const endDate = new Date(sub.end_date);
+                    if (endDate < new Date()) return false;
+                }
+                return true;
+            }) || null;
+        }
+
+        // ── Paywall ──
+        function renderPaywall(container, sectionName) {
             const site = assignedSites.find(s => s.id === currentSiteId);
             container.innerHTML = `
-                <div class="paywall rounded-2xl border border-amber-200 p-8 text-center max-w-2xl mx-auto mt-10">
+                <div class="paywall rounded-2xl border-2 border-amber-200 p-8 text-center max-w-2xl mx-auto mt-10">
                     <iconify-icon icon="material-symbols:subscriptions-outline" class="text-7xl text-amber-500 mx-auto block mb-4"></iconify-icon>
-                    <h2 class="text-2xl font-bold text-slate-800 mb-2">No Active Subscription</h2>
-                    <p class="text-slate-600 mb-4">
-                        This site (${site?.name || 'Current Site'}) does not have an active subscription plan.
-                        Please contact the owner to activate a plan.
+                    <h2 class="text-2xl font-bold text-slate-800 mb-2">Subscription Required</h2>
+                    <p class="text-slate-600 mb-2">
+                        <strong>${sectionName}</strong> is locked because <strong>${site?.name || 'this site'}</strong> 
+                        does not have an active subscription plan.
                     </p>
                     <p class="text-sm text-slate-500 mb-6">
-                        Once a subscription is activated, you'll have full access to all features.
+                        Please contact the owner to activate a plan and unlock all features.
                     </p>
-                    <button onclick="showSection('subscription')" class="px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-medium transition">
-                        View Subscription Plans
-                    </button>
+                    <div class="flex flex-wrap gap-4 justify-center">
+                        <button onclick="showSection('subscription')" class="px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-medium transition">
+                            View Subscription Plans
+                        </button>
+                        <button onclick="showSection('dashboard')" class="px-6 py-3 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-xl font-medium transition">
+                            Go to Dashboard
+                        </button>
+                    </div>
                 </div>
             `;
         }
@@ -401,19 +410,12 @@
             const unsubTrans = onSnapshot(transQ, snap => { stockTransactions = snap.docs.map(d => ({ id: d.id, ...d.data() })); refreshCurrentSection(); });
             unsubscribeSnapshots.push(unsubTrans);
 
-            // ── Subscription listeners ──
             const plansQ = query(collection(db, 'subscription_plans'));
-            const unsubPlans = onSnapshot(plansQ, snap => {
-                subscriptionPlans = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-                refreshCurrentSection();
-            });
+            const unsubPlans = onSnapshot(plansQ, snap => { subscriptionPlans = snap.docs.map(d => ({ id: d.id, ...d.data() })); refreshCurrentSection(); });
             unsubscribeSnapshots.push(unsubPlans);
 
             const subsQ = query(collection(db, 'subscriptions'), where('site_id', '==', siteId));
-            const unsubSubs = onSnapshot(subsQ, snap => {
-                siteSubscriptions = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-                refreshCurrentSection();
-            });
+            const unsubSubs = onSnapshot(subsQ, snap => { siteSubscriptions = snap.docs.map(d => ({ id: d.id, ...d.data() })); refreshCurrentSection(); });
             unsubscribeSnapshots.push(unsubSubs);
         }
 
@@ -444,19 +446,12 @@
             const container = document.getElementById('content-area');
             container.innerHTML = '';
 
-            // ── SUBSCRIPTION ACCESS CONTROL ──
-            // Always allow 'subscription' section, and 'dashboard' can show a paywall or summary.
-            // For all other sections, check subscription.
-            const restrictedSections = ['materials', 'stock', 'workers', 'progress', 'reports', 'gallery'];
-            const isRestricted = restrictedSections.includes(section);
-
-            if (isRestricted && !hasActiveSubscription(currentSiteId)) {
-                renderPaywall(container);
-                // Also update sidebar to highlight subscription? Already handled.
+            const restricted = ['materials','stock','workers','progress','reports','gallery'];
+            if (restricted.includes(section) && !hasActiveSubscription(currentSiteId)) {
+                renderPaywall(container, section.charAt(0).toUpperCase() + section.slice(1));
                 return;
             }
 
-            // Render the actual section
             switch(section) {
                 case 'dashboard': renderDashboard(container); break;
                 case 'materials': renderMaterials(container); break;
@@ -476,7 +471,6 @@
 
         window.switchSite = (siteId) => {
             currentSiteId = siteId;
-            selectedWorkers = [];
             attachListeners();
             showSection(currentSection);
         };
@@ -488,7 +482,6 @@
             document.getElementById('modal-overlay').classList.add('active');
         };
 
-        // ── IMGBB Upload Helper ──
         async function uploadImageToImgbb(file) {
             const formData = new FormData();
             formData.append('image', file);
@@ -506,12 +499,7 @@
             const completedTasks = progressTasks.filter(t => t.status === 'completed').length;
             const totalTasks = progressTasks.length;
             const completionPercent = totalTasks ? Math.round((completedTasks / totalTasks) * 100) : 0;
-
-            const currentSub = siteSubscriptions.find(s => s.status === 'active');
-            const planName = currentSub?.plan_name || 'No Active Plan';
-            const planBadge = currentSub ? 
-                `<span class="text-xs bg-emerald-100 text-emerald-700 px-2 py-1 rounded-full">${planName}</span>` :
-                `<span class="text-xs bg-amber-100 text-amber-700 px-2 py-1 rounded-full">No Plan</span>`;
+            const currentSub = getCurrentSubscription(currentSiteId);
 
             container.innerHTML = `
                 <div class="bg-white rounded-2xl overflow-hidden shadow-sm mb-4 sm:mb-6">
@@ -520,7 +508,9 @@
                             <div>
                                 <h1 class="text-2xl sm:text-4xl font-bold text-white">${site.name}</h1>
                                 <p class="text-emerald-100 mt-2 text-sm sm:text-base">${site.location || ''}</p>
-                                <div class="mt-2">${planBadge}</div>
+                                <div class="mt-2">
+                                    ${currentSub ? `<span class="text-xs bg-emerald-100 text-emerald-700 px-2 py-1 rounded-full">${currentSub.plan_name}</span>` : `<span class="text-xs bg-amber-100 text-amber-700 px-2 py-1 rounded-full">No Plan</span>`}
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -529,9 +519,8 @@
                         <div><span class="text-sm text-slate-500">Manager</span><p class="text-lg font-bold">${managerProfile.full_name || 'You'}</p></div>
                     </div>
                 </div>
-
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4 sm:mb-6">
-                    <div class="stat-card bg-white rounded-2xl p-4 border border-slate-200 shadow-sm">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+                    <div class="stat-card bg-white rounded-2xl p-4 border shadow-sm">
                         <div class="flex items-center gap-4">
                             <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
                                 <iconify-icon icon="material-symbols:engineering" width="24" class="text-blue-700"></iconify-icon>
@@ -539,7 +528,7 @@
                             <div><p class="text-sm text-slate-500">Workers On Site</p><p class="text-2xl font-bold">${totalWorkers}</p></div>
                         </div>
                     </div>
-                    <div class="stat-card bg-white rounded-2xl p-4 border border-slate-200 shadow-sm">
+                    <div class="stat-card bg-white rounded-2xl p-4 border shadow-sm">
                         <div class="flex items-center gap-4">
                             <div class="w-12 h-12 bg-amber-100 rounded-xl flex items-center justify-center">
                                 <iconify-icon icon="material-symbols:trending-up" width="24" class="text-amber-700"></iconify-icon>
@@ -548,144 +537,898 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div class="bg-white rounded-2xl border p-4 shadow-sm">
                         <h3 class="font-semibold text-sm mb-3">Recent Materials</h3>
-                        <div class="space-y-1 text-sm">
-                            ${materialsData.slice(-4).reverse().map(m => `
-                                <div class="flex justify-between"><span>${m.name}</span><span class="text-slate-400">${m.quantity_used || 0} used</span></div>
-                            `).join('') || '<p class="text-slate-400">No materials recorded.</p>'}
-                        </div>
+                        ${materialsData.slice(-4).reverse().map(m => `<div class="flex justify-between text-sm"><span>${m.name}</span><span class="text-slate-400">${m.quantity_used || 0} used</span></div>`).join('') || '<p class="text-slate-400 text-sm">No materials recorded.</p>'}
                     </div>
                     <div class="bg-white rounded-2xl border p-4 shadow-sm">
                         <h3 class="font-semibold text-sm mb-3">Pending Tasks</h3>
-                        <div class="space-y-1 text-sm">
-                            ${progressTasks.filter(t => t.status === 'pending').slice(0,4).map(t => `
-                                <div class="flex justify-between"><span>${t.name}</span><span class="text-slate-400">Due: ${new Date(t.end_date).toLocaleDateString()}</span></div>
-                            `).join('') || '<p class="text-slate-400">No pending tasks.</p>'}
-                        </div>
+                        ${progressTasks.filter(t => t.status === 'pending').slice(0,4).map(t => `<div class="flex justify-between text-sm"><span>${t.name}</span><span class="text-slate-400">Due: ${new Date(t.end_date).toLocaleDateString()}</span></div>`).join('') || '<p class="text-slate-400 text-sm">No pending tasks.</p>'}
                     </div>
                 </div>
             `;
         }
 
-        // =============== MATERIALS (unchanged – included for completeness) ===============
-        // All existing functions (renderMaterials, editMaterial, deleteMaterial, etc.) remain unchanged.
-        // They are the same as in the full manager file.
-
-        // =============== STOCK (unchanged) ===============
-        // All existing stock functions remain unchanged.
-
-        // =============== WORKERS (unchanged) ===============
-        // All existing worker functions remain unchanged.
-
-        // =============== PROGRESS (unchanged) ===============
-        // All existing progress functions remain unchanged.
-
-        // =============== REPORTS (unchanged) ===============
-        // All existing report functions remain unchanged.
-
-        // =============== GALLERY (unchanged) ===============
-        // All existing gallery functions remain unchanged.
-
-        // =============== SUBSCRIPTION (Manager View) ===============
-        function renderSubscription(container) {
+        // =============== MATERIALS ===============
+        function renderMaterials(container) {
+            const grouped = {};
+            materialsData.forEach(m => {
+                const date = m.date_used ? new Date(m.date_used).toLocaleDateString() : 'No date';
+                if (!grouped[date]) grouped[date] = [];
+                grouped[date].push(m);
+            });
             const site = assignedSites.find(s => s.id === currentSiteId);
-            const currentSub = siteSubscriptions.find(s => s.status === 'active');
+            const siteName = site?.name || 'Unknown';
+
+            let html = `
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-xl sm:text-2xl font-bold">Materials Used</h2>
+                    <button onclick="openAddMaterialModal()" class="px-3 py-2 bg-emerald-600 text-white rounded-xl hover:bg-emerald-700 flex items-center gap-2 text-sm">
+                        <iconify-icon icon="material-symbols:add"></iconify-icon> Record Usage
+                    </button>
+                </div>
+            `;
+            if (Object.keys(grouped).length === 0) {
+                html += '<p class="text-slate-500">No materials recorded yet.</p>';
+            } else {
+                const sorted = Object.keys(grouped).sort((a,b) => new Date(b) - new Date(a));
+                sorted.forEach(date => {
+                    html += `<div class="mb-4"><h3 class="font-bold text-sm text-slate-700 mb-2">${date}</h3><div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">`;
+                    grouped[date].forEach(m => {
+                        const total = calculateTotal(m.quantity_used || 0, m.unit_cost || 0);
+                        html += `
+                            <div class="bg-white rounded-2xl border overflow-hidden shadow-sm">
+                                <img src="${m.image || PLACEHOLDER_IMG}" class="w-full h-40 object-cover">
+                                <div class="p-4">
+                                    <h3 class="font-bold">${m.name}</h3>
+                                    <div class="mt-2 space-y-1 text-sm">
+                                        <div class="flex justify-between"><span class="text-slate-500">Qty Used</span><span>${m.quantity_used || 0}</span></div>
+                                        <div class="flex justify-between"><span class="text-slate-500">Unit Cost</span><span>${(m.unit_cost || 0).toFixed(2)} RWF</span></div>
+                                        <div class="flex justify-between font-semibold text-emerald-600"><span>Total</span><span>${total.toFixed(2)} RWF</span></div>
+                                    </div>
+                                    <div class="mt-3 flex gap-2">
+                                        <button onclick="editMaterial('${m.id}')" class="text-xs text-emerald-600 hover:text-emerald-800">Edit</button>
+                                        <button onclick="deleteMaterial('${m.id}')" class="text-xs text-red-500 hover:text-red-700">Delete</button>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    html += `</div></div>`;
+                });
+            }
+            container.innerHTML = html;
+        }
+
+        window.openAddMaterialModal = () => {
+            let count = 0;
+            const addEntry = () => {
+                count++;
+                const container = document.getElementById('material-entries');
+                const div = document.createElement('div');
+                div.className = 'material-entry';
+                div.innerHTML = `
+                    <div class="grid grid-cols-2 gap-2">
+                        <input class="border rounded-lg p-2 text-sm" placeholder="Material Name" name="mat-name-${count}" required>
+                        <input class="border rounded-lg p-2 text-sm" placeholder="Quantity Used" type="number" name="mat-used-${count}" required step="0.01">
+                    </div>
+                    <div class="grid grid-cols-2 gap-2 mt-2">
+                        <input class="border rounded-lg p-2 text-sm" placeholder="Unit Cost (RWF)" type="number" name="mat-unit-${count}" step="0.01">
+                        <input class="border rounded-lg p-2 text-sm" type="file" accept="image/*" name="mat-image-${count}">
+                    </div>
+                `;
+                container.appendChild(div);
+            };
+            const modalContent = `
+                <div class="mb-4"><label class="block text-sm font-medium mb-1">Date</label><input type="date" id="usageDate" value="${getTodayISO()}" class="w-full border rounded-lg p-2 text-sm" required></div>
+                <div id="material-entries"></div>
+                <button type="button" onclick="addMaterialEntry()" class="text-emerald-600 text-sm mt-2">+ Add another</button>
+                <button onclick="submitBatchMaterials()" class="w-full bg-emerald-600 text-white py-2 rounded-xl mt-4">Save All</button>
+            `;
+            openModal('Record Material Usage', modalContent);
+            addEntry();
+            window.addMaterialEntry = addEntry;
+        };
+
+        window.submitBatchMaterials = async () => {
+            const date = document.getElementById('usageDate').value;
+            if (!date) { alert('Please select a date.'); return; }
+            const dateObj = new Date(date + 'T00:00:00.000Z');
+            const entries = document.querySelectorAll('#material-entries .material-entry');
+            const usage = [];
+            for (const entry of entries) {
+                const name = entry.querySelector('[name^="mat-name-"]').value.trim();
+                const used = parseFloat(entry.querySelector('[name^="mat-used-"]').value) || 0;
+                const unitCost = parseFloat(entry.querySelector('[name^="mat-unit-"]').value) || 0;
+                const file = entry.querySelector('[name^="mat-image-"]').files[0];
+                if (name && used > 0) usage.push({ name, used, unitCost, file });
+            }
+            if (!usage.length) { alert('No valid materials.'); return; }
+
+            // Check stock
+            for (const u of usage) {
+                const stock = stockData.find(s => s.site_id === currentSiteId && s.material_name === u.name);
+                if (stock && stock.quantity < u.used) {
+                    alert(`Insufficient stock. Only ${stock.quantity} ${stock.unit || 'units'} of ${u.name} available.`);
+                    return;
+                }
+            }
+
+            try {
+                const batch = writeBatch(db);
+                for (const u of usage) {
+                    let imageUrl = '';
+                    if (u.file) imageUrl = await uploadImageToImgbb(u.file);
+                    const ref = doc(collection(db, 'materials'));
+                    batch.set(ref, {
+                        site_id: currentSiteId,
+                        name: u.name,
+                        quantity_used: u.used,
+                        unit_cost: u.unitCost,
+                        image: imageUrl,
+                        date_used: dateObj.toISOString(),
+                        created_at: new Date().toISOString()
+                    });
+                    // Deduct stock
+                    const stock = stockData.find(s => s.site_id === currentSiteId && s.material_name === u.name);
+                    if (stock) {
+                        const newQty = stock.quantity - u.used;
+                        batch.update(doc(db, 'stock', stock.id), { quantity: newQty, updated_at: new Date().toISOString() });
+                        const transRef = doc(collection(db, 'stock_transactions'));
+                        batch.set(transRef, {
+                            site_id: currentSiteId,
+                            stock_id: stock.id,
+                            material_name: u.name,
+                            transaction_type: 'MATERIAL_USAGE',
+                            quantity: u.used,
+                            previous_quantity: stock.quantity,
+                            new_quantity: newQty,
+                            unit: stock.unit || 'units',
+                            notes: `Material usage: ${u.used} used`,
+                            recorded_by: currentUser.uid,
+                            created_at: new Date().toISOString()
+                        });
+                    }
+                }
+                await batch.commit();
+                closeModal();
+                alert('Materials saved and stock updated.');
+            } catch (err) { alert('Error: ' + err.message); }
+        };
+
+        window.editMaterial = (id) => {
+            const m = materialsData.find(x => x.id === id);
+            if (!m) return;
+            openModal('Edit Material', `
+                <form onsubmit="handleEditMaterial(event, '${id}')" class="space-y-4">
+                    <input class="w-full border rounded-lg p-3" value="${m.name}" id="edit-mat-name" required>
+                    <input class="w-full border rounded-lg p-3" value="${m.quantity_used || 0}" type="number" id="edit-mat-used" required step="0.01">
+                    <input class="w-full border rounded-lg p-3" value="${m.unit_cost || 0}" type="number" id="edit-mat-unit" required step="0.01">
+                    <div><label class="text-sm font-medium">New Image</label><input type="file" id="edit-mat-image" accept="image/*" class="w-full mt-1"></div>
+                    <button type="submit" class="w-full bg-emerald-600 text-white py-3 rounded-xl">Update</button>
+                </form>
+            `);
+        };
+
+        window.handleEditMaterial = async (e, id) => {
+            e.preventDefault();
+            const form = e.target;
+            const btn = getFormSubmitBtn(form);
+            setButtonLoading(btn, true);
+            try {
+                const name = document.getElementById('edit-mat-name').value.trim();
+                const used = parseFloat(document.getElementById('edit-mat-used').value) || 0;
+                const unit = parseFloat(document.getElementById('edit-mat-unit').value) || 0;
+                const file = document.getElementById('edit-mat-image').files[0];
+                const old = materialsData.find(x => x.id === id);
+                if (!old) throw new Error('Not found');
+                // Restore old stock, deduct new
+                const stock = stockData.find(s => s.site_id === currentSiteId && s.material_name === old.name);
+                const batch = writeBatch(db);
+                let imageUrl = old.image;
+                if (file) imageUrl = await uploadImageToImgbb(file);
+                batch.update(doc(db, 'materials', id), { name, quantity_used: used, unit_cost: unit, image: imageUrl, updated_at: new Date().toISOString() });
+                if (stock) {
+                    const restored = stock.quantity + (old.quantity_used || 0);
+                    if (used > restored) {
+                        alert(`Insufficient stock. Available: ${restored}`);
+                        return;
+                    }
+                    const newQty = restored - used;
+                    batch.update(doc(db, 'stock', stock.id), { quantity: newQty, updated_at: new Date().toISOString() });
+                    const transRef = doc(collection(db, 'stock_transactions'));
+                    batch.set(transRef, {
+                        site_id: currentSiteId,
+                        stock_id: stock.id,
+                        material_name: name,
+                        transaction_type: 'MATERIAL_USAGE_EDITED',
+                        quantity: used - (old.quantity_used || 0),
+                        previous_quantity: stock.quantity,
+                        new_quantity: newQty,
+                        unit: stock.unit || 'units',
+                        notes: `Usage edited: ${old.quantity_used || 0} → ${used}`,
+                        recorded_by: currentUser.uid,
+                        created_at: new Date().toISOString()
+                    });
+                }
+                await batch.commit();
+                closeModal();
+                alert('Updated.');
+            } catch (err) { alert('Error: ' + err.message); }
+            finally { setButtonLoading(btn, false); }
+        };
+
+        window.deleteMaterial = (id) => {
+            if (!confirm('Delete? Stock will be restored.')) return;
+            const m = materialsData.find(x => x.id === id);
+            if (!m) return;
+            (async () => {
+                try {
+                    const stock = stockData.find(s => s.site_id === currentSiteId && s.material_name === m.name);
+                    const batch = writeBatch(db);
+                    batch.delete(doc(db, 'materials', id));
+                    if (stock) {
+                        const newQty = stock.quantity + (m.quantity_used || 0);
+                        batch.update(doc(db, 'stock', stock.id), { quantity: newQty, updated_at: new Date().toISOString() });
+                        const transRef = doc(collection(db, 'stock_transactions'));
+                        batch.set(transRef, {
+                            site_id: currentSiteId,
+                            stock_id: stock.id,
+                            material_name: m.name,
+                            transaction_type: 'MATERIAL_USAGE_DELETED',
+                            quantity: m.quantity_used || 0,
+                            previous_quantity: stock.quantity,
+                            new_quantity: newQty,
+                            unit: stock.unit || 'units',
+                            notes: 'Usage deleted, stock restored.',
+                            recorded_by: currentUser.uid,
+                            created_at: new Date().toISOString()
+                        });
+                    }
+                    await batch.commit();
+                    alert('Deleted.');
+                } catch (err) { alert('Error: ' + err.message); }
+            })();
+        };
+
+        // =============== STOCK ===============
+        function renderStock(container) {
+            const siteStock = stockData.filter(s => s.site_id === currentSiteId);
+            let html = `
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-xl sm:text-2xl font-bold">Stock Management</h2>
+                    <button onclick="openAddStockModal()" class="px-3 py-2 bg-emerald-600 text-white rounded-xl hover:bg-emerald-700 flex items-center gap-2 text-sm">
+                        <iconify-icon icon="material-symbols:add"></iconify-icon> Receive Stock
+                    </button>
+                </div>
+                <div class="bg-white rounded-2xl border p-4 shadow-sm mb-4">
+                    <p class="text-sm text-slate-600"><strong>Site:</strong> ${assignedSites.find(s => s.id === currentSiteId)?.name}</p>
+                </div>
+            `;
+            if (!siteStock.length) {
+                html += '<p class="text-slate-500">No stock records. Click "Receive Stock" to add.</p>';
+            } else {
+                html += `<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">`;
+                siteStock.forEach(item => {
+                    const status = item.quantity <= 0 ? 'Out of Stock' :
+                                 (item.minimum_quantity && item.quantity <= item.minimum_quantity ? 'Low Stock' : 'Normal');
+                    const statusClass = status === 'Normal' ? 'stock-status-normal' :
+                                       status === 'Low Stock' ? 'stock-status-low' : 'stock-status-out';
+                    const unitCost = materialsData.filter(m => m.site_id === currentSiteId && m.name === item.material_name).pop()?.unit_cost || 0;
+                    const value = item.quantity * unitCost;
+                    html += `
+                        <div class="bg-white rounded-2xl border p-4 shadow-sm">
+                            <div class="flex justify-between items-start">
+                                <h3 class="font-bold">${item.material_name}</h3>
+                                <span class="text-xs font-medium px-2 py-1 rounded-full ${statusClass}">${status}</span>
+                            </div>
+                            <p class="text-2xl font-bold text-emerald-600">${item.quantity}</p>
+                            <p class="text-sm text-slate-500">${item.unit || 'units'}</p>
+                            <p class="text-xs text-slate-400">Value: ${value.toFixed(2)} RWF</p>
+                            ${item.minimum_quantity ? `<p class="text-xs text-slate-400">Min: ${item.minimum_quantity}</p>` : ''}
+                            <p class="text-xs text-slate-400">Updated: ${item.updated_at ? new Date(item.updated_at).toLocaleDateString() : '—'}</p>
+                            <div class="mt-3 flex gap-2">
+                                <button onclick="editStockItem('${item.id}')" class="text-xs text-emerald-600">Edit</button>
+                                <button onclick="viewStockHistory('${item.id}')" class="text-xs text-blue-600">History</button>
+                            </div>
+                        </div>
+                    `;
+                });
+                html += `</div>`;
+            }
+            // Recent transactions
+            const recent = stockTransactions.slice(0, 5);
+            if (recent.length) {
+                html += `<div class="mt-6 bg-white rounded-2xl border p-4 shadow-sm">
+                    <h3 class="font-semibold text-sm mb-2">Recent Transactions</h3>
+                    ${recent.map(t => `<div class="flex justify-between text-sm border-b pb-1"><span>${t.material_name} ${t.transaction_type === 'STOCK_ADDED' ? '+' : ''}${t.quantity} ${t.unit || ''}</span><span class="text-slate-400">${new Date(t.created_at).toLocaleDateString()}</span></div>`).join('')}
+                </div>`;
+            }
+            container.innerHTML = html;
+        }
+
+        window.openAddStockModal = () => {
+            const materials = [...new Set(materialsData.map(m => m.name).filter(Boolean))];
+            const opts = materials.map(n => `<option value="${n}">${n}</option>`).join('');
+            openModal('Receive Stock', `
+                <form onsubmit="handleAddStock(event)" class="space-y-4">
+                    <input list="mat-list" class="w-full border rounded-lg p-2.5" placeholder="Material Name" id="stock-material" required>
+                    <datalist id="mat-list">${opts}</datalist>
+                    <input type="number" step="0.01" class="w-full border rounded-lg p-2.5" placeholder="Quantity" id="stock-qty" required min="0">
+                    <select class="w-full border rounded-lg p-2.5" id="stock-unit">
+                        <option value="bags">Bags</option><option value="tons">Tons</option><option value="kg">Kg</option>
+                        <option value="litres">Litres</option><option value="pieces">Pieces</option><option value="rolls">Rolls</option>
+                        <option value="cubic meters">Cubic Meters</option>
+                    </select>
+                    <input type="number" step="0.01" class="w-full border rounded-lg p-2.5" placeholder="Min Stock (optional)" id="stock-min">
+                    <input class="w-full border rounded-lg p-2.5" placeholder="Notes" id="stock-notes">
+                    <button type="submit" class="w-full bg-emerald-600 text-white py-3 rounded-xl">Add Stock</button>
+                </form>
+            `);
+        };
+
+        window.handleAddStock = async (e) => {
+            e.preventDefault();
+            const btn = getFormSubmitBtn(e.target);
+            setButtonLoading(btn, true);
+            try {
+                const name = document.getElementById('stock-material').value.trim();
+                const qty = parseFloat(document.getElementById('stock-qty').value) || 0;
+                const unit = document.getElementById('stock-unit').value;
+                const min = parseFloat(document.getElementById('stock-min').value) || null;
+                const notes = document.getElementById('stock-notes').value.trim();
+                if (!name || qty <= 0) { alert('Name and quantity required.'); return; }
+                const existing = stockData.find(s => s.site_id === currentSiteId && s.material_name === name);
+                let ref;
+                if (existing) {
+                    ref = doc(db, 'stock', existing.id);
+                    await updateDoc(ref, { quantity: existing.quantity + qty, unit, minimum_quantity: min, notes, updated_at: new Date().toISOString() });
+                } else {
+                    ref = await addDoc(collection(db, 'stock'), {
+                        site_id: currentSiteId, material_name: name, quantity: qty, unit, minimum_quantity: min, notes,
+                        created_at: new Date().toISOString(), updated_at: new Date().toISOString()
+                    });
+                }
+                await addDoc(collection(db, 'stock_transactions'), {
+                    site_id: currentSiteId, stock_id: existing ? existing.id : ref.id, material_name: name,
+                    transaction_type: 'STOCK_ADDED', quantity: qty,
+                    previous_quantity: existing ? existing.quantity : 0,
+                    new_quantity: existing ? existing.quantity + qty : qty,
+                    unit, notes: `Received${notes ? ': ' + notes : ''}`,
+                    recorded_by: currentUser.uid, created_at: new Date().toISOString()
+                });
+                closeModal();
+                alert('Stock added.');
+            } catch (err) { alert('Error: ' + err.message); }
+            finally { setButtonLoading(btn, false); }
+        };
+
+        window.editStockItem = (id) => {
+            const item = stockData.find(s => s.id === id);
+            if (!item) return;
+            openModal('Edit Stock', `
+                <form onsubmit="handleEditStock(event, '${id}')" class="space-y-4">
+                    <input class="w-full border rounded-lg p-2.5" value="${item.material_name}" id="edit-stock-name" required>
+                    <input type="number" step="0.01" class="w-full border rounded-lg p-2.5" value="${item.quantity}" id="edit-stock-qty" required min="0">
+                    <select class="w-full border rounded-lg p-2.5" id="edit-stock-unit">
+                        ${['bags','tons','kg','litres','pieces','rolls','cubic meters'].map(u => `<option value="${u}" ${u === item.unit ? 'selected' : ''}>${u}</option>`).join('')}
+                    </select>
+                    <input type="number" step="0.01" class="w-full border rounded-lg p-2.5" value="${item.minimum_quantity || ''}" id="edit-stock-min">
+                    <input class="w-full border rounded-lg p-2.5" value="${item.notes || ''}" id="edit-stock-notes">
+                    <button type="submit" class="w-full bg-emerald-600 text-white py-3 rounded-xl">Update</button>
+                </form>
+            `);
+        };
+
+        window.handleEditStock = async (e, id) => {
+            e.preventDefault();
+            const btn = getFormSubmitBtn(e.target);
+            setButtonLoading(btn, true);
+            try {
+                const name = document.getElementById('edit-stock-name').value.trim();
+                const qty = parseFloat(document.getElementById('edit-stock-qty').value) || 0;
+                const unit = document.getElementById('edit-stock-unit').value;
+                const min = parseFloat(document.getElementById('edit-stock-min').value) || null;
+                const notes = document.getElementById('edit-stock-notes').value.trim();
+                const old = stockData.find(s => s.id === id);
+                await updateDoc(doc(db, 'stock', id), { material_name: name, quantity: qty, unit, minimum_quantity: min, notes, updated_at: new Date().toISOString() });
+                const diff = qty - old.quantity;
+                if (diff !== 0) {
+                    await addDoc(collection(db, 'stock_transactions'), {
+                        site_id: currentSiteId, stock_id: id, material_name: name,
+                        transaction_type: 'STOCK_ADJUSTMENT', quantity: Math.abs(diff),
+                        previous_quantity: old.quantity, new_quantity: qty, unit, notes: `Manual adjustment${notes ? ': ' + notes : ''}`,
+                        recorded_by: currentUser.uid, created_at: new Date().toISOString()
+                    });
+                }
+                closeModal();
+                alert('Updated.');
+            } catch (err) { alert('Error: ' + err.message); }
+            finally { setButtonLoading(btn, false); }
+        };
+
+        window.viewStockHistory = (id) => {
+            const t = stockTransactions.filter(x => x.stock_id === id);
+            if (!t.length) { alert('No history.'); return; }
+            openModal('Stock History', t.map(tr => `
+                <div class="flex justify-between text-sm border-b pb-1">
+                    <span>${tr.transaction_type === 'STOCK_ADDED' ? '+' : '-'} ${tr.quantity} ${tr.unit || ''}</span>
+                    <span class="text-slate-400">${new Date(tr.created_at).toLocaleDateString()}</span>
+                </div>
+            `).join(''));
+        };
+
+        // =============== WORKERS ===============
+        function renderWorkers(container) {
+            container.innerHTML = `
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-xl sm:text-2xl font-bold">Workers</h2>
+                    <button onclick="openAddWorkerModal()" class="px-3 py-2 bg-emerald-600 text-white rounded-xl hover:bg-emerald-700 flex items-center gap-2 text-sm">
+                        <iconify-icon icon="material-symbols:add"></iconify-icon> Add Worker
+                    </button>
+                </div>
+                <div class="flex gap-2 p-1 bg-slate-100 rounded-xl mb-4">
+                    <button onclick="setWorkersTab('view')" class="px-4 py-2 rounded-lg text-sm font-semibold ${workersTab === 'view' ? 'tab-active' : 'tab-inactive'}">View</button>
+                    <button onclick="setWorkersTab('record')" class="px-4 py-2 rounded-lg text-sm font-semibold ${workersTab === 'record' ? 'tab-active' : 'tab-inactive'}">Attendance</button>
+                </div>
+                <div id="workers-content">${workersTab === 'view' ? renderWorkersView() : renderWorkersRecord()}</div>
+            `;
+            if (workersTab === 'record') setTimeout(updateAttendanceSummary, 100);
+        }
+
+        window.setWorkersTab = (tab) => { workersTab = tab; showSection('workers'); };
+
+        function renderWorkersView() {
+            if (!siteWorkersData.length) return '<p class="text-slate-500">No workers added.</p>';
+            let html = '<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">';
+            siteWorkersData.forEach((w, i) => {
+                html += `
+                    <div class="bg-white rounded-2xl border overflow-hidden shadow-sm">
+                        <img src="${w.image || PLACEHOLDER_IMG}" class="w-full h-48 object-cover cursor-pointer" onclick="openWorkerImage(${i})">
+                        <div class="p-4">
+                            <h3 class="font-bold">${w.name}</h3>
+                            <p class="text-sm text-emerald-600">${w.role || 'Worker'}</p>
+                            <div class="mt-2 text-sm"><span class="text-slate-500">Salary:</span> ${(w.salary || 0).toLocaleString()} RWF</div>
+                            <div class="text-sm"><span class="text-slate-500">Phone:</span> ${w.phone || '—'}</div>
+                            <button onclick="viewWorkerDetail('${w.id}')" class="mt-2 text-xs text-emerald-600 hover:underline">Details</button>
+                        </div>
+                    </div>
+                `;
+            });
+            html += '</div>';
+            return html;
+        }
+
+        function renderWorkersRecord() {
+            if (!siteWorkersData.length) return '<p class="text-slate-500">No workers to record.</p>';
+            const today = getTodayISO();
+            const already = attendanceData.some(a => a.date === today && a.site_id === currentSiteId);
+            let html = `
+                <div class="bg-white rounded-2xl border p-4">
+                    <div class="mb-4"><label class="block text-sm font-medium">Date</label><input type="date" id="attendance-date" value="${today}" class="w-full border rounded-lg p-2 text-sm" onchange="updateAttendanceSummary()"></div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-60 overflow-y-auto">
+                        ${siteWorkersData.map(w => {
+                            const daily = w.payment_method === 'daily' ? (w.salary || 0) : Math.round((w.salary || 0) / 30);
+                            return `
+                                <div class="flex items-center gap-3 p-2 hover:bg-slate-50 rounded-lg worker-checkbox">
+                                    <input type="checkbox" id="worker-chk-${w.id}" value="${w.id}" class="w-4 h-4 text-emerald-600" ${already ? 'disabled' : ''}>
+                                    <label for="worker-chk-${w.id}" class="flex-1 cursor-pointer">
+                                        <span class="font-medium">${w.name}</span>
+                                        <span class="text-xs text-slate-500 ml-2">${w.role}</span>
+                                        <span class="text-xs text-slate-400 ml-2">${daily.toLocaleString()} RWF/day</span>
+                                    </label>
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
+                    ${already ? '<p class="text-amber-600 text-sm mt-2">Attendance already recorded for today.</p>' : ''}
+                    <div id="attendance-summary" class="mt-4 p-3 bg-slate-50 rounded-lg hidden">
+                        <p class="text-sm">Selected: <span id="selected-count">0</span></p>
+                        <p class="text-sm font-bold">Total: <span id="total-cost">0</span> RWF</p>
+                        <button onclick="submitAttendance()" class="mt-2 w-full bg-emerald-600 text-white py-2 rounded-xl text-sm">Save Attendance</button>
+                    </div>
+                    <div class="mt-6">
+                        <h4 class="font-semibold text-sm mb-2">History</h4>
+                        ${attendanceData.length ? renderAttendanceHistory() : '<p class="text-slate-400 text-sm">No records.</p>'}
+                    </div>
+                </div>
+            `;
+            setTimeout(() => {
+                document.querySelectorAll('.worker-checkbox input[type="checkbox"]').forEach(cb => cb.addEventListener('change', updateAttendanceSummary));
+                updateAttendanceSummary();
+            }, 50);
+            return html;
+        }
+
+        function renderAttendanceHistory() {
+            const groups = {};
+            attendanceData.forEach(a => {
+                const d = a.date || 'Unknown';
+                if (!groups[d]) groups[d] = [];
+                groups[d].push(a);
+            });
+            let html = '';
+            Object.keys(groups).sort((a,b) => new Date(b) - new Date(a)).forEach(date => {
+                const workers = groups[date];
+                const total = workers.reduce((s, a) => s + (a.daily_rate || 0), 0);
+                html += `<div class="mb-2 p-2 bg-slate-50 rounded-lg"><p class="font-semibold text-sm">${date}</p><p class="text-xs text-slate-500">${workers.length} workers • ${total.toLocaleString()} RWF</p><div class="flex flex-wrap gap-1 mt-1">${workers.map(a => `<span class="bg-white border px-2 py-0.5 rounded text-xs">${a.name}</span>`).join('')}</div></div>`;
+            });
+            return html;
+        }
+
+        window.updateAttendanceSummary = () => {
+            const checkboxes = document.querySelectorAll('.worker-checkbox input[type="checkbox"]:checked');
+            const ids = Array.from(checkboxes).map(cb => cb.value);
+            const selected = siteWorkersData.filter(w => ids.includes(w.id));
+            const summary = document.getElementById('attendance-summary');
+            if (!summary) return;
+            if (!ids.length) { summary.classList.add('hidden'); return; }
+            summary.classList.remove('hidden');
+            document.getElementById('selected-count').textContent = ids.length;
+            let total = 0;
+            selected.forEach(w => {
+                const daily = w.payment_method === 'daily' ? (w.salary || 0) : Math.round((w.salary || 0) / 30);
+                total += daily;
+            });
+            document.getElementById('total-cost').textContent = total.toLocaleString();
+            window._selectedWorkerIds = ids;
+        };
+
+        window.submitAttendance = async () => {
+            const date = document.getElementById('attendance-date').value;
+            if (!date) { alert('Select date.'); return; }
+            const ids = window._selectedWorkerIds || [];
+            if (!ids.length) { alert('Select at least one worker.'); return; }
+            try {
+                const existing = attendanceData.filter(a => a.date === date && a.site_id === currentSiteId);
+                const batch = writeBatch(db);
+                existing.forEach(a => batch.delete(doc(db, 'worker_attendance', a.id)));
+                ids.forEach(id => {
+                    const w = siteWorkersData.find(x => x.id === id);
+                    if (!w) return;
+                    const daily = w.payment_method === 'daily' ? (w.salary || 0) : Math.round((w.salary || 0) / 30);
+                    const ref = doc(collection(db, 'worker_attendance'));
+                    batch.set(ref, {
+                        site_id: currentSiteId, worker_id: w.id, name: w.name, role: w.role || 'Worker',
+                        daily_rate: daily, date, status: 'present',
+                        recorded_by: currentUser.uid, recorded_at: new Date().toISOString()
+                    });
+                });
+                await batch.commit();
+                alert('Attendance saved.');
+                document.querySelectorAll('.worker-checkbox input[type="checkbox"]').forEach(cb => cb.checked = false);
+                updateAttendanceSummary();
+            } catch (err) { alert('Error: ' + err.message); }
+        };
+
+        window.openWorkerImage = (index) => {
+            const w = siteWorkersData[index];
+            if (!w) return;
+            openModal('Worker Photo', `<img src="${w.image || PLACEHOLDER_IMG}" class="w-full max-h-96 object-contain rounded-lg">`);
+        };
+
+        window.viewWorkerDetail = (id) => {
+            const w = siteWorkersData.find(x => x.id === id);
+            if (!w) return;
+            openModal('Worker Details', `
+                <div class="space-y-2 text-sm">
+                    <p><strong>Name:</strong> ${w.name}</p>
+                    <p><strong>Role:</strong> ${w.role || '—'}</p>
+                    <p><strong>Payment:</strong> ${w.payment_method || '—'}</p>
+                    <p><strong>Salary:</strong> ${(w.salary || 0).toLocaleString()} RWF</p>
+                    <p><strong>Phone:</strong> ${w.phone || '—'}</p>
+                    <p><strong>ID:</strong> ${w.id}</p>
+                </div>
+            `);
+        };
+
+        window.openAddWorkerModal = () => {
+            const roles = [...new Set(workerPositions.map(p => p.role).filter(Boolean))];
+            const common = ['Mason','Carpenter','Plumber','Electrician','Welder','Painter','Tiler','Roofer','Driver','Cleaner'];
+            const all = [...new Set([...common, ...roles])];
+            const opts = all.map(r => `<option value="${r}">${r}</option>`).join('');
+            openModal('Add Worker', `
+                <form onsubmit="handleAddWorker(event)" class="space-y-4">
+                    <input class="w-full border rounded-lg p-3" placeholder="Full Name" id="worker-name" required>
+                    <select class="w-full border rounded-lg p-3" id="worker-role" required><option value="">Role</option>${opts}</select>
+                    <select class="w-full border rounded-lg p-3" id="worker-payment" required><option value="">Payment</option><option value="daily">Daily</option><option value="monthly">Monthly</option></select>
+                    <input class="w-full border rounded-lg p-3" placeholder="Salary (RWF)" type="number" id="worker-salary" required min="0">
+                    <input class="w-full border rounded-lg p-3" placeholder="Phone" type="tel" id="worker-phone">
+                    <div><label class="text-sm font-medium">Photo</label><input type="file" id="worker-image" accept="image/*" class="w-full mt-1"></div>
+                    <button type="submit" class="w-full bg-emerald-600 text-white py-3 rounded-xl">Save</button>
+                </form>
+            `);
+        };
+
+        window.handleAddWorker = async (e) => {
+            e.preventDefault();
+            const btn = getFormSubmitBtn(e.target);
+            setButtonLoading(btn, true);
+            try {
+                const name = document.getElementById('worker-name').value.trim();
+                const role = document.getElementById('worker-role').value;
+                const payment = document.getElementById('worker-payment').value;
+                const salary = parseFloat(document.getElementById('worker-salary').value) || 0;
+                const phone = document.getElementById('worker-phone').value.trim();
+                const file = document.getElementById('worker-image').files[0];
+                if (!name || !role || !payment) { alert('Required fields.'); return; }
+                let imageUrl = '';
+                if (file) imageUrl = await uploadImageToImgbb(file);
+                await addDoc(collection(db, 'site_workers'), {
+                    site_id: currentSiteId, name, role, payment_method: payment, salary, phone, image: imageUrl,
+                    added_by: currentUser.uid, added_at: new Date().toISOString()
+                });
+                closeModal();
+                alert('Worker added.');
+            } catch (err) { alert('Error: ' + err.message); }
+            finally { setButtonLoading(btn, false); }
+        };
+
+        // =============== PROGRESS ===============
+        function renderProgress(container) {
+            container.innerHTML = `
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-xl sm:text-2xl font-bold">Progress Tasks</h2>
+                    <button onclick="openAddTaskModal()" class="px-3 py-2 bg-emerald-600 text-white rounded-xl hover:bg-emerald-700 text-sm">Add Task</button>
+                </div>
+                <div class="bg-white rounded-2xl border overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm">
+                            <thead class="bg-slate-50 text-xs"><tr><th class="px-3 py-2">Action</th><th class="px-3 py-2">Task</th><th class="px-3 py-2">Start</th><th class="px-3 py-2">End</th><th class="px-3 py-2">Status</th></tr></thead>
+                            <tbody>${progressTasks.map(t => `
+                                <tr>
+                                    <td class="px-3 py-2 text-center">
+                                        ${t.status !== 'completed' ? `<button onclick="markTaskCompleted('${t.id}')" class="bg-gray-300 hover:bg-gray-400 text-white w-8 h-8 rounded-full inline-flex items-center justify-center"><iconify-icon icon="material-symbols:check" width="18"></iconify-icon></button>` : `<span class="text-emerald-600"><iconify-icon icon="material-symbols:check-circle" width="20"></iconify-icon></span>`}
+                                    </td>
+                                    <td class="px-3 py-2 font-medium">${t.name}</td>
+                                    <td class="px-3 py-2">${new Date(t.start_date).toLocaleDateString()}</td>
+                                    <td class="px-3 py-2">${new Date(t.end_date).toLocaleDateString()}</td>
+                                    <td class="px-3 py-2"><span class="px-2 py-1 rounded-full text-xs ${t.status === 'completed' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}">${t.status}</span></td>
+                                </tr>
+                            `).join('') || '<tr><td colspan="5" class="p-4 text-slate-500">No tasks.</td></tr>'}</tbody>
+                        </table>
+                    </div>
+                </div>
+            `;
+        }
+
+        window.openAddTaskModal = () => {
+            const siteOpts = assignedSites.map(s => `<option value="${s.id}">${s.name}</option>`).join('');
+            openModal('Add Task', `
+                <form onsubmit="handleAddTask(event)" class="space-y-4">
+                    <input class="w-full border rounded-lg p-3" placeholder="Task Name" id="task-name" required>
+                    <select class="w-full border rounded-lg p-3" id="task-site" required><option value="">Site</option>${siteOpts}</select>
+                    <input class="w-full border rounded-lg p-3" type="date" id="task-start" required>
+                    <div class="flex gap-2"><input class="w-1/2 border rounded-lg p-3" placeholder="Period" type="number" id="task-period" min="1" required><select class="w-1/2 border rounded-lg p-3" id="task-unit"><option value="days">Days</option><option value="weeks">Weeks</option></select></div>
+                    <button type="submit" class="w-full bg-emerald-600 text-white py-3 rounded-xl">Save</button>
+                </form>
+            `);
+        };
+
+        window.handleAddTask = async (e) => {
+            e.preventDefault();
+            const btn = getFormSubmitBtn(e.target);
+            setButtonLoading(btn, true);
+            try {
+                const name = document.getElementById('task-name').value.trim();
+                const site_id = document.getElementById('task-site').value;
+                const start = document.getElementById('task-start').value;
+                const period = parseInt(document.getElementById('task-period').value);
+                const unit = document.getElementById('task-unit').value;
+                if (!name || !site_id || !start) { alert('Required.'); return; }
+                const startDate = new Date(start);
+                let end = new Date(startDate);
+                if (unit === 'days') end.setDate(end.getDate() + period);
+                else end.setDate(end.getDate() + period * 7);
+                await addDoc(collection(db, 'progress_tasks'), {
+                    site_id, name, start_date: startDate.toISOString(), end_date: end.toISOString(), status: 'pending'
+                });
+                closeModal();
+            } catch (err) { alert('Error: ' + err.message); }
+            finally { setButtonLoading(btn, false); }
+        };
+
+        window.markTaskCompleted = async (id) => {
+            if (!confirm('Mark as completed?')) return;
+            await updateDoc(doc(db, 'progress_tasks', id), { status: 'completed', updated_at: new Date().toISOString() });
+        };
+
+        // =============== REPORTS ===============
+        function renderReports(container) {
+            container.innerHTML = `
+                <h2 class="text-xl sm:text-2xl font-bold mb-4">Reports</h2>
+                <div class="flex gap-2 p-1 bg-slate-100 rounded-xl mb-4">
+                    <button onclick="setReportType('general')" class="px-4 py-2 rounded-lg text-sm font-semibold ${reportType === 'general' ? 'tab-active' : 'tab-inactive'}">General</button>
+                    <button onclick="setReportType('payroll')" class="px-4 py-2 rounded-lg text-sm font-semibold ${reportType === 'payroll' ? 'tab-active' : 'tab-inactive'}">Payroll</button>
+                </div>
+                <div id="report-content">
+                    ${reportType === 'general' ? renderGeneralReport() : renderPayrollReport()}
+                </div>
+            `;
+            if (reportType === 'payroll') setTimeout(updatePayrollReport, 100);
+        }
+
+        window.setReportType = (type) => { reportType = type; showSection('reports'); };
+
+        function renderGeneralReport() {
+            return `
+                <div class="bg-white rounded-2xl border p-4 max-w-lg space-y-4">
+                    <select id="report-dept" class="w-full border rounded-lg p-3"><option value="all">All</option><option value="materials">Materials</option><option value="workers">Workers</option><option value="finances">Finances</option></select>
+                    <input type="date" id="report-start" class="w-full border rounded-lg p-3" placeholder="Start">
+                    <input type="date" id="report-end" class="w-full border rounded-lg p-3" placeholder="End">
+                    <div class="flex gap-3"><button onclick="exportReport('csv')" class="flex-1 bg-emerald-600 text-white py-3 rounded-xl">CSV</button><button onclick="exportReport('print')" class="flex-1 bg-slate-800 text-white py-3 rounded-xl">PDF</button></div>
+                </div>
+            `;
+        }
+
+        function renderPayrollReport() {
+            return `
+                <div class="space-y-4">
+                    <div class="bg-white rounded-2xl border p-4 grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <input type="date" id="payroll-start" class="w-full border rounded-lg p-2.5" placeholder="Start" onchange="updatePayrollReport()">
+                        <input type="date" id="payroll-end" class="w-full border rounded-lg p-2.5" placeholder="End" onchange="updatePayrollReport()">
+                        <input type="text" id="payroll-search" class="w-full border rounded-lg p-2.5" placeholder="Search worker..." oninput="updatePayrollReport()">
+                    </div>
+                    <div id="payroll-summary" class="grid grid-cols-2 md:grid-cols-4 gap-4"></div>
+                    <div id="payroll-table" class="bg-white rounded-2xl border overflow-hidden"></div>
+                    <div class="flex gap-3 justify-end"><button onclick="exportPayrollReport('csv')" class="px-6 py-2 bg-emerald-600 text-white rounded-xl">CSV</button><button onclick="exportPayrollReport('print')" class="px-6 py-2 bg-slate-800 text-white rounded-xl">PDF</button></div>
+                </div>
+            `;
+        }
+
+        window.updatePayrollReport = () => {
+            const start = document.getElementById('payroll-start')?.value || '';
+            const end = document.getElementById('payroll-end')?.value || '';
+            const search = document.getElementById('payroll-search')?.value?.toLowerCase() || '';
+            let filtered = attendanceData.filter(a => a.site_id === currentSiteId);
+            if (start) filtered = filtered.filter(a => a.date >= start);
+            if (end) filtered = filtered.filter(a => a.date <= end);
+            if (search) filtered = filtered.filter(a => a.name.toLowerCase().includes(search));
+
+            const map = {};
+            filtered.forEach(r => {
+                const key = r.worker_id || r.id;
+                if (!map[key]) map[key] = { name: r.name, role: r.role, days: 0, total: 0, rate: r.daily_rate || 0 };
+                map[key].days++;
+                map[key].total += (r.daily_rate || 0);
+            });
+            const workers = Object.values(map);
+            const totalDays = workers.reduce((s, w) => s + w.days, 0);
+            const totalPay = workers.reduce((s, w) => s + w.total, 0);
+            const avg = totalDays > 0 ? totalPay / totalDays : 0;
+
+            const summary = document.getElementById('payroll-summary');
+            if (summary) {
+                summary.innerHTML = `
+                    <div class="bg-white rounded-2xl border p-4"><p class="text-xs">Workers</p><p class="text-2xl font-bold">${workers.length}</p></div>
+                    <div class="bg-white rounded-2xl border p-4"><p class="text-xs">Worker-Days</p><p class="text-2xl font-bold">${totalDays}</p></div>
+                    <div class="bg-white rounded-2xl border p-4"><p class="text-xs">Total Payroll</p><p class="text-2xl font-bold text-emerald-600">${totalPay.toLocaleString()} RWF</p></div>
+                    <div class="bg-white rounded-2xl border p-4"><p class="text-xs">Avg Daily</p><p class="text-2xl font-bold">${avg.toLocaleString()} RWF</p></div>
+                `;
+            }
+            const table = document.getElementById('payroll-table');
+            if (table) {
+                if (!workers.length) { table.innerHTML = '<div class="p-4 text-slate-500">No records.</div>'; return; }
+                table.innerHTML = `
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm">
+                            <thead class="bg-slate-50"><tr><th class="px-3 py-2">Worker</th><th class="px-3 py-2">Position</th><th class="px-3 py-2 text-center">Days</th><th class="px-3 py-2 text-right">Rate</th><th class="px-3 py-2 text-right">Total</th></tr></thead>
+                            <tbody>${workers.map(w => `<tr><td class="px-3 py-2">${w.name}</td><td class="px-3 py-2">${w.role || '—'}</td><td class="px-3 py-2 text-center">${w.days}</td><td class="px-3 py-2 text-right">${w.rate.toLocaleString()} RWF</td><td class="px-3 py-2 text-right font-semibold text-emerald-600">${w.total.toLocaleString()} RWF</td></tr>`).join('')}</tbody>
+                            <tfoot class="bg-slate-50 font-bold"><tr><td colspan="2" class="px-3 py-2 text-right">Total</td><td class="px-3 py-2 text-center">${totalDays}</td><td></td><td class="px-3 py-2 text-right text-emerald-600">${totalPay.toLocaleString()} RWF</td></tr></tfoot>
+                        </table>
+                    </div>
+                `;
+            }
+        };
+
+        window.exportReport = (format) => {
+            const dept = document.getElementById('report-dept').value;
+            const start = document.getElementById('report-start').value;
+            const end = document.getElementById('report-end').value;
+            // Simplified export – in production, full implementation would be here.
+            alert('Export feature: would generate ' + format.toUpperCase() + ' with filters.');
+        };
+
+        window.exportPayrollReport = (format) => {
+            alert('Export Payroll: would generate ' + format.toUpperCase() + ' with current filters.');
+        };
+
+        // =============== GALLERY ===============
+        function renderGallery(container) {
+            container.innerHTML = `
+                <h2 class="text-xl sm:text-2xl font-bold mb-4">Gallery</h2>
+                <div class="bg-white rounded-2xl border p-4 mb-4">
+                    <form onsubmit="handleGalleryUpload(event)" class="space-y-3">
+                        <input type="file" id="gallery-image" accept="image/*" required class="w-full border rounded-lg p-2 text-sm">
+                        <textarea id="gallery-desc" placeholder="Description" rows="2" class="w-full border rounded-lg p-2 text-sm"></textarea>
+                        <button type="submit" class="w-full bg-emerald-600 text-white py-2 rounded-xl text-sm">Upload</button>
+                    </form>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    ${galleryData.map((item, i) => `
+                        <div class="bg-white rounded-2xl border overflow-hidden shadow-sm">
+                            <img src="${item.image || PLACEHOLDER_IMG}" class="w-full h-40 object-cover cursor-pointer" onclick="openGalleryImage(${i})">
+                            <div class="p-3"><p class="text-sm">${item.description || 'No description'}</p><p class="text-xs text-slate-400">${item.uploaded_at ? new Date(item.uploaded_at).toLocaleDateString() : ''}</p></div>
+                        </div>
+                    `).join('') || '<p class="text-slate-400 col-span-full">No images.</p>'}
+                </div>
+            `;
+        }
+
+        window.openGalleryImage = (index) => {
+            const item = galleryData[index];
+            if (!item) return;
+            openModal('Gallery Image', `<img src="${item.image || PLACEHOLDER_IMG}" class="w-full max-h-96 object-contain rounded-lg">`);
+        };
+
+        window.handleGalleryUpload = async (e) => {
+            e.preventDefault();
+            const btn = e.target.querySelector('button[type="submit"]');
+            setButtonLoading(btn, true);
+            try {
+                const file = document.getElementById('gallery-image').files[0];
+                const desc = document.getElementById('gallery-desc').value.trim();
+                if (!file) { alert('Select image.'); return; }
+                const url = await uploadImageToImgbb(file);
+                await addDoc(collection(db, 'gallery'), {
+                    site_id: currentSiteId, image: url, description: desc || '',
+                    uploaded_at: new Date().toISOString()
+                });
+                document.getElementById('gallery-image').value = '';
+                document.getElementById('gallery-desc').value = '';
+            } catch (err) { alert('Error: ' + err.message); }
+            finally { setButtonLoading(btn, false); }
+        };
+
+        // =============== SUBSCRIPTION ===============
+        function renderSubscription(container) {
+            const sub = getCurrentSubscription(currentSiteId);
             const plans = subscriptionPlans.filter(p => p.status === 'active');
 
             let html = `
                 <h2 class="text-xl sm:text-2xl font-bold mb-4">Subscription</h2>
-                <div class="space-y-6">
+                <div class="space-y-4">
             `;
-
-            // Current Subscription Status
-            if (currentSub) {
-                const plan = subscriptionPlans.find(p => p.id === currentSub.plan_id);
-                const expiryDate = currentSub.end_date ? new Date(currentSub.end_date).toLocaleDateString() : 'N/A';
-                const isExpiring = currentSub.end_date ? new Date(currentSub.end_date) < new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) : false;
-
+            if (sub) {
+                const plan = subscriptionPlans.find(p => p.id === sub.plan_id);
+                const expiry = sub.end_date ? new Date(sub.end_date).toLocaleDateString() : 'N/A';
                 html += `
-                    <div class="bg-white rounded-2xl border p-6 shadow-sm">
-                        <div class="flex flex-wrap items-start justify-between gap-4">
-                            <div>
-                                <h3 class="text-lg font-bold text-slate-800">Current Plan: ${currentSub.plan_name}</h3>
-                                <p class="text-sm text-slate-500 mt-1">${plan?.description || 'No description'}</p>
-                                <div class="mt-3 space-y-1 text-sm">
-                                    <p><strong>Price:</strong> ${currentSub.price?.toLocaleString()} RWF / ${currentSub.billing_period || 'month'}</p>
-                                    <p><strong>Expires:</strong> ${expiryDate} ${isExpiring ? '⚠️' : ''}</p>
-                                    <p><strong>Status:</strong> <span class="px-2 py-1 rounded-full text-xs font-medium ${currentSub.status === 'active' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}">${currentSub.status}</span></p>
-                                </div>
-                            </div>
-                            ${isExpiring ? `
-                                <div class="bg-amber-50 border border-amber-200 rounded-lg p-3 text-sm text-amber-700">
-                                    <strong>⚠️ Renewal Reminder</strong>
-                                    <p>Your subscription will expire on ${expiryDate}. Please contact the owner to renew.</p>
-                                </div>
-                            ` : ''}
-                        </div>
-                        ${currentSub.features ? `
-                            <div class="mt-4 pt-4 border-t border-slate-100">
-                                <p class="font-semibold text-sm mb-2">Included Features:</p>
-                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-1">
-                                    ${currentSub.features.map(f => `
-                                        <div class="flex items-center gap-2 text-sm">
-                                            <iconify-icon icon="material-symbols:check-circle" class="text-emerald-500"></iconify-icon>
-                                            ${f}
-                                        </div>
-                                    `).join('')}
-                                </div>
-                            </div>
-                        ` : ''}
+                    <div class="bg-white rounded-2xl border-2 border-emerald-200 p-6">
+                        <h3 class="text-lg font-bold">${sub.plan_name}</h3>
+                        <p class="text-sm text-slate-500">${plan?.description || ''}</p>
+                        <p class="mt-2"><strong>Price:</strong> ${sub.price?.toLocaleString()} RWF / ${sub.billing_period}</p>
+                        <p><strong>Expires:</strong> ${expiry}</p>
+                        <p><strong>Status:</strong> <span class="bg-green-100 text-green-700 px-2 py-1 rounded-full text-xs">Active</span></p>
+                        ${sub.features ? `<div class="mt-3"><p class="font-semibold">Features:</p><ul class="list-disc list-inside text-sm">${sub.features.map(f => `<li>${f}</li>`).join('')}</ul></div>` : ''}
                     </div>
                 `;
             } else {
                 html += `
-                    <div class="bg-white rounded-2xl border p-6 shadow-sm text-center">
-                        <iconify-icon icon="material-symbols:subscriptions-outline" class="text-6xl text-slate-300 mx-auto block mb-4"></iconify-icon>
-                        <h3 class="text-lg font-bold text-slate-800">No Active Subscription</h3>
-                        <p class="text-sm text-slate-500 mt-2">This site does not have an active subscription plan.</p>
-                        <p class="text-sm text-slate-400 mt-1">Please contact the owner to set up a subscription.</p>
+                    <div class="bg-white rounded-2xl border-2 border-amber-200 p-6 text-center">
+                        <iconify-icon icon="material-symbols:subscriptions-outline" class="text-6xl text-slate-300 mx-auto block"></iconify-icon>
+                        <h3 class="text-lg font-bold mt-4">No Active Subscription</h3>
+                        <p class="text-sm text-slate-500">Contact the owner to assign a plan.</p>
                     </div>
                 `;
             }
 
-            // Available Plans (if any)
-            if (plans.length > 0) {
-                html += `
-                    <div class="bg-white rounded-2xl border p-6 shadow-sm">
-                        <h3 class="text-lg font-bold text-slate-800 mb-4">Available Plans</h3>
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            ${plans.map(plan => {
-                                const isCurrent = currentSub?.plan_id === plan.id;
-                                return `
-                                    <div class="plan-card bg-white rounded-2xl border p-6 shadow-sm ${isCurrent ? 'plan-popular' : ''}">
-                                        <div class="flex justify-between items-start">
-                                            <div>
-                                                <h4 class="font-bold text-lg text-slate-800">${plan.name}</h4>
-                                                <p class="text-sm text-slate-500">${plan.description || ''}</p>
-                                            </div>
-                                            ${isCurrent ? `<span class="text-xs bg-emerald-100 text-emerald-700 px-2 py-1 rounded-full">Current</span>` : ''}
-                                        </div>
-                                        <div class="mt-3">
-                                            <span class="text-2xl font-bold text-emerald-600">${plan.price?.toLocaleString()}</span>
-                                            <span class="text-sm text-slate-500"> RWF / ${plan.billing_period || 'month'}</span>
-                                        </div>
-                                        <div class="mt-4 space-y-1 text-sm">
-                                            ${plan.features ? plan.features.map(f => `
-                                                <div class="flex items-center gap-2">
-                                                    <iconify-icon icon="material-symbols:check-circle" class="text-emerald-500"></iconify-icon>
-                                                    ${f}
-                                                </div>
-                                            `).join('') : ''}
-                                        </div>
-                                    </div>
-                                `;
-                            }).join('')}
+            if (plans.length) {
+                html += `<div class="bg-white rounded-2xl border p-6"><h3 class="font-semibold mb-3">Available Plans</h3><div class="grid grid-cols-1 md:grid-cols-3 gap-4">`;
+                plans.forEach(p => {
+                    const isCurrent = sub?.plan_id === p.id;
+                    html += `
+                        <div class="border rounded-xl p-4 ${isCurrent ? 'border-emerald-500 border-2' : ''}">
+                            <h4 class="font-bold">${p.name}</h4>
+                            <p class="text-sm text-slate-500">${p.description || ''}</p>
+                            <p class="text-2xl font-bold text-emerald-600">${p.price?.toLocaleString()}</p>
+                            <p class="text-sm text-slate-500">/ ${p.billing_period}</p>
+                            ${isCurrent ? '<span class="inline-block mt-2 text-xs bg-emerald-100 text-emerald-700 px-2 py-1 rounded-full">Current</span>' : ''}
+                            ${p.features ? `<div class="mt-2 text-sm">${p.features.map(f => `<div class="flex items-center gap-1"><iconify-icon icon="material-symbols:check-circle" class="text-emerald-500"></iconify-icon> ${f}</div>`).join('')}</div>` : ''}
                         </div>
-                    </div>
-                `;
+                    `;
+                });
+                html += `</div></div>`;
             }
 
             html += `</div>`;
