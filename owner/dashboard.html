@@ -1713,9 +1713,9 @@
             }
         };
 
-        // =============== REPORTS ===============
+   // =============== REPORTS ===============
 
-// ── Shared company details ──
+// ── Shared company details (updated) ──
 function getCompanyDetails() {
     return {
         name: 'SHDR Ltd',
@@ -1770,7 +1770,7 @@ function generateReportHTML(title, bodyHTML, meta, extraStyles = '') {
                     <div>
                         <div class="company-name">${company.name}</div>
                         <div class="company-subtitle">Construction Management System</div>
-                        <div class="company-details">${company.address}<br>${company.city}<br><strong>Tel:</strong> ${company.phone}</div>
+                        <div class="company-details">${company.address}<br>${company.location}<br>${company.city}<br><strong>Tel:</strong> ${company.phone}<br><strong>Email:</strong> ${company.email}</div>
                     </div>
                 </div>
                 <div class="report-title">
@@ -1796,7 +1796,7 @@ function renderReports(container) {
     const siteOpts = sitesData.map(s => `<option value="${s.id}">${s.name}</option>`).join('');
 
     container.innerHTML = `
-        <h2 class="text-xl sm:text-2xl font-bold mb-4">Generate Reports</h2>
+        <h2 class="text-xl sm:text-2xl font-bold mb-4">Reports</h2>
 
         <div class="flex gap-2 p-1 bg-slate-200/60 rounded-xl mb-6 max-w-md">
             <button onclick="setReportType('general')" class="flex-1 px-4 py-2 rounded-lg text-sm font-semibold transition ${reportType === 'general' ? 'report-tab-active' : 'report-tab-inactive'}">
@@ -1966,8 +1966,8 @@ window.exportPayrollReport = (format) => {
     if (format === 'csv') {
         const headers = ['Worker', 'Position', 'Days Worked', 'Daily Rate (RWF)', 'Total Payable (RWF)'];
         const csvRows = [
-            `"${company.name}"`, `"${company.address}"`, `"${company.city}"`, `"Tel: ${company.phone}"`,
-            `"Generated: ${generatedDate}"`, `"Report: Workers' Attendance & Payroll"`, `"Site: ${siteName}"`, `"Period: ${period}"`, '',
+            `"${company.name}"`, `"${company.address}"`, `"${company.location}"`, `"${company.city}"`, `"Tel: ${company.phone}"`, `"Email: ${company.email}"`,
+            `"Generated: ${generatedDate}"`, `"Report: Worker Attendance & Payroll"`, `"Site: ${siteName}"`, `"Period: ${period}"`, '',
             headers.join(',')
         ];
         for (const w of workers) {
@@ -2012,7 +2012,7 @@ window.exportPayrollReport = (format) => {
             </tfoot>
         </table>
     `;
-    const fullHTML = generateReportHTML("Workers' Attendance & Payroll Report", bodyHTML, meta);
+    const fullHTML = generateReportHTML('Worker Attendance & Payroll Report', bodyHTML, meta);
     const win = window.open('', '_blank', 'width=1000,height=700');
     if (!win) { alert('Please allow pop-ups to print the report.'); return; }
     win.document.write(fullHTML);
@@ -2020,7 +2020,7 @@ window.exportPayrollReport = (format) => {
     setTimeout(() => win.print(), 500);
 };
 
-// ── Export: Stock ──
+// ── Export: Stock (now respects selected site) ──
 window.exportStockReport = (format) => {
     const siteId = document.getElementById('stock-report-site')?.value || 'all';
     let filteredStock = siteId === 'all' ? stockData : stockData.filter(s => s.site_id === siteId);
@@ -2045,8 +2045,8 @@ window.exportStockReport = (format) => {
             return [siteName, item.material_name, item.quantity, item.unit || 'units', item.minimum_quantity || '', unitCost.toFixed(2), stockValue.toFixed(2), status, item.updated_at ? new Date(item.updated_at).toLocaleDateString() : ''];
         });
         const csvContent = [
-            `"${company.name}"`, `"${company.address}"`, `"${company.city}"`, `"Tel: ${company.phone}"`,
-            `"Generated: ${generatedDate}"`, `"Report: Stock Overview"`, `"Site Name: ${siteLabel}"`, '',
+            `"${company.name}"`, `"${company.address}"`, `"${company.location}"`, `"${company.city}"`, `"Tel: ${company.phone}"`, `"Email: ${company.email}"`,
+            `"Generated: ${generatedDate}"`, `"Report: Stock Overview"`, `"Site: ${siteLabel}"`, '',
             headers.join(','),
             ...rows.map(row => row.join(','))
         ].join('\n');
@@ -2071,7 +2071,7 @@ window.exportStockReport = (format) => {
         return `<tr><td>${siteName}</td><td>${item.material_name}</td><td>${item.quantity}</td><td>${item.unit || 'units'}</td><td>${item.minimum_quantity || '-'}</td><td>${unitCost.toFixed(2)}</td><td>${stockValue.toFixed(2)}</td><td>${status}</td><td>${item.updated_at ? new Date(item.updated_at).toLocaleDateString() : '-'}</td></tr>`;
     }).join('');
 
-    const meta = `<strong>Site Name:</strong> ${siteLabel} &nbsp;|&nbsp; <strong>Generated:</strong> ${generatedDate}`;
+    const meta = `<strong>Site:</strong> ${siteLabel} &nbsp;|&nbsp; <strong>Generated:</strong> ${generatedDate}`;
     const bodyHTML = `<table><thead><tr>${headers.map(h => `<th>${h}</th>`).join('')}</tr></thead><tbody>${rows}</tbody></table>`;
     const fullHTML = generateReportHTML('Stock Report', bodyHTML, meta);
     const win = window.open('', '_blank', 'width=1000,height=700');
@@ -2127,8 +2127,8 @@ window.exportGeneralReport = (format) => {
         const totalWorkerCost = att.reduce((sum, a) => sum + (a.daily_rate || 0), 0);
         let mats = siteId !== 'all' ? materialsData.filter(m => m.site_id === siteId) : materialsData;
         const totalMatCost = mats.reduce((sum, m) => sum + calculateTotal(m.quantity_used || 0, m.unit_cost || 0), 0);
-        data.push({ Department: 'Finances', Category: 'Materials Used', Amount: totalMatCost, Description: 'Total material cost from used quantities' });
-        data.push({ Department: 'Finances', Category: "Workers' Attendance", Amount: totalWorkerCost, Description: "Total workers' attendance cost" });
+        data.push({ Department: 'Finances', Category: 'Materials (Used)', Amount: totalMatCost, Description: 'Total material cost from used quantities' });
+        data.push({ Department: 'Finances', Category: 'Workers (Attendance)', Amount: totalWorkerCost, Description: 'Total worker attendance cost' });
     }
 
     if (!data.length) { alert('No data found for the selected filters.'); return; }
@@ -2141,7 +2141,7 @@ window.exportGeneralReport = (format) => {
     if (format === 'csv') {
         const headers = Object.keys(data[0]);
         const csvRows = [
-            `"${company.name}"`, `"${company.address}"`, `"${company.city}"`, `"Tel: ${company.phone}"`,
+            `"${company.name}"`, `"${company.address}"`, `"${company.location}"`, `"${company.city}"`, `"Tel: ${company.phone}"`, `"Email: ${company.email}"`,
             `"Generated: ${generatedDate}"`, `"Report: ${siteLabel}"`, `"Department: ${deptLabel}"`, '',
             headers.join(',')
         ];
