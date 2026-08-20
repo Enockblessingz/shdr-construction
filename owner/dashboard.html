@@ -2400,26 +2400,498 @@ window.exportGeneralReport = (format) => {
 
         function galleryLightboxEscHandler(event) { if (event.key === 'Escape') closeGalleryImage(); }
 
-        // =============== OFFICE MANAGEMENT HUB ===============
-        function renderOfficeHub(container) {
-            container.innerHTML = `
-                <div class="max-w-4xl mx-auto">
-                    <div class="bg-white rounded-2xl border p-4 shadow-sm text-center">
-                        <iconify-icon icon="material-symbols:rocket-launch" width="48" height="48" class="text-emerald-600 mb-3"></iconify-icon>
-                        <h1 class="text-2xl font-bold text-slate-900 mb-2">Office Management Hub</h1>
-                        <p class="text-sm text-slate-500 mb-4">Coming Soon (v2.0.0)</p>
-                        <div class="text-left bg-slate-50 rounded-xl p-4 space-y-4 text-sm">
-                            <div><h3 class="font-semibold text-emerald-700 mb-2">Design & Technical Control</h3><ul class="list-disc list-inside text-slate-600 space-y-1"><li>Architectural Documents</li><li>Structural Analysis</li><li>MEP Coordination</li></ul></div>
-                            <div><h3 class="font-semibold text-emerald-700 mb-2">Financial & Cost Control</h3><ul class="list-disc list-inside text-slate-600 space-y-1"><li>Cost Estimation</li><li>Budget Review & Tracking</li></ul></div>
-                            <div><h3 class="font-semibold text-emerald-700 mb-2">Document Workflow Center</h3><ul class="list-disc list-inside text-slate-600 space-y-1"><li>Certification Management</li><li>Submission Queue</li><li>Review & Verification</li></ul></div>
-                            <div><h3 class="font-semibold text-emerald-700 mb-2">Approval & Decision Center</h3><ul class="list-disc list-inside text-slate-600 space-y-1"><li>Approved Documents</li><li>Pending Approvals</li><li>Rejected / Revision Required</li></ul></div>
-                            <div><h3 class="font-semibold text-emerald-700 mb-2">Permit & Compliance Center</h3><ul class="list-disc list-inside text-slate-600 space-y-1"><li>Permit Management</li><li>Approved Permits</li><li>Rejected Permits</li></ul></div>
-                            <div><h3 class="font-semibold text-emerald-700 mb-2">Submission Control Center</h3><ul class="list-disc list-inside text-slate-600 space-y-1"><li>New Submissions</li><li>Submission Tracking</li><li>Submission History</li></ul></div>
-                        </div>
+     // =============== OFFICE MANAGEMENT HUB ===============
+// ── State ──
+let officeTab = 'design';
+let officeSubtab = 'documents';
+let officeItems = [];
+let officeFilter = 'all';
+
+// ── Get default sub-tab ──
+function getDefaultSubtab(tab) {
+    const map = {
+        design: 'documents',
+        financial: 'estimation',
+        workflow: 'certification',
+        approval: 'pending',
+        permit: 'management',
+        submission: 'new'
+    };
+    return map[tab] || 'documents';
+}
+
+// ── Get sub-tabs ──
+function getSubtabs(tab) {
+    const map = {
+        design: [
+            { id: 'documents', label: 'Architectural Docs', icon: 'architecture' },
+            { id: 'structural', label: 'Structural Analysis', icon: 'construction' },
+            { id: 'mep', label: 'MEP Coordination', icon: 'electrical-services' }
+        ],
+        financial: [
+            { id: 'estimation', label: 'Cost Estimation', icon: 'calculate' },
+            { id: 'budget', label: 'Budget Review', icon: 'account-balance' }
+        ],
+        workflow: [
+            { id: 'certification', label: 'Certification', icon: 'verified' },
+            { id: 'queue', label: 'Submission Queue', icon: 'queue' },
+            { id: 'review', label: 'Review & Verification', icon: 'rate-review' }
+        ],
+        approval: [
+            { id: 'pending', label: 'Pending Approvals', icon: 'pending' },
+            { id: 'approved', label: 'Approved', icon: 'check-circle' },
+            { id: 'rejected', label: 'Rejected / Revision', icon: 'cancel' }
+        ],
+        permit: [
+            { id: 'management', label: 'Permit Management', icon: 'gavel' },
+            { id: 'approved-permits', label: 'Approved Permits', icon: 'check-circle' },
+            { id: 'rejected-permits', label: 'Rejected Permits', icon: 'cancel' }
+        ],
+        submission: [
+            { id: 'new', label: 'New Submissions', icon: 'add-box' },
+            { id: 'tracking', label: 'Submission Tracking', icon: 'track-changes' },
+            { id: 'history', label: 'Submission History', icon: 'history' }
+        ]
+    };
+    return map[tab] || map.design;
+}
+
+// ── Get categories for tab ──
+function getCategoriesForTab(tab) {
+    const map = {
+        design: [
+            { value: 'architectural', label: 'Architectural Document' },
+            { value: 'structural', label: 'Structural Analysis' },
+            { value: 'mep', label: 'MEP Coordination' }
+        ],
+        financial: [
+            { value: 'estimation', label: 'Cost Estimation' },
+            { value: 'budget', label: 'Budget Review' }
+        ],
+        workflow: [
+            { value: 'certification', label: 'Certification' },
+            { value: 'queue', label: 'Submission Queue' },
+            { value: 'review', label: 'Review & Verification' }
+        ],
+        approval: [
+            { value: 'approval', label: 'Approval Item' }
+        ],
+        permit: [
+            { value: 'permit', label: 'Permit' }
+        ],
+        submission: [
+            { value: 'submission', label: 'Submission' }
+        ]
+    };
+    return map[tab] || map.design;
+}
+
+// ── Get status badge class ──
+function getStatusBadge(status) {
+    const map = {
+        'pending': 'bg-amber-100 text-amber-700',
+        'in-progress': 'bg-blue-100 text-blue-700',
+        'approved': 'bg-emerald-100 text-emerald-700',
+        'rejected': 'bg-red-100 text-red-700',
+        'revision': 'bg-orange-100 text-orange-700',
+        'history': 'bg-slate-100 text-slate-500'
+    };
+    return map[status] || 'bg-slate-100 text-slate-500';
+}
+
+// ── Main render ──
+function renderOfficeHub(container) {
+    container.innerHTML = `
+        <div class="max-w-7xl mx-auto">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+                <div>
+                    <h2 class="text-2xl font-bold text-slate-900">Office Management Hub</h2>
+                    <p class="text-sm text-slate-500 mt-1">Centralized control for design, finance, workflow, approvals, permits, and submissions</p>
+                </div>
+                <button onclick="openOfficeAddModal()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-sm font-medium shadow-sm transition flex items-center gap-2">
+                    <iconify-icon icon="material-symbols:add" width="18" height="18"></iconify-icon>
+                    New Item
+                </button>
+            </div>
+
+            <!-- Main Tabs -->
+            <div class="flex flex-wrap gap-1 p-1 bg-slate-100 rounded-xl mb-6">
+                ${[
+                    { id: 'design', label: 'Design & Technical', icon: 'design-services' },
+                    { id: 'financial', label: 'Financial & Cost', icon: 'finance' },
+                    { id: 'workflow', label: 'Document Workflow', icon: 'assignment' },
+                    { id: 'approval', label: 'Approval Center', icon: 'check-circle' },
+                    { id: 'permit', label: 'Permit & Compliance', icon: 'gavel' },
+                    { id: 'submission', label: 'Submission Control', icon: 'send' }
+                ].map(tab => `
+                    <button onclick="switchOfficeTab('${tab.id}')" 
+                        class="flex-1 min-w-[100px] px-3 py-2 rounded-lg text-sm font-semibold transition flex items-center justify-center gap-2
+                        ${officeTab === tab.id ? 'bg-white text-emerald-700 shadow-sm' : 'text-slate-500 hover:bg-white/50'}">
+                        <iconify-icon icon="material-symbols:${tab.icon}" width="18" height="18"></iconify-icon>
+                        ${tab.label}
+                    </button>
+                `).join('')}
+            </div>
+
+            <!-- Sub-tabs & Content -->
+            <div id="office-content">
+                ${renderOfficeContent()}
+            </div>
+        </div>
+    `;
+    loadOfficeItems();
+}
+
+// ── Switch main tab ──
+window.switchOfficeTab = (tab) => {
+    officeTab = tab;
+    officeSubtab = getDefaultSubtab(tab);
+    officeFilter = 'all';
+    document.getElementById('office-content').innerHTML = renderOfficeContent();
+    loadOfficeItems();
+};
+
+// ── Switch sub-tab ──
+window.switchOfficeSubtab = (subtab) => {
+    officeSubtab = subtab;
+    renderOfficeItems();
+};
+
+// ── Render office content ──
+function renderOfficeContent() {
+    const subtabs = getSubtabs(officeTab);
+    return `
+        <div class="bg-white rounded-2xl border shadow-sm overflow-hidden">
+            <!-- Sub-tabs -->
+            <div class="flex flex-wrap gap-1 p-3 border-b bg-slate-50/50">
+                ${subtabs.map(st => `
+                    <button onclick="switchOfficeSubtab('${st.id}')" 
+                        class="px-3 py-1.5 rounded-lg text-sm font-medium transition
+                        ${officeSubtab === st.id ? 'bg-emerald-100 text-emerald-700' : 'text-slate-500 hover:bg-slate-100'}">
+                        <iconify-icon icon="material-symbols:${st.icon}" width="16" height="16" class="inline mr-1"></iconify-icon>
+                        ${st.label}
+                    </button>
+                `).join('')}
+                <div class="flex-1"></div>
+                <div class="flex items-center gap-2">
+                    <select id="office-filter-select" onchange="officeFilter = this.value; renderOfficeItems()" class="text-sm border rounded-lg px-2 py-1 bg-white">
+                        <option value="all">All Status</option>
+                        <option value="pending">Pending</option>
+                        <option value="in-progress">In Progress</option>
+                        <option value="approved">Approved</option>
+                        <option value="rejected">Rejected</option>
+                        <option value="revision">Revision Required</option>
+                    </select>
+                    <input type="text" id="office-search-input" placeholder="Search..." oninput="renderOfficeItems()" class="text-sm border rounded-lg px-3 py-1 w-40 bg-white">
+                </div>
+            </div>
+
+            <!-- Stats -->
+            <div id="office-stats" class="grid grid-cols-2 sm:grid-cols-4 gap-3 p-4 border-b bg-slate-50/30">
+                <div class="text-center"><span class="text-xs text-slate-500">Total</span><p class="text-lg font-bold text-slate-800" id="stat-total">0</p></div>
+                <div class="text-center"><span class="text-xs text-slate-500">Pending</span><p class="text-lg font-bold text-amber-600" id="stat-pending">0</p></div>
+                <div class="text-center"><span class="text-xs text-slate-500">Approved</span><p class="text-lg font-bold text-emerald-600" id="stat-approved">0</p></div>
+                <div class="text-center"><span class="text-xs text-slate-500">Rejected / Revision</span><p class="text-lg font-bold text-red-600" id="stat-rejected">0</p></div>
+            </div>
+
+            <!-- Items List -->
+            <div id="office-items-container" class="p-4 space-y-3 max-h-[600px] overflow-y-auto">
+                <div class="flex justify-center py-8"><div class="spinner"></div></div>
+            </div>
+        </div>
+    `;
+}
+
+// ── Load office items from Firestore ──
+async function loadOfficeItems() {
+    if (!sitesData.length) {
+        document.getElementById('office-items-container').innerHTML = `<p class="text-slate-400 text-sm">No sites available. Create a site first.</p>`;
+        return;
+    }
+    try {
+        const siteIds = sitesData.map(s => s.id);
+        const q = query(collection(db, 'office_items'), where('site_id', 'in', siteIds));
+        const snap = await getDocs(q);
+        officeItems = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+        renderOfficeItems();
+    } catch (err) {
+        console.error('Error loading office items:', err);
+        document.getElementById('office-items-container').innerHTML = `<p class="text-red-500 text-sm">Error loading: ${err.message}</p>`;
+    }
+}
+
+// ── Render filtered office items ──
+function renderOfficeItems() {
+    const container = document.getElementById('office-items-container');
+    if (!container) return;
+
+    const search = document.getElementById('office-search-input')?.value?.toLowerCase() || '';
+    const filter = officeFilter;
+
+    let items = officeItems.filter(item => {
+        // Filter by site (owner sees all sites)
+        // Filter by main tab (category)
+        const categoryMap = {
+            design: ['architectural', 'structural', 'mep'],
+            financial: ['estimation', 'budget'],
+            workflow: ['certification', 'queue', 'review'],
+            approval: ['approval'],
+            permit: ['permit'],
+            submission: ['submission']
+        };
+        const categories = categoryMap[officeTab] || [];
+        if (!categories.includes(item.category)) return false;
+
+        // Filter by subtab
+        if (officeSubtab === 'documents' && item.category !== 'architectural') return false;
+        if (officeSubtab === 'structural' && item.category !== 'structural') return false;
+        if (officeSubtab === 'mep' && item.category !== 'mep') return false;
+        if (officeSubtab === 'estimation' && item.category !== 'estimation') return false;
+        if (officeSubtab === 'budget' && item.category !== 'budget') return false;
+        if (officeSubtab === 'certification' && item.category !== 'certification') return false;
+        if (officeSubtab === 'queue' && item.category !== 'queue') return false;
+        if (officeSubtab === 'review' && item.category !== 'review') return false;
+        if (officeSubtab === 'pending' && item.status !== 'pending') return false;
+        if (officeSubtab === 'approved' && item.status !== 'approved') return false;
+        if (officeSubtab === 'rejected' && !['rejected', 'revision'].includes(item.status)) return false;
+        if (officeSubtab === 'management' && item.category !== 'permit') return false;
+        if (officeSubtab === 'approved-permits' && (item.category !== 'permit' || item.status !== 'approved')) return false;
+        if (officeSubtab === 'rejected-permits' && (item.category !== 'permit' || !['rejected', 'revision'].includes(item.status))) return false;
+        if (officeSubtab === 'new' && (item.category !== 'submission' || item.status !== 'pending')) return false;
+        if (officeSubtab === 'tracking' && (item.category !== 'submission' || !['in-progress', 'approved', 'rejected', 'revision'].includes(item.status))) return false;
+        if (officeSubtab === 'history' && (item.category !== 'submission' || item.status !== 'history')) return false;
+
+        // Filter by status
+        if (filter !== 'all' && item.status !== filter) return false;
+
+        // Search
+        if (search && !item.title?.toLowerCase().includes(search) && !item.description?.toLowerCase().includes(search)) return false;
+
+        return true;
+    });
+
+    // Sort by date (newest first)
+    items.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+
+    // Update stats
+    const total = items.length;
+    const pending = items.filter(i => i.status === 'pending').length;
+    const approved = items.filter(i => i.status === 'approved').length;
+    const rejected = items.filter(i => ['rejected', 'revision'].includes(i.status)).length;
+
+    document.getElementById('stat-total').textContent = total;
+    document.getElementById('stat-pending').textContent = pending;
+    document.getElementById('stat-approved').textContent = approved;
+    document.getElementById('stat-rejected').textContent = rejected;
+
+    if (!items.length) {
+        container.innerHTML = `<div class="text-center py-8 text-slate-400"><iconify-icon icon="material-symbols:inbox" width="48" height="48" class="mx-auto mb-2 opacity-50"></iconify-icon><p class="text-sm">No items found. Click "New Item" to add one.</p></div>`;
+        return;
+    }
+
+    container.innerHTML = items.map(item => {
+        const siteName = sitesData.find(s => s.id === item.site_id)?.name || 'Unknown Site';
+        return `
+            <div class="bg-slate-50 rounded-xl p-4 border border-slate-200 hover:shadow-md transition flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-2 flex-wrap">
+                        <span class="text-sm font-semibold text-slate-800">${item.title || 'Untitled'}</span>
+                        <span class="text-xs px-2 py-0.5 rounded-full ${getStatusBadge(item.status)}">${item.status || 'pending'}</span>
+                        <span class="text-xs text-slate-400">${formatDate(item.created_at)}</span>
+                        <span class="text-xs text-slate-400 bg-slate-200 px-2 py-0.5 rounded-full">${siteName}</span>
+                    </div>
+                    <p class="text-sm text-slate-500 truncate mt-0.5">${item.description || 'No description'}</p>
+                    <div class="flex items-center gap-3 mt-1 text-xs text-slate-400">
+                        <span>Category: ${item.category}</span>
+                        ${item.file_url ? `<a href="${item.file_url}" target="_blank" class="text-emerald-600 hover:underline flex items-center gap-1"><iconify-icon icon="material-symbols:attach-file" width="14" height="14"></iconify-icon> Attachment</a>` : ''}
+                        ${item.submitted_by ? `<span>By: ${item.submitted_by}</span>` : ''}
                     </div>
                 </div>
-            `;
+                <div class="flex items-center gap-2 flex-shrink-0">
+                    <button onclick="editOfficeItem('${item.id}')" class="text-xs text-emerald-600 hover:text-emerald-800 font-medium px-2 py-1 bg-emerald-50 rounded-lg transition">Edit</button>
+                    <button onclick="deleteOfficeItem('${item.id}')" class="text-xs text-red-500 hover:text-red-700 font-medium px-2 py-1 bg-red-50 rounded-lg transition">Delete</button>
+                    <select onchange="updateOfficeStatus('${item.id}', this.value)" class="text-xs border rounded-lg px-2 py-1 bg-white">
+                        <option value="pending" ${item.status === 'pending' ? 'selected' : ''}>Pending</option>
+                        <option value="in-progress" ${item.status === 'in-progress' ? 'selected' : ''}>In Progress</option>
+                        <option value="approved" ${item.status === 'approved' ? 'selected' : ''}>Approved</option>
+                        <option value="rejected" ${item.status === 'rejected' ? 'selected' : ''}>Rejected</option>
+                        <option value="revision" ${item.status === 'revision' ? 'selected' : ''}>Revision Required</option>
+                        <option value="history" ${item.status === 'history' ? 'selected' : ''}>Archive</option>
+                    </select>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+// ── Update office item status ──
+window.updateOfficeStatus = async (id, status) => {
+    try {
+        await updateDoc(doc(db, 'office_items', id), {
+            status: status,
+            updated_at: new Date().toISOString()
+        });
+        loadOfficeItems();
+        showToast('Status updated successfully', 'success');
+    } catch (err) {
+        showToast('Error updating status: ' + err.message, 'error');
+    }
+};
+
+// ── Delete office item ──
+window.deleteOfficeItem = async (id) => {
+    if (!confirm('Delete this item permanently?')) return;
+    try {
+        await deleteDoc(doc(db, 'office_items', id));
+        loadOfficeItems();
+        showToast('Item deleted', 'success');
+    } catch (err) {
+        showToast('Error deleting: ' + err.message, 'error');
+    }
+};
+
+// ── Open add/edit modal ──
+window.openOfficeAddModal = (editData = null) => {
+    const isEdit = !!editData;
+    const categories = getCategoriesForTab(officeTab);
+
+    const modalContent = `
+        <form onsubmit="handleOfficeSave(event, '${editData?.id || ''}')" class="space-y-4">
+            <div>
+                <label class="block text-sm font-medium text-slate-700 mb-1">Title *</label>
+                <input type="text" id="office-title" value="${editData?.title || ''}" required class="w-full border rounded-lg p-2.5 text-sm">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-slate-700 mb-1">Description</label>
+                <textarea id="office-description" rows="3" class="w-full border rounded-lg p-2.5 text-sm">${editData?.description || ''}</textarea>
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-slate-700 mb-1">Site *</label>
+                <select id="office-site" required class="w-full border rounded-lg p-2.5 text-sm">
+                    ${sitesData.map(s => `<option value="${s.id}" ${editData?.site_id === s.id ? 'selected' : ''}>${s.name}</option>`).join('')}
+                </select>
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-slate-700 mb-1">Category *</label>
+                <select id="office-category" required class="w-full border rounded-lg p-2.5 text-sm">
+                    <option value="">Select category</option>
+                    ${categories.map(c => `<option value="${c.value}" ${editData?.category === c.value ? 'selected' : ''}>${c.label}</option>`).join('')}
+                </select>
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-slate-700 mb-1">Status</label>
+                <select id="office-status" class="w-full border rounded-lg p-2.5 text-sm">
+                    <option value="pending" ${editData?.status === 'pending' ? 'selected' : ''}>Pending</option>
+                    <option value="in-progress" ${editData?.status === 'in-progress' ? 'selected' : ''}>In Progress</option>
+                    <option value="approved" ${editData?.status === 'approved' ? 'selected' : ''}>Approved</option>
+                    <option value="rejected" ${editData?.status === 'rejected' ? 'selected' : ''}>Rejected</option>
+                    <option value="revision" ${editData?.status === 'revision' ? 'selected' : ''}>Revision Required</option>
+                    <option value="history" ${editData?.status === 'history' ? 'selected' : ''}>Archive</option>
+                </select>
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-slate-700 mb-1">File Attachment (optional)</label>
+                <input type="file" id="office-file" accept=".pdf,.doc,.docx,.xls,.xlsx,.png,.jpg,.jpeg" class="w-full text-sm">
+                ${editData?.file_url ? `<p class="text-xs text-emerald-600 mt-1">Current: <a href="${editData.file_url}" target="_blank" class="underline">View File</a></p>` : ''}
+            </div>
+            <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-3 rounded-xl transition">${isEdit ? 'Update' : 'Create'} Item</button>
+        </form>
+    `;
+    openModal(isEdit ? 'Edit Office Item' : 'New Office Item', modalContent);
+};
+
+// ── Handle office item save ──
+window.handleOfficeSave = async (e, id) => {
+    e.preventDefault();
+    const btn = e.target.querySelector('button[type="submit"]');
+    setButtonLoading(btn, true);
+
+    try {
+        const title = document.getElementById('office-title').value.trim();
+        const description = document.getElementById('office-description').value.trim();
+        const site_id = document.getElementById('office-site').value;
+        const category = document.getElementById('office-category').value;
+        const status = document.getElementById('office-status').value;
+        const fileInput = document.getElementById('office-file');
+        const isEdit = !!id;
+
+        if (!title || !category || !site_id) {
+            alert('Title, Site, and Category are required.');
+            setButtonLoading(btn, false);
+            return;
         }
+
+        let file_url = '';
+        if (fileInput.files.length > 0) {
+            file_url = await uploadImageToImgbb(fileInput.files[0]);
+        } else if (isEdit) {
+            const existing = officeItems.find(i => i.id === id);
+            file_url = existing?.file_url || '';
+        }
+
+        const data = {
+            site_id,
+            title,
+            description,
+            category,
+            status,
+            file_url,
+            updated_at: new Date().toISOString()
+        };
+
+        if (isEdit) {
+            await updateDoc(doc(db, 'office_items', id), data);
+        } else {
+            data.created_at = new Date().toISOString();
+            data.submitted_by = currentUser.displayName || currentUser.email || 'Owner';
+            await addDoc(collection(db, 'office_items'), data);
+        }
+
+        closeModal();
+        loadOfficeItems();
+        showToast(isEdit ? 'Item updated successfully' : 'Item created successfully', 'success');
+    } catch (err) {
+        showToast('Error: ' + err.message, 'error');
+    } finally {
+        setButtonLoading(btn, false);
+    }
+};
+
+// ── Edit office item ──
+window.editOfficeItem = (id) => {
+    const item = officeItems.find(i => i.id === id);
+    if (!item) return;
+    const tabMap = {
+        'architectural': 'design',
+        'structural': 'design',
+        'mep': 'design',
+        'estimation': 'financial',
+        'budget': 'financial',
+        'certification': 'workflow',
+        'queue': 'workflow',
+        'review': 'workflow',
+        'approval': 'approval',
+        'permit': 'permit',
+        'submission': 'submission'
+    };
+    const targetTab = tabMap[item.category] || 'design';
+    if (officeTab !== targetTab) {
+        officeTab = targetTab;
+        officeSubtab = getDefaultSubtab(targetTab);
+        document.getElementById('office-content').innerHTML = renderOfficeContent();
+        loadOfficeItems();
+        setTimeout(() => openOfficeAddModal(item), 100);
+    } else {
+        openOfficeAddModal(item);
+    }
+};
+
+// ── Add Office Hub to bottom nav (mobile) ──
+// Add this to your bottom-nav HTML:
+// <a href="#" onclick="showSection('office')" data-section="office">
+//     <iconify-icon icon="material-symbols:business-center-outline"></iconify-icon>
+//     <span>Office</span>
+// </a>
 
         // ============================================================
         // ─── SETTINGS MODULE (NEW) ──────────────────────────────────
