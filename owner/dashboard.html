@@ -19,6 +19,227 @@
     <script src="https://cdn.jsdelivr.net/npm/iconify-icon@2.3.0/dist/iconify-icon.min.js"></script>
 
     <style>
+        /* ── Office Hub Enhanced Styles ── */
+
+/* Office Hub header */
+.office-header {
+    background: linear-gradient(135deg, #059669 0%, #047857 50%, #065f46 100%);
+    border-radius: 16px;
+    padding: 24px 28px;
+    margin-bottom: 28px;
+    color: white;
+    box-shadow: 0 8px 30px rgba(5, 150, 105, 0.25);
+}
+.office-header h2 {
+    font-weight: 700;
+    letter-spacing: -0.5px;
+}
+.office-header p {
+    color: rgba(255,255,255,0.85);
+    font-weight: 400;
+}
+
+/* Office Tab Buttons */
+.office-tab {
+    transition: all 0.25s ease;
+    border-radius: 9999px;
+    font-weight: 600;
+    padding: 8px 18px;
+    background: transparent;
+    color: #64748b;
+    border: 1px solid transparent;
+}
+.office-tab:hover {
+    background: rgba(255,255,255,0.6);
+    color: #1e293b;
+}
+.office-tab.active {
+    background: #059669;
+    color: white;
+    box-shadow: 0 4px 14px rgba(5, 150, 105, 0.35);
+    border-color: #059669;
+}
+.office-tab.active:hover {
+    background: #047857;
+    transform: scale(1.02);
+}
+
+/* Glass Stats */
+.glass-stat {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 16px;
+    padding: 16px 20px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+}
+.glass-stat:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+}
+.glass-stat .stat-number {
+    font-size: 2rem;
+    font-weight: 700;
+    line-height: 1.2;
+}
+.glass-stat .stat-label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: 600;
+    color: #64748b;
+}
+
+/* Office Cards */
+.office-card {
+    background: white;
+    border-radius: 14px;
+    padding: 16px 20px;
+    border: 1px solid #e9edf2;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+}
+.office-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 32px rgba(0,0,0,0.08);
+    border-color: #cbd5e1;
+}
+
+/* Priority borders */
+.priority-high {
+    border-left: 5px solid #ef4444;
+}
+.priority-medium {
+    border-left: 5px solid #f59e0b;
+}
+.priority-low {
+    border-left: 5px solid #22c55e;
+}
+
+/* Status badges */
+.status-badge {
+    font-size: 0.65rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    padding: 2px 10px;
+    border-radius: 20px;
+}
+.status-pending { background: #fef3c7; color: #92400e; }
+.status-in-progress { background: #dbeafe; color: #1e40af; }
+.status-approved { background: #d1fae5; color: #065f46; }
+.status-rejected { background: #fee2e2; color: #991b1b; }
+.status-revision { background: #ffedd5; color: #9a3412; }
+.status-history { background: #f1f5f9; color: #475569; }
+
+/* Kanban columns */
+.kanban-column {
+    background: #f8fafc;
+    border-radius: 14px;
+    padding: 14px;
+    min-height: 200px;
+    border: 1px solid #e9edf2;
+    transition: all 0.2s;
+}
+.kanban-column:hover {
+    border-color: #cbd5e1;
+}
+.kanban-column h4 {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #64748b;
+    border-bottom: 2px solid #e2e8f0;
+    padding-bottom: 10px;
+    margin-bottom: 12px;
+}
+
+/* Activity feed */
+.activity-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 10px 0;
+    border-bottom: 1px solid #f1f5f9;
+    transition: background 0.2s;
+}
+.activity-item:hover {
+    background: #f8fafc;
+    border-radius: 8px;
+    padding-left: 8px;
+}
+.activity-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+.activity-dot.create { background: #22c55e; }
+.activity-dot.update { background: #3b82f6; }
+.activity-dot.status { background: #f59e0b; }
+
+/* Sub-tab buttons */
+.subtab-btn {
+    padding: 6px 16px;
+    border-radius: 9999px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    transition: all 0.2s;
+    background: transparent;
+    color: #64748b;
+    border: 1px solid transparent;
+}
+.subtab-btn:hover {
+    background: #f1f5f9;
+    color: #1e293b;
+}
+.subtab-btn.active {
+    background: #ecfdf5;
+    color: #059669;
+    border-color: #a7f3d0;
+}
+
+/* Filters */
+.office-filter {
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 4px 10px;
+    font-size: 0.8rem;
+    background: white;
+    transition: border-color 0.2s;
+}
+.office-filter:focus {
+    outline: none;
+    border-color: #059669;
+    box-shadow: 0 0 0 3px rgba(5,150,105,0.15);
+}
+
+/* New Item button */
+.btn-new {
+    background: linear-gradient(135deg, #059669, #047857);
+    color: white;
+    padding: 10px 24px;
+    border-radius: 9999px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 14px rgba(5,150,105,0.3);
+    border: none;
+}
+.btn-new:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(5,150,105,0.4);
+    background: linear-gradient(135deg, #047857, #065f46);
+}
+
+/* Responsive tweaks */
+@media (max-width: 640px) {
+    .office-header { padding: 16px 18px; }
+    .office-tab { font-size: 0.7rem; padding: 6px 12px; }
+    .glass-stat .stat-number { font-size: 1.4rem; }
+}
         * { font-family: 'Plus Jakarta Sans', sans-serif; }
         body { background: #f8fafc; }
         .sidebar-link.active { background: #ecfdf5; color: #059669; border-left: 3px solid #059669; }
@@ -2491,14 +2712,14 @@ function getCategoriesForTab(tab) {
 
 function getStatusBadge(status) {
     const map = {
-        'pending': 'bg-amber-100 text-amber-700',
-        'in-progress': 'bg-blue-100 text-blue-700',
-        'approved': 'bg-emerald-100 text-emerald-700',
-        'rejected': 'bg-red-100 text-red-700',
-        'revision': 'bg-orange-100 text-orange-700',
-        'history': 'bg-slate-100 text-slate-500'
+        'pending': 'status-pending',
+        'in-progress': 'status-in-progress',
+        'approved': 'status-approved',
+        'rejected': 'status-rejected',
+        'revision': 'status-revision',
+        'history': 'status-history'
     };
-    return map[status] || 'bg-slate-100 text-slate-500';
+    return map[status] || 'status-pending';
 }
 
 function getPriorityLabel(priority) {
@@ -2514,23 +2735,25 @@ function getPriorityLabel(priority) {
 function renderOfficeHub(container) {
     container.innerHTML = `
         <div class="max-w-7xl mx-auto">
-            <!-- Header -->
-            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-                <div>
-                    <h2 class="text-2xl sm:text-3xl font-bold text-slate-900 flex items-center gap-2">
-                        <iconify-icon icon="material-symbols:business-center" class="text-emerald-600" width="32"></iconify-icon>
-                        Office Management Hub
-                    </h2>
-                    <p class="text-sm text-slate-500 mt-1">Centralized control for design, finance, workflow, approvals, permits, and submissions</p>
+            <!-- Gradient Header -->
+            <div class="office-header">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                    <div>
+                        <h2 class="text-2xl sm:text-3xl font-bold flex items-center gap-3">
+                            <iconify-icon icon="material-symbols:business-center" width="32" class="text-white/90"></iconify-icon>
+                            Office Management Hub
+                        </h2>
+                        <p class="text-white/80 text-sm mt-1">Centralized control for design, finance, workflow, approvals, permits, and submissions</p>
+                    </div>
+                    <button onclick="openOfficeAddModal()" class="btn-new flex items-center gap-2 text-sm">
+                        <iconify-icon icon="material-symbols:add" width="18"></iconify-icon>
+                        New Item
+                    </button>
                 </div>
-                <button onclick="openOfficeAddModal()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-sm font-medium shadow-sm transition flex items-center gap-2">
-                    <iconify-icon icon="material-symbols:add" width="18" height="18"></iconify-icon>
-                    New Item
-                </button>
             </div>
 
             <!-- Main Tabs -->
-            <div class="flex flex-wrap gap-1 p-1 bg-slate-100 rounded-xl mb-6">
+            <div class="flex flex-wrap gap-1 p-1 bg-white/60 backdrop-blur-sm rounded-full shadow-sm border border-slate-200/60 mb-6">
                 ${[
                     { id: 'dashboard', label: 'Dashboard', icon: 'dashboard' },
                     { id: 'design', label: 'Design & Technical', icon: 'design-services' },
@@ -2541,8 +2764,8 @@ function renderOfficeHub(container) {
                     { id: 'submission', label: 'Submission Control', icon: 'send' }
                 ].map(tab => `
                     <button onclick="switchOfficeTab('${tab.id}')" 
-                        class="flex-1 min-w-[80px] px-3 py-2 rounded-full text-sm font-semibold transition flex items-center justify-center gap-2
-                        ${officeTab === tab.id ? 'bg-emerald-600 text-white shadow-sm' : 'bg-transparent text-slate-500 hover:bg-white/50'}">
+                        class="office-tab flex-1 min-w-[70px] px-3 py-2 text-sm font-semibold transition flex items-center justify-center gap-1.5
+                        ${officeTab === tab.id ? 'active' : ''}">
                         <iconify-icon icon="material-symbols:${tab.icon}" width="18" height="18"></iconify-icon>
                         <span class="hidden sm:inline">${tab.label}</span>
                     </button>
@@ -2550,7 +2773,7 @@ function renderOfficeHub(container) {
             </div>
 
             <!-- Content -->
-            <div id="office-content">
+            <div id="office-content" class="animate-fade-in">
                 ${officeTab === 'dashboard' ? renderOfficeDashboard() : renderOfficeContent()}
             </div>
         </div>
@@ -2564,28 +2787,28 @@ function renderOfficeDashboard() {
         <div class="space-y-6">
             <!-- Stats -->
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div class="bg-white/70 backdrop-blur-sm rounded-2xl p-4 shadow-sm border border-slate-200">
-                    <p class="text-xs text-slate-500">Total Items</p>
-                    <p class="text-2xl font-bold text-slate-800" id="dash-total">0</p>
+                <div class="glass-stat">
+                    <p class="stat-label">Total Items</p>
+                    <p class="stat-number text-slate-800" id="dash-total">0</p>
                 </div>
-                <div class="bg-white/70 backdrop-blur-sm rounded-2xl p-4 shadow-sm border border-amber-200">
-                    <p class="text-xs text-slate-500">Pending</p>
-                    <p class="text-2xl font-bold text-amber-600" id="dash-pending">0</p>
+                <div class="glass-stat border-amber-200/50">
+                    <p class="stat-label">Pending</p>
+                    <p class="stat-number text-amber-600" id="dash-pending">0</p>
                 </div>
-                <div class="bg-white/70 backdrop-blur-sm rounded-2xl p-4 shadow-sm border border-emerald-200">
-                    <p class="text-xs text-slate-500">Approved</p>
-                    <p class="text-2xl font-bold text-emerald-600" id="dash-approved">0</p>
+                <div class="glass-stat border-emerald-200/50">
+                    <p class="stat-label">Approved</p>
+                    <p class="stat-number text-emerald-600" id="dash-approved">0</p>
                 </div>
-                <div class="bg-white/70 backdrop-blur-sm rounded-2xl p-4 shadow-sm border border-red-200">
-                    <p class="text-xs text-slate-500">Rejected / Revision</p>
-                    <p class="text-2xl font-bold text-red-600" id="dash-rejected">0</p>
+                <div class="glass-stat border-red-200/50">
+                    <p class="stat-label">Rejected / Revision</p>
+                    <p class="stat-number text-red-600" id="dash-rejected">0</p>
                 </div>
             </div>
 
             <!-- Recent Activity -->
-            <div class="bg-white rounded-2xl border shadow-sm p-4">
+            <div class="bg-white rounded-2xl border border-slate-200/60 shadow-sm p-5">
                 <h3 class="font-semibold text-slate-700 flex items-center gap-2 mb-3">
-                    <iconify-icon icon="material-symbols:history" width="20"></iconify-icon>
+                    <iconify-icon icon="material-symbols:history" width="20" class="text-emerald-600"></iconify-icon>
                     Recent Activity
                 </h3>
                 <div id="dash-activity" class="max-h-60 overflow-y-auto">
@@ -2606,10 +2829,19 @@ function renderOfficeDashboard() {
                     };
                     const count = officeItems.filter(i => map[cat].includes(i.category)).length;
                     const label = cat.charAt(0).toUpperCase() + cat.slice(1);
+                    const icons = {
+                        design: 'design-services',
+                        financial: 'finance',
+                        workflow: 'assignment',
+                        approval: 'check-circle',
+                        permit: 'gavel',
+                        submission: 'send'
+                    };
                     return `
-                        <div class="bg-slate-50 rounded-xl p-3 border border-slate-200 text-center hover:shadow-sm transition">
+                        <div class="bg-white/70 backdrop-blur-sm rounded-xl p-4 border border-slate-200/60 text-center hover:shadow-md transition hover:-translate-y-0.5">
+                            <iconify-icon icon="material-symbols:${icons[cat]}" width="28" class="text-emerald-500 mx-auto mb-1"></iconify-icon>
                             <p class="text-xs text-slate-500">${label}</p>
-                            <p class="text-xl font-bold text-slate-800">${count}</p>
+                            <p class="text-2xl font-bold text-slate-800">${count}</p>
                         </div>
                     `;
                 }).join('')}
@@ -2629,7 +2861,6 @@ function updateDashboardStats() {
     document.getElementById('dash-approved').textContent = approved;
     document.getElementById('dash-rejected').textContent = rejected;
 
-    // Activity
     const container = document.getElementById('dash-activity');
     if (!container) return;
     const items = officeItems.slice().sort((a,b) => new Date(b.updated_at) - new Date(a.updated_at));
@@ -2639,11 +2870,11 @@ function updateDashboardStats() {
     }
     const recent = items.slice(0, 10);
     container.innerHTML = recent.map(item => `
-        <div class="flex items-center gap-3 py-2 border-b border-slate-100 last:border-0 text-sm">
-            <span class="w-2 h-2 rounded-full ${item.status === 'approved' ? 'bg-emerald-500' : item.status === 'rejected' ? 'bg-red-500' : 'bg-amber-500'}"></span>
+        <div class="activity-item">
+            <span class="activity-dot ${item.status === 'approved' ? 'create' : item.status === 'rejected' ? 'status' : 'update'}"></span>
             <span class="font-medium text-slate-700">${item.title}</span>
             <span class="text-slate-400 text-xs">${formatDate(item.updated_at)}</span>
-            <span class="text-xs bg-slate-100 px-2 py-0.5 rounded-full">${item.status}</span>
+            <span class="text-xs ${getStatusBadge(item.status)} px-2 py-0.5 rounded-full">${item.status}</span>
             <span class="text-xs text-slate-400 ml-auto">${item.submitted_by || '—'}</span>
         </div>
     `).join('');
@@ -2669,20 +2900,19 @@ window.switchOfficeSubtab = (subtab) => {
 function renderOfficeContent() {
     const subtabs = getSubtabs(officeTab);
     return `
-        <div class="bg-white rounded-2xl border shadow-sm overflow-hidden">
+        <div class="bg-white rounded-2xl border border-slate-200/60 shadow-sm overflow-hidden">
             <!-- Sub-tabs -->
-            <div class="flex flex-wrap gap-1 p-3 border-b bg-slate-50/50">
+            <div class="flex flex-wrap items-center gap-1 p-3 border-b border-slate-200/60 bg-slate-50/50">
                 ${subtabs.map(st => `
                     <button onclick="switchOfficeSubtab('${st.id}')" 
-                        class="px-3 py-1.5 rounded-lg text-sm font-medium transition
-                        ${officeSubtab === st.id ? 'bg-emerald-100 text-emerald-700' : 'text-slate-500 hover:bg-slate-100'}">
+                        class="subtab-btn ${officeSubtab === st.id ? 'active' : ''}">
                         <iconify-icon icon="material-symbols:${st.icon}" width="16" height="16" class="inline mr-1"></iconify-icon>
                         ${st.label}
                     </button>
                 `).join('')}
                 <div class="flex-1"></div>
                 <div class="flex items-center gap-2">
-                    <select id="office-filter-select" onchange="officeFilter = this.value; renderOfficeItems()" class="text-sm border rounded-lg px-2 py-1 bg-white">
+                    <select id="office-filter-select" onchange="officeFilter = this.value; renderOfficeItems()" class="office-filter">
                         <option value="all">All Status</option>
                         <option value="pending">Pending</option>
                         <option value="in-progress">In Progress</option>
@@ -2690,7 +2920,7 @@ function renderOfficeContent() {
                         <option value="rejected">Rejected</option>
                         <option value="revision">Revision</option>
                     </select>
-                    <input type="text" id="office-search-input" placeholder="Search..." oninput="officeSearch = this.value; renderOfficeItems()" class="text-sm border rounded-lg px-3 py-1 w-40 bg-white">
+                    <input type="text" id="office-search-input" placeholder="Search..." oninput="officeSearch = this.value; renderOfficeItems()" class="office-filter w-40">
                 </div>
             </div>
 
@@ -2777,7 +3007,7 @@ function renderOfficeItems() {
     items.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 
     if (!items.length) {
-        container.innerHTML = `<div class="text-center py-8 text-slate-400"><iconify-icon icon="material-symbols:inbox" width="48" height="48" class="mx-auto mb-2 opacity-50"></iconify-icon><p class="text-sm">No items found. Click "New Item" to add one.</p></div>`;
+        container.innerHTML = `<div class="text-center py-12 text-slate-400"><iconify-icon icon="material-symbols:inbox" width="56" height="56" class="mx-auto mb-3 opacity-40"></iconify-icon><p class="text-sm font-medium">No items found</p><p class="text-xs">Click "New Item" to add one.</p></div>`;
         return;
     }
 
@@ -2798,13 +3028,13 @@ function renderOfficeItems() {
         container.innerHTML = `
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 ${Object.entries(columns).map(([key, col]) => `
-                    <div class="bg-slate-50 rounded-xl p-3 min-h-[200px]">
-                        <h4 class="text-xs font-semibold uppercase tracking-wider text-slate-500 border-b border-slate-200 pb-2 mb-3">${col.label} (${col.items.length})</h4>
+                    <div class="kanban-column">
+                        <h4>${col.label} (${col.items.length})</h4>
                         ${col.items.map(item => `
-                            <div class="bg-white rounded-xl p-3 mb-2 shadow-sm border-l-4 ${getPriorityLabel(item.priority).class || 'border-l-slate-300'}">
+                            <div class="office-card mb-2 ${getPriorityLabel(item.priority).class}">
                                 <div class="flex justify-between items-start">
-                                    <p class="text-sm font-medium text-slate-800">${item.title}</p>
-                                    <span class="text-xs px-2 py-0.5 rounded-full ${getStatusBadge(item.status)}">${item.status}</span>
+                                    <p class="text-sm font-semibold text-slate-800">${item.title}</p>
+                                    <span class="text-xs ${getStatusBadge(item.status)} px-2 py-0.5 rounded-full">${item.status}</span>
                                 </div>
                                 <p class="text-xs text-slate-500 mt-1 truncate">${item.description || '—'}</p>
                                 <div class="flex flex-wrap gap-1 mt-2 text-xs text-slate-400">
@@ -2812,7 +3042,7 @@ function renderOfficeItems() {
                                     ${item.assignee ? `<span>👤 ${item.assignee}</span>` : ''}
                                     ${item.due_date ? `<span>📅 ${formatDate(item.due_date)}</span>` : ''}
                                 </div>
-                                <div class="flex items-center gap-2 mt-2">
+                                <div class="flex items-center gap-2 mt-3 pt-2 border-t border-slate-100">
                                     <button onclick="editOfficeItem('${item.id}')" class="text-xs text-emerald-600 hover:text-emerald-800 font-medium">Edit</button>
                                     <button onclick="deleteOfficeItem('${item.id}')" class="text-xs text-red-500 hover:text-red-700 font-medium">Delete</button>
                                     <select onchange="updateOfficeStatus('${item.id}', this.value)" class="text-xs border rounded-lg px-1 py-0.5 bg-white">
@@ -2837,12 +3067,12 @@ function renderOfficeItems() {
     container.innerHTML = items.map(item => {
         const siteName = sitesData.find(s => s.id === item.site_id)?.name || 'Unknown Site';
         return `
-            <div class="bg-white rounded-xl p-4 mb-3 shadow-sm border-l-4 ${getPriorityLabel(item.priority).class || 'border-l-slate-300'} hover:shadow-md transition">
-                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <div class="office-card mb-3 ${getPriorityLabel(item.priority).class}">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                     <div class="flex-1 min-w-0">
                         <div class="flex items-center gap-2 flex-wrap">
                             <span class="text-sm font-semibold text-slate-800">${item.title}</span>
-                            <span class="text-xs px-2 py-0.5 rounded-full ${getStatusBadge(item.status)}">${item.status}</span>
+                            <span class="text-xs ${getStatusBadge(item.status)} px-2 py-0.5 rounded-full">${item.status}</span>
                             ${item.priority ? `<span class="text-xs bg-slate-100 px-1.5 py-0.5 rounded">${getPriorityLabel(item.priority).icon} ${getPriorityLabel(item.priority).label}</span>` : ''}
                             <span class="text-xs text-slate-400">${formatDate(item.created_at)}</span>
                         </div>
@@ -2874,7 +3104,7 @@ function renderOfficeItems() {
     }).join('');
 }
 
-// ── Update Status ──
+// ── Status Update ──
 window.updateOfficeStatus = async (id, status) => {
     try {
         await updateDoc(doc(db, 'office_items', id), {
@@ -2907,28 +3137,28 @@ window.openOfficeAddModal = (editData = null) => {
         <form onsubmit="handleOfficeSave(event, '${editData?.id || ''}')" class="space-y-4">
             <div>
                 <label class="block text-sm font-medium text-slate-700 mb-1">Title *</label>
-                <input type="text" id="office-title" value="${editData?.title || ''}" required class="w-full border rounded-lg p-2.5 text-sm">
+                <input type="text" id="office-title" value="${editData?.title || ''}" required class="w-full border rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-transparent">
             </div>
             <div>
                 <label class="block text-sm font-medium text-slate-700 mb-1">Description</label>
-                <textarea id="office-description" rows="3" class="w-full border rounded-lg p-2.5 text-sm">${editData?.description || ''}</textarea>
+                <textarea id="office-description" rows="3" class="w-full border rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-transparent">${editData?.description || ''}</textarea>
             </div>
             <div>
                 <label class="block text-sm font-medium text-slate-700 mb-1">Site *</label>
-                <select id="office-site" required class="w-full border rounded-lg p-2.5 text-sm">
+                <select id="office-site" required class="w-full border rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-transparent">
                     ${sitesData.map(s => `<option value="${s.id}" ${editData?.site_id === s.id ? 'selected' : ''}>${s.name}</option>`).join('')}
                 </select>
             </div>
             <div>
                 <label class="block text-sm font-medium text-slate-700 mb-1">Category *</label>
-                <select id="office-category" required class="w-full border rounded-lg p-2.5 text-sm">
+                <select id="office-category" required class="w-full border rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-transparent">
                     <option value="">Select category</option>
                     ${categories.map(c => `<option value="${c.value}" ${editData?.category === c.value ? 'selected' : ''}>${c.label}</option>`).join('')}
                 </select>
             </div>
             <div>
                 <label class="block text-sm font-medium text-slate-700 mb-1">Status</label>
-                <select id="office-status" class="w-full border rounded-lg p-2.5 text-sm">
+                <select id="office-status" class="w-full border rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-transparent">
                     <option value="pending" ${editData?.status === 'pending' ? 'selected' : ''}>Pending</option>
                     <option value="in-progress" ${editData?.status === 'in-progress' ? 'selected' : ''}>In Progress</option>
                     <option value="approved" ${editData?.status === 'approved' ? 'selected' : ''}>Approved</option>
@@ -2939,7 +3169,7 @@ window.openOfficeAddModal = (editData = null) => {
             </div>
             <div>
                 <label class="block text-sm font-medium text-slate-700 mb-1">Priority</label>
-                <select id="office-priority" class="w-full border rounded-lg p-2.5 text-sm">
+                <select id="office-priority" class="w-full border rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-transparent">
                     <option value="">None</option>
                     <option value="high" ${editData?.priority === 'high' ? 'selected' : ''}>🔴 High</option>
                     <option value="medium" ${editData?.priority === 'medium' ? 'selected' : ''}>🟡 Medium</option>
@@ -2948,18 +3178,18 @@ window.openOfficeAddModal = (editData = null) => {
             </div>
             <div>
                 <label class="block text-sm font-medium text-slate-700 mb-1">Due Date</label>
-                <input type="date" id="office-due-date" value="${editData?.due_date ? new Date(editData.due_date).toISOString().split('T')[0] : ''}" class="w-full border rounded-lg p-2.5 text-sm">
+                <input type="date" id="office-due-date" value="${editData?.due_date ? new Date(editData.due_date).toISOString().split('T')[0] : ''}" class="w-full border rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-transparent">
             </div>
             <div>
                 <label class="block text-sm font-medium text-slate-700 mb-1">Assignee</label>
-                <input type="text" id="office-assignee" value="${editData?.assignee || ''}" placeholder="e.g. John Doe" class="w-full border rounded-lg p-2.5 text-sm">
+                <input type="text" id="office-assignee" value="${editData?.assignee || ''}" placeholder="e.g. John Doe" class="w-full border rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-transparent">
             </div>
             <div>
                 <label class="block text-sm font-medium text-slate-700 mb-1">File Attachment (optional)</label>
                 <input type="file" id="office-file" accept=".pdf,.doc,.docx,.xls,.xlsx,.png,.jpg,.jpeg" class="w-full text-sm">
                 ${editData?.file_url ? `<p class="text-xs text-emerald-600 mt-1">Current: <a href="${editData.file_url}" target="_blank" class="underline">View File</a></p>` : ''}
             </div>
-            <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-3 rounded-xl transition">${isEdit ? 'Update' : 'Create'} Item</button>
+            <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-3 rounded-xl transition shadow-md hover:shadow-lg">${isEdit ? 'Update' : 'Create'} Item</button>
         </form>
     `;
     openModal(isEdit ? 'Edit Office Item' : 'New Office Item', modalContent);
