@@ -2400,498 +2400,1065 @@ window.exportGeneralReport = (format) => {
 
         function galleryLightboxEscHandler(event) { if (event.key === 'Escape') closeGalleryImage(); }
 
-     // =============== OFFICE MANAGEMENT HUB ===============
-// ── State ──
-let officeTab = 'design';
-let officeSubtab = 'documents';
-let officeItems = [];
-let officeFilter = 'all';
+    <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#059669" />
+    <title>SHDR Ltd — Office Management Hub</title>
 
-// ── Get default sub-tab ──
-function getDefaultSubtab(tab) {
-    const map = {
-        design: 'documents',
-        financial: 'estimation',
-        workflow: 'certification',
-        approval: 'pending',
-        permit: 'management',
-        submission: 'new'
-    };
-    return map[tab] || 'documents';
-}
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+    <!-- Iconify -->
+    <script src="https://cdn.jsdelivr.net/npm/iconify-icon@2.3.0/dist/iconify-icon.min.js"></script>
 
-// ── Get sub-tabs ──
-function getSubtabs(tab) {
-    const map = {
-        design: [
-            { id: 'documents', label: 'Architectural Docs', icon: 'architecture' },
-            { id: 'structural', label: 'Structural Analysis', icon: 'construction' },
-            { id: 'mep', label: 'MEP Coordination', icon: 'electrical-services' }
-        ],
-        financial: [
-            { id: 'estimation', label: 'Cost Estimation', icon: 'calculate' },
-            { id: 'budget', label: 'Budget Review', icon: 'account-balance' }
-        ],
-        workflow: [
-            { id: 'certification', label: 'Certification', icon: 'verified' },
-            { id: 'queue', label: 'Submission Queue', icon: 'queue' },
-            { id: 'review', label: 'Review & Verification', icon: 'rate-review' }
-        ],
-        approval: [
-            { id: 'pending', label: 'Pending Approvals', icon: 'pending' },
-            { id: 'approved', label: 'Approved', icon: 'check-circle' },
-            { id: 'rejected', label: 'Rejected / Revision', icon: 'cancel' }
-        ],
-        permit: [
-            { id: 'management', label: 'Permit Management', icon: 'gavel' },
-            { id: 'approved-permits', label: 'Approved Permits', icon: 'check-circle' },
-            { id: 'rejected-permits', label: 'Rejected Permits', icon: 'cancel' }
-        ],
-        submission: [
-            { id: 'new', label: 'New Submissions', icon: 'add-box' },
-            { id: 'tracking', label: 'Submission Tracking', icon: 'track-changes' },
-            { id: 'history', label: 'Submission History', icon: 'history' }
-        ]
-    };
-    return map[tab] || map.design;
-}
+    <style>
+        * {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        body {
+            background: #f8fafc;
+        }
 
-// ── Get categories for tab ──
-function getCategoriesForTab(tab) {
-    const map = {
-        design: [
-            { value: 'architectural', label: 'Architectural Document' },
-            { value: 'structural', label: 'Structural Analysis' },
-            { value: 'mep', label: 'MEP Coordination' }
-        ],
-        financial: [
-            { value: 'estimation', label: 'Cost Estimation' },
-            { value: 'budget', label: 'Budget Review' }
-        ],
-        workflow: [
-            { value: 'certification', label: 'Certification' },
-            { value: 'queue', label: 'Submission Queue' },
-            { value: 'review', label: 'Review & Verification' }
-        ],
-        approval: [
-            { value: 'approval', label: 'Approval Item' }
-        ],
-        permit: [
-            { value: 'permit', label: 'Permit' }
-        ],
-        submission: [
-            { value: 'submission', label: 'Submission' }
-        ]
-    };
-    return map[tab] || map.design;
-}
+        /* ── Modal ── */
+        .modal {
+            display: none;
+        }
+        .modal.active {
+            display: flex;
+        }
+        .spinner {
+            border: 3px solid #e2e8f0;
+            border-top: 3px solid #059669;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 0.8s linear infinite;
+        }
+        .btn-spinner {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top: 2px solid #fff;
+            border-radius: 50%;
+            animation: spin 0.6s linear infinite;
+            vertical-align: middle;
+            margin-right: 6px;
+        }
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: #1e293b;
+            color: #fff;
+            padding: 14px 24px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 500;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.20);
+            transform: translateY(80px);
+            opacity: 0;
+            transition: all 0.4s ease;
+            z-index: 999;
+            max-width: 400px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        .toast.success {
+            border-left: 4px solid #059669;
+        }
+        .toast.error {
+            border-left: 4px solid #ef4444;
+        }
+        .toast.info {
+            border-left: 4px solid #3b82f6;
+        }
 
-// ── Get status badge class ──
-function getStatusBadge(status) {
-    const map = {
-        'pending': 'bg-amber-100 text-amber-700',
-        'in-progress': 'bg-blue-100 text-blue-700',
-        'approved': 'bg-emerald-100 text-emerald-700',
-        'rejected': 'bg-red-100 text-red-700',
-        'revision': 'bg-orange-100 text-orange-700',
-        'history': 'bg-slate-100 text-slate-500'
-    };
-    return map[status] || 'bg-slate-100 text-slate-500';
-}
+        /* ── Office Hub custom ── */
+        .office-tab-btn {
+            transition: all 0.2s;
+            border-radius: 9999px;
+        }
+        .office-tab-btn.active {
+            background: #059669;
+            color: white;
+            box-shadow: 0 4px 14px rgba(5, 150, 105, 0.25);
+        }
+        .office-tab-btn:not(.active):hover {
+            background: #f1f5f9;
+        }
 
-// ── Main render ──
-function renderOfficeHub(container) {
-    container.innerHTML = `
-        <div class="max-w-7xl mx-auto">
-            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-                <div>
-                    <h2 class="text-2xl font-bold text-slate-900">Office Management Hub</h2>
-                    <p class="text-sm text-slate-500 mt-1">Centralized control for design, finance, workflow, approvals, permits, and submissions</p>
-                </div>
-                <button onclick="openOfficeAddModal()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-sm font-medium shadow-sm transition flex items-center gap-2">
-                    <iconify-icon icon="material-symbols:add" width="18" height="18"></iconify-icon>
-                    New Item
-                </button>
+        .office-card {
+            transition: all 0.2s;
+            border: 1px solid #e5e7eb;
+        }
+        .office-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.06);
+        }
+
+        .priority-high {
+            border-left: 4px solid #ef4444;
+        }
+        .priority-medium {
+            border-left: 4px solid #f59e0b;
+        }
+        .priority-low {
+            border-left: 4px solid #22c55e;
+        }
+
+        .status-badge {
+            font-size: 0.65rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+        }
+        .status-pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+        .status-in-progress {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+        .status-approved {
+            background: #d1fae5;
+            color: #065f46;
+        }
+        .status-rejected {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+        .status-revision {
+            background: #ffedd5;
+            color: #9a3412;
+        }
+        .status-history {
+            background: #f1f5f9;
+            color: #475569;
+        }
+
+        .kanban-column {
+            min-height: 200px;
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 12px;
+        }
+        .kanban-column h4 {
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #64748b;
+            margin-bottom: 12px;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 8px;
+        }
+
+        .activity-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 0;
+            border-bottom: 1px solid #f1f5f9;
+            font-size: 0.85rem;
+        }
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+        .activity-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+        .activity-dot.create {
+            background: #22c55e;
+        }
+        .activity-dot.update {
+            background: #3b82f6;
+        }
+        .activity-dot.status {
+            background: #f59e0b;
+        }
+
+        .stats-glass {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        @media (max-width: 640px) {
+            .office-tab-btn {
+                font-size: 0.7rem;
+                padding: 6px 10px;
+                min-width: 60px;
+            }
+            .office-tab-btn span {
+                display: none;
+            }
+            .kanban-column {
+                min-height: 100px;
+            }
+            #office-items-container {
+                padding: 8px;
+            }
+            .office-card {
+                padding: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ========== TOAST ========== -->
+    <div id="toast" class="toast"></div>
+
+    <!-- ========== MODAL ========== -->
+    <div id="modal-overlay" class="modal fixed inset-0 bg-black/40 backdrop-blur-sm z-50 items-center justify-center p-4" onclick="closeModal()">
+        <div class="bg-white rounded-2xl p-6 w-full max-w-lg shadow-xl max-h-[90vh] overflow-y-auto" onclick="event.stopPropagation()">
+            <div class="flex justify-between items-center mb-4">
+                <h3 id="modal-title" class="text-xl font-bold"></h3>
+                <button onclick="closeModal()" class="text-slate-400 hover:text-slate-600"><iconify-icon icon="material-symbols:close" width="24"></iconify-icon></button>
             </div>
-
-            <!-- Main Tabs -->
-            <div class="flex flex-wrap gap-1 p-1 bg-slate-100 rounded-xl mb-6">
-                ${[
-                    { id: 'design', label: 'Design & Technical', icon: 'design-services' },
-                    { id: 'financial', label: 'Financial & Cost', icon: 'finance' },
-                    { id: 'workflow', label: 'Document Workflow', icon: 'assignment' },
-                    { id: 'approval', label: 'Approval Center', icon: 'check-circle' },
-                    { id: 'permit', label: 'Permit & Compliance', icon: 'gavel' },
-                    { id: 'submission', label: 'Submission Control', icon: 'send' }
-                ].map(tab => `
-                    <button onclick="switchOfficeTab('${tab.id}')" 
-                        class="flex-1 min-w-[100px] px-3 py-2 rounded-lg text-sm font-semibold transition flex items-center justify-center gap-2
-                        ${officeTab === tab.id ? 'bg-white text-emerald-700 shadow-sm' : 'text-slate-500 hover:bg-white/50'}">
-                        <iconify-icon icon="material-symbols:${tab.icon}" width="18" height="18"></iconify-icon>
-                        ${tab.label}
-                    </button>
-                `).join('')}
-            </div>
-
-            <!-- Sub-tabs & Content -->
-            <div id="office-content">
-                ${renderOfficeContent()}
-            </div>
+            <div id="modal-body"></div>
         </div>
-    `;
-    loadOfficeItems();
-}
+    </div>
 
-// ── Switch main tab ──
-window.switchOfficeTab = (tab) => {
-    officeTab = tab;
-    officeSubtab = getDefaultSubtab(tab);
-    officeFilter = 'all';
-    document.getElementById('office-content').innerHTML = renderOfficeContent();
-    loadOfficeItems();
-};
-
-// ── Switch sub-tab ──
-window.switchOfficeSubtab = (subtab) => {
-    officeSubtab = subtab;
-    renderOfficeItems();
-};
-
-// ── Render office content ──
-function renderOfficeContent() {
-    const subtabs = getSubtabs(officeTab);
-    return `
-        <div class="bg-white rounded-2xl border shadow-sm overflow-hidden">
-            <!-- Sub-tabs -->
-            <div class="flex flex-wrap gap-1 p-3 border-b bg-slate-50/50">
-                ${subtabs.map(st => `
-                    <button onclick="switchOfficeSubtab('${st.id}')" 
-                        class="px-3 py-1.5 rounded-lg text-sm font-medium transition
-                        ${officeSubtab === st.id ? 'bg-emerald-100 text-emerald-700' : 'text-slate-500 hover:bg-slate-100'}">
-                        <iconify-icon icon="material-symbols:${st.icon}" width="16" height="16" class="inline mr-1"></iconify-icon>
-                        ${st.label}
-                    </button>
-                `).join('')}
-                <div class="flex-1"></div>
-                <div class="flex items-center gap-2">
-                    <select id="office-filter-select" onchange="officeFilter = this.value; renderOfficeItems()" class="text-sm border rounded-lg px-2 py-1 bg-white">
-                        <option value="all">All Status</option>
-                        <option value="pending">Pending</option>
-                        <option value="in-progress">In Progress</option>
-                        <option value="approved">Approved</option>
-                        <option value="rejected">Rejected</option>
-                        <option value="revision">Revision Required</option>
-                    </select>
-                    <input type="text" id="office-search-input" placeholder="Search..." oninput="renderOfficeItems()" class="text-sm border rounded-lg px-3 py-1 w-40 bg-white">
-                </div>
+    <!-- ========== MAIN CONTENT ========== -->
+    <div class="max-w-7xl mx-auto px-4 py-6">
+        <!-- Header -->
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+            <div>
+                <h1 class="text-2xl sm:text-3xl font-bold text-slate-900 flex items-center gap-2">
+                    <iconify-icon icon="material-symbols:business-center" class="text-emerald-600" width="32"></iconify-icon>
+                    Office Management Hub
+                </h1>
+                <p class="text-sm text-slate-500 mt-1">Centralized control for design, finance, workflow, approvals, permits, and submissions</p>
             </div>
-
-            <!-- Stats -->
-            <div id="office-stats" class="grid grid-cols-2 sm:grid-cols-4 gap-3 p-4 border-b bg-slate-50/30">
-                <div class="text-center"><span class="text-xs text-slate-500">Total</span><p class="text-lg font-bold text-slate-800" id="stat-total">0</p></div>
-                <div class="text-center"><span class="text-xs text-slate-500">Pending</span><p class="text-lg font-bold text-amber-600" id="stat-pending">0</p></div>
-                <div class="text-center"><span class="text-xs text-slate-500">Approved</span><p class="text-lg font-bold text-emerald-600" id="stat-approved">0</p></div>
-                <div class="text-center"><span class="text-xs text-slate-500">Rejected / Revision</span><p class="text-lg font-bold text-red-600" id="stat-rejected">0</p></div>
-            </div>
-
-            <!-- Items List -->
-            <div id="office-items-container" class="p-4 space-y-3 max-h-[600px] overflow-y-auto">
-                <div class="flex justify-center py-8"><div class="spinner"></div></div>
-            </div>
+            <button onclick="openOfficeAddModal()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-sm font-medium shadow-sm transition flex items-center gap-2">
+                <iconify-icon icon="material-symbols:add" width="18" height="18"></iconify-icon>
+                New Item
+            </button>
         </div>
-    `;
-}
 
-// ── Load office items from Firestore ──
-async function loadOfficeItems() {
-    if (!sitesData.length) {
-        document.getElementById('office-items-container').innerHTML = `<p class="text-slate-400 text-sm">No sites available. Create a site first.</p>`;
-        return;
-    }
-    try {
-        const siteIds = sitesData.map(s => s.id);
-        const q = query(collection(db, 'office_items'), where('site_id', 'in', siteIds));
-        const snap = await getDocs(q);
-        officeItems = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-        renderOfficeItems();
-    } catch (err) {
-        console.error('Error loading office items:', err);
-        document.getElementById('office-items-container').innerHTML = `<p class="text-red-500 text-sm">Error loading: ${err.message}</p>`;
-    }
-}
+        <!-- Loading -->
+        <div id="global-loading" class="hidden p-6 flex justify-center"><div class="spinner"></div></div>
+        <div id="global-error" class="hidden p-6"><div class="bg-red-50 border border-red-200 rounded-2xl p-4 text-red-700"></div></div>
 
-// ── Render filtered office items ──
-function renderOfficeItems() {
-    const container = document.getElementById('office-items-container');
-    if (!container) return;
+        <!-- Tabs -->
+        <div class="flex flex-wrap gap-1 p-1 bg-slate-100 rounded-xl mb-6" id="tab-container">
+            <!-- Tabs rendered by JS -->
+        </div>
 
-    const search = document.getElementById('office-search-input')?.value?.toLowerCase() || '';
-    const filter = officeFilter;
+        <!-- Content -->
+        <div id="office-content"></div>
+    </div>
 
-    let items = officeItems.filter(item => {
-        // Filter by site (owner sees all sites)
-        // Filter by main tab (category)
-        const categoryMap = {
-            design: ['architectural', 'structural', 'mep'],
-            financial: ['estimation', 'budget'],
-            workflow: ['certification', 'queue', 'review'],
-            approval: ['approval'],
-            permit: ['permit'],
-            submission: ['submission']
+    <footer class="bg-white border border-green-200 rounded-2xl shadow-md mx-4 mb-4">
+        <div class="px-5 py-4 flex flex-col sm:flex-row items-center justify-between gap-2 sm:gap-0">
+            <span class="text-xs font-medium text-green-600 order-2 sm:order-1">Office Hub v2.0</span>
+            <div class="text-sm text-gray-600 text-center order-1 sm:order-2">
+                Designed &amp; Powered by
+                <a href="https://wa.me/250790020086" target="_blank" rel="noopener noreferrer" class="text-green-600 hover:text-green-700 no-underline font-semibold">
+                    ___Enock's___blessingz___
+                </a>
+            </div>
+            <div class="hidden sm:block w-16"></div>
+        </div>
+    </footer>
+
+    <!-- ========== FIREBASE + APP ========== -->
+    <script type="importmap">
+        {
+            "imports": {
+                "firebase/app": "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js",
+                "firebase/auth": "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js",
+                "firebase/firestore": "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js"
+            }
+        }
+    </script>
+    <script type="module">
+        import { initializeApp } from "firebase/app";
+        import {
+            getAuth,
+            onAuthStateChanged,
+            signOut
+        } from "firebase/auth";
+        import {
+            getFirestore,
+            collection,
+            query,
+            where,
+            onSnapshot,
+            addDoc,
+            updateDoc,
+            deleteDoc,
+            doc,
+            getDocs,
+            orderBy
+        } from "firebase/firestore";
+
+        // ── Firebase Config ──
+        const firebaseConfig = {
+            apiKey: "AIzaSyBVTLxC6nWpWL6a4BLI3xghdgUoR_cgGzw",
+            authDomain: "shdr-construction.firebaseapp.com",
+            databaseURL: "https://shdr-construction-default-rtdb.firebaseio.com",
+            projectId: "shdr-construction",
+            storageBucket: "shdr-construction.firebasestorage.app",
+            messagingSenderId: "418309267761",
+            appId: "1:418309267761:web:328922587ea18021e21010",
+            measurementId: "G-Y4KMGWDBH3"
         };
-        const categories = categoryMap[officeTab] || [];
-        if (!categories.includes(item.category)) return false;
 
-        // Filter by subtab
-        if (officeSubtab === 'documents' && item.category !== 'architectural') return false;
-        if (officeSubtab === 'structural' && item.category !== 'structural') return false;
-        if (officeSubtab === 'mep' && item.category !== 'mep') return false;
-        if (officeSubtab === 'estimation' && item.category !== 'estimation') return false;
-        if (officeSubtab === 'budget' && item.category !== 'budget') return false;
-        if (officeSubtab === 'certification' && item.category !== 'certification') return false;
-        if (officeSubtab === 'queue' && item.category !== 'queue') return false;
-        if (officeSubtab === 'review' && item.category !== 'review') return false;
-        if (officeSubtab === 'pending' && item.status !== 'pending') return false;
-        if (officeSubtab === 'approved' && item.status !== 'approved') return false;
-        if (officeSubtab === 'rejected' && !['rejected', 'revision'].includes(item.status)) return false;
-        if (officeSubtab === 'management' && item.category !== 'permit') return false;
-        if (officeSubtab === 'approved-permits' && (item.category !== 'permit' || item.status !== 'approved')) return false;
-        if (officeSubtab === 'rejected-permits' && (item.category !== 'permit' || !['rejected', 'revision'].includes(item.status))) return false;
-        if (officeSubtab === 'new' && (item.category !== 'submission' || item.status !== 'pending')) return false;
-        if (officeSubtab === 'tracking' && (item.category !== 'submission' || !['in-progress', 'approved', 'rejected', 'revision'].includes(item.status))) return false;
-        if (officeSubtab === 'history' && (item.category !== 'submission' || item.status !== 'history')) return false;
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const IMGBB_API_KEY = '6b1b5028aba07a31bf702efd9c0ef4fe';
+        const PLACEHOLDER_IMG = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="200"%3E%3Crect width="400" height="200" fill="%23e2e8f0"/%3E%3Ctext x="50%25" y="50%25" dominant-baseline="middle" text-anchor="middle" fill="%2394a3b8" font-size="20"%3ENo Image%3C/text%3E%3C/svg%3E';
 
-        // Filter by status
-        if (filter !== 'all' && item.status !== filter) return false;
+        // ── Global State ──
+        let currentUser = null;
+        let sitesData = [];
+        let officeItems = [];
+        let officeTab = 'dashboard';
+        let officeSubtab = 'documents';
+        let officeFilter = 'all';
+        let officeSearch = '';
+        let unsubscribeSnapshots = [];
+        let currentSiteId = null;
 
-        // Search
-        if (search && !item.title?.toLowerCase().includes(search) && !item.description?.toLowerCase().includes(search)) return false;
+        // ── Helpers ──
+        function formatDate(dateValue) {
+            if (!dateValue) return '—';
+            const date = typeof dateValue === 'string' ? new Date(dateValue) : dateValue;
+            if (isNaN(date.getTime())) return '—';
+            return date.toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+        }
 
-        return true;
-    });
+        function showLoading(show) {
+            document.getElementById('global-loading').classList.toggle('hidden', !show);
+        }
 
-    // Sort by date (newest first)
-    items.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+        function showError(msg) {
+            const el = document.getElementById('global-error');
+            el.classList.remove('hidden');
+            el.querySelector('div').textContent = msg;
+        }
 
-    // Update stats
-    const total = items.length;
-    const pending = items.filter(i => i.status === 'pending').length;
-    const approved = items.filter(i => i.status === 'approved').length;
-    const rejected = items.filter(i => ['rejected', 'revision'].includes(i.status)).length;
+        function clearError() {
+            document.getElementById('global-error').classList.add('hidden');
+        }
 
-    document.getElementById('stat-total').textContent = total;
-    document.getElementById('stat-pending').textContent = pending;
-    document.getElementById('stat-approved').textContent = approved;
-    document.getElementById('stat-rejected').textContent = rejected;
+        function showToast(message, type = 'info') {
+            const toast = document.getElementById('toast');
+            const iconMap = { success: '✅', error: '❌', info: 'ℹ️' };
+            toast.innerHTML = `<span>${iconMap[type] || 'ℹ️'}</span> ${message}`;
+            toast.className = 'toast ' + (type || 'info');
+            toast.classList.add('show');
+            clearTimeout(toast._hideTimer);
+            toast._hideTimer = setTimeout(() => {
+                toast.classList.remove('show');
+            }, 5000);
+        }
 
-    if (!items.length) {
-        container.innerHTML = `<div class="text-center py-8 text-slate-400"><iconify-icon icon="material-symbols:inbox" width="48" height="48" class="mx-auto mb-2 opacity-50"></iconify-icon><p class="text-sm">No items found. Click "New Item" to add one.</p></div>`;
-        return;
-    }
+        function setButtonLoading(btn, loading) {
+            if (!btn) return;
+            if (loading) {
+                btn.disabled = true;
+                btn.dataset.originalHTML = btn.innerHTML;
+                btn.innerHTML = '<span class="btn-spinner"></span> Loading...';
+            } else {
+                btn.disabled = false;
+                btn.innerHTML = btn.dataset.originalHTML || 'Submit';
+            }
+        }
 
-    container.innerHTML = items.map(item => {
-        const siteName = sitesData.find(s => s.id === item.site_id)?.name || 'Unknown Site';
-        return `
-            <div class="bg-slate-50 rounded-xl p-4 border border-slate-200 hover:shadow-md transition flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                <div class="flex-1 min-w-0">
-                    <div class="flex items-center gap-2 flex-wrap">
-                        <span class="text-sm font-semibold text-slate-800">${item.title || 'Untitled'}</span>
-                        <span class="text-xs px-2 py-0.5 rounded-full ${getStatusBadge(item.status)}">${item.status || 'pending'}</span>
-                        <span class="text-xs text-slate-400">${formatDate(item.created_at)}</span>
-                        <span class="text-xs text-slate-400 bg-slate-200 px-2 py-0.5 rounded-full">${siteName}</span>
-                    </div>
-                    <p class="text-sm text-slate-500 truncate mt-0.5">${item.description || 'No description'}</p>
-                    <div class="flex items-center gap-3 mt-1 text-xs text-slate-400">
-                        <span>Category: ${item.category}</span>
-                        ${item.file_url ? `<a href="${item.file_url}" target="_blank" class="text-emerald-600 hover:underline flex items-center gap-1"><iconify-icon icon="material-symbols:attach-file" width="14" height="14"></iconify-icon> Attachment</a>` : ''}
-                        ${item.submitted_by ? `<span>By: ${item.submitted_by}</span>` : ''}
-                    </div>
-                </div>
-                <div class="flex items-center gap-2 flex-shrink-0">
-                    <button onclick="editOfficeItem('${item.id}')" class="text-xs text-emerald-600 hover:text-emerald-800 font-medium px-2 py-1 bg-emerald-50 rounded-lg transition">Edit</button>
-                    <button onclick="deleteOfficeItem('${item.id}')" class="text-xs text-red-500 hover:text-red-700 font-medium px-2 py-1 bg-red-50 rounded-lg transition">Delete</button>
-                    <select onchange="updateOfficeStatus('${item.id}', this.value)" class="text-xs border rounded-lg px-2 py-1 bg-white">
-                        <option value="pending" ${item.status === 'pending' ? 'selected' : ''}>Pending</option>
-                        <option value="in-progress" ${item.status === 'in-progress' ? 'selected' : ''}>In Progress</option>
-                        <option value="approved" ${item.status === 'approved' ? 'selected' : ''}>Approved</option>
-                        <option value="rejected" ${item.status === 'rejected' ? 'selected' : ''}>Rejected</option>
-                        <option value="revision" ${item.status === 'revision' ? 'selected' : ''}>Revision Required</option>
-                        <option value="history" ${item.status === 'history' ? 'selected' : ''}>Archive</option>
-                    </select>
-                </div>
-            </div>
-        `;
-    }).join('');
-}
+        async function uploadImageToImgbb(file) {
+            const formData = new FormData();
+            formData.append('image', file);
+            const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, { method: 'POST', body: formData });
+            const json = await res.json();
+            if (!json.success) throw new Error('Image upload failed');
+            return json.data.url;
+        }
 
-// ── Update office item status ──
-window.updateOfficeStatus = async (id, status) => {
-    try {
-        await updateDoc(doc(db, 'office_items', id), {
-            status: status,
-            updated_at: new Date().toISOString()
+        // ── Close Modal ──
+        window.closeModal = () => document.getElementById('modal-overlay').classList.remove('active');
+
+        window.openModal = (title, bodyHTML) => {
+            document.getElementById('modal-title').textContent = title;
+            document.getElementById('modal-body').innerHTML = bodyHTML;
+            document.getElementById('modal-overlay').classList.add('active');
+        };
+
+        // ── Auth ──
+        onAuthStateChanged(auth, async (user) => {
+            if (!user) {
+                showToast('Please sign in to continue.', 'error');
+                return;
+            }
+            currentUser = user;
+            await loadSites();
+            attachListeners();
+            renderTabs();
+            renderOfficeHub();
         });
-        loadOfficeItems();
-        showToast('Status updated successfully', 'success');
-    } catch (err) {
-        showToast('Error updating status: ' + err.message, 'error');
-    }
-};
 
-// ── Delete office item ──
-window.deleteOfficeItem = async (id) => {
-    if (!confirm('Delete this item permanently?')) return;
-    try {
-        await deleteDoc(doc(db, 'office_items', id));
-        loadOfficeItems();
-        showToast('Item deleted', 'success');
-    } catch (err) {
-        showToast('Error deleting: ' + err.message, 'error');
-    }
-};
-
-// ── Open add/edit modal ──
-window.openOfficeAddModal = (editData = null) => {
-    const isEdit = !!editData;
-    const categories = getCategoriesForTab(officeTab);
-
-    const modalContent = `
-        <form onsubmit="handleOfficeSave(event, '${editData?.id || ''}')" class="space-y-4">
-            <div>
-                <label class="block text-sm font-medium text-slate-700 mb-1">Title *</label>
-                <input type="text" id="office-title" value="${editData?.title || ''}" required class="w-full border rounded-lg p-2.5 text-sm">
-            </div>
-            <div>
-                <label class="block text-sm font-medium text-slate-700 mb-1">Description</label>
-                <textarea id="office-description" rows="3" class="w-full border rounded-lg p-2.5 text-sm">${editData?.description || ''}</textarea>
-            </div>
-            <div>
-                <label class="block text-sm font-medium text-slate-700 mb-1">Site *</label>
-                <select id="office-site" required class="w-full border rounded-lg p-2.5 text-sm">
-                    ${sitesData.map(s => `<option value="${s.id}" ${editData?.site_id === s.id ? 'selected' : ''}>${s.name}</option>`).join('')}
-                </select>
-            </div>
-            <div>
-                <label class="block text-sm font-medium text-slate-700 mb-1">Category *</label>
-                <select id="office-category" required class="w-full border rounded-lg p-2.5 text-sm">
-                    <option value="">Select category</option>
-                    ${categories.map(c => `<option value="${c.value}" ${editData?.category === c.value ? 'selected' : ''}>${c.label}</option>`).join('')}
-                </select>
-            </div>
-            <div>
-                <label class="block text-sm font-medium text-slate-700 mb-1">Status</label>
-                <select id="office-status" class="w-full border rounded-lg p-2.5 text-sm">
-                    <option value="pending" ${editData?.status === 'pending' ? 'selected' : ''}>Pending</option>
-                    <option value="in-progress" ${editData?.status === 'in-progress' ? 'selected' : ''}>In Progress</option>
-                    <option value="approved" ${editData?.status === 'approved' ? 'selected' : ''}>Approved</option>
-                    <option value="rejected" ${editData?.status === 'rejected' ? 'selected' : ''}>Rejected</option>
-                    <option value="revision" ${editData?.status === 'revision' ? 'selected' : ''}>Revision Required</option>
-                    <option value="history" ${editData?.status === 'history' ? 'selected' : ''}>Archive</option>
-                </select>
-            </div>
-            <div>
-                <label class="block text-sm font-medium text-slate-700 mb-1">File Attachment (optional)</label>
-                <input type="file" id="office-file" accept=".pdf,.doc,.docx,.xls,.xlsx,.png,.jpg,.jpeg" class="w-full text-sm">
-                ${editData?.file_url ? `<p class="text-xs text-emerald-600 mt-1">Current: <a href="${editData.file_url}" target="_blank" class="underline">View File</a></p>` : ''}
-            </div>
-            <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-3 rounded-xl transition">${isEdit ? 'Update' : 'Create'} Item</button>
-        </form>
-    `;
-    openModal(isEdit ? 'Edit Office Item' : 'New Office Item', modalContent);
-};
-
-// ── Handle office item save ──
-window.handleOfficeSave = async (e, id) => {
-    e.preventDefault();
-    const btn = e.target.querySelector('button[type="submit"]');
-    setButtonLoading(btn, true);
-
-    try {
-        const title = document.getElementById('office-title').value.trim();
-        const description = document.getElementById('office-description').value.trim();
-        const site_id = document.getElementById('office-site').value;
-        const category = document.getElementById('office-category').value;
-        const status = document.getElementById('office-status').value;
-        const fileInput = document.getElementById('office-file');
-        const isEdit = !!id;
-
-        if (!title || !category || !site_id) {
-            alert('Title, Site, and Category are required.');
-            setButtonLoading(btn, false);
-            return;
+        // ── Load Sites ──
+        async function loadSites() {
+            try {
+                const q = query(collection(db, 'sites'), where('owner_id', '==', currentUser.uid));
+                const snap = await getDocs(q);
+                sitesData = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+                if (sitesData.length) currentSiteId = sitesData[0].id;
+            } catch (err) {
+                showError('Failed to load sites: ' + err.message);
+            }
         }
 
-        let file_url = '';
-        if (fileInput.files.length > 0) {
-            file_url = await uploadImageToImgbb(fileInput.files[0]);
-        } else if (isEdit) {
-            const existing = officeItems.find(i => i.id === id);
-            file_url = existing?.file_url || '';
+        // ── Attach Listeners ──
+        function attachListeners() {
+            unsubscribeSnapshots.forEach(fn => fn());
+            unsubscribeSnapshots = [];
+            if (!sitesData.length) return;
+
+            const siteIds = sitesData.map(s => s.id);
+            const q = query(collection(db, 'office_items'), where('site_id', 'in', siteIds));
+            const unsub = onSnapshot(q, (snap) => {
+                officeItems = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+                renderOfficeHub();
+                if (officeTab === 'dashboard') updateDashboardStats();
+            }, err => showError('Office items error: ' + err.message));
+            unsubscribeSnapshots.push(unsub);
         }
 
-        const data = {
-            site_id,
-            title,
-            description,
-            category,
-            status,
-            file_url,
-            updated_at: new Date().toISOString()
+        // ── Get Sub-tabs ──
+        function getSubtabs(tab) {
+            const map = {
+                design: [
+                    { id: 'documents', label: 'Architectural Docs', icon: 'architecture' },
+                    { id: 'structural', label: 'Structural Analysis', icon: 'construction' },
+                    { id: 'mep', label: 'MEP Coordination', icon: 'electrical-services' }
+                ],
+                financial: [
+                    { id: 'estimation', label: 'Cost Estimation', icon: 'calculate' },
+                    { id: 'budget', label: 'Budget Review', icon: 'account-balance' }
+                ],
+                workflow: [
+                    { id: 'certification', label: 'Certification', icon: 'verified' },
+                    { id: 'queue', label: 'Submission Queue', icon: 'queue' },
+                    { id: 'review', label: 'Review & Verification', icon: 'rate-review' }
+                ],
+                approval: [
+                    { id: 'pending', label: 'Pending', icon: 'pending' },
+                    { id: 'in-progress', label: 'In Progress', icon: 'progress' },
+                    { id: 'approved', label: 'Approved', icon: 'check-circle' },
+                    { id: 'rejected', label: 'Rejected / Revision', icon: 'cancel' }
+                ],
+                permit: [
+                    { id: 'management', label: 'Permit Management', icon: 'gavel' },
+                    { id: 'approved-permits', label: 'Approved Permits', icon: 'check-circle' },
+                    { id: 'rejected-permits', label: 'Rejected Permits', icon: 'cancel' }
+                ],
+                submission: [
+                    { id: 'new', label: 'New Submissions', icon: 'add-box' },
+                    { id: 'tracking', label: 'Submission Tracking', icon: 'track-changes' },
+                    { id: 'history', label: 'Submission History', icon: 'history' }
+                ]
+            };
+            return map[tab] || map.design;
+        }
+
+        function getDefaultSubtab(tab) {
+            const map = {
+                design: 'documents',
+                financial: 'estimation',
+                workflow: 'certification',
+                approval: 'pending',
+                permit: 'management',
+                submission: 'new'
+            };
+            return map[tab] || 'documents';
+        }
+
+        function getCategoriesForTab(tab) {
+            const map = {
+                design: [
+                    { value: 'architectural', label: 'Architectural Document' },
+                    { value: 'structural', label: 'Structural Analysis' },
+                    { value: 'mep', label: 'MEP Coordination' }
+                ],
+                financial: [
+                    { value: 'estimation', label: 'Cost Estimation' },
+                    { value: 'budget', label: 'Budget Review' }
+                ],
+                workflow: [
+                    { value: 'certification', label: 'Certification' },
+                    { value: 'queue', label: 'Submission Queue' },
+                    { value: 'review', label: 'Review & Verification' }
+                ],
+                approval: [
+                    { value: 'approval', label: 'Approval Item' }
+                ],
+                permit: [
+                    { value: 'permit', label: 'Permit' }
+                ],
+                submission: [
+                    { value: 'submission', label: 'Submission' }
+                ]
+            };
+            return map[tab] || map.design;
+        }
+
+        function getStatusBadge(status) {
+            const map = {
+                'pending': 'status-pending',
+                'in-progress': 'status-in-progress',
+                'approved': 'status-approved',
+                'rejected': 'status-rejected',
+                'revision': 'status-revision',
+                'history': 'status-history'
+            };
+            return map[status] || 'status-pending';
+        }
+
+        function getPriorityLabel(priority) {
+            const map = {
+                'high': { label: 'High', icon: '🔴' },
+                'medium': { label: 'Medium', icon: '🟡' },
+                'low': { label: 'Low', icon: '🟢' }
+            };
+            return map[priority] || { label: 'None', icon: '⚪' };
+        }
+
+        // ── Render Tabs ──
+        function renderTabs() {
+            const container = document.getElementById('tab-container');
+            const tabs = [
+                { id: 'dashboard', label: 'Dashboard', icon: 'dashboard' },
+                { id: 'design', label: 'Design & Technical', icon: 'design-services' },
+                { id: 'financial', label: 'Financial & Cost', icon: 'finance' },
+                { id: 'workflow', label: 'Document Workflow', icon: 'assignment' },
+                { id: 'approval', label: 'Approval Center', icon: 'check-circle' },
+                { id: 'permit', label: 'Permit & Compliance', icon: 'gavel' },
+                { id: 'submission', label: 'Submission Control', icon: 'send' }
+            ];
+            container.innerHTML = tabs.map(tab => `
+                <button onclick="switchOfficeTab('${tab.id}')" 
+                    class="office-tab-btn flex-1 min-w-[80px] px-3 py-2 rounded-full text-sm font-semibold transition flex items-center justify-center gap-2
+                    ${officeTab === tab.id ? 'active' : 'bg-transparent text-slate-500 hover:bg-white/50'}">
+                    <iconify-icon icon="material-symbols:${tab.icon}" width="18" height="18"></iconify-icon>
+                    <span class="hidden sm:inline">${tab.label}</span>
+                </button>
+            `).join('');
+        }
+
+        // ── Switch Tab ──
+        window.switchOfficeTab = (tab) => {
+            officeTab = tab;
+            officeSubtab = getDefaultSubtab(tab);
+            officeFilter = 'all';
+            renderTabs();
+            renderOfficeHub();
+            if (tab === 'dashboard') updateDashboardStats();
         };
 
-        if (isEdit) {
-            await updateDoc(doc(db, 'office_items', id), data);
-        } else {
-            data.created_at = new Date().toISOString();
-            data.submitted_by = currentUser.displayName || currentUser.email || 'Owner';
-            await addDoc(collection(db, 'office_items'), data);
+        // ── Switch Sub-tab ──
+        window.switchOfficeSubtab = (subtab) => {
+            officeSubtab = subtab;
+            renderOfficeHub();
+        };
+
+        // ── Render Office Hub ──
+        function renderOfficeHub() {
+            const container = document.getElementById('office-content');
+            if (officeTab === 'dashboard') {
+                container.innerHTML = renderDashboard();
+                updateDashboardStats();
+            } else {
+                container.innerHTML = renderContent();
+                renderItems();
+            }
         }
 
-        closeModal();
-        loadOfficeItems();
-        showToast(isEdit ? 'Item updated successfully' : 'Item created successfully', 'success');
-    } catch (err) {
-        showToast('Error: ' + err.message, 'error');
-    } finally {
-        setButtonLoading(btn, false);
-    }
-};
+        // ── Dashboard ──
+        function renderDashboard() {
+            return `
+                <div class="space-y-6">
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div class="stats-glass rounded-2xl p-4 shadow-sm border border-slate-200">
+                            <p class="text-xs text-slate-500">Total Items</p>
+                            <p class="text-2xl font-bold text-slate-800" id="dash-total">0</p>
+                        </div>
+                        <div class="stats-glass rounded-2xl p-4 shadow-sm border border-amber-200">
+                            <p class="text-xs text-slate-500">Pending</p>
+                            <p class="text-2xl font-bold text-amber-600" id="dash-pending">0</p>
+                        </div>
+                        <div class="stats-glass rounded-2xl p-4 shadow-sm border border-emerald-200">
+                            <p class="text-xs text-slate-500">Approved</p>
+                            <p class="text-2xl font-bold text-emerald-600" id="dash-approved">0</p>
+                        </div>
+                        <div class="stats-glass rounded-2xl p-4 shadow-sm border border-red-200">
+                            <p class="text-xs text-slate-500">Rejected / Revision</p>
+                            <p class="text-2xl font-bold text-red-600" id="dash-rejected">0</p>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-2xl border shadow-sm p-4">
+                        <h3 class="font-semibold text-slate-700 flex items-center gap-2 mb-3">
+                            <iconify-icon icon="material-symbols:history" width="20"></iconify-icon>
+                            Recent Activity
+                        </h3>
+                        <div id="dash-activity" class="max-h-60 overflow-y-auto">
+                            <div class="text-slate-400 text-sm">Loading activity...</div>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                        ${['design','financial','workflow','approval','permit','submission'].map(cat => {
+                            const map = {
+                                design: ['architectural','structural','mep'],
+                                financial: ['estimation','budget'],
+                                workflow: ['certification','queue','review'],
+                                approval: ['approval'],
+                                permit: ['permit'],
+                                submission: ['submission']
+                            };
+                            const count = officeItems.filter(i => map[cat].includes(i.category)).length;
+                            const label = cat.charAt(0).toUpperCase() + cat.slice(1);
+                            return `
+                                <div class="bg-slate-50 rounded-xl p-3 border border-slate-200 text-center hover:shadow-sm transition">
+                                    <p class="text-xs text-slate-500">${label}</p>
+                                    <p class="text-xl font-bold text-slate-800">${count}</p>
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
+                </div>
+            `;
+        }
 
-// ── Edit office item ──
-window.editOfficeItem = (id) => {
-    const item = officeItems.find(i => i.id === id);
-    if (!item) return;
-    const tabMap = {
-        'architectural': 'design',
-        'structural': 'design',
-        'mep': 'design',
-        'estimation': 'financial',
-        'budget': 'financial',
-        'certification': 'workflow',
-        'queue': 'workflow',
-        'review': 'workflow',
-        'approval': 'approval',
-        'permit': 'permit',
-        'submission': 'submission'
-    };
-    const targetTab = tabMap[item.category] || 'design';
-    if (officeTab !== targetTab) {
-        officeTab = targetTab;
-        officeSubtab = getDefaultSubtab(targetTab);
-        document.getElementById('office-content').innerHTML = renderOfficeContent();
-        loadOfficeItems();
-        setTimeout(() => openOfficeAddModal(item), 100);
-    } else {
-        openOfficeAddModal(item);
-    }
-};
+        function updateDashboardStats() {
+            const total = officeItems.length;
+            const pending = officeItems.filter(i => i.status === 'pending').length;
+            const approved = officeItems.filter(i => i.status === 'approved').length;
+            const rejected = officeItems.filter(i => ['rejected','revision'].includes(i.status)).length;
 
-// ── Add Office Hub to bottom nav (mobile) ──
-// Add this to your bottom-nav HTML:
-// <a href="#" onclick="showSection('office')" data-section="office">
-//     <iconify-icon icon="material-symbols:business-center-outline"></iconify-icon>
-//     <span>Office</span>
-// </a>
+            document.getElementById('dash-total').textContent = total;
+            document.getElementById('dash-pending').textContent = pending;
+            document.getElementById('dash-approved').textContent = approved;
+            document.getElementById('dash-rejected').textContent = rejected;
+
+            // Activity
+            const container = document.getElementById('dash-activity');
+            if (!container) return;
+            const items = officeItems.slice().sort((a,b) => new Date(b.updated_at) - new Date(a.updated_at));
+            if (!items.length) {
+                container.innerHTML = '<div class="text-slate-400 text-sm">No activity yet.</div>';
+                return;
+            }
+            const recent = items.slice(0, 10);
+            container.innerHTML = recent.map(item => `
+                <div class="activity-item">
+                    <span class="activity-dot ${item.status === 'approved' ? 'create' : item.status === 'rejected' ? 'status' : 'update'}"></span>
+                    <span class="text-slate-700 font-medium">${item.title}</span>
+                    <span class="text-slate-400 text-xs">${formatDate(item.updated_at)}</span>
+                    <span class="text-xs text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">${item.status}</span>
+                    <span class="text-xs text-slate-400 ml-auto">${item.submitted_by || '—'}</span>
+                </div>
+            `).join('');
+        }
+
+        // ── Render Content ──
+        function renderContent() {
+            const subtabs = getSubtabs(officeTab);
+            const isKanban = officeTab === 'approval';
+            return `
+                <div class="bg-white rounded-2xl border shadow-sm overflow-hidden">
+                    <div class="flex flex-wrap gap-1 p-3 border-b bg-slate-50/50">
+                        ${subtabs.map(st => `
+                            <button onclick="switchOfficeSubtab('${st.id}')" 
+                                class="px-3 py-1.5 rounded-lg text-sm font-medium transition
+                                ${officeSubtab === st.id ? 'bg-emerald-100 text-emerald-700' : 'text-slate-500 hover:bg-slate-100'}">
+                                <iconify-icon icon="material-symbols:${st.icon}" width="16" height="16" class="inline mr-1"></iconify-icon>
+                                ${st.label}
+                            </button>
+                        `).join('')}
+                        <div class="flex-1"></div>
+                        <div class="flex items-center gap-2">
+                            <select id="office-filter-select" onchange="officeFilter = this.value; renderItems()" class="text-sm border rounded-lg px-2 py-1 bg-white">
+                                <option value="all">All Status</option>
+                                <option value="pending">Pending</option>
+                                <option value="in-progress">In Progress</option>
+                                <option value="approved">Approved</option>
+                                <option value="rejected">Rejected</option>
+                                <option value="revision">Revision</option>
+                            </select>
+                            <input type="text" id="office-search-input" placeholder="Search..." oninput="officeSearch = this.value; renderItems()" class="text-sm border rounded-lg px-3 py-1 w-40 bg-white">
+                        </div>
+                    </div>
+                    <div id="office-items-container" class="p-4">
+                        <div class="flex justify-center py-8"><div class="spinner"></div></div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // ── Render Items ──
+        function renderItems() {
+            const container = document.getElementById('office-items-container');
+            if (!container) return;
+
+            const search = officeSearch.toLowerCase();
+            const filter = officeFilter;
+
+            let items = officeItems.filter(item => {
+                const categoryMap = {
+                    design: ['architectural','structural','mep'],
+                    financial: ['estimation','budget'],
+                    workflow: ['certification','queue','review'],
+                    approval: ['approval'],
+                    permit: ['permit'],
+                    submission: ['submission']
+                };
+                const categories = categoryMap[officeTab] || [];
+                if (!categories.includes(item.category)) return false;
+
+                // Subtab filters
+                if (officeSubtab === 'documents' && item.category !== 'architectural') return false;
+                if (officeSubtab === 'structural' && item.category !== 'structural') return false;
+                if (officeSubtab === 'mep' && item.category !== 'mep') return false;
+                if (officeSubtab === 'estimation' && item.category !== 'estimation') return false;
+                if (officeSubtab === 'budget' && item.category !== 'budget') return false;
+                if (officeSubtab === 'certification' && item.category !== 'certification') return false;
+                if (officeSubtab === 'queue' && item.category !== 'queue') return false;
+                if (officeSubtab === 'review' && item.category !== 'review') return false;
+                if (officeSubtab === 'pending' && item.status !== 'pending') return false;
+                if (officeSubtab === 'in-progress' && item.status !== 'in-progress') return false;
+                if (officeSubtab === 'approved' && item.status !== 'approved') return false;
+                if (officeSubtab === 'rejected' && !['rejected','revision'].includes(item.status)) return false;
+                if (officeSubtab === 'management' && item.category !== 'permit') return false;
+                if (officeSubtab === 'approved-permits' && (item.category !== 'permit' || item.status !== 'approved')) return false;
+                if (officeSubtab === 'rejected-permits' && (item.category !== 'permit' || !['rejected','revision'].includes(item.status))) return false;
+                if (officeSubtab === 'new' && (item.category !== 'submission' || item.status !== 'pending')) return false;
+                if (officeSubtab === 'tracking' && (item.category !== 'submission' || !['in-progress','approved','rejected','revision'].includes(item.status))) return false;
+                if (officeSubtab === 'history' && (item.category !== 'submission' || item.status !== 'history')) return false;
+
+                if (filter !== 'all' && item.status !== filter) return false;
+                if (search) {
+                    const match = item.title?.toLowerCase().includes(search) ||
+                                  item.description?.toLowerCase().includes(search) ||
+                                  item.assignee?.toLowerCase().includes(search) ||
+                                  item.category?.toLowerCase().includes(search);
+                    if (!match) return false;
+                }
+                return true;
+            });
+
+            items.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+
+            if (!items.length) {
+                container.innerHTML = `<div class="text-center py-8 text-slate-400"><iconify-icon icon="material-symbols:inbox" width="48" height="48" class="mx-auto mb-2 opacity-50"></iconify-icon><p class="text-sm">No items found. Click "New Item" to add one.</p></div>`;
+                return;
+            }
+
+            // ── Kanban ──
+            if (officeTab === 'approval') {
+                const columns = {
+                    'pending': { label: 'Pending', items: [] },
+                    'in-progress': { label: 'In Progress', items: [] },
+                    'approved': { label: 'Approved', items: [] },
+                    'rejected': { label: 'Rejected / Revision', items: [] }
+                };
+                items.forEach(item => {
+                    const status = item.status || 'pending';
+                    if (columns[status]) columns[status].items.push(item);
+                    else columns['pending'].items.push(item);
+                });
+
+                container.innerHTML = `
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                        ${Object.entries(columns).map(([key, col]) => `
+                            <div class="kanban-column">
+                                <h4>${col.label} (${col.items.length})</h4>
+                                ${col.items.map(item => `
+                                    <div class="office-card bg-white rounded-xl p-3 mb-2 shadow-sm ${item.priority ? `priority-${item.priority}` : ''}">
+                                        <div class="flex justify-between items-start">
+                                            <p class="text-sm font-medium text-slate-800">${item.title}</p>
+                                            <span class="text-xs px-2 py-0.5 rounded-full ${getStatusBadge(item.status)} status-badge">${item.status}</span>
+                                        </div>
+                                        <p class="text-xs text-slate-500 mt-1 truncate">${item.description || '—'}</p>
+                                        <div class="flex flex-wrap gap-1 mt-2 text-xs text-slate-400">
+                                            ${item.priority ? `<span class="bg-slate-100 px-1.5 py-0.5 rounded">${getPriorityLabel(item.priority).icon} ${getPriorityLabel(item.priority).label}</span>` : ''}
+                                            ${item.assignee ? `<span>👤 ${item.assignee}</span>` : ''}
+                                            ${item.due_date ? `<span>📅 ${formatDate(item.due_date)}</span>` : ''}
+                                            <span>🏷️ ${item.category}</span>
+                                        </div>
+                                        <div class="flex items-center gap-2 mt-2">
+                                            <button onclick="editOfficeItem('${item.id}')" class="text-xs text-emerald-600 hover:text-emerald-800 font-medium">Edit</button>
+                                            <button onclick="deleteOfficeItem('${item.id}')" class="text-xs text-red-500 hover:text-red-700 font-medium">Delete</button>
+                                            <select onchange="updateOfficeStatus('${item.id}', this.value)" class="text-xs border rounded-lg px-1 py-0.5 bg-white">
+                                                <option value="pending" ${item.status === 'pending' ? 'selected' : ''}>Pending</option>
+                                                <option value="in-progress" ${item.status === 'in-progress' ? 'selected' : ''}>In Progress</option>
+                                                <option value="approved" ${item.status === 'approved' ? 'selected' : ''}>Approved</option>
+                                                <option value="rejected" ${item.status === 'rejected' ? 'selected' : ''}>Rejected</option>
+                                                <option value="revision" ${item.status === 'revision' ? 'selected' : ''}>Revision</option>
+                                                <option value="history" ${item.status === 'history' ? 'selected' : ''}>Archive</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                `).join('') || `<p class="text-xs text-slate-400">Empty</p>`}
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+                return;
+            }
+
+            // ── List View ──
+            container.innerHTML = items.map(item => {
+                const siteName = sitesData.find(s => s.id === item.site_id)?.name || 'Unknown Site';
+                return `
+                    <div class="office-card bg-white rounded-xl p-4 mb-3 shadow-sm ${item.priority ? `priority-${item.priority}` : ''}">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                            <div class="flex-1 min-w-0">
+                                <div class="flex items-center gap-2 flex-wrap">
+                                    <span class="text-sm font-semibold text-slate-800">${item.title}</span>
+                                    <span class="text-xs px-2 py-0.5 rounded-full ${getStatusBadge(item.status)} status-badge">${item.status}</span>
+                                    ${item.priority ? `<span class="text-xs bg-slate-100 px-1.5 py-0.5 rounded">${getPriorityLabel(item.priority).icon} ${getPriorityLabel(item.priority).label}</span>` : ''}
+                                    <span class="text-xs text-slate-400">${formatDate(item.created_at)}</span>
+                                </div>
+                                <p class="text-sm text-slate-500 truncate mt-0.5">${item.description || 'No description'}</p>
+                                <div class="flex flex-wrap items-center gap-3 mt-1 text-xs text-slate-400">
+                                    <span>🏷️ ${item.category}</span>
+                                    <span>📍 ${siteName}</span>
+                                    ${item.assignee ? `<span>👤 ${item.assignee}</span>` : ''}
+                                    ${item.due_date ? `<span>📅 Due: ${formatDate(item.due_date)}</span>` : ''}
+                                    ${item.file_url ? `<a href="${item.file_url}" target="_blank" class="text-emerald-600 hover:underline flex items-center gap-1"><iconify-icon icon="material-symbols:attach-file" width="14"></iconify-icon> Attachment</a>` : ''}
+                                    ${item.submitted_by ? `<span>By: ${item.submitted_by}</span>` : ''}
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-2 flex-shrink-0">
+                                <button onclick="editOfficeItem('${item.id}')" class="text-xs text-emerald-600 hover:text-emerald-800 font-medium px-2 py-1 bg-emerald-50 rounded-lg transition">Edit</button>
+                                <button onclick="deleteOfficeItem('${item.id}')" class="text-xs text-red-500 hover:text-red-700 font-medium px-2 py-1 bg-red-50 rounded-lg transition">Delete</button>
+                                <select onchange="updateOfficeStatus('${item.id}', this.value)" class="text-xs border rounded-lg px-2 py-1 bg-white">
+                                    <option value="pending" ${item.status === 'pending' ? 'selected' : ''}>Pending</option>
+                                    <option value="in-progress" ${item.status === 'in-progress' ? 'selected' : ''}>In Progress</option>
+                                    <option value="approved" ${item.status === 'approved' ? 'selected' : ''}>Approved</option>
+                                    <option value="rejected" ${item.status === 'rejected' ? 'selected' : ''}>Rejected</option>
+                                    <option value="revision" ${item.status === 'revision' ? 'selected' : ''}>Revision</option>
+                                    <option value="history" ${item.status === 'history' ? 'selected' : ''}>Archive</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // ── Update Status ──
+        window.updateOfficeStatus = async (id, status) => {
+            try {
+                await updateDoc(doc(db, 'office_items', id), {
+                    status: status,
+                    updated_at: new Date().toISOString()
+                });
+                showToast('Status updated', 'success');
+            } catch (err) {
+                showToast('Error: ' + err.message, 'error');
+            }
+        };
+
+        // ── Delete ──
+        window.deleteOfficeItem = async (id) => {
+            if (!confirm('Delete this item permanently?')) return;
+            try {
+                await deleteDoc(doc(db, 'office_items', id));
+                showToast('Item deleted', 'success');
+            } catch (err) {
+                showToast('Error: ' + err.message, 'error');
+            }
+        };
+
+        // ── Open Add/Edit Modal ──
+        window.openOfficeAddModal = (editData = null) => {
+            const isEdit = !!editData;
+            const categories = getCategoriesForTab(officeTab === 'dashboard' ? 'design' : officeTab);
+
+            const modalContent = `
+                <form onsubmit="handleOfficeSave(event, '${editData?.id || ''}')" class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Title *</label>
+                        <input type="text" id="office-title" value="${editData?.title || ''}" required class="w-full border rounded-lg p-2.5 text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Description</label>
+                        <textarea id="office-description" rows="3" class="w-full border rounded-lg p-2.5 text-sm">${editData?.description || ''}</textarea>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Site *</label>
+                        <select id="office-site" required class="w-full border rounded-lg p-2.5 text-sm">
+                            ${sitesData.map(s => `<option value="${s.id}" ${editData?.site_id === s.id ? 'selected' : ''}>${s.name}</option>`).join('')}
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Category *</label>
+                        <select id="office-category" required class="w-full border rounded-lg p-2.5 text-sm">
+                            <option value="">Select category</option>
+                            ${categories.map(c => `<option value="${c.value}" ${editData?.category === c.value ? 'selected' : ''}>${c.label}</option>`).join('')}
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Status</label>
+                        <select id="office-status" class="w-full border rounded-lg p-2.5 text-sm">
+                            <option value="pending" ${editData?.status === 'pending' ? 'selected' : ''}>Pending</option>
+                            <option value="in-progress" ${editData?.status === 'in-progress' ? 'selected' : ''}>In Progress</option>
+                            <option value="approved" ${editData?.status === 'approved' ? 'selected' : ''}>Approved</option>
+                            <option value="rejected" ${editData?.status === 'rejected' ? 'selected' : ''}>Rejected</option>
+                            <option value="revision" ${editData?.status === 'revision' ? 'selected' : ''}>Revision Required</option>
+                            <option value="history" ${editData?.status === 'history' ? 'selected' : ''}>Archive</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Priority</label>
+                        <select id="office-priority" class="w-full border rounded-lg p-2.5 text-sm">
+                            <option value="">None</option>
+                            <option value="high" ${editData?.priority === 'high' ? 'selected' : ''}>🔴 High</option>
+                            <option value="medium" ${editData?.priority === 'medium' ? 'selected' : ''}>🟡 Medium</option>
+                            <option value="low" ${editData?.priority === 'low' ? 'selected' : ''}>🟢 Low</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Due Date</label>
+                        <input type="date" id="office-due-date" value="${editData?.due_date ? new Date(editData.due_date).toISOString().split('T')[0] : ''}" class="w-full border rounded-lg p-2.5 text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Assignee</label>
+                        <input type="text" id="office-assignee" value="${editData?.assignee || ''}" placeholder="e.g. John Doe" class="w-full border rounded-lg p-2.5 text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">File Attachment (optional)</label>
+                        <input type="file" id="office-file" accept=".pdf,.doc,.docx,.xls,.xlsx,.png,.jpg,.jpeg" class="w-full text-sm">
+                        ${editData?.file_url ? `<p class="text-xs text-emerald-600 mt-1">Current: <a href="${editData.file_url}" target="_blank" class="underline">View File</a></p>` : ''}
+                    </div>
+                    <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-3 rounded-xl transition">${isEdit ? 'Update' : 'Create'} Item</button>
+                </form>
+            `;
+            openModal(isEdit ? 'Edit Office Item' : 'New Office Item', modalContent);
+        };
+
+        // ── Handle Save ──
+        window.handleOfficeSave = async (e, id) => {
+            e.preventDefault();
+            const btn = e.target.querySelector('button[type="submit"]');
+            setButtonLoading(btn, true);
+
+            try {
+                const title = document.getElementById('office-title').value.trim();
+                const description = document.getElementById('office-description').value.trim();
+                const site_id = document.getElementById('office-site').value;
+                const category = document.getElementById('office-category').value;
+                const status = document.getElementById('office-status').value;
+                const priority = document.getElementById('office-priority').value;
+                const due_date = document.getElementById('office-due-date').value;
+                const assignee = document.getElementById('office-assignee').value.trim();
+                const fileInput = document.getElementById('office-file');
+                const isEdit = !!id;
+
+                if (!title || !category || !site_id) {
+                    alert('Title, Site, and Category are required.');
+                    setButtonLoading(btn, false);
+                    return;
+                }
+
+                let file_url = '';
+                if (fileInput.files.length > 0) {
+                    file_url = await uploadImageToImgbb(fileInput.files[0]);
+                } else if (isEdit) {
+                    const existing = officeItems.find(i => i.id === id);
+                    file_url = existing?.file_url || '';
+                }
+
+                const data = {
+                    site_id,
+                    title,
+                    description,
+                    category,
+                    status,
+                    priority,
+                    due_date: due_date || null,
+                    assignee: assignee || null,
+                    file_url,
+                    updated_at: new Date().toISOString()
+                };
+
+                if (isEdit) {
+                    await updateDoc(doc(db, 'office_items', id), data);
+                } else {
+                    data.created_at = new Date().toISOString();
+                    data.submitted_by = currentUser.displayName || currentUser.email || 'Owner';
+                    await addDoc(collection(db, 'office_items'), data);
+                }
+
+                closeModal();
+                showToast(isEdit ? 'Item updated' : 'Item created', 'success');
+            } catch (err) {
+                showToast('Error: ' + err.message, 'error');
+            } finally {
+                setButtonLoading(btn, false);
+            }
+        };
+
+        // ── Edit ──
+        window.editOfficeItem = (id) => {
+            const item = officeItems.find(i => i.id === id);
+            if (!item) return;
+            const tabMap = {
+                'architectural': 'design',
+                'structural': 'design',
+                'mep': 'design',
+                'estimation': 'financial',
+                'budget': 'financial',
+                'certification': 'workflow',
+                'queue': 'workflow',
+                'review': 'workflow',
+                'approval': 'approval',
+                'permit': 'permit',
+                'submission': 'submission'
+            };
+            const targetTab = tabMap[item.category] || 'design';
+            if (officeTab !== targetTab && officeTab !== 'dashboard') {
+                officeTab = targetTab;
+                officeSubtab = getDefaultSubtab(targetTab);
+                renderTabs();
+                renderOfficeHub();
+                setTimeout(() => openOfficeAddModal(item), 100);
+            } else {
+                openOfficeAddModal(item);
+            }
+        };
+
+        // ── Initial render ──
+        renderTabs();
+        renderOfficeHub();
+
+        console.log('🏢 Office Management Hub loaded successfully!');
+    </script>
+</body>
+</html>
 
         // ============================================================
         // ─── SETTINGS MODULE (NEW) ──────────────────────────────────
