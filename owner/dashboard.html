@@ -20,7 +20,23 @@
 
     <style>
         /* ── Office Hub Enhanced Styles ── */
-
+/* ── Disabled Nav Links ── */
+.nav-disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+    user-select: none;
+    position: relative;
+}
+.nav-disabled::after {
+    content: ' 🔒';
+    font-size: 0.65rem;
+    color: #9ca3af;
+    font-weight: 400;
+}
+.nav-disabled .nav-label {
+    opacity: 0.6;
+}
 /* Office Hub header */
 .office-header {
     background: linear-gradient(135deg, #059669 0%, #047857 50%, #065f46 100%);
@@ -543,9 +559,11 @@
         <a href="#" onclick="showSection('gallery')" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg text-slate-600 hover:bg-slate-50 transition-colors" data-section="gallery">
             <iconify-icon icon="material-symbols:photo-library-outline" width="20" height="20"></iconify-icon> Gallery
         </a>
-        <a href="#" onclick="showSection('office')" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg text-slate-600 hover:bg-slate-50 transition-colors" data-section="office">
-            <iconify-icon icon="material-symbols:business-center-outline" width="20" height="20"></iconify-icon> Office Hub
-        </a>
+        <a href="#" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg text-slate-600 transition-colors nav-disabled" data-section="office">
+    <iconify-icon icon="material-symbols:business-center-outline" width="20" height="20"></iconify-icon>
+    <span class="nav-label">Office Hub</span>
+    <span class="text-[10px] text-amber-500 ml-auto font-medium">Coming Soon</span>
+</a>
         <!-- NEW: Settings -->
         <a href="#" onclick="showSection('settings')" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg text-slate-600 hover:bg-slate-50 transition-colors" data-section="settings">
             <iconify-icon icon="material-symbols:settings-outline" width="20" height="20"></iconify-icon> Settings
@@ -3326,6 +3344,15 @@ window.editOfficeItem = (id) => {
     } else {
         openOfficeAddModal(item);
     }
+    // ── Block Office Hub navigation ──
+const originalShowSection = window.showSection;
+window.showSection = function(section) {
+    if (section === 'office') {
+        showToast('🏗️ Office Hub is coming soon. Stay tuned!', 'info');
+        return; // Do nothing – stay on current page
+    }
+    originalShowSection(section);
+};
 };
 
         // ============================================================
