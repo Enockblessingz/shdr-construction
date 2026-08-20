@@ -20,242 +20,242 @@
 
     <style>
         /* ── Office Hub Enhanced Styles ── */
-/* ── Disabled Nav Links ── */
-.nav-disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-    pointer-events: none;
-    user-select: none;
-    position: relative;
-}
-.nav-disabled::after {
-    content: ' 🔒';
-    font-size: 0.65rem;
-    color: #9ca3af;
-    font-weight: 400;
-}
-.nav-disabled .nav-label {
-    opacity: 0.6;
-}
-/* Office Hub header */
-.office-header {
-    background: linear-gradient(135deg, #059669 0%, #047857 50%, #065f46 100%);
-    border-radius: 16px;
-    padding: 24px 28px;
-    margin-bottom: 28px;
-    color: white;
-    box-shadow: 0 8px 30px rgba(5, 150, 105, 0.25);
-}
-.office-header h2 {
-    font-weight: 700;
-    letter-spacing: -0.5px;
-}
-.office-header p {
-    color: rgba(255,255,255,0.85);
-    font-weight: 400;
-}
+        /* ── Disabled Nav Links ── */
+        .nav-disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            pointer-events: none;
+            user-select: none;
+            position: relative;
+        }
+        .nav-disabled::after {
+            content: ' 🔒';
+            font-size: 0.65rem;
+            color: #9ca3af;
+            font-weight: 400;
+        }
+        .nav-disabled .nav-label {
+            opacity: 0.6;
+        }
+        /* Office Hub header */
+        .office-header {
+            background: linear-gradient(135deg, #059669 0%, #047857 50%, #065f46 100%);
+            border-radius: 16px;
+            padding: 24px 28px;
+            margin-bottom: 28px;
+            color: white;
+            box-shadow: 0 8px 30px rgba(5, 150, 105, 0.25);
+        }
+        .office-header h2 {
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+        .office-header p {
+            color: rgba(255,255,255,0.85);
+            font-weight: 400;
+        }
 
-/* Office Tab Buttons */
-.office-tab {
-    transition: all 0.25s ease;
-    border-radius: 9999px;
-    font-weight: 600;
-    padding: 8px 18px;
-    background: transparent;
-    color: #64748b;
-    border: 1px solid transparent;
-}
-.office-tab:hover {
-    background: rgba(255,255,255,0.6);
-    color: #1e293b;
-}
-.office-tab.active {
-    background: #059669;
-    color: white;
-    box-shadow: 0 4px 14px rgba(5, 150, 105, 0.35);
-    border-color: #059669;
-}
-.office-tab.active:hover {
-    background: #047857;
-    transform: scale(1.02);
-}
+        /* Office Tab Buttons */
+        .office-tab {
+            transition: all 0.25s ease;
+            border-radius: 9999px;
+            font-weight: 600;
+            padding: 8px 18px;
+            background: transparent;
+            color: #64748b;
+            border: 1px solid transparent;
+        }
+        .office-tab:hover {
+            background: rgba(255,255,255,0.6);
+            color: #1e293b;
+        }
+        .office-tab.active {
+            background: #059669;
+            color: white;
+            box-shadow: 0 4px 14px rgba(5, 150, 105, 0.35);
+            border-color: #059669;
+        }
+        .office-tab.active:hover {
+            background: #047857;
+            transform: scale(1.02);
+        }
 
-/* Glass Stats */
-.glass-stat {
-    background: rgba(255, 255, 255, 0.7);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    border-radius: 16px;
-    padding: 16px 20px;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.04);
-}
-.glass-stat:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 12px 30px rgba(0,0,0,0.08);
-}
-.glass-stat .stat-number {
-    font-size: 2rem;
-    font-weight: 700;
-    line-height: 1.2;
-}
-.glass-stat .stat-label {
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    font-weight: 600;
-    color: #64748b;
-}
+        /* Glass Stats */
+        .glass-stat {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 16px;
+            padding: 16px 20px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+        }
+        .glass-stat:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+        }
+        .glass-stat .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            line-height: 1.2;
+        }
+        .glass-stat .stat-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-weight: 600;
+            color: #64748b;
+        }
 
-/* Office Cards */
-.office-card {
-    background: white;
-    border-radius: 14px;
-    padding: 16px 20px;
-    border: 1px solid #e9edf2;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 2px 8px rgba(0,0,0,0.03);
-}
-.office-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 12px 32px rgba(0,0,0,0.08);
-    border-color: #cbd5e1;
-}
+        /* Office Cards */
+        .office-card {
+            background: white;
+            border-radius: 14px;
+            padding: 16px 20px;
+            border: 1px solid #e9edf2;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+        }
+        .office-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 32px rgba(0,0,0,0.08);
+            border-color: #cbd5e1;
+        }
 
-/* Priority borders */
-.priority-high {
-    border-left: 5px solid #ef4444;
-}
-.priority-medium {
-    border-left: 5px solid #f59e0b;
-}
-.priority-low {
-    border-left: 5px solid #22c55e;
-}
+        /* Priority borders */
+        .priority-high {
+            border-left: 5px solid #ef4444;
+        }
+        .priority-medium {
+            border-left: 5px solid #f59e0b;
+        }
+        .priority-low {
+            border-left: 5px solid #22c55e;
+        }
 
-/* Status badges */
-.status-badge {
-    font-size: 0.65rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-    padding: 2px 10px;
-    border-radius: 20px;
-}
-.status-pending { background: #fef3c7; color: #92400e; }
-.status-in-progress { background: #dbeafe; color: #1e40af; }
-.status-approved { background: #d1fae5; color: #065f46; }
-.status-rejected { background: #fee2e2; color: #991b1b; }
-.status-revision { background: #ffedd5; color: #9a3412; }
-.status-history { background: #f1f5f9; color: #475569; }
+        /* Status badges */
+        .status-badge {
+            font-size: 0.65rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            padding: 2px 10px;
+            border-radius: 20px;
+        }
+        .status-pending { background: #fef3c7; color: #92400e; }
+        .status-in-progress { background: #dbeafe; color: #1e40af; }
+        .status-approved { background: #d1fae5; color: #065f46; }
+        .status-rejected { background: #fee2e2; color: #991b1b; }
+        .status-revision { background: #ffedd5; color: #9a3412; }
+        .status-history { background: #f1f5f9; color: #475569; }
 
-/* Kanban columns */
-.kanban-column {
-    background: #f8fafc;
-    border-radius: 14px;
-    padding: 14px;
-    min-height: 200px;
-    border: 1px solid #e9edf2;
-    transition: all 0.2s;
-}
-.kanban-column:hover {
-    border-color: #cbd5e1;
-}
-.kanban-column h4 {
-    font-size: 0.7rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    color: #64748b;
-    border-bottom: 2px solid #e2e8f0;
-    padding-bottom: 10px;
-    margin-bottom: 12px;
-}
+        /* Kanban columns */
+        .kanban-column {
+            background: #f8fafc;
+            border-radius: 14px;
+            padding: 14px;
+            min-height: 200px;
+            border: 1px solid #e9edf2;
+            transition: all 0.2s;
+        }
+        .kanban-column:hover {
+            border-color: #cbd5e1;
+        }
+        .kanban-column h4 {
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: #64748b;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 10px;
+            margin-bottom: 12px;
+        }
 
-/* Activity feed */
-.activity-item {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    padding: 10px 0;
-    border-bottom: 1px solid #f1f5f9;
-    transition: background 0.2s;
-}
-.activity-item:hover {
-    background: #f8fafc;
-    border-radius: 8px;
-    padding-left: 8px;
-}
-.activity-dot {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    flex-shrink: 0;
-}
-.activity-dot.create { background: #22c55e; }
-.activity-dot.update { background: #3b82f6; }
-.activity-dot.status { background: #f59e0b; }
+        /* Activity feed */
+        .activity-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 10px 0;
+            border-bottom: 1px solid #f1f5f9;
+            transition: background 0.2s;
+        }
+        .activity-item:hover {
+            background: #f8fafc;
+            border-radius: 8px;
+            padding-left: 8px;
+        }
+        .activity-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+        .activity-dot.create { background: #22c55e; }
+        .activity-dot.update { background: #3b82f6; }
+        .activity-dot.status { background: #f59e0b; }
 
-/* Sub-tab buttons */
-.subtab-btn {
-    padding: 6px 16px;
-    border-radius: 9999px;
-    font-size: 0.8rem;
-    font-weight: 500;
-    transition: all 0.2s;
-    background: transparent;
-    color: #64748b;
-    border: 1px solid transparent;
-}
-.subtab-btn:hover {
-    background: #f1f5f9;
-    color: #1e293b;
-}
-.subtab-btn.active {
-    background: #ecfdf5;
-    color: #059669;
-    border-color: #a7f3d0;
-}
+        /* Sub-tab buttons */
+        .subtab-btn {
+            padding: 6px 16px;
+            border-radius: 9999px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            transition: all 0.2s;
+            background: transparent;
+            color: #64748b;
+            border: 1px solid transparent;
+        }
+        .subtab-btn:hover {
+            background: #f1f5f9;
+            color: #1e293b;
+        }
+        .subtab-btn.active {
+            background: #ecfdf5;
+            color: #059669;
+            border-color: #a7f3d0;
+        }
 
-/* Filters */
-.office-filter {
-    border: 1px solid #e2e8f0;
-    border-radius: 8px;
-    padding: 4px 10px;
-    font-size: 0.8rem;
-    background: white;
-    transition: border-color 0.2s;
-}
-.office-filter:focus {
-    outline: none;
-    border-color: #059669;
-    box-shadow: 0 0 0 3px rgba(5,150,105,0.15);
-}
+        /* Filters */
+        .office-filter {
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 4px 10px;
+            font-size: 0.8rem;
+            background: white;
+            transition: border-color 0.2s;
+        }
+        .office-filter:focus {
+            outline: none;
+            border-color: #059669;
+            box-shadow: 0 0 0 3px rgba(5,150,105,0.15);
+        }
 
-/* New Item button */
-.btn-new {
-    background: linear-gradient(135deg, #059669, #047857);
-    color: white;
-    padding: 10px 24px;
-    border-radius: 9999px;
-    font-weight: 600;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 14px rgba(5,150,105,0.3);
-    border: none;
-}
-.btn-new:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(5,150,105,0.4);
-    background: linear-gradient(135deg, #047857, #065f46);
-}
+        /* New Item button */
+        .btn-new {
+            background: linear-gradient(135deg, #059669, #047857);
+            color: white;
+            padding: 10px 24px;
+            border-radius: 9999px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 14px rgba(5,150,105,0.3);
+            border: none;
+        }
+        .btn-new:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(5,150,105,0.4);
+            background: linear-gradient(135deg, #047857, #065f46);
+        }
 
-/* Responsive tweaks */
-@media (max-width: 640px) {
-    .office-header { padding: 16px 18px; }
-    .office-tab { font-size: 0.7rem; padding: 6px 12px; }
-    .glass-stat .stat-number { font-size: 1.4rem; }
-}
+        /* Responsive tweaks */
+        @media (max-width: 640px) {
+            .office-header { padding: 16px 18px; }
+            .office-tab { font-size: 0.7rem; padding: 6px 12px; }
+            .glass-stat .stat-number { font-size: 1.4rem; }
+        }
         * { font-family: 'Plus Jakarta Sans', sans-serif; }
         body { background: #f8fafc; }
         .sidebar-link.active { background: #ecfdf5; color: #059669; border-left: 3px solid #059669; }
@@ -560,10 +560,10 @@
             <iconify-icon icon="material-symbols:photo-library-outline" width="20" height="20"></iconify-icon> Gallery
         </a>
         <a href="#" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg text-slate-600 transition-colors nav-disabled" data-section="office">
-    <iconify-icon icon="material-symbols:business-center-outline" width="20" height="20"></iconify-icon>
-    <span class="nav-label">Office Hub</span>
-    <span class="text-[10px] text-amber-500 ml-auto font-medium">Coming Soon</span>
-</a>
+            <iconify-icon icon="material-symbols:business-center-outline" width="20" height="20"></iconify-icon>
+            <span class="nav-label">Office Hub</span>
+            <span class="text-[10px] text-amber-500 ml-auto font-medium">Coming Soon</span>
+        </a>
         <!-- NEW: Settings -->
         <a href="#" onclick="showSection('settings')" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg text-slate-600 hover:bg-slate-50 transition-colors" data-section="settings">
             <iconify-icon icon="material-symbols:settings-outline" width="20" height="20"></iconify-icon> Settings
@@ -1487,99 +1487,99 @@
             })();
         };
 
-       // =============== STOCK (Owner View) ===============
-function renderStock(container) {
-    if (!stockData.length) {
-        container.innerHTML = `
-            <div class="bg-white rounded-2xl border p-8 text-center">
-                <iconify-icon icon="material-symbols:inventory-2-outline" class="text-5xl text-slate-300 mx-auto block mb-4"></iconify-icon>
-                <p class="text-slate-600 font-medium">No stock records found.</p>
-                <p class="text-sm text-slate-400 mt-1">Managers will add stock when they receive materials at sites.</p>
-            </div>
-        `;
-        return;
-    }
-
-    const siteGroups = {};
-    stockData.forEach(item => {
-        const site = sitesData.find(s => s.id === item.site_id);
-        const siteName = site ? site.name : 'Unknown Site';
-        if (!siteGroups[siteName]) siteGroups[siteName] = [];
-        siteGroups[siteName].push(item);
-    });
-
-    let html = `
-        <h2 class="text-xl sm:text-2xl font-bold mb-4">Stock Overview</h2>
-        <div class="space-y-6">
-    `;
-
-    for (const [siteName, items] of Object.entries(siteGroups)) {
-        html += `
-            <div class="bg-white rounded-2xl border p-4 shadow-sm">
-                <h3 class="font-semibold text-sm text-slate-700 mb-3">${siteName}</h3>
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        `;
-        items.forEach(item => {
-            const status = item.quantity <= 0 ? 'Out of Stock' :
-                         (item.minimum_quantity && item.quantity <= item.minimum_quantity ? 'Low Stock' : 'Normal');
-            const statusClass = status === 'Normal' ? 'stock-status-normal' :
-                               status === 'Low Stock' ? 'stock-status-low' : 'stock-status-out';
-            const unitCost = materialsData.filter(m => m.site_id === item.site_id && m.name === item.material_name).pop()?.unit_cost || 0;
-            const stockValue = item.quantity * unitCost;
-            html += `
-                <div class="bg-slate-50 rounded-xl p-3 border border-slate-200">
-                    <div class="flex justify-between items-start">
-                        <p class="font-medium text-slate-800">${item.material_name}</p>
-                        <span class="text-xs font-medium px-2 py-0.5 rounded-full ${statusClass}">${status}</span>
+        // =============== STOCK (Owner View) ===============
+        function renderStock(container) {
+            if (!stockData.length) {
+                container.innerHTML = `
+                    <div class="bg-white rounded-2xl border p-8 text-center">
+                        <iconify-icon icon="material-symbols:inventory-2-outline" class="text-5xl text-slate-300 mx-auto block mb-4"></iconify-icon>
+                        <p class="text-slate-600 font-medium">No stock records found.</p>
+                        <p class="text-sm text-slate-400 mt-1">Managers will add stock when they receive materials at sites.</p>
                     </div>
-                    <p class="text-sm text-slate-600">${item.quantity} ${item.unit || 'units'}</p>
-                    <p class="text-xs text-slate-400">Unit Cost: ${unitCost.toFixed(2)} RWF</p>
-                    <p class="text-xs text-slate-600 font-medium">Value: ${stockValue.toFixed(2)} RWF</p>
-                    ${item.minimum_quantity ? `<p class="text-xs text-slate-400">Min: ${item.minimum_quantity}</p>` : ''}
-                    <p class="text-xs text-slate-400">Updated: ${formatDate(item.updated_at)}</p>
-                </div>
+                `;
+                return;
+            }
+
+            const siteGroups = {};
+            stockData.forEach(item => {
+                const site = sitesData.find(s => s.id === item.site_id);
+                const siteName = site ? site.name : 'Unknown Site';
+                if (!siteGroups[siteName]) siteGroups[siteName] = [];
+                siteGroups[siteName].push(item);
+            });
+
+            let html = `
+                <h2 class="text-xl sm:text-2xl font-bold mb-4">Stock Overview</h2>
+                <div class="space-y-6">
             `;
-        });
-        html += `</div></div>`;
-    }
 
-    // Recent transactions
-    const recent = stockTransactions.slice(0, 20);
-    if (recent.length) {
-        html += `
-            <div class="bg-white rounded-2xl border p-4 shadow-sm">
-                <h3 class="font-semibold text-sm mb-3">Recent Stock Transactions</h3>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-sm">
-                        <thead class="bg-slate-50 text-xs">
-                            <tr><th class="px-3 py-2">Date</th><th class="px-3 py-2">Site</th><th class="px-3 py-2">Material</th><th class="px-3 py-2">Type</th><th class="px-3 py-2">Qty</th><th class="px-3 py-2">Notes</th></tr>
-                        </thead>
-                        <tbody>
-                            ${recent.map(t => {
-                                const site = sitesData.find(s => s.id === t.site_id);
-                                const siteName = site ? site.name : 'Unknown';
-                                const sign = (t.transaction_type === 'STOCK_ADDED' || t.transaction_type === 'STOCK_ADJUSTMENT' && t.quantity > 0) ? '+' : '-';
-                                return `
-                                    <tr>
-                                        <td class="px-3 py-2">${formatDate(t.created_at)}</td>
-                                        <td class="px-3 py-2">${siteName}</td>
-                                        <td class="px-3 py-2">${t.material_name}</td>
-                                        <td class="px-3 py-2">${t.transaction_type.replace('_', ' ')}</td>
-                                        <td class="px-3 py-2">${sign} ${t.quantity} ${t.unit || ''}</td>
-                                        <td class="px-3 py-2 text-xs text-slate-500">${t.notes || ''}</td>
-                                    </tr>
-                                `;
-                            }).join('')}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        `;
-    }
+            for (const [siteName, items] of Object.entries(siteGroups)) {
+                html += `
+                    <div class="bg-white rounded-2xl border p-4 shadow-sm">
+                        <h3 class="font-semibold text-sm text-slate-700 mb-3">${siteName}</h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                `;
+                items.forEach(item => {
+                    const status = item.quantity <= 0 ? 'Out of Stock' :
+                                 (item.minimum_quantity && item.quantity <= item.minimum_quantity ? 'Low Stock' : 'Normal');
+                    const statusClass = status === 'Normal' ? 'stock-status-normal' :
+                                       status === 'Low Stock' ? 'stock-status-low' : 'stock-status-out';
+                    const unitCost = materialsData.filter(m => m.site_id === item.site_id && m.name === item.material_name).pop()?.unit_cost || 0;
+                    const stockValue = item.quantity * unitCost;
+                    html += `
+                        <div class="bg-slate-50 rounded-xl p-3 border border-slate-200">
+                            <div class="flex justify-between items-start">
+                                <p class="font-medium text-slate-800">${item.material_name}</p>
+                                <span class="text-xs font-medium px-2 py-0.5 rounded-full ${statusClass}">${status}</span>
+                            </div>
+                            <p class="text-sm text-slate-600">${item.quantity} ${item.unit || 'units'}</p>
+                            <p class="text-xs text-slate-400">Unit Cost: ${unitCost.toFixed(2)} RWF</p>
+                            <p class="text-xs text-slate-600 font-medium">Value: ${stockValue.toFixed(2)} RWF</p>
+                            ${item.minimum_quantity ? `<p class="text-xs text-slate-400">Min: ${item.minimum_quantity}</p>` : ''}
+                            <p class="text-xs text-slate-400">Updated: ${formatDate(item.updated_at)}</p>
+                        </div>
+                    `;
+                });
+                html += `</div></div>`;
+            }
 
-    html += `</div>`;
-    container.innerHTML = html;
-}
+            // Recent transactions
+            const recent = stockTransactions.slice(0, 20);
+            if (recent.length) {
+                html += `
+                    <div class="bg-white rounded-2xl border p-4 shadow-sm">
+                        <h3 class="font-semibold text-sm mb-3">Recent Stock Transactions</h3>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-sm">
+                                <thead class="bg-slate-50 text-xs">
+                                    <tr><th class="px-3 py-2">Date</th><th class="px-3 py-2">Site</th><th class="px-3 py-2">Material</th><th class="px-3 py-2">Type</th><th class="px-3 py-2">Qty</th><th class="px-3 py-2">Notes</th></tr>
+                                </thead>
+                                <tbody>
+                                    ${recent.map(t => {
+                                        const site = sitesData.find(s => s.id === t.site_id);
+                                        const siteName = site ? site.name : 'Unknown';
+                                        const sign = (t.transaction_type === 'STOCK_ADDED' || t.transaction_type === 'STOCK_ADJUSTMENT' && t.quantity > 0) ? '+' : '-';
+                                        return `
+                                            <tr>
+                                                <td class="px-3 py-2">${formatDate(t.created_at)}</td>
+                                                <td class="px-3 py-2">${siteName}</td>
+                                                <td class="px-3 py-2">${t.material_name}</td>
+                                                <td class="px-3 py-2">${t.transaction_type.replace('_', ' ')}</td>
+                                                <td class="px-3 py-2">${sign} ${t.quantity} ${t.unit || ''}</td>
+                                                <td class="px-3 py-2 text-xs text-slate-500">${t.notes || ''}</td>
+                                            </tr>
+                                        `;
+                                    }).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                `;
+            }
+
+            html += `</div>`;
+            container.innerHTML = html;
+        }
 
         // =============== WORKERS ===============
         let selectedWorkerViewSite = null;
@@ -1957,474 +1957,470 @@ function renderStock(container) {
             }
         };
 
-   // =============== REPORTS ===============
+        // =============== REPORTS ===============
 
-// ── Date formatter (unified) ──
-function formatDate(dateValue) {
-    if (!dateValue) return '-';
-    const date = typeof dateValue === 'string' ? new Date(dateValue) : dateValue;
-    if (isNaN(date.getTime())) return '-';
-    return date.toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
-}
+        // ── Date formatter (unified) ──
+        function formatDate(dateValue) {
+            if (!dateValue) return '-';
+            const date = typeof dateValue === 'string' ? new Date(dateValue) : dateValue;
+            if (isNaN(date.getTime())) return '-';
+            return date.toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+        }
 
-// ── Shared company details ──
-function getCompanyDetails() {
-    return {
-        name: 'SHDR Ltd',
-        address: 'KG 11 Avenue, Kimironko, Gasabo District',
-        location: 'Yussa Plaza, 1st Floor',
-        city: 'Kigali City, Rwanda',
-        phone: '+250 788 474 110',
-        email: 'sustainablehomedesign@gmail.com',
-        logo: 'shdr.jpg'
-    };
-}
+        // ── Shared company details ──
+        function getCompanyDetails() {
+            return {
+                name: 'SHDR Ltd',
+                address: 'KG 11 Avenue, Kimironko, Gasabo District',
+                location: 'Yussa Plaza, 1st Floor',
+                city: 'Kigali City, Rwanda',
+                phone: '+250 788 474 110',
+                email: 'sustainablehomedesign@gmail.com',
+                logo: 'shdr.jpg'
+            };
+        }
 
-// ── Shared HTML template for Print/PDF reports ──
-function generateReportHTML(title, bodyHTML, meta, extraStyles = '') {
-    const company = getCompanyDetails();
-    const currentYear = new Date().getFullYear();
-    return `
-        <!DOCTYPE html>
-        <html>
-        <head>
-            <meta charset="UTF-8">
-            <title>${title}</title>
-            <style>
-                * { box-sizing: border-box; }
-                body { font-family: Arial, sans-serif; padding: 30px; margin: 0; color: #1f2937; background: white; }
-                .company-header { display: flex; align-items: center; justify-content: space-between; border-bottom: 3px solid #059669; padding-bottom: 18px; margin-bottom: 20px; }
-                .company-left { display: flex; align-items: center; gap: 15px; }
-                .company-logo { width: 75px; height: 75px; object-fit: contain; border-radius: 8px; }
-                .company-name { font-size: 25px; font-weight: 700; color: #059669; margin-bottom: 3px; }
-                .company-subtitle { font-size: 12px; color: #6b7280; margin-bottom: 5px; }
-                .company-details { font-size: 12px; line-height: 1.5; color: #374151; }
-                .report-title { text-align: right; }
-                .report-title h2 { margin: 0; font-size: 21px; color: #111827; }
-                .report-title p { margin: 5px 0 0; font-size: 11px; color: #6b7280; }
-                .report-meta { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 12px 15px; margin-bottom: 20px; font-size: 12px; line-height: 1.6; }
-                .report-meta strong { color: #111827; }
-                table { border-collapse: collapse; width: 100%; font-size: 11px; }
-                th { background: #059669; color: white; font-weight: 600; padding: 9px; border: 1px solid #047857; text-align: left; }
-                td { padding: 8px; border: 1px solid #d1d5db; }
-                tr:nth-child(even) { background: #f9fafb; }
-                .report-footer { margin-top: 30px; padding-top: 12px; border-top: 1px solid #d1d5db; text-align: center; font-size: 11px; color: #6b7280; line-height: 1.6; }
-                .footer-system { font-weight: 600; color: #374151; }
-                .footer-copy { font-size: 10px; color: #9ca3af; }
-                @media print { body { padding: 15px; } .company-header { break-inside: avoid; } table { page-break-inside: auto; } tr { page-break-inside: avoid; } thead { display: table-header-group; } .report-footer { page-break-inside: avoid; } }
-                ${extraStyles}
-            </style>
-        </head>
-        <body>
-            <div class="company-header">
-                <div class="company-left">
-                    <img src="${company.logo}" alt="${company.name} Logo" class="company-logo" onerror="this.style.display='none'">
-                    <div>
-                        <div class="company-name">${company.name}</div>
-                        <div class="company-subtitle">Construction Management System</div>
-                        <div class="company-details">${company.address}<br>${company.location}<br>${company.city}<br><strong>Tel:</strong> ${company.phone}<br><strong>Email:</strong> ${company.email}</div>
+        // ── Shared HTML template for Print/PDF reports ──
+        function generateReportHTML(title, bodyHTML, meta, extraStyles = '') {
+            const company = getCompanyDetails();
+            const currentYear = new Date().getFullYear();
+            return `
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <meta charset="UTF-8">
+                    <title>${title}</title>
+                    <style>
+                        * { box-sizing: border-box; }
+                        body { font-family: Arial, sans-serif; padding: 30px; margin: 0; color: #1f2937; background: white; }
+                        .company-header { display: flex; align-items: center; justify-content: space-between; border-bottom: 3px solid #059669; padding-bottom: 18px; margin-bottom: 20px; }
+                        .company-left { display: flex; align-items: center; gap: 15px; }
+                        .company-logo { width: 75px; height: 75px; object-fit: contain; border-radius: 8px; }
+                        .company-name { font-size: 25px; font-weight: 700; color: #059669; margin-bottom: 3px; }
+                        .company-subtitle { font-size: 12px; color: #6b7280; margin-bottom: 5px; }
+                        .company-details { font-size: 12px; line-height: 1.5; color: #374151; }
+                        .report-title { text-align: right; }
+                        .report-title h2 { margin: 0; font-size: 21px; color: #111827; }
+                        .report-title p { margin: 5px 0 0; font-size: 11px; color: #6b7280; }
+                        .report-meta { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 12px 15px; margin-bottom: 20px; font-size: 12px; line-height: 1.6; }
+                        .report-meta strong { color: #111827; }
+                        table { border-collapse: collapse; width: 100%; font-size: 11px; }
+                        th { background: #059669; color: white; font-weight: 600; padding: 9px; border: 1px solid #047857; text-align: left; }
+                        td { padding: 8px; border: 1px solid #d1d5db; }
+                        tr:nth-child(even) { background: #f9fafb; }
+                        .report-footer { margin-top: 30px; padding-top: 12px; border-top: 1px solid #d1d5db; text-align: center; font-size: 11px; color: #6b7280; line-height: 1.6; }
+                        .footer-system { font-weight: 600; color: #374151; }
+                        .footer-copy { font-size: 10px; color: #9ca3af; }
+                        @media print { body { padding: 15px; } .company-header { break-inside: avoid; } table { page-break-inside: auto; } tr { page-break-inside: avoid; } thead { display: table-header-group; } .report-footer { page-break-inside: avoid; } }
+                        ${extraStyles}
+                    </style>
+                </head>
+                <body>
+                    <div class="company-header">
+                        <div class="company-left">
+                            <img src="${company.logo}" alt="${company.name} Logo" class="company-logo" onerror="this.style.display='none'">
+                            <div>
+                                <div class="company-name">${company.name}</div>
+                                <div class="company-subtitle">Construction Management System</div>
+                                <div class="company-details">${company.address}<br>${company.location}<br>${company.city}<br><strong>Tel:</strong> ${company.phone}<br><strong>Email:</strong> ${company.email}</div>
+                            </div>
+                        </div>
+                        <div class="report-title">
+                            <h2>${title}</h2>
+                            <p>Official Company Report</p>
+                        </div>
                     </div>
+                    <div class="report-meta">
+                        ${meta}
+                    </div>
+                    ${bodyHTML}
+                    <div class="report-footer">
+                        <div class="footer-system">This report is generated automatically by ${company.name} Management System.</div>
+                        <div class="footer-copy">© ${currentYear} ${company.name} — All rights reserved.</div>
+                    </div>
+                </body>
+                </html>
+            `;
+        }
+
+        // ── Main render ──
+        function renderReports(container) {
+            const siteOpts = sitesData.map(s => `<option value="${s.id}">${s.name}</option>`).join('');
+
+            container.innerHTML = `
+                <h2 class="text-xl sm:text-2xl font-bold mb-4">Generate Reports</h2>
+
+                <div class="flex gap-2 p-1 bg-slate-200/60 rounded-xl mb-6 max-w-md">
+                    <button onclick="setReportType('general')" class="flex-1 px-4 py-2 rounded-lg text-sm font-semibold transition ${reportType === 'general' ? 'report-tab-active' : 'report-tab-inactive'}">
+                        <iconify-icon icon="material-symbols:description" class="inline mr-1"></iconify-icon> General
+                    </button>
+                    <button onclick="setReportType('payroll')" class="flex-1 px-4 py-2 rounded-lg text-sm font-semibold transition ${reportType === 'payroll' ? 'report-tab-active' : 'report-tab-inactive'}">
+                        <iconify-icon icon="material-symbols:payments" class="inline mr-1"></iconify-icon> Worker Payroll
+                    </button>
+                    <button onclick="setReportType('stock')" class="flex-1 px-4 py-2 rounded-lg text-sm font-semibold transition ${reportType === 'stock' ? 'report-tab-active' : 'report-tab-inactive'}">
+                        <iconify-icon icon="material-symbols:inventory-2" class="inline mr-1"></iconify-icon> Stock
+                    </button>
                 </div>
-                <div class="report-title">
-                    <h2>${title}</h2>
-                    <p>Official Company Report</p>
+
+                <div id="report-content">
+                    ${reportType === 'general' ? renderGeneralReport(siteOpts) : reportType === 'payroll' ? renderPayrollReport(siteOpts) : renderStockReport(siteOpts)}
                 </div>
-            </div>
-            <div class="report-meta">
-                ${meta}
-            </div>
-            ${bodyHTML}
-            <div class="report-footer">
-                <div class="footer-system">This report is generated automatically by ${company.name} Management System.</div>
-                <div class="footer-copy">© ${currentYear} ${company.name} — All rights reserved.</div>
-            </div>
-        </body>
-        </html>
-    `;
-}
-
-// ── Main render ──
-function renderReports(container) {
-    const siteOpts = sitesData.map(s => `<option value="${s.id}">${s.name}</option>`).join('');
-
-    container.innerHTML = `
-        <h2 class="text-xl sm:text-2xl font-bold mb-4">Generate Reports</h2>
-
-        <div class="flex gap-2 p-1 bg-slate-200/60 rounded-xl mb-6 max-w-md">
-            <button onclick="setReportType('general')" class="flex-1 px-4 py-2 rounded-lg text-sm font-semibold transition ${reportType === 'general' ? 'report-tab-active' : 'report-tab-inactive'}">
-                <iconify-icon icon="material-symbols:description" class="inline mr-1"></iconify-icon> General
-            </button>
-            <button onclick="setReportType('payroll')" class="flex-1 px-4 py-2 rounded-lg text-sm font-semibold transition ${reportType === 'payroll' ? 'report-tab-active' : 'report-tab-inactive'}">
-                <iconify-icon icon="material-symbols:payments" class="inline mr-1"></iconify-icon> Worker Payroll
-            </button>
-            <button onclick="setReportType('stock')" class="flex-1 px-4 py-2 rounded-lg text-sm font-semibold transition ${reportType === 'stock' ? 'report-tab-active' : 'report-tab-inactive'}">
-                <iconify-icon icon="material-symbols:inventory-2" class="inline mr-1"></iconify-icon> Stock
-            </button>
-        </div>
-
-        <div id="report-content">
-            ${reportType === 'general' ? renderGeneralReport(siteOpts) : reportType === 'payroll' ? renderPayrollReport(siteOpts) : renderStockReport(siteOpts)}
-        </div>
-    `;
-}
-
-window.setReportType = (type) => {
-    reportType = type;
-    showSection('reports');
-};
-
-function renderGeneralReport(siteOpts) {
-    return `
-        <div class="bg-white rounded-2xl border p-4 max-w-lg space-y-4">
-            <div><label class="block text-sm font-medium mb-1">Select Site</label><select id="report-site" class="w-full border rounded-lg p-3"><option value="all">All Sites</option>${siteOpts}</select></div>
-            <div><label class="block text-sm font-medium mb-1">Department</label><select id="report-dept" class="w-full border rounded-lg p-3"><option value="all">All Departments</option><option value="materials">Materials</option><option value="workers">Workers</option><option value="finances">Finances</option></select></div>
-            <div><label class="block text-sm font-medium mb-1">Start Date</label><input type="date" id="report-start" class="w-full border rounded-lg p-3"></div>
-            <div><label class="block text-sm font-medium mb-1">End Date</label><input type="date" id="report-end" class="w-full border rounded-lg p-3"></div>
-            <div class="flex gap-3"><button onclick="exportGeneralReport('csv')" class="flex-1 bg-emerald-600 text-white py-3 rounded-xl">Export CSV</button><button onclick="exportGeneralReport('print')" class="flex-1 bg-slate-800 text-white py-3 rounded-xl">Print / PDF</button></div>
-        </div>
-    `;
-}
-
-function renderPayrollReport(siteOpts) {
-    if (!attendanceData.length) {
-        return `
-            <div class="bg-white rounded-2xl border p-8 text-center">
-                <iconify-icon icon="material-symbols:info-outline" class="text-5xl text-slate-300 mx-auto block mb-4"></iconify-icon>
-                <p class="text-slate-600 font-medium">No attendance records found.</p>
-                <p class="text-sm text-slate-400 mt-1">Please ensure managers have recorded attendance for the workers.</p>
-            </div>
-        `;
-    }
-
-    return `
-        <div class="space-y-6">
-            <div class="bg-white rounded-2xl border p-4 grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div><label class="block text-sm font-medium mb-1">Site</label><select id="payroll-site" class="w-full border rounded-lg p-2.5 text-sm" onchange="updatePayrollReport()"><option value="all">All Sites</option>${siteOpts}</select></div>
-                <div><label class="block text-sm font-medium mb-1">Start Date</label><input type="date" id="payroll-start" class="w-full border rounded-lg p-2.5 text-sm" onchange="updatePayrollReport()"></div>
-                <div><label class="block text-sm font-medium mb-1">End Date</label><input type="date" id="payroll-end" class="w-full border rounded-lg p-2.5 text-sm" onchange="updatePayrollReport()"></div>
-                <div><label class="block text-sm font-medium mb-1">Worker</label><input type="text" id="payroll-worker-search" class="w-full border rounded-lg p-2.5 text-sm" placeholder="Search worker..." oninput="updatePayrollReport()"></div>
-                <div><label class="block text-sm font-medium mb-1">Position</label><select id="payroll-position" class="w-full border rounded-lg p-2.5 text-sm" onchange="updatePayrollReport()"><option value="all">All Positions</option>${[...new Set(assignedWorkersData.map(w => w.role).filter(Boolean))].map(role => `<option value="${role}">${role}</option>`).join('')}</select></div>
-                <div><label class="block text-sm font-medium mb-1">Payment Status</label><select id="payroll-status" class="w-full border rounded-lg p-2.5 text-sm" onchange="updatePayrollReport()"><option value="all">All (Unpaid)</option><option value="paid">Paid</option><option value="unpaid">Unpaid</option></select></div>
-            </div>
-            <div id="payroll-summary-cards" class="grid grid-cols-2 md:grid-cols-4 gap-4"></div>
-            <div id="payroll-table-container" class="bg-white rounded-2xl border overflow-hidden shadow-sm"></div>
-            <div class="flex gap-3 justify-end"><button onclick="exportPayrollReport('csv')" class="px-6 py-2 bg-emerald-600 text-white rounded-xl">Export CSV</button><button onclick="exportPayrollReport('print')" class="px-6 py-2 bg-slate-800 text-white rounded-xl">Print / PDF</button></div>
-        </div>
-    `;
-}
-
-function renderStockReport(siteOpts) {
-    return `
-        <div class="bg-white rounded-2xl border p-4 max-w-lg space-y-4">
-            <div><label class="block text-sm font-medium mb-1">Select Site</label><select id="stock-report-site" class="w-full border rounded-lg p-3"><option value="all">All Sites</option>${siteOpts}</select></div>
-            <div class="flex gap-3"><button onclick="exportStockReport('csv')" class="flex-1 bg-emerald-600 text-white py-3 rounded-xl">Export CSV</button><button onclick="exportStockReport('print')" class="flex-1 bg-slate-800 text-white py-3 rounded-xl">Print / PDF</button></div>
-        </div>
-    `;
-}
-
-// ── Update Payroll (live preview) ──
-window.updatePayrollReport = () => {
-    const siteId = document.getElementById('payroll-site')?.value || 'all';
-    const startDate = document.getElementById('payroll-start')?.value || '';
-    const endDate = document.getElementById('payroll-end')?.value || '';
-    const workerSearch = document.getElementById('payroll-worker-search')?.value?.toLowerCase() || '';
-    const position = document.getElementById('payroll-position')?.value || 'all';
-
-    let filtered = attendanceData;
-    if (siteId !== 'all') filtered = filtered.filter(a => a.site_id === siteId);
-    if (startDate) filtered = filtered.filter(a => a.date >= startDate);
-    if (endDate) filtered = filtered.filter(a => a.date <= endDate);
-    if (workerSearch) filtered = filtered.filter(a => a.name.toLowerCase().includes(workerSearch));
-    if (position !== 'all') filtered = filtered.filter(a => a.role === position);
-
-    const workerMap = {};
-    filtered.forEach(rec => {
-        const key = rec.worker_id || rec.id;
-        if (!workerMap[key]) {
-            workerMap[key] = { id: key, name: rec.name, role: rec.role, dailyRate: rec.daily_rate || 0, days: [], totalPayable: 0 };
+            `;
         }
-        workerMap[key].days.push(rec.date);
-        workerMap[key].totalPayable += (rec.daily_rate || 0);
-    });
 
-    const workers = Object.values(workerMap);
-    const totalWorkers = workers.length;
-    const totalDays = workers.reduce((sum, w) => sum + w.days.length, 0);
-    const totalPayroll = workers.reduce((sum, w) => sum + w.totalPayable, 0);
-    const avgDaily = totalDays > 0 ? totalPayroll / totalDays : 0;
+        window.setReportType = (type) => {
+            reportType = type;
+            showSection('reports');
+        };
 
-    const cardsContainer = document.getElementById('payroll-summary-cards');
-    if (cardsContainer) {
-        cardsContainer.innerHTML = `
-            <div class="payroll-card bg-white rounded-2xl border p-4 shadow-sm"><p class="text-xs text-slate-500">Total Workers</p><p class="text-2xl font-bold text-slate-800">${totalWorkers}</p></div>
-            <div class="payroll-card bg-white rounded-2xl border p-4 shadow-sm"><p class="text-xs text-slate-500">Worker-Days</p><p class="text-2xl font-bold text-slate-800">${totalDays}</p></div>
-            <div class="payroll-card bg-white rounded-2xl border p-4 shadow-sm"><p class="text-xs text-slate-500">Total Payroll</p><p class="text-2xl font-bold text-emerald-600">${totalPayroll.toLocaleString()} RWF</p></div>
-            <div class="payroll-card bg-white rounded-2xl border p-4 shadow-sm"><p class="text-xs text-slate-500">Avg. Daily Labor Cost</p><p class="text-2xl font-bold text-slate-800">${avgDaily.toLocaleString()} RWF</p></div>
-        `;
-    }
-
-    const tableContainer = document.getElementById('payroll-table-container');
-    if (tableContainer) {
-        if (!workers.length) {
-            tableContainer.innerHTML = `<div class="p-4 text-slate-500 text-sm">No attendance records found for the selected filters.</div>`;
-            return;
+        function renderGeneralReport(siteOpts) {
+            return `
+                <div class="bg-white rounded-2xl border p-4 max-w-lg space-y-4">
+                    <div><label class="block text-sm font-medium mb-1">Select Site</label><select id="report-site" class="w-full border rounded-lg p-3"><option value="all">All Sites</option>${siteOpts}</select></div>
+                    <div><label class="block text-sm font-medium mb-1">Department</label><select id="report-dept" class="w-full border rounded-lg p-3"><option value="all">All Departments</option><option value="materials">Materials</option><option value="workers">Workers</option><option value="finances">Finances</option></select></div>
+                    <div><label class="block text-sm font-medium mb-1">Start Date</label><input type="date" id="report-start" class="w-full border rounded-lg p-3"></div>
+                    <div><label class="block text-sm font-medium mb-1">End Date</label><input type="date" id="report-end" class="w-full border rounded-lg p-3"></div>
+                    <div class="flex gap-3"><button onclick="exportGeneralReport('csv')" class="flex-1 bg-emerald-600 text-white py-3 rounded-xl">Export CSV</button><button onclick="exportGeneralReport('print')" class="flex-1 bg-slate-800 text-white py-3 rounded-xl">Print / PDF</button></div>
+                </div>
+            `;
         }
-        tableContainer.innerHTML = `
-            <div class="overflow-x-auto">
-                <table class="w-full text-sm">
-                    <thead class="bg-slate-50 uppercase text-xs"><tr><th class="px-3 py-2 text-left">Worker</th><th class="px-3 py-2 text-left">Position</th><th class="px-3 py-2 text-center">Days Worked</th><th class="px-3 py-2 text-right">Daily Rate</th><th class="px-3 py-2 text-right">Total Payable</th></tr></thead>
-                    <tbody>${workers.map(w => `<tr><td class="px-3 py-2 font-medium">${w.name}</td><td class="px-3 py-2">${w.role || '—'}</td><td class="px-3 py-2 text-center">${w.days.length}</td><td class="px-3 py-2 text-right">${w.dailyRate.toLocaleString()} RWF</td><td class="px-3 py-2 text-right font-semibold text-emerald-600">${w.totalPayable.toLocaleString()} RWF</td></tr>`).join('')}</tbody>
-                    <tfoot class="bg-slate-50 font-bold"><tr><td colspan="2" class="px-3 py-2 text-right">Total</td><td class="px-3 py-2 text-center">${totalDays}</td><td class="px-3 py-2 text-right"></td><td class="px-3 py-2 text-right text-emerald-600">${totalPayroll.toLocaleString()} RWF</td></tr></tfoot>
-                </table>
-            </div>
-        `;
-    }
-};
 
-// ── Export: Payroll ──
-window.exportPayrollReport = (format) => {
-    const siteId = document.getElementById('payroll-site')?.value || 'all';
-    const startDate = document.getElementById('payroll-start')?.value || '';
-    const endDate = document.getElementById('payroll-end')?.value || '';
-    const workerSearch = document.getElementById('payroll-worker-search')?.value?.toLowerCase() || '';
-    const position = document.getElementById('payroll-position')?.value || 'all';
+        function renderPayrollReport(siteOpts) {
+            if (!attendanceData.length) {
+                return `
+                    <div class="bg-white rounded-2xl border p-8 text-center">
+                        <iconify-icon icon="material-symbols:info-outline" class="text-5xl text-slate-300 mx-auto block mb-4"></iconify-icon>
+                        <p class="text-slate-600 font-medium">No attendance records found.</p>
+                        <p class="text-sm text-slate-400 mt-1">Please ensure managers have recorded attendance for the workers.</p>
+                    </div>
+                `;
+            }
 
-    let filtered = attendanceData;
-    if (siteId !== 'all') filtered = filtered.filter(a => a.site_id === siteId);
-    if (startDate) filtered = filtered.filter(a => a.date >= startDate);
-    if (endDate) filtered = filtered.filter(a => a.date <= endDate);
-    if (workerSearch) filtered = filtered.filter(a => a.name.toLowerCase().includes(workerSearch));
-    if (position !== 'all') filtered = filtered.filter(a => a.role === position);
-
-    const workerMap = {};
-    filtered.forEach(rec => {
-        const key = rec.worker_id || rec.id;
-        if (!workerMap[key]) {
-            workerMap[key] = { id: key, name: rec.name, role: rec.role, dailyRate: rec.daily_rate || 0, days: [], totalPayable: 0 };
+            return `
+                <div class="space-y-6">
+                    <div class="bg-white rounded-2xl border p-4 grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div><label class="block text-sm font-medium mb-1">Site</label><select id="payroll-site" class="w-full border rounded-lg p-2.5 text-sm" onchange="updatePayrollReport()"><option value="all">All Sites</option>${siteOpts}</select></div>
+                        <div><label class="block text-sm font-medium mb-1">Start Date</label><input type="date" id="payroll-start" class="w-full border rounded-lg p-2.5 text-sm" onchange="updatePayrollReport()"></div>
+                        <div><label class="block text-sm font-medium mb-1">End Date</label><input type="date" id="payroll-end" class="w-full border rounded-lg p-2.5 text-sm" onchange="updatePayrollReport()"></div>
+                        <div><label class="block text-sm font-medium mb-1">Worker</label><input type="text" id="payroll-worker-search" class="w-full border rounded-lg p-2.5 text-sm" placeholder="Search worker..." oninput="updatePayrollReport()"></div>
+                        <div><label class="block text-sm font-medium mb-1">Position</label><select id="payroll-position" class="w-full border rounded-lg p-2.5 text-sm" onchange="updatePayrollReport()"><option value="all">All Positions</option>${[...new Set(assignedWorkersData.map(w => w.role).filter(Boolean))].map(role => `<option value="${role}">${role}</option>`).join('')}</select></div>
+                        <div><label class="block text-sm font-medium mb-1">Payment Status</label><select id="payroll-status" class="w-full border rounded-lg p-2.5 text-sm" onchange="updatePayrollReport()"><option value="all">All (Unpaid)</option><option value="paid">Paid</option><option value="unpaid">Unpaid</option></select></div>
+                    </div>
+                    <div id="payroll-summary-cards" class="grid grid-cols-2 md:grid-cols-4 gap-4"></div>
+                    <div id="payroll-table-container" class="bg-white rounded-2xl border overflow-hidden shadow-sm"></div>
+                    <div class="flex gap-3 justify-end"><button onclick="exportPayrollReport('csv')" class="px-6 py-2 bg-emerald-600 text-white rounded-xl">Export CSV</button><button onclick="exportPayrollReport('print')" class="px-6 py-2 bg-slate-800 text-white rounded-xl">Print / PDF</button></div>
+                </div>
+            `;
         }
-        workerMap[key].days.push(rec.date);
-        workerMap[key].totalPayable += (rec.daily_rate || 0);
-    });
 
-    const workers = Object.values(workerMap);
-    const totalDays = workers.reduce((sum, w) => sum + w.days.length, 0);
-    const totalPayroll = workers.reduce((sum, w) => sum + w.totalPayable, 0);
-
-    const company = getCompanyDetails();
-    const generatedDate = new Date().toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false }).replace(',', ', ');
-    const siteName = siteId === 'all' ? 'All Sites' : (sitesData.find(s => s.id === siteId)?.name || 'Site');
-    // Format period dates
-    const period = startDate && endDate ? `${formatDate(startDate)} to ${formatDate(endDate)}` : (startDate || endDate || 'All Time');
-
-    if (format === 'csv') {
-        const headers = ['Worker', 'Position', 'Days Worked', 'Daily Rate (RWF)', 'Total Payable (RWF)'];
-        const csvRows = [
-            `"${company.name}"`, `"${company.address}"`, `"${company.location}"`, `"${company.city}"`, `"Tel: ${company.phone}"`, `"Email: ${company.email}"`,
-            `"Generated: ${generatedDate}"`, `"Report: Worker Attendance & Payroll"`, `"Site Name: ${siteName}"`, `"Period: ${period}"`, '',
-            headers.join(',')
-        ];
-        for (const w of workers) {
-            csvRows.push([w.name, w.role || '—', w.days.length, w.dailyRate.toLocaleString(), w.totalPayable.toLocaleString()].map(v => `"${v}"`).join(','));
+        function renderStockReport(siteOpts) {
+            return `
+                <div class="bg-white rounded-2xl border p-4 max-w-lg space-y-4">
+                    <div><label class="block text-sm font-medium mb-1">Select Site</label><select id="stock-report-site" class="w-full border rounded-lg p-3"><option value="all">All Sites</option>${siteOpts}</select></div>
+                    <div class="flex gap-3"><button onclick="exportStockReport('csv')" class="flex-1 bg-emerald-600 text-white py-3 rounded-xl">Export CSV</button><button onclick="exportStockReport('print')" class="flex-1 bg-slate-800 text-white py-3 rounded-xl">Print / PDF</button></div>
+                </div>
+            `;
         }
-        csvRows.push(`"Total","",${totalDays},"",${totalPayroll.toLocaleString()}`);
-        const csv = csvRows.join('\n');
-        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `SHDR_Payroll_${siteName.replace(/\s/g, '_')}_${new Date().toISOString().slice(0,10)}.csv`;
-        a.click();
-        URL.revokeObjectURL(url);
-        return;
-    }
 
-    // Print / PDF
-    const headers = ['Worker', 'Position', 'Days Worked', 'Daily Rate (RWF)', 'Total Payable (RWF)'];
-    const tableRows = workers.map(w => `
-        <tr>
-            <td>${w.name}</td>
-            <td>${w.role || '—'}</td>
-            <td style="text-align:center">${w.days.length}</td>
-            <td style="text-align:right">${w.dailyRate.toLocaleString()} RWF</td>
-            <td style="text-align:right">${w.totalPayable.toLocaleString()} RWF</td>
-        </tr>
-    `).join('');
+        // ── Update Payroll (live preview) ──
+        window.updatePayrollReport = () => {
+            const siteId = document.getElementById('payroll-site')?.value || 'all';
+            const startDate = document.getElementById('payroll-start')?.value || '';
+            const endDate = document.getElementById('payroll-end')?.value || '';
+            const workerSearch = document.getElementById('payroll-worker-search')?.value?.toLowerCase() || '';
+            const position = document.getElementById('payroll-position')?.value || 'all';
 
-    const meta = `<strong>Site Name:</strong> ${siteName} &nbsp;|&nbsp; <strong>Period:</strong> ${period} &nbsp;|&nbsp; <strong>Generated:</strong> ${generatedDate}`;
-    const bodyHTML = `
-        <table>
-            <thead><tr>${headers.map(h => `<th>${h}</th>`).join('')}</tr></thead>
-            <tbody>${tableRows}</tbody>
-            <tfoot>
+            let filtered = attendanceData;
+            if (siteId !== 'all') filtered = filtered.filter(a => a.site_id === siteId);
+            if (startDate) filtered = filtered.filter(a => a.date >= startDate);
+            if (endDate) filtered = filtered.filter(a => a.date <= endDate);
+            if (workerSearch) filtered = filtered.filter(a => a.name.toLowerCase().includes(workerSearch));
+            if (position !== 'all') filtered = filtered.filter(a => a.role === position);
+
+            const workerMap = {};
+            filtered.forEach(rec => {
+                const key = rec.worker_id || rec.id;
+                if (!workerMap[key]) {
+                    workerMap[key] = { id: key, name: rec.name, role: rec.role, dailyRate: rec.daily_rate || 0, days: [], totalPayable: 0 };
+                }
+                workerMap[key].days.push(rec.date);
+                workerMap[key].totalPayable += (rec.daily_rate || 0);
+            });
+
+            const workers = Object.values(workerMap);
+            const totalWorkers = workers.length;
+            const totalDays = workers.reduce((sum, w) => sum + w.days.length, 0);
+            const totalPayroll = workers.reduce((sum, w) => sum + w.totalPayable, 0);
+            const avgDaily = totalDays > 0 ? totalPayroll / totalDays : 0;
+
+            const cardsContainer = document.getElementById('payroll-summary-cards');
+            if (cardsContainer) {
+                cardsContainer.innerHTML = `
+                    <div class="payroll-card bg-white rounded-2xl border p-4 shadow-sm"><p class="text-xs text-slate-500">Total Workers</p><p class="text-2xl font-bold text-slate-800">${totalWorkers}</p></div>
+                    <div class="payroll-card bg-white rounded-2xl border p-4 shadow-sm"><p class="text-xs text-slate-500">Worker-Days</p><p class="text-2xl font-bold text-slate-800">${totalDays}</p></div>
+                    <div class="payroll-card bg-white rounded-2xl border p-4 shadow-sm"><p class="text-xs text-slate-500">Total Payroll</p><p class="text-2xl font-bold text-emerald-600">${totalPayroll.toLocaleString()} RWF</p></div>
+                    <div class="payroll-card bg-white rounded-2xl border p-4 shadow-sm"><p class="text-xs text-slate-500">Avg. Daily Labor Cost</p><p class="text-2xl font-bold text-slate-800">${avgDaily.toLocaleString()} RWF</p></div>
+                `;
+            }
+
+            const tableContainer = document.getElementById('payroll-table-container');
+            if (tableContainer) {
+                if (!workers.length) {
+                    tableContainer.innerHTML = `<div class="p-4 text-slate-500 text-sm">No attendance records found for the selected filters.</div>`;
+                    return;
+                }
+                tableContainer.innerHTML = `
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm">
+                            <thead class="bg-slate-50 uppercase text-xs"><tr><th class="px-3 py-2 text-left">Worker</th><th class="px-3 py-2 text-left">Position</th><th class="px-3 py-2 text-center">Days Worked</th><th class="px-3 py-2 text-right">Daily Rate</th><th class="px-3 py-2 text-right">Total Payable</th></tr></thead>
+                            <tbody>${workers.map(w => `<tr><td class="px-3 py-2 font-medium">${w.name}</td><td class="px-3 py-2">${w.role || '—'}</td><td class="px-3 py-2 text-center">${w.days.length}</td><td class="px-3 py-2 text-right">${w.dailyRate.toLocaleString()} RWF</td><td class="px-3 py-2 text-right font-semibold text-emerald-600">${w.totalPayable.toLocaleString()} RWF</td></tr>`).join('')}</tbody>
+                            <tfoot class="bg-slate-50 font-bold"><tr><td colspan="2" class="px-3 py-2 text-right">Total</td><td class="px-3 py-2 text-center">${totalDays}</td><td class="px-3 py-2 text-right"></td><td class="px-3 py-2 text-right text-emerald-600">${totalPayroll.toLocaleString()} RWF</td></tr></tfoot>
+                        </table>
+                    </div>
+                `;
+            }
+        };
+
+        // ── Export: Payroll ──
+        window.exportPayrollReport = (format) => {
+            const siteId = document.getElementById('payroll-site')?.value || 'all';
+            const startDate = document.getElementById('payroll-start')?.value || '';
+            const endDate = document.getElementById('payroll-end')?.value || '';
+            const workerSearch = document.getElementById('payroll-worker-search')?.value?.toLowerCase() || '';
+            const position = document.getElementById('payroll-position')?.value || 'all';
+
+            let filtered = attendanceData;
+            if (siteId !== 'all') filtered = filtered.filter(a => a.site_id === siteId);
+            if (startDate) filtered = filtered.filter(a => a.date >= startDate);
+            if (endDate) filtered = filtered.filter(a => a.date <= endDate);
+            if (workerSearch) filtered = filtered.filter(a => a.name.toLowerCase().includes(workerSearch));
+            if (position !== 'all') filtered = filtered.filter(a => a.role === position);
+
+            const workerMap = {};
+            filtered.forEach(rec => {
+                const key = rec.worker_id || rec.id;
+                if (!workerMap[key]) {
+                    workerMap[key] = { id: key, name: rec.name, role: rec.role, dailyRate: rec.daily_rate || 0, days: [], totalPayable: 0 };
+                }
+                workerMap[key].days.push(rec.date);
+                workerMap[key].totalPayable += (rec.daily_rate || 0);
+            });
+
+            const workers = Object.values(workerMap);
+            const totalDays = workers.reduce((sum, w) => sum + w.days.length, 0);
+            const totalPayroll = workers.reduce((sum, w) => sum + w.totalPayable, 0);
+
+            const company = getCompanyDetails();
+            const generatedDate = new Date().toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false }).replace(',', ', ');
+            const siteName = siteId === 'all' ? 'All Sites' : (sitesData.find(s => s.id === siteId)?.name || 'Site');
+            const period = startDate && endDate ? `${formatDate(startDate)} to ${formatDate(endDate)}` : (startDate || endDate || 'All Time');
+
+            if (format === 'csv') {
+                const headers = ['Worker', 'Position', 'Days Worked', 'Daily Rate (RWF)', 'Total Payable (RWF)'];
+                const csvRows = [
+                    `"${company.name}"`, `"${company.address}"`, `"${company.location}"`, `"${company.city}"`, `"Tel: ${company.phone}"`, `"Email: ${company.email}"`,
+                    `"Generated: ${generatedDate}"`, `"Report: Worker Attendance & Payroll"`, `"Site Name: ${siteName}"`, `"Period: ${period}"`, '',
+                    headers.join(',')
+                ];
+                for (const w of workers) {
+                    csvRows.push([w.name, w.role || '—', w.days.length, w.dailyRate.toLocaleString(), w.totalPayable.toLocaleString()].map(v => `"${v}"`).join(','));
+                }
+                csvRows.push(`"Total","",${totalDays},"",${totalPayroll.toLocaleString()}`);
+                const csv = csvRows.join('\n');
+                const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `SHDR_Payroll_${siteName.replace(/\s/g, '_')}_${new Date().toISOString().slice(0,10)}.csv`;
+                a.click();
+                URL.revokeObjectURL(url);
+                return;
+            }
+
+            const headers = ['Worker', 'Position', 'Days Worked', 'Daily Rate (RWF)', 'Total Payable (RWF)'];
+            const tableRows = workers.map(w => `
                 <tr>
-                    <td colspan="2" style="text-align:right"><strong>Total</strong></td>
-                    <td style="text-align:center"><strong>${totalDays}</strong></td>
-                    <td></td>
-                    <td style="text-align:right"><strong>${totalPayroll.toLocaleString()} RWF</strong></td>
+                    <td>${w.name}</td>
+                    <td>${w.role || '—'}</td>
+                    <td style="text-align:center">${w.days.length}</td>
+                    <td style="text-align:right">${w.dailyRate.toLocaleString()} RWF</td>
+                    <td style="text-align:right">${w.totalPayable.toLocaleString()} RWF</td>
                 </tr>
-            </tfoot>
-        </table>
-    `;
-    const fullHTML = generateReportHTML("Workers' Attendance & Payroll Report", bodyHTML, meta);
-    const win = window.open('', '_blank', 'width=1000,height=700');
-    if (!win) { alert('Please allow pop-ups to print the report.'); return; }
-    win.document.write(fullHTML);
-    win.document.close();
-    setTimeout(() => win.print(), 500);
-};
+            `).join('');
 
-// ── Export: Stock (now respects selected site and uses formatDate) ──
-window.exportStockReport = (format) => {
-    const siteId = document.getElementById('stock-report-site')?.value || 'all';
-    let filteredStock = siteId === 'all' ? stockData : stockData.filter(s => s.site_id === siteId);
+            const meta = `<strong>Site Name:</strong> ${siteName} &nbsp;|&nbsp; <strong>Period:</strong> ${period} &nbsp;|&nbsp; <strong>Generated:</strong> ${generatedDate}`;
+            const bodyHTML = `
+                <table>
+                    <thead><tr>${headers.map(h => `<th>${h}</th>`).join('')}</tr></thead>
+                    <tbody>${tableRows}</tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="2" style="text-align:right"><strong>Total</strong></td>
+                            <td style="text-align:center"><strong>${totalDays}</strong></td>
+                            <td></td>
+                            <td style="text-align:right"><strong>${totalPayroll.toLocaleString()} RWF</strong></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            `;
+            const fullHTML = generateReportHTML("Workers' Attendance & Payroll Report", bodyHTML, meta);
+            const win = window.open('', '_blank', 'width=1000,height=700');
+            if (!win) { alert('Please allow pop-ups to print the report.'); return; }
+            win.document.write(fullHTML);
+            win.document.close();
+            setTimeout(() => win.print(), 500);
+        };
 
-    if (!filteredStock.length) {
-        alert('No stock data for the selected site.');
-        return;
-    }
+        // ── Export: Stock (now respects selected site and uses formatDate) ──
+        window.exportStockReport = (format) => {
+            const siteId = document.getElementById('stock-report-site')?.value || 'all';
+            let filteredStock = siteId === 'all' ? stockData : stockData.filter(s => s.site_id === siteId);
 
-    const company = getCompanyDetails();
-    const generatedDate = new Date().toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false }).replace(',', ', ');
-    const siteLabel = siteId === 'all' ? 'All Sites' : (sitesData.find(s => s.id === siteId)?.name || 'Site');
+            if (!filteredStock.length) {
+                alert('No stock data for the selected site.');
+                return;
+            }
 
-    if (format === 'csv') {
-        const headers = ['Site', 'Material', 'Quantity', 'Unit', 'Min Stock', 'Unit Cost (RWF)', 'Stock Value (RWF)', 'Status', 'Last Updated'];
-        const rows = filteredStock.map(item => {
-            const site = sitesData.find(s => s.id === item.site_id);
-            const siteName = site ? site.name : 'Unknown';
-            const unitCost = materialsData.filter(m => m.site_id === item.site_id && m.name === item.material_name).pop()?.unit_cost || 0;
-            const stockValue = item.quantity * unitCost;
-            const status = item.quantity <= 0 ? 'Out of Stock' : (item.minimum_quantity && item.quantity <= item.minimum_quantity ? 'Low Stock' : 'Normal');
-            return [siteName, item.material_name, item.quantity, item.unit || 'units', item.minimum_quantity || '', unitCost.toFixed(2), stockValue.toFixed(2), status, formatDate(item.updated_at)];
-        });
-        const csvContent = [
-            `"${company.name}"`, `"${company.address}"`, `"${company.location}"`, `"${company.city}"`, `"Tel: ${company.phone}"`, `"Email: ${company.email}"`,
-            `"Generated: ${generatedDate}"`, `"Report: Stock Overview"`, `"Site Name: ${siteLabel}"`, '',
-            headers.join(','),
-            ...rows.map(row => row.join(','))
-        ].join('\n');
-        const blob = new Blob([csvContent], { type: 'text/csv' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `Stock_Report_${siteLabel.replace(/\s/g, '_')}_${new Date().toISOString().slice(0,10)}.csv`;
-        a.click();
-        URL.revokeObjectURL(url);
-        return;
-    }
+            const company = getCompanyDetails();
+            const generatedDate = new Date().toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false }).replace(',', ', ');
+            const siteLabel = siteId === 'all' ? 'All Sites' : (sitesData.find(s => s.id === siteId)?.name || 'Site');
 
-    // Print / PDF
-    const headers = ['Site', 'Material', 'Quantity', 'Unit', 'Min Stock', 'Unit Cost (RWF)', 'Stock Value (RWF)', 'Status', 'Last Updated'];
-    const rows = filteredStock.map(item => {
-        const site = sitesData.find(s => s.id === item.site_id);
-        const siteName = site ? site.name : 'Unknown';
-        const unitCost = materialsData.filter(m => m.site_id === item.site_id && m.name === item.material_name).pop()?.unit_cost || 0;
-        const stockValue = item.quantity * unitCost;
-        const status = item.quantity <= 0 ? 'Out of Stock' : (item.minimum_quantity && item.quantity <= item.minimum_quantity ? 'Low Stock' : 'Normal');
-        return `<tr><td>${siteName}</td><td>${item.material_name}</td><td>${item.quantity}</td><td>${item.unit || 'units'}</td><td>${item.minimum_quantity || '-'}</td><td>${unitCost.toFixed(2)}</td><td>${stockValue.toFixed(2)}</td><td>${status}</td><td>${formatDate(item.updated_at)}</td></tr>`;
-    }).join('');
+            if (format === 'csv') {
+                const headers = ['Site', 'Material', 'Quantity', 'Unit', 'Min Stock', 'Unit Cost (RWF)', 'Stock Value (RWF)', 'Status', 'Last Updated'];
+                const rows = filteredStock.map(item => {
+                    const site = sitesData.find(s => s.id === item.site_id);
+                    const siteName = site ? site.name : 'Unknown';
+                    const unitCost = materialsData.filter(m => m.site_id === item.site_id && m.name === item.material_name).pop()?.unit_cost || 0;
+                    const stockValue = item.quantity * unitCost;
+                    const status = item.quantity <= 0 ? 'Out of Stock' : (item.minimum_quantity && item.quantity <= item.minimum_quantity ? 'Low Stock' : 'Normal');
+                    return [siteName, item.material_name, item.quantity, item.unit || 'units', item.minimum_quantity || '', unitCost.toFixed(2), stockValue.toFixed(2), status, formatDate(item.updated_at)];
+                });
+                const csvContent = [
+                    `"${company.name}"`, `"${company.address}"`, `"${company.location}"`, `"${company.city}"`, `"Tel: ${company.phone}"`, `"Email: ${company.email}"`,
+                    `"Generated: ${generatedDate}"`, `"Report: Stock Overview"`, `"Site Name: ${siteLabel}"`, '',
+                    headers.join(','),
+                    ...rows.map(row => row.join(','))
+                ].join('\n');
+                const blob = new Blob([csvContent], { type: 'text/csv' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `Stock_Report_${siteLabel.replace(/\s/g, '_')}_${new Date().toISOString().slice(0,10)}.csv`;
+                a.click();
+                URL.revokeObjectURL(url);
+                return;
+            }
 
-    const meta = `<strong>Site Name:</strong> ${siteLabel} &nbsp;|&nbsp; <strong>Generated:</strong> ${generatedDate}`;
-    const bodyHTML = `<table><thead><tr>${headers.map(h => `<th>${h}</th>`).join('')}</tr></thead><tbody>${rows}</tbody></table>`;
-    const fullHTML = generateReportHTML('Stock Report', bodyHTML, meta);
-    const win = window.open('', '_blank', 'width=1000,height=700');
-    if (!win) { alert('Please allow pop-ups to print the report.'); return; }
-    win.document.write(fullHTML);
-    win.document.close();
-    setTimeout(() => win.print(), 500);
-};
+            const headers = ['Site', 'Material', 'Quantity', 'Unit', 'Min Stock', 'Unit Cost (RWF)', 'Stock Value (RWF)', 'Status', 'Last Updated'];
+            const rows = filteredStock.map(item => {
+                const site = sitesData.find(s => s.id === item.site_id);
+                const siteName = site ? site.name : 'Unknown';
+                const unitCost = materialsData.filter(m => m.site_id === item.site_id && m.name === item.material_name).pop()?.unit_cost || 0;
+                const stockValue = item.quantity * unitCost;
+                const status = item.quantity <= 0 ? 'Out of Stock' : (item.minimum_quantity && item.quantity <= item.minimum_quantity ? 'Low Stock' : 'Normal');
+                return `<tr><td>${siteName}</td><td>${item.material_name}</td><td>${item.quantity}</td><td>${item.unit || 'units'}</td><td>${item.minimum_quantity || '-'}</td><td>${unitCost.toFixed(2)}</td><td>${stockValue.toFixed(2)}</td><td>${status}</td><td>${formatDate(item.updated_at)}</td></tr>`;
+            }).join('');
 
-// ── Export: General ──
-window.exportGeneralReport = (format) => {
-    const siteId = document.getElementById('report-site').value;
-    const dept = document.getElementById('report-dept').value;
-    const startDate = document.getElementById('report-start').value;
-    const endDate = document.getElementById('report-end').value;
+            const meta = `<strong>Site Name:</strong> ${siteLabel} &nbsp;|&nbsp; <strong>Generated:</strong> ${generatedDate}`;
+            const bodyHTML = `<table><thead><tr>${headers.map(h => `<th>${h}</th>`).join('')}</tr></thead><tbody>${rows}</tbody></table>`;
+            const fullHTML = generateReportHTML('Stock Report', bodyHTML, meta);
+            const win = window.open('', '_blank', 'width=1000,height=700');
+            if (!win) { alert('Please allow pop-ups to print the report.'); return; }
+            win.document.write(fullHTML);
+            win.document.close();
+            setTimeout(() => win.print(), 500);
+        };
 
-    let data = [];
-    const company = getCompanyDetails();
+        // ── Export: General ──
+        window.exportGeneralReport = (format) => {
+            const siteId = document.getElementById('report-site').value;
+            const dept = document.getElementById('report-dept').value;
+            const startDate = document.getElementById('report-start').value;
+            const endDate = document.getElementById('report-end').value;
 
-    const filterByDate = (items, dateField) => {
-        if (!startDate && !endDate) return items;
-        return items.filter(item => {
-            const itemDate = new Date(item[dateField]);
-            if (startDate && itemDate < new Date(startDate)) return false;
-            if (endDate && itemDate > new Date(endDate + 'T23:59:59')) return false;
-            return true;
-        });
-    };
+            let data = [];
+            const company = getCompanyDetails();
 
-    const getSiteName = (id) => sitesData.find(s => s.id === id)?.name || 'Unknown';
+            const filterByDate = (items, dateField) => {
+                if (!startDate && !endDate) return items;
+                return items.filter(item => {
+                    const itemDate = new Date(item[dateField]);
+                    if (startDate && itemDate < new Date(startDate)) return false;
+                    if (endDate && itemDate > new Date(endDate + 'T23:59:59')) return false;
+                    return true;
+                });
+            };
 
-    if (dept === 'all' || dept === 'materials') {
-        let mats = siteId !== 'all' ? materialsData.filter(m => m.site_id === siteId) : materialsData;
-        mats = filterByDate(mats, 'created_at');
-        data = data.concat(mats.map(m => ({
-            Department: 'Materials',
-            Site: getSiteName(m.site_id),
-            Name: m.name,
-            'Quantity Used': m.quantity_used || 0,
-            'Unit Cost (RWF)': m.unit_cost || 0,
-            'Total Amount (RWF)': calculateTotal(m.quantity_used || 0, m.unit_cost || 0),
-            Date: formatDate(m.created_at)
-        })));
-    }
-    if (dept === 'all' || dept === 'workers') {
-        let assigned = siteId !== 'all' ? assignedWorkersData.filter(w => w.site_id === siteId) : assignedWorkersData;
-        data = data.concat(assigned.map(w => ({ Department: 'Workers', Site: getSiteName(w.site_id), Name: w.name, Role: w.role, Salary: w.salary, Phone: w.phone })));
-        let positions = siteId !== 'all' ? workersData.filter(p => p.site_id === siteId || p.site_id === 'all') : workersData;
-        data = data.concat(positions.map(p => ({ Department: "Worker's Position", Site: p.site_id === 'all' ? 'All Sites' : getSiteName(p.site_id), Role: p.role, 'Salary Type': p.salary_type, 'Est. Cost': p.estimated_cost })));
-    }
-    if (dept === 'all' || dept === 'finances') {
-        let att = siteId !== 'all' ? attendanceData.filter(a => a.site_id === siteId) : attendanceData;
-        const totalWorkerCost = att.reduce((sum, a) => sum + (a.daily_rate || 0), 0);
-        let mats = siteId !== 'all' ? materialsData.filter(m => m.site_id === siteId) : materialsData;
-        const totalMatCost = mats.reduce((sum, m) => sum + calculateTotal(m.quantity_used || 0, m.unit_cost || 0), 0);
-        data.push({ Department: 'Finances', Category: 'Materials Used', Amount: totalMatCost, Description: 'Total material cost from used quantities' });
-        data.push({ Department: 'Finances', Category: "Workers' Attendance", Amount: totalWorkerCost, Description: 'Total worker attendance cost' });
-    }
+            const getSiteName = (id) => sitesData.find(s => s.id === id)?.name || 'Unknown';
 
-    if (!data.length) { alert('No data found for the selected filters.'); return; }
+            if (dept === 'all' || dept === 'materials') {
+                let mats = siteId !== 'all' ? materialsData.filter(m => m.site_id === siteId) : materialsData;
+                mats = filterByDate(mats, 'created_at');
+                data = data.concat(mats.map(m => ({
+                    Department: 'Materials',
+                    Site: getSiteName(m.site_id),
+                    Name: m.name,
+                    'Quantity Used': m.quantity_used || 0,
+                    'Unit Cost (RWF)': m.unit_cost || 0,
+                    'Total Amount (RWF)': calculateTotal(m.quantity_used || 0, m.unit_cost || 0),
+                    Date: formatDate(m.created_at)
+                })));
+            }
+            if (dept === 'all' || dept === 'workers') {
+                let assigned = siteId !== 'all' ? assignedWorkersData.filter(w => w.site_id === siteId) : assignedWorkersData;
+                data = data.concat(assigned.map(w => ({ Department: 'Workers', Site: getSiteName(w.site_id), Name: w.name, Role: w.role, Salary: w.salary, Phone: w.phone })));
+                let positions = siteId !== 'all' ? workersData.filter(p => p.site_id === siteId || p.site_id === 'all') : workersData;
+                data = data.concat(positions.map(p => ({ Department: "Worker's Position", Site: p.site_id === 'all' ? 'All Sites' : getSiteName(p.site_id), Role: p.role, 'Salary Type': p.salary_type, 'Est. Cost': p.estimated_cost })));
+            }
+            if (dept === 'all' || dept === 'finances') {
+                let att = siteId !== 'all' ? attendanceData.filter(a => a.site_id === siteId) : attendanceData;
+                const totalWorkerCost = att.reduce((sum, a) => sum + (a.daily_rate || 0), 0);
+                let mats = siteId !== 'all' ? materialsData.filter(m => m.site_id === siteId) : materialsData;
+                const totalMatCost = mats.reduce((sum, m) => sum + calculateTotal(m.quantity_used || 0, m.unit_cost || 0), 0);
+                data.push({ Department: 'Finances', Category: 'Materials Used', Amount: totalMatCost, Description: 'Total material cost from used quantities' });
+                data.push({ Department: 'Finances', Category: "Workers' Attendance", Amount: totalWorkerCost, Description: 'Total worker attendance cost' });
+            }
 
-    const siteLabel = siteId === 'all' ? 'All Sites' : (sitesData.find(s => s.id === siteId)?.name || 'Site');
-    const deptLabel = dept === 'all' ? 'All Departments' : dept.charAt(0).toUpperCase() + dept.slice(1);
-    const generatedDate = new Date().toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false }).replace(',', ', ');
-    const filename = `SHDR_${siteLabel.replace(/\s/g, '_')}_${deptLabel.replace(/\s/g, '_')}`;
+            if (!data.length) { alert('No data found for the selected filters.'); return; }
 
-    if (format === 'csv') {
-        const headers = Object.keys(data[0]);
-        const csvRows = [
-            `"${company.name}"`, `"${company.address}"`, `"${company.location}"`, `"${company.city}"`, `"Tel: ${company.phone}"`, `"Email: ${company.email}"`,
-            `"Generated: ${generatedDate}"`, `"Report: ${siteLabel}"`, `"Department: ${deptLabel}"`, '',
-            headers.join(',')
-        ];
-        for (const row of data) {
-            const values = headers.map(h => `"${String(row[h] ?? '').replace(/"/g, '""')}"`);
-            csvRows.push(values.join(','));
-        }
-        const csv = csvRows.join('\n');
-        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `${filename}_${new Date().toISOString().slice(0,10)}.csv`;
-        a.click();
-        URL.revokeObjectURL(url);
-        return;
-    }
+            const siteLabel = siteId === 'all' ? 'All Sites' : (sitesData.find(s => s.id === siteId)?.name || 'Site');
+            const deptLabel = dept === 'all' ? 'All Departments' : dept.charAt(0).toUpperCase() + dept.slice(1);
+            const generatedDate = new Date().toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false }).replace(',', ', ');
+            const filename = `SHDR_${siteLabel.replace(/\s/g, '_')}_${deptLabel.replace(/\s/g, '_')}`;
 
-    // Print / PDF
-    const headers = Object.keys(data[0]);
-    const tableRows = data.map(row => `<tr>${headers.map(h => `<td>${row[h] ?? ''}</td>`).join('')}</tr>`).join('');
-    const meta = `<strong>Site Name:</strong> ${siteLabel} &nbsp;|&nbsp; <strong>Department:</strong> ${deptLabel}<br><strong>Generated:</strong> ${generatedDate}`;
-    const bodyHTML = `<table><thead><tr>${headers.map(h => `<th>${h}</th>`).join('')}</tr></thead><tbody>${tableRows}</tbody></table>`;
-    const fullHTML = generateReportHTML('Management Report', bodyHTML, meta);
-    const win = window.open('', '_blank', 'width=1000,height=700');
-    if (!win) { alert('Please allow pop-ups to print the report.'); return; }
-    win.document.write(fullHTML);
-    win.document.close();
-    setTimeout(() => win.print(), 500);
-};
+            if (format === 'csv') {
+                const headers = Object.keys(data[0]);
+                const csvRows = [
+                    `"${company.name}"`, `"${company.address}"`, `"${company.location}"`, `"${company.city}"`, `"Tel: ${company.phone}"`, `"Email: ${company.email}"`,
+                    `"Generated: ${generatedDate}"`, `"Report: ${siteLabel}"`, `"Department: ${deptLabel}"`, '',
+                    headers.join(',')
+                ];
+                for (const row of data) {
+                    const values = headers.map(h => `"${String(row[h] ?? '').replace(/"/g, '""')}"`);
+                    csvRows.push(values.join(','));
+                }
+                const csv = csvRows.join('\n');
+                const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `${filename}_${new Date().toISOString().slice(0,10)}.csv`;
+                a.click();
+                URL.revokeObjectURL(url);
+                return;
+            }
+
+            const headers = Object.keys(data[0]);
+            const tableRows = data.map(row => `<tr>${headers.map(h => `<td>${row[h] ?? ''}</td>`).join('')}</tr>`).join('');
+            const meta = `<strong>Site Name:</strong> ${siteLabel} &nbsp;|&nbsp; <strong>Department:</strong> ${deptLabel}<br><strong>Generated:</strong> ${generatedDate}`;
+            const bodyHTML = `<table><thead><tr>${headers.map(h => `<th>${h}</th>`).join('')}</tr></thead><tbody>${tableRows}</tbody></table>`;
+            const fullHTML = generateReportHTML('Management Report', bodyHTML, meta);
+            const win = window.open('', '_blank', 'width=1000,height=700');
+            if (!win) { alert('Please allow pop-ups to print the report.'); return; }
+            win.document.write(fullHTML);
+            win.document.close();
+            setTimeout(() => win.print(), 500);
+        };
 
         // =============== FINANCES ===============
         let selectedFinanceSite = null;
@@ -2639,721 +2635,723 @@ window.exportGeneralReport = (format) => {
 
         function galleryLightboxEscHandler(event) { if (event.key === 'Escape') closeGalleryImage(); }
 
+        // =============== OFFICE MANAGEMENT HUB ===============
+        // ── Toggle: true = fully functional, false = coming soon ──
+        const OFFICE_HUB_ENABLED = false;  // Change to true to enable the full hub
 
+        // ── State ──
+        let officeTab = 'dashboard';
+        let officeSubtab = 'documents';
+        let officeItems = [];
+        let officeFilter = 'all';
+        let officeSearch = '';
+        let officeUnsubscribe = null;
 
-       // =============== OFFICE MANAGEMENT HUB ===============
-// ── Toggle: true = fully functional, false = coming soon ──
-const OFFICE_HUB_ENABLED = false;  // Change to true to enable the full hub
-
-// ── State ──
-let officeTab = 'dashboard';
-let officeSubtab = 'documents';
-let officeItems = [];
-let officeFilter = 'all';
-let officeSearch = '';
-let officeUnsubscribe = null;
-
-// ── Helpers ──
-function getDefaultSubtab(tab) {
-    const map = {
-        design: 'documents',
-        financial: 'estimation',
-        workflow: 'certification',
-        approval: 'pending',
-        permit: 'management',
-        submission: 'new'
-    };
-    return map[tab] || 'documents';
-}
-
-function getSubtabs(tab) {
-    const map = {
-        design: [
-            { id: 'documents', label: 'Architectural Docs', icon: 'architecture' },
-            { id: 'structural', label: 'Structural Analysis', icon: 'construction' },
-            { id: 'mep', label: 'MEP Coordination', icon: 'electrical-services' }
-        ],
-        financial: [
-            { id: 'estimation', label: 'Cost Estimation', icon: 'calculate' },
-            { id: 'budget', label: 'Budget Review', icon: 'account-balance' }
-        ],
-        workflow: [
-            { id: 'certification', label: 'Certification', icon: 'verified' },
-            { id: 'queue', label: 'Submission Queue', icon: 'queue' },
-            { id: 'review', label: 'Review & Verification', icon: 'rate-review' }
-        ],
-        approval: [
-            { id: 'pending', label: 'Pending', icon: 'pending' },
-            { id: 'in-progress', label: 'In Progress', icon: 'progress' },
-            { id: 'approved', label: 'Approved', icon: 'check-circle' },
-            { id: 'rejected', label: 'Rejected / Revision', icon: 'cancel' }
-        ],
-        permit: [
-            { id: 'management', label: 'Permit Management', icon: 'gavel' },
-            { id: 'approved-permits', label: 'Approved Permits', icon: 'check-circle' },
-            { id: 'rejected-permits', label: 'Rejected Permits', icon: 'cancel' }
-        ],
-        submission: [
-            { id: 'new', label: 'New Submissions', icon: 'add-box' },
-            { id: 'tracking', label: 'Submission Tracking', icon: 'track-changes' },
-            { id: 'history', label: 'Submission History', icon: 'history' }
-        ]
-    };
-    return map[tab] || map.design;
-}
-
-function getCategoriesForTab(tab) {
-    const map = {
-        design: [
-            { value: 'architectural', label: 'Architectural Document' },
-            { value: 'structural', label: 'Structural Analysis' },
-            { value: 'mep', label: 'MEP Coordination' }
-        ],
-        financial: [
-            { value: 'estimation', label: 'Cost Estimation' },
-            { value: 'budget', label: 'Budget Review' }
-        ],
-        workflow: [
-            { value: 'certification', label: 'Certification' },
-            { value: 'queue', label: 'Submission Queue' },
-            { value: 'review', label: 'Review & Verification' }
-        ],
-        approval: [
-            { value: 'approval', label: 'Approval Item' }
-        ],
-        permit: [
-            { value: 'permit', label: 'Permit' }
-        ],
-        submission: [
-            { value: 'submission', label: 'Submission' }
-        ]
-    };
-    return map[tab] || map.design;
-}
-
-function getStatusBadge(status) {
-    const map = {
-        'pending': 'bg-amber-100 text-amber-700',
-        'in-progress': 'bg-blue-100 text-blue-700',
-        'approved': 'bg-emerald-100 text-emerald-700',
-        'rejected': 'bg-red-100 text-red-700',
-        'revision': 'bg-orange-100 text-orange-700',
-        'history': 'bg-slate-100 text-slate-500'
-    };
-    return map[status] || 'bg-slate-100 text-slate-500';
-}
-
-function getPriorityLabel(priority) {
-    const map = {
-        'high': { label: 'High', icon: '🔴', class: 'priority-high' },
-        'medium': { label: 'Medium', icon: '🟡', class: 'priority-medium' },
-        'low': { label: 'Low', icon: '🟢', class: 'priority-low' }
-    };
-    return map[priority] || { label: 'None', icon: '⚪', class: '' };
-}
-
-// ── Main render ──
-function renderOfficeHub(container) {
-    if (OFFICE_HUB_ENABLED) {
-        renderFullOfficeHub(container);
-    } else {
-        renderComingSoon(container);
-    }
-}
-
-// ── Coming Soon Page ──
-function renderComingSoon(container) {
-    container.innerHTML = `
-        <div class="max-w-3xl mx-auto py-12 px-4">
-            <div class="bg-white rounded-3xl border border-slate-200 shadow-xl overflow-hidden">
-                <div class="h-2 bg-gradient-to-r from-emerald-400 via-emerald-500 to-emerald-600"></div>
-                <div class="p-8 sm:p-12 text-center">
-                    <div class="w-24 h-24 bg-emerald-50 rounded-full flex items-center justify-center mx-auto mb-6">
-                        <iconify-icon icon="material-symbols:business-center" width="48" height="48" class="text-emerald-600"></iconify-icon>
-                    </div>
-                    <h2 class="text-3xl sm:text-4xl font-bold text-slate-900 mb-3">Office Hub</h2>
-                    <span class="inline-flex items-center gap-2 px-4 py-1.5 bg-amber-50 border border-amber-200 rounded-full text-sm font-medium text-amber-700 mb-6">
-                        <span class="w-2 h-2 bg-amber-500 rounded-full animate-pulse"></span>
-                        Under Development
-                    </span>
-                    <p class="text-slate-600 text-base sm:text-lg max-w-lg mx-auto leading-relaxed">
-                        This feature is currently <strong>under development</strong> and will be available soon.
-                    </p>
-                    <p class="text-slate-500 text-sm mt-3 max-w-md mx-auto leading-relaxed">
-                        We're working to bring you powerful tools for managing your office operations more efficiently.
-                    </p>
-                    <div class="mt-8 bg-emerald-50 rounded-2xl p-6 border border-emerald-100 max-w-sm mx-auto">
-                        <p class="text-emerald-700 font-semibold text-lg flex items-center justify-center gap-2">
-                            <iconify-icon icon="material-symbols:construction" width="24" class="text-emerald-600"></iconify-icon>
-                            Coming Soon
-                            <iconify-icon icon="material-symbols:rocket-launch" width="24" class="text-emerald-600"></iconify-icon>
-                        </p>
-                        <p class="text-emerald-600 text-sm mt-1">Q4 2026</p>
-                    </div>
-                    <button onclick="showSection('dashboard')" class="mt-8 inline-flex items-center gap-2 px-6 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium rounded-xl transition">
-                        <iconify-icon icon="material-symbols:arrow-back" width="18"></iconify-icon>
-                        Back to Dashboard
-                    </button>
-                </div>
-            </div>
-        </div>
-    `;
-}
-
-// ── Full Office Hub (Fully Functional) ──
-function renderFullOfficeHub(container) {
-    container.innerHTML = `
-        <div class="max-w-7xl mx-auto">
-            <!-- Gradient Header -->
-            <div class="office-header">
-                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                    <div>
-                        <h2 class="text-2xl sm:text-3xl font-bold flex items-center gap-3">
-                            <iconify-icon icon="material-symbols:business-center" width="32" class="text-white/90"></iconify-icon>
-                            Office Management Hub
-                        </h2>
-                        <p class="text-white/80 text-sm mt-1">Centralized control for design, finance, workflow, approvals, permits, and submissions</p>
-                    </div>
-                    <button onclick="openOfficeAddModal()" class="btn-new flex items-center gap-2 text-sm">
-                        <iconify-icon icon="material-symbols:add" width="18"></iconify-icon>
-                        New Item
-                    </button>
-                </div>
-            </div>
-
-            <!-- Main Tabs -->
-            <div class="flex flex-wrap gap-1 p-1 bg-white/60 backdrop-blur-sm rounded-full shadow-sm border border-slate-200/60 mb-6">
-                ${[
-                    { id: 'dashboard', label: 'Dashboard', icon: 'dashboard' },
-                    { id: 'design', label: 'Design & Technical', icon: 'design-services' },
-                    { id: 'financial', label: 'Financial & Cost', icon: 'finance' },
-                    { id: 'workflow', label: 'Document Workflow', icon: 'assignment' },
-                    { id: 'approval', label: 'Approval Center', icon: 'check-circle' },
-                    { id: 'permit', label: 'Permit & Compliance', icon: 'gavel' },
-                    { id: 'submission', label: 'Submission Control', icon: 'send' }
-                ].map(tab => `
-                    <button onclick="switchOfficeTab('${tab.id}')" 
-                        class="office-tab flex-1 min-w-[70px] px-3 py-2 text-sm font-semibold transition flex items-center justify-center gap-1.5
-                        ${officeTab === tab.id ? 'active' : ''}">
-                        <iconify-icon icon="material-symbols:${tab.icon}" width="18" height="18"></iconify-icon>
-                        <span class="hidden sm:inline">${tab.label}</span>
-                    </button>
-                `).join('')}
-            </div>
-
-            <!-- Content -->
-            <div id="office-content" class="animate-fade-in">
-                ${officeTab === 'dashboard' ? renderOfficeDashboard() : renderOfficeContent()}
-            </div>
-        </div>
-    `;
-    loadOfficeItems();
-}
-
-// ── Dashboard ──
-function renderOfficeDashboard() {
-    return `
-        <div class="space-y-6">
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div class="glass-stat">
-                    <p class="stat-label">Total Items</p>
-                    <p class="stat-number text-slate-800" id="dash-total">0</p>
-                </div>
-                <div class="glass-stat border-amber-200/50">
-                    <p class="stat-label">Pending</p>
-                    <p class="stat-number text-amber-600" id="dash-pending">0</p>
-                </div>
-                <div class="glass-stat border-emerald-200/50">
-                    <p class="stat-label">Approved</p>
-                    <p class="stat-number text-emerald-600" id="dash-approved">0</p>
-                </div>
-                <div class="glass-stat border-red-200/50">
-                    <p class="stat-label">Rejected / Revision</p>
-                    <p class="stat-number text-red-600" id="dash-rejected">0</p>
-                </div>
-            </div>
-            <div class="bg-white rounded-2xl border border-slate-200/60 shadow-sm p-5">
-                <h3 class="font-semibold text-slate-700 flex items-center gap-2 mb-3">
-                    <iconify-icon icon="material-symbols:history" width="20" class="text-emerald-600"></iconify-icon>
-                    Recent Activity
-                </h3>
-                <div id="dash-activity" class="max-h-60 overflow-y-auto">
-                    <div class="text-slate-400 text-sm">Loading activity...</div>
-                </div>
-            </div>
-            <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
-                ${['design','financial','workflow','approval','permit','submission'].map(cat => {
-                    const map = {
-                        design: ['architectural','structural','mep'],
-                        financial: ['estimation','budget'],
-                        workflow: ['certification','queue','review'],
-                        approval: ['approval'],
-                        permit: ['permit'],
-                        submission: ['submission']
-                    };
-                    const count = officeItems.filter(i => map[cat].includes(i.category)).length;
-                    const label = cat.charAt(0).toUpperCase() + cat.slice(1);
-                    const icons = {
-                        design: 'design-services',
-                        financial: 'finance',
-                        workflow: 'assignment',
-                        approval: 'check-circle',
-                        permit: 'gavel',
-                        submission: 'send'
-                    };
-                    return `
-                        <div class="bg-white/70 backdrop-blur-sm rounded-xl p-4 border border-slate-200/60 text-center hover:shadow-md transition hover:-translate-y-0.5">
-                            <iconify-icon icon="material-symbols:${icons[cat]}" width="28" class="text-emerald-500 mx-auto mb-1"></iconify-icon>
-                            <p class="text-xs text-slate-500">${label}</p>
-                            <p class="text-2xl font-bold text-slate-800">${count}</p>
-                        </div>
-                    `;
-                }).join('')}
-            </div>
-        </div>
-    `;
-}
-
-function updateDashboardStats() {
-    const total = officeItems.length;
-    const pending = officeItems.filter(i => i.status === 'pending').length;
-    const approved = officeItems.filter(i => i.status === 'approved').length;
-    const rejected = officeItems.filter(i => ['rejected','revision'].includes(i.status)).length;
-
-    document.getElementById('dash-total').textContent = total;
-    document.getElementById('dash-pending').textContent = pending;
-    document.getElementById('dash-approved').textContent = approved;
-    document.getElementById('dash-rejected').textContent = rejected;
-
-    const container = document.getElementById('dash-activity');
-    if (!container) return;
-    const items = officeItems.slice().sort((a,b) => new Date(b.updated_at) - new Date(a.updated_at));
-    if (!items.length) {
-        container.innerHTML = '<div class="text-slate-400 text-sm">No activity yet.</div>';
-        return;
-    }
-    const recent = items.slice(0, 10);
-    container.innerHTML = recent.map(item => `
-        <div class="activity-item">
-            <span class="activity-dot ${item.status === 'approved' ? 'create' : item.status === 'rejected' ? 'status' : 'update'}"></span>
-            <span class="font-medium text-slate-700">${item.title}</span>
-            <span class="text-slate-400 text-xs">${formatDate(item.updated_at)}</span>
-            <span class="text-xs ${getStatusBadge(item.status)} px-2 py-0.5 rounded-full">${item.status}</span>
-            <span class="text-xs text-slate-400 ml-auto">${item.submitted_by || '—'}</span>
-        </div>
-    `).join('');
-}
-
-// ── Switch Tab ──
-window.switchOfficeTab = (tab) => {
-    officeTab = tab;
-    officeSubtab = getDefaultSubtab(tab);
-    officeFilter = 'all';
-    officeSearch = '';
-    document.getElementById('office-content').innerHTML = tab === 'dashboard' ? renderOfficeDashboard() : renderOfficeContent();
-    loadOfficeItems();
-};
-
-// ── Switch Sub-tab ──
-window.switchOfficeSubtab = (subtab) => {
-    officeSubtab = subtab;
-    renderOfficeItems();
-};
-
-// ── Render Content ──
-function renderOfficeContent() {
-    const subtabs = getSubtabs(officeTab);
-    return `
-        <div class="bg-white rounded-2xl border border-slate-200/60 shadow-sm overflow-hidden">
-            <div class="flex flex-wrap items-center gap-1 p-3 border-b border-slate-200/60 bg-slate-50/50">
-                ${subtabs.map(st => `
-                    <button onclick="switchOfficeSubtab('${st.id}')" 
-                        class="subtab-btn ${officeSubtab === st.id ? 'active' : ''}">
-                        <iconify-icon icon="material-symbols:${st.icon}" width="16" height="16" class="inline mr-1"></iconify-icon>
-                        ${st.label}
-                    </button>
-                `).join('')}
-                <div class="flex-1"></div>
-                <div class="flex items-center gap-2">
-                    <select id="office-filter-select" onchange="officeFilter = this.value; renderOfficeItems()" class="office-filter">
-                        <option value="all">All Status</option>
-                        <option value="pending">Pending</option>
-                        <option value="in-progress">In Progress</option>
-                        <option value="approved">Approved</option>
-                        <option value="rejected">Rejected</option>
-                        <option value="revision">Revision</option>
-                    </select>
-                    <input type="text" id="office-search-input" placeholder="Search..." oninput="officeSearch = this.value; renderOfficeItems()" class="office-filter w-40">
-                </div>
-            </div>
-            <div id="office-items-container" class="p-4">
-                <div class="flex justify-center py-8"><div class="spinner"></div></div>
-            </div>
-        </div>
-    `;
-}
-
-// ── Load Office Items ──
-function loadOfficeItems() {
-    if (officeUnsubscribe) {
-        officeUnsubscribe();
-        officeUnsubscribe = null;
-    }
-    if (!sitesData.length) {
-        const container = document.getElementById('office-items-container');
-        if (container) container.innerHTML = '<p class="text-slate-400 text-sm">No sites available. Create a site first.</p>';
-        return;
-    }
-
-    const siteIds = sitesData.map(s => s.id);
-    const q = query(collection(db, 'office_items'), where('site_id', 'in', siteIds));
-    officeUnsubscribe = onSnapshot(q, (snap) => {
-        officeItems = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-        if (officeTab === 'dashboard') updateDashboardStats();
-        else renderOfficeItems();
-    }, err => showError('Office items error: ' + err.message));
-}
-
-// ── Render Items ──
-function renderOfficeItems() {
-    const container = document.getElementById('office-items-container');
-    if (!container) return;
-
-    const search = officeSearch.toLowerCase();
-    const filter = officeFilter;
-
-    let items = officeItems.filter(item => {
-        const categoryMap = {
-            design: ['architectural','structural','mep'],
-            financial: ['estimation','budget'],
-            workflow: ['certification','queue','review'],
-            approval: ['approval'],
-            permit: ['permit'],
-            submission: ['submission']
-        };
-        const categories = categoryMap[officeTab] || [];
-        if (!categories.includes(item.category)) return false;
-
-        if (officeSubtab === 'documents' && item.category !== 'architectural') return false;
-        if (officeSubtab === 'structural' && item.category !== 'structural') return false;
-        if (officeSubtab === 'mep' && item.category !== 'mep') return false;
-        if (officeSubtab === 'estimation' && item.category !== 'estimation') return false;
-        if (officeSubtab === 'budget' && item.category !== 'budget') return false;
-        if (officeSubtab === 'certification' && item.category !== 'certification') return false;
-        if (officeSubtab === 'queue' && item.category !== 'queue') return false;
-        if (officeSubtab === 'review' && item.category !== 'review') return false;
-        if (officeSubtab === 'pending' && item.status !== 'pending') return false;
-        if (officeSubtab === 'in-progress' && item.status !== 'in-progress') return false;
-        if (officeSubtab === 'approved' && item.status !== 'approved') return false;
-        if (officeSubtab === 'rejected' && !['rejected','revision'].includes(item.status)) return false;
-        if (officeSubtab === 'management' && item.category !== 'permit') return false;
-        if (officeSubtab === 'approved-permits' && (item.category !== 'permit' || item.status !== 'approved')) return false;
-        if (officeSubtab === 'rejected-permits' && (item.category !== 'permit' || !['rejected','revision'].includes(item.status))) return false;
-        if (officeSubtab === 'new' && (item.category !== 'submission' || item.status !== 'pending')) return false;
-        if (officeSubtab === 'tracking' && (item.category !== 'submission' || !['in-progress','approved','rejected','revision'].includes(item.status))) return false;
-        if (officeSubtab === 'history' && (item.category !== 'submission' || item.status !== 'history')) return false;
-
-        if (filter !== 'all' && item.status !== filter) return false;
-        if (search) {
-            const match = item.title?.toLowerCase().includes(search) ||
-                          item.description?.toLowerCase().includes(search) ||
-                          item.assignee?.toLowerCase().includes(search) ||
-                          item.category?.toLowerCase().includes(search);
-            if (!match) return false;
+        // ── Helpers ──
+        function getDefaultSubtab(tab) {
+            const map = {
+                design: 'documents',
+                financial: 'estimation',
+                workflow: 'certification',
+                approval: 'pending',
+                permit: 'management',
+                submission: 'new'
+            };
+            return map[tab] || 'documents';
         }
-        return true;
-    });
 
-    items.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+        function getSubtabs(tab) {
+            const map = {
+                design: [
+                    { id: 'documents', label: 'Architectural Docs', icon: 'architecture' },
+                    { id: 'structural', label: 'Structural Analysis', icon: 'construction' },
+                    { id: 'mep', label: 'MEP Coordination', icon: 'electrical-services' }
+                ],
+                financial: [
+                    { id: 'estimation', label: 'Cost Estimation', icon: 'calculate' },
+                    { id: 'budget', label: 'Budget Review', icon: 'account-balance' }
+                ],
+                workflow: [
+                    { id: 'certification', label: 'Certification', icon: 'verified' },
+                    { id: 'queue', label: 'Submission Queue', icon: 'queue' },
+                    { id: 'review', label: 'Review & Verification', icon: 'rate-review' }
+                ],
+                approval: [
+                    { id: 'pending', label: 'Pending', icon: 'pending' },
+                    { id: 'in-progress', label: 'In Progress', icon: 'progress' },
+                    { id: 'approved', label: 'Approved', icon: 'check-circle' },
+                    { id: 'rejected', label: 'Rejected / Revision', icon: 'cancel' }
+                ],
+                permit: [
+                    { id: 'management', label: 'Permit Management', icon: 'gavel' },
+                    { id: 'approved-permits', label: 'Approved Permits', icon: 'check-circle' },
+                    { id: 'rejected-permits', label: 'Rejected Permits', icon: 'cancel' }
+                ],
+                submission: [
+                    { id: 'new', label: 'New Submissions', icon: 'add-box' },
+                    { id: 'tracking', label: 'Submission Tracking', icon: 'track-changes' },
+                    { id: 'history', label: 'Submission History', icon: 'history' }
+                ]
+            };
+            return map[tab] || map.design;
+        }
 
-    if (!items.length) {
-        container.innerHTML = `<div class="text-center py-12 text-slate-400"><iconify-icon icon="material-symbols:inbox" width="56" height="56" class="mx-auto mb-3 opacity-40"></iconify-icon><p class="text-sm font-medium">No items found</p><p class="text-xs">Click "New Item" to add one.</p></div>`;
-        return;
-    }
+        function getCategoriesForTab(tab) {
+            const map = {
+                design: [
+                    { value: 'architectural', label: 'Architectural Document' },
+                    { value: 'structural', label: 'Structural Analysis' },
+                    { value: 'mep', label: 'MEP Coordination' }
+                ],
+                financial: [
+                    { value: 'estimation', label: 'Cost Estimation' },
+                    { value: 'budget', label: 'Budget Review' }
+                ],
+                workflow: [
+                    { value: 'certification', label: 'Certification' },
+                    { value: 'queue', label: 'Submission Queue' },
+                    { value: 'review', label: 'Review & Verification' }
+                ],
+                approval: [
+                    { value: 'approval', label: 'Approval Item' }
+                ],
+                permit: [
+                    { value: 'permit', label: 'Permit' }
+                ],
+                submission: [
+                    { value: 'submission', label: 'Submission' }
+                ]
+            };
+            return map[tab] || map.design;
+        }
 
-    // Kanban
-    if (officeTab === 'approval') {
-        const columns = {
-            'pending': { label: 'Pending', items: [] },
-            'in-progress': { label: 'In Progress', items: [] },
-            'approved': { label: 'Approved', items: [] },
-            'rejected': { label: 'Rejected / Revision', items: [] }
+        function getStatusBadge(status) {
+            const map = {
+                'pending': 'bg-amber-100 text-amber-700',
+                'in-progress': 'bg-blue-100 text-blue-700',
+                'approved': 'bg-emerald-100 text-emerald-700',
+                'rejected': 'bg-red-100 text-red-700',
+                'revision': 'bg-orange-100 text-orange-700',
+                'history': 'bg-slate-100 text-slate-500'
+            };
+            return map[status] || 'bg-slate-100 text-slate-500';
+        }
+
+        function getPriorityLabel(priority) {
+            const map = {
+                'high': { label: 'High', icon: '🔴', class: 'priority-high' },
+                'medium': { label: 'Medium', icon: '🟡', class: 'priority-medium' },
+                'low': { label: 'Low', icon: '🟢', class: 'priority-low' }
+            };
+            return map[priority] || { label: 'None', icon: '⚪', class: '' };
+        }
+
+        // ── Main render ──
+        function renderOfficeHub(container) {
+            if (OFFICE_HUB_ENABLED) {
+                renderFullOfficeHub(container);
+            } else {
+                renderComingSoon(container);
+            }
+        }
+
+        // ── Coming Soon Page ──
+        function renderComingSoon(container) {
+            container.innerHTML = `
+                <div class="max-w-3xl mx-auto py-12 px-4">
+                    <div class="bg-white rounded-3xl border border-slate-200 shadow-xl overflow-hidden">
+                        <div class="h-2 bg-gradient-to-r from-emerald-400 via-emerald-500 to-emerald-600"></div>
+                        <div class="p-8 sm:p-12 text-center">
+                            <div class="w-24 h-24 bg-emerald-50 rounded-full flex items-center justify-center mx-auto mb-6">
+                                <iconify-icon icon="material-symbols:business-center" width="48" height="48" class="text-emerald-600"></iconify-icon>
+                            </div>
+                            <h2 class="text-3xl sm:text-4xl font-bold text-slate-900 mb-3">Office Hub</h2>
+                            <span class="inline-flex items-center gap-2 px-4 py-1.5 bg-amber-50 border border-amber-200 rounded-full text-sm font-medium text-amber-700 mb-6">
+                                <span class="w-2 h-2 bg-amber-500 rounded-full animate-pulse"></span>
+                                Under Development
+                            </span>
+                            <p class="text-slate-600 text-base sm:text-lg max-w-lg mx-auto leading-relaxed">
+                                This feature is currently <strong>under development</strong> and will be available soon.
+                            </p>
+                            <p class="text-slate-500 text-sm mt-3 max-w-md mx-auto leading-relaxed">
+                                We're working to bring you powerful tools for managing your office operations more efficiently.
+                            </p>
+                            <div class="mt-8 bg-emerald-50 rounded-2xl p-6 border border-emerald-100 max-w-sm mx-auto">
+                                <p class="text-emerald-700 font-semibold text-lg flex items-center justify-center gap-2">
+                                    <iconify-icon icon="material-symbols:construction" width="24" class="text-emerald-600"></iconify-icon>
+                                    Coming Soon
+                                    <iconify-icon icon="material-symbols:rocket-launch" width="24" class="text-emerald-600"></iconify-icon>
+                                </p>
+                                <p class="text-emerald-600 text-sm mt-1">Q4 2026</p>
+                            </div>
+                            <button onclick="showSection('dashboard')" class="mt-8 inline-flex items-center gap-2 px-6 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium rounded-xl transition">
+                                <iconify-icon icon="material-symbols:arrow-back" width="18"></iconify-icon>
+                                Back to Dashboard
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // ── Full Office Hub (Fully Functional) ──
+        function renderFullOfficeHub(container) {
+            container.innerHTML = `
+                <div class="max-w-7xl mx-auto">
+                    <!-- Gradient Header -->
+                    <div class="office-header">
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                            <div>
+                                <h2 class="text-2xl sm:text-3xl font-bold flex items-center gap-3">
+                                    <iconify-icon icon="material-symbols:business-center" width="32" class="text-white/90"></iconify-icon>
+                                    Office Management Hub
+                                </h2>
+                                <p class="text-white/80 text-sm mt-1">Centralized control for design, finance, workflow, approvals, permits, and submissions</p>
+                            </div>
+                            <button onclick="openOfficeAddModal()" class="btn-new flex items-center gap-2 text-sm">
+                                <iconify-icon icon="material-symbols:add" width="18"></iconify-icon>
+                                New Item
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Main Tabs -->
+                    <div class="flex flex-wrap gap-1 p-1 bg-white/60 backdrop-blur-sm rounded-full shadow-sm border border-slate-200/60 mb-6">
+                        ${[
+                            { id: 'dashboard', label: 'Dashboard', icon: 'dashboard' },
+                            { id: 'design', label: 'Design & Technical', icon: 'design-services' },
+                            { id: 'financial', label: 'Financial & Cost', icon: 'finance' },
+                            { id: 'workflow', label: 'Document Workflow', icon: 'assignment' },
+                            { id: 'approval', label: 'Approval Center', icon: 'check-circle' },
+                            { id: 'permit', label: 'Permit & Compliance', icon: 'gavel' },
+                            { id: 'submission', label: 'Submission Control', icon: 'send' }
+                        ].map(tab => `
+                            <button onclick="switchOfficeTab('${tab.id}')" 
+                                class="office-tab flex-1 min-w-[70px] px-3 py-2 text-sm font-semibold transition flex items-center justify-center gap-1.5
+                                ${officeTab === tab.id ? 'active' : ''}">
+                                <iconify-icon icon="material-symbols:${tab.icon}" width="18" height="18"></iconify-icon>
+                                <span class="hidden sm:inline">${tab.label}</span>
+                            </button>
+                        `).join('')}
+                    </div>
+
+                    <!-- Content -->
+                    <div id="office-content" class="animate-fade-in">
+                        ${officeTab === 'dashboard' ? renderOfficeDashboard() : renderOfficeContent()}
+                    </div>
+                </div>
+            `;
+            loadOfficeItems();
+        }
+
+        // ── Dashboard ──
+        function renderOfficeDashboard() {
+            return `
+                <div class="space-y-6">
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div class="glass-stat">
+                            <p class="stat-label">Total Items</p>
+                            <p class="stat-number text-slate-800" id="dash-total">0</p>
+                        </div>
+                        <div class="glass-stat border-amber-200/50">
+                            <p class="stat-label">Pending</p>
+                            <p class="stat-number text-amber-600" id="dash-pending">0</p>
+                        </div>
+                        <div class="glass-stat border-emerald-200/50">
+                            <p class="stat-label">Approved</p>
+                            <p class="stat-number text-emerald-600" id="dash-approved">0</p>
+                        </div>
+                        <div class="glass-stat border-red-200/50">
+                            <p class="stat-label">Rejected / Revision</p>
+                            <p class="stat-number text-red-600" id="dash-rejected">0</p>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-2xl border border-slate-200/60 shadow-sm p-5">
+                        <h3 class="font-semibold text-slate-700 flex items-center gap-2 mb-3">
+                            <iconify-icon icon="material-symbols:history" width="20" class="text-emerald-600"></iconify-icon>
+                            Recent Activity
+                        </h3>
+                        <div id="dash-activity" class="max-h-60 overflow-y-auto">
+                            <div class="text-slate-400 text-sm">Loading activity...</div>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                        ${['design','financial','workflow','approval','permit','submission'].map(cat => {
+                            const map = {
+                                design: ['architectural','structural','mep'],
+                                financial: ['estimation','budget'],
+                                workflow: ['certification','queue','review'],
+                                approval: ['approval'],
+                                permit: ['permit'],
+                                submission: ['submission']
+                            };
+                            const count = officeItems.filter(i => map[cat].includes(i.category)).length;
+                            const label = cat.charAt(0).toUpperCase() + cat.slice(1);
+                            const icons = {
+                                design: 'design-services',
+                                financial: 'finance',
+                                workflow: 'assignment',
+                                approval: 'check-circle',
+                                permit: 'gavel',
+                                submission: 'send'
+                            };
+                            return `
+                                <div class="bg-white/70 backdrop-blur-sm rounded-xl p-4 border border-slate-200/60 text-center hover:shadow-md transition hover:-translate-y-0.5">
+                                    <iconify-icon icon="material-symbols:${icons[cat]}" width="28" class="text-emerald-500 mx-auto mb-1"></iconify-icon>
+                                    <p class="text-xs text-slate-500">${label}</p>
+                                    <p class="text-2xl font-bold text-slate-800">${count}</p>
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function updateDashboardStats() {
+            const total = officeItems.length;
+            const pending = officeItems.filter(i => i.status === 'pending').length;
+            const approved = officeItems.filter(i => i.status === 'approved').length;
+            const rejected = officeItems.filter(i => ['rejected','revision'].includes(i.status)).length;
+
+            document.getElementById('dash-total').textContent = total;
+            document.getElementById('dash-pending').textContent = pending;
+            document.getElementById('dash-approved').textContent = approved;
+            document.getElementById('dash-rejected').textContent = rejected;
+
+            const container = document.getElementById('dash-activity');
+            if (!container) return;
+            const items = officeItems.slice().sort((a,b) => new Date(b.updated_at) - new Date(a.updated_at));
+            if (!items.length) {
+                container.innerHTML = '<div class="text-slate-400 text-sm">No activity yet.</div>';
+                return;
+            }
+            const recent = items.slice(0, 10);
+            container.innerHTML = recent.map(item => `
+                <div class="activity-item">
+                    <span class="activity-dot ${item.status === 'approved' ? 'create' : item.status === 'rejected' ? 'status' : 'update'}"></span>
+                    <span class="font-medium text-slate-700">${item.title}</span>
+                    <span class="text-slate-400 text-xs">${formatDate(item.updated_at)}</span>
+                    <span class="text-xs ${getStatusBadge(item.status)} px-2 py-0.5 rounded-full">${item.status}</span>
+                    <span class="text-xs text-slate-400 ml-auto">${item.submitted_by || '—'}</span>
+                </div>
+            `).join('');
+        }
+
+        // ── Switch Tab ──
+        window.switchOfficeTab = (tab) => {
+            officeTab = tab;
+            officeSubtab = getDefaultSubtab(tab);
+            officeFilter = 'all';
+            officeSearch = '';
+            document.getElementById('office-content').innerHTML = tab === 'dashboard' ? renderOfficeDashboard() : renderOfficeContent();
+            loadOfficeItems();
         };
-        items.forEach(item => {
-            const status = item.status || 'pending';
-            if (columns[status]) columns[status].items.push(item);
-            else columns['pending'].items.push(item);
-        });
 
-        container.innerHTML = `
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                ${Object.entries(columns).map(([key, col]) => `
-                    <div class="kanban-column">
-                        <h4>${col.label} (${col.items.length})</h4>
-                        ${col.items.map(item => `
-                            <div class="office-card mb-2 ${getPriorityLabel(item.priority).class}">
-                                <div class="flex justify-between items-start">
-                                    <p class="text-sm font-semibold text-slate-800">${item.title}</p>
+        // ── Switch Sub-tab ──
+        window.switchOfficeSubtab = (subtab) => {
+            officeSubtab = subtab;
+            renderOfficeItems();
+        };
+
+        // ── Render Content ──
+        function renderOfficeContent() {
+            const subtabs = getSubtabs(officeTab);
+            return `
+                <div class="bg-white rounded-2xl border border-slate-200/60 shadow-sm overflow-hidden">
+                    <div class="flex flex-wrap items-center gap-1 p-3 border-b border-slate-200/60 bg-slate-50/50">
+                        ${subtabs.map(st => `
+                            <button onclick="switchOfficeSubtab('${st.id}')" 
+                                class="subtab-btn ${officeSubtab === st.id ? 'active' : ''}">
+                                <iconify-icon icon="material-symbols:${st.icon}" width="16" height="16" class="inline mr-1"></iconify-icon>
+                                ${st.label}
+                            </button>
+                        `).join('')}
+                        <div class="flex-1"></div>
+                        <div class="flex items-center gap-2">
+                            <select id="office-filter-select" onchange="officeFilter = this.value; renderOfficeItems()" class="office-filter">
+                                <option value="all">All Status</option>
+                                <option value="pending">Pending</option>
+                                <option value="in-progress">In Progress</option>
+                                <option value="approved">Approved</option>
+                                <option value="rejected">Rejected</option>
+                                <option value="revision">Revision</option>
+                            </select>
+                            <input type="text" id="office-search-input" placeholder="Search..." oninput="officeSearch = this.value; renderOfficeItems()" class="office-filter w-40">
+                        </div>
+                    </div>
+                    <div id="office-items-container" class="p-4">
+                        <div class="flex justify-center py-8"><div class="spinner"></div></div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // ── Load Office Items ──
+        function loadOfficeItems() {
+            if (officeUnsubscribe) {
+                officeUnsubscribe();
+                officeUnsubscribe = null;
+            }
+            if (!sitesData.length) {
+                const container = document.getElementById('office-items-container');
+                if (container) container.innerHTML = '<p class="text-slate-400 text-sm">No sites available. Create a site first.</p>';
+                return;
+            }
+
+            const siteIds = sitesData.map(s => s.id);
+            const q = query(collection(db, 'office_items'), where('site_id', 'in', siteIds));
+            officeUnsubscribe = onSnapshot(q, (snap) => {
+                officeItems = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+                if (officeTab === 'dashboard') updateDashboardStats();
+                else renderOfficeItems();
+            }, err => showError('Office items error: ' + err.message));
+        }
+
+        // ── Render Items ──
+        function renderOfficeItems() {
+            const container = document.getElementById('office-items-container');
+            if (!container) return;
+
+            const search = officeSearch.toLowerCase();
+            const filter = officeFilter;
+
+            let items = officeItems.filter(item => {
+                const categoryMap = {
+                    design: ['architectural','structural','mep'],
+                    financial: ['estimation','budget'],
+                    workflow: ['certification','queue','review'],
+                    approval: ['approval'],
+                    permit: ['permit'],
+                    submission: ['submission']
+                };
+                const categories = categoryMap[officeTab] || [];
+                if (!categories.includes(item.category)) return false;
+
+                if (officeSubtab === 'documents' && item.category !== 'architectural') return false;
+                if (officeSubtab === 'structural' && item.category !== 'structural') return false;
+                if (officeSubtab === 'mep' && item.category !== 'mep') return false;
+                if (officeSubtab === 'estimation' && item.category !== 'estimation') return false;
+                if (officeSubtab === 'budget' && item.category !== 'budget') return false;
+                if (officeSubtab === 'certification' && item.category !== 'certification') return false;
+                if (officeSubtab === 'queue' && item.category !== 'queue') return false;
+                if (officeSubtab === 'review' && item.category !== 'review') return false;
+                if (officeSubtab === 'pending' && item.status !== 'pending') return false;
+                if (officeSubtab === 'in-progress' && item.status !== 'in-progress') return false;
+                if (officeSubtab === 'approved' && item.status !== 'approved') return false;
+                if (officeSubtab === 'rejected' && !['rejected','revision'].includes(item.status)) return false;
+                if (officeSubtab === 'management' && item.category !== 'permit') return false;
+                if (officeSubtab === 'approved-permits' && (item.category !== 'permit' || item.status !== 'approved')) return false;
+                if (officeSubtab === 'rejected-permits' && (item.category !== 'permit' || !['rejected','revision'].includes(item.status))) return false;
+                if (officeSubtab === 'new' && (item.category !== 'submission' || item.status !== 'pending')) return false;
+                if (officeSubtab === 'tracking' && (item.category !== 'submission' || !['in-progress','approved','rejected','revision'].includes(item.status))) return false;
+                if (officeSubtab === 'history' && (item.category !== 'submission' || item.status !== 'history')) return false;
+
+                if (filter !== 'all' && item.status !== filter) return false;
+                if (search) {
+                    const match = item.title?.toLowerCase().includes(search) ||
+                                  item.description?.toLowerCase().includes(search) ||
+                                  item.assignee?.toLowerCase().includes(search) ||
+                                  item.category?.toLowerCase().includes(search);
+                    if (!match) return false;
+                }
+                return true;
+            });
+
+            items.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+
+            if (!items.length) {
+                container.innerHTML = `<div class="text-center py-12 text-slate-400"><iconify-icon icon="material-symbols:inbox" width="56" height="56" class="mx-auto mb-3 opacity-40"></iconify-icon><p class="text-sm font-medium">No items found</p><p class="text-xs">Click "New Item" to add one.</p></div>`;
+                return;
+            }
+
+            // Kanban
+            if (officeTab === 'approval') {
+                const columns = {
+                    'pending': { label: 'Pending', items: [] },
+                    'in-progress': { label: 'In Progress', items: [] },
+                    'approved': { label: 'Approved', items: [] },
+                    'rejected': { label: 'Rejected / Revision', items: [] }
+                };
+                items.forEach(item => {
+                    const status = item.status || 'pending';
+                    if (columns[status]) columns[status].items.push(item);
+                    else columns['pending'].items.push(item);
+                });
+
+                container.innerHTML = `
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                        ${Object.entries(columns).map(([key, col]) => `
+                            <div class="kanban-column">
+                                <h4>${col.label} (${col.items.length})</h4>
+                                ${col.items.map(item => `
+                                    <div class="office-card mb-2 ${getPriorityLabel(item.priority).class}">
+                                        <div class="flex justify-between items-start">
+                                            <p class="text-sm font-semibold text-slate-800">${item.title}</p>
+                                            <span class="text-xs ${getStatusBadge(item.status)} px-2 py-0.5 rounded-full">${item.status}</span>
+                                        </div>
+                                        <p class="text-xs text-slate-500 mt-1 truncate">${item.description || '—'}</p>
+                                        <div class="flex flex-wrap gap-1 mt-2 text-xs text-slate-400">
+                                            ${item.priority ? `<span>${getPriorityLabel(item.priority).icon} ${getPriorityLabel(item.priority).label}</span>` : ''}
+                                            ${item.assignee ? `<span>👤 ${item.assignee}</span>` : ''}
+                                            ${item.due_date ? `<span>📅 ${formatDate(item.due_date)}</span>` : ''}
+                                        </div>
+                                        <div class="flex items-center gap-2 mt-3 pt-2 border-t border-slate-100">
+                                            <button onclick="editOfficeItem('${item.id}')" class="text-xs text-emerald-600 hover:text-emerald-800 font-medium">Edit</button>
+                                            <button onclick="deleteOfficeItem('${item.id}')" class="text-xs text-red-500 hover:text-red-700 font-medium">Delete</button>
+                                            <select onchange="updateOfficeStatus('${item.id}', this.value)" class="text-xs border rounded-lg px-1 py-0.5 bg-white">
+                                                <option value="pending" ${item.status === 'pending' ? 'selected' : ''}>Pending</option>
+                                                <option value="in-progress" ${item.status === 'in-progress' ? 'selected' : ''}>In Progress</option>
+                                                <option value="approved" ${item.status === 'approved' ? 'selected' : ''}>Approved</option>
+                                                <option value="rejected" ${item.status === 'rejected' ? 'selected' : ''}>Rejected</option>
+                                                <option value="revision" ${item.status === 'revision' ? 'selected' : ''}>Revision</option>
+                                                <option value="history" ${item.status === 'history' ? 'selected' : ''}>Archive</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                `).join('') || `<p class="text-xs text-slate-400">Empty</p>`}
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+                return;
+            }
+
+            // List View
+            container.innerHTML = items.map(item => {
+                const siteName = sitesData.find(s => s.id === item.site_id)?.name || 'Unknown Site';
+                return `
+                    <div class="office-card mb-3 ${getPriorityLabel(item.priority).class}">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                            <div class="flex-1 min-w-0">
+                                <div class="flex items-center gap-2 flex-wrap">
+                                    <span class="text-sm font-semibold text-slate-800">${item.title}</span>
                                     <span class="text-xs ${getStatusBadge(item.status)} px-2 py-0.5 rounded-full">${item.status}</span>
+                                    ${item.priority ? `<span class="text-xs bg-slate-100 px-1.5 py-0.5 rounded">${getPriorityLabel(item.priority).icon} ${getPriorityLabel(item.priority).label}</span>` : ''}
+                                    <span class="text-xs text-slate-400">${formatDate(item.created_at)}</span>
                                 </div>
-                                <p class="text-xs text-slate-500 mt-1 truncate">${item.description || '—'}</p>
-                                <div class="flex flex-wrap gap-1 mt-2 text-xs text-slate-400">
-                                    ${item.priority ? `<span>${getPriorityLabel(item.priority).icon} ${getPriorityLabel(item.priority).label}</span>` : ''}
+                                <p class="text-sm text-slate-500 truncate mt-0.5">${item.description || 'No description'}</p>
+                                <div class="flex flex-wrap items-center gap-3 mt-1 text-xs text-slate-400">
+                                    <span>🏷️ ${item.category}</span>
+                                    <span>📍 ${siteName}</span>
                                     ${item.assignee ? `<span>👤 ${item.assignee}</span>` : ''}
-                                    ${item.due_date ? `<span>📅 ${formatDate(item.due_date)}</span>` : ''}
-                                </div>
-                                <div class="flex items-center gap-2 mt-3 pt-2 border-t border-slate-100">
-                                    <button onclick="editOfficeItem('${item.id}')" class="text-xs text-emerald-600 hover:text-emerald-800 font-medium">Edit</button>
-                                    <button onclick="deleteOfficeItem('${item.id}')" class="text-xs text-red-500 hover:text-red-700 font-medium">Delete</button>
-                                    <select onchange="updateOfficeStatus('${item.id}', this.value)" class="text-xs border rounded-lg px-1 py-0.5 bg-white">
-                                        <option value="pending" ${item.status === 'pending' ? 'selected' : ''}>Pending</option>
-                                        <option value="in-progress" ${item.status === 'in-progress' ? 'selected' : ''}>In Progress</option>
-                                        <option value="approved" ${item.status === 'approved' ? 'selected' : ''}>Approved</option>
-                                        <option value="rejected" ${item.status === 'rejected' ? 'selected' : ''}>Rejected</option>
-                                        <option value="revision" ${item.status === 'revision' ? 'selected' : ''}>Revision</option>
-                                        <option value="history" ${item.status === 'history' ? 'selected' : ''}>Archive</option>
-                                    </select>
+                                    ${item.due_date ? `<span>📅 Due: ${formatDate(item.due_date)}</span>` : ''}
+                                    ${item.file_url ? `<a href="${item.file_url}" target="_blank" class="text-emerald-600 hover:underline flex items-center gap-1"><iconify-icon icon="material-symbols:attach-file" width="14"></iconify-icon> Attachment</a>` : ''}
+                                    ${item.submitted_by ? `<span>By: ${item.submitted_by}</span>` : ''}
                                 </div>
                             </div>
-                        `).join('') || `<p class="text-xs text-slate-400">Empty</p>`}
-                    </div>
-                `).join('')}
-            </div>
-        `;
-        return;
-    }
-
-    // List View
-    container.innerHTML = items.map(item => {
-        const siteName = sitesData.find(s => s.id === item.site_id)?.name || 'Unknown Site';
-        return `
-            <div class="office-card mb-3 ${getPriorityLabel(item.priority).class}">
-                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                    <div class="flex-1 min-w-0">
-                        <div class="flex items-center gap-2 flex-wrap">
-                            <span class="text-sm font-semibold text-slate-800">${item.title}</span>
-                            <span class="text-xs ${getStatusBadge(item.status)} px-2 py-0.5 rounded-full">${item.status}</span>
-                            ${item.priority ? `<span class="text-xs bg-slate-100 px-1.5 py-0.5 rounded">${getPriorityLabel(item.priority).icon} ${getPriorityLabel(item.priority).label}</span>` : ''}
-                            <span class="text-xs text-slate-400">${formatDate(item.created_at)}</span>
-                        </div>
-                        <p class="text-sm text-slate-500 truncate mt-0.5">${item.description || 'No description'}</p>
-                        <div class="flex flex-wrap items-center gap-3 mt-1 text-xs text-slate-400">
-                            <span>🏷️ ${item.category}</span>
-                            <span>📍 ${siteName}</span>
-                            ${item.assignee ? `<span>👤 ${item.assignee}</span>` : ''}
-                            ${item.due_date ? `<span>📅 Due: ${formatDate(item.due_date)}</span>` : ''}
-                            ${item.file_url ? `<a href="${item.file_url}" target="_blank" class="text-emerald-600 hover:underline flex items-center gap-1"><iconify-icon icon="material-symbols:attach-file" width="14"></iconify-icon> Attachment</a>` : ''}
-                            ${item.submitted_by ? `<span>By: ${item.submitted_by}</span>` : ''}
+                            <div class="flex items-center gap-2 flex-shrink-0">
+                                <button onclick="editOfficeItem('${item.id}')" class="text-xs text-emerald-600 hover:text-emerald-800 font-medium px-2 py-1 bg-emerald-50 rounded-lg transition">Edit</button>
+                                <button onclick="deleteOfficeItem('${item.id}')" class="text-xs text-red-500 hover:text-red-700 font-medium px-2 py-1 bg-red-50 rounded-lg transition">Delete</button>
+                                <select onchange="updateOfficeStatus('${item.id}', this.value)" class="text-xs border rounded-lg px-2 py-1 bg-white">
+                                    <option value="pending" ${item.status === 'pending' ? 'selected' : ''}>Pending</option>
+                                    <option value="in-progress" ${item.status === 'in-progress' ? 'selected' : ''}>In Progress</option>
+                                    <option value="approved" ${item.status === 'approved' ? 'selected' : ''}>Approved</option>
+                                    <option value="rejected" ${item.status === 'rejected' ? 'selected' : ''}>Rejected</option>
+                                    <option value="revision" ${item.status === 'revision' ? 'selected' : ''}>Revision</option>
+                                    <option value="history" ${item.status === 'history' ? 'selected' : ''}>Archive</option>
+                                </select>
+                            </div>
                         </div>
                     </div>
-                    <div class="flex items-center gap-2 flex-shrink-0">
-                        <button onclick="editOfficeItem('${item.id}')" class="text-xs text-emerald-600 hover:text-emerald-800 font-medium px-2 py-1 bg-emerald-50 rounded-lg transition">Edit</button>
-                        <button onclick="deleteOfficeItem('${item.id}')" class="text-xs text-red-500 hover:text-red-700 font-medium px-2 py-1 bg-red-50 rounded-lg transition">Delete</button>
-                        <select onchange="updateOfficeStatus('${item.id}', this.value)" class="text-xs border rounded-lg px-2 py-1 bg-white">
-                            <option value="pending" ${item.status === 'pending' ? 'selected' : ''}>Pending</option>
-                            <option value="in-progress" ${item.status === 'in-progress' ? 'selected' : ''}>In Progress</option>
-                            <option value="approved" ${item.status === 'approved' ? 'selected' : ''}>Approved</option>
-                            <option value="rejected" ${item.status === 'rejected' ? 'selected' : ''}>Rejected</option>
-                            <option value="revision" ${item.status === 'revision' ? 'selected' : ''}>Revision</option>
-                            <option value="history" ${item.status === 'history' ? 'selected' : ''}>Archive</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-        `;
-    }).join('');
-}
-
-// ── Status Update ──
-window.updateOfficeStatus = async (id, status) => {
-    try {
-        await updateDoc(doc(db, 'office_items', id), {
-            status: status,
-            updated_at: new Date().toISOString()
-        });
-        showToast('Status updated', 'success');
-    } catch (err) {
-        showToast('Error: ' + err.message, 'error');
-    }
-};
-
-// ── Delete ──
-window.deleteOfficeItem = async (id) => {
-    if (!confirm('Delete this item permanently?')) return;
-    try {
-        await deleteDoc(doc(db, 'office_items', id));
-        showToast('Item deleted', 'success');
-    } catch (err) {
-        showToast('Error: ' + err.message, 'error');
-    }
-};
-
-// ── Open Add/Edit Modal ──
-window.openOfficeAddModal = (editData = null) => {
-    const isEdit = !!editData;
-    const categories = getCategoriesForTab(officeTab === 'dashboard' ? 'design' : officeTab);
-
-    const modalContent = `
-        <form onsubmit="handleOfficeSave(event, '${editData?.id || ''}')" class="space-y-4">
-            <div>
-                <label class="block text-sm font-medium text-slate-700 mb-1">Title *</label>
-                <input type="text" id="office-title" value="${editData?.title || ''}" required class="w-full border rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-transparent">
-            </div>
-            <div>
-                <label class="block text-sm font-medium text-slate-700 mb-1">Description</label>
-                <textarea id="office-description" rows="3" class="w-full border rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-transparent">${editData?.description || ''}</textarea>
-            </div>
-            <div>
-                <label class="block text-sm font-medium text-slate-700 mb-1">Site *</label>
-                <select id="office-site" required class="w-full border rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-transparent">
-                    ${sitesData.map(s => `<option value="${s.id}" ${editData?.site_id === s.id ? 'selected' : ''}>${s.name}</option>`).join('')}
-                </select>
-            </div>
-            <div>
-                <label class="block text-sm font-medium text-slate-700 mb-1">Category *</label>
-                <select id="office-category" required class="w-full border rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-transparent">
-                    <option value="">Select category</option>
-                    ${categories.map(c => `<option value="${c.value}" ${editData?.category === c.value ? 'selected' : ''}>${c.label}</option>`).join('')}
-                </select>
-            </div>
-            <div>
-                <label class="block text-sm font-medium text-slate-700 mb-1">Status</label>
-                <select id="office-status" class="w-full border rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-transparent">
-                    <option value="pending" ${editData?.status === 'pending' ? 'selected' : ''}>Pending</option>
-                    <option value="in-progress" ${editData?.status === 'in-progress' ? 'selected' : ''}>In Progress</option>
-                    <option value="approved" ${editData?.status === 'approved' ? 'selected' : ''}>Approved</option>
-                    <option value="rejected" ${editData?.status === 'rejected' ? 'selected' : ''}>Rejected</option>
-                    <option value="revision" ${editData?.status === 'revision' ? 'selected' : ''}>Revision Required</option>
-                    <option value="history" ${editData?.status === 'history' ? 'selected' : ''}>Archive</option>
-                </select>
-            </div>
-            <div>
-                <label class="block text-sm font-medium text-slate-700 mb-1">Priority</label>
-                <select id="office-priority" class="w-full border rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-transparent">
-                    <option value="">None</option>
-                    <option value="high" ${editData?.priority === 'high' ? 'selected' : ''}>🔴 High</option>
-                    <option value="medium" ${editData?.priority === 'medium' ? 'selected' : ''}>🟡 Medium</option>
-                    <option value="low" ${editData?.priority === 'low' ? 'selected' : ''}>🟢 Low</option>
-                </select>
-            </div>
-            <div>
-                <label class="block text-sm font-medium text-slate-700 mb-1">Due Date</label>
-                <input type="date" id="office-due-date" value="${editData?.due_date ? new Date(editData.due_date).toISOString().split('T')[0] : ''}" class="w-full border rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-transparent">
-            </div>
-            <div>
-                <label class="block text-sm font-medium text-slate-700 mb-1">Assignee</label>
-                <input type="text" id="office-assignee" value="${editData?.assignee || ''}" placeholder="e.g. John Doe" class="w-full border rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-transparent">
-            </div>
-            <div>
-                <label class="block text-sm font-medium text-slate-700 mb-1">File Attachment (optional)</label>
-                <input type="file" id="office-file" accept=".pdf,.doc,.docx,.xls,.xlsx,.png,.jpg,.jpeg" class="w-full text-sm">
-                ${editData?.file_url ? `<p class="text-xs text-emerald-600 mt-1">Current: <a href="${editData.file_url}" target="_blank" class="underline">View File</a></p>` : ''}
-            </div>
-            <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-3 rounded-xl transition shadow-md hover:shadow-lg">${isEdit ? 'Update' : 'Create'} Item</button>
-        </form>
-    `;
-    openModal(isEdit ? 'Edit Office Item' : 'New Office Item', modalContent);
-};
-
-// ── Save ──
-window.handleOfficeSave = async (e, id) => {
-    e.preventDefault();
-    const btn = e.target.querySelector('button[type="submit"]');
-    setButtonLoading(btn, true);
-
-    try {
-        const title = document.getElementById('office-title').value.trim();
-        const description = document.getElementById('office-description').value.trim();
-        const site_id = document.getElementById('office-site').value;
-        const category = document.getElementById('office-category').value;
-        const status = document.getElementById('office-status').value;
-        const priority = document.getElementById('office-priority').value;
-        const due_date = document.getElementById('office-due-date').value;
-        const assignee = document.getElementById('office-assignee').value.trim();
-        const fileInput = document.getElementById('office-file');
-        const isEdit = !!id;
-
-        if (!title || !category || !site_id) {
-            alert('Title, Site, and Category are required.');
-            setButtonLoading(btn, false);
-            return;
+                `;
+            }).join('');
         }
 
-        let file_url = '';
-        if (fileInput.files.length > 0) {
-            file_url = await uploadImageToImgbb(fileInput.files[0]);
-        } else if (isEdit) {
-            const existing = officeItems.find(i => i.id === id);
-            file_url = existing?.file_url || '';
-        }
-
-        const data = {
-            site_id,
-            title,
-            description,
-            category,
-            status,
-            priority,
-            due_date: due_date || null,
-            assignee: assignee || null,
-            file_url,
-            updated_at: new Date().toISOString()
+        // ── Status Update ──
+        window.updateOfficeStatus = async (id, status) => {
+            try {
+                await updateDoc(doc(db, 'office_items', id), {
+                    status: status,
+                    updated_at: new Date().toISOString()
+                });
+                showToast('Status updated', 'success');
+            } catch (err) {
+                showToast('Error: ' + err.message, 'error');
+            }
         };
 
-        if (isEdit) {
-            await updateDoc(doc(db, 'office_items', id), data);
-        } else {
-            data.created_at = new Date().toISOString();
-            data.submitted_by = currentUser.displayName || currentUser.email || 'Owner';
-            await addDoc(collection(db, 'office_items'), data);
-        }
+        // ── Delete ──
+        window.deleteOfficeItem = async (id) => {
+            if (!confirm('Delete this item permanently?')) return;
+            try {
+                await deleteDoc(doc(db, 'office_items', id));
+                showToast('Item deleted', 'success');
+            } catch (err) {
+                showToast('Error: ' + err.message, 'error');
+            }
+        };
 
-        closeModal();
-        showToast(isEdit ? 'Item updated' : 'Item created', 'success');
-    } catch (err) {
-        showToast('Error: ' + err.message, 'error');
-    } finally {
-        setButtonLoading(btn, false);
-    }
-};
+        // ── Open Add/Edit Modal ──
+        window.openOfficeAddModal = (editData = null) => {
+            const isEdit = !!editData;
+            const categories = getCategoriesForTab(officeTab === 'dashboard' ? 'design' : officeTab);
 
-// ── Edit ──
-window.editOfficeItem = (id) => {
-    const item = officeItems.find(i => i.id === id);
-    if (!item) return;
-    const tabMap = {
-        'architectural': 'design',
-        'structural': 'design',
-        'mep': 'design',
-        'estimation': 'financial',
-        'budget': 'financial',
-        'certification': 'workflow',
-        'queue': 'workflow',
-        'review': 'workflow',
-        'approval': 'approval',
-        'permit': 'permit',
-        'submission': 'submission'
-    };
-    const targetTab = tabMap[item.category] || 'design';
-    if (officeTab !== targetTab && officeTab !== 'dashboard') {
-        officeTab = targetTab;
-        officeSubtab = getDefaultSubtab(targetTab);
-        document.getElementById('office-content').innerHTML = renderOfficeContent();
-        loadOfficeItems();
-        setTimeout(() => openOfficeAddModal(item), 100);
-    } else {
-        openOfficeAddModal(item);
-    }
-    // ── Block Office Hub navigation ──
-const originalShowSection = window.showSection;
-window.showSection = function(section) {
-    if (section === 'office') {
-        showToast('🏗️ Office Hub is coming soon. Stay tuned!', 'info');
-        return; // Do nothing – stay on current page
-    }
-    originalShowSection(section);
-};
-};
+            const modalContent = `
+                <form onsubmit="handleOfficeSave(event, '${editData?.id || ''}')" class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Title *</label>
+                        <input type="text" id="office-title" value="${editData?.title || ''}" required class="w-full border rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-transparent">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Description</label>
+                        <textarea id="office-description" rows="3" class="w-full border rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-transparent">${editData?.description || ''}</textarea>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Site *</label>
+                        <select id="office-site" required class="w-full border rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-transparent">
+                            ${sitesData.map(s => `<option value="${s.id}" ${editData?.site_id === s.id ? 'selected' : ''}>${s.name}</option>`).join('')}
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Category *</label>
+                        <select id="office-category" required class="w-full border rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-transparent">
+                            <option value="">Select category</option>
+                            ${categories.map(c => `<option value="${c.value}" ${editData?.category === c.value ? 'selected' : ''}>${c.label}</option>`).join('')}
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Status</label>
+                        <select id="office-status" class="w-full border rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-transparent">
+                            <option value="pending" ${editData?.status === 'pending' ? 'selected' : ''}>Pending</option>
+                            <option value="in-progress" ${editData?.status === 'in-progress' ? 'selected' : ''}>In Progress</option>
+                            <option value="approved" ${editData?.status === 'approved' ? 'selected' : ''}>Approved</option>
+                            <option value="rejected" ${editData?.status === 'rejected' ? 'selected' : ''}>Rejected</option>
+                            <option value="revision" ${editData?.status === 'revision' ? 'selected' : ''}>Revision Required</option>
+                            <option value="history" ${editData?.status === 'history' ? 'selected' : ''}>Archive</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Priority</label>
+                        <select id="office-priority" class="w-full border rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-transparent">
+                            <option value="">None</option>
+                            <option value="high" ${editData?.priority === 'high' ? 'selected' : ''}>🔴 High</option>
+                            <option value="medium" ${editData?.priority === 'medium' ? 'selected' : ''}>🟡 Medium</option>
+                            <option value="low" ${editData?.priority === 'low' ? 'selected' : ''}>🟢 Low</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Due Date</label>
+                        <input type="date" id="office-due-date" value="${editData?.due_date ? new Date(editData.due_date).toISOString().split('T')[0] : ''}" class="w-full border rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-transparent">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Assignee</label>
+                        <input type="text" id="office-assignee" value="${editData?.assignee || ''}" placeholder="e.g. John Doe" class="w-full border rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-transparent">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">File Attachment (optional)</label>
+                        <input type="file" id="office-file" accept=".pdf,.doc,.docx,.xls,.xlsx,.png,.jpg,.jpeg" class="w-full text-sm">
+                        ${editData?.file_url ? `<p class="text-xs text-emerald-600 mt-1">Current: <a href="${editData.file_url}" target="_blank" class="underline">View File</a></p>` : ''}
+                    </div>
+                    <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-3 rounded-xl transition shadow-md hover:shadow-lg">${isEdit ? 'Update' : 'Create'} Item</button>
+                </form>
+            `;
+            openModal(isEdit ? 'Edit Office Item' : 'New Office Item', modalContent);
+        };
+
+        // ── Save ──
+        window.handleOfficeSave = async (e, id) => {
+            e.preventDefault();
+            const btn = e.target.querySelector('button[type="submit"]');
+            setButtonLoading(btn, true);
+
+            try {
+                const title = document.getElementById('office-title').value.trim();
+                const description = document.getElementById('office-description').value.trim();
+                const site_id = document.getElementById('office-site').value;
+                const category = document.getElementById('office-category').value;
+                const status = document.getElementById('office-status').value;
+                const priority = document.getElementById('office-priority').value;
+                const due_date = document.getElementById('office-due-date').value;
+                const assignee = document.getElementById('office-assignee').value.trim();
+                const fileInput = document.getElementById('office-file');
+                const isEdit = !!id;
+
+                if (!title || !category || !site_id) {
+                    alert('Title, Site, and Category are required.');
+                    setButtonLoading(btn, false);
+                    return;
+                }
+
+                let file_url = '';
+                if (fileInput.files.length > 0) {
+                    file_url = await uploadImageToImgbb(fileInput.files[0]);
+                } else if (isEdit) {
+                    const existing = officeItems.find(i => i.id === id);
+                    file_url = existing?.file_url || '';
+                }
+
+                const data = {
+                    site_id,
+                    title,
+                    description,
+                    category,
+                    status,
+                    priority,
+                    due_date: due_date || null,
+                    assignee: assignee || null,
+                    file_url,
+                    updated_at: new Date().toISOString()
+                };
+
+                if (isEdit) {
+                    await updateDoc(doc(db, 'office_items', id), data);
+                } else {
+                    data.created_at = new Date().toISOString();
+                    data.submitted_by = currentUser.displayName || currentUser.email || 'Owner';
+                    await addDoc(collection(db, 'office_items'), data);
+                }
+
+                closeModal();
+                showToast(isEdit ? 'Item updated' : 'Item created', 'success');
+            } catch (err) {
+                showToast('Error: ' + err.message, 'error');
+            } finally {
+                setButtonLoading(btn, false);
+            }
+        };
+
+        // ── Edit ──
+        window.editOfficeItem = (id) => {
+            const item = officeItems.find(i => i.id === id);
+            if (!item) return;
+            const tabMap = {
+                'architectural': 'design',
+                'structural': 'design',
+                'mep': 'design',
+                'estimation': 'financial',
+                'budget': 'financial',
+                'certification': 'workflow',
+                'queue': 'workflow',
+                'review': 'workflow',
+                'approval': 'approval',
+                'permit': 'permit',
+                'submission': 'submission'
+            };
+            const targetTab = tabMap[item.category] || 'design';
+            if (officeTab !== targetTab && officeTab !== 'dashboard') {
+                officeTab = targetTab;
+                officeSubtab = getDefaultSubtab(targetTab);
+                document.getElementById('office-content').innerHTML = renderOfficeContent();
+                loadOfficeItems();
+                setTimeout(() => openOfficeAddModal(item), 100);
+            } else {
+                openOfficeAddModal(item);
+            }
+        };
+
+        // ── Block Office Hub navigation ──
+        // This must be placed outside any function, at the top level.
+        // We'll override showSection to block office access.
+        const originalShowSection = window.showSection;
+        window.showSection = function(section) {
+            if (section === 'office') {
+                showToast('🏗️ Office Hub is coming soon. Stay tuned!', 'info');
+                // Stay on current page – do nothing
+                return;
+            }
+            originalShowSection(section);
+        };
 
         // ============================================================
         // ─── SETTINGS MODULE (NEW) ──────────────────────────────────
@@ -3762,9 +3760,18 @@ window.showSection = function(section) {
             window.location.href = 'https://shdr-construction.vercel.app/index.html';
         };
 
-        const originalShowSection = window.showSection;
-        window.showSection = (section) => {
-            originalShowSection(section);
+        // The original showSection was already overridden above for office blocking.
+        // Keep the existing override for reports.
+        // We'll add the reports tab update separately.
+        const originalShowSection2 = window.showSection;
+        window.showSection = function(section) {
+            // If it's office, block it (already handled above, but this ensures it stays)
+            if (section === 'office') {
+                showToast('🏗️ Office Hub is coming soon. Stay tuned!', 'info');
+                return;
+            }
+            // Otherwise call the original (which might be the one we defined earlier)
+            originalShowSection2(section);
             if (section === 'reports' && reportType === 'payroll') {
                 setTimeout(updatePayrollReport, 100);
             }
