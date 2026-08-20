@@ -2623,7 +2623,10 @@ window.exportGeneralReport = (format) => {
 
 
 
-        // =============== OFFICE MANAGEMENT HUB ===============
+       // =============== OFFICE MANAGEMENT HUB ===============
+// ── Toggle: true = fully functional, false = coming soon ──
+const OFFICE_HUB_ENABLED = false;  // Change to true to enable the full hub
+
 // ── State ──
 let officeTab = 'dashboard';
 let officeSubtab = 'documents';
@@ -2712,14 +2715,14 @@ function getCategoriesForTab(tab) {
 
 function getStatusBadge(status) {
     const map = {
-        'pending': 'status-pending',
-        'in-progress': 'status-in-progress',
-        'approved': 'status-approved',
-        'rejected': 'status-rejected',
-        'revision': 'status-revision',
-        'history': 'status-history'
+        'pending': 'bg-amber-100 text-amber-700',
+        'in-progress': 'bg-blue-100 text-blue-700',
+        'approved': 'bg-emerald-100 text-emerald-700',
+        'rejected': 'bg-red-100 text-red-700',
+        'revision': 'bg-orange-100 text-orange-700',
+        'history': 'bg-slate-100 text-slate-500'
     };
-    return map[status] || 'status-pending';
+    return map[status] || 'bg-slate-100 text-slate-500';
 }
 
 function getPriorityLabel(priority) {
@@ -2731,8 +2734,56 @@ function getPriorityLabel(priority) {
     return map[priority] || { label: 'None', icon: '⚪', class: '' };
 }
 
-// ── Main Render ──
+// ── Main render ──
 function renderOfficeHub(container) {
+    if (OFFICE_HUB_ENABLED) {
+        renderFullOfficeHub(container);
+    } else {
+        renderComingSoon(container);
+    }
+}
+
+// ── Coming Soon Page ──
+function renderComingSoon(container) {
+    container.innerHTML = `
+        <div class="max-w-3xl mx-auto py-12 px-4">
+            <div class="bg-white rounded-3xl border border-slate-200 shadow-xl overflow-hidden">
+                <div class="h-2 bg-gradient-to-r from-emerald-400 via-emerald-500 to-emerald-600"></div>
+                <div class="p-8 sm:p-12 text-center">
+                    <div class="w-24 h-24 bg-emerald-50 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <iconify-icon icon="material-symbols:business-center" width="48" height="48" class="text-emerald-600"></iconify-icon>
+                    </div>
+                    <h2 class="text-3xl sm:text-4xl font-bold text-slate-900 mb-3">Office Hub</h2>
+                    <span class="inline-flex items-center gap-2 px-4 py-1.5 bg-amber-50 border border-amber-200 rounded-full text-sm font-medium text-amber-700 mb-6">
+                        <span class="w-2 h-2 bg-amber-500 rounded-full animate-pulse"></span>
+                        Under Development
+                    </span>
+                    <p class="text-slate-600 text-base sm:text-lg max-w-lg mx-auto leading-relaxed">
+                        This feature is currently <strong>under development</strong> and will be available soon.
+                    </p>
+                    <p class="text-slate-500 text-sm mt-3 max-w-md mx-auto leading-relaxed">
+                        We're working to bring you powerful tools for managing your office operations more efficiently.
+                    </p>
+                    <div class="mt-8 bg-emerald-50 rounded-2xl p-6 border border-emerald-100 max-w-sm mx-auto">
+                        <p class="text-emerald-700 font-semibold text-lg flex items-center justify-center gap-2">
+                            <iconify-icon icon="material-symbols:construction" width="24" class="text-emerald-600"></iconify-icon>
+                            Coming Soon
+                            <iconify-icon icon="material-symbols:rocket-launch" width="24" class="text-emerald-600"></iconify-icon>
+                        </p>
+                        <p class="text-emerald-600 text-sm mt-1">Q4 2026</p>
+                    </div>
+                    <button onclick="showSection('dashboard')" class="mt-8 inline-flex items-center gap-2 px-6 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium rounded-xl transition">
+                        <iconify-icon icon="material-symbols:arrow-back" width="18"></iconify-icon>
+                        Back to Dashboard
+                    </button>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+// ── Full Office Hub (Fully Functional) ──
+function renderFullOfficeHub(container) {
     container.innerHTML = `
         <div class="max-w-7xl mx-auto">
             <!-- Gradient Header -->
@@ -2785,7 +2836,6 @@ function renderOfficeHub(container) {
 function renderOfficeDashboard() {
     return `
         <div class="space-y-6">
-            <!-- Stats -->
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div class="glass-stat">
                     <p class="stat-label">Total Items</p>
@@ -2804,8 +2854,6 @@ function renderOfficeDashboard() {
                     <p class="stat-number text-red-600" id="dash-rejected">0</p>
                 </div>
             </div>
-
-            <!-- Recent Activity -->
             <div class="bg-white rounded-2xl border border-slate-200/60 shadow-sm p-5">
                 <h3 class="font-semibold text-slate-700 flex items-center gap-2 mb-3">
                     <iconify-icon icon="material-symbols:history" width="20" class="text-emerald-600"></iconify-icon>
@@ -2815,8 +2863,6 @@ function renderOfficeDashboard() {
                     <div class="text-slate-400 text-sm">Loading activity...</div>
                 </div>
             </div>
-
-            <!-- Category Stats -->
             <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
                 ${['design','financial','workflow','approval','permit','submission'].map(cat => {
                     const map = {
@@ -2901,7 +2947,6 @@ function renderOfficeContent() {
     const subtabs = getSubtabs(officeTab);
     return `
         <div class="bg-white rounded-2xl border border-slate-200/60 shadow-sm overflow-hidden">
-            <!-- Sub-tabs -->
             <div class="flex flex-wrap items-center gap-1 p-3 border-b border-slate-200/60 bg-slate-50/50">
                 ${subtabs.map(st => `
                     <button onclick="switchOfficeSubtab('${st.id}')" 
@@ -2923,8 +2968,6 @@ function renderOfficeContent() {
                     <input type="text" id="office-search-input" placeholder="Search..." oninput="officeSearch = this.value; renderOfficeItems()" class="office-filter w-40">
                 </div>
             </div>
-
-            <!-- Items -->
             <div id="office-items-container" class="p-4">
                 <div class="flex justify-center py-8"><div class="spinner"></div></div>
             </div>
@@ -2973,7 +3016,6 @@ function renderOfficeItems() {
         const categories = categoryMap[officeTab] || [];
         if (!categories.includes(item.category)) return false;
 
-        // Subtab filters
         if (officeSubtab === 'documents' && item.category !== 'architectural') return false;
         if (officeSubtab === 'structural' && item.category !== 'structural') return false;
         if (officeSubtab === 'mep' && item.category !== 'mep') return false;
@@ -3011,7 +3053,7 @@ function renderOfficeItems() {
         return;
     }
 
-    // ── Kanban (Approval Tab) ──
+    // Kanban
     if (officeTab === 'approval') {
         const columns = {
             'pending': { label: 'Pending', items: [] },
@@ -3063,7 +3105,7 @@ function renderOfficeItems() {
         return;
     }
 
-    // ── List View ──
+    // List View
     container.innerHTML = items.map(item => {
         const siteName = sitesData.find(s => s.id === item.site_id)?.name || 'Unknown Site';
         return `
