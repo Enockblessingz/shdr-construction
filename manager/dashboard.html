@@ -13,48 +13,14 @@
     <link rel="manifest" href="manifest.json">
     <title>SHDR Ltd. — Manager Dashboard</title>
 
-    <!-- Tailwind CSS CDN -->
+    <!-- Tailwind CSS CDN --> 
     <script src="https://cdn.tailwindcss.com/3.4.17"></script>
     <!-- Google Font -->
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <!-- Iconify -->
     <script src="https://cdn.jsdelivr.net/npm/iconify-icon@2.3.0/dist/iconify-icon.min.js"></script>
 
-
     <style>
-        /* ── Language Switcher Styles (Added) ── */
-        .language-switcher {
-            display: flex;
-            align-items: center;
-            background-color: rgba(30, 86, 160, 0.1);
-            border: 1px solid rgba(30, 86, 160, 0.2);
-            border-radius: 50px;
-            padding: 4px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-        }
-        .lang-btn {
-            background: transparent;
-            border: 2px solid transparent;
-            color: #64748b;
-            font-size: 14px;
-            font-weight: 700;
-            padding: 6px 16px;
-            border-radius: 50px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            outline: none;
-        }
-        .lang-btn:hover { background: rgba(30, 86, 160, 0.1); }
-        .lang-btn:focus-visible { outline: 2px solid #1e56a0; outline-offset: 2px; }
-        .lang-btn.active {
-            background: #ffffff;
-            color: #1e56a0;
-            border-color: #1e56a0;
-            box-shadow: 0 2px 6px rgba(30, 86, 160, 0.2);
-        }
-        @media (max-width: 640px) { .lang-btn { font-size: 12px; padding: 4px 10px; } }
-
-        /* ── Original Styles ── */
         * { font-family: 'Plus Jakarta Sans', sans-serif; }
         body { background: #f8fafc; }
         .sidebar-link.active { background: #ecfdf5; color: #059669; border-left: 3px solid #059669; }
@@ -84,6 +50,7 @@
         @keyframes spin { to { transform: rotate(360deg); } }
         .role-option:hover { background: #ecfdf5; }
 
+        /* Bottom navigation – mobile only */
         .bottom-nav {
             display: none;
             position: fixed;
@@ -137,16 +104,57 @@
         .stock-status-low { background: #fef9c3; color: #854d0e; }
         .stock-status-out { background: #fee2e2; color: #991b1b; }
 
-        .settings-tab-btn { transition: all 0.2s; }
+        /* ── Language Switcher Styles ── */
+        .language-switcher {
+            display: flex;
+            align-items: center;
+            background-color: rgba(30, 86, 160, 0.1);
+            border: 1px solid rgba(30, 86, 160, 0.2);
+            border-radius: 50px;
+            padding: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .lang-btn {
+            background: transparent;
+            border: 2px solid transparent;
+            color: #64748b;
+            font-size: 14px;
+            font-weight: 700;
+            padding: 6px 16px;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+        .lang-btn:hover { background: rgba(30, 86, 160, 0.1); }
+        .lang-btn:focus-visible { outline: 2px solid #1e56a0; outline-offset: 2px; }
+        .lang-btn.active { background: #ffffff; color: #1e56a0; border-color: #1e56a0; box-shadow: 0 2px 6px rgba(30, 86, 160, 0.2); }
+        @media (max-width: 640px) { .lang-btn { font-size: 12px; padding: 4px 10px; } }
+
+        /* ── Settings specific ── */
+        .settings-tab-btn {
+            transition: all 0.2s;
+        }
         .settings-tab-btn.active {
             background: #059669;
             color: white;
             box-shadow: 0 4px 10px rgba(5, 150, 105, 0.2);
         }
-        .settings-tab-btn:not(.active):hover { background: #f1f5f9; }
-        .settings-section { display: none; }
-        .settings-section.active { display: block; }
-        .profile-avatar-wrapper { position: relative; width: 120px; height: 120px; margin: 0 auto; }
+        .settings-tab-btn:not(.active):hover {
+            background: #f1f5f9;
+        }
+        .settings-section {
+            display: none;
+        }
+        .settings-section.active {
+            display: block;
+        }
+        .profile-avatar-wrapper {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            margin: 0 auto;
+        }
         .profile-avatar-wrapper img {
             width: 100%;
             height: 100%;
@@ -192,7 +200,9 @@
             align-items: center;
             gap: 0.5rem;
         }
-        .settings-card .field-group { margin-bottom: 1.25rem; }
+        .settings-card .field-group {
+            margin-bottom: 1.25rem;
+        }
         .settings-card label {
             display: block;
             font-size: 0.85rem;
@@ -231,8 +241,13 @@
             cursor: pointer;
             transition: 0.2s;
         }
-        .settings-card .save-btn:hover { background: #047857; }
-        .settings-card .save-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+        .settings-card .save-btn:hover {
+            background: #047857;
+        }
+        .settings-card .save-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
         .settings-card .remove-photo-btn {
             color: #ef4444;
             font-size: 0.85rem;
@@ -242,8 +257,13 @@
             border: none;
             padding: 0.2rem 0.5rem;
         }
-        .settings-card .remove-photo-btn:hover { color: #dc2626; text-decoration: underline; }
-        @media (max-width: 640px) { .settings-card { padding: 1rem; } }
+        .settings-card .remove-photo-btn:hover {
+            color: #dc2626;
+            text-decoration: underline;
+        }
+        @media (max-width: 640px) {
+            .settings-card { padding: 1rem; }
+        }
         .toast {
             position: fixed;
             bottom: 24px;
@@ -268,9 +288,15 @@
             transform: translateY(0);
             opacity: 1;
         }
-        .toast.success { border-left: 4px solid #059669; }
-        .toast.error { border-left: 4px solid #ef4444; }
-        .toast.info { border-left: 4px solid #3b82f6; }
+        .toast.success {
+            border-left: 4px solid #059669;
+        }
+        .toast.error {
+            border-left: 4px solid #ef4444;
+        }
+        .toast.info {
+            border-left: 4px solid #3b82f6;
+        }
     </style>
 </head>
 <body class="min-h-screen flex">
@@ -315,7 +341,6 @@
         <a href="#" onclick="showSection('gallery')" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg text-slate-600 hover:bg-slate-50 transition-colors" data-section="gallery">
             <iconify-icon icon="material-symbols:photo-library-outline" width="20" height="20"></iconify-icon> <span data-i18n="navigation.gallery">Gallery</span>
         </a>
-        <!-- Settings -->
         <a href="#" onclick="showSection('settings')" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg text-slate-600 hover:bg-slate-50 transition-colors" data-section="settings">
             <iconify-icon icon="material-symbols:settings-outline" width="20" height="20"></iconify-icon> <span data-i18n="navigation.settings">Settings</span>
         </a>
@@ -348,7 +373,6 @@
             <select id="site-selector" class="hidden border rounded-lg p-1 text-sm bg-slate-50" onchange="switchSite(this.value)"></select>
         </div>
         <div class="flex items-center gap-3">
-            <span class="text-xs text-slate-500" data-i18n="navigation.managerPanel">Manager</span>
             <div class="language-switcher" role="group" aria-label="Language Selection">
                 <button class="lang-btn" data-language="en" aria-label="English" aria-pressed="true">EN</button>
                 <button class="lang-btn" data-language="rw" aria-label="Kinyarwanda" aria-pressed="false">RW</button>
@@ -383,7 +407,7 @@
     <div class="bottom-nav" id="bottom-nav">
         <a href="#" onclick="showSection('dashboard')" class="active" data-section="dashboard">
             <iconify-icon icon="material-symbols:dashboard-outline"></iconify-icon>
-            <span data-i18n="navigation.home">Home</span>
+            <span data-i18n="navigation.dashboard">Home</span>
         </a>
         <a href="#" onclick="showSection('materials')" data-section="materials">
             <iconify-icon icon="material-symbols:package-2-outline"></iconify-icon>
@@ -401,7 +425,6 @@
             <iconify-icon icon="material-symbols:photo-library-outline"></iconify-icon>
             <span data-i18n="navigation.gallery">Gallery</span>
         </a>
-        <!-- Settings -->
         <a href="#" onclick="showSection('settings')" data-section="settings">
             <iconify-icon icon="material-symbols:settings-outline"></iconify-icon>
             <span data-i18n="navigation.settings">Settings</span>
@@ -424,68 +447,214 @@
 
     <script type="module">
         // =================================================================
-        // 1. CENTRAL I18N SYSTEM (Added)
+        // 1. CENTRAL I18N SYSTEM
         // =================================================================
         const translations = {
             en: {
-                common: { comingSoon: "Coming Soon", save: "Save", cancel: "Cancel", add: "Add", delete: "Delete", edit: "Edit", close: "Close", export: "Export", loading: "Loading...", error: "Error", search: "Search", view: "View", areYouSure: "Are you sure?", cannotUndo: "This action cannot be undone", savedSuccessfully: "Saved successfully", updatedSuccessfully: "Updated successfully", deletedSuccessfully: "Deleted successfully", somethingWentWrong: "Something went wrong", requiredField: "Required field", invalidValue: "Invalid value", noDataAvailable: "No data available", accessDenied: "Access denied", subscriptionRequired: "Subscription required", sessionExpired: "Session expired", confirmDelete: "Confirm Delete" },
-                navigation: { dashboard: "Dashboard", sites: "Sites", materials: "Materials", stock: "Stock", workers: "Workers", progress: "Progress", reports: "Reports", finances: "Finances", managers: "Managers", gallery: "Gallery", officeHub: "Office Hub", settings: "Settings", notifications: "Notifications", logout: "Sign Out", ownerPanel: "Owner's Panel", managerPanel: "Manager's Panel", home: "Home" },
-                dashboard: { title: "Dashboard", totalSites: "Total Sites", activeSites: "Active Sites", completedSites: "Completed Sites", totalWorkers: "Total Workers", totalMaterials: "Total Materials", stockValue: "Stock Value", totalExpenses: "Total Expenses", recentActivity: "Recent Activity", quickActions: "Quick Actions", viewDetails: "View Details", welcome: "Welcome back, {name}", overview: "Here's your construction site overview", noSites: "No sites", noWorkers: "No workers assigned", noData: "No data", spentOnMaterials: "Spent on Materials", recentProgress: "Recent Progress", selectSite: "Select a site", completedTasks: "Completed Tasks", endDate: "End" },
-                sites: { title: "Your Sites", addSite: "Add Site", editSite: "Edit Site", siteName: "Site Name", location: "Location", client: "Client", startDate: "Start Date", endDate: "End Date", budget: "Budget", status: "Status", active: "Active", completed: "Completed", upcoming: "Upcoming", markFinished: "Mark Finished", noSites: "No sites yet", district: "District", sector: "Sector", saveSite: "Save Site", deleteSite: "Delete Site", edit: "Edit", delete: "Delete" },
-                materials: { title: "Materials", materialUsage: "Material Usage", inventory: "Inventory", stock: "Stock", addMaterial: "Add Material", editMaterial: "Edit Material", materialName: "Material Name", unit: "Unit", quantity: "Quantity", unitCost: "Unit Cost", totalAmount: "Total Amount", availableStock: "Available Stock", stockDeduction: "Stock Deduction", notes: "Notes", usageDate: "Usage Date", enterQuantity: "Enter Quantity", name: "Name", cost: "Cost", noMaterials: "No materials recorded for this site.", quantityUsed: "Quantity Used", edit: "Edit", delete: "Delete", update: "Update", recordUsage: "Record Usage", usedOn: "Used on", dateUsed: "Date Used" },
-                stock: { title: "Stock Overview", noStock: "No stock records found.", info: "Managers will add stock when they receive materials at sites.", material: "Material", quantity: "Quantity", unitCost: "Unit Cost", value: "Value", status: "Status", updated: "Updated", min: "Min", normal: "Normal", low: "Low Stock", out: "Out of Stock", recentTransactions: "Recent Stock Transactions", date: "Date", site: "Site", type: "Type", qty: "Qty", notes: "Notes", receiveStock: "Receive Stock", stockManagement: "Stock Management", stockLevels: "Stock levels are automatically updated when materials are used.", editStock: "Edit Stock", viewHistory: "History" },
-                workers: { title: "Workers", addWorker: "Add New Worker", role: "Role", site: "Site", salaryType: "Salary Type", estCost: "Est. Cost", actions: "Actions", noPositions: "No positions defined.", actualWorkers: "Actual Workers Assigned by Managers", search: "Search by name...", noAssigned: "No workers assigned by managers for this site.", edit: "Edit", delete: "Delete", fullName: "Full Name", phone: "Phone Number", salary: "Salary", update: "Update Worker", viewDetails: "View Details", assignedSite: "Site:", position: "Role", addPosition: "Add Worker Position", roleName: "Role name", allSites: "All Sites", daily: "Daily", monthly: "Monthly", estimatedCost: "Estimated salary/cost", savePosition: "Save Position", updatePosition: "Update Position", allWorkers: "All Workers", recordAttendance: "Record Attendance", attendanceDate: "Attendance Date", selectPresentWorkers: "Select Present Workers", selected: "Selected", totalDailyCost: "Total Daily Cost", saveAttendance: "Save Attendance", attendanceLogs: "Attendance Logs", today: "Today", noWorkers: "No workers yet. Add workers to record daily attendance." },
-                progress: { title: "Progress Tasks", addTask: "Add Task", task: "Task", start: "Start", end: "End", status: "Status", pending: "Pending", completed: "Completed", noTasks: "No tasks yet.", markAsCompleted: "Mark as completed", noTasksAssigned: "No tasks assigned." },
-                reports: { title: "Generate Reports", general: "General", workerPayroll: "Worker Payroll", stockReport: "Stock", selectSite: "Select Site", allSites: "All Sites", department: "Department", allDepartments: "All Departments", startDate: "Start Date", endDate: "End Date", exportCSV: "Export CSV", printPDF: "Print / PDF", noAttendance: "No attendance records found.", info: "Please ensure managers have recorded attendance for the workers.", searchWorker: "Search worker...", position: "Position", allPositions: "All Positions", paymentStatus: "Payment Status", paid: "Paid", unpaid: "Unpaid", totalWorkers: "Total Workers", workerDays: "Worker-Days", totalPayroll: "Total Payroll", avgDaily: "Avg. Daily Labor Cost", worker: "Worker", daysWorked: "Days Worked", dailyRate: "Daily Rate", totalPayable: "Total Payable", total: "Total", generated: "Generated on" },
-                finances: { title: "Finances", info: "Site Info", overview: "Financial Overview", budget: "Budget", totalSpent: "Total Spent", materialsCost: "Materials Cost", workersCost: "Workers Cost", remaining: "Remaining", dailyAvg: "Daily average", monthlyAvg: "Monthly average", addBudget: "Add Budget", newBudget: "New Budget Amount", updateBudget: "Update Budget", exceeded: "Budget exceeded!", costControl: "Cost control needed." },
-                managers: { title: "Site Managers", info: "Managers assigned to your sites. The list updates automatically.", inviteManager: "Invite Manager", assignSite: "Assign to Site", email: "Email", password: "Password", invite: "Invite Manager", noManagers: "No managers invited yet.", remove: "Remove", assignedSite: "Assigned site" },
-                gallery: { title: "Site Gallery", selectSite: "Select Site", allSites: "All Sites", viewImage: "View Image", noImages: "No gallery images", close: "Close", uploadNewImage: "Upload New Image", description: "Description", upload: "Upload", noImagesUploaded: "No images uploaded yet." },
-                settings: { title: "Settings", profile: "Profile", account: "Account", security: "Security", preferences: "Preferences", profileInfo: "Profile Information", fullName: "Full Name", phone: "Phone Number", email: "Email Address", saveChanges: "Save Changes", accountInfo: "Account Information", accountName: "Account Name", role: "Role", accountStatus: "Account Status", active: "Active", memberSince: "Member Since", changePasscode: "Change Password", currentPasscode: "Current Password", newPasscode: "New Password", confirmPasscode: "Confirm New Password", changePass: "Change Password", prefs: "Preferences", language: "Language", currency: "Currency", dateFormat: "Date Format", notifications: "Enable Notifications", savePrefs: "Save Preferences", changePhoto: "Change Photo", removePhoto: "Remove Photo", saveProfileChanges: "Save Profile Changes" },
-                alerts: { savedSuccessfully: "Saved successfully", updatedSuccessfully: "Updated successfully", deletedSuccessfully: "Deleted successfully", somethingWentWrong: "Something went wrong", areYouSure: "Are you sure?", cannotUndo: "This action cannot be undone", requiredField: "Required field", invalidValue: "Invalid value", noDataAvailable: "No data available", accessDenied: "Access denied", subscriptionRequired: "Subscription required", sessionExpired: "Session expired" },
-                status: { active: "Active", completed: "Completed", pending: "Pending", cancelled: "Cancelled", notStarted: "Not Started", inProgress: "In Progress", finished: "Finished" }
+                navigation: {
+                    managerPanel: "Manager's Panel", dashboard: "Dashboard", materials: "Materials", stock: "Stock",
+                    workers: "Workers", progress: "Progress", reports: "Reports", gallery: "Gallery", settings: "Settings",
+                    logout: "Sign Out", manager: "Manager"
+                },
+                common: {
+                    save: "Save", cancel: "Cancel", close: "Close", add: "Add", edit: "Edit", delete: "Delete",
+                    view: "View", upload: "Upload", search: "Search", loading: "Loading...", areYouSure: "Are you sure?",
+                    cannotUndo: "This action cannot be undone", savedSuccessfully: "Saved successfully",
+                    updatedSuccessfully: "Updated successfully", deletedSuccessfully: "Deleted successfully",
+                    somethingWentWrong: "Something went wrong", noDataAvailable: "No data available",
+                    requiredField: "Required field", invalidValue: "Invalid value"
+                },
+                dashboard: {
+                    siteStatus: "Status", siteManager: "Manager", workersOnSite: "Workers On Site",
+                    progress: "Progress", recentMaterials: "Recent Materials", pendingTasks: "Pending Tasks"
+                },
+                materials: {
+                    title: "Materials Used", recordUsage: "Record Usage", addMaterial: "Add Material",
+                    editMaterial: "Edit Material", materialName: "Material Name", quantityUsed: "Qty Used",
+                    unitCost: "Unit Cost", totalAmount: "Total Amount", noMaterials: "No materials recorded yet."
+                },
+                stock: {
+                    title: "Stock Management", receiveStock: "Receive Stock", addStock: "Add Stock",
+                    editStock: "Edit Stock", stockHistory: "Stock History", quantity: "Quantity",
+                    minimumStock: "Minimum Stock", stockValue: "Stock Value", lastUpdated: "Last Updated",
+                    notes: "Notes", normal: "Normal", lowStock: "Low Stock", outOfStock: "Out of Stock"
+                },
+                workers: {
+                    title: "Workers", addWorker: "Add New Worker", view: "All Workers", recordAttendance: "Record Attendance",
+                    fullName: "Full Name", role: "Role", paymentType: "Payment Type", dailyRate: "Daily Rate",
+                    monthlySalary: "Monthly Salary", salary: "Salary", phone: "Phone", photo: "Photo",
+                    saveWorker: "Save Worker", selectWorkerRole: "Choose worker role...", searchRole: "Search role...",
+                    workerDetails: "Worker Details", noWorkers: "No workers added yet."
+                },
+                progress: {
+                    title: "Progress Tasks", task: "Task", start: "Start", end: "End", status: "Status",
+                    pending: "Pending", completed: "Completed", markCompleted: "Mark as completed", noTasks: "No tasks assigned."
+                },
+                reports: {
+                    title: "Generate Reports", general: "General", workerPayroll: "Worker Payroll",
+                    exportCSV: "Export CSV", printPDF: "Print / PDF", department: "Department",
+                    allDepartments: "All Departments", startDate: "Start Date", endDate: "End Date",
+                    searchWorker: "Search worker...", totalWorkers: "Total Workers", workerDays: "Worker-Days",
+                    totalPayroll: "Total Payroll", avgDaily: "Avg. Daily Labor Cost"
+                },
+                gallery: {
+                    title: "Site Gallery", uploadImage: "Upload New Image", description: "Description",
+                    upload: "Upload", noImages: "No images uploaded yet.", close: "Close",
+                    previous: "Previous", next: "Next"
+                },
+                settings: {
+                    title: "Settings", profile: "Profile", account: "Account", security: "Security",
+                    preferences: "Preferences", profileInfo: "Profile Information", fullName: "Full Name",
+                    phone: "Phone Number", email: "Email Address", changePhoto: "Change Photo", removePhoto: "Remove Photo",
+                    saveProfile: "Save Profile Changes", accountInfo: "Account Information", accountName: "Account Name",
+                    role: "Role", accountStatus: "Account Status", active: "Active", memberSince: "Member Since",
+                    changePassword: "Change Password", currentPassword: "Current Password", newPassword: "New Password",
+                    confirmPassword: "Confirm New Password", changePassBtn: "Change Password",
+                    prefs: "Preferences", language: "Language", currency: "Currency", dateFormat: "Date Format",
+                    notifications: "Enable Notifications", savePrefs: "Save Preferences"
+                }
             },
             rw: {
-                common: { comingSoon: "Biraza", save: "Bika", cancel: "Hagarika", add: "Ongeraho", delete: "Siba", edit: "Hindura", close: "Funga", export: "Sohora", loading: "Birimo gutegura...", error: "Ikibazo", search: "Shakisha", view: "Reba", areYouSure: "Urabyemeza?", cannotUndo: "Ibi ntibishobora guhindurwa", savedSuccessfully: "Byabitswe neza", updatedSuccessfully: "Byavuguruwe neza", deletedSuccessfully: "Byasibwe neza", somethingWentWrong: "Hari ikitagenze neza", requiredField: "Ibi birakenewe", invalidValue: "Agaciro katariyo", noDataAvailable: "Nta makuru aboneka", accessDenied: "Ntabwo ureherewe", subscriptionRequired: "Kwiyandikisha birakenewe", sessionExpired: "Igihe cyashaje", confirmDelete: "Emeza gusiba" },
-                navigation: { dashboard: "Imbonerahamwe", sites: "Ibibanza", materials: "Ibikoresho", stock: "Imbuganyuro", workers: "Abakozi", progress: "Ibitekerezo", reports: "Raporo", finances: "Imari", managers: "Abayobozi", gallery: "Amafoto", officeHub: "Office Hub", settings: "Igenamiterere", notifications: "Imenyesha", logout: "Sohoka", ownerPanel: "Ipaneli ya nyir'ubwite", managerPanel: "Ipaneli y'umuyobozi", home: "Ahabanza" },
-                dashboard: { title: "Imbonerahamwe", totalSites: "Imibare y'ibibanza", activeSites: "Ibibanza bikora", completedSites: "Ibibanza byarangiye", totalWorkers: "Imibare y'abakozi", totalMaterials: "Imibare y'ibikoresho", stockValue: "Agaciro k'ibikoresho", totalExpenses: "Amafaranga yakoreshejwe", recentActivity: "Ibikorwa bishya", quickActions: "Ibikorwa byihutirwa", viewDetails: "Reba ibisobanuro", welcome: "Murakaza neza, {name}", overview: "Dore ikibazo cy'umurimo wawe", noSites: "Nta bibanza", noWorkers: "Nta bakozi bagenwe", noData: "Nta makuru", spentOnMaterials: "Amafaranga yakoreshejwe ku bikoresho", recentProgress: "Ibitekerezo bishya", selectSite: "Hitamo igibanza", completedTasks: "Imirimo yarangiye", endDate: "Iherezo" },
-                sites: { title: "Ibibanza byawe", addSite: "Ongeraho igibanza", editSite: "Hindura igibanza", siteName: "Izina ry'igibanza", location: "Aho biherereye", client: "Umukiriya", startDate: "Itariki yo gutangira", endDate: "Itariki yo kurangira", budget: "Ingengo y'imari", status: "Imiterere", active: "Bikora", completed: "Byarangiye", upcoming: "Bikaza", markFinished: "Menya ko byarangiye", noSites: "Nta bibanza birahari", district: "Akarere", sector: "Umurenge", saveSite: "Bika igibanza", deleteSite: "Siba igibanza", edit: "Hindura", delete: "Siba" },
-                materials: { title: "Ibikoresho", materialUsage: "Gukoresha ibikoresho", inventory: "Ibitundumirwa", stock: "Imbuganyuro", addMaterial: "Ongeraho ibikoresho", editMaterial: "Hindura ibikoresho", materialName: "Izina ry'ibikoresho", unit: "Igice", quantity: "Umubare", unitCost: "Igiciro cy'igice", totalAmount: "Amafaranga yose", availableStock: "Ibikoresho bishoboka", stockDeduction: "Ibikoresho bikoreshwa", notes: "Ibisobanuro", usageDate: "Itariki yo gukoresha", enterQuantity: "Andika umubare", name: "Izina", cost: "Igiciro", noMaterials: "Nta bikoresho byanditswe kuri iki gibanze.", quantityUsed: "Umubare wakoreshejwe", edit: "Hindura", delete: "Siba", update: "Vugurura", recordUsage: "Andika Gukoresha", usedOn: "Byakoreshejwe kuri", dateUsed: "Itariki yakoreshejwe" },
-                stock: { title: "Imbuganyuro", noStock: "Nta mbuganyuro iboneka.", info: "Abayobozi bazongeraho ibikoresho iyo bibonye.", material: "Ibikoresho", quantity: "Umubare", unitCost: "Igiciro cy'igice", value: "Agaciro", status: "Imiterere", updated: "Byavuguruwe", min: "Ubugabanyiro", normal: "Bisanzwe", low: "Bike", out: "Byashaje", recentTransactions: "Ibikorwa bishya by'imbuganyuro", date: "Itariki", site: "Igibanza", type: "Ubwoko", qty: "Umubare", notes: "Ibisobanuro", receiveStock: "Akira Imbuganyuro", stockManagement: "Gucunga Imbuganyuro", stockLevels: "Urwego rw'imbuganyuro ruvuguruka ako kanya iyo ibikoresho bikoreshejwe.", editStock: "Hindura Imbuganyuro", viewHistory: "Amateka" },
-                workers: { title: "Abakozi", addWorker: "Ongeraho Umukozi", role: "Umwanya", site: "Igibanza", salaryType: "Ubwoko bw'umushahara", estCost: "Igiciro gike", actions: "Ibikorwa", noPositions: "Nta mwanya wasobanuwe.", actualWorkers: "Abakozi bagenzwe n'abayobozi", search: "Shakisha izina...", noAssigned: "Nta bakozi bagenzwe kuri iki gibanze.", edit: "Hindura", delete: "Siba", fullName: "Amazina yombi", phone: "Nomero ya telefoni", salary: "Umushahara", update: "Vugurura umukozi", viewDetails: "Reba Ibisobanuro", assignedSite: "Igibanza:", position: "Umwanya", addPosition: "Ongeraho umwanya", roleName: "Izina ry'umwanya", allSites: "Ibibanza byose", daily: "Buri munsi", monthly: "Buri kwezi", estimatedCost: "Umushahara uganijwe", savePosition: "Bika umwanya", updatePosition: "Vugurura umwanya", allWorkers: "Abakozi Bose", recordAttendance: "Andika Kwitaba", attendanceDate: "Itariki yo Kwitaba", selectPresentWorkers: "Hitamo Abakozi Bariho", selected: "Bahitanywe", totalDailyCost: "Igiciro Cyose cy'Umunsi", saveAttendance: "Bika Kwitaba", attendanceLogs: "Amateka yo Kwitaba", today: "Uyu munsi", noWorkers: "Nta bakozi. Ongeraho abakozi kugira ngo wandike kwitaba buri munsi." },
-                progress: { title: "Imirimo", addTask: "Ongeraho umurimo", task: "Umurimo", start: "Tangira", end: "Rangira", status: "Imiterere", pending: "Bitegereje", completed: "Byarangiye", noTasks: "Nta mirimo ihari.", markAsCompleted: "Menya ko byarangiye", noTasksAssigned: "Nta mirimo yagenwe." },
-                reports: { title: "Kora Raporo", general: "Rusange", workerPayroll: "Umushahara w'Abakozi", stockReport: "Imbuganyuro", selectSite: "Hitamo Igibanza", allSites: "Ibibanza Byose", department: "Ishami", allDepartments: "Amashami Yose", startDate: "Itariki yo gutangira", endDate: "Itariki yo kurangira", exportCSV: "Sohora CSV", printPDF: "Capa / PDF", noAttendance: "Nta makuru yo kwitaba aboneka.", info: "Nyamuneka menya neza ko abayobozi banditse kwitaba kw'abakozi.", searchWorker: "Shakisha umukozi...", position: "Umwanya", allPositions: "Imiryango Yose", paymentStatus: "Imiterere y'ubwishyu", paid: "Byishyuwe", unpaid: "Bitishyuwe", totalWorkers: "Abakozi Bose", workerDays: "Iminsi y'Abakozi", totalPayroll: "Umushahara Wose", avgDaily: "Igiciro cy'umunsi", worker: "Umukozi", daysWorked: "Iminsi Yakozwe", dailyRate: "Umushahara w'umunsi", totalPayable: "Amafaranga Yose", total: "Igiteranyo", generated: "Byakozwe" },
-                finances: { title: "Imari", info: "Amakuru y'Igibanza", overview: "Imbonerahamwe y'Imari", budget: "Ingengo y'imari", totalSpent: "Amafaranga Yakoreshejwe", materialsCost: "Ibikoresho", workersCost: "Abakozi", remaining: "Isigazwa", dailyAvg: "Umubare wa buri munsi", monthlyAvg: "Umubare wa buri kwezi", addBudget: "Ongeraho Ingengo", newBudget: "Ingengo nshya", updateBudget: "Vugurura Ingengo", exceeded: "Ingengo yarengwe!", costControl: "Birakenewe kugenzura ibikoreshwa." },
-                managers: { title: "Abayobozi b'Ibibanza", info: "Abayobozi bagenzwe kuri ibibanza byawe. Urutonde ruvuguruka ako kanya.", inviteManager: "Tumira Umuyobozi", assignSite: "Mwize igibanza", email: "Email", password: "Ijambobanga", invite: "Tumira Umuyobozi", noManagers: "Nta bayobozi batumiriwe.", remove: "Kuraho", assignedSite: "Igibanza" },
-                gallery: { title: "Amafoto y'Ibibanza", selectSite: "Hitamo Igibanza", allSites: "Ibibanza Byose", viewImage: "Reba Ifoto", noImages: "Nta mafoto", close: "Funga", uploadNewImage: "Ohereza Ifoto Nshya", description: "Ibisobanuro", upload: "Ohereza", noImagesUploaded: "Nta mafoto yoherejwe." },
-                settings: { title: "Igenamiterere", profile: "Umwirondoro", account: "Kontu", security: "Umutekano", preferences: "Amahitamo", profileInfo: "Amakuru bwite", fullName: "Amazina yombi", phone: "Nomero ya telefoni", email: "Email", saveChanges: "Bika impinduka", accountInfo: "Amakuru ya kontu", accountName: "Izina rya kontu", role: "Umwanya", accountStatus: "Imiterere ya kontu", active: "Bikora", memberSince: "Umuryango kuva", changePasscode: "Hindura Ijambobanga", currentPasscode: "Ijambobanga ry'ubu", newPasscode: "Ijambobanga rishya", confirmPasscode: "Emeza ijambobanga rishya", changePass: "Hindura Ijambobanga", prefs: "Amahitamo", language: "Ururimi", currency: "Ifaranga", dateFormat: "Imiterere y'itariki", notifications: "Koresha imenyesha", savePrefs: "Bika amahitamo", changePhoto: "Hindura ifoto", removePhoto: "Kuraho ifoto", saveProfileChanges: "Bika Impinduka z'Umwirondoro" },
-                alerts: { savedSuccessfully: "Byabitswe neza", updatedSuccessfully: "Byavuguruwe neza", deletedSuccessfully: "Byasibwe neza", somethingWentWrong: "Hari ikitagenze neza", areYouSure: "Urabyemeza?", cannotUndo: "Ibi ntibishobora guhindurwa", requiredField: "Ibi birakenewe", invalidValue: "Agaciro katariyo", noDataAvailable: "Nta makuru aboneka", accessDenied: "Ntabwo ureherewe", subscriptionRequired: "Kwiyandikisha birakenewe", sessionExpired: "Igihe cyashaje" },
-                status: { active: "Bikora", completed: "Byarangiye", pending: "Bitegereje", cancelled: "Byahagaritswe", notStarted: "Ntibitangira", inProgress: "Bikorwa", finished: "Byarangiye" }
+                navigation: {
+                    managerPanel: "Ipaneli y'umuyobozi", dashboard: "Imbonerahamwe", materials: "Ibikoresho", stock: "Imbuganyuro",
+                    workers: "Abakozi", progress: "Ibitekerezo", reports: "Raporo", gallery: "Amafoto", settings: "Igenamiterere",
+                    logout: "Sohoka", manager: "Umuyobozi"
+                },
+                common: {
+                    save: "Bika", cancel: "Hagarika", close: "Funga", add: "Ongeraho", edit: "Hindura", delete: "Siba",
+                    view: "Reba", upload: "Ohereza", search: "Shakisha", loading: "Birimo gutegura...",
+                    areYouSure: "Urabyemeza?", cannotUndo: "Ibi ntibishobora guhindurwa",
+                    savedSuccessfully: "Byabitswe neza", updatedSuccessfully: "Byavuguruwe neza",
+                    deletedSuccessfully: "Byasibwe neza", somethingWentWrong: "Hari ikitagenze neza",
+                    noDataAvailable: "Nta makuru aboneka", requiredField: "Ibi birakenewe", invalidValue: "Agaciro katariyo"
+                },
+                dashboard: {
+                    siteStatus: "Imiterere", siteManager: "Umuyobozi", workersOnSite: "Abakozi ku kibanza",
+                    progress: "Ibitekerezo", recentMaterials: "Ibikoresho bishya", pendingTasks: "Imirimo itegereje"
+                },
+                materials: {
+                    title: "Ibikoresho Byakoreshejwe", recordUsage: "Andika Gukoresha", addMaterial: "Ongeraho ibikoresho",
+                    editMaterial: "Hindura ibikoresho", materialName: "Izina ry'ibikoresho", quantityUsed: "Umubare wakoreshejwe",
+                    unitCost: "Igiciro cy'igice", totalAmount: "Amafaranga yose", noMaterials: "Nta bikoresho byanditswe."
+                },
+                stock: {
+                    title: "Gucunga Imbuganyuro", receiveStock: "Akira Imbuganyuro", addStock: "Ongeraho Imbuganyuro",
+                    editStock: "Hindura Imbuganyuro", stockHistory: "Amateka y'Imbuganyuro", quantity: "Umubare",
+                    minimumStock: "Ubugabanyiro ntarengwa", stockValue: "Agaciro k'Imbuganyuro",
+                    lastUpdated: "Byavuguruwe", notes: "Ibisobanuro", normal: "Bisanzwe",
+                    lowStock: "Imbuganyuro nke", outOfStock: "Imbuganyuro yashaje"
+                },
+                workers: {
+                    title: "Abakozi", addWorker: "Ongeraho Umukozi", view: "Abakozi Bose", recordAttendance: "Andika Kwitaba",
+                    fullName: "Amazina yombi", role: "Umwanya", paymentType: "Uburyo bwo Kwishyura",
+                    dailyRate: "Umushahara w'umunsi", monthlySalary: "Umushahara w'ukwezi",
+                    salary: "Umushahara", phone: "Telefoni", photo: "Ifoto", saveWorker: "Bika Umukozi",
+                    selectWorkerRole: "Hitamo umwanya...", searchRole: "Shakisha umwanya...",
+                    workerDetails: "Ibisobanuro by'Umukozi", noWorkers: "Nta bakozi bahari."
+                },
+                progress: {
+                    title: "Imirimo", task: "Umurimo", start: "Tangira", end: "Rangira", status: "Imiterere",
+                    pending: "Bitegereje", completed: "Byarangiye", markCompleted: "Menya ko byarangiye",
+                    noTasks: "Nta mirimo ihari."
+                },
+                reports: {
+                    title: "Kora Raporo", general: "Rusange", workerPayroll: "Umushahara w'Abakozi",
+                    exportCSV: "Sohora CSV", printPDF: "Capa / PDF", department: "Ishami",
+                    allDepartments: "Amashami Yose", startDate: "Itariki yo gutangira", endDate: "Itariki yo kurangira",
+                    searchWorker: "Shakisha umukozi...", totalWorkers: "Abakozi Bose", workerDays: "Iminsi y'Abakozi",
+                    totalPayroll: "Umushahara Wose", avgDaily: "Igiciro cy'umunsi"
+                },
+                gallery: {
+                    title: "Amafoto y'Ibibanza", uploadImage: "Ohereza Ifoto Nshya", description: "Ibisobanuro",
+                    upload: "Ohereza", noImages: "Nta mafoto yashyizweho.", close: "Funga",
+                    previous: "Ibanze", next: "Ikurikira"
+                },
+                settings: {
+                    title: "Igenamiterere", profile: "Umwirondoro", account: "Kontu", security: "Umutekano",
+                    preferences: "Amahitamo", profileInfo: "Amakuru bwite", fullName: "Amazina yombi",
+                    phone: "Nomero ya telefoni", email: "Email", changePhoto: "Hindura ifoto",
+                    removePhoto: "Kuraho ifoto", saveProfile: "Bika Impinduka", accountInfo: "Amakuru ya kontu",
+                    accountName: "Izina rya kontu", role: "Umwanya", accountStatus: "Imiterere ya kontu",
+                    active: "Bikora", memberSince: "Umuryango kuva", changePassword: "Hindura Ijambobanga",
+                    currentPassword: "Ijambobanga risanzwe", newPassword: "Ijambobanga rishya",
+                    confirmPassword: "Emeza Ijambobanga rishya", changePassBtn: "Hindura Ijambobanga",
+                    prefs: "Amahitamo", language: "Ururimi", currency: "Ifaranga", dateFormat: "Imiterere y'itariki",
+                    notifications: "Koresha imenyesha", savePrefs: "Bika Amahitamo"
+                }
             },
             fr: {
-                common: { comingSoon: "Bientôt disponible", save: "Enregistrer", cancel: "Annuler", add: "Ajouter", delete: "Supprimer", edit: "Modifier", close: "Fermer", export: "Exporter", loading: "Chargement...", error: "Erreur", search: "Rechercher", view: "Voir", areYouSure: "Êtes-vous sûr ?", cannotUndo: "Cette action est irréversible", savedSuccessfully: "Enregistré avec succès", updatedSuccessfully: "Mis à jour avec succès", deletedSuccessfully: "Supprimé avec succès", somethingWentWrong: "Une erreur s'est produite", requiredField: "Champ requis", invalidValue: "Valeur invalide", noDataAvailable: "Aucune donnée disponible", accessDenied: "Accès refusé", subscriptionRequired: "Abonnement requis", sessionExpired: "Session expirée", confirmDelete: "Confirmer la suppression" },
-                navigation: { dashboard: "Tableau de bord", sites: "Sites", materials: "Matériaux", stock: "Stock", workers: "Ouvriers", progress: "Progrès", reports: "Rapports", finances: "Finances", managers: "Gestionnaires", gallery: "Galerie", officeHub: "Bureau", settings: "Paramètres", notifications: "Notifications", logout: "Déconnexion", ownerPanel: "Panneau du propriétaire", managerPanel: "Panneau du gestionnaire", home: "Accueil" },
-                dashboard: { title: "Tableau de bord", totalSites: "Total des sites", activeSites: "Sites actifs", completedSites: "Sites terminés", totalWorkers: "Total des ouvriers", totalMaterials: "Total des matériaux", stockValue: "Valeur du stock", totalExpenses: "Dépenses totales", recentActivity: "Activité récente", quickActions: "Actions rapides", viewDetails: "Voir les détails", welcome: "Bienvenue, {name}", overview: "Voici votre aperçu du chantier", noSites: "Aucun site", noWorkers: "Aucun ouvrier assigné", noData: "Aucune donnée", spentOnMaterials: "Dépensé en matériaux", recentProgress: "Progrès récents", selectSite: "Sélectionner un site", completedTasks: "Tâches terminées", endDate: "Fin" },
-                sites: { title: "Vos sites", addSite: "Ajouter un site", editSite: "Modifier le site", siteName: "Nom du site", location: "Emplacement", client: "Client", startDate: "Date de début", endDate: "Date de fin", budget: "Budget", status: "Statut", active: "Actif", completed: "Terminé", upcoming: "À venir", markFinished: "Marquer terminé", noSites: "Aucun site pour le moment", district: "District", sector: "Secteur", saveSite: "Enregistrer le site", deleteSite: "Supprimer le site", edit: "Modifier", delete: "Supprimer" },
-                materials: { title: "Matériaux", materialUsage: "Utilisation des matériaux", inventory: "Inventaire", stock: "Stock", addMaterial: "Ajouter un matériau", editMaterial: "Modifier le matériau", materialName: "Nom du matériau", unit: "Unité", quantity: "Quantité", unitCost: "Coût unitaire", totalAmount: "Montant total", availableStock: "Stock disponible", stockDeduction: "Déduction de stock", notes: "Notes", usageDate: "Date d'utilisation", enterQuantity: "Entrer la quantité", name: "Nom", cost: "Coût", noMaterials: "Aucun matériau enregistré pour ce site.", quantityUsed: "Quantité utilisée", edit: "Modifier", delete: "Supprimer", update: "Mettre à jour", recordUsage: "Enregistrer l'utilisation", usedOn: "Utilisé le", dateUsed: "Date d'utilisation" },
-                stock: { title: "Aperçu du stock", noStock: "Aucun enregistrement de stock trouvé.", info: "Les gestionnaires ajouteront du stock lorsqu'ils recevront des matériaux.", material: "Matériau", quantity: "Quantité", unitCost: "Coût unitaire", value: "Valeur", status: "Statut", updated: "Mis à jour", min: "Min", normal: "Normal", low: "Stock faible", out: "Épuisé", recentTransactions: "Transactions récentes", date: "Date", site: "Site", type: "Type", qty: "Qté", notes: "Notes", receiveStock: "Recevoir du stock", stockManagement: "Gestion du stock", stockLevels: "Les niveaux de stock sont mis à jour automatiquement lorsque des matériaux sont utilisés.", editStock: "Modifier le stock", viewHistory: "Historique" },
-                workers: { title: "Ouvriers", addWorker: "Ajouter un ouvrier", role: "Rôle", site: "Site", salaryType: "Type de salaire", estCost: "Coût estimé", actions: "Actions", noPositions: "Aucun poste défini.", actualWorkers: "Ouvriers actuellement assignés", search: "Rechercher par nom...", noAssigned: "Aucun ouvrier assigné par les gestionnaires pour ce site.", edit: "Modifier", delete: "Supprimer", fullName: "Nom complet", phone: "Téléphone", salary: "Salaire", update: "Mettre à jour", viewDetails: "Voir les détails", assignedSite: "Site :", position: "Rôle", addPosition: "Ajouter un poste", roleName: "Nom du rôle", allSites: "Tous les sites", daily: "Journalier", monthly: "Mensuel", estimatedCost: "Salaire estimé", savePosition: "Enregistrer le poste", updatePosition: "Mettre à jour le poste", allWorkers: "Tous les ouvriers", recordAttendance: "Enregistrer la présence", attendanceDate: "Date de présence", selectPresentWorkers: "Sélectionner les ouvriers présents", selected: "Sélectionné", totalDailyCost: "Coût journalier total", saveAttendance: "Enregistrer la présence", attendanceLogs: "Journaux de présence", today: "Aujourd'hui", noWorkers: "Aucun ouvrier. Ajoutez des ouvriers pour enregistrer la présence quotidienne." },
-                progress: { title: "Tâches de progression", addTask: "Ajouter une tâche", task: "Tâche", start: "Début", end: "Fin", status: "Statut", pending: "En attente", completed: "Terminé", noTasks: "Aucune tâche.", markAsCompleted: "Marquer comme terminé", noTasksAssigned: "Aucune tâche assignée." },
-                reports: { title: "Générer des rapports", general: "Général", workerPayroll: "Paie des ouvriers", stockReport: "Stock", selectSite: "Sélectionner le site", allSites: "Tous les sites", department: "Département", allDepartments: "Tous les départements", startDate: "Date de début", endDate: "Date de fin", exportCSV: "Exporter CSV", printPDF: "Imprimer / PDF", noAttendance: "Aucun enregistrement de présence trouvé.", info: "Veuillez vous assurer que les gestionnaires ont enregistré la présence des ouvriers.", searchWorker: "Rechercher un ouvrier...", position: "Poste", allPositions: "Tous les postes", paymentStatus: "Statut du paiement", paid: "Payé", unpaid: "Non payé", totalWorkers: "Total des ouvriers", workerDays: "Jours ouvriers", totalPayroll: "Paie totale", avgDaily: "Coût journalier moyen", worker: "Ouvrier", daysWorked: "Jours travaillés", dailyRate: "Taux journalier", totalPayable: "Total à payer", total: "Total", generated: "Généré le" },
-                finances: { title: "Finances", info: "Informations sur le site", overview: "Aperçu financier", budget: "Budget", totalSpent: "Dépenses totales", materialsCost: "Coût des matériaux", workersCost: "Coût des ouvriers", remaining: "Restant", dailyAvg: "Moyenne journalière", monthlyAvg: "Moyenne mensuelle", addBudget: "Ajouter un budget", newBudget: "Nouveau budget", updateBudget: "Mettre à jour le budget", exceeded: "Budget dépassé !", costControl: "Contrôle des coûts nécessaire." },
-                managers: { title: "Gestionnaires de site", info: "Gestionnaires assignés à vos sites. La liste se met à jour automatiquement.", inviteManager: "Inviter un gestionnaire", assignSite: "Assigner au site", email: "E-mail", password: "Mot de passe", invite: "Inviter", noManagers: "Aucun gestionnaire invité.", remove: "Retirer", assignedSite: "Site assigné" },
-                gallery: { title: "Galerie du site", selectSite: "Sélectionner le site", allSites: "Tous les sites", viewImage: "Voir l'image", noImages: "Aucune image", close: "Fermer", uploadNewImage: "Télécharger une nouvelle image", description: "Description", upload: "Télécharger", noImagesUploaded: "Aucune image téléchargée." },
-                settings: { title: "Paramètres", profile: "Profil", account: "Compte", security: "Sécurité", preferences: "Préférences", profileInfo: "Informations du profil", fullName: "Nom complet", phone: "Téléphone", email: "E-mail", saveChanges: "Enregistrer", accountInfo: "Informations du compte", accountName: "Nom du compte", role: "Rôle", accountStatus: "Statut du compte", active: "Actif", memberSince: "Membre depuis", changePasscode: "Changer le mot de passe", currentPasscode: "Mot de passe actuel", newPasscode: "Nouveau mot de passe", confirmPasscode: "Confirmer le nouveau mot de passe", changePass: "Changer le mot de passe", prefs: "Préférences", language: "Langue", currency: "Devise", dateFormat: "Format de date", notifications: "Activer les notifications", savePrefs: "Enregistrer les préférences", changePhoto: "Changer la photo", removePhoto: "Supprimer la photo", saveProfileChanges: "Enregistrer les modifications du profil" },
-                alerts: { savedSuccessfully: "Enregistré avec succès", updatedSuccessfully: "Mis à jour avec succès", deletedSuccessfully: "Supprimé avec succès", somethingWentWrong: "Une erreur s'est produite", areYouSure: "Êtes-vous sûr ?", cannotUndo: "Cette action est irréversible", requiredField: "Champ requis", invalidValue: "Valeur invalide", noDataAvailable: "Aucune donnée disponible", accessDenied: "Accès refusé", subscriptionRequired: "Abonnement requis", sessionExpired: "Session expirée" },
-                status: { active: "Actif", completed: "Terminé", pending: "En attente", cancelled: "Annulé", notStarted: "Non commencé", inProgress: "En cours", finished: "Terminé" }
+                navigation: {
+                    managerPanel: "Panneau du gestionnaire", dashboard: "Tableau de bord", materials: "Matériaux",
+                    stock: "Stock", workers: "Ouvriers", progress: "Progrès", reports: "Rapports",
+                    gallery: "Galerie", settings: "Paramètres", logout: "Déconnexion", manager: "Gestionnaire"
+                },
+                common: {
+                    save: "Enregistrer", cancel: "Annuler", close: "Fermer", add: "Ajouter", edit: "Modifier",
+                    delete: "Supprimer", view: "Voir", upload: "Télécharger", search: "Rechercher",
+                    loading: "Chargement...", areYouSure: "Êtes-vous sûr ?", cannotUndo: "Cette action est irréversible",
+                    savedSuccessfully: "Enregistré avec succès", updatedSuccessfully: "Mis à jour avec succès",
+                    deletedSuccessfully: "Supprimé avec succès", somethingWentWrong: "Une erreur s'est produite",
+                    noDataAvailable: "Aucune donnée disponible", requiredField: "Champ requis", invalidValue: "Valeur invalide"
+                },
+                dashboard: {
+                    siteStatus: "Statut", siteManager: "Gestionnaire", workersOnSite: "Ouvriers sur site",
+                    progress: "Progrès", recentMaterials: "Matériaux récents", pendingTasks: "Tâches en attente"
+                },
+                materials: {
+                    title: "Matériaux utilisés", recordUsage: "Enregistrer l'utilisation", addMaterial: "Ajouter un matériau",
+                    editMaterial: "Modifier le matériau", materialName: "Nom du matériau", quantityUsed: "Qté utilisée",
+                    unitCost: "Coût unitaire", totalAmount: "Montant total", noMaterials: "Aucun matériau enregistré."
+                },
+                stock: {
+                    title: "Gestion du stock", receiveStock: "Recevoir du stock", addStock: "Ajouter du stock",
+                    editStock: "Modifier le stock", stockHistory: "Historique du stock", quantity: "Quantité",
+                    minimumStock: "Stock minimum", stockValue: "Valeur du stock", lastUpdated: "Mis à jour",
+                    notes: "Notes", normal: "Normal", lowStock: "Stock faible", outOfStock: "Épuisé"
+                },
+                workers: {
+                    title: "Ouvriers", addWorker: "Ajouter un ouvrier", view: "Tous les ouvriers",
+                    recordAttendance: "Enregistrer la présence", fullName: "Nom complet", role: "Rôle",
+                    paymentType: "Type de paiement", dailyRate: "Taux journalier", monthlySalary: "Salaire mensuel",
+                    salary: "Salaire", phone: "Téléphone", photo: "Photo", saveWorker: "Enregistrer l'ouvrier",
+                    selectWorkerRole: "Choisir un rôle...", searchRole: "Rechercher un rôle...",
+                    workerDetails: "Détails de l'ouvrier", noWorkers: "Aucun ouvrier ajouté."
+                },
+                progress: {
+                    title: "Tâches de progression", task: "Tâche", start: "Début", end: "Fin", status: "Statut",
+                    pending: "En attente", completed: "Terminé", markCompleted: "Marquer comme terminé",
+                    noTasks: "Aucune tâche assignée."
+                },
+                reports: {
+                    title: "Générer des rapports", general: "Général", workerPayroll: "Paie des ouvriers",
+                    exportCSV: "Exporter CSV", printPDF: "Imprimer / PDF", department: "Département",
+                    allDepartments: "Tous les départements", startDate: "Date de début", endDate: "Date de fin",
+                    searchWorker: "Rechercher un ouvrier...", totalWorkers: "Total des ouvriers",
+                    workerDays: "Jours ouvriers", totalPayroll: "Paie totale", avgDaily: "Coût journalier moyen"
+                },
+                gallery: {
+                    title: "Galerie du site", uploadImage: "Télécharger une image", description: "Description",
+                    upload: "Télécharger", noImages: "Aucune image téléchargée.", close: "Fermer",
+                    previous: "Précédent", next: "Suivant"
+                },
+                settings: {
+                    title: "Paramètres", profile: "Profil", account: "Compte", security: "Sécurité",
+                    preferences: "Préférences", profileInfo: "Informations du profil", fullName: "Nom complet",
+                    phone: "Téléphone", email: "E-mail", changePhoto: "Changer la photo", removePhoto: "Supprimer la photo",
+                    saveProfile: "Enregistrer les modifications", accountInfo: "Informations du compte",
+                    accountName: "Nom du compte", role: "Rôle", accountStatus: "Statut du compte", active: "Actif",
+                    memberSince: "Membre depuis", changePassword: "Changer le mot de passe",
+                    currentPassword: "Mot de passe actuel", newPassword: "Nouveau mot de passe",
+                    confirmPassword: "Confirmer le nouveau mot de passe", changePassBtn: "Changer le mot de passe",
+                    prefs: "Préférences", language: "Langue", currency: "Devise", dateFormat: "Format de date",
+                    notifications: "Activer les notifications", savePrefs: "Enregistrer les préférences"
+                }
             }
         };
 
         let currentLanguage = localStorage.getItem('shdr_language') || 'en';
-
         function getNestedTranslation(obj, key) {
             return key.split('.').reduce((o, i) => (o ? o[i] : undefined), obj);
         }
-
         function t(key, params = {}) {
             let value = getNestedTranslation(translations[currentLanguage], key);
             if (value === undefined) value = getNestedTranslation(translations.en, key);
@@ -497,22 +666,23 @@
             }
             return value;
         }
-
         function applyTranslations() {
-            document.querySelectorAll('[data-i18n]').forEach(element => {
-                element.textContent = t(element.dataset.i18n);
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.dataset.i18n;
+                el.textContent = t(key);
             });
-            document.querySelectorAll('[data-i18n-placeholder]').forEach(element => {
-                element.placeholder = t(element.dataset.i18nPlaceholder);
+            document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+                el.placeholder = t(el.dataset.i18nPlaceholder);
             });
-            document.querySelectorAll('[data-i18n-title]').forEach(element => {
-                element.title = t(element.dataset.i18nTitle);
+            document.querySelectorAll('[data-i18n-title]').forEach(el => {
+                el.title = t(el.dataset.i18nTitle);
             });
-            document.querySelectorAll('[data-i18n-aria-label]').forEach(element => {
-                element.setAttribute('aria-label', t(element.dataset.i18nAriaLabel));
+            document.querySelectorAll('[data-i18n-aria-label]').forEach(el => {
+                el.setAttribute('aria-label', t(el.dataset.i18nAriaLabel));
             });
+            // Re-render dynamic content with new language
+            if (currentSection) showSection(currentSection);
         }
-
         function setLanguage(lang) {
             if (!['en', 'rw', 'fr'].includes(lang)) return;
             currentLanguage = lang;
@@ -524,15 +694,13 @@
             });
             document.documentElement.lang = lang;
             applyTranslations();
-            if (currentSection) showSection(currentSection);
         }
-
         document.querySelectorAll('.lang-btn').forEach(btn => {
             btn.addEventListener('click', () => setLanguage(btn.dataset.language));
         });
 
         // =================================================================
-        // 2. YOUR ORIGINAL FIREBASE CODE AND REST OF THE APP (Updated to use t() for strings)
+        // 2. ORIGINAL FIREBASE & APPLICATION CODE (unchanged logic)
         // =================================================================
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
         import {
@@ -584,7 +752,8 @@
             if (!dateValue) return '—';
             const date = typeof dateValue === 'string' ? new Date(dateValue) : dateValue;
             if (isNaN(date.getTime())) return '—';
-            return date.toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+            const localeMap = { en: 'en-US', rw: 'rw-RW', fr: 'fr-FR' };
+            return new Intl.DateTimeFormat(localeMap[currentLanguage], { year: 'numeric', month: 'long', day: 'numeric' }).format(date);
         }
 
         // Global state
@@ -624,7 +793,7 @@
         function getTodayISO() { return new Date().toISOString().split('T')[0]; }
         function calculateTotal(qty, unitCost) { return (qty || 0) * (unitCost || 0); }
 
-        // ── Toast ──
+        // ── Toast (translates messages) ──
         function showToast(message, type = 'info') {
             const toast = document.getElementById('toast');
             const iconMap = { success: '✅', error: '❌', info: 'ℹ️' };
@@ -632,11 +801,14 @@
             toast.className = 'toast ' + (type || 'info');
             toast.classList.add('show');
             clearTimeout(toast._hideTimer);
-            toast._hideTimer = setTimeout(() => { toast.classList.remove('show'); }, 5000);
+            toast._hideTimer = setTimeout(() => {
+                toast.classList.remove('show');
+            }, 5000);
         }
 
         // ── Auth & Init ──
         window.addEventListener('load', () => {
+            // Set initial language buttons
             document.querySelectorAll('.lang-btn').forEach(btn => {
                 const isActive = btn.dataset.language === currentLanguage;
                 btn.classList.toggle('active', isActive);
@@ -676,7 +848,7 @@
                     } else if (managerProfile.assigned_site) {
                         siteIds = [managerProfile.assigned_site];
                     } else {
-                        showError(t('common.accessDenied'));
+                        showError('No site assigned.');
                         return;
                     }
 
@@ -685,7 +857,7 @@
                     assignedSites = siteSnaps.filter(snap => snap.exists()).map(snap => ({ id: snap.id, ...snap.data() }));
 
                     if (assignedSites.length === 0) {
-                        showError(t('common.accessDenied'));
+                        showError('Assigned site(s) not found.');
                         return;
                     }
 
@@ -700,7 +872,7 @@
 
                     attachListeners();
                     showSection('dashboard');
-                } catch (err) { showError(t('common.somethingWentWrong')); }
+                } catch (err) { showError('Failed to initialize: ' + err.message); }
             });
         });
 
@@ -787,7 +959,7 @@
 
         window.showSection = (section) => {
             if (currentSection === 'settings' && hasUnsavedChanges) {
-                if (!confirm(t('alerts.areYouSure'))) {
+                if (!confirm(t('common.areYouSure'))) {
                     return;
                 }
                 hasUnsavedChanges = false;
@@ -839,7 +1011,7 @@
             formData.append('image', file);
             const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, { method: 'POST', body: formData });
             const json = await res.json();
-            if (!json.success) throw new Error('Image upload failed');
+            if (!json.success) throw new Error(t('common.somethingWentWrong'));
             return json.data.url;
         }
 
@@ -848,7 +1020,7 @@
         // ──────────────────────────────────────────────────────────────
         function renderDashboard(container) {
             const site = assignedSites.find(s => s.id === currentSiteId);
-            if (!site) { container.innerHTML = `<p class="text-red-500">${t('common.somethingWentWrong')}</p>`; return; }
+            if (!site) { container.innerHTML = '<p class="text-red-500">Site not found.</p>'; return; }
             const totalWorkers = siteWorkersData.length;
             const completedTasks = progressTasks.filter(t => t.status === 'completed').length;
             const totalTasks = progressTasks.length;
@@ -865,8 +1037,8 @@
                         </div>
                     </div>
                     <div class="p-4 sm:p-6 grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div><span class="text-sm text-slate-500">${t('sites.status')}</span><p class="text-lg font-bold capitalize">${site.status || 'active'}</p></div>
-                        <div><span class="text-sm text-slate-500">${t('managers.assignedSite')}</span><p class="text-lg font-bold">${managerProfile.full_name || t('navigation.managerPanel')}</p></div>
+                        <div><span class="text-sm text-slate-500">${t('dashboard.siteStatus')}</span><p class="text-lg font-bold capitalize">${site.status || 'active'}</p></div>
+                        <div><span class="text-sm text-slate-500">${t('dashboard.siteManager')}</span><p class="text-lg font-bold">${managerProfile.full_name || 'You'}</p></div>
                     </div>
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4 sm:mb-6">
@@ -875,7 +1047,7 @@
                             <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
                                 <iconify-icon icon="material-symbols:engineering" width="24" class="text-blue-700"></iconify-icon>
                             </div>
-                            <div><p class="text-sm text-slate-500">${t('workers.allWorkers')}</p><p class="text-2xl font-bold">${totalWorkers}</p></div>
+                            <div><p class="text-sm text-slate-500">${t('dashboard.workersOnSite')}</p><p class="text-2xl font-bold">${totalWorkers}</p></div>
                         </div>
                     </div>
                     <div class="stat-card bg-white rounded-2xl p-4 border border-slate-200 shadow-sm">
@@ -883,24 +1055,24 @@
                             <div class="w-12 h-12 bg-amber-100 rounded-xl flex items-center justify-center">
                                 <iconify-icon icon="material-symbols:trending-up" width="24" class="text-amber-700"></iconify-icon>
                             </div>
-                            <div><p class="text-sm text-slate-500">${t('navigation.progress')}</p><p class="text-2xl font-bold">${completionPercent}%</p></div>
+                            <div><p class="text-sm text-slate-500">${t('dashboard.progress')}</p><p class="text-2xl font-bold">${completionPercent}%</p></div>
                         </div>
                     </div>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div class="bg-white rounded-2xl border p-4 shadow-sm">
-                        <h3 class="font-semibold text-sm mb-3">${t('dashboard.recentActivity')}</h3>
+                        <h3 class="font-semibold text-sm mb-3">${t('dashboard.recentMaterials')}</h3>
                         <div class="space-y-1 text-sm">
                             ${materialsData.slice(-4).reverse().map(m => `
-                                <div class="flex justify-between"><span>${m.name}</span><span class="text-slate-400">${m.quantity_used || 0} ${t('materials.quantityUsed')}</span></div>
+                                <div class="flex justify-between"><span>${m.name}</span><span class="text-slate-400">${m.quantity_used || 0} used</span></div>
                             `).join('') || `<p class="text-slate-400">${t('common.noDataAvailable')}</p>`}
                         </div>
                     </div>
                     <div class="bg-white rounded-2xl border p-4 shadow-sm">
-                        <h3 class="font-semibold text-sm mb-3">${t('progress.pending')}</h3>
+                        <h3 class="font-semibold text-sm mb-3">${t('dashboard.pendingTasks')}</h3>
                         <div class="space-y-1 text-sm">
                             ${progressTasks.filter(t => t.status === 'pending').slice(0,4).map(t => `
-                                <div class="flex justify-between"><span>${t.name}</span><span class="text-slate-400">${t('dashboard.endDate')}: ${formatDate(t.end_date)}</span></div>
+                                <div class="flex justify-between"><span>${t.name}</span><span class="text-slate-400">${t('progress.end')}: ${formatDate(t.end_date)}</span></div>
                             `).join('') || `<p class="text-slate-400">${t('common.noDataAvailable')}</p>`}
                         </div>
                     </div>
@@ -909,12 +1081,12 @@
         }
 
         // ──────────────────────────────────────────────────────────────
-        // MATERIALS
+        // MATERIALS (translated)
         // ──────────────────────────────────────────────────────────────
         function renderMaterials(container) {
             const grouped = {};
             materialsData.forEach(m => {
-                const date = m.date_used ? formatDate(m.date_used) : t('materials.dateUsed');
+                const date = m.date_used ? formatDate(m.date_used) : 'No date';
                 if (!grouped[date]) grouped[date] = [];
                 grouped[date].push(m);
             });
@@ -924,7 +1096,7 @@
 
             let html = `
                 <div class="flex justify-between items-center mb-4 sm:mb-6">
-                    <h2 class="text-xl sm:text-2xl font-bold">${t('materials.materialUsage')}</h2>
+                    <h2 class="text-xl sm:text-2xl font-bold">${t('materials.title')}</h2>
                     <button onclick="openAddMaterialModal()" class="px-3 py-2 bg-emerald-600 text-white rounded-xl hover:bg-emerald-700 flex items-center gap-2 text-sm">
                         <iconify-icon icon="material-symbols:add"></iconify-icon> ${t('materials.recordUsage')}
                     </button>
@@ -1006,7 +1178,7 @@
                     <input class="w-full border rounded-lg p-3" value="${mat.quantity_used || 0}" type="number" id="edit-mat-used" required step="0.01" placeholder="${t('materials.quantityUsed')}">
                     <input class="w-full border rounded-lg p-3" value="${mat.unit_cost || 0}" type="number" id="edit-mat-unit-cost" required step="0.01" placeholder="${t('materials.unitCost')}">
                     <div>
-                        <label class="text-sm font-medium">${t('common.add')} Image</label>
+                        <label class="text-sm font-medium">${t('common.add')} (optional)</label>
                         <input type="file" id="edit-mat-image" accept="image/*" class="w-full mt-1">
                     </div>
                     <button type="submit" class="w-full bg-emerald-600 text-white py-3 rounded-xl">${t('common.save')}</button>
@@ -1026,7 +1198,7 @@
                 const imageFile = document.getElementById('edit-mat-image').files[0];
 
                 const oldMat = materialsData.find(m => m.id === id);
-                if (!oldMat) throw new Error(t('alerts.somethingWentWrong'));
+                if (!oldMat) throw new Error(t('common.somethingWentWrong'));
 
                 const oldUsed = oldMat.quantity_used || 0;
                 const siteId = oldMat.site_id;
@@ -1046,7 +1218,7 @@
 
                 const restoredQuantity = stockItem.quantity + oldUsed;
                 if (newUsed > restoredQuantity) {
-                    alert(`${t('alerts.invalidValue')}: ${restoredQuantity} ${t('materials.availableStock')}`);
+                    alert(`${t('common.invalidValue')}: ${restoredQuantity} ${t('materials.quantityUsed')}`);
                     return;
                 }
                 const newStockQty = restoredQuantity - newUsed;
@@ -1082,18 +1254,18 @@
 
                 await batch.commit();
                 closeModal();
-                showToast(t('alerts.updatedSuccessfully'), 'success');
+                showToast(t('common.updatedSuccessfully'), 'success');
             } catch (err) {
-                showToast(t('alerts.somethingWentWrong'), 'error');
+                showToast(t('common.somethingWentWrong'), 'error');
             } finally {
                 setButtonLoading(btn, false);
             }
         };
 
         window.deleteMaterial = (id) => {
-            if (!confirm(t('alerts.areYouSure'))) return;
+            if (!confirm(t('common.areYouSure'))) return;
             const mat = materialsData.find(m => m.id === id);
-            if (!mat) { showToast(t('alerts.somethingWentWrong'), 'error'); return; }
+            if (!mat) { showToast(t('common.somethingWentWrong'), 'error'); return; }
 
             (async () => {
                 try {
@@ -1101,7 +1273,7 @@
                     const stockItem = stockData.find(s => s.site_id === siteId && s.material_name === mat.name);
                     if (!stockItem) {
                         await deleteDoc(doc(db, 'materials', id));
-                        showToast(t('alerts.deletedSuccessfully'), 'success');
+                        showToast(t('common.deletedSuccessfully'), 'success');
                         return;
                     }
 
@@ -1126,9 +1298,9 @@
                     });
 
                     await batch.commit();
-                    showToast(t('alerts.deletedSuccessfully'), 'success');
+                    showToast(t('common.deletedSuccessfully'), 'success');
                 } catch (err) {
-                    showToast(t('alerts.somethingWentWrong'), 'error');
+                    showToast(t('common.somethingWentWrong'), 'error');
                 }
             })();
         };
@@ -1155,12 +1327,12 @@
 
             const modalContent = `
                 <div class="mb-4">
-                    <label class="block text-sm font-medium text-slate-700 mb-1">${t('materials.usageDate')}</label>
+                    <label class="block text-sm font-medium text-slate-700 mb-1">${t('reports.startDate')}</label>
                     <input type="date" id="usageDate" value="${getTodayISO()}" class="border rounded-lg p-2 text-sm w-full" required>
                 </div>
                 <div id="material-entries"></div>
                 <button type="button" onclick="addMaterialEntry()" class="text-emerald-600 text-sm mt-2">+ ${t('materials.addMaterial')}</button>
-                <button onclick="submitBatchMaterials()" class="w-full bg-emerald-600 text-white py-2 rounded-xl mt-4">${t('common.save')} ${t('materials.title')}</button>
+                <button onclick="submitBatchMaterials()" class="w-full bg-emerald-600 text-white py-2 rounded-xl mt-4">${t('common.save')}</button>
             `;
 
             openModal(t('materials.recordUsage'), modalContent);
@@ -1173,7 +1345,7 @@
             const dateInput = document.getElementById('usageDate');
             const selectedDate = dateInput ? dateInput.value : getTodayISO();
             if (!selectedDate) {
-                alert(t('alerts.requiredField'));
+                alert(t('common.requiredField'));
                 return;
             }
             const dateObj = new Date(selectedDate + 'T00:00:00.000Z');
@@ -1203,14 +1375,12 @@
                 const stockItem = stockData.find(s => s.site_id === currentSiteId && s.material_name === entry.name);
                 if (stockItem) {
                     if (stockItem.quantity < entry.used) {
-                        alert(`${t('alerts.invalidValue')}: ${stockItem.quantity} ${stockItem.unit || 'units'} of ${entry.name}`);
+                        alert(`${t('common.invalidValue')}. ${stockItem.quantity} ${stockItem.unit || 'units'} of ${entry.name} available.`);
                         return;
                     }
                     stockChecks.push({ stockItem, entry });
                 } else {
-                    if (!confirm(t('common.cannotUndo'))) {
-                        return;
-                    }
+                    if (!confirm(t('common.areYouSure'))) return;
                 }
             }
 
@@ -1223,7 +1393,7 @@
                         try {
                             imageUrl = await uploadImageToImgbb(entry.imageFile);
                         } catch (e) {
-                            alert(t('alerts.somethingWentWrong'));
+                            alert(t('common.somethingWentWrong') + ': ' + entry.name);
                             throw e;
                         }
                     }
@@ -1267,43 +1437,43 @@
 
                 await batch.commit();
                 closeModal();
-                showToast(t('alerts.savedSuccessfully'), 'success');
+                showToast(t('common.savedSuccessfully'), 'success');
             } catch (err) {
-                showToast(t('alerts.somethingWentWrong'), 'error');
+                alert(t('common.somethingWentWrong') + ': ' + err.message);
             }
         };
 
         // ──────────────────────────────────────────────────────────────
-        // STOCK
+        // STOCK (translated)
         // ──────────────────────────────────────────────────────────────
         function renderStock(container) {
             const site = assignedSites.find(s => s.id === currentSiteId);
-            if (!site) { container.innerHTML = `<p class="text-red-500">${t('common.somethingWentWrong')}</p>`; return; }
+            if (!site) { container.innerHTML = '<p class="text-red-500">Site not found.</p>'; return; }
 
             const siteStock = stockData.filter(s => s.site_id === currentSiteId);
 
             let html = `
                 <div class="flex justify-between items-center mb-4">
-                    <h2 class="text-xl sm:text-2xl font-bold">${t('stock.stockManagement')}</h2>
+                    <h2 class="text-xl sm:text-2xl font-bold">${t('stock.title')}</h2>
                     <button onclick="openAddStockModal()" class="px-3 py-2 bg-emerald-600 text-white rounded-xl hover:bg-emerald-700 flex items-center gap-2 text-sm">
                         <iconify-icon icon="material-symbols:add"></iconify-icon> ${t('stock.receiveStock')}
                     </button>
                 </div>
                 <div class="bg-white rounded-2xl border p-4 shadow-sm mb-4">
-                    <p class="text-sm text-slate-600"><strong>${t('navigation.sites')}:</strong> ${site.name}</p>
-                    <p class="text-xs text-slate-400">${t('stock.stockLevels')}</p>
+                    <p class="text-sm text-slate-600"><strong>${t('navigation.dashboard')}:</strong> ${site.name}</p>
+                    <p class="text-xs text-slate-400">${t('common.noDataAvailable')}</p>
                 </div>
             `;
 
             if (siteStock.length === 0) {
-                html += `<p class="text-slate-500 text-sm">${t('stock.noStock')}</p>`;
+                html += `<p class="text-slate-500 text-sm">${t('common.noDataAvailable')}</p>`;
             } else {
                 html += `<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">`;
                 siteStock.forEach(item => {
-                    const status = item.quantity <= 0 ? t('stock.out') :
-                                 (item.minimum_quantity && item.quantity <= item.minimum_quantity ? t('stock.low') : t('stock.normal'));
+                    const status = item.quantity <= 0 ? t('stock.outOfStock') :
+                                 (item.minimum_quantity && item.quantity <= item.minimum_quantity ? t('stock.lowStock') : t('stock.normal'));
                     const statusClass = status === t('stock.normal') ? 'stock-status-normal' :
-                                       status === t('stock.low') ? 'stock-status-low' : 'stock-status-out';
+                                       status === t('stock.lowStock') ? 'stock-status-low' : 'stock-status-out';
                     const unitCost = materialsData.filter(m => m.site_id === currentSiteId && m.name === item.material_name).pop()?.unit_cost || 0;
                     const stockValue = item.quantity * unitCost;
                     html += `
@@ -1315,15 +1485,14 @@
                                 </div>
                                 <div class="mt-3 space-y-1 text-sm">
                                     <p><strong>${t('stock.quantity')}:</strong> ${item.quantity} ${item.unit || 'units'}</p>
-                                    <p><strong>${t('stock.min')}:</strong> ${item.minimum_quantity || t('common.noDataAvailable')} ${item.unit || ''}</p>
-                                    <p><strong>${t('stock.unitCost')}:</strong> ${unitCost.toFixed(2)} RWF</p>
-                                    <p><strong>${t('stock.value')}:</strong> ${stockValue.toFixed(2)} RWF</p>
-                                    <p><strong>${t('stock.updated')}:</strong> ${formatDate(item.updated_at)}</p>
+                                    <p><strong>${t('stock.minimumStock')}:</strong> ${item.minimum_quantity || 'Not set'} ${item.unit || ''}</p>
+                                    <p><strong>${t('stock.stockValue')}:</strong> ${stockValue.toFixed(2)} RWF</p>
+                                    <p><strong>${t('stock.lastUpdated')}:</strong> ${formatDate(item.updated_at)}</p>
                                     ${item.notes ? `<p><strong>${t('stock.notes')}:</strong> ${item.notes}</p>` : ''}
                                 </div>
                                 <div class="mt-4 flex gap-2">
-                                    <button onclick="editStockItem('${item.id}')" class="text-xs text-emerald-600 hover:text-emerald-800 font-medium">${t('stock.editStock')}</button>
-                                    <button onclick="viewStockHistory('${item.id}')" class="text-xs text-blue-600 hover:text-blue-800 font-medium">${t('stock.viewHistory')}</button>
+                                    <button onclick="editStockItem('${item.id}')" class="text-xs text-emerald-600 hover:text-emerald-800 font-medium">${t('common.edit')}</button>
+                                    <button onclick="viewStockHistory('${item.id}')" class="text-xs text-blue-600 hover:text-blue-800 font-medium">${t('stock.stockHistory')}</button>
                                 </div>
                             </div>
                         </div>
@@ -1336,7 +1505,7 @@
             if (recentTrans.length) {
                 html += `
                     <div class="mt-6 bg-white rounded-2xl border p-4 shadow-sm">
-                        <h3 class="font-semibold text-sm mb-3">${t('stock.recentTransactions')}</h3>
+                        <h3 class="font-semibold text-sm mb-3">${t('stock.stockHistory')}</h3>
                         <div class="space-y-2 max-h-60 overflow-y-auto">
                             ${recentTrans.map(t => `
                                 <div class="flex justify-between items-center text-sm border-b border-slate-100 pb-2">
@@ -1365,8 +1534,8 @@
                 <form onsubmit="handleAddStock(event)" class="space-y-4">
                     <div><label class="block text-sm font-medium text-slate-700 mb-1">${t('materials.materialName')}</label><input list="material-list" class="w-full border rounded-lg p-2.5 text-sm" id="stock-material" placeholder="${t('materials.materialName')}" required><datalist id="material-list">${materialOptions}</datalist></div>
                     <div><label class="block text-sm font-medium text-slate-700 mb-1">${t('stock.quantity')}</label><input type="number" step="0.01" class="w-full border rounded-lg p-2.5 text-sm" id="stock-quantity" placeholder="e.g. 100" required min="0"></div>
-                    <div><label class="block text-sm font-medium text-slate-700 mb-1">${t('materials.unit')}</label><select class="w-full border rounded-lg p-2.5 text-sm" id="stock-unit">${units.map(u => `<option value="${u}">${u}</option>`).join('')}</select></div>
-                    <div><label class="block text-sm font-medium text-slate-700 mb-1">${t('stock.min')}</label><input type="number" step="0.01" class="w-full border rounded-lg p-2.5 text-sm" id="stock-min" placeholder="e.g. 20"></div>
+                    <div><label class="block text-sm font-medium text-slate-700 mb-1">${t('common.add')}</label><select class="w-full border rounded-lg p-2.5 text-sm" id="stock-unit">${units.map(u => `<option value="${u}">${u}</option>`).join('')}</select></div>
+                    <div><label class="block text-sm font-medium text-slate-700 mb-1">${t('stock.minimumStock')}</label><input type="number" step="0.01" class="w-full border rounded-lg p-2.5 text-sm" id="stock-min" placeholder="e.g. 20"></div>
                     <div><label class="block text-sm font-medium text-slate-700 mb-1">${t('stock.notes')}</label><input class="w-full border rounded-lg p-2.5 text-sm" id="stock-notes" placeholder="${t('stock.notes')}"></div>
                     <button type="submit" class="w-full bg-emerald-600 text-white py-3 rounded-xl">${t('common.save')}</button>
                 </form>
@@ -1388,7 +1557,7 @@
                 const notes = document.getElementById('stock-notes').value.trim();
 
                 if (!materialName || quantity <= 0) {
-                    alert(t('alerts.requiredField'));
+                    alert(t('common.requiredField'));
                     return;
                 }
 
@@ -1431,9 +1600,9 @@
                 });
 
                 closeModal();
-                showToast(t('alerts.savedSuccessfully'), 'success');
+                showToast(t('common.savedSuccessfully'), 'success');
             } catch (err) {
-                showToast(t('alerts.somethingWentWrong'), 'error');
+                showToast(t('common.somethingWentWrong'), 'error');
             } finally {
                 setButtonLoading(btn, false);
             }
@@ -1446,8 +1615,8 @@
                 <form onsubmit="handleEditStock(event, '${id}')" class="space-y-4">
                     <div><label class="block text-sm font-medium text-slate-700 mb-1">${t('materials.materialName')}</label><input class="w-full border rounded-lg p-2.5 text-sm" id="edit-stock-material" value="${item.material_name || ''}" required></div>
                     <div><label class="block text-sm font-medium text-slate-700 mb-1">${t('stock.quantity')}</label><input type="number" step="0.01" class="w-full border rounded-lg p-2.5 text-sm" id="edit-stock-quantity" value="${item.quantity || 0}" required min="0"></div>
-                    <div><label class="block text-sm font-medium text-slate-700 mb-1">${t('materials.unit')}</label><select class="w-full border rounded-lg p-2.5 text-sm" id="edit-stock-unit">${['bags','tons','kg','litres','pieces','rolls','cubic meters'].map(u => `<option value="${u}" ${u === item.unit ? 'selected' : ''}>${u}</option>`).join('')}</select></div>
-                    <div><label class="block text-sm font-medium text-slate-700 mb-1">${t('stock.min')}</label><input type="number" step="0.01" class="w-full border rounded-lg p-2.5 text-sm" id="edit-stock-min" value="${item.minimum_quantity || ''}"></div>
+                    <div><label class="block text-sm font-medium text-slate-700 mb-1">${t('common.add')}</label><select class="w-full border rounded-lg p-2.5 text-sm" id="edit-stock-unit">${['bags','tons','kg','litres','pieces','rolls','cubic meters'].map(u => `<option value="${u}" ${u === item.unit ? 'selected' : ''}>${u}</option>`).join('')}</select></div>
+                    <div><label class="block text-sm font-medium text-slate-700 mb-1">${t('stock.minimumStock')}</label><input type="number" step="0.01" class="w-full border rounded-lg p-2.5 text-sm" id="edit-stock-min" value="${item.minimum_quantity || ''}"></div>
                     <div><label class="block text-sm font-medium text-slate-700 mb-1">${t('stock.notes')}</label><input class="w-full border rounded-lg p-2.5 text-sm" id="edit-stock-notes" value="${item.notes || ''}"></div>
                     <button type="submit" class="w-full bg-emerald-600 text-white py-3 rounded-xl">${t('common.save')}</button>
                 </form>
@@ -1468,7 +1637,7 @@
                 const notes = document.getElementById('edit-stock-notes').value.trim();
 
                 const item = stockData.find(s => s.id === id);
-                if (!item) throw new Error('Stock item not found');
+                if (!item) throw new Error(t('common.somethingWentWrong'));
 
                 await updateDoc(doc(db, 'stock', id), {
                     material_name: materialName,
@@ -1496,9 +1665,9 @@
                     });
                 }
                 closeModal();
-                showToast(t('alerts.updatedSuccessfully'), 'success');
+                showToast(t('common.updatedSuccessfully'), 'success');
             } catch (err) {
-                showToast(t('alerts.somethingWentWrong'), 'error');
+                showToast(t('common.somethingWentWrong'), 'error');
             } finally {
                 setButtonLoading(btn, false);
             }
@@ -1521,18 +1690,18 @@
                 `;
             });
             html += `</div>`;
-            openModal(t('stock.viewHistory'), html);
+            openModal(t('stock.stockHistory'), html);
         };
 
         // ──────────────────────────────────────────────────────────────
-        // WORKERS
+        // WORKERS (translated)
         // ──────────────────────────────────────────────────────────────
         function renderWorkers(container) {
             container.innerHTML = `
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
                     <div class="flex gap-2 p-1 bg-slate-200/60 rounded-xl">
                         <button onclick="switchWorkersTab('view')" class="px-4 py-2 rounded-lg text-sm font-semibold transition ${workersTab === 'view' ? 'tab-active shadow-sm' : 'tab-inactive'}" id="tab-btn-view">
-                            <iconify-icon icon="material-symbols:grid-view" class="inline mr-1"></iconify-icon> ${t('workers.allWorkers')}
+                            <iconify-icon icon="material-symbols:grid-view" class="inline mr-1"></iconify-icon> ${t('workers.view')}
                         </button>
                         <button onclick="switchWorkersTab('record')" class="px-4 py-2 rounded-lg text-sm font-semibold transition ${workersTab === 'record' ? 'tab-active shadow-sm' : 'tab-inactive'}" id="tab-btn-record">
                             <iconify-icon icon="material-symbols:edit-calendar" class="inline mr-1"></iconify-icon> ${t('workers.recordAttendance')}
@@ -1579,24 +1748,24 @@
                 <form onsubmit="handleAddWorker(event)" class="space-y-4">
                     <div><label class="block text-sm font-medium text-slate-700 mb-1">${t('workers.fullName')}</label><input class="w-full border rounded-lg p-2.5 text-sm" placeholder="${t('workers.fullName')}" id="worker-name" required></div>
                     <div class="relative">
-                        <label class="block text-sm font-medium text-slate-700 mb-1">${t('workers.role')} (select option)</label>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">${t('workers.role')}</label>
                         <div id="role-selector" class="border rounded-lg p-2.5 bg-white flex items-center justify-between cursor-pointer text-sm" onclick="document.getElementById('role-dropdown').classList.toggle('hidden')">
-                            <span id="selected-role-text" class="text-slate-400">${t('workers.role')}...</span>
+                            <span id="selected-role-text" class="text-slate-400">${t('workers.selectWorkerRole')}</span>
                             <iconify-icon icon="material-symbols:arrow-drop-down" width="20"></iconify-icon>
                         </div>
                         <input type="hidden" id="worker-role" required>
                         <div id="role-dropdown" class="hidden absolute z-20 w-full bg-white border rounded-lg mt-1 max-h-48 overflow-y-auto shadow-lg">
-                            <input type="text" id="role-search" class="w-full border-b p-2 text-sm sticky top-0 bg-white" placeholder="${t('common.search')}..." oninput="filterRoleDropdown()">
+                            <input type="text" id="role-search" class="w-full border-b p-2 text-sm sticky top-0 bg-white" placeholder="${t('workers.searchRole')}" oninput="filterRoleDropdown()">
                             <div id="role-options-container">${roleOptions}</div>
                         </div>
                     </div>
                     <div class="grid grid-cols-2 gap-3">
-                        <div><label class="block text-sm font-medium text-slate-700 mb-1">${t('workers.salaryType')}</label><select id="worker-payment" class="w-full border rounded-lg p-2.5 text-sm" required><option value="">${t('dashboard.selectSite')}</option><option value="daily">${t('workers.daily')}</option><option value="monthly">${t('workers.monthly')}</option></select></div>
-                        <div><label class="block text-sm font-medium text-slate-700 mb-1">${t('workers.salary')}</label><input class="w-full border rounded-lg p-2.5 text-sm" placeholder="e.g. 5000" type="number" id="worker-salary" required min="0"></div>
+                        <div><label class="block text-sm font-medium text-slate-700 mb-1">${t('workers.paymentType')}</label><select id="worker-payment" class="w-full border rounded-lg p-2.5 text-sm" required><option value="">${t('common.add')}...</option><option value="daily">${t('workers.dailyRate')}</option><option value="monthly">${t('workers.monthlySalary')}</option></select></div>
+                        <div><label class="block text-sm font-medium text-slate-700 mb-1">${t('workers.salary')} (RWF)</label><input class="w-full border rounded-lg p-2.5 text-sm" placeholder="e.g. 5000" type="number" id="worker-salary" required min="0"></div>
                     </div>
                     <div><label class="block text-sm font-medium text-slate-700 mb-1">${t('workers.phone')}</label><input class="w-full border rounded-lg p-2.5 text-sm" placeholder="078XXXXXXX" type="tel" id="worker-phone"></div>
-                    <div><label class="block text-sm font-medium text-slate-700 mb-1">${t('common.add')} Photo</label><input type="file" id="worker-image" accept="image/*" class="w-full text-sm"></div>
-                    <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-3 rounded-xl transition">${t('common.save')}</button>
+                    <div><label class="block text-sm font-medium text-slate-700 mb-1">${t('workers.photo')} (${t('common.add')})</label><input type="file" id="worker-image" accept="image/*" class="w-full text-sm"></div>
+                    <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-3 rounded-xl transition">${t('workers.saveWorker')}</button>
                 </form>
             `;
 
@@ -1635,7 +1804,7 @@
                 const imageFile = document.getElementById('worker-image').files[0];
 
                 if (!name || !role || !payment) {
-                    alert(t('alerts.requiredField'));
+                    alert(t('common.requiredField'));
                     return;
                 }
 
@@ -1644,7 +1813,7 @@
                     try {
                         imageUrl = await uploadImageToImgbb(imageFile);
                     } catch (err) {
-                        alert(t('alerts.somethingWentWrong'));
+                        alert(t('common.somethingWentWrong') + ': ' + err.message);
                         return;
                     }
                 }
@@ -1662,9 +1831,9 @@
                 });
 
                 closeModal();
-                showToast(t('alerts.savedSuccessfully'), 'success');
+                showToast(t('common.savedSuccessfully'), 'success');
             } catch (err) {
-                showToast(t('alerts.somethingWentWrong'), 'error');
+                alert(t('common.somethingWentWrong') + ': ' + err.message);
             } finally {
                 setButtonLoading(btn, false);
             }
@@ -1678,14 +1847,14 @@
             const viewer = document.createElement('div');
             viewer.className = `fixed inset-0 z-[9999] bg-black/95 backdrop-blur-sm flex items-center justify-center p-4`;
             viewer.innerHTML = `
-                <button onclick="this.parentElement.remove(); document.body.style.overflow='';" class="absolute top-4 right-4 z-50 w-11 h-11 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition" aria-label="Close">
+                <button onclick="this.parentElement.remove(); document.body.style.overflow='';" class="absolute top-4 right-4 z-50 w-11 h-11 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition" aria-label="${t('common.close')}">
                     <iconify-icon icon="material-symbols:close" class="text-3xl"></iconify-icon>
                 </button>
                 <div class="w-full h-full flex items-center justify-center px-4" onclick="event.stopPropagation()">
                     <img src="${imageUrl}" class="max-w-full max-h-[90vh] object-contain rounded-xl shadow-2xl" alt="${worker.name}">
                 </div>
                 <div class="absolute bottom-8 left-1/2 -translate-x-1/2 text-white bg-black/60 px-4 py-2 rounded-lg text-sm">
-                    ${worker.name} — ${worker.role || 'Worker'}
+                    ${worker.name} — ${worker.role || t('workers.view')}
                 </div>
             `;
             document.body.appendChild(viewer);
@@ -1704,19 +1873,19 @@
                 <div class="space-y-2 text-sm">
                     <p><strong>${t('workers.fullName')}:</strong> ${worker.name}</p>
                     <p><strong>${t('workers.role')}:</strong> ${worker.role || '—'}</p>
-                    <p><strong>${t('workers.salaryType')}:</strong> ${worker.payment_method || '—'}</p>
+                    <p><strong>${t('workers.paymentType')}:</strong> ${worker.payment_method || '—'}</p>
                     <p><strong>${t('workers.salary')}:</strong> ${(Number(worker.salary) || 0).toLocaleString()} RWF</p>
                     <p><strong>${t('workers.phone')}:</strong> ${worker.phone || '—'}</p>
                     <p><strong>ID:</strong> ${worker.id}</p>
-                    <p><strong>${t('workers.allWorkers')}:</strong> ${formatDate(worker.added_at)}</p>
+                    <p><strong>${t('settings.memberSince')}:</strong> ${formatDate(worker.added_at)}</p>
                 </div>
             `;
-            openModal(t('workers.viewDetails'), details);
+            openModal(t('workers.workerDetails'), details);
         };
 
         function renderWorkersView() {
             if (!siteWorkersData.length) {
-                return `<div class="bg-white rounded-2xl border p-6 text-center"><p class="text-slate-500">${t('workers.noPositions')}</p></div>`;
+                return `<div class="bg-white rounded-2xl border p-6 text-center"><p class="text-slate-500">${t('workers.noWorkers')}</p></div>`;
             }
 
             let html = `<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">`;
@@ -1735,7 +1904,7 @@
                         </div>
                         <div class="p-5">
                             <div class="flex items-start justify-between gap-3">
-                                <div class="min-w-0"><p class="font-bold text-lg text-slate-800 truncate">${w.name}</p><p class="text-sm text-emerald-600 font-medium mt-1">${w.role || t('workers.role')}</p></div>
+                                <div class="min-w-0"><p class="font-bold text-lg text-slate-800 truncate">${w.name}</p><p class="text-sm text-emerald-600 font-medium mt-1">${w.role || t('workers.view')}</p></div>
                                 <span class="text-xs bg-emerald-50 text-emerald-700 px-2.5 py-1 rounded-full whitespace-nowrap capitalize">${w.payment_method || 'N/A'}</span>
                             </div>
                             <div class="mt-5 space-y-3">
@@ -1745,7 +1914,7 @@
                             <div class="mt-4 pt-3 border-t border-slate-100 flex justify-end">
                                 <button onclick="viewWorkerDetail('${w.id}')" class="text-xs text-emerald-600 hover:text-emerald-800 font-medium flex items-center gap-1 transition">
                                     <iconify-icon icon="material-symbols:info" width="14" height="14"></iconify-icon>
-                                    ${t('workers.viewDetails')}
+                                    ${t('workers.view')}
                                 </button>
                             </div>
                         </div>
@@ -1768,21 +1937,21 @@
                 <div class="space-y-6">
                     <div class="bg-white rounded-2xl border p-4 shadow-sm">
                         <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                            <div><h3 class="text-sm font-semibold text-slate-600 flex items-center gap-2"><iconify-icon icon="material-symbols:calendar-today" class="text-emerald-600"></iconify-icon> ${t('workers.attendanceDate')}</h3></div>
+                            <div><h3 class="text-sm font-semibold text-slate-600 flex items-center gap-2"><iconify-icon icon="material-symbols:calendar-today" class="text-emerald-600"></iconify-icon> ${t('workers.recordAttendance')}</h3></div>
                             <div class="flex items-center gap-2">
                                 <button onclick="changeAttendanceDate(-1)" class="p-2 rounded-lg border hover:bg-slate-50 transition"><iconify-icon icon="material-symbols:chevron-left" class="text-slate-600"></iconify-icon></button>
                                 <input type="date" id="attendance-date" value="${today}" class="border rounded-lg px-3 py-2 text-sm w-40 focus:ring-2 focus:ring-emerald-500 outline-none" onchange="updateAttendanceSummary()">
-                                <button onclick="changeAttendanceDate(0)" class="px-3 py-2 bg-emerald-50 text-emerald-700 rounded-lg text-sm font-medium hover:bg-emerald-100 transition">${t('workers.today')}</button>
+                                <button onclick="changeAttendanceDate(0)" class="px-3 py-2 bg-emerald-50 text-emerald-700 rounded-lg text-sm font-medium hover:bg-emerald-100 transition">${t('common.save')}</button>
                                 <button onclick="changeAttendanceDate(1)" class="p-2 rounded-lg border hover:bg-slate-50 transition"><iconify-icon icon="material-symbols:chevron-right" class="text-slate-600"></iconify-icon></button>
                             </div>
                         </div>
-                        <div id="attendance-status-badge" class="mt-3 hidden"><div class="inline-flex items-center gap-2 bg-amber-50 text-amber-700 px-3 py-1.5 rounded-full text-xs font-medium border border-amber-200"><iconify-icon icon="material-symbols:info-outline" class="text-amber-500"></iconify-icon> Attendance for this date is already recorded. Submitting will update existing records.</div></div>
+                        <div id="attendance-status-badge" class="mt-3 hidden"><div class="inline-flex items-center gap-2 bg-amber-50 text-amber-700 px-3 py-1.5 rounded-full text-xs font-medium border border-amber-200"><iconify-icon icon="material-symbols:info-outline" class="text-amber-500"></iconify-icon> ${t('common.noDataAvailable')}</div></div>
                     </div>
 
                     <div class="bg-white rounded-2xl border p-4 shadow-sm">
                         <div class="flex items-center justify-between mb-4">
-                            <h4 class="text-sm font-medium text-slate-700 flex items-center gap-2"><iconify-icon icon="material-symbols:people" class="text-emerald-600"></iconify-icon> ${t('workers.selectPresentWorkers')} <span class="text-xs text-slate-400 font-normal">(${siteWorkersData.length})</span></h4>
-                            <button onclick="toggleSelectAllWorkers()" id="select-all-btn" class="text-xs text-emerald-600 hover:text-emerald-800 font-medium flex items-center gap-1 transition"><iconify-icon icon="material-symbols:select-all" class="text-sm"></iconify-icon><span>${t('workers.allWorkers')}</span></button>
+                            <h4 class="text-sm font-medium text-slate-700 flex items-center gap-2"><iconify-icon icon="material-symbols:people" class="text-emerald-600"></iconify-icon> ${t('workers.view')} <span class="text-xs text-slate-400 font-normal">(${siteWorkersData.length})</span></h4>
+                            <button onclick="toggleSelectAllWorkers()" id="select-all-btn" class="text-xs text-emerald-600 hover:text-emerald-800 font-medium flex items-center gap-1 transition"><iconify-icon icon="material-symbols:select-all" class="text-sm"></iconify-icon><span>${t('common.add')} All</span></button>
                         </div>
                         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 max-h-80 overflow-y-auto pr-1">
                             ${siteWorkersData.map(w => {
@@ -1793,8 +1962,8 @@
                                         <input type="checkbox" id="worker-chk-${w.id}" value="${w.id}" class="hidden worker-checkbox-input">
                                         <div class="flex items-center gap-3">
                                             <div class="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-700 font-bold text-sm overflow-hidden flex-shrink-0">${w.image ? `<img src="${w.image}" class="w-full h-full object-cover" alt="${w.name}">` : initial}</div>
-                                            <div class="flex-1 min-w-0"><p class="text-sm font-medium text-slate-800 truncate">${w.name}</p><p class="text-xs text-slate-500 truncate">${w.role || t('workers.role')}</p></div>
-                                            <div class="text-right flex-shrink-0"><span class="text-xs font-semibold text-emerald-700">${dailyRate.toLocaleString()} RWF</span><span class="text-[10px] text-slate-400 block">/ ${t('workers.daily')}</span></div>
+                                            <div class="flex-1 min-w-0"><p class="text-sm font-medium text-slate-800 truncate">${w.name}</p><p class="text-xs text-slate-500 truncate">${w.role || t('workers.view')}</p></div>
+                                            <div class="text-right flex-shrink-0"><span class="text-xs font-semibold text-emerald-700">${dailyRate.toLocaleString()} RWF</span><span class="text-[10px] text-slate-400 block">/ day</span></div>
                                         </div>
                                         <div class="absolute top-2 right-2 w-5 h-5 rounded-full bg-emerald-600 text-white flex items-center justify-center opacity-0 scale-75 transition-all duration-200" data-checkmark><iconify-icon icon="material-symbols:check" class="text-xs"></iconify-icon></div>
                                     </div>
@@ -1806,19 +1975,19 @@
                     <div id="attendance-summary" class="bg-white rounded-2xl border p-4 shadow-sm hidden">
                         <div class="flex flex-wrap items-center justify-between gap-4">
                             <div class="flex items-center gap-6">
-                                <div><p class="text-xs text-slate-500">${t('workers.selected')}</p><p class="text-2xl font-bold text-slate-800"><span id="selected-count">0</span> <span class="text-sm font-normal text-slate-400">/ ${siteWorkersData.length}</span></p></div>
+                                <div><p class="text-xs text-slate-500">${t('workers.view')}</p><p class="text-2xl font-bold text-slate-800"><span id="selected-count">0</span> <span class="text-sm font-normal text-slate-400">/ ${siteWorkersData.length}</span></p></div>
                                 <div class="h-10 w-px bg-slate-200"></div>
-                                <div><p class="text-xs text-slate-500">${t('workers.totalDailyCost')}</p><p class="text-2xl font-bold text-emerald-600"><span id="total-cost">0</span> <span class="text-sm font-normal text-slate-400">RWF</span></p></div>
+                                <div><p class="text-xs text-slate-500">${t('reports.totalPayroll')}</p><p class="text-2xl font-bold text-emerald-600"><span id="total-cost">0</span> <span class="text-sm font-normal text-slate-400">RWF</span></p></div>
                             </div>
                             <div class="flex items-center gap-3">
                                 <div class="w-32 h-2 bg-slate-100 rounded-full overflow-hidden"><div id="selection-progress" class="h-full bg-emerald-500 rounded-full transition-all duration-500" style="width:0%"></div></div>
-                                <button onclick="submitAttendance(this)" class="px-6 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-sm font-semibold shadow-md transition-all flex items-center gap-2"><iconify-icon icon="material-symbols:save"></iconify-icon> ${t('workers.saveAttendance')}</button>
+                                <button onclick="submitAttendance(this)" class="px-6 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-sm font-semibold shadow-md transition-all flex items-center gap-2"><iconify-icon icon="material-symbols:save"></iconify-icon> ${t('common.save')}</button>
                             </div>
                         </div>
                     </div>
 
                     <div class="bg-white rounded-2xl border p-4 shadow-sm">
-                        <h4 class="text-sm font-medium text-slate-700 flex items-center gap-2 mb-3"><iconify-icon icon="material-symbols:history" class="text-emerald-600"></iconify-icon> ${t('workers.attendanceLogs')}</h4>
+                        <h4 class="text-sm font-medium text-slate-700 flex items-center gap-2 mb-3"><iconify-icon icon="material-symbols:history" class="text-emerald-600"></iconify-icon> ${t('reports.workerPayroll')}</h4>
                         <div id="attendance-history-container">${attendanceData.length ? renderAttendanceHistory() : `<p class="text-sm text-slate-400">${t('common.noDataAvailable')}</p>`}</div>
                     </div>
                 </div>
@@ -1875,7 +2044,7 @@
             });
             const btn = document.getElementById('select-all-btn');
             if (btn) {
-                btn.querySelector('span').textContent = allWorkersSelected ? t('workers.allWorkers') : t('workers.allWorkers');
+                btn.querySelector('span').textContent = allWorkersSelected ? 'Deselect All' : 'Select All';
                 btn.querySelector('iconify-icon').icon = allWorkersSelected ? 'material-symbols:deselect' : 'material-symbols:select-all';
             }
             updateAttendanceSummary();
@@ -1926,7 +2095,7 @@
             const selectedIds = Array.from(checkedBoxes).map(cb => cb.value);
 
             if (selectedIds.length === 0) {
-                alert(t('workers.selectPresentWorkers'));
+                alert(t('common.requiredField'));
                 return;
             }
 
@@ -1957,12 +2126,12 @@
                 });
 
                 await batch.commit();
-                showToast(t('alerts.savedSuccessfully'), 'success');
+                showToast(t('common.savedSuccessfully'), 'success');
                 if (currentSection === 'reports' && reportType === 'payroll') {
                     setTimeout(updatePayrollReport, 300);
                 }
             } catch (err) {
-                showToast(t('alerts.somethingWentWrong'), 'error');
+                showToast(t('common.somethingWentWrong'), 'error');
             } finally {
                 setButtonLoading(btn, false);
             }
@@ -1995,41 +2164,41 @@
         }
 
         // ──────────────────────────────────────────────────────────────
-        // PROGRESS
+        // PROGRESS (translated)
         // ──────────────────────────────────────────────────────────────
         function renderProgress(container) {
             container.innerHTML = `
-                <h2 class="text-xl sm:text-2xl font-bold mb-4">${t('navigation.progress')}</h2>
+                <h2 class="text-xl sm:text-2xl font-bold mb-4">${t('progress.title')}</h2>
                 <div class="bg-white rounded-2xl border overflow-hidden shadow-sm">
                     ${progressTasks.length ? `
                     <div class="overflow-x-auto">
                         <table class="w-full text-sm">
-                            <thead class="bg-slate-50 uppercase text-xs"><tr><th class="px-3 py-2 text-center">Action</th><th class="px-3 py-2">${t('progress.task')}</th><th class="px-3 py-2">${t('progress.start')}</th><th class="px-3 py-2">${t('progress.end')}</th><th class="px-3 py-2">${t('progress.status')}</th></tr></thead>
+                            <thead class="bg-slate-50 uppercase text-xs"><tr><th class="px-3 py-2 text-center">${t('common.add')}</th><th class="px-3 py-2">${t('progress.task')}</th><th class="px-3 py-2">${t('progress.start')}</th><th class="px-3 py-2">${t('progress.end')}</th><th class="px-3 py-2">${t('progress.status')}</th></tr></thead>
                             <tbody>${progressTasks.map(t => `
                                 <tr>
-                                    <td class="px-3 py-2 text-center">${t.status !== 'completed' ? `<button onclick="markTaskCompleted('${t.id}')" class="bg-gray-300 hover:bg-gray-400 text-white w-8 h-8 rounded-full inline-flex items-center justify-center transition-all" title="${t('progress.markAsCompleted')}"><iconify-icon icon="material-symbols:check" width="18" height="18"></iconify-icon></button>` : `<span class="text-emerald-600"><iconify-icon icon="material-symbols:check-circle" width="20" height="20"></iconify-icon></span>`}</td>
+                                    <td class="px-3 py-2 text-center">${t.status !== 'completed' ? `<button onclick="markTaskCompleted('${t.id}')" class="bg-gray-300 hover:bg-gray-400 text-white w-8 h-8 rounded-full inline-flex items-center justify-center transition-all" title="${t('progress.markCompleted')}"><iconify-icon icon="material-symbols:check" width="18" height="18"></iconify-icon></button>` : `<span class="text-emerald-600"><iconify-icon icon="material-symbols:check-circle" width="20" height="20"></iconify-icon></span>`}</td>
                                     <td class="px-3 py-2 font-medium">${t.name}</td>
                                     <td class="px-3 py-2">${formatDate(t.start_date)}</td>
                                     <td class="px-3 py-2">${formatDate(t.end_date)}</td>
-                                    <td class="px-3 py-2"><span class="px-2 py-1 rounded-full text-xs ${t.status === 'completed' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}">${t.status}</span></td>
+                                    <td class="px-3 py-2"><span class="px-2 py-1 rounded-full text-xs ${t.status === 'completed' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}">${t.status === 'completed' ? t('progress.completed') : t('progress.pending')}</span></td>
                                 </tr>
                             `).join('')}</tbody>
                         </table>
                     </div>
-                    ` : `<p class="p-4 text-slate-500">${t('progress.noTasksAssigned')}</p>`}
+                    ` : `<p class="p-4 text-slate-500">${t('progress.noTasks')}</p>`}
                 </div>
             `;
         }
 
         window.markTaskCompleted = async (taskId) => {
-            if (!confirm(t('alerts.areYouSure'))) return;
+            if (!confirm(t('common.areYouSure'))) return;
             try {
                 await updateDoc(doc(db, 'progress_tasks', taskId), { status: 'completed', updated_at: new Date().toISOString() });
-            } catch (err) { showToast(t('alerts.somethingWentWrong'), 'error'); }
+            } catch (err) { showToast(t('common.somethingWentWrong'), 'error'); }
         };
 
         // ──────────────────────────────────────────────────────────────
-        // REPORTS
+        // REPORTS (translated)
         // ──────────────────────────────────────────────────────────────
         function getCompanyDetails() {
             return {
@@ -2401,151 +2570,227 @@
             setTimeout(() => win.print(), 800);
         };
 
-        // ──────────────────────────────────────────────────────────────
-        // GALLERY
-        // ──────────────────────────────────────────────────────────────
-        function renderGallery(container) {
-            container.innerHTML = `
-                <h2 class="text-xl sm:text-2xl font-bold mb-4">${t('gallery.title')}</h2>
-                <div class="bg-white rounded-2xl border p-4 mb-4">
-                    <h3 class="font-semibold text-sm mb-3">${t('gallery.uploadNewImage')}</h3>
-                    <form onsubmit="handleGalleryUpload(event)" class="space-y-3">
-                        <input type="file" id="gallery-image" accept="image/*" required class="w-full border rounded-lg p-2 text-sm">
-                        <textarea id="gallery-description" placeholder="${t('gallery.description')}" rows="2" class="w-full border rounded-lg p-2 text-sm"></textarea>
-                        <button type="submit" class="w-full bg-emerald-600 text-white py-2 rounded-xl text-sm font-medium">${t('gallery.upload')}</button>
-                    </form>
-                </div>
-                <div id="gallery-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                    ${galleryData.length ? galleryData.map((item, index) => `
-                        <div class="bg-white rounded-2xl border overflow-hidden shadow-sm">
-                            <div class="relative w-full h-40 overflow-hidden cursor-pointer group bg-slate-100" onclick="openGalleryImage(${index})">
-                                <img src="${item.image || PLACEHOLDER_IMG}" class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" alt="Gallery image" loading="lazy" onerror="this.src='${PLACEHOLDER_IMG}'">
-                                <div class="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition duration-300 flex items-center justify-center">
-                                    <div class="opacity-0 group-hover:opacity-100 transition bg-white/90 rounded-full p-3 shadow-lg">
-                                        <iconify-icon icon="material-symbols:zoom-in" class="text-emerald-600 text-2xl"></iconify-icon>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="p-3">
-                                <p class="text-sm text-slate-700">${item.description || t('gallery.description')}</p>
-                                <p class="text-xs text-slate-400 mt-1">${t('stock.updated')}: ${formatDate(item.uploaded_at)}</p>
+// ──────────────────────────────────────────────────────────────
+// GALLERY (Owner style - with edit/delete, fit screen, no zoom)
+// ──────────────────────────────────────────────────────────────
+function renderGallery(container) {
+    container.innerHTML = `
+        <h2 class="text-xl sm:text-2xl font-bold mb-4">${t('gallery.title')}</h2>
+        <div class="bg-white rounded-2xl border p-4 mb-4">
+            <h3 class="font-semibold text-sm mb-3">${t('gallery.uploadImage')}</h3>
+            <form onsubmit="handleGalleryUpload(event)" class="space-y-3">
+                <input type="file" id="gallery-image" accept="image/*" required class="w-full border rounded-lg p-2 text-sm">
+                <textarea id="gallery-description" placeholder="${t('gallery.description')}" rows="2" class="w-full border rounded-lg p-2 text-sm"></textarea>
+                <button type="submit" class="w-full bg-emerald-600 text-white py-2 rounded-xl text-sm font-medium">${t('gallery.upload')}</button>
+            </form>
+        </div>
+        <div id="gallery-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            ${galleryData.length ? galleryData.map((item, index) => `
+                <div class="bg-white rounded-2xl border overflow-hidden shadow-sm flex flex-col">
+                    <div class="relative w-full h-40 overflow-hidden cursor-pointer group bg-slate-100" onclick="openGalleryImage(${index})">
+                        <img src="${item.image || PLACEHOLDER_IMG}" class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" alt="Gallery image" loading="lazy" onerror="this.src='${PLACEHOLDER_IMG}'">
+                        <div class="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition duration-300 flex items-center justify-center">
+                            <div class="opacity-0 group-hover:opacity-100 transition bg-white/90 rounded-full p-3 shadow-lg">
+                                <iconify-icon icon="material-symbols:zoom-in" class="text-emerald-600 text-2xl"></iconify-icon>
                             </div>
                         </div>
-                    `).join('') : `<p class="text-slate-400 col-span-full text-sm">${t('gallery.noImagesUploaded')}</p>`}
+                    </div>
+                    <div class="p-3 flex-1 flex flex-col">
+                        <p class="text-sm text-slate-700 flex-1">${item.description || t('common.noDataAvailable')}</p>
+                        <p class="text-xs text-slate-400 mt-2">${t('stock.lastUpdated')}: ${formatDate(item.uploaded_at)}</p>
+                        <div class="mt-3 pt-2 border-t border-slate-100 flex justify-end gap-2">
+                            <button onclick="editGalleryItem('${item.id}')" class="text-xs text-emerald-600 hover:text-emerald-800 font-medium px-2 py-1 bg-emerald-50 rounded-lg">${t('common.edit')}</button>
+                            <button onclick="deleteGalleryItem('${item.id}')" class="text-xs text-red-500 hover:text-red-700 font-medium px-2 py-1 bg-red-50 rounded-lg">${t('common.delete')}</button>
+                        </div>
+                    </div>
                 </div>
-            `;
+            `).join('') : `<p class="text-slate-400 col-span-full text-sm">${t('gallery.noImages')}</p>`}
+        </div>
+    `;
+}
+
+let galleryViewerIndex = 0;
+
+window.openGalleryImage = (index) => {
+    if (!galleryData.length) return;
+    galleryViewerIndex = index;
+    document.getElementById('gallery-image-viewer')?.remove();
+
+    const viewer = document.createElement('div');
+    viewer.id = 'gallery-image-viewer';
+    viewer.className = `fixed inset-0 z-[9999] bg-black/95 backdrop-blur-sm flex items-center justify-center p-4`;
+
+    viewer.innerHTML = `
+        <div class="absolute top-4 right-4 sm:top-6 sm:right-6 z-50 flex gap-2">
+            <button onclick="downloadGalleryImage()" class="w-11 h-11 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition" title="${t('common.save')}">
+                <iconify-icon icon="material-symbols:download" class="text-2xl"></iconify-icon>
+            </button>
+            <button onclick="closeGalleryImageViewer()" class="w-11 h-11 rounded-full bg-white/10 hover:bg-red-500/20 text-white flex items-center justify-center transition" title="${t('gallery.close')}" aria-label="${t('gallery.close')}">
+                <iconify-icon icon="material-symbols:close" class="text-3xl"></iconify-icon>
+            </button>
+        </div>
+
+        <div id="gallery-viewer-counter" class="absolute top-5 left-1/2 -translate-x-1/2 bg-black/70 text-white px-3 py-1.5 rounded-full text-sm z-40"></div>
+
+        <button id="gallery-prev" onclick="previousGalleryImage(event)" class="absolute left-3 sm:left-6 top-1/2 -translate-y-1/2 z-40 w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-white/10 hover:bg-white/25 text-white flex items-center justify-center transition">
+            <iconify-icon icon="material-symbols:chevron-left" class="text-4xl"></iconify-icon>
+        </button>
+
+        <div class="w-full h-full flex flex-col items-center justify-center px-14 sm:px-20" onclick="event.stopPropagation()">
+            <img id="gallery-viewer-image" src="" class="max-w-full max-h-[90vh] object-contain rounded-xl shadow-2xl select-none" alt="SHDR Site Gallery">
+            <p id="gallery-viewer-description" class="text-white text-sm text-center mt-4 max-w-2xl"></p>
+        </div>
+
+        <button id="gallery-next" onclick="nextGalleryImage(event)" class="absolute right-3 sm:right-6 top-1/2 -translate-y-1/2 z-40 w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-white/10 hover:bg-white/25 text-white flex items-center justify-center transition">
+            <iconify-icon icon="material-symbols:chevron-right" class="text-4xl"></iconify-icon>
+        </button>
+    `;
+
+    viewer.addEventListener('click', (event) => {
+        if (event.target === viewer) closeGalleryImageViewer();
+    });
+
+    document.body.appendChild(viewer);
+    document.body.style.overflow = 'hidden';
+    updateGalleryViewer();
+    document.addEventListener('keydown', galleryViewerKeyboard);
+};
+
+function updateGalleryViewer() {
+    const item = galleryData[galleryViewerIndex];
+    if (!item) return;
+    const image = document.getElementById('gallery-viewer-image');
+    const description = document.getElementById('gallery-viewer-description');
+    const counter = document.getElementById('gallery-viewer-counter');
+    const previous = document.getElementById('gallery-prev');
+    const next = document.getElementById('gallery-next');
+
+    image.src = item.image || PLACEHOLDER_IMG;
+    description.textContent = item.description || t('common.noDataAvailable');
+    counter.textContent = `${galleryViewerIndex + 1} / ${galleryData.length}`;
+
+    if (galleryData.length <= 1) {
+        previous.classList.add('hidden');
+        next.classList.add('hidden');
+        counter.classList.add('hidden');
+        return;
+    }
+    previous.classList.remove('hidden');
+    next.classList.remove('hidden');
+    counter.classList.remove('hidden');
+    previous.classList.toggle('opacity-30', galleryViewerIndex === 0);
+    next.classList.toggle('opacity-30', galleryViewerIndex === galleryData.length - 1);
+}
+
+window.previousGalleryImage = (event) => {
+    if (event) event.stopPropagation();
+    if (galleryViewerIndex > 0) { galleryViewerIndex--; updateGalleryViewer(); }
+};
+
+window.nextGalleryImage = (event) => {
+    if (event) event.stopPropagation();
+    if (galleryViewerIndex < galleryData.length - 1) { galleryViewerIndex++; updateGalleryViewer(); }
+};
+
+window.downloadGalleryImage = () => {
+    const item = galleryData[galleryViewerIndex];
+    if (!item) return;
+    const link = document.createElement('a');
+    link.href = item.image || PLACEHOLDER_IMG;
+    link.download = `SHDR_Image_${galleryViewerIndex + 1}`;
+    link.click();
+};
+
+window.closeGalleryImageViewer = () => {
+    document.getElementById('gallery-image-viewer')?.remove();
+    document.body.style.overflow = '';
+    document.removeEventListener('keydown', galleryViewerKeyboard);
+};
+
+function galleryViewerKeyboard(event) {
+    if (event.key === 'Escape') closeGalleryImageViewer();
+    else if (event.key === 'ArrowLeft') previousGalleryImage();
+    else if (event.key === 'ArrowRight') nextGalleryImage();
+}
+
+// Edit Gallery Item
+window.editGalleryItem = (id) => {
+    const item = galleryData.find(g => g.id === id);
+    if (!item) return;
+    openModal(t('common.edit'), `
+        <form onsubmit="handleEditGalleryItem(event, '${id}')" class="space-y-4">
+            <div>
+                <label class="block text-sm font-medium mb-1">${t('gallery.description')}</label>
+                <input type="text" id="edit-gallery-desc" value="${item.description || ''}" class="w-full border rounded-lg p-3 text-sm">
+            </div>
+            <div>
+                <label class="block text-sm font-medium mb-1">${t('gallery.uploadImage')} (${t('common.add')})</label>
+                <input type="file" id="edit-gallery-image" accept="image/*" class="w-full border rounded-lg p-2 text-sm">
+            </div>
+            <button type="submit" class="w-full bg-emerald-600 text-white py-3 rounded-xl">${t('common.save')}</button>
+        </form>
+    `);
+};
+
+window.handleEditGalleryItem = async (e, id) => {
+    e.preventDefault();
+    const btn = getFormSubmitBtn(e.target);
+    setButtonLoading(btn, true);
+    try {
+        const description = document.getElementById('edit-gallery-desc').value.trim();
+        const imageFile = document.getElementById('edit-gallery-image').files[0];
+        const updateData = { description, updated_at: new Date().toISOString() };
+        
+        if (imageFile) {
+            const imageUrl = await uploadImageToImgbb(imageFile);
+            updateData.image = imageUrl;
         }
+        
+        await updateDoc(doc(db, 'gallery', id), updateData);
+        closeModal();
+        showToast(t('common.updatedSuccessfully'), 'success');
+    } catch (err) {
+        showToast(t('common.somethingWentWrong'), 'error');
+    } finally {
+        setButtonLoading(btn, false);
+    }
+};
 
-        let galleryViewerIndex = 0;
+// Delete Gallery Item
+window.deleteGalleryItem = async (id) => {
+    if (!confirm(t('common.areYouSure'))) return;
+    try {
+        await deleteDoc(doc(db, 'gallery', id));
+        showToast(t('common.deletedSuccessfully'), 'success');
+    } catch (err) {
+        showToast(t('common.somethingWentWrong'), 'error');
+    }
+};
 
-        window.openGalleryImage = (index) => {
-            if (!galleryData.length) return;
-            galleryViewerIndex = index;
-            document.getElementById('gallery-image-viewer')?.remove();
-
-            const viewer = document.createElement('div');
-            viewer.id = 'gallery-image-viewer';
-            viewer.className = `fixed inset-0 z-[9999] bg-black/95 backdrop-blur-sm flex items-center justify-center p-4`;
-
-            viewer.innerHTML = `
-                <button onclick="closeGalleryImageViewer()" class="absolute top-4 right-4 sm:top-6 sm:right-6 z-50 w-11 h-11 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition" aria-label="Close">
-                    <iconify-icon icon="material-symbols:close" class="text-3xl"></iconify-icon>
-                </button>
-                <div id="gallery-viewer-counter" class="absolute top-5 left-1/2 -translate-x-1/2 bg-black/70 text-white px-3 py-1.5 rounded-full text-sm z-40"></div>
-                <button id="gallery-prev" onclick="previousGalleryImage(event)" class="absolute left-3 sm:left-6 top-1/2 -translate-y-1/2 z-40 w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-white/10 hover:bg-white/25 text-white flex items-center justify-center transition">
-                    <iconify-icon icon="material-symbols:chevron-left" class="text-4xl"></iconify-icon>
-                </button>
-                <div class="w-full h-full flex flex-col items-center justify-center px-14 sm:px-20" onclick="event.stopPropagation()">
-                    <img id="gallery-viewer-image" src="" class="max-w-full max-h-[82vh] object-contain rounded-xl shadow-2xl select-none" alt="SHDR Site Gallery">
-                    <p id="gallery-viewer-description" class="text-white text-sm text-center mt-4 max-w-2xl"></p>
-                </div>
-                <button id="gallery-next" onclick="nextGalleryImage(event)" class="absolute right-3 sm:right-6 top-1/2 -translate-y-1/2 z-40 w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-white/10 hover:bg-white/25 text-white flex items-center justify-center transition">
-                    <iconify-icon icon="material-symbols:chevron-right" class="text-4xl"></iconify-icon>
-                </button>
-            `;
-
-            viewer.addEventListener('click', (event) => {
-                if (event.target === viewer) closeGalleryImageViewer();
-            });
-
-            document.body.appendChild(viewer);
-            document.body.style.overflow = 'hidden';
-            updateGalleryViewer();
-            document.addEventListener('keydown', galleryViewerKeyboard);
-        };
-
-        function updateGalleryViewer() {
-            const item = galleryData[galleryViewerIndex];
-            if (!item) return;
-            const image = document.getElementById('gallery-viewer-image');
-            const description = document.getElementById('gallery-viewer-description');
-            const counter = document.getElementById('gallery-viewer-counter');
-            const previous = document.getElementById('gallery-prev');
-            const next = document.getElementById('gallery-next');
-
-            image.src = item.image || PLACEHOLDER_IMG;
-            description.textContent = item.description || t('gallery.description');
-            counter.textContent = `${galleryViewerIndex + 1} / ${galleryData.length}`;
-
-            if (galleryData.length <= 1) {
-                previous.classList.add('hidden');
-                next.classList.add('hidden');
-                counter.classList.add('hidden');
-                return;
-            }
-            previous.classList.remove('hidden');
-            next.classList.remove('hidden');
-            counter.classList.remove('hidden');
-            previous.classList.toggle('opacity-30', galleryViewerIndex === 0);
-            next.classList.toggle('opacity-30', galleryViewerIndex === galleryData.length - 1);
-        }
-
-        window.previousGalleryImage = (event) => {
-            if (event) event.stopPropagation();
-            if (galleryViewerIndex > 0) { galleryViewerIndex--; updateGalleryViewer(); }
-        };
-
-        window.nextGalleryImage = (event) => {
-            if (event) event.stopPropagation();
-            if (galleryViewerIndex < galleryData.length - 1) { galleryViewerIndex++; updateGalleryViewer(); }
-        };
-
-        window.closeGalleryImageViewer = () => {
-            document.getElementById('gallery-image-viewer')?.remove();
-            document.body.style.overflow = '';
-            document.removeEventListener('keydown', galleryViewerKeyboard);
-        };
-
-        function galleryViewerKeyboard(event) {
-            if (event.key === 'Escape') closeGalleryImageViewer();
-            else if (event.key === 'ArrowLeft') previousGalleryImage();
-            else if (event.key === 'ArrowRight') nextGalleryImage();
-        }
-
-        window.handleGalleryUpload = async (e) => {
-            e.preventDefault();
-            const form = e.target;
-            const btn = form.querySelector('button[type="submit"]');
-            setButtonLoading(btn, true);
-            try {
-                const imageFile = document.getElementById('gallery-image').files[0];
-                const description = document.getElementById('gallery-description').value.trim();
-                if (!imageFile) return alert(t('alerts.requiredField'));
-                const imageUrl = await uploadImageToImgbb(imageFile);
-                await addDoc(collection(db, 'gallery'), {
-                    site_id: currentSiteId,
-                    image: imageUrl,
-                    description: description || '',
-                    uploaded_at: new Date().toISOString()
-                });
-                document.getElementById('gallery-image').value = '';
-                document.getElementById('gallery-description').value = '';
-            } catch (err) { showToast(t('alerts.somethingWentWrong'), 'error'); }
-            finally { setButtonLoading(btn, false); }
-        };
+window.handleGalleryUpload = async (e) => {
+    e.preventDefault();
+    const form = e.target;
+    const btn = form.querySelector('button[type="submit"]');
+    setButtonLoading(btn, true);
+    try {
+        const imageFile = document.getElementById('gallery-image').files[0];
+        const description = document.getElementById('gallery-description').value.trim();
+        if (!imageFile) return alert(t('common.requiredField'));
+        const imageUrl = await uploadImageToImgbb(imageFile);
+        await addDoc(collection(db, 'gallery'), {
+            site_id: currentSiteId,
+            image: imageUrl,
+            description: description || '',
+            uploaded_at: new Date().toISOString()
+        });
+        document.getElementById('gallery-image').value = '';
+        document.getElementById('gallery-description').value = '';
+    } catch (err) { showToast(t('common.somethingWentWrong'), 'error'); }
+    finally { setButtonLoading(btn, false); }
+};
 
         // ──────────────────────────────────────────────────────────────
-        // SETTINGS MODULE
+        // SETTINGS (translated)
         // ──────────────────────────────────────────────────────────────
         function renderSettings(container) {
             container.innerHTML = `
@@ -2612,7 +2857,7 @@
                             <label for="settings-email">${t('settings.email')}</label>
                             <input type="email" id="settings-email" placeholder="example@email.com" value="${profile.email || ''}">
                         </div>
-                        <button type="submit" class="save-btn">${t('settings.saveProfileChanges')}</button>
+                        <button type="submit" class="save-btn">${t('settings.saveProfile')}</button>
                     </form>
                 </div>
             `;
@@ -2654,21 +2899,21 @@
         function renderSecuritySection() {
             return `
                 <div class="settings-card">
-                    <h3><iconify-icon icon="material-symbols:lock-outline" class="text-emerald-600"></iconify-icon> ${t('settings.changePasscode')}</h3>
+                    <h3><iconify-icon icon="material-symbols:lock-outline" class="text-emerald-600"></iconify-icon> ${t('settings.changePassword')}</h3>
                     <form id="security-form" onsubmit="handlePasswordChange(event)">
                         <div class="field-group">
-                            <label for="current-password">${t('settings.currentPasscode')}</label>
-                            <input type="password" id="current-password" placeholder="${t('settings.currentPasscode')}" required>
+                            <label for="current-password">${t('settings.currentPassword')}</label>
+                            <input type="password" id="current-password" placeholder="${t('settings.currentPassword')}" required>
                         </div>
                         <div class="field-group">
-                            <label for="new-password">${t('settings.newPasscode')}</label>
-                            <input type="password" id="new-password" placeholder="${t('settings.newPasscode')}" required minlength="6">
+                            <label for="new-password">${t('settings.newPassword')}</label>
+                            <input type="password" id="new-password" placeholder="${t('settings.newPassword')}" required minlength="6">
                         </div>
                         <div class="field-group">
-                            <label for="confirm-password">${t('settings.confirmPasscode')}</label>
-                            <input type="password" id="confirm-password" placeholder="${t('settings.confirmPasscode')}" required>
+                            <label for="confirm-password">${t('settings.confirmPassword')}</label>
+                            <input type="password" id="confirm-password" placeholder="${t('settings.confirmPassword')}" required>
                         </div>
-                        <button type="submit" class="save-btn">${t('settings.changePass')}</button>
+                        <button type="submit" class="save-btn">${t('settings.changePassBtn')}</button>
                     </form>
                 </div>
             `;
@@ -2679,34 +2924,34 @@
             const prefs = profile.preferences || {};
             return `
                 <div class="settings-card">
-                    <h3><iconify-icon icon="material-symbols:settings-outline" class="text-emerald-600"></iconify-icon> ${t('settings.prefs')}</h3>
+                    <h3><iconify-icon icon="material-symbols:settings-outline" class="text-emerald-600"></iconify-icon> ${t('settings.preferences')}</h3>
                     <form id="preferences-form" onsubmit="handlePreferencesSave(event)">
                         <div class="field-group">
                             <label for="settings-language">${t('settings.language')}</label>
                             <select id="settings-language">
-                                <option value="en" ${prefs.language === 'en' ? 'selected' : ''}>English</option>
-                                <option value="fr" ${prefs.language === 'fr' ? 'selected' : ''}>French</option>
-                                <option value="rw" ${prefs.language === 'rw' ? 'selected' : ''}>Kinyarwanda</option>
+                                <option value="en">English</option>
+                                <option value="fr">French</option>
+                                <option value="rw">Kinyarwanda</option>
                             </select>
                         </div>
                         <div class="field-group">
                             <label for="settings-currency">${t('settings.currency')}</label>
                             <select id="settings-currency">
-                                <option value="RWF" ${prefs.currency === 'RWF' ? 'selected' : ''}>RWF</option>
-                                <option value="USD" ${prefs.currency === 'USD' ? 'selected' : ''}>USD</option>
-                                <option value="EUR" ${prefs.currency === 'EUR' ? 'selected' : ''}>EUR</option>
+                                <option value="RWF">RWF — Rwandan Franc</option>
+                                <option value="USD">USD — US Dollar</option>
+                                <option value="EUR">EUR — Euro</option>
                             </select>
                         </div>
                         <div class="field-group">
                             <label for="settings-date-format">${t('settings.dateFormat')}</label>
                             <select id="settings-date-format">
-                                <option value="DD/MM/YYYY" ${prefs.dateFormat === 'DD/MM/YYYY' ? 'selected' : ''}>DD/MM/YYYY</option>
-                                <option value="MM/DD/YYYY" ${prefs.dateFormat === 'MM/DD/YYYY' ? 'selected' : ''}>MM/DD/YYYY</option>
-                                <option value="YYYY-MM-DD" ${prefs.dateFormat === 'YYYY-MM-DD' ? 'selected' : ''}>YYYY-MM-DD</option>
+                                <option value="DD/MM/YYYY">DD/MM/YYYY</option>
+                                <option value="MM/DD/YYYY">MM/DD/YYYY</option>
+                                <option value="YYYY-MM-DD">YYYY-MM-DD</option>
                             </select>
                         </div>
                         <div class="field-group flex items-center gap-3">
-                            <input type="checkbox" id="settings-notifications" class="w-5 h-5 text-emerald-600" ${prefs.notifications !== false ? 'checked' : ''}>
+                            <input type="checkbox" id="settings-notifications" class="w-5 h-5 text-emerald-600">
                             <label for="settings-notifications" class="mb-0">${t('settings.notifications')}</label>
                         </div>
                         <button type="submit" class="save-btn">${t('settings.savePrefs')}</button>
@@ -2729,19 +2974,18 @@
             const roleDisplay = document.getElementById('settings-role');
             if (roleDisplay) roleDisplay.textContent = profile.role || 'Manager';
             const statusDisplay = document.getElementById('settings-status');
-            if (statusDisplay) statusDisplay.textContent = profile.status || t('settings.active');
+            if (statusDisplay) statusDisplay.textContent = profile.status || 'Active';
             const sinceDisplay = document.getElementById('settings-since');
             if (sinceDisplay) sinceDisplay.textContent = formatDate(profile.created_at);
 
-            const prefs = profile.preferences || {};
             const langSelect = document.getElementById('settings-language');
-            if (langSelect) langSelect.value = prefs.language || 'en';
+            if (langSelect) langSelect.value = profile.preferences?.language || currentLanguage;
             const currencySelect = document.getElementById('settings-currency');
-            if (currencySelect) currencySelect.value = prefs.currency || 'RWF';
+            if (currencySelect) currencySelect.value = profile.preferences?.currency || 'RWF';
             const dateFormatSelect = document.getElementById('settings-date-format');
-            if (dateFormatSelect) dateFormatSelect.value = prefs.dateFormat || 'DD/MM/YYYY';
+            if (dateFormatSelect) dateFormatSelect.value = profile.preferences?.dateFormat || 'DD/MM/YYYY';
             const notifToggle = document.getElementById('settings-notifications');
-            if (notifToggle) notifToggle.checked = prefs.notifications !== false;
+            if (notifToggle) notifToggle.checked = profile.preferences?.notifications !== false;
         }
 
         function attachSettingsChangeListeners() {
@@ -2758,7 +3002,7 @@
 
         window.switchSettingsTab = (tab) => {
             if (hasUnsavedChanges) {
-                if (!confirm(t('alerts.areYouSure'))) return;
+                if (!confirm(t('common.areYouSure'))) return;
                 hasUnsavedChanges = false;
             }
             settingsTab = tab;
@@ -2784,7 +3028,7 @@
         };
 
         window.removeProfilePhoto = () => {
-            if (!confirm(t('alerts.areYouSure'))) return;
+            if (!confirm(t('common.areYouSure'))) return;
             const img = document.getElementById('settings-profile-photo-img');
             if (img) img.src = PLACEHOLDER_IMG;
             _profilePhotoFile = null;
@@ -2805,17 +3049,17 @@
                 const email = document.getElementById('settings-email').value.trim();
 
                 if (!name) {
-                    alert(t('alerts.requiredField'));
+                    alert(t('common.requiredField'));
                     setButtonLoading(btn, false);
                     return;
                 }
                 if (phone && !/^\+?[0-9\s-]{7,15}$/.test(phone)) {
-                    alert(t('alerts.invalidValue'));
+                    alert(t('common.invalidValue'));
                     setButtonLoading(btn, false);
                     return;
                 }
                 if (email && !/^\S+@\S+\.\S+$/.test(email)) {
-                    alert(t('alerts.invalidValue'));
+                    alert(t('common.invalidValue'));
                     setButtonLoading(btn, false);
                     return;
                 }
@@ -2824,7 +3068,7 @@
                     const usersQuery = query(collection(db, 'profiles'), where('email', '==', email));
                     const snap = await getDocs(usersQuery);
                     if (!snap.empty && snap.docs[0].id !== currentUser.uid) {
-                        alert(t('alerts.invalidValue'));
+                        alert(t('common.invalidValue'));
                         setButtonLoading(btn, false);
                         return;
                     }
@@ -2843,7 +3087,7 @@
                         updateData.profile_picture = photoUrl;
                         _profilePhotoFile = null;
                     } catch (err) {
-                        alert(t('alerts.somethingWentWrong'));
+                        alert(t('common.somethingWentWrong'));
                         setButtonLoading(btn, false);
                         return;
                     }
@@ -2858,9 +3102,9 @@
                 await updateDoc(profileRef, updateData);
 
                 if (email && email !== currentUser.email) {
-                    const password = prompt(t('settings.currentPasscode'));
+                    const password = prompt(t('settings.currentPassword'));
                     if (!password) {
-                        alert(t('alerts.somethingWentWrong'));
+                        alert(t('common.somethingWentWrong'));
                         setButtonLoading(btn, false);
                         return;
                     }
@@ -2868,15 +3112,16 @@
                     await reauthenticateWithCredential(currentUser, credential);
                     await updateEmail(currentUser, email);
                     await sendEmailVerification(currentUser);
+                    showToast(t('common.savedSuccessfully'), 'success');
                 }
 
                 managerProfile = { ...managerProfile, ...updateData };
                 updateProfileUI(managerProfile);
                 hasUnsavedChanges = false;
-                showToast(t('alerts.updatedSuccessfully'), 'success');
+                showToast(t('common.updatedSuccessfully'), 'success');
                 populateSettingsForms();
             } catch (err) {
-                showToast(t('alerts.somethingWentWrong'), 'error');
+                showToast(t('common.somethingWentWrong'), 'error');
             } finally {
                 setButtonLoading(btn, false);
             }
@@ -2893,12 +3138,12 @@
             const confirm = document.getElementById('confirm-password').value;
 
             if (newPass !== confirm) {
-                alert(t('alerts.invalidValue'));
+                alert(t('common.invalidValue'));
                 setButtonLoading(btn, false);
                 return;
             }
             if (newPass.length < 6) {
-                alert(t('alerts.invalidValue'));
+                alert(t('common.invalidValue'));
                 setButtonLoading(btn, false);
                 return;
             }
@@ -2907,11 +3152,11 @@
                 const credential = EmailAuthProvider.credential(currentUser.email, current);
                 await reauthenticateWithCredential(currentUser, credential);
                 await updatePassword(currentUser, newPass);
-                showToast(t('alerts.updatedSuccessfully'), 'success');
+                showToast(t('common.updatedSuccessfully'), 'success');
                 form.reset();
                 hasUnsavedChanges = false;
             } catch (err) {
-                showToast(t('alerts.somethingWentWrong'), 'error');
+                alert(t('common.somethingWentWrong'));
             } finally {
                 setButtonLoading(btn, false);
             }
@@ -2935,10 +3180,11 @@
 
                 managerProfile.preferences = prefs;
                 hasUnsavedChanges = false;
-                setLanguage(language);
-                showToast(t('alerts.savedSuccessfully'), 'success');
+                // Switch language immediately if changed
+                if (language !== currentLanguage) setLanguage(language);
+                showToast(t('common.savedSuccessfully'), 'success');
             } catch (err) {
-                showToast(t('alerts.somethingWentWrong'), 'error');
+                showToast(t('common.somethingWentWrong'), 'error');
             } finally {
                 setButtonLoading(btn, false);
             }
