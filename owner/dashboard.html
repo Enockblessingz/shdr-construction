@@ -2615,58 +2615,144 @@
         };
 
         // =============== GALLERY ===============
-        let selectedGallerySite = null;
-        function renderGallery(container) {
-            const siteOpts = sitesData.map(s => `<option value="${s.id}">${s.name}</option>`).join('');
-            container.innerHTML = `
-                <h2 class="text-xl sm:text-2xl font-bold mb-3">${t('gallery.title')}</h2>
-                <div class="mb-4"><label class="block text-sm font-medium mb-1">${t('gallery.selectSite')}</label><select id="gallery-site-select" class="w-full border p-2 rounded-lg text-sm" onchange="filterGallery()"><option value="">${t('gallery.allSites')}</option>${siteOpts}</select></div>
-                <div id="gallery-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"><p class="text-slate-400 col-span-full text-sm">${t('gallery.selectSite')}</p></div>
-            `;
-            if (selectedGallerySite) document.getElementById('gallery-site-select').value = selectedGallerySite;
-            filterGallery();
+let selectedGallerySite = null;
+
+function renderGallery(container) {
+    const siteOpts = sitesData.map(s => `<option value="${s.id}">${s.name}</option>`).join('');
+    container.innerHTML = `
+        <h2 class="text-xl sm:text-2xl font-bold mb-3">${t('gallery.title')}</h2>
+        <div class="mb-4"><label class="block text-sm font-medium mb-1">${t('gallery.selectSite')}</label><select id="gallery-site-select" class="w-full border p-2 rounded-lg text-sm" onchange="filterGallery()"><option value="">${t('gallery.allSites')}</option>${siteOpts}</select></div>
+        <div id="gallery-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"><p class="text-slate-400 col-span-full text-sm">${t('gallery.selectSite')}</p></div>
+    `;
+    if (selectedGallerySite) document.getElementById('gallery-site-select').value = selectedGallerySite;
+    filterGallery();
+}
+
+window.filterGallery = () => {
+    const select = document.getElementById('gallery-site-select');
+    if (!select) return;
+    const siteId = select.value;
+    selectedGallerySite = siteId;
+    const container = document.getElementById('gallery-container');
+    if (!container) return;
+    let filtered = siteId ? galleryData.filter(item => item.site_id === siteId) : galleryData;
+    if (!filtered.length) {
+        container.innerHTML = `<p class="text-slate-400 col-span-full text-sm">${t('gallery.noImages')}</p>`;
+        return;
+    }
+    container.innerHTML = filtered.map(item => {
+        const imageUrl = item.image || PLACEHOLDER_IMG;
+        const siteName = sitesData.find(s => s.id === item.site_id)?.name || 'Unknown';
+        return `<div class="bg-white rounded-2xl border overflow-hidden shadow-sm flex flex-col">
+            <div class="relative cursor-pointer group flex-1" onclick="openGalleryImage('${imageUrl.replace(/'/g, "\\'")}')">
+                <img src="${imageUrl}" class="w-full h-40 object-cover transition duration-300 group-hover:scale-105" alt="${item.description || 'No description'}" loading="lazy" onerror="this.src='${PLACEHOLDER_IMG}'">
+                <div class="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition duration-300 flex items-center justify-center">
+                    <span class="opacity-0 group-hover:opacity-100 transition text-white bg-black/50 rounded-full px-4 py-2 text-sm">${t('gallery.viewImage')}</span>
+                </div>
+            </div>
+            <div class="p-3">
+                <p class="text-sm text-slate-700">${item.description || 'No description'}</p>
+                <p class="text-xs text-slate-500 mt-2">${t('workers.site')}: ${siteName}</p>
+                <p class="text-xs text-slate-400 mt-1">${t('stock.updated')}: ${item.uploaded_at ? new Date(item.uploaded_at).toLocaleDateString() : ''}</p>
+                <div class="mt-2 flex justify-end gap-2">
+                    <button onclick="editGalleryItem('${item.id}')" class="text-xs text-emerald-600 hover:text-emerald-800 font-medium px-2 py-1 bg-emerald-50 rounded-lg">${t('common.edit')}</button>
+                    <button onclick="deleteGalleryItem('${item.id}')" class="text-xs text-red-500 hover:text-red-700 font-medium px-2 py-1 bg-red-50 rounded-lg">${t('common.delete')}</button>
+                </div>
+            </div>
+        </div>`;
+    }).join('');
+};
+
+// Open the lightbox with a labeled Close button
+window.openGalleryImage = (imageUrl) => {
+    const existing = document.getElementById('gallery-lightbox');
+    if (existing) existing.remove();
+    const viewer = document.createElement('div');
+    viewer.id = 'gallery-lightbox';
+    viewer.className = 'fixed inset-0 z-[9999] bg-black/80 backdrop-blur-sm flex items-center justify-center p-4';
+    viewer.innerHTML = `
+        <div class="relative max-w-6xl max-h-[90vh] flex flex-col items-center justify-center">
+            <img src="${imageUrl}" class="max-w-full max-h-[80vh] object-contain rounded-xl shadow-2xl" alt="SHDR Site Gallery Preview" onerror="this.src='${PLACEHOLDER_IMG}'">
+            <div class="mt-4 flex gap-3">
+                <button onclick="closeGalleryImage()" class="px-6 py-2 bg-white text-slate-800 rounded-lg font-medium hover:bg-slate-200 transition">${t('gallery.close')}</button>
+                <button onclick="closeGalleryImage()" class="absolute top-0 right-0 text-white text-4xl font-light hover:text-emerald-400 transition">&times;</button>
+            </div>
+        </div>
+    `;
+    viewer.addEventListener('click', (event) => { if (event.target === viewer) closeGalleryImage(); });
+    document.body.appendChild(viewer);
+    document.body.style.overflow = 'hidden';
+    document.addEventListener('keydown', galleryLightboxEscHandler);
+};
+
+window.closeGalleryImage = () => {
+    document.getElementById('gallery-lightbox')?.remove();
+    document.body.style.overflow = '';
+    document.removeEventListener('keydown', galleryLightboxEscHandler);
+};
+
+function galleryLightboxEscHandler(event) { if (event.key === 'Escape') closeGalleryImage(); }
+
+// New Edit function for gallery items
+window.editGalleryItem = (id) => {
+    const item = galleryData.find(g => g.id === id);
+    if (!item) return;
+    openModal(t('common.edit'), `
+        <form onsubmit="handleEditGalleryItem(event, '${id}')" class="space-y-4">
+            <div>
+                <label class="block text-sm font-medium mb-1">${t('gallery.selectSite')}</label>
+                <select id="edit-gallery-site" class="w-full border rounded-lg p-3 text-sm">
+                    ${sitesData.map(s => `<option value="${s.id}" ${s.id === item.site_id ? 'selected' : ''}>${s.name}</option>`).join('')}
+                </select>
+            </div>
+            <div>
+                <label class="block text-sm font-medium mb-1">${t('gallery.description')}</label>
+                <input type="text" id="edit-gallery-desc" value="${item.description || ''}" class="w-full border rounded-lg p-3 text-sm">
+            </div>
+            <div>
+                <label class="block text-sm font-medium mb-1">Change Image (optional)</label>
+                <input type="file" id="edit-gallery-image" accept="image/*" class="w-full border rounded-lg p-2 text-sm">
+            </div>
+            <button type="submit" class="w-full bg-emerald-600 text-white py-3 rounded-xl">${t('common.save')}</button>
+        </form>
+    `);
+};
+
+window.handleEditGalleryItem = async (e, id) => {
+    e.preventDefault();
+    const btn = getFormSubmitBtn(e.target);
+    setButtonLoading(btn, true);
+    try {
+        const site_id = document.getElementById('edit-gallery-site').value;
+        const description = document.getElementById('edit-gallery-desc').value.trim();
+        const imageFile = document.getElementById('edit-gallery-image').files[0];
+        const updateData = { site_id, description, updated_at: new Date().toISOString() };
+        
+        if (imageFile) {
+            const imageUrl = await uploadImageToImgbb(imageFile);
+            updateData.image = imageUrl;
         }
+        
+        await updateDoc(doc(db, 'gallery', id), updateData);
+        closeModal();
+        showToast(t('alerts.updatedSuccessfully'), 'success');
+    } catch (err) {
+        showToast(t('alerts.somethingWentWrong'), 'error');
+    } finally {
+        setButtonLoading(btn, false);
+    }
+};
 
-        window.filterGallery = () => {
-            const select = document.getElementById('gallery-site-select');
-            if (!select) return;
-            const siteId = select.value;
-            selectedGallerySite = siteId;
-            const container = document.getElementById('gallery-container');
-            if (!container) return;
-            let filtered = siteId ? galleryData.filter(item => item.site_id === siteId) : galleryData;
-            if (!filtered.length) {
-                container.innerHTML = `<p class="text-slate-400 col-span-full text-sm">${t('gallery.noImages')}</p>`;
-                return;
-            }
-            container.innerHTML = filtered.map(item => {
-                const imageUrl = item.image || PLACEHOLDER_IMG;
-                const siteName = sitesData.find(s => s.id === item.site_id)?.name || 'Unknown';
-                return `<div class="bg-white rounded-2xl border overflow-hidden shadow-sm"><div class="relative cursor-pointer group" onclick="openGalleryImage('${imageUrl.replace(/'/g, "\\'")}')"><img src="${imageUrl}" class="w-full h-40 object-cover transition duration-300 group-hover:scale-105" alt="${item.description || 'No description'}" loading="lazy" onerror="this.src='${PLACEHOLDER_IMG}'"><div class="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition duration-300 flex items-center justify-center"><span class="opacity-0 group-hover:opacity-100 transition text-white bg-black/50 rounded-full px-4 py-2 text-sm">${t('gallery.viewImage')}</span></div></div><div class="p-3"><p class="text-sm text-slate-700">${item.description || 'No description'}</p><p class="text-xs text-slate-500 mt-2">${t('workers.site')}: ${siteName}</p><p class="text-xs text-slate-400 mt-1">${t('stock.updated')}: ${item.uploaded_at ? new Date(item.uploaded_at).toLocaleDateString() : ''}</p></div></div>`;
-            }).join('');
-        };
-
-        window.openGalleryImage = (imageUrl) => {
-            const existing = document.getElementById('gallery-lightbox');
-            if (existing) existing.remove();
-            const viewer = document.createElement('div');
-            viewer.id = 'gallery-lightbox';
-            viewer.className = 'fixed inset-0 z-[9999] bg-black/80 backdrop-blur-sm flex items-center justify-center p-4';
-            viewer.innerHTML = `<button onclick="closeGalleryImage()" class="absolute top-5 right-6 text-white text-4xl font-light hover:text-emerald-400 transition z-10">&times;</button><div class="relative max-w-6xl max-h-[90vh] flex items-center justify-center"><img src="${imageUrl}" class="max-w-full max-h-[90vh] object-contain rounded-xl shadow-2xl" alt="SHDR Site Gallery Preview" onerror="this.src='${PLACEHOLDER_IMG}'"></div>`;
-            viewer.addEventListener('click', (event) => { if (event.target === viewer) closeGalleryImage(); });
-            document.body.appendChild(viewer);
-            document.body.style.overflow = 'hidden';
-            document.addEventListener('keydown', galleryLightboxEscHandler);
-        };
-
-        window.closeGalleryImage = () => {
-            document.getElementById('gallery-lightbox')?.remove();
-            document.body.style.overflow = '';
-            document.removeEventListener('keydown', galleryLightboxEscHandler);
-        };
-
-        function galleryLightboxEscHandler(event) { if (event.key === 'Escape') closeGalleryImage(); }
-
+// Delete function (updated to use t() for confirmation)
+window.deleteGalleryItem = async (id) => {
+    if (!confirm(t('alerts.areYouSure'))) return;
+    try {
+        await deleteDoc(doc(db, 'gallery', id));
+        showToast(t('alerts.deletedSuccessfully'), 'success');
+    } catch (err) {
+        showToast(t('alerts.somethingWentWrong'), 'error');
+    }
+};
         // =============== OFFICE MANAGEMENT HUB ===============
         // ── Toggle: true = fully functional, false = coming soon ──
         const OFFICE_HUB_ENABLED = false;  // Change to true to enable the full hub
