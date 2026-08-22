@@ -2176,7 +2176,7 @@
                             <thead class="bg-slate-50 uppercase text-xs"><tr><th class="px-3 py-2 text-center">${t('common.add')}</th><th class="px-3 py-2">${t('progress.task')}</th><th class="px-3 py-2">${t('progress.start')}</th><th class="px-3 py-2">${t('progress.end')}</th><th class="px-3 py-2">${t('progress.status')}</th></tr></thead>
                             <tbody>${progressTasks.map(t => `
                                 <tr>
-                                    <td class="px-3 py-2 text-center">${t.status !== 'completed' ? `<button onclick="markTaskCompleted('${t.id}')" class="bg-gray-300 hover:bg-gray-400 text-white w-8 h-8 rounded-full inline-flex items-center justify-center transition-all" title="${t('progress.markCompleted')}"><iconify-icon icon="material-symbols:check" width="18" height="18"></iconify-icon></button>` : `<span class="text-emerald-600"><iconify-icon icon="material-symbols:check-circle" width="20" height="20"></iconify-icon></span>`}</td>
+                                    <td class="px-3 py-2 text-center">${t.status !== 'completed' ? `<button onclick="markTaskCompleted('${t.id}')" class="bg-gray-300 hover:bg-gray-400 text-white w-8 h-8 rounded-full inline-flex items-center justify-center transition-all" title="${t('progress.markAsCompleted')}"><iconify-icon icon="material-symbols:check" width="18" height="18"></iconify-icon></button>` : `<span class="text-emerald-600"><iconify-icon icon="material-symbols:check-circle" width="20" height="20"></iconify-icon></span>`}</td>
                                     <td class="px-3 py-2 font-medium">${t.name}</td>
                                     <td class="px-3 py-2">${formatDate(t.start_date)}</td>
                                     <td class="px-3 py-2">${formatDate(t.end_date)}</td>
@@ -2194,13 +2194,16 @@
             if (!confirm(t('common.areYouSure'))) return;
             try {
                 await updateDoc(doc(db, 'progress_tasks', taskId), { status: 'completed', updated_at: new Date().toISOString() });
+                showToast(t('alerts.updatedSuccessfully'), 'success');
             } catch (err) { showToast(t('common.somethingWentWrong'), 'error'); }
         };
 
+        
         // ──────────────────────────────────────────────────────────────
-// REPORTS (translated for Manager Dashboard)
+// REPORTS (EXACT FORMAT FROM SCREENSHOTS)
 // ──────────────────────────────────────────────────────────────
 
+// ── Shared company details ──
 function getCompanyDetails() {
     return {
         name: 'SHDR Ltd',
@@ -2213,6 +2216,7 @@ function getCompanyDetails() {
     };
 }
 
+// ── THE EXACT HTML TEMPLATE FOR REPORTS ──
 function generateReportHTML(title, bodyHTML, meta, extraStyles = '') {
     const company = getCompanyDetails();
     const currentYear = new Date().getFullYear();
@@ -2275,6 +2279,7 @@ function generateReportHTML(title, bodyHTML, meta, extraStyles = '') {
     `;
 }
 
+// ── Main render ──
 function renderReports(container) {
     container.innerHTML = `
         <h2 class="text-xl sm:text-2xl font-bold mb-4">${t('reports.title')}</h2>
@@ -2362,10 +2367,7 @@ window.updatePayrollReport = () => {
 
     const tableContainer = document.getElementById('payroll-table-container');
     if (tableContainer) {
-        if (!workers.length) {
-            tableContainer.innerHTML = `<div class="p-4 text-slate-500 text-sm">${t('common.noDataAvailable')}</div>`;
-            return;
-        }
+        if (!workers.length) { tableContainer.innerHTML = `<div class="p-4 text-slate-500 text-sm">${t('common.noDataAvailable')}</div>`; return; }
         tableContainer.innerHTML = `
             <div class="overflow-x-auto">
                 <table class="w-full text-sm">
@@ -2378,6 +2380,7 @@ window.updatePayrollReport = () => {
     }
 };
 
+// ── Export: Payroll (Uses EXACT generateReportHTML) ──
 window.exportPayrollReport = (format) => {
     const startDate = document.getElementById('payroll-start')?.value || '';
     const endDate = document.getElementById('payroll-end')?.value || '';
@@ -2415,9 +2418,7 @@ window.exportPayrollReport = (format) => {
             `"Generated on: ${generatedDate}"`, `"Report: Workers' Attendance & Payroll"`, `"Site Name: ${siteName}"`, `"Period: ${period}"`, '',
             headers.join(',')
         ];
-        for (const w of workers) {
-            csvRows.push([w.name, w.role || '—', w.days.length, w.dailyRate.toLocaleString(), w.totalPayable.toLocaleString()].map(v => `"${v}"`).join(','));
-        }
+        for (const w of workers) { csvRows.push([w.name, w.role || '—', w.days.length, w.dailyRate.toLocaleString(), w.totalPayable.toLocaleString()].map(v => `"${v}"`).join(',')); }
         csvRows.push(`"Total","",${totalDays},"",${totalPayroll.toLocaleString()}`);
         const csv = csvRows.join('\n');
         const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
@@ -2430,6 +2431,7 @@ window.exportPayrollReport = (format) => {
         return;
     }
 
+    // Print / PDF (EXACT FORMAT)
     const headers = [t('workers.fullName'), t('workers.role'), t('reports.workerDays'), t('reports.totalPayroll'), t('reports.totalPayroll')];
     const tableRows = workers.map(w => `
         <tr>
@@ -2441,22 +2443,9 @@ window.exportPayrollReport = (format) => {
         </tr>
     `).join('');
 
-    const meta = `<strong>${t('navigation.dashboard')}:</strong> ${siteName} &nbsp;|&nbsp; <strong>${t('reports.general')}:</strong> ${period} &nbsp;|&nbsp; <strong>${t('reports.title')}:</strong> ${generatedDate}`;
-    const bodyHTML = `
-        <table>
-            <thead><tr>${headers.map(h => `<th>${h}</th>`).join('')}</tr></thead>
-            <tbody>${tableRows}</tbody>
-            <tfoot>
-                <tr>
-                    <td colspan="2" style="text-align:right"><strong>${t('reports.totalPayroll')}</strong></td>
-                    <td style="text-align:center"><strong>${totalDays}</strong></td>
-                    <td></td>
-                    <td style="text-align:right"><strong>${totalPayroll.toLocaleString()} RWF</strong></td>
-                </tr>
-            </tfoot>
-        </table>
-    `;
-    const fullHTML = generateReportHTML(t('reports.workerPayroll'), bodyHTML, meta);
+    const meta = `<strong>Site Name:</strong> ${siteName} &nbsp;|&nbsp; <strong>Period:</strong> ${period} &nbsp;|&nbsp; <strong>Generated on:</strong> ${generatedDate}`;
+    const bodyHTML = `<table><thead><tr>${headers.map(h => `<th>${h}</th>`).join('')}</tr></thead><tbody>${tableRows}</tbody><tfoot><tr><td colspan="2" style="text-align:right"><strong>Total</strong></td><td style="text-align:center"><strong>${totalDays}</strong></td><td></td><td style="text-align:right"><strong>${totalPayroll.toLocaleString()} RWF</strong></td></tr></tfoot></table>`;
+    const fullHTML = generateReportHTML("Workers' Attendance & Payroll Report", bodyHTML, meta);
     const win = window.open('', '_blank', 'width=1000,height=700');
     if (!win) { alert(t('common.noDataAvailable')); return; }
     win.document.write(fullHTML);
@@ -2464,6 +2453,7 @@ window.exportPayrollReport = (format) => {
     setTimeout(() => win.print(), 800);
 };
 
+// ── Export: General (Uses EXACT generateReportHTML) ──
 window.exportReport = (format) => {
     const dept = document.getElementById('report-dept').value;
     const startDate = document.getElementById('report-start').value;
@@ -2472,7 +2462,6 @@ window.exportReport = (format) => {
     const company = getCompanyDetails();
 
     let data = [];
-
     const filterByDate = (items, dateField) => {
         if (!startDate && !endDate) return items;
         return items.filter(item => {
@@ -2488,11 +2477,12 @@ window.exportReport = (format) => {
         mats = filterByDate(mats, 'date_used');
         data = data.concat(mats.map(m => ({
             Department: t('navigation.materials'),
+            Site: site?.name || 'All',
             Name: m.name,
             'Quantity Used': m.quantity_used || 0,
             'Unit Cost (RWF)': m.unit_cost || 0,
             'Total Amount (RWF)': (m.quantity_used || 0) * (m.unit_cost || 0),
-            Date: formatDate(m.date_used)
+            Period: formatDate(m.date_used)
         })));
     }
 
@@ -2500,6 +2490,7 @@ window.exportReport = (format) => {
         let workers = siteWorkersData;
         data = data.concat(workers.map(w => ({
             Department: t('navigation.workers'),
+            Site: site?.name || 'All',
             Name: w.name,
             Role: w.role,
             Salary: w.salary,
@@ -2510,24 +2501,11 @@ window.exportReport = (format) => {
     if (dept === 'all' || dept === 'finances') {
         const attCost = attendanceData.reduce((sum, a) => sum + (a.daily_rate || 0), 0);
         const matCost = materialsData.reduce((sum, m) => sum + (m.amount || 0), 0);
-        data.push({
-            Department: t('navigation.finances'),
-            Category: t('navigation.materials'),
-            Amount: matCost,
-            Description: t('reports.totalPayroll')
-        });
-        data.push({
-            Department: t('navigation.finances'),
-            Category: t('navigation.workers'),
-            Amount: attCost,
-            Description: t('reports.totalPayroll')
-        });
+        data.push({ Department: t('navigation.finances'), Site: site?.name || 'All', Category: t('navigation.materials'), Amount: matCost, Description: t('reports.totalPayroll') });
+        data.push({ Department: t('navigation.finances'), Site: site?.name || 'All', Category: t('navigation.workers'), Amount: attCost, Description: t('reports.totalPayroll') });
     }
 
-    if (!data.length) {
-        alert(t('common.noDataAvailable'));
-        return;
-    }
+    if (!data.length) { alert(t('common.noDataAvailable')); return; }
 
     const siteName = site?.name || 'Site';
     const deptLabel = dept === 'all' ? t('reports.allDepartments') : dept.charAt(0).toUpperCase() + dept.slice(1);
@@ -2541,10 +2519,7 @@ window.exportReport = (format) => {
             `"Generated on: ${generatedDate}"`, `"Report: ${siteName}"`, `"Department: ${deptLabel}"`, '',
             headers.join(',')
         ];
-        for (const row of data) {
-            const values = headers.map(h => `"${String(row[h] ?? '').replace(/"/g, '""')}"`);
-            csvRows.push(values.join(','));
-        }
+        for (const row of data) { const values = headers.map(h => `"${String(row[h] ?? '').replace(/"/g, '""')}"`); csvRows.push(values.join(',')); }
         const csv = csvRows.join('\n');
         const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
         const url = URL.createObjectURL(blob);
@@ -2556,14 +2531,12 @@ window.exportReport = (format) => {
         return;
     }
 
+    // Print / PDF (EXACT FORMAT)
     const headers = Object.keys(data[0]);
-    const tableRows = data.map(row =>
-        `<tr>${headers.map(h => `<td>${row[h] ?? ''}</td>`).join('')}</tr>`
-    ).join('');
-
-    const meta = `<strong>${t('navigation.dashboard')}:</strong> ${siteName} &nbsp;|&nbsp; <strong>${t('reports.department')}:</strong> ${deptLabel}<br><strong>${t('reports.title')}:</strong> ${generatedDate}`;
+    const tableRows = data.map(row => `<tr>${headers.map(h => `<td>${row[h] ?? ''}</td>`).join('')}</tr>`).join('');
+    const meta = `<strong>Site Name:</strong> ${siteName} &nbsp;|&nbsp; <strong>Department:</strong> ${deptLabel}<br><strong>Generated on:</strong> ${generatedDate}`;
     const bodyHTML = `<table><thead><tr>${headers.map(h => `<th>${h}</th>`).join('')}</tr></thead><tbody>${tableRows}</tbody></table>`;
-    const fullHTML = generateReportHTML(t('reports.general'), bodyHTML, meta);
+    const fullHTML = generateReportHTML('Management Report', bodyHTML, meta);
     const win = window.open('', '_blank', 'width=1000,height=700');
     if (!win) { alert(t('common.noDataAvailable')); return; }
     win.document.write(fullHTML);
