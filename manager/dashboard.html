@@ -6,50 +6,21 @@
     <meta name="theme-color" content="#059669">
     <meta name="description" content="SHDR — Construction Site Management">
     
+    <!-- ── Favicon (browser tab) – real logo ── -->
     <link rel="icon" type="image/jpeg" href="shdr_logo.jpg">
     <link rel="apple-touch-icon" href="shdr_logo.jpg">
     
     <link rel="manifest" href="manifest.json">
     <title>SHDR Ltd. — Manager Dashboard</title>
 
+    <!-- Tailwind CSS CDN --> 
     <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+    <!-- Google Font -->
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Iconify -->
     <script src="https://cdn.jsdelivr.net/npm/iconify-icon@2.3.0/dist/iconify-icon.min.js"></script>
 
     <style>
-        /* ── Language Switcher Styles ── */
-        .language-switcher {
-            display: flex;
-            align-items: center;
-            background-color: rgba(30, 86, 160, 0.1);
-            border: 1px solid rgba(30, 86, 160, 0.2);
-            border-radius: 50px;
-            padding: 4px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-        }
-        .lang-btn {
-            background: transparent;
-            border: 2px solid transparent;
-            color: #64748b;
-            font-size: 14px;
-            font-weight: 700;
-            padding: 6px 16px;
-            border-radius: 50px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            outline: none;
-        }
-        .lang-btn:hover { background: rgba(30, 86, 160, 0.1); }
-        .lang-btn:focus-visible { outline: 2px solid #1e56a0; outline-offset: 2px; }
-        .lang-btn.active {
-            background: #ffffff;
-            color: #1e56a0;
-            border-color: #1e56a0;
-            box-shadow: 0 2px 6px rgba(30, 86, 160, 0.2);
-        }
-        @media (max-width: 640px) { .lang-btn { font-size: 12px; padding: 4px 10px; } }
-
-        /* ── Original Base Styles ── */
         * { font-family: 'Plus Jakarta Sans', sans-serif; }
         body { background: #f8fafc; }
         .sidebar-link.active { background: #ecfdf5; color: #059669; border-left: 3px solid #059669; }
@@ -78,6 +49,8 @@
         }
         @keyframes spin { to { transform: rotate(360deg); } }
         .role-option:hover { background: #ecfdf5; }
+
+        /* Bottom navigation – mobile only */
         .bottom-nav {
             display: none;
             position: fixed;
@@ -111,6 +84,7 @@
             .bottom-nav { display: flex; }
             main { padding-bottom: 80px; }
         }
+
         @media (max-width: 640px) {
             #content-area { padding: 1rem; }
             .stat-card { padding: 1rem; }
@@ -130,16 +104,57 @@
         .stock-status-low { background: #fef9c3; color: #854d0e; }
         .stock-status-out { background: #fee2e2; color: #991b1b; }
 
-        .settings-tab-btn { transition: all 0.2s; }
+        /* ── Language Switcher Styles ── */
+        .language-switcher {
+            display: flex;
+            align-items: center;
+            background-color: rgba(30, 86, 160, 0.1);
+            border: 1px solid rgba(30, 86, 160, 0.2);
+            border-radius: 50px;
+            padding: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .lang-btn {
+            background: transparent;
+            border: 2px solid transparent;
+            color: #64748b;
+            font-size: 14px;
+            font-weight: 700;
+            padding: 6px 16px;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+        .lang-btn:hover { background: rgba(30, 86, 160, 0.1); }
+        .lang-btn:focus-visible { outline: 2px solid #1e56a0; outline-offset: 2px; }
+        .lang-btn.active { background: #ffffff; color: #1e56a0; border-color: #1e56a0; box-shadow: 0 2px 6px rgba(30, 86, 160, 0.2); }
+        @media (max-width: 640px) { .lang-btn { font-size: 12px; padding: 4px 10px; } }
+
+        /* ── Settings specific ── */
+        .settings-tab-btn {
+            transition: all 0.2s;
+        }
         .settings-tab-btn.active {
             background: #059669;
             color: white;
             box-shadow: 0 4px 10px rgba(5, 150, 105, 0.2);
         }
-        .settings-tab-btn:not(.active):hover { background: #f1f5f9; }
-        .settings-section { display: none; }
-        .settings-section.active { display: block; }
-        .profile-avatar-wrapper { position: relative; width: 120px; height: 120px; margin: 0 auto; }
+        .settings-tab-btn:not(.active):hover {
+            background: #f1f5f9;
+        }
+        .settings-section {
+            display: none;
+        }
+        .settings-section.active {
+            display: block;
+        }
+        .profile-avatar-wrapper {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            margin: 0 auto;
+        }
         .profile-avatar-wrapper img {
             width: 100%;
             height: 100%;
@@ -185,7 +200,9 @@
             align-items: center;
             gap: 0.5rem;
         }
-        .settings-card .field-group { margin-bottom: 1.25rem; }
+        .settings-card .field-group {
+            margin-bottom: 1.25rem;
+        }
         .settings-card label {
             display: block;
             font-size: 0.85rem;
@@ -224,8 +241,13 @@
             cursor: pointer;
             transition: 0.2s;
         }
-        .settings-card .save-btn:hover { background: #047857; }
-        .settings-card .save-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+        .settings-card .save-btn:hover {
+            background: #047857;
+        }
+        .settings-card .save-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
         .settings-card .remove-photo-btn {
             color: #ef4444;
             font-size: 0.85rem;
@@ -235,8 +257,13 @@
             border: none;
             padding: 0.2rem 0.5rem;
         }
-        .settings-card .remove-photo-btn:hover { color: #dc2626; text-decoration: underline; }
-        @media (max-width: 640px) { .settings-card { padding: 1rem; } }
+        .settings-card .remove-photo-btn:hover {
+            color: #dc2626;
+            text-decoration: underline;
+        }
+        @media (max-width: 640px) {
+            .settings-card { padding: 1rem; }
+        }
         .toast {
             position: fixed;
             bottom: 24px;
@@ -261,15 +288,23 @@
             transform: translateY(0);
             opacity: 1;
         }
-        .toast.success { border-left: 4px solid #059669; }
-        .toast.error { border-left: 4px solid #ef4444; }
-        .toast.info { border-left: 4px solid #3b82f6; }
+        .toast.success {
+            border-left: 4px solid #059669;
+        }
+        .toast.error {
+            border-left: 4px solid #ef4444;
+        }
+        .toast.info {
+            border-left: 4px solid #3b82f6;
+        }
     </style>
 </head>
 <body class="min-h-screen flex">
 
+<!-- Mobile overlay -->
 <div id="sidebar-overlay" class="fixed inset-0 bg-black/40 z-40 hidden lg:hidden" onclick="toggleSidebar()"></div>
 
+<!-- Sidebar (desktop) -->
 <aside id="sidebar" class="fixed inset-y-0 left-0 w-64 bg-white border-r border-slate-200 z-50 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out flex flex-col shadow-sm">
     <div class="p-6 border-b border-slate-100">
         <div class="flex items-center gap-3">
@@ -327,6 +362,7 @@
     </div>
 </aside>
 
+<!-- Main Content -->
 <main class="flex-1 lg:ml-64 min-h-screen flex flex-col">
     <header class="bg-white border-b border-slate-200 px-4 py-3 flex items-center justify-between sticky top-0 z-30 shadow-sm">
         <button class="lg:hidden text-slate-600 p-2 rounded-lg hover:bg-slate-100" onclick="toggleSidebar()">
@@ -345,21 +381,29 @@
         </div>
     </header>
 
+    <!-- Loading & Error -->
     <div id="global-loading" class="hidden p-6 flex justify-center"><div class="spinner"></div></div>
     <div id="global-error" class="hidden p-6"><div class="bg-red-50 border border-red-200 rounded-2xl p-4 text-red-700"></div></div>
+
+    <!-- Content Area -->
     <div id="content-area" class="flex-1 p-4 sm:p-6"></div>
 
     <footer class="bg-white border border-green-200 rounded-2xl shadow-md mx-4 mb-4">
         <div class="px-5 py-4 flex flex-col sm:flex-row items-center justify-between gap-2 sm:gap-0">
-            <span class="text-xs font-medium text-green-600 order-2 sm:order-1">Version 1.0.0</span>
+            <span class="text-xs font-medium text-green-600 order-2 sm:order-1">
+                Version 1.0.0
+            </span>
             <div class="text-sm text-gray-600 text-center order-1 sm:order-2">
                 Designed &amp; Powered by
-                <a href="https://wa.me/250790020086" target="_blank" rel="noopener noreferrer" class="text-green-600 hover:text-green-700 no-underline font-semibold">___Enock's___blessingz___</a>
+                <a href="https://wa.me/250790020086" target="_blank" rel="noopener noreferrer" class="text-green-600 hover:text-green-700 no-underline font-semibold">
+                    ___Enock's___blessingz___
+                </a>
             </div>
             <div class="hidden sm:block w-16"></div>
         </div>
     </footer>
 
+    <!-- Bottom Navigation (mobile) -->
     <div class="bottom-nav" id="bottom-nav">
         <a href="#" onclick="showSection('dashboard')" class="active" data-section="dashboard">
             <iconify-icon icon="material-symbols:dashboard-outline"></iconify-icon>
@@ -387,6 +431,7 @@
         </a>
     </div>
 
+    <!-- Modals -->
     <div id="modal-overlay" class="modal fixed inset-0 bg-black/40 backdrop-blur-sm z-50 items-center justify-center p-4" onclick="closeModal()">
         <div class="bg-white rounded-2xl p-6 w-full max-w-md shadow-xl max-h-[90vh] overflow-y-auto" onclick="event.stopPropagation()">
             <div class="flex justify-between items-center mb-4">
@@ -397,54 +442,48 @@
         </div>
     </div>
 
+    <!-- Toast Container -->
     <div id="toast" class="toast"></div>
 
     <script type="module">
         // =================================================================
-        // 1. CENTRAL I18N SYSTEM (Complete)
+        // 1. CENTRAL I18N SYSTEM
         // =================================================================
         const translations = {
             en: {
-                common: {
-                    comingSoon: "Coming Soon", save: "Save", cancel: "Cancel", add: "Add", delete: "Delete", edit: "Edit",
-                    close: "Close", export: "Export", loading: "Loading...", error: "Error", search: "Search", view: "View",
-                    areYouSure: "Are you sure?", cannotUndo: "This action cannot be undone", savedSuccessfully: "Saved successfully",
-                    updatedSuccessfully: "Updated successfully", deletedSuccessfully: "Deleted successfully", somethingWentWrong: "Something went wrong",
-                    requiredField: "Required field", invalidValue: "Invalid value", noDataAvailable: "No data available", accessDenied: "Access denied",
-                    sessionExpired: "Session expired"
-                },
                 navigation: { managerPanel: "Manager's Panel", dashboard: "Dashboard", materials: "Materials", stock: "Stock", workers: "Workers", progress: "Progress", reports: "Reports", gallery: "Gallery", settings: "Settings", logout: "Sign Out" },
+                common: { save: "Save", cancel: "Cancel", close: "Close", add: "Add", edit: "Edit", delete: "Delete", view: "View", upload: "Upload", search: "Search", loading: "Loading...", areYouSure: "Are you sure?", cannotUndo: "This action cannot be undone", savedSuccessfully: "Saved successfully", updatedSuccessfully: "Updated successfully", deletedSuccessfully: "Deleted successfully", somethingWentWrong: "Something went wrong", noDataAvailable: "No data available", requiredField: "Required field", invalidValue: "Invalid value" },
                 dashboard: { siteStatus: "Status", siteManager: "Manager", workersOnSite: "Workers On Site", progress: "Progress", recentMaterials: "Recent Materials", pendingTasks: "Pending Tasks" },
                 materials: { title: "Materials Used", recordUsage: "Record Usage", addMaterial: "Add Material", editMaterial: "Edit Material", materialName: "Material Name", quantityUsed: "Qty Used", unitCost: "Unit Cost", totalAmount: "Total Amount", noMaterials: "No materials recorded yet." },
-                stock: { title: "Stock Management", receiveStock: "Receive Stock", editStock: "Edit Stock", history: "History", quantity: "Quantity", minimumStock: "Minimum Stock", value: "Value", lastUpdated: "Last Updated", notes: "Notes", normal: "Normal", lowStock: "Low Stock", outOfStock: "Out of Stock" },
+                stock: { title: "Stock Management", receiveStock: "Receive Stock", addStock: "Add Stock", editStock: "Edit Stock", stockHistory: "Stock History", quantity: "Quantity", minimumStock: "Minimum Stock", stockValue: "Stock Value", lastUpdated: "Last Updated", notes: "Notes", normal: "Normal", lowStock: "Low Stock", outOfStock: "Out of Stock" },
                 workers: { title: "Workers", addWorker: "Add New Worker", view: "All Workers", recordAttendance: "Record Attendance", fullName: "Full Name", role: "Role", paymentType: "Payment Type", dailyRate: "Daily Rate", monthlySalary: "Monthly Salary", salary: "Salary", phone: "Phone", photo: "Photo", saveWorker: "Save Worker", selectWorkerRole: "Choose worker role...", searchRole: "Search role...", workerDetails: "Worker Details", noWorkers: "No workers added yet." },
                 progress: { title: "Progress Tasks", task: "Task", start: "Start", end: "End", status: "Status", pending: "Pending", completed: "Completed", markCompleted: "Mark as completed", noTasks: "No tasks assigned." },
                 reports: { title: "Generate Reports", general: "General", workerPayroll: "Worker Payroll", exportCSV: "Export CSV", printPDF: "Print / PDF", department: "Department", allDepartments: "All Departments", startDate: "Start Date", endDate: "End Date", searchWorker: "Search worker...", totalWorkers: "Total Workers", workerDays: "Worker-Days", totalPayroll: "Total Payroll", avgDaily: "Avg. Daily Labor Cost" },
-                gallery: { title: "Site Gallery", uploadNewImage: "Upload New Image", description: "Description", upload: "Upload", noImages: "No gallery images", close: "Close", edit: "Edit", delete: "Delete", save: "Save" },
+                gallery: { title: "Site Gallery", uploadImage: "Upload New Image", description: "Description", upload: "Upload", noImages: "No images uploaded yet.", close: "Close" },
                 settings: { title: "Settings", profile: "Profile", account: "Account", security: "Security", preferences: "Preferences", profileInfo: "Profile Information", fullName: "Full Name", phone: "Phone Number", email: "Email Address", changePhoto: "Change Photo", removePhoto: "Remove Photo", saveProfile: "Save Profile Changes", accountInfo: "Account Information", accountName: "Account Name", role: "Role", accountStatus: "Account Status", active: "Active", memberSince: "Member Since", changePassword: "Change Password", currentPassword: "Current Password", newPassword: "New Password", confirmPassword: "Confirm New Password", changePassBtn: "Change Password", prefs: "Preferences", language: "Language", currency: "Currency", dateFormat: "Date Format", notifications: "Enable Notifications", savePrefs: "Save Preferences" }
             },
             rw: {
-                common: { save: "Bika", cancel: "Hagarika", add: "Ongeraho", delete: "Siba", edit: "Hindura", close: "Funga", loading: "Birimo gutegura...", areYouSure: "Urabyemeza?", cannotUndo: "Ibi ntibishobora guhindurwa", savedSuccessfully: "Byabitswe neza", updatedSuccessfully: "Byavuguruwe neza", deletedSuccessfully: "Byasibwe neza", somethingWentWrong: "Hari ikitagenze neza", requiredField: "Ibi birakenewe", invalidValue: "Agaciro katariyo", noDataAvailable: "Nta makuru aboneka" },
                 navigation: { managerPanel: "Ipaneli y'umuyobozi", dashboard: "Imbonerahamwe", materials: "Ibikoresho", stock: "Imbuganyuro", workers: "Abakozi", progress: "Ibitekerezo", reports: "Raporo", gallery: "Amafoto", settings: "Igenamiterere", logout: "Sohoka" },
+                common: { save: "Bika", cancel: "Hagarika", close: "Funga", add: "Ongeraho", edit: "Hindura", delete: "Siba", view: "Reba", upload: "Ohereza", search: "Shakisha", loading: "Birimo gutegura...", areYouSure: "Urabyemeza?", cannotUndo: "Ibi ntibishobora guhindurwa", savedSuccessfully: "Byabitswe neza", updatedSuccessfully: "Byavuguruwe neza", deletedSuccessfully: "Byasibwe neza", somethingWentWrong: "Hari ikitagenze neza", noDataAvailable: "Nta makuru aboneka", requiredField: "Ibi birakenewe", invalidValue: "Agaciro katariyo" },
                 dashboard: { siteStatus: "Imiterere", siteManager: "Umuyobozi", workersOnSite: "Abakozi ku kibanza", progress: "Ibitekerezo", recentMaterials: "Ibikoresho bishya", pendingTasks: "Imirimo itegereje" },
                 materials: { title: "Ibikoresho Byakoreshejwe", recordUsage: "Andika Gukoresha", addMaterial: "Ongeraho ibikoresho", editMaterial: "Hindura ibikoresho", materialName: "Izina ry'ibikoresho", quantityUsed: "Umubare wakoreshejwe", unitCost: "Igiciro cy'igice", totalAmount: "Amafaranga yose", noMaterials: "Nta bikoresho byanditswe." },
-                stock: { title: "Gucunga Imbuganyuro", receiveStock: "Akira Imbuganyuro", editStock: "Hindura Imbuganyuro", history: "Amateka", quantity: "Umubare", minimumStock: "Ubugabanyiro ntarengwa", value: "Agaciro", lastUpdated: "Byavuguruwe", notes: "Ibisobanuro", normal: "Bisanzwe", lowStock: "Imbuganyuro nke", outOfStock: "Imbuganyuro yashaje" },
+                stock: { title: "Gucunga Imbuganyuro", receiveStock: "Akira Imbuganyuro", addStock: "Ongeraho Imbuganyuro", editStock: "Hindura Imbuganyuro", stockHistory: "Amateka y'Imbuganyuro", quantity: "Umubare", minimumStock: "Ubugabanyiro ntarengwa", stockValue: "Agaciro k'Imbuganyuro", lastUpdated: "Byavuguruwe", notes: "Ibisobanuro", normal: "Bisanzwe", lowStock: "Imbuganyuro nke", outOfStock: "Imbuganyuro yashaje" },
                 workers: { title: "Abakozi", addWorker: "Ongeraho Umukozi", view: "Abakozi Bose", recordAttendance: "Andika Kwitaba", fullName: "Amazina yombi", role: "Umwanya", paymentType: "Uburyo bwo Kwishyura", dailyRate: "Umushahara w'umunsi", monthlySalary: "Umushahara w'ukwezi", salary: "Umushahara", phone: "Telefoni", photo: "Ifoto", saveWorker: "Bika Umukozi", selectWorkerRole: "Hitamo umwanya...", searchRole: "Shakisha umwanya...", workerDetails: "Ibisobanuro by'Umukozi", noWorkers: "Nta bakozi bahari." },
                 progress: { title: "Imirimo", task: "Umurimo", start: "Tangira", end: "Rangira", status: "Imiterere", pending: "Bitegereje", completed: "Byarangiye", markCompleted: "Menya ko byarangiye", noTasks: "Nta mirimo ihari." },
                 reports: { title: "Kora Raporo", general: "Rusange", workerPayroll: "Umushahara w'Abakozi", exportCSV: "Sohora CSV", printPDF: "Capa / PDF", department: "Ishami", allDepartments: "Amashami Yose", startDate: "Itariki yo gutangira", endDate: "Itariki yo kurangira", searchWorker: "Shakisha umukozi...", totalWorkers: "Abakozi Bose", workerDays: "Iminsi y'Abakozi", totalPayroll: "Umushahara Wose", avgDaily: "Igiciro cy'umunsi" },
-                gallery: { title: "Amafoto y'Ibibanza", uploadNewImage: "Ohereza Ifoto Nshya", description: "Ibisobanuro", upload: "Ohereza", noImages: "Nta mafoto", close: "Funga", edit: "Hindura", delete: "Siba", save: "Bika" },
+                gallery: { title: "Amafoto y'Ibibanza", uploadImage: "Ohereza Ifoto Nshya", description: "Ibisobanuro", upload: "Ohereza", noImages: "Nta mafoto yashyizweho.", close: "Funga" },
                 settings: { title: "Igenamiterere", profile: "Umwirondoro", account: "Kontu", security: "Umutekano", preferences: "Amahitamo", profileInfo: "Amakuru bwite", fullName: "Amazina yombi", phone: "Nomero ya telefoni", email: "Email", changePhoto: "Hindura ifoto", removePhoto: "Kuraho ifoto", saveProfile: "Bika Impinduka", accountInfo: "Amakuru ya kontu", accountName: "Izina rya kontu", role: "Umwanya", accountStatus: "Imiterere ya kontu", active: "Bikora", memberSince: "Umuryango kuva", changePassword: "Hindura Ijambobanga", currentPassword: "Ijambobanga risanzwe", newPassword: "Ijambobanga rishya", confirmPassword: "Emeza Ijambobanga rishya", changePassBtn: "Hindura Ijambobanga", prefs: "Amahitamo", language: "Ururimi", currency: "Ifaranga", dateFormat: "Imiterere y'itariki", notifications: "Koresha imenyesha", savePrefs: "Bika Amahitamo" }
             },
             fr: {
-                common: { save: "Enregistrer", cancel: "Annuler", add: "Ajouter", delete: "Supprimer", edit: "Modifier", close: "Fermer", loading: "Chargement...", areYouSure: "Êtes-vous sûr ?", cannotUndo: "Cette action est irréversible", savedSuccessfully: "Enregistré avec succès", updatedSuccessfully: "Mis à jour avec succès", deletedSuccessfully: "Supprimé avec succès", somethingWentWrong: "Une erreur s'est produite", requiredField: "Champ requis", invalidValue: "Valeur invalide", noDataAvailable: "Aucune donnée disponible" },
                 navigation: { managerPanel: "Panneau du gestionnaire", dashboard: "Tableau de bord", materials: "Matériaux", stock: "Stock", workers: "Ouvriers", progress: "Progrès", reports: "Rapports", gallery: "Galerie", settings: "Paramètres", logout: "Déconnexion" },
+                common: { save: "Enregistrer", cancel: "Annuler", close: "Fermer", add: "Ajouter", edit: "Modifier", delete: "Supprimer", view: "Voir", upload: "Télécharger", search: "Rechercher", loading: "Chargement...", areYouSure: "Êtes-vous sûr ?", cannotUndo: "Cette action est irréversible", savedSuccessfully: "Enregistré avec succès", updatedSuccessfully: "Mis à jour avec succès", deletedSuccessfully: "Supprimé avec succès", somethingWentWrong: "Une erreur s'est produite", noDataAvailable: "Aucune donnée disponible", requiredField: "Champ requis", invalidValue: "Valeur invalide" },
                 dashboard: { siteStatus: "Statut", siteManager: "Gestionnaire", workersOnSite: "Ouvriers sur site", progress: "Progrès", recentMaterials: "Matériaux récents", pendingTasks: "Tâches en attente" },
                 materials: { title: "Matériaux utilisés", recordUsage: "Enregistrer l'utilisation", addMaterial: "Ajouter un matériau", editMaterial: "Modifier le matériau", materialName: "Nom du matériau", quantityUsed: "Qté utilisée", unitCost: "Coût unitaire", totalAmount: "Montant total", noMaterials: "Aucun matériau enregistré." },
-                stock: { title: "Gestion du stock", receiveStock: "Recevoir du stock", editStock: "Modifier le stock", history: "Historique", quantity: "Quantité", minimumStock: "Stock minimum", value: "Valeur", lastUpdated: "Mis à jour", notes: "Notes", normal: "Normal", lowStock: "Stock faible", outOfStock: "Épuisé" },
+                stock: { title: "Gestion du stock", receiveStock: "Recevoir du stock", addStock: "Ajouter du stock", editStock: "Modifier le stock", stockHistory: "Historique du stock", quantity: "Quantité", minimumStock: "Stock minimum", stockValue: "Valeur du stock", lastUpdated: "Mis à jour", notes: "Notes", normal: "Normal", lowStock: "Stock faible", outOfStock: "Épuisé" },
                 workers: { title: "Ouvriers", addWorker: "Ajouter un ouvrier", view: "Tous les ouvriers", recordAttendance: "Enregistrer la présence", fullName: "Nom complet", role: "Rôle", paymentType: "Type de paiement", dailyRate: "Taux journalier", monthlySalary: "Salaire mensuel", salary: "Salaire", phone: "Téléphone", photo: "Photo", saveWorker: "Enregistrer l'ouvrier", selectWorkerRole: "Choisir un rôle...", searchRole: "Rechercher un rôle...", workerDetails: "Détails de l'ouvrier", noWorkers: "Aucun ouvrier ajouté." },
                 progress: { title: "Tâches de progression", task: "Tâche", start: "Début", end: "Fin", status: "Statut", pending: "En attente", completed: "Terminé", markCompleted: "Marquer comme terminé", noTasks: "Aucune tâche assignée." },
                 reports: { title: "Générer des rapports", general: "Général", workerPayroll: "Paie des ouvriers", exportCSV: "Exporter CSV", printPDF: "Imprimer / PDF", department: "Département", allDepartments: "Tous les départements", startDate: "Date de début", endDate: "Date de fin", searchWorker: "Rechercher un ouvrier...", totalWorkers: "Total des ouvriers", workerDays: "Jours ouvriers", totalPayroll: "Paie totale", avgDaily: "Coût journalier moyen" },
-                gallery: { title: "Galerie du site", uploadNewImage: "Télécharger une image", description: "Description", upload: "Télécharger", noImages: "Aucune image", close: "Fermer", edit: "Modifier", delete: "Supprimer", save: "Enregistrer" },
+                gallery: { title: "Galerie du site", uploadImage: "Télécharger une image", description: "Description", upload: "Télécharger", noImages: "Aucune image téléchargée.", close: "Fermer" },
                 settings: { title: "Paramètres", profile: "Profil", account: "Compte", security: "Sécurité", preferences: "Préférences", profileInfo: "Informations du profil", fullName: "Nom complet", phone: "Téléphone", email: "E-mail", changePhoto: "Changer la photo", removePhoto: "Supprimer la photo", saveProfile: "Enregistrer les modifications", accountInfo: "Informations du compte", accountName: "Nom du compte", role: "Rôle", accountStatus: "Statut du compte", active: "Actif", memberSince: "Membre depuis", changePassword: "Changer le mot de passe", currentPassword: "Mot de passe actuel", newPassword: "Nouveau mot de passe", confirmPassword: "Confirmer le nouveau mot de passe", changePassBtn: "Changer le mot de passe", prefs: "Préférences", language: "Langue", currency: "Devise", dateFormat: "Format de date", notifications: "Activer les notifications", savePrefs: "Enregistrer les préférences" }
             }
         };
@@ -465,10 +504,19 @@
             return value;
         }
         function applyTranslations() {
-            document.querySelectorAll('[data-i18n]').forEach(el => el.textContent = t(el.dataset.i18n));
-            document.querySelectorAll('[data-i18n-placeholder]').forEach(el => el.placeholder = t(el.dataset.i18nPlaceholder));
-            document.querySelectorAll('[data-i18n-title]').forEach(el => el.title = t(el.dataset.i18nTitle));
-            document.querySelectorAll('[data-i18n-aria-label]').forEach(el => el.setAttribute('aria-label', t(el.dataset.i18nAriaLabel)));
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.dataset.i18n;
+                el.textContent = t(key);
+            });
+            document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+                el.placeholder = t(el.dataset.i18nPlaceholder);
+            });
+            document.querySelectorAll('[data-i18n-title]').forEach(el => {
+                el.title = t(el.dataset.i18nTitle);
+            });
+            document.querySelectorAll('[data-i18n-aria-label]').forEach(el => {
+                el.setAttribute('aria-label', t(el.dataset.i18nAriaLabel));
+            });
             if (currentSection) showSection(currentSection);
         }
         function setLanguage(lang) {
@@ -483,20 +531,16 @@
             document.documentElement.lang = lang;
             applyTranslations();
         }
-        document.querySelectorAll('.lang-btn').forEach(btn => btn.addEventListener('click', () => setLanguage(btn.dataset.language)));
+        document.querySelectorAll('.lang-btn').forEach(btn => {
+            btn.addEventListener('click', () => setLanguage(btn.dataset.language));
+        });
 
         // =================================================================
-        // 2. FIREBASE INITIALIZATION
+        // 2. FIREBASE INITIALIZATION & GLOBAL HANDLERS
         // =================================================================
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
-        import {
-            getAuth, onAuthStateChanged, signOut, reauthenticateWithCredential,
-            EmailAuthProvider, updatePassword, updateEmail, sendEmailVerification
-        } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
-        import {
-            getFirestore, collection, query, where, onSnapshot, addDoc, updateDoc,
-            doc, getDoc, deleteDoc, getDocs, writeBatch, orderBy, setDoc
-        } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
+        import { getAuth, onAuthStateChanged, signOut, reauthenticateWithCredential, EmailAuthProvider, updatePassword, updateEmail, sendEmailVerification } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
+        import { getFirestore, collection, query, where, onSnapshot, addDoc, updateDoc, doc, getDoc, deleteDoc, getDocs, writeBatch, orderBy, setDoc } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBVTLxC6nWpWL6a4BLI3xghdgUoR_cgGzw",
@@ -515,7 +559,7 @@
         const IMGBB_API_KEY = '6b1b5028aba07a31bf702efd9c0ef4fe';
         const PLACEHOLDER_IMG = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="200"%3E%3Crect width="400" height="200" fill="%23e2e8f0"/%3E%3Ctext x="50%25" y="50%25" dominant-baseline="middle" text-anchor="middle" fill="%2394a3b8" font-size="20"%3ENo Image%3C/text%3E%3C/svg%3E';
 
-        // ── Helpers & State ──
+        // ── Date formatter (locale aware) ──
         function formatDate(dateValue) {
             if (!dateValue) return '—';
             const date = typeof dateValue === 'string' ? new Date(dateValue) : dateValue;
@@ -524,6 +568,7 @@
             return new Intl.DateTimeFormat(localeMap[currentLanguage], { year: 'numeric', month: 'long', day: 'numeric' }).format(date);
         }
 
+        // Global state
         let currentUser = null;
         let managerProfile = null;
         let assignedSites = [];
@@ -538,6 +583,7 @@
         let hasUnsavedChanges = false;
         let _profilePhotoFile = null;
 
+        // Helpers
         function showLoading(show) { document.getElementById('global-loading').classList.toggle('hidden', !show); }
         function showError(msg) { const el = document.getElementById('global-error'); el.classList.remove('hidden'); el.querySelector('div').textContent = msg; }
         function clearError() { document.getElementById('global-error').classList.add('hidden'); }
@@ -597,32 +643,21 @@
                     });
 
                     let siteIds = [];
-                    if (managerProfile.assigned_sites && Array.isArray(managerProfile.assigned_sites)) {
-                        siteIds = managerProfile.assigned_sites;
-                    } else if (managerProfile.assigned_site) {
-                        siteIds = [managerProfile.assigned_site];
-                    } else {
-                        showError('No site assigned.');
-                        return;
-                    }
+                    if (managerProfile.assigned_sites && Array.isArray(managerProfile.assigned_sites)) siteIds = managerProfile.assigned_sites;
+                    else if (managerProfile.assigned_site) siteIds = [managerProfile.assigned_site];
+                    else { showError('No site assigned.'); return; }
 
                     const sitePromises = siteIds.map(id => getDoc(doc(db, 'sites', id)));
                     const siteSnaps = await Promise.all(sitePromises);
                     assignedSites = siteSnaps.filter(snap => snap.exists()).map(snap => ({ id: snap.id, ...snap.data() }));
-
-                    if (assignedSites.length === 0) {
-                        showError('Assigned site(s) not found.');
-                        return;
-                    }
+                    if (assignedSites.length === 0) { showError('Assigned site(s) not found.'); return; }
 
                     currentSiteId = assignedSites[0].id;
                     const selector = document.getElementById('site-selector');
                     if (assignedSites.length > 1) {
                         selector.classList.remove('hidden');
                         selector.innerHTML = assignedSites.map(s => `<option value="${s.id}" ${s.id === currentSiteId ? 'selected' : ''}>${s.name}</option>`).join('');
-                    } else {
-                        selector.classList.add('hidden');
-                    }
+                    } else { selector.classList.add('hidden'); }
 
                     attachListeners();
                     showSection('dashboard');
@@ -637,15 +672,8 @@
             const photo = profile.profile_picture || '';
             const avatarImg = document.getElementById('sidebar-user-avatar-img');
             const avatarText = document.getElementById('user-avatar-text');
-            if (photo) {
-                avatarImg.src = photo;
-                avatarImg.style.display = 'block';
-                avatarText.style.display = 'none';
-            } else {
-                avatarImg.style.display = 'none';
-                avatarText.style.display = 'flex';
-                avatarText.textContent = name.charAt(0).toUpperCase();
-            }
+            if (photo) { avatarImg.src = photo; avatarImg.style.display = 'block'; avatarText.style.display = 'none'; }
+            else { avatarImg.style.display = 'none'; avatarText.style.display = 'flex'; avatarText.textContent = name.charAt(0).toUpperCase(); }
             document.getElementById('user-name').textContent = name;
             document.getElementById('user-email').textContent = email;
         }
@@ -782,7 +810,7 @@
                     <div class="bg-white rounded-2xl border p-4 shadow-sm">
                         <h3 class="font-semibold text-sm mb-3">${t('dashboard.recentMaterials')}</h3>
                         <div class="space-y-1 text-sm">
-                            ${materialsData.slice(-4).reverse().map(m => `<div class="flex justify-between"><span>${m.name}</span><span class="text-slate-400">${m.quantity_used || 0} ${t('materials.quantityUsed')}</span></div>`).join('') || `<p class="text-slate-400">${t('common.noDataAvailable')}</p>`}
+                            ${materialsData.slice(-4).reverse().map(m => `<div class="flex justify-between"><span>${m.name}</span><span class="text-slate-400">${m.quantity_used || 0} used</span></div>`).join('') || `<p class="text-slate-400">${t('common.noDataAvailable')}</p>`}
                         </div>
                     </div>
                     <div class="bg-white rounded-2xl border p-4 shadow-sm">
@@ -807,14 +835,7 @@
             });
             const currentSite = assignedSites.find(s => s.id === currentSiteId);
             const siteName = currentSite ? currentSite.name : 'Unknown Site';
-            let html = `
-                <div class="flex justify-between items-center mb-4 sm:mb-6">
-                    <h2 class="text-xl sm:text-2xl font-bold">${t('materials.title')}</h2>
-                    <button onclick="openAddMaterialModal()" class="px-3 py-2 bg-emerald-600 text-white rounded-xl hover:bg-emerald-700 flex items-center gap-2 text-sm">
-                        <iconify-icon icon="material-symbols:add"></iconify-icon> ${t('materials.recordUsage')}
-                    </button>
-                </div>
-            `;
+            let html = `<div class="flex justify-between items-center mb-4 sm:mb-6"><h2 class="text-xl sm:text-2xl font-bold">${t('materials.title')}</h2><button onclick="openAddMaterialModal()" class="px-3 py-2 bg-emerald-600 text-white rounded-xl hover:bg-emerald-700 flex items-center gap-2 text-sm"><iconify-icon icon="material-symbols:add"></iconify-icon> ${t('materials.recordUsage')}</button></div>`;
             if (Object.keys(grouped).length === 0) html += `<p class="text-slate-500">${t('materials.noMaterials')}</p>`;
             else {
                 const sortedDates = Object.keys(grouped).sort((a, b) => new Date(b) - new Date(a));
@@ -823,21 +844,7 @@
                     html += `<div class="mb-6"><h3 class="font-bold text-sm text-slate-700 mb-3 flex items-center gap-2"><iconify-icon icon="material-symbols:calendar-month" class="text-emerald-500"></iconify-icon>${date}</h3><div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">`;
                     materials.forEach(m => {
                         const qty = m.quantity_used || 0, unitCost = m.unit_cost || 0, total = calculateTotal(qty, unitCost), imageUrl = m.image || PLACEHOLDER_IMG;
-                        html += `<div class="bg-white rounded-2xl border overflow-hidden shadow-sm hover:shadow-md transition">
-                            <div class="relative w-full h-48 overflow-hidden bg-slate-100"><img src="${imageUrl}" class="w-full h-full object-cover" alt="${m.name}" loading="lazy" onerror="this.src='${PLACEHOLDER_IMG}'"><div class="absolute top-3 left-3 bg-emerald-600/90 text-white text-xs font-medium px-2.5 py-1 rounded-full">${siteName}</div></div>
-                            <div class="p-5">
-                                <h3 class="font-bold text-lg text-slate-800 truncate">${m.name}</h3>
-                                <div class="mt-4 space-y-2">
-                                    <div class="flex justify-between text-sm border-b border-slate-100 pb-2"><span class="text-slate-500">${t('materials.quantityUsed')}</span><span class="font-semibold text-slate-700">${qty}</span></div>
-                                    <div class="flex justify-between text-sm border-b border-slate-100 pb-2"><span class="text-slate-500">${t('materials.unitCost')}</span><span class="font-semibold text-slate-700">${unitCost.toFixed(2)} RWF</span></div>
-                                    <div class="flex justify-between text-sm"><span class="text-slate-500">${t('materials.totalAmount')}</span><span class="font-bold text-emerald-600">${total.toFixed(2)} RWF</span></div>
-                                </div>
-                                <div class="mt-4 pt-3 border-t border-slate-100 flex justify-end gap-3">
-                                    <button onclick="editMaterial('${m.id}')" class="text-sm text-emerald-600 font-medium">${t('common.edit')}</button>
-                                    <button onclick="deleteMaterial('${m.id}')" class="text-sm text-red-500 font-medium">${t('common.delete')}</button>
-                                </div>
-                            </div>
-                        </div>`;
+                        html += `<div class="bg-white rounded-2xl border overflow-hidden shadow-sm hover:shadow-md transition"><div class="relative w-full h-48 overflow-hidden bg-slate-100"><img src="${imageUrl}" class="w-full h-full object-cover" onerror="this.src='${PLACEHOLDER_IMG}'"><div class="absolute top-3 left-3 bg-emerald-600/90 text-white text-xs font-medium px-2.5 py-1 rounded-full">${siteName}</div></div><div class="p-5"><h3 class="font-bold text-lg text-slate-800 truncate">${m.name}</h3><div class="mt-4 space-y-2"><div class="flex justify-between text-sm border-b border-slate-100 pb-2"><span class="text-slate-500">${t('materials.quantityUsed')}</span><span class="font-semibold text-slate-700">${qty}</span></div><div class="flex justify-between text-sm border-b border-slate-100 pb-2"><span class="text-slate-500">${t('materials.unitCost')}</span><span class="font-semibold text-slate-700">${unitCost.toFixed(2)} RWF</span></div><div class="flex justify-between text-sm"><span class="text-slate-500">${t('materials.totalAmount')}</span><span class="font-bold text-emerald-600">${total.toFixed(2)} RWF</span></div></div><div class="mt-4 pt-3 border-t border-slate-100 flex justify-end gap-3"><button onclick="editMaterial('${m.id}')" class="text-sm text-emerald-600 font-medium">${t('common.edit')}</button><button onclick="deleteMaterial('${m.id}')" class="text-sm text-red-500 font-medium">${t('common.delete')}</button></div></div></div>`;
                     });
                     html += `</div></div>`;
                 });
@@ -957,12 +964,12 @@
                     const statusClass = status === t('stock.normal') ? 'stock-status-normal' : status === t('stock.lowStock') ? 'stock-status-low' : 'stock-status-out';
                     const unitCost = materialsData.filter(m => m.site_id === currentSiteId && m.name === item.material_name).pop()?.unit_cost || 0;
                     const value = item.quantity * unitCost;
-                    html += `<div class="bg-white rounded-2xl border overflow-hidden shadow-sm hover:shadow-md transition"><div class="p-5"><div class="flex justify-between items-start"><h3 class="font-bold text-lg text-slate-800">${item.material_name || 'Unknown'}</h3><span class="text-xs font-medium px-2 py-1 rounded-full ${statusClass}">${status}</span></div><div class="mt-3 space-y-1 text-sm"><p><strong>${t('stock.quantity')}:</strong> ${item.quantity} ${item.unit || 'units'}</p><p><strong>${t('stock.value')}:</strong> ${value.toFixed(2)} RWF</p><p><strong>${t('stock.lastUpdated')}:</strong> ${formatDate(item.updated_at)}</p>${item.notes ? `<p><strong>${t('stock.notes')}:</strong> ${item.notes}</p>` : ''}</div><div class="mt-4 flex gap-2"><button onclick="editStockItem('${item.id}')" class="text-xs text-emerald-600 font-medium">${t('common.edit')}</button><button onclick="viewStockHistory('${item.id}')" class="text-xs text-blue-600 font-medium">${t('stock.history')}</button></div></div></div>`;
+                    html += `<div class="bg-white rounded-2xl border overflow-hidden shadow-sm hover:shadow-md transition"><div class="p-5"><div class="flex justify-between items-start"><h3 class="font-bold text-lg text-slate-800">${item.material_name || 'Unknown'}</h3><span class="text-xs font-medium px-2 py-1 rounded-full ${statusClass}">${status}</span></div><div class="mt-3 space-y-1 text-sm"><p><strong>${t('stock.quantity')}:</strong> ${item.quantity} ${item.unit || 'units'}</p><p><strong>${t('stock.value')}:</strong> ${value.toFixed(2)} RWF</p><p><strong>${t('stock.lastUpdated')}:</strong> ${formatDate(item.updated_at)}</p>${item.notes ? `<p><strong>${t('stock.notes')}:</strong> ${item.notes}</p>` : ''}</div><div class="mt-4 flex gap-2"><button onclick="editStockItem('${item.id}')" class="text-xs text-emerald-600 font-medium">${t('common.edit')}</button><button onclick="viewStockHistory('${item.id}')" class="text-xs text-blue-600 font-medium">${t('stock.stockHistory')}</button></div></div></div>`;
                 });
                 html += `</div>`;
             }
             const recentTrans = stockTransactions.slice(0, 10);
-            if (recentTrans.length) html += `<div class="mt-6 bg-white rounded-2xl border p-4 shadow-sm"><h3 class="font-semibold text-sm mb-3">${t('stock.history')}</h3><div class="space-y-2">${recentTrans.map(t => `<div class="flex justify-between text-sm border-b border-slate-100 pb-2"><div><span class="font-medium">${t.material_name}</span><span class="text-xs text-slate-500 ml-2">${t.transaction_type === 'STOCK_ADDED' ? '+' : ''}${t.quantity} ${t.unit || ''}</span></div><span class="text-xs text-slate-400">${formatDate(t.created_at)}</span></div>`).join('')}</div></div>`;
+            if (recentTrans.length) html += `<div class="mt-6 bg-white rounded-2xl border p-4 shadow-sm"><h3 class="font-semibold text-sm mb-3">${t('stock.stockHistory')}</h3><div class="space-y-2">${recentTrans.map(t => `<div class="flex justify-between text-sm border-b border-slate-100 pb-2"><div><span class="font-medium">${t.material_name}</span><span class="text-xs text-slate-500 ml-2">${t.transaction_type === 'STOCK_ADDED' ? '+' : ''}${t.quantity} ${t.unit || ''}</span></div><span class="text-xs text-slate-400">${formatDate(t.created_at)}</span></div>`).join('')}</div></div>`;
             container.innerHTML = html;
         }
 
@@ -1007,7 +1014,7 @@
             const transactions = stockTransactions.filter(t => t.stock_id === stockId);
             if (!transactions.length) { alert(t('common.noDataAvailable')); return; }
             let html = `<div class="space-y-2">${transactions.map(t => `<div class="flex justify-between text-sm"><span>${t.transaction_type === 'STOCK_ADDED' ? '+' : ''}${t.quantity} ${t.unit || ''} — ${t.notes || ''}</span><span class="text-slate-400">${formatDate(t.created_at)}</span></div>`).join('')}</div>`;
-            openModal(t('stock.history'), html);
+            openModal(t('stock.stockHistory'), html);
         };
 
         // =================================================================
@@ -1122,7 +1129,7 @@
         // PROGRESS
         // =================================================================
         function renderProgress(container) {
-            container.innerHTML = `<h2 class="text-xl sm:text-2xl font-bold mb-4">${t('progress.title')}</h2><div class="bg-white rounded-2xl border overflow-hidden shadow-sm">${progressTasks.length ? `<div class="overflow-x-auto"><table class="w-full text-sm"><thead class="bg-slate-50 uppercase text-xs"><tr><th class="px-3 py-2 text-center">${t('common.add')}</th><th class="px-3 py-2">${t('progress.task')}</th><th class="px-3 py-2">${t('progress.start')}</th><th class="px-3 py-2">${t('progress.end')}</th><th class="px-3 py-2">${t('progress.status')}</th></tr></thead><tbody>${progressTasks.map(t => `<tr><td class="px-3 py-2 text-center">${t.status !== 'completed' ? `<button onclick="markTaskCompleted('${t.id}')" class="bg-gray-300 hover:bg-gray-400 text-white w-8 h-8 rounded-full inline-flex items-center justify-center" title="${t('progress.markCompleted')}"><iconify-icon icon="material-symbols:check" width="18"></iconify-icon></button>` : `<span class="text-emerald-600"><iconify-icon icon="material-symbols:check-circle" width="20"></iconify-icon></span>`}</td><td class="px-3 py-2 font-medium">${t.name}</td><td class="px-3 py-2">${formatDate(t.start_date)}</td><td class="px-3 py-2">${formatDate(t.end_date)}</td><td class="px-3 py-2"><span class="px-2 py-1 rounded-full text-xs ${t.status === 'completed' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}">${t.status === 'completed' ? t('progress.completed') : t('progress.pending')}</span></td></tr>`).join('')}</tbody></table></div>` : `<p class="p-4 text-slate-500">${t('progress.noTasks')}</p>`}</div>`;
+            container.innerHTML = `<h2 class="text-xl sm:text-2xl font-bold mb-4">${t('progress.title')}</h2><div class="bg-white rounded-2xl border overflow-hidden shadow-sm">${progressTasks.length ? `<div class="overflow-x-auto"><table class="w-full text-sm"><thead class="bg-slate-50 uppercase text-xs"><tr><th class="px-3 py-2 text-center">${t('common.add')}</th><th class="px-3 py-2">${t('progress.task')}</th><th class="px-3 py-2">${t('progress.start')}</th><th class="px-3 py-2">${t('progress.end')}</th><th class="px-3 py-2">${t('progress.status')}</th></tr></thead><tbody>${progressTasks.map(t => `<tr><td class="px-3 py-2 text-center">${t.status !== 'completed' ? `<button onclick="markTaskCompleted('${t.id}')" class="bg-gray-300 hover:bg-gray-400 text-white w-8 h-8 rounded-full inline-flex items-center justify-center" title="${t('progress.markAsCompleted')}"><iconify-icon icon="material-symbols:check" width="18"></iconify-icon></button>` : `<span class="text-emerald-600"><iconify-icon icon="material-symbols:check-circle" width="20"></iconify-icon></span>`}</td><td class="px-3 py-2 font-medium">${t.name}</td><td class="px-3 py-2">${formatDate(t.start_date)}</td><td class="px-3 py-2">${formatDate(t.end_date)}</td><td class="px-3 py-2"><span class="px-2 py-1 rounded-full text-xs ${t.status === 'completed' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}">${t.status === 'completed' ? t('progress.completed') : t('progress.pending')}</span></td></tr>`).join('')}</tbody></table></div>` : `<p class="p-4 text-slate-500">${t('progress.noTasks')}</p>`}</div>`;
         }
 
         window.markTaskCompleted = async (taskId) => {
@@ -1207,7 +1214,7 @@
         // GALLERY
         // =================================================================
         function renderGallery(container) {
-            container.innerHTML = `<h2 class="text-xl sm:text-2xl font-bold mb-4">${t('gallery.title')}</h2><div class="bg-white rounded-2xl border p-4 mb-4"><h3 class="font-semibold text-sm mb-3">${t('gallery.uploadNewImage')}</h3><form onsubmit="handleGalleryUpload(event)" class="space-y-3"><input type="file" id="gallery-image" accept="image/*" required class="w-full border rounded-lg p-2 text-sm"><textarea id="gallery-description" placeholder="${t('gallery.description')}" rows="2" class="w-full border rounded-lg p-2 text-sm"></textarea><button type="submit" class="w-full bg-emerald-600 text-white py-2 rounded-xl text-sm font-medium">${t('gallery.upload')}</button></form></div><div id="gallery-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">${galleryData.length ? galleryData.map((item, index) => `<div class="bg-white rounded-2xl border overflow-hidden shadow-sm flex flex-col"><div class="relative w-full h-40 overflow-hidden cursor-pointer group bg-slate-100" onclick="openGalleryImage(${index})"><img src="${item.image || PLACEHOLDER_IMG}" class="w-full h-full object-cover transition group-hover:scale-105" onerror="this.src='${PLACEHOLDER_IMG}'"><div class="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition"></div></div><div class="p-3 flex-1"><p class="text-sm text-slate-700">${item.description || t('common.noDataAvailable')}</p><p class="text-xs text-slate-400 mt-1">${formatDate(item.uploaded_at)}</p><div class="mt-3 pt-2 border-t flex justify-end gap-2"><button onclick="editGalleryItem('${item.id}')" class="text-xs text-emerald-600">${t('common.edit')}</button><button onclick="deleteGalleryItem('${item.id}')" class="text-xs text-red-500">${t('common.delete')}</button></div></div></div>`).join('') : `<p class="text-slate-400 col-span-full text-sm">${t('gallery.noImages')}</p>`}</div>`;
+            container.innerHTML = `<h2 class="text-xl sm:text-2xl font-bold mb-4">${t('gallery.title')}</h2><div class="bg-white rounded-2xl border p-4 mb-4"><h3 class="font-semibold text-sm mb-3">${t('gallery.uploadImage')}</h3><form onsubmit="handleGalleryUpload(event)" class="space-y-3"><input type="file" id="gallery-image" accept="image/*" required class="w-full border rounded-lg p-2 text-sm"><textarea id="gallery-description" placeholder="${t('gallery.description')}" rows="2" class="w-full border rounded-lg p-2 text-sm"></textarea><button type="submit" class="w-full bg-emerald-600 text-white py-2 rounded-xl text-sm font-medium">${t('gallery.upload')}</button></form></div><div id="gallery-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">${galleryData.length ? galleryData.map((item, index) => `<div class="bg-white rounded-2xl border overflow-hidden shadow-sm flex flex-col"><div class="relative w-full h-40 overflow-hidden cursor-pointer group bg-slate-100" onclick="openGalleryImage(${index})"><img src="${item.image || PLACEHOLDER_IMG}" class="w-full h-full object-cover transition group-hover:scale-105" onerror="this.src='${PLACEHOLDER_IMG}'"><div class="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition"></div></div><div class="p-3 flex-1"><p class="text-sm text-slate-700">${item.description || t('common.noDataAvailable')}</p><p class="text-xs text-slate-400 mt-1">${formatDate(item.uploaded_at)}</p><div class="mt-3 pt-2 border-t flex justify-end gap-2"><button onclick="editGalleryItem('${item.id}')" class="text-xs text-emerald-600">${t('common.edit')}</button><button onclick="deleteGalleryItem('${item.id}')" class="text-xs text-red-500">${t('common.delete')}</button></div></div></div>`).join('') : `<p class="text-slate-400 col-span-full text-sm">${t('gallery.noImages')}</p>`}</div>`;
         }
 
         let galleryViewerIndex = 0;
@@ -1250,93 +1257,413 @@
             } catch (err) { showToast(t('common.somethingWentWrong'), 'error'); } finally { setButtonLoading(btn, false); }
         };
 
-        // =================================================================
-        // SETTINGS
-        // =================================================================
+        // SETTINGS (translated)
+        // ──────────────────────────────────────────────────────────────
         function renderSettings(container) {
-            container.innerHTML = `<h2 class="text-xl sm:text-2xl font-bold mb-6">${t('settings.title')}</h2><div class="flex flex-wrap gap-2 mb-6 p-1 bg-slate-200/60 rounded-xl"><button class="settings-tab-btn px-4 py-2 rounded-lg text-sm ${settingsTab === 'profile' ? 'active' : ''}" onclick="switchSettingsTab('profile')">${t('settings.profile')}</button><button class="settings-tab-btn px-4 py-2 rounded-lg text-sm ${settingsTab === 'account' ? 'active' : ''}" onclick="switchSettingsTab('account')">${t('settings.account')}</button><button class="settings-tab-btn px-4 py-2 rounded-lg text-sm ${settingsTab === 'security' ? 'active' : ''}" onclick="switchSettingsTab('security')">${t('settings.security')}</button><button class="settings-tab-btn px-4 py-2 rounded-lg text-sm ${settingsTab === 'preferences' ? 'active' : ''}" onclick="switchSettingsTab('preferences')">${t('settings.preferences')}</button></div><div class="settings-sections"><div id="settings-profile" class="settings-section ${settingsTab === 'profile' ? 'active' : ''}">${renderProfileSection()}</div><div id="settings-account" class="settings-section ${settingsTab === 'account' ? 'active' : ''}">${renderAccountSection()}</div><div id="settings-security" class="settings-section ${settingsTab === 'security' ? 'active' : ''}">${renderSecuritySection()}</div><div id="settings-preferences" class="settings-section ${settingsTab === 'preferences' ? 'active' : ''}">${renderPreferencesSection()}</div></div>`;
-            populateSettingsForms(); attachSettingsChangeListeners();
+            container.innerHTML = `
+                <h2 class="text-xl sm:text-2xl font-bold mb-6">${t('settings.title')}</h2>
+                <div class="flex flex-wrap gap-2 mb-6 p-1 bg-slate-200/60 rounded-xl">
+                    <button class="settings-tab-btn px-4 py-2 rounded-lg text-sm font-semibold transition ${settingsTab === 'profile' ? 'active' : ''}" onclick="switchSettingsTab('profile')">
+                        <iconify-icon icon="material-symbols:person-outline" class="inline mr-1"></iconify-icon> ${t('settings.profile')}
+                    </button>
+                    <button class="settings-tab-btn px-4 py-2 rounded-lg text-sm font-semibold transition ${settingsTab === 'account' ? 'active' : ''}" onclick="switchSettingsTab('account')">
+                        <iconify-icon icon="material-symbols:account-box-outline" class="inline mr-1"></iconify-icon> ${t('settings.account')}
+                    </button>
+                    <button class="settings-tab-btn px-4 py-2 rounded-lg text-sm font-semibold transition ${settingsTab === 'security' ? 'active' : ''}" onclick="switchSettingsTab('security')">
+                        <iconify-icon icon="material-symbols:lock-outline" class="inline mr-1"></iconify-icon> ${t('settings.security')}
+                    </button>
+                    <button class="settings-tab-btn px-4 py-2 rounded-lg text-sm font-semibold transition ${settingsTab === 'preferences' ? 'active' : ''}" onclick="switchSettingsTab('preferences')">
+                        <iconify-icon icon="material-symbols:settings-outline" class="inline mr-1"></iconify-icon> ${t('settings.preferences')}
+                    </button>
+                </div>
+                <div class="settings-sections">
+                    <div id="settings-profile" class="settings-section ${settingsTab === 'profile' ? 'active' : ''}">
+                        ${renderProfileSection()}
+                    </div>
+                    <div id="settings-account" class="settings-section ${settingsTab === 'account' ? 'active' : ''}">
+                        ${renderAccountSection()}
+                    </div>
+                    <div id="settings-security" class="settings-section ${settingsTab === 'security' ? 'active' : ''}">
+                        ${renderSecuritySection()}
+                    </div>
+                    <div id="settings-preferences" class="settings-section ${settingsTab === 'preferences' ? 'active' : ''}">
+                        ${renderPreferencesSection()}
+                    </div>
+                </div>
+            `;
+            populateSettingsForms();
+            attachSettingsChangeListeners();
         }
 
         function renderProfileSection() {
-            const profile = managerProfile || {}, photo = profile.profile_picture || PLACEHOLDER_IMG;
-            return `<div class="settings-card"><h3>${t('settings.profileInfo')}</h3><form id="profile-form" onsubmit="handleProfileSave(event)"><div class="text-center mb-6"><div class="profile-avatar-wrapper"><img id="settings-profile-photo-img" src="${photo}"><label class="change-photo-btn" title="${t('settings.changePhoto')}"><iconify-icon icon="material-symbols:photo-camera" width="20"></iconify-icon><input type="file" id="settings-profile-photo-input" accept="image/*" style="display:none" onchange="previewProfilePhoto(event)"></label></div><button type="button" id="settings-remove-photo-btn" class="remove-photo-btn mt-2" onclick="removeProfilePhoto()">${t('settings.removePhoto')}</button></div><div class="field-group"><label>${t('settings.fullName')}</label><input type="text" id="settings-full-name" value="${profile.full_name || ''}"></div><div class="field-group"><label>${t('settings.phone')}</label><input type="tel" id="settings-phone" value="${profile.phone || ''}"></div><div class="field-group"><label>${t('settings.email')}</label><input type="email" id="settings-email" value="${profile.email || ''}"></div><button type="submit" class="save-btn">${t('settings.saveProfile')}</button></form></div>`;
+            const profile = managerProfile || {};
+            const photo = profile.profile_picture || PLACEHOLDER_IMG;
+            return `
+                <div class="settings-card">
+                    <h3><iconify-icon icon="material-symbols:person-outline" class="text-emerald-600"></iconify-icon> ${t('settings.profileInfo')}</h3>
+                    <form id="profile-form" onsubmit="handleProfileSave(event)">
+                        <div class="field-group text-center">
+                            <div class="profile-avatar-wrapper">
+                                <img id="settings-profile-photo-img" src="${photo}" alt="Profile Photo">
+                                <label class="change-photo-btn" title="${t('settings.changePhoto')}">
+                                    <iconify-icon icon="material-symbols:photo-camera" width="20"></iconify-icon>
+                                    <input type="file" id="settings-profile-photo-input" accept="image/*" style="display:none;" onchange="previewProfilePhoto(event)">
+                                </label>
+                            </div>
+                            <button type="button" id="settings-remove-photo-btn" class="remove-photo-btn mt-2" onclick="removeProfilePhoto()">${t('settings.removePhoto')}</button>
+                        </div>
+                        <div class="field-group">
+                            <label for="settings-full-name">${t('settings.fullName')}</label>
+                            <input type="text" id="settings-full-name" placeholder="${t('settings.fullName')}" value="${profile.full_name || ''}">
+                        </div>
+                        <div class="field-group">
+                            <label for="settings-phone">${t('settings.phone')}</label>
+                            <input type="tel" id="settings-phone" placeholder="+250 7XX XXX XXX" value="${profile.phone || ''}">
+                        </div>
+                        <div class="field-group">
+                            <label for="settings-email">${t('settings.email')}</label>
+                            <input type="email" id="settings-email" placeholder="example@email.com" value="${profile.email || ''}">
+                        </div>
+                        <button type="submit" class="save-btn">${t('settings.saveProfile')}</button>
+                    </form>
+                </div>
+            `;
         }
 
         function renderAccountSection() {
             const profile = managerProfile || {};
-            return `<div class="settings-card"><h3>${t('settings.accountInfo')}</h3><div class="field-group"><label>${t('settings.accountName')}</label><div class="readonly-field">${profile.full_name || 'N/A'}</div></div><div class="field-group"><label>${t('settings.role')}</label><div class="readonly-field">${profile.role || 'Manager'}</div></div><div class="field-group"><label>${t('settings.memberSince')}</label><div class="readonly-field">${formatDate(profile.created_at)}</div></div></div>`;
+            return `
+                <div class="settings-card">
+                    <h3><iconify-icon icon="material-symbols:account-box-outline" class="text-emerald-600"></iconify-icon> ${t('settings.accountInfo')}</h3>
+                    <div class="field-group">
+                        <label>${t('settings.accountName')}</label>
+                        <div class="readonly-field">${profile.full_name || 'N/A'}</div>
+                    </div>
+                    <div class="field-group">
+                        <label>${t('settings.role')}</label>
+                        <div class="readonly-field" id="settings-role">${profile.role || 'Manager'}</div>
+                    </div>
+                    <div class="field-group">
+                        <label>${t('settings.email')}</label>
+                        <div class="readonly-field">${profile.email || 'N/A'}</div>
+                    </div>
+                    <div class="field-group">
+                        <label>${t('settings.phone')}</label>
+                        <div class="readonly-field">${profile.phone || 'N/A'}</div>
+                    </div>
+                    <div class="field-group">
+                        <label>${t('settings.accountStatus')}</label>
+                        <div class="readonly-field" id="settings-status">${profile.status || t('settings.active')}</div>
+                    </div>
+                    <div class="field-group">
+                        <label>${t('settings.memberSince')}</label>
+                        <div class="readonly-field" id="settings-since">${formatDate(profile.created_at)}</div>
+                    </div>
+                </div>
+            `;
         }
 
         function renderSecuritySection() {
-            return `<div class="settings-card"><h3>${t('settings.changePassword')}</h3><form id="security-form" onsubmit="handlePasswordChange(event)"><div class="field-group"><label>${t('settings.currentPassword')}</label><input type="password" id="current-password" required></div><div class="field-group"><label>${t('settings.newPassword')}</label><input type="password" id="new-password" required minlength="6"></div><div class="field-group"><label>${t('settings.confirmPassword')}</label><input type="password" id="confirm-password" required></div><button type="submit" class="save-btn">${t('settings.changePassBtn')}</button></form></div>`;
+            return `
+                <div class="settings-card">
+                    <h3><iconify-icon icon="material-symbols:lock-outline" class="text-emerald-600"></iconify-icon> ${t('settings.changePassword')}</h3>
+                    <form id="security-form" onsubmit="handlePasswordChange(event)">
+                        <div class="field-group">
+                            <label for="current-password">${t('settings.currentPassword')}</label>
+                            <input type="password" id="current-password" placeholder="${t('settings.currentPassword')}" required>
+                        </div>
+                        <div class="field-group">
+                            <label for="new-password">${t('settings.newPassword')}</label>
+                            <input type="password" id="new-password" placeholder="${t('settings.newPassword')}" required minlength="6">
+                        </div>
+                        <div class="field-group">
+                            <label for="confirm-password">${t('settings.confirmPassword')}</label>
+                            <input type="password" id="confirm-password" placeholder="${t('settings.confirmPassword')}" required>
+                        </div>
+                        <button type="submit" class="save-btn">${t('settings.changePassBtn')}</button>
+                    </form>
+                </div>
+            `;
         }
 
         function renderPreferencesSection() {
-            const prefs = managerProfile?.preferences || {};
-            return `<div class="settings-card"><h3>${t('settings.preferences')}</h3><form id="preferences-form" onsubmit="handlePreferencesSave(event)"><div class="field-group"><label>${t('settings.language')}</label><select id="settings-language"><option value="en">English</option><option value="fr">French</option><option value="rw">Kinyarwanda</option></select></div><div class="field-group"><label>${t('settings.currency')}</label><select id="settings-currency"><option value="RWF">RWF</option><option value="USD">USD</option><option value="EUR">EUR</option></select></div><div class="field-group"><label>${t('settings.dateFormat')}</label><select id="settings-date-format"><option value="DD/MM/YYYY">DD/MM/YYYY</option><option value="MM/DD/YYYY">MM/DD/YYYY</option><option value="YYYY-MM-DD">YYYY-MM-DD</option></select></div><div class="field-group"><input type="checkbox" id="settings-notifications" class="w-5 h-5 text-emerald-600"><label for="settings-notifications">${t('settings.notifications')}</label></div><button type="submit" class="save-btn">${t('settings.savePrefs')}</button></form></div>`;
+            const profile = managerProfile || {};
+            const prefs = profile.preferences || {};
+            return `
+                <div class="settings-card">
+                    <h3><iconify-icon icon="material-symbols:settings-outline" class="text-emerald-600"></iconify-icon> ${t('settings.preferences')}</h3>
+                    <form id="preferences-form" onsubmit="handlePreferencesSave(event)">
+                        <div class="field-group">
+                            <label for="settings-language">${t('settings.language')}</label>
+                            <select id="settings-language">
+                                <option value="en">English</option>
+                                <option value="fr">French</option>
+                                <option value="rw">Kinyarwanda</option>
+                            </select>
+                        </div>
+                        <div class="field-group">
+                            <label for="settings-currency">${t('settings.currency')}</label>
+                            <select id="settings-currency">
+                                <option value="RWF">RWF — Rwandan Franc</option>
+                                <option value="USD">USD — US Dollar</option>
+                                <option value="EUR">EUR — Euro</option>
+                            </select>
+                        </div>
+                        <div class="field-group">
+                            <label for="settings-date-format">${t('settings.dateFormat')}</label>
+                            <select id="settings-date-format">
+                                <option value="DD/MM/YYYY">DD/MM/YYYY</option>
+                                <option value="MM/DD/YYYY">MM/DD/YYYY</option>
+                                <option value="YYYY-MM-DD">YYYY-MM-DD</option>
+                            </select>
+                        </div>
+                        <div class="field-group flex items-center gap-3">
+                            <input type="checkbox" id="settings-notifications" class="w-5 h-5 text-emerald-600">
+                            <label for="settings-notifications" class="mb-0">${t('settings.notifications')}</label>
+                        </div>
+                        <button type="submit" class="save-btn">${t('settings.savePrefs')}</button>
+                    </form>
+                </div>
+            `;
         }
 
         function populateSettingsForms() {
             const profile = managerProfile || {};
-            const nameInput = document.getElementById('settings-full-name'); if (nameInput) nameInput.value = profile.full_name || '';
-            const phoneInput = document.getElementById('settings-phone'); if (phoneInput) phoneInput.value = profile.phone || '';
-            const emailInput = document.getElementById('settings-email'); if (emailInput) emailInput.value = profile.email || '';
-            const photoImg = document.getElementById('settings-profile-photo-img'); if (photoImg) photoImg.src = profile.profile_picture || PLACEHOLDER_IMG;
-            const lang = document.getElementById('settings-language'); if (lang) lang.value = profile.preferences?.language || currentLanguage;
-            const currency = document.getElementById('settings-currency'); if (currency) currency.value = profile.preferences?.currency || 'RWF';
+            const nameInput = document.getElementById('settings-full-name');
+            if (nameInput) nameInput.value = profile.full_name || '';
+            const phoneInput = document.getElementById('settings-phone');
+            if (phoneInput) phoneInput.value = profile.phone || '';
+            const emailInput = document.getElementById('settings-email');
+            if (emailInput) emailInput.value = profile.email || '';
+            const photoImg = document.getElementById('settings-profile-photo-img');
+            if (photoImg) photoImg.src = profile.profile_picture || PLACEHOLDER_IMG;
+
+            const roleDisplay = document.getElementById('settings-role');
+            if (roleDisplay) roleDisplay.textContent = profile.role || 'Manager';
+            const statusDisplay = document.getElementById('settings-status');
+            if (statusDisplay) statusDisplay.textContent = profile.status || 'Active';
+            const sinceDisplay = document.getElementById('settings-since');
+            if (sinceDisplay) sinceDisplay.textContent = formatDate(profile.created_at);
+
+            const langSelect = document.getElementById('settings-language');
+            if (langSelect) langSelect.value = profile.preferences?.language || currentLanguage;
+            const currencySelect = document.getElementById('settings-currency');
+            if (currencySelect) currencySelect.value = profile.preferences?.currency || 'RWF';
+            const dateFormatSelect = document.getElementById('settings-date-format');
+            if (dateFormatSelect) dateFormatSelect.value = profile.preferences?.dateFormat || 'DD/MM/YYYY';
+            const notifToggle = document.getElementById('settings-notifications');
+            if (notifToggle) notifToggle.checked = profile.preferences?.notifications !== false;
         }
 
         function attachSettingsChangeListeners() {
-            const inputs = document.querySelectorAll('#settings-profile input, #settings-preferences input, #settings-security input');
-            inputs.forEach(el => el.addEventListener('input', () => hasUnsavedChanges = true));
-            const fileInput = document.getElementById('settings-profile-photo-input'); if (fileInput) fileInput.addEventListener('change', () => hasUnsavedChanges = true);
+            const inputs = document.querySelectorAll('#settings-profile input, #settings-preferences input, #settings-preferences select, #settings-security input');
+            inputs.forEach(el => {
+                el.addEventListener('input', () => { if (!hasUnsavedChanges) hasUnsavedChanges = true; });
+                el.addEventListener('change', () => { if (!hasUnsavedChanges) hasUnsavedChanges = true; });
+            });
+            const fileInput = document.getElementById('settings-profile-photo-input');
+            if (fileInput) fileInput.addEventListener('change', () => { hasUnsavedChanges = true; });
+            const removeBtn = document.getElementById('settings-remove-photo-btn');
+            if (removeBtn) removeBtn.addEventListener('click', () => { hasUnsavedChanges = true; });
         }
 
-        window.switchSettingsTab = (tab) => { if (hasUnsavedChanges && !confirm(t('common.areYouSure'))) return; hasUnsavedChanges = false; settingsTab = tab; showSection('settings'); };
-
-        window.previewProfilePhoto = (event) => {
-            const file = event.target.files[0]; if (!file) return;
-            const reader = new FileReader(); reader.onload = e => { const img = document.getElementById('settings-profile-photo-img'); if (img) img.src = e.target.result; _profilePhotoFile = file; hasUnsavedChanges = true; }; reader.readAsDataURL(file);
+        window.switchSettingsTab = (tab) => {
+            if (hasUnsavedChanges) {
+                if (!confirm(t('common.areYouSure'))) return;
+                hasUnsavedChanges = false;
+            }
+            settingsTab = tab;
+            document.querySelectorAll('.settings-tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelector(`.settings-tab-btn[onclick*="${tab}"]`)?.classList.add('active');
+            document.querySelectorAll('.settings-section').forEach(el => el.classList.remove('active'));
+            document.getElementById(`settings-${tab}`)?.classList.add('active');
+            populateSettingsForms();
+            attachSettingsChangeListeners();
         };
 
-        window.removeProfilePhoto = () => { if (!confirm(t('common.areYouSure'))) return; const img = document.getElementById('settings-profile-photo-img'); if (img) img.src = PLACEHOLDER_IMG; _profilePhotoFile = null; hasUnsavedChanges = true; };
+        window.previewProfilePhoto = (event) => {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const img = document.getElementById('settings-profile-photo-img');
+                if (img) img.src = e.target.result;
+                _profilePhotoFile = file;
+                hasUnsavedChanges = true;
+            };
+            reader.readAsDataURL(file);
+        };
+
+        window.removeProfilePhoto = () => {
+            if (!confirm(t('common.areYouSure'))) return;
+            const img = document.getElementById('settings-profile-photo-img');
+            if (img) img.src = PLACEHOLDER_IMG;
+            _profilePhotoFile = null;
+            const input = document.getElementById('settings-profile-photo-input');
+            if (input) input.value = '';
+            hasUnsavedChanges = true;
+        };
 
         window.handleProfileSave = async (e) => {
-            e.preventDefault(); const form = e.target, btn = form.querySelector('.save-btn'); setButtonLoading(btn, true);
+            e.preventDefault();
+            const form = e.target;
+            const btn = form.querySelector('.save-btn');
+            setButtonLoading(btn, true);
+
             try {
-                const full_name = document.getElementById('settings-full-name').value.trim(), phone = document.getElementById('settings-phone').value.trim(), email = document.getElementById('settings-email').value.trim();
-                if (!full_name) { alert(t('common.requiredField')); return; }
-                let profile_picture = managerProfile.profile_picture || '';
-                if (_profilePhotoFile) { profile_picture = await uploadImageToImgbb(_profilePhotoFile); _profilePhotoFile = null; }
-                await updateDoc(doc(db, 'profiles', currentUser.uid), { full_name, phone, email, profile_picture, updated_at: new Date().toISOString() });
-                managerProfile = { ...managerProfile, full_name, phone, email, profile_picture };
-                updateProfileUI(managerProfile); hasUnsavedChanges = false; showToast(t('common.updatedSuccessfully'), 'success'); populateSettingsForms();
-            } catch (err) { showToast(t('common.somethingWentWrong'), 'error'); } finally { setButtonLoading(btn, false); }
+                const name = document.getElementById('settings-full-name').value.trim();
+                const phone = document.getElementById('settings-phone').value.trim();
+                const email = document.getElementById('settings-email').value.trim();
+
+                if (!name) {
+                    alert(t('common.requiredField'));
+                    setButtonLoading(btn, false);
+                    return;
+                }
+                if (phone && !/^\+?[0-9\s-]{7,15}$/.test(phone)) {
+                    alert(t('common.invalidValue'));
+                    setButtonLoading(btn, false);
+                    return;
+                }
+                if (email && !/^\S+@\S+\.\S+$/.test(email)) {
+                    alert(t('common.invalidValue'));
+                    setButtonLoading(btn, false);
+                    return;
+                }
+
+                if (email && email !== managerProfile.email) {
+                    const usersQuery = query(collection(db, 'profiles'), where('email', '==', email));
+                    const snap = await getDocs(usersQuery);
+                    if (!snap.empty && snap.docs[0].id !== currentUser.uid) {
+                        alert(t('common.invalidValue'));
+                        setButtonLoading(btn, false);
+                        return;
+                    }
+                }
+
+                const updateData = {
+                    full_name: name,
+                    phone: phone,
+                    email: email,
+                    updated_at: new Date().toISOString()
+                };
+
+                if (_profilePhotoFile) {
+                    try {
+                        const photoUrl = await uploadImageToImgbb(_profilePhotoFile);
+                        updateData.profile_picture = photoUrl;
+                        _profilePhotoFile = null;
+                    } catch (err) {
+                        alert(t('common.somethingWentWrong'));
+                        setButtonLoading(btn, false);
+                        return;
+                    }
+                } else {
+                    const currentImg = document.getElementById('settings-profile-photo-img').src;
+                    if (currentImg === PLACEHOLDER_IMG && managerProfile.profile_picture) {
+                        updateData.profile_picture = '';
+                    }
+                }
+
+                const profileRef = doc(db, 'profiles', currentUser.uid);
+                await updateDoc(profileRef, updateData);
+
+                if (email && email !== currentUser.email) {
+                    const password = prompt(t('settings.currentPassword'));
+                    if (!password) {
+                        alert(t('common.somethingWentWrong'));
+                        setButtonLoading(btn, false);
+                        return;
+                    }
+                    const credential = EmailAuthProvider.credential(currentUser.email, password);
+                    await reauthenticateWithCredential(currentUser, credential);
+                    await updateEmail(currentUser, email);
+                    await sendEmailVerification(currentUser);
+                    showToast(t('common.savedSuccessfully'), 'success');
+                }
+
+                managerProfile = { ...managerProfile, ...updateData };
+                updateProfileUI(managerProfile);
+                hasUnsavedChanges = false;
+                showToast(t('common.updatedSuccessfully'), 'success');
+                populateSettingsForms();
+            } catch (err) {
+                showToast(t('common.somethingWentWrong'), 'error');
+            } finally {
+                setButtonLoading(btn, false);
+            }
         };
 
         window.handlePasswordChange = async (e) => {
-            e.preventDefault(); const form = e.target, btn = form.querySelector('.save-btn'); setButtonLoading(btn, true);
-            const current = document.getElementById('current-password').value, newPass = document.getElementById('new-password').value, confirm = document.getElementById('confirm-password').value;
-            if (newPass !== confirm) { alert(t('common.invalidValue')); return; }
+            e.preventDefault();
+            const form = e.target;
+            const btn = form.querySelector('.save-btn');
+            setButtonLoading(btn, true);
+
+            const current = document.getElementById('current-password').value;
+            const newPass = document.getElementById('new-password').value;
+            const confirm = document.getElementById('confirm-password').value;
+
+            if (newPass !== confirm) {
+                alert(t('common.invalidValue'));
+                setButtonLoading(btn, false);
+                return;
+            }
+            if (newPass.length < 6) {
+                alert(t('common.invalidValue'));
+                setButtonLoading(btn, false);
+                return;
+            }
+
             try {
-                const credential = EmailAuthProvider.credential(currentUser.email, current); await reauthenticateWithCredential(currentUser, credential); await updatePassword(currentUser, newPass); showToast(t('common.updatedSuccessfully'), 'success'); form.reset(); hasUnsavedChanges = false;
-            } catch (err) { showToast(t('common.somethingWentWrong'), 'error'); } finally { setButtonLoading(btn, false); }
+                const credential = EmailAuthProvider.credential(currentUser.email, current);
+                await reauthenticateWithCredential(currentUser, credential);
+                await updatePassword(currentUser, newPass);
+                showToast(t('common.updatedSuccessfully'), 'success');
+                form.reset();
+                hasUnsavedChanges = false;
+            } catch (err) {
+                alert(t('common.somethingWentWrong'));
+            } finally {
+                setButtonLoading(btn, false);
+            }
         };
 
         window.handlePreferencesSave = async (e) => {
-            e.preventDefault(); const form = e.target, btn = form.querySelector('.save-btn'); setButtonLoading(btn, true);
+            e.preventDefault();
+            const form = e.target;
+            const btn = form.querySelector('.save-btn');
+            setButtonLoading(btn, true);
+
             try {
-                const language = document.getElementById('settings-language').value, currency = document.getElementById('settings-currency').value, dateFormat = document.getElementById('settings-date-format').value, notifications = document.getElementById('settings-notifications').checked;
+                const language = document.getElementById('settings-language').value;
+                const currency = document.getElementById('settings-currency').value;
+                const dateFormat = document.getElementById('settings-date-format').value;
+                const notifications = document.getElementById('settings-notifications').checked;
+
                 const prefs = { language, currency, dateFormat, notifications };
-                await updateDoc(doc(db, 'profiles', currentUser.uid), { preferences: prefs, updated_at: new Date().toISOString() });
-                managerProfile.preferences = prefs; hasUnsavedChanges = false;
-                setLanguage(language);
+                const profileRef = doc(db, 'profiles', currentUser.uid);
+                await updateDoc(profileRef, { preferences: prefs, updated_at: new Date().toISOString() });
+
+                managerProfile.preferences = prefs;
+                hasUnsavedChanges = false;
+                // Switch language immediately if changed
+                if (language !== currentLanguage) setLanguage(language);
                 showToast(t('common.savedSuccessfully'), 'success');
-            } catch (err) { showToast(t('common.somethingWentWrong'), 'error'); } finally { setButtonLoading(btn, false); }
+            } catch (err) {
+                showToast(t('common.somethingWentWrong'), 'error');
+            } finally {
+                setButtonLoading(btn, false);
+            }
         };
 
-        window.handleLogout = async () => { await signOut(auth); window.location.href = '../index.html'; };
+        // ──────────────────────────────────────────────────────────────
+        // LOGOUT
+        // ──────────────────────────────────────────────────────────────
+        window.handleLogout = async () => {
+            await signOut(auth);
+            window.location.href = '../index.html';
+        };
     </script>
 </body>
-</html>
+</html>)
