@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#059669">
+    <!-- ── Favicon (browser tab) – only the real logo ── -->
     <link rel="icon" type="image/jpeg" href="shdr_logo.jpg">
     <link rel="apple-touch-icon" href="shdr_logo.jpg">
     
@@ -18,20 +19,252 @@
     <script src="https://cdn.jsdelivr.net/npm/iconify-icon@2.3.0/dist/iconify-icon.min.js"></script>
 
     <style>
-        /* Language Switcher */
-        .language-switcher { display: flex; align-items: center; background-color: rgba(30, 86, 160, 0.1); border: 1px solid rgba(30, 86, 160, 0.2); border-radius: 50px; padding: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
-        .lang-btn { background: transparent; border: 2px solid transparent; color: #64748b; font-size: 14px; font-weight: 700; padding: 6px 16px; border-radius: 50px; cursor: pointer; transition: all 0.3s ease; outline: none; }
-        .lang-btn:hover { background: rgba(30, 86, 160, 0.1); }
-        .lang-btn:focus-visible { outline: 2px solid #1e56a0; outline-offset: 2px; }
-        .lang-btn.active { background: #ffffff; color: #1e56a0; border-color: #1e56a0; box-shadow: 0 2px 6px rgba(30, 86, 160, 0.2); }
-        @media (max-width: 640px) { .lang-btn { font-size: 12px; padding: 4px 10px; } }
+        /* ── Language Switcher Styles (Added) ── */
+        .language-switcher {
+            display: flex;
+            align-items: center;
+            background-color: rgba(30, 86, 160, 0.1);
+            border: 1px solid rgba(30, 86, 160, 0.2);
+            border-radius: 50px;
+            padding: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .lang-btn {
+            background: transparent;
+            border: 2px solid transparent;
+            color: #64748b;
+            font-size: 14px;
+            font-weight: 700;
+            padding: 6px 16px;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+        .lang-btn:hover {
+            background: rgba(30, 86, 160, 0.1);
+        }
+        .lang-btn:focus-visible {
+            outline: 2px solid #1e56a0;
+            outline-offset: 2px;
+        }
+        .lang-btn.active {
+            background: #ffffff;
+            color: #1e56a0;
+            border-color: #1e56a0;
+            box-shadow: 0 2px 6px rgba(30, 86, 160, 0.2);
+        }
+        @media (max-width: 640px) {
+            .lang-btn { font-size: 12px; padding: 4px 10px; }
+        }
 
-        /* ── Office Hub Enhanced Styles (Untouched) ── */
-        .nav-disabled { opacity: 0.5; cursor: not-allowed; pointer-events: none; user-select: none; position: relative; }
-        .nav-disabled::after { content: ' 🔒'; font-size: 0.65rem; color: #9ca3af; font-weight: 400; }
-        .nav-disabled .nav-label { opacity: 0.6; }
-        .office-header { background: linear-gradient(135deg, #059669 0%, #047857 50%, #065f46 100%); border-radius: 16px; padding: 24px 28px; margin-bottom: 28px; color: white; box-shadow: 0 8px 30px rgba(5, 150, 105, 0.25); }
-        /* ... rest of original CSS ... */
+        /* ── Office Hub Enhanced Styles (Original) ── */
+        .nav-disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            pointer-events: none;
+            user-select: none;
+            position: relative;
+        }
+        .nav-disabled::after {
+            content: ' 🔒';
+            font-size: 0.65rem;
+            color: #9ca3af;
+            font-weight: 400;
+        }
+        .nav-disabled .nav-label {
+            opacity: 0.6;
+        }
+        .office-header {
+            background: linear-gradient(135deg, #059669 0%, #047857 50%, #065f46 100%);
+            border-radius: 16px;
+            padding: 24px 28px;
+            margin-bottom: 28px;
+            color: white;
+            box-shadow: 0 8px 30px rgba(5, 150, 105, 0.25);
+        }
+        .office-header h2 {
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+        .office-header p {
+            color: rgba(255,255,255,0.85);
+            font-weight: 400;
+        }
+        .office-tab {
+            transition: all 0.25s ease;
+            border-radius: 9999px;
+            font-weight: 600;
+            padding: 8px 18px;
+            background: transparent;
+            color: #64748b;
+            border: 1px solid transparent;
+        }
+        .office-tab:hover {
+            background: rgba(255,255,255,0.6);
+            color: #1e293b;
+        }
+        .office-tab.active {
+            background: #059669;
+            color: white;
+            box-shadow: 0 4px 14px rgba(5, 150, 105, 0.35);
+            border-color: #059669;
+        }
+        .office-tab.active:hover {
+            background: #047857;
+            transform: scale(1.02);
+        }
+        .glass-stat {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 16px;
+            padding: 16px 20px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+        }
+        .glass-stat:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+        }
+        .glass-stat .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            line-height: 1.2;
+        }
+        .glass-stat .stat-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-weight: 600;
+            color: #64748b;
+        }
+        .office-card {
+            background: white;
+            border-radius: 14px;
+            padding: 16px 20px;
+            border: 1px solid #e9edf2;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+        }
+        .office-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 32px rgba(0,0,0,0.08);
+            border-color: #cbd5e1;
+        }
+        .priority-high { border-left: 5px solid #ef4444; }
+        .priority-medium { border-left: 5px solid #f59e0b; }
+        .priority-low { border-left: 5px solid #22c55e; }
+        .status-badge {
+            font-size: 0.65rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            padding: 2px 10px;
+            border-radius: 20px;
+        }
+        .status-pending { background: #fef3c7; color: #92400e; }
+        .status-in-progress { background: #dbeafe; color: #1e40af; }
+        .status-approved { background: #d1fae5; color: #065f46; }
+        .status-rejected { background: #fee2e2; color: #991b1b; }
+        .status-revision { background: #ffedd5; color: #9a3412; }
+        .status-history { background: #f1f5f9; color: #475569; }
+        .kanban-column {
+            background: #f8fafc;
+            border-radius: 14px;
+            padding: 14px;
+            min-height: 200px;
+            border: 1px solid #e9edf2;
+            transition: all 0.2s;
+        }
+        .kanban-column:hover {
+            border-color: #cbd5e1;
+        }
+        .kanban-column h4 {
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: #64748b;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 10px;
+            margin-bottom: 12px;
+        }
+        .activity-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 10px 0;
+            border-bottom: 1px solid #f1f5f9;
+            transition: background 0.2s;
+        }
+        .activity-item:hover {
+            background: #f8fafc;
+            border-radius: 8px;
+            padding-left: 8px;
+        }
+        .activity-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+        .activity-dot.create { background: #22c55e; }
+        .activity-dot.update { background: #3b82f6; }
+        .activity-dot.status { background: #f59e0b; }
+        .subtab-btn {
+            padding: 6px 16px;
+            border-radius: 9999px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            transition: all 0.2s;
+            background: transparent;
+            color: #64748b;
+            border: 1px solid transparent;
+        }
+        .subtab-btn:hover {
+            background: #f1f5f9;
+            color: #1e293b;
+        }
+        .subtab-btn.active {
+            background: #ecfdf5;
+            color: #059669;
+            border-color: #a7f3d0;
+        }
+        .office-filter {
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 4px 10px;
+            font-size: 0.8rem;
+            background: white;
+            transition: border-color 0.2s;
+        }
+        .office-filter:focus {
+            outline: none;
+            border-color: #059669;
+            box-shadow: 0 0 0 3px rgba(5,150,105,0.15);
+        }
+        .btn-new {
+            background: linear-gradient(135deg, #059669, #047857);
+            color: white;
+            padding: 10px 24px;
+            border-radius: 9999px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 14px rgba(5,150,105,0.3);
+            border: none;
+        }
+        .btn-new:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(5,150,105,0.4);
+            background: linear-gradient(135deg, #047857, #065f46);
+        }
+        @media (max-width: 640px) {
+            .office-header { padding: 16px 18px; }
+            .office-tab { font-size: 0.7rem; padding: 6px 12px; }
+            .glass-stat .stat-number { font-size: 1.4rem; }
+        }
         * { font-family: 'Plus Jakarta Sans', sans-serif; }
         body { background: #f8fafc; }
         .sidebar-link.active { background: #ecfdf5; color: #059669; border-left: 3px solid #059669; }
@@ -39,18 +272,69 @@
         .stat-card:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
         .modal { display: none; }
         .modal.active { display: flex; }
-        .spinner { border: 3px solid #e2e8f0; border-top: 3px solid #059669; border-radius: 50%; width: 24px; height: 24px; animation: spin 0.8s linear infinite; }
-        .btn-spinner { display: inline-block; width: 18px; height: 18px; border: 2px solid rgba(255,255,255,0.3); border-top: 2px solid #fff; border-radius: 50%; animation: spin 0.6s linear infinite; vertical-align: middle; margin-right: 6px; }
+        .spinner {
+            border: 3px solid #e2e8f0;
+            border-top: 3px solid #059669;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 0.8s linear infinite;
+        }
+        .btn-spinner {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-top: 2px solid #fff;
+            border-radius: 50%;
+            animation: spin 0.6s linear infinite;
+            vertical-align: middle;
+            margin-right: 6px;
+        }
         @keyframes spin { to { transform: rotate(360deg); } }
         .site-selector::-webkit-scrollbar { height: 4px; }
         .site-selector::-webkit-scrollbar-thumb { background: #059669; border-radius: 2px; }
         .scroll-box { max-height: 140px; overflow-y: auto; }
-        .bottom-nav { display: none; position: fixed; bottom: 0; left: 0; right: 0; background: white; border-top: 1px solid #e2e8f0; z-index: 40; justify-content: space-around; padding: 8px 0; box-shadow: 0 -2px 10px rgba(0,0,0,0.05); }
-        .bottom-nav a { display: flex; flex-direction: column; align-items: center; font-size: 0.6rem; color: #6b7280; text-decoration: none; padding: 4px 8px; border-radius: 8px; transition: 0.2s; }
-        .bottom-nav a.active { color: #059669; background: #ecfdf5; }
+        .bottom-nav {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            border-top: 1px solid #e2e8f0;
+            z-index: 40;
+            justify-content: space-around;
+            padding: 8px 0;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+        }
+        .bottom-nav a {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 0.6rem;
+            color: #6b7280;
+            text-decoration: none;
+            padding: 4px 8px;
+            border-radius: 8px;
+            transition: 0.2s;
+        }
+        .bottom-nav a.active {
+            color: #059669;
+            background: #ecfdf5;
+        }
         .bottom-nav a iconify-icon { font-size: 1.3rem; }
-        @media (max-width: 1023px) { .bottom-nav { display: flex; } main { padding-bottom: 80px; } }
-        @media (max-width: 640px) { #content-area { padding: 1rem; } .card-title { font-size: 1.1rem; } .stat-card { padding: 1rem; } .table-cell { padding: 0.5rem; } .sidebar-link { padding: 0.5rem; font-size: 0.85rem; } }
+        @media (max-width: 1023px) {
+            .bottom-nav { display: flex; }
+            main { padding-bottom: 80px; }
+        }
+        @media (max-width: 640px) {
+            #content-area { padding: 1rem; }
+            .card-title { font-size: 1.1rem; }
+            .stat-card { padding: 1rem; }
+            .table-cell { padding: 0.5rem; }
+            .sidebar-link { padding: 0.5rem; font-size: 0.85rem; }
+        }
         tbody tr:nth-child(even) { background: #f9fafb; }
         tbody tr:hover { background: #f1f5f9; }
         .payroll-card { transition: all 0.2s; }
@@ -62,27 +346,133 @@
         .stock-status-low { background: #fef9c3; color: #854d0e; }
         .stock-status-out { background: #fee2e2; color: #991b1b; }
         .settings-tab-btn { transition: all 0.2s; }
-        .settings-tab-btn.active { background: #059669; color: white; box-shadow: 0 4px 10px rgba(5, 150, 105, 0.2); }
+        .settings-tab-btn.active {
+            background: #059669;
+            color: white;
+            box-shadow: 0 4px 10px rgba(5, 150, 105, 0.2);
+        }
         .settings-tab-btn:not(.active):hover { background: #f1f5f9; }
         .settings-section { display: none; }
         .settings-section.active { display: block; }
         .profile-avatar-wrapper { position: relative; width: 120px; height: 120px; margin: 0 auto; }
-        .profile-avatar-wrapper img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; border: 4px solid white; box-shadow: 0 8px 20px rgba(0,0,0,0.15); }
-        .profile-avatar-wrapper .change-photo-btn { position: absolute; bottom: 4px; right: 4px; background: #059669; color: white; border-radius: 50%; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; cursor: pointer; border: 2px solid white; transition: 0.2s; box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
-        .settings-card { background: white; border-radius: 16px; border: 1px solid #e5e7eb; padding: 1.5rem; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
-        .settings-card h3 { font-weight: 600; font-size: 1.1rem; color: #1e293b; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; }
+        .profile-avatar-wrapper img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid white;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+        .profile-avatar-wrapper .change-photo-btn {
+            position: absolute;
+            bottom: 4px;
+            right: 4px;
+            background: #059669;
+            color: white;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border: 2px solid white;
+            transition: 0.2s;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+        .profile-avatar-wrapper .change-photo-btn:hover {
+            background: #047857;
+            transform: scale(1.05);
+        }
+        .settings-card {
+            background: white;
+            border-radius: 16px;
+            border: 1px solid #e5e7eb;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .settings-card h3 {
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: #1e293b;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
         .settings-card .field-group { margin-bottom: 1.25rem; }
-        .settings-card label { display: block; font-size: 0.85rem; font-weight: 500; color: #475569; margin-bottom: 0.3rem; }
-        .settings-card input, .settings-card select { width: 100%; padding: 0.6rem 0.75rem; border: 1px solid #d1d5db; border-radius: 8px; font-size: 0.95rem; transition: border 0.2s; background: white; }
-        .settings-card input:focus, .settings-card select:focus { outline: none; border-color: #059669; box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.2); }
-        .settings-card .readonly-field { background: #f1f5f9; color: #475569; padding: 0.6rem 0.75rem; border-radius: 8px; font-size: 0.95rem; }
-        .settings-card .save-btn { background: #059669; color: white; padding: 0.6rem 1.5rem; border-radius: 8px; font-weight: 600; border: none; cursor: pointer; transition: 0.2s; }
+        .settings-card label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #475569;
+            margin-bottom: 0.3rem;
+        }
+        .settings-card input,
+        .settings-card select {
+            width: 100%;
+            padding: 0.6rem 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            transition: border 0.2s;
+            background: white;
+        }
+        .settings-card input:focus,
+        .settings-card select:focus {
+            outline: none;
+            border-color: #059669;
+            box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.2);
+        }
+        .settings-card .readonly-field {
+            background: #f1f5f9;
+            color: #475569;
+            padding: 0.6rem 0.75rem;
+            border-radius: 8px;
+            font-size: 0.95rem;
+        }
+        .settings-card .save-btn {
+            background: #059669;
+            color: white;
+            padding: 0.6rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: 0.2s;
+        }
         .settings-card .save-btn:hover { background: #047857; }
         .settings-card .save-btn:disabled { opacity: 0.6; cursor: not-allowed; }
-        .settings-card .remove-photo-btn { color: #ef4444; font-size: 0.85rem; cursor: pointer; background: none; border: none; padding: 0.2rem 0.5rem; }
+        .settings-card .remove-photo-btn {
+            color: #ef4444;
+            font-size: 0.85rem;
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 0.2rem 0.5rem;
+        }
         .settings-card .remove-photo-btn:hover { color: #dc2626; text-decoration: underline; }
         @media (max-width: 640px) { .settings-card { padding: 1rem; } }
-        .toast { position: fixed; bottom: 24px; right: 24px; background: #1e293b; color: #fff; padding: 14px 24px; border-radius: 12px; font-size: 14px; font-weight: 500; box-shadow: 0 8px 24px rgba(0,0,0,0.20); transform: translateY(80px); opacity: 0; transition: all 0.4s ease; z-index: 999; max-width: 400px; display: flex; align-items: center; gap: 10px; }
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: #1e293b;
+            color: #fff;
+            padding: 14px 24px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 500;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.20);
+            transform: translateY(80px);
+            opacity: 0;
+            transition: all 0.4s ease;
+            z-index: 999;
+            max-width: 400px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
         .toast.show { transform: translateY(0); opacity: 1; }
         .toast.success { border-left: 4px solid #059669; }
         .toast.error { border-left: 4px solid #ef4444; }
@@ -91,13 +481,16 @@
 </head>
 <body class="min-h-screen flex">
 
+<!-- Mobile overlay -->
 <div id="sidebar-overlay" class="fixed inset-0 bg-black/40 z-40 hidden lg:hidden" onclick="toggleSidebar()"></div>
 
+<!-- Sidebar (desktop) -->
 <aside id="sidebar" class="fixed inset-y-0 left-0 w-64 bg-white border-r border-slate-200 z-50 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out flex flex-col shadow-sm">
     <div class="p-6 border-b border-slate-100">
         <div class="flex items-center gap-3">
             <div class="w-10 h-10 rounded-lg bg-emerald-100 flex items-center justify-center overflow-hidden">
-                <img src="shdr.jpg" alt="SHDR" class="w-10 h-10 object-cover" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                <img src="shdr.jpg" alt="SHDR" class="w-10 h-10 object-cover"
+                     onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
                 <span id="logo-fallback" class="hidden font-bold text-emerald-700 text-lg">SH</span>
             </div>
             <div>
@@ -142,6 +535,7 @@
             <span class="nav-label" data-i18n="navigation.officeHub">Office Hub</span>
             <span class="text-[10px] text-amber-500 ml-auto font-medium" data-i18n="common.comingSoon">Coming Soon</span>
         </a>
+        <!-- Settings -->
         <a href="#" onclick="showSection('settings')" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg text-slate-600 hover:bg-slate-50 transition-colors" data-section="settings">
             <iconify-icon icon="material-symbols:settings-outline" width="20" height="20"></iconify-icon> <span data-i18n="navigation.settings">Settings</span>
         </a>
@@ -163,6 +557,7 @@
     </div>
 </aside>
 
+<!-- Main Content -->
 <main class="flex-1 lg:ml-64 min-h-screen flex flex-col">
     <header class="bg-white border-b border-slate-200 px-4 py-3 flex items-center justify-between sticky top-0 z-30 shadow-sm">
         <button class="lg:hidden text-slate-600 p-2 rounded-lg hover:bg-slate-100" onclick="toggleSidebar()">
@@ -196,6 +591,7 @@
         </div>
     </footer>
 
+    <!-- Bottom Navigation (mobile) -->
     <div class="bottom-nav" id="bottom-nav">
         <a href="#" onclick="showSection('dashboard')" class="active" data-section="dashboard">
             <iconify-icon icon="material-symbols:dashboard-outline"></iconify-icon> <span data-i18n="navigation.dashboard">Home</span>
@@ -212,6 +608,7 @@
         <a href="#" onclick="showSection('gallery')" data-section="gallery">
             <iconify-icon icon="material-symbols:photo-library-outline"></iconify-icon> <span data-i18n="navigation.gallery">Gallery</span>
         </a>
+        <!-- Settings (mobile) -->
         <a href="#" onclick="showSection('settings')" data-section="settings">
             <iconify-icon icon="material-symbols:settings-outline"></iconify-icon> <span data-i18n="navigation.settings">Settings</span>
         </a>
@@ -233,17 +630,71 @@
 
     <script type="module">
         // =================================================================
-        // 1. CENTRAL I18N SYSTEM (Added)
+        // 1. CENTRAL I18N SYSTEM
         // =================================================================
         const translations = {
-            en: { common: { comingSoon: "Coming Soon", save: "Save", cancel: "Cancel", add: "Add", delete: "Delete", edit: "Edit", close: "Close", export: "Export", loading: "Loading...", error: "Error", search: "Search", view: "View", areYouSure: "Are you sure?", cannotUndo: "This action cannot be undone", savedSuccessfully: "Saved successfully", updatedSuccessfully: "Updated successfully", deletedSuccessfully: "Deleted successfully", somethingWentWrong: "Something went wrong", requiredField: "Required field", invalidValue: "Invalid value", noDataAvailable: "No data available", accessDenied: "Access denied", subscriptionRequired: "Subscription required", sessionExpired: "Session expired", confirmDelete: "Confirm Delete" }, navigation: { dashboard: "Dashboard", sites: "Sites", materials: "Materials", stock: "Stock", workers: "Workers", progress: "Progress", reports: "Reports", finances: "Finances", managers: "Managers", gallery: "Gallery", officeHub: "Office Hub", settings: "Settings", notifications: "Notifications", logout: "Sign Out", ownerPanel: "Owner's Panel" }, dashboard: { title: "Dashboard", totalSites: "Total Sites", activeSites: "Active Sites", completedSites: "Completed Sites", totalWorkers: "Total Workers", totalMaterials: "Total Materials", stockValue: "Stock Value", totalExpenses: "Total Expenses", recentActivity: "Recent Activity", quickActions: "Quick Actions", viewDetails: "View Details", welcome: "Welcome back, {name}", overview: "Here's your construction site overview", noSites: "No sites", noWorkers: "No workers assigned", noData: "No data", spentOnMaterials: "Spent on Materials", recentProgress: "Recent Progress", selectSite: "Select a site", completedTasks: "Completed Tasks", endDate: "End" }, sites: { title: "Your Sites", addSite: "Add Site", editSite: "Edit Site", siteName: "Site Name", location: "Location", client: "Client", startDate: "Start Date", endDate: "End Date", budget: "Budget", status: "Status", active: "Active", completed: "Completed", upcoming: "Upcoming", markFinished: "Mark Finished", noSites: "No sites yet", district: "District", sector: "Sector", saveSite: "Save Site", deleteSite: "Delete Site", edit: "Edit", delete: "Delete" }, materials: { title: "Materials", materialUsage: "Material Usage", inventory: "Inventory", stock: "Stock", addMaterial: "Add Material", editMaterial: "Edit Material", materialName: "Material Name", unit: "Unit", quantity: "Quantity", unitCost: "Unit Cost", totalAmount: "Total Amount", availableStock: "Available Stock", stockDeduction: "Stock Deduction", notes: "Notes", usageDate: "Usage Date", enterQuantity: "Enter Quantity", name: "Name", cost: "Cost", noMaterials: "No materials recorded for this site.", quantityUsed: "Quantity Used", edit: "Edit", delete: "Delete", update: "Update" }, stock: { title: "Stock Overview", noStock: "No stock records found.", info: "Managers will add stock when they receive materials at sites.", material: "Material", quantity: "Quantity", unitCost: "Unit Cost", value: "Value", status: "Status", updated: "Updated", min: "Min", normal: "Normal", low: "Low Stock", out: "Out of Stock", recentTransactions: "Recent Stock Transactions", date: "Date", site: "Site", type: "Type", qty: "Qty", notes: "Notes" }, workers: { title: "Workers", addWorker: "Add Position", role: "Role", site: "Site", salaryType: "Salary Type", estCost: "Est. Cost", actions: "Actions", noPositions: "No positions defined.", actualWorkers: "Actual Workers Assigned by Managers", search: "Search by name...", noAssigned: "No workers assigned by managers for this site.", edit: "Edit", delete: "Delete", fullName: "Full Name", phone: "Phone Number", salary: "Salary", update: "Update Worker", viewDetails: "Worker Details", assignedSite: "Site:", position: "Role", addPosition: "Add Worker Position", roleName: "Role name", allSites: "All Sites", daily: "Daily", monthly: "Monthly", estimatedCost: "Estimated salary/cost", savePosition: "Save Position", updatePosition: "Update Position" }, progress: { title: "Progress Tasks", addTask: "Add Task", task: "Task", start: "Start", end: "End", status: "Status", pending: "Pending", completed: "Completed", noTasks: "No tasks yet.", addTaskModal: "Add Progress Task", taskName: "Task name", selectSite: "Select site", periodNumber: "Period number", days: "Days", weeks: "Weeks", saveTask: "Save Task", editTask: "Edit Progress Task", edit: "Edit", delete: "Delete" }, reports: { title: "Generate Reports", general: "General", payroll: "Worker Payroll", stockReport: "Stock", selectSite: "Select Site", allSites: "All Sites", department: "Department", allDepartments: "All Departments", startDate: "Start Date", endDate: "End Date", exportCSV: "Export CSV", printPDF: "Print / PDF", noAttendance: "No attendance records found.", info: "Please ensure managers have recorded attendance for the workers.", searchWorker: "Search worker...", position: "Position", allPositions: "All Positions", paymentStatus: "Payment Status", paid: "Paid", unpaid: "Unpaid", totalWorkers: "Total Workers", workerDays: "Worker-Days", totalPayroll: "Total Payroll", avgDaily: "Avg. Daily Labor Cost", worker: "Worker", daysWorked: "Days Worked", dailyRate: "Daily Rate", totalPayable: "Total Payable", total: "Total", generated: "Generated on", reportTitles: { general: "Management Report", payroll: "Workers' Attendance & Payroll Report", stock: "Stock Report" }, labels: { siteName: "Site Name", period: "Period", department: "Department" } }, finances: { title: "Finances", info: "Site Info", overview: "Financial Overview", budget: "Budget", totalSpent: "Total Spent", materialsCost: "Materials Cost", workersCost: "Workers Cost", remaining: "Remaining", dailyAvg: "Daily average", monthlyAvg: "Monthly average", addBudget: "Add Budget", newBudget: "New Budget Amount", updateBudget: "Update Budget", exceeded: "Budget exceeded!", costControl: "Cost control needed." }, managers: { title: "Site Managers", info: "Managers assigned to your sites. The list updates automatically.", inviteManager: "Invite Manager", assignSite: "Assign to Site", email: "Email", password: "Password", invite: "Invite Manager", noManagers: "No managers invited yet.", remove: "Remove", assignedSite: "Assigned site" }, gallery: { title: "Site Gallery", selectSite: "Select Site", allSites: "All Sites", viewImage: "View Image", noImages: "No gallery images", close: "Close" }, settings: { title: "Settings", profile: "Profile", account: "Account", security: "Security", preferences: "Preferences", profileInfo: "Profile Information", fullName: "Full Name", phone: "Phone Number", email: "Email Address", saveChanges: "Save Changes", accountInfo: "Account Information", accountName: "Account Name", role: "Role", accountStatus: "Account Status", active: "Active", memberSince: "Member Since", changePasscode: "Change Passcode", currentPasscode: "Current Passcode", newPasscode: "New Passcode", confirmPasscode: "Confirm New Passcode", changePass: "Change Passcode", prefs: "Preferences", language: "Language", currency: "Currency", dateFormat: "Date Format", notifications: "Enable Notifications", savePrefs: "Save Preferences", changePhoto: "Change Photo", removePhoto: "Erase Photo" }, alerts: { savedSuccessfully: "Saved successfully", updatedSuccessfully: "Updated successfully", deletedSuccessfully: "Deleted successfully", somethingWentWrong: "Something went wrong", areYouSure: "Are you sure?", cannotUndo: "This action cannot be undone", requiredField: "Required field", invalidValue: "Invalid value", noDataAvailable: "No data available", accessDenied: "Access denied", subscriptionRequired: "Subscription required", sessionExpired: "Session expired" }, status: { active: "Active", completed: "Completed", pending: "Pending", cancelled: "Cancelled", notStarted: "Not Started", inProgress: "In Progress", finished: "Finished" } },
-            rw: { common: { comingSoon: "Biraza", save: "Bika", cancel: "Hagarika", add: "Ongeraho", delete: "Siba", edit: "Hindura", close: "Funga", export: "Sohora", loading: "Birimo gutegura...", error: "Ikibazo", search: "Shakisha", view: "Reba", areYouSure: "Urabyemeza?", cannotUndo: "Ibi ntibishobora guhindurwa", savedSuccessfully: "Byabitswe neza", updatedSuccessfully: "Byavuguruwe neza", deletedSuccessfully: "Byasibwe neza", somethingWentWrong: "Hari ikitagenze neza", requiredField: "Ibi birakenewe", invalidValue: "Agaciro katariyo", noDataAvailable: "Nta makuru aboneka", accessDenied: "Ntabwo ureherewe", subscriptionRequired: "Kwiyandikisha birakenewe", sessionExpired: "Igihe cyashaje", confirmDelete: "Emeza gusiba" }, navigation: { dashboard: "Imbonerahamwe", sites: "Ibibanza", materials: "Ibikoresho", stock: "Imbuganyuro", workers: "Abakozi", progress: "Ibitekerezo", reports: "Raporo", finances: "Imari", managers: "Abayobozi", gallery: "Amafoto", officeHub: "Office Hub", settings: "Igenamiterere", notifications: "Imenyesha", logout: "Sohoka", ownerPanel: "Ipaneli ya nyir'ubwite" }, dashboard: { title: "Imbonerahamwe", totalSites: "Imibare y'ibibanza", activeSites: "Ibibanza bikora", completedSites: "Ibibanza byarangiye", totalWorkers: "Imibare y'abakozi", totalMaterials: "Imibare y'ibikoresho", stockValue: "Agaciro k'ibikoresho", totalExpenses: "Amafaranga yakoreshejwe", recentActivity: "Ibikorwa bishya", quickActions: "Ibikorwa byihutirwa", viewDetails: "Reba ibisobanuro", welcome: "Murakaza neza, {name}", overview: "Dore ikibazo cy'umurimo wawe", noSites: "Nta bibanza", noWorkers: "Nta bakozi bagenwe", noData: "Nta makuru", spentOnMaterials: "Amafaranga yakoreshejwe ku bikoresho", recentProgress: "Ibitekerezo bishya", selectSite: "Hitamo igibanza", completedTasks: "Imirimo yarangiye", endDate: "Iherezo" }, sites: { title: "Ibibanza byawe", addSite: "Ongeraho igibanza", editSite: "Hindura igibanza", siteName: "Izina ry'igibanza", location: "Aho biherereye", client: "Umukiriya", startDate: "Itariki yo gutangira", endDate: "Itariki yo kurangira", budget: "Ingengo y'imari", status: "Imiterere", active: "Bikora", completed: "Byarangiye", upcoming: "Bikaza", markFinished: "Menya ko byarangiye", noSites: "Nta bibanza birahari", district: "Akarere", sector: "Umurenge", saveSite: "Bika igibanza", deleteSite: "Siba igibanza", edit: "Hindura", delete: "Siba" }, materials: { title: "Ibikoresho", materialUsage: "Gukoresha ibikoresho", inventory: "Ibitundumirwa", stock: "Imbuganyuro", addMaterial: "Ongeraho ibikoresho", editMaterial: "Hindura ibikoresho", materialName: "Izina ry'ibikoresho", unit: "Igice", quantity: "Umubare", unitCost: "Igiciro cy'igice", totalAmount: "Amafaranga yose", availableStock: "Ibikoresho bishoboka", stockDeduction: "Ibikoresho bikoreshwa", notes: "Ibisobanuro", usageDate: "Itariki yo gukoresha", enterQuantity: "Andika umubare", name: "Izina", cost: "Igiciro", noMaterials: "Nta bikoresho byanditswe kuri iki gibanze.", quantityUsed: "Umubare wakoreshejwe", edit: "Hindura", delete: "Siba", update: "Vugurura" }, stock: { title: "Imbuganyuro", noStock: "Nta mbuganyuro iboneka.", info: "Abayobozi bazongeraho ibikoresho iyo bibonye.", material: "Ibikoresho", quantity: "Umubare", unitCost: "Igiciro cy'igice", value: "Agaciro", status: "Imiterere", updated: "Byavuguruwe", min: "Ubugabanyiro", normal: "Bisanzwe", low: "Bike", out: "Byashaje", recentTransactions: "Ibikorwa bishya by'imbuganyuro", date: "Itariki", site: "Igibanza", type: "Ubwoko", qty: "Umubare", notes: "Ibisobanuro" }, workers: { title: "Abakozi", addWorker: "Ongeraho umwanya", role: "Umwanya", site: "Igibanza", salaryType: "Ubwoko bw'umushahara", estCost: "Igiciro gike", actions: "Ibikorwa", noPositions: "Nta mwanya wasobanuwe.", actualWorkers: "Abakozi bagenzwe n'abayobozi", search: "Shakisha izina...", noAssigned: "Nta bakozi bagenzwe kuri iki gibanze.", edit: "Hindura", delete: "Siba", fullName: "Amazina yombi", phone: "Nomero ya telefoni", salary: "Umushahara", update: "Vugurura umukozi", viewDetails: "Ibisobanuro by'umukozi", assignedSite: "Igibanza:", position: "Umwanya", addPosition: "Ongeraho umwanya", roleName: "Izina ry'umwanya", allSites: "Ibibanza byose", daily: "Buri munsi", monthly: "Buri kwezi", estimatedCost: "Umushahara uganijwe", savePosition: "Bika umwanya", updatePosition: "Vugurura umwanya" }, progress: { title: "Imirimo", addTask: "Ongeraho umurimo", task: "Umurimo", start: "Tangira", end: "Rangira", status: "Imiterere", pending: "Bitegereje", completed: "Byarangiye", noTasks: "Nta mirimo ihari.", addTaskModal: "Ongeraho umurimo", taskName: "Izina ry'umurimo", selectSite: "Hitamo igibanza", periodNumber: "Umubare w'igihe", days: "Iminsi", weeks: "Ibyumweru", saveTask: "Bika umurimo", editTask: "Hindura umurimo", edit: "Hindura", delete: "Siba" }, reports: { title: "Kora Raporo", general: "Rusange", payroll: "Umushahara w'Abakozi", stockReport: "Imbuganyuro", selectSite: "Hitamo Igibanza", allSites: "Ibibanza Byose", department: "Ishami", allDepartments: "Amashami Yose", startDate: "Itariki yo gutangira", endDate: "Itariki yo kurangira", exportCSV: "Sohora CSV", printPDF: "Capa / PDF", noAttendance: "Nta makuru yo kwitaba aboneka.", info: "Nyamuneka menya neza ko abayobozi banditse kwitaba kw'abakozi.", searchWorker: "Shakisha umukozi...", position: "Umwanya", allPositions: "Imiryango Yose", paymentStatus: "Imiterere y'ubwishyu", paid: "Byishyuwe", unpaid: "Bitishyuwe", totalWorkers: "Abakozi Bose", workerDays: "Iminsi y'Abakozi", totalPayroll: "Umushahara Wose", avgDaily: "Igiciro cy'umunsi", worker: "Umukozi", daysWorked: "Iminsi Yakozwe", dailyRate: "Umushahara w'umunsi", totalPayable: "Amafaranga Yose", total: "Igiteranyo", generated: "Byakozwe", reportTitles: { general: "Raporo y'Ubutegetsi", payroll: "Raporo y'Abakozi n'Umushahara", stock: "Raporo y'Imbuganyuro" }, labels: { siteName: "Izina ry'Igibanza", period: "Igihe", department: "Ishami" } }, finances: { title: "Imari", info: "Amakuru y'Igibanza", overview: "Imbonerahamwe y'Imari", budget: "Ingengo y'imari", totalSpent: "Amafaranga Yakoreshejwe", materialsCost: "Ibikoresho", workersCost: "Abakozi", remaining: "Isigazwa", dailyAvg: "Umubare wa buri munsi", monthlyAvg: "Umubare wa buri kwezi", addBudget: "Ongeraho Ingengo", newBudget: "Ingengo nshya", updateBudget: "Vugurura Ingengo", exceeded: "Ingengo yarengwe!", costControl: "Birakenewe kugenzura ibikoreshwa." }, managers: { title: "Abayobozi b'Ibibanza", info: "Abayobozi bagenzwe kuri ibibanza byawe. Urutonde ruvuguruka ako kanya.", inviteManager: "Tumira Umuyobozi", assignSite: "Mwize igibanza", email: "Email", password: "Ijambobanga", invite: "Tumira Umuyobozi", noManagers: "Nta bayobozi batumiriwe.", remove: "Kuraho", assignedSite: "Igibanza" }, gallery: { title: "Amafoto y'Ibibanza", selectSite: "Hitamo Igibanza", allSites: "Ibibanza Byose", viewImage: "Reba Ifoto", noImages: "Nta mafoto", close: "Funga" }, settings: { title: "Igenamiterere", profile: "Umwirondoro", account: "Kontu", security: "Umutekano", preferences: "Amahitamo", profileInfo: "Amakuru bwite", fullName: "Amazina yombi", phone: "Nomero ya telefoni", email: "Email", saveChanges: "Bika impinduka", accountInfo: "Amakuru ya kontu", accountName: "Izina rya kontu", role: "Umwanya", accountStatus: "Imiterere ya kontu", active: "Bikora", memberSince: "Umuryango kuva", changePasscode: "Hindura passcode", currentPasscode: "Passcode y'ubu", newPasscode: "Passcode nshya", confirmPasscode: "Emeza passcode nshya", changePass: "Hindura passcode", prefs: "Amahitamo", language: "Ururimi", currency: "Ifaranga", dateFormat: "Imiterere y'itariki", notifications: "Koresha imenyesha", savePrefs: "Bika amahitamo", changePhoto: "Hindura ifoto", removePhoto: "Kuraho ifoto" }, alerts: { savedSuccessfully: "Byabitswe neza", updatedSuccessfully: "Byavuguruwe neza", deletedSuccessfully: "Byasibwe neza", somethingWentWrong: "Hari ikitagenze neza", areYouSure: "Urabyemeza?", cannotUndo: "Ibi ntibishobora guhindurwa", requiredField: "Ibi birakenewe", invalidValue: "Agaciro katariyo", noDataAvailable: "Nta makuru aboneka", accessDenied: "Ntabwo ureherewe", subscriptionRequired: "Kwiyandikisha birakenewe", sessionExpired: "Igihe cyashaje" }, status: { active: "Bikora", completed: "Byarangiye", pending: "Bitegereje", cancelled: "Byahagaritswe", notStarted: "Ntibitangira", inProgress: "Bikorwa", finished: "Byarangiye" } },
-            fr: { common: { comingSoon: "Bientôt disponible", save: "Enregistrer", cancel: "Annuler", add: "Ajouter", delete: "Supprimer", edit: "Modifier", close: "Fermer", export: "Exporter", loading: "Chargement...", error: "Erreur", search: "Rechercher", view: "Voir", areYouSure: "Êtes-vous sûr ?", cannotUndo: "Cette action est irréversible", savedSuccessfully: "Enregistré avec succès", updatedSuccessfully: "Mis à jour avec succès", deletedSuccessfully: "Supprimé avec succès", somethingWentWrong: "Une erreur s'est produite", requiredField: "Champ requis", invalidValue: "Valeur invalide", noDataAvailable: "Aucune donnée disponible", accessDenied: "Accès refusé", subscriptionRequired: "Abonnement requis", sessionExpired: "Session expirée", confirmDelete: "Confirmer la suppression" }, navigation: { dashboard: "Tableau de bord", sites: "Sites", materials: "Matériaux", stock: "Stock", workers: "Ouvriers", progress: "Progrès", reports: "Rapports", finances: "Finances", managers: "Gestionnaires", gallery: "Galerie", officeHub: "Bureau", settings: "Paramètres", notifications: "Notifications", logout: "Déconnexion", ownerPanel: "Panneau du propriétaire" }, dashboard: { title: "Tableau de bord", totalSites: "Total des sites", activeSites: "Sites actifs", completedSites: "Sites terminés", totalWorkers: "Total des ouvriers", totalMaterials: "Total des matériaux", stockValue: "Valeur du stock", totalExpenses: "Dépenses totales", recentActivity: "Activité récente", quickActions: "Actions rapides", viewDetails: "Voir les détails", welcome: "Bienvenue, {name}", overview: "Voici votre aperçu du chantier", noSites: "Aucun site", noWorkers: "Aucun ouvrier assigné", noData: "Aucune donnée", spentOnMaterials: "Dépensé en matériaux", recentProgress: "Progrès récents", selectSite: "Sélectionner un site", completedTasks: "Tâches terminées", endDate: "Fin" }, sites: { title: "Vos sites", addSite: "Ajouter un site", editSite: "Modifier le site", siteName: "Nom du site", location: "Emplacement", client: "Client", startDate: "Date de début", endDate: "Date de fin", budget: "Budget", status: "Statut", active: "Actif", completed: "Terminé", upcoming: "À venir", markFinished: "Marquer terminé", noSites: "Aucun site pour le moment", district: "District", sector: "Secteur", saveSite: "Enregistrer le site", deleteSite: "Supprimer le site", edit: "Modifier", delete: "Supprimer" }, materials: { title: "Matériaux", materialUsage: "Utilisation des matériaux", inventory: "Inventaire", stock: "Stock", addMaterial: "Ajouter un matériau", editMaterial: "Modifier le matériau", materialName: "Nom du matériau", unit: "Unité", quantity: "Quantité", unitCost: "Coût unitaire", totalAmount: "Montant total", availableStock: "Stock disponible", stockDeduction: "Déduction de stock", notes: "Notes", usageDate: "Date d'utilisation", enterQuantity: "Entrer la quantité", name: "Nom", cost: "Coût", noMaterials: "Aucun matériau enregistré pour ce site.", quantityUsed: "Quantité utilisée", edit: "Modifier", delete: "Supprimer", update: "Mettre à jour" }, stock: { title: "Aperçu du stock", noStock: "Aucun enregistrement de stock trouvé.", info: "Les gestionnaires ajouteront du stock lorsqu'ils recevront des matériaux.", material: "Matériau", quantity: "Quantité", unitCost: "Coût unitaire", value: "Valeur", status: "Statut", updated: "Mis à jour", min: "Min", normal: "Normal", low: "Stock faible", out: "Épuisé", recentTransactions: "Transactions récentes", date: "Date", site: "Site", type: "Type", qty: "Qté", notes: "Notes" }, workers: { title: "Ouvriers", addWorker: "Ajouter un poste", role: "Rôle", site: "Site", salaryType: "Type de salaire", estCost: "Coût estimé", actions: "Actions", noPositions: "Aucun poste défini.", actualWorkers: "Ouvriers actuellement assignés", search: "Rechercher par nom...", noAssigned: "Aucun ouvrier assigné par les gestionnaires pour ce site.", edit: "Modifier", delete: "Supprimer", fullName: "Nom complet", phone: "Téléphone", salary: "Salaire", update: "Mettre à jour", viewDetails: "Détails de l'ouvrier", assignedSite: "Site :", position: "Rôle", addPosition: "Ajouter un poste", roleName: "Nom du rôle", allSites: "Tous les sites", daily: "Journalier", monthly: "Mensuel", estimatedCost: "Salaire estimé", savePosition: "Enregistrer le poste", updatePosition: "Mettre à jour le poste" }, progress: { title: "Tâches de progression", addTask: "Ajouter une tâche", task: "Tâche", start: "Début", end: "Fin", status: "Statut", pending: "En attente", completed: "Terminé", noTasks: "Aucune tâche.", addTaskModal: "Ajouter une tâche", taskName: "Nom de la tâche", selectSite: "Sélectionner le site", periodNumber: "Numéro de période", days: "Jours", weeks: "Semaines", saveTask: "Enregistrer", editTask: "Modifier la tâche", edit: "Modifier", delete: "Supprimer" }, reports: { title: "Générer des rapports", general: "Général", payroll: "Paie des ouvriers", stockReport: "Stock", selectSite: "Sélectionner le site", allSites: "Tous les sites", department: "Département", allDepartments: "Tous les départements", startDate: "Date de début", endDate: "Date de fin", exportCSV: "Exporter CSV", printPDF: "Imprimer / PDF", noAttendance: "Aucun enregistrement de présence trouvé.", info: "Veuillez vous assurer que les gestionnaires ont enregistré la présence des ouvriers.", searchWorker: "Rechercher un ouvrier...", position: "Poste", allPositions: "Tous les postes", paymentStatus: "Statut du paiement", paid: "Payé", unpaid: "Non payé", totalWorkers: "Total des ouvriers", workerDays: "Jours ouvriers", totalPayroll: "Paie totale", avgDaily: "Coût journalier moyen", worker: "Ouvrier", daysWorked: "Jours travaillés", dailyRate: "Taux journalier", totalPayable: "Total à payer", total: "Total", generated: "Généré le", reportTitles: { general: "Rapport de gestion", payroll: "Rapport de présence et paie", stock: "Rapport de stock" }, labels: { siteName: "Nom du site", period: "Période", department: "Département" } }, finances: { title: "Finances", info: "Informations sur le site", overview: "Aperçu financier", budget: "Budget", totalSpent: "Dépenses totales", materialsCost: "Coût des matériaux", workersCost: "Coût des ouvriers", remaining: "Restant", dailyAvg: "Moyenne journalière", monthlyAvg: "Moyenne mensuelle", addBudget: "Ajouter un budget", newBudget: "Nouveau budget", updateBudget: "Mettre à jour le budget", exceeded: "Budget dépassé !", costControl: "Contrôle des coûts nécessaire." }, managers: { title: "Gestionnaires de site", info: "Gestionnaires assignés à vos sites. La liste se met à jour automatiquement.", inviteManager: "Inviter un gestionnaire", assignSite: "Assigner au site", email: "E-mail", password: "Mot de passe", invite: "Inviter", noManagers: "Aucun gestionnaire invité.", remove: "Retirer", assignedSite: "Site assigné" }, gallery: { title: "Galerie du site", selectSite: "Sélectionner le site", allSites: "Tous les sites", viewImage: "Voir l'image", noImages: "Aucune image", close: "Fermer" }, settings: { title: "Paramètres", profile: "Profil", account: "Compte", security: "Sécurité", preferences: "Préférences", profileInfo: "Informations du profil", fullName: "Nom complet", phone: "Téléphone", email: "E-mail", saveChanges: "Enregistrer", accountInfo: "Informations du compte", accountName: "Nom du compte", role: "Rôle", accountStatus: "Statut du compte", active: "Actif", memberSince: "Membre depuis", changePasscode: "Changer le code", currentPasscode: "Code actuel", newPasscode: "Nouveau code", confirmPasscode: "Confirmer le code", changePass: "Changer le code", prefs: "Préférences", language: "Langue", currency: "Devise", dateFormat: "Format de date", notifications: "Activer les notifications", savePrefs: "Enregistrer les préférences", changePhoto: "Changer la photo", removePhoto: "Supprimer la photo" }, alerts: { savedSuccessfully: "Enregistré avec succès", updatedSuccessfully: "Mis à jour avec succès", deletedSuccessfully: "Supprimé avec succès", somethingWentWrong: "Une erreur s'est produite", areYouSure: "Êtes-vous sûr ?", cannotUndo: "Cette action est irréversible", requiredField: "Champ requis", invalidValue: "Valeur invalide", noDataAvailable: "Aucune donnée disponible", accessDenied: "Accès refusé", subscriptionRequired: "Abonnement requis", sessionExpired: "Session expirée" }, status: { active: "Actif", completed: "Terminé", pending: "En attente", cancelled: "Annulé", notStarted: "Non commencé", inProgress: "En cours", finished: "Terminé" } }
+            en: {
+                common: { comingSoon: "Coming Soon", save: "Save", cancel: "Cancel", add: "Add", delete: "Delete", edit: "Edit", close: "Close", export: "Export", loading: "Loading...", error: "Error", search: "Search", view: "View", areYouSure: "Are you sure?", cannotUndo: "This action cannot be undone", savedSuccessfully: "Saved successfully", updatedSuccessfully: "Updated successfully", deletedSuccessfully: "Deleted successfully", somethingWentWrong: "Something went wrong", requiredField: "Required field", invalidValue: "Invalid value", noDataAvailable: "No data available", accessDenied: "Access denied", subscriptionRequired: "Subscription required", sessionExpired: "Session expired", confirmDelete: "Confirm Delete" },
+                navigation: { dashboard: "Dashboard", sites: "Sites", materials: "Materials", stock: "Stock", workers: "Workers", progress: "Progress", reports: "Reports", finances: "Finances", managers: "Managers", gallery: "Gallery", officeHub: "Office Hub", settings: "Settings", notifications: "Notifications", logout: "Sign Out", ownerPanel: "Owner's Panel" },
+                dashboard: { title: "Dashboard", totalSites: "Total Sites", activeSites: "Active Sites", completedSites: "Completed Sites", totalWorkers: "Total Workers", totalMaterials: "Total Materials", stockValue: "Stock Value", totalExpenses: "Total Expenses", recentActivity: "Recent Activity", quickActions: "Quick Actions", viewDetails: "View Details", welcome: "Welcome back, {name}", overview: "Here's your construction site overview", noSites: "No sites", noWorkers: "No workers assigned", noData: "No data", spentOnMaterials: "Spent on Materials", recentProgress: "Recent Progress", selectSite: "Select a site", completedTasks: "Completed Tasks", endDate: "End" },
+                sites: { title: "Your Sites", addSite: "Add Site", editSite: "Edit Site", siteName: "Site Name", location: "Location", client: "Client", startDate: "Start Date", endDate: "End Date", budget: "Budget", status: "Status", active: "Active", completed: "Completed", upcoming: "Upcoming", markFinished: "Mark Finished", noSites: "No sites yet", district: "District", sector: "Sector", saveSite: "Save Site", deleteSite: "Delete Site", edit: "Edit", delete: "Delete" },
+                materials: { title: "Materials", materialUsage: "Material Usage", inventory: "Inventory", stock: "Stock", addMaterial: "Add Material", editMaterial: "Edit Material", materialName: "Material Name", unit: "Unit", quantity: "Quantity", unitCost: "Unit Cost", totalAmount: "Total Amount", availableStock: "Available Stock", stockDeduction: "Stock Deduction", notes: "Notes", usageDate: "Usage Date", enterQuantity: "Enter Quantity", name: "Name", cost: "Cost", noMaterials: "No materials recorded for this site.", quantityUsed: "Quantity Used", edit: "Edit", delete: "Delete", update: "Update" },
+                stock: { title: "Stock Overview", noStock: "No stock records found.", info: "Managers will add stock when they receive materials at sites.", material: "Material", quantity: "Quantity", unitCost: "Unit Cost", value: "Value", status: "Status", updated: "Updated", min: "Min", normal: "Normal", low: "Low Stock", out: "Out of Stock", recentTransactions: "Recent Stock Transactions", date: "Date", site: "Site", type: "Type", qty: "Qty", notes: "Notes" },
+                workers: { title: "Workers", addWorker: "Add Position", role: "Role", site: "Site", salaryType: "Salary Type", estCost: "Est. Cost", actions: "Actions", noPositions: "No positions defined.", actualWorkers: "Actual Workers Assigned by Managers", search: "Search by name...", noAssigned: "No workers assigned by managers for this site.", edit: "Edit", delete: "Delete", fullName: "Full Name", phone: "Phone Number", salary: "Salary", update: "Update Worker", viewDetails: "Worker Details", assignedSite: "Site:", position: "Role", addPosition: "Add Worker Position", roleName: "Role name", allSites: "All Sites", daily: "Daily", monthly: "Monthly", estimatedCost: "Estimated salary/cost", savePosition: "Save Position", updatePosition: "Update Position" },
+                progress: { title: "Progress Tasks", addTask: "Add Task", task: "Task", start: "Start", end: "End", status: "Status", pending: "Pending", completed: "Completed", noTasks: "No tasks yet.", addTaskModal: "Add Progress Task", taskName: "Task name", selectSite: "Select site", periodNumber: "Period number", days: "Days", weeks: "Weeks", saveTask: "Save Task", editTask: "Edit Progress Task", edit: "Edit", delete: "Delete" },
+                reports: { title: "Generate Reports", general: "General", payroll: "Worker Payroll", stockReport: "Stock", selectSite: "Select Site", allSites: "All Sites", department: "Department", allDepartments: "All Departments", startDate: "Start Date", endDate: "End Date", exportCSV: "Export CSV", printPDF: "Print / PDF", noAttendance: "No attendance records found.", info: "Please ensure managers have recorded attendance for the workers.", searchWorker: "Search worker...", position: "Position", allPositions: "All Positions", paymentStatus: "Payment Status", paid: "Paid", unpaid: "Unpaid", totalWorkers: "Total Workers", workerDays: "Worker-Days", totalPayroll: "Total Payroll", avgDaily: "Avg. Daily Labor Cost", worker: "Worker", daysWorked: "Days Worked", dailyRate: "Daily Rate", totalPayable: "Total Payable", total: "Total", generated: "Generated on", reportTitles: { general: "Management Report", payroll: "Workers' Attendance & Payroll Report", stock: "Stock Report" }, labels: { siteName: "Site Name", period: "Period", department: "Department" } },
+                finances: { title: "Finances", info: "Site Info", overview: "Financial Overview", budget: "Budget", totalSpent: "Total Spent", materialsCost: "Materials Cost", workersCost: "Workers Cost", remaining: "Remaining", dailyAvg: "Daily average", monthlyAvg: "Monthly average", addBudget: "Add Budget", newBudget: "New Budget Amount", updateBudget: "Update Budget", exceeded: "Budget exceeded!", costControl: "Cost control needed." },
+                managers: { title: "Site Managers", info: "Managers assigned to your sites. The list updates automatically.", inviteManager: "Invite Manager", assignSite: "Assign to Site", email: "Email", password: "Password", invite: "Invite Manager", noManagers: "No managers invited yet.", remove: "Remove", assignedSite: "Assigned site" },
+                gallery: { title: "Site Gallery", selectSite: "Select Site", allSites: "All Sites", viewImage: "View Image", noImages: "No gallery images", close: "Close" },
+                settings: { title: "Settings", profile: "Profile", account: "Account", security: "Security", preferences: "Preferences", profileInfo: "Profile Information", fullName: "Full Name", phone: "Phone Number", email: "Email Address", saveChanges: "Save Changes", accountInfo: "Account Information", accountName: "Account Name", role: "Role", accountStatus: "Account Status", active: "Active", memberSince: "Member Since", changePasscode: "Change Passcode", currentPasscode: "Current Passcode", newPasscode: "New Passcode", confirmPasscode: "Confirm New Passcode", changePass: "Change Passcode", prefs: "Preferences", language: "Language", currency: "Currency", dateFormat: "Date Format", notifications: "Enable Notifications", savePrefs: "Save Preferences", changePhoto: "Change Photo", removePhoto: "Erase Photo" },
+                alerts: { savedSuccessfully: "Saved successfully", updatedSuccessfully: "Updated successfully", deletedSuccessfully: "Deleted successfully", somethingWentWrong: "Something went wrong", areYouSure: "Are you sure?", cannotUndo: "This action cannot be undone", requiredField: "Required field", invalidValue: "Invalid value", noDataAvailable: "No data available", accessDenied: "Access denied", subscriptionRequired: "Subscription required", sessionExpired: "Session expired" },
+                status: { active: "Active", completed: "Completed", pending: "Pending", cancelled: "Cancelled", notStarted: "Not Started", inProgress: "In Progress", finished: "Finished" }
+            },
+            rw: {
+                common: { comingSoon: "Biraza", save: "Bika", cancel: "Hagarika", add: "Ongeraho", delete: "Siba", edit: "Hindura", close: "Funga", export: "Sohora", loading: "Birimo gutegura...", error: "Ikibazo", search: "Shakisha", view: "Reba", areYouSure: "Urabyemeza?", cannotUndo: "Ibi ntibishobora guhindurwa", savedSuccessfully: "Byabitswe neza", updatedSuccessfully: "Byavuguruwe neza", deletedSuccessfully: "Byasibwe neza", somethingWentWrong: "Hari ikitagenze neza", requiredField: "Ibi birakenewe", invalidValue: "Agaciro katariyo", noDataAvailable: "Nta makuru aboneka", accessDenied: "Ntabwo ureherewe", subscriptionRequired: "Kwiyandikisha birakenewe", sessionExpired: "Igihe cyashaje", confirmDelete: "Emeza gusiba" },
+                navigation: { dashboard: "Imbonerahamwe", sites: "Ibibanza", materials: "Ibikoresho", stock: "Imbuganyuro", workers: "Abakozi", progress: "Ibitekerezo", reports: "Raporo", finances: "Imari", managers: "Abayobozi", gallery: "Amafoto", officeHub: "Office Hub", settings: "Igenamiterere", notifications: "Imenyesha", logout: "Sohoka", ownerPanel: "Ipaneli ya nyir'ubwite" },
+                dashboard: { title: "Imbonerahamwe", totalSites: "Imibare y'ibibanza", activeSites: "Ibibanza bikora", completedSites: "Ibibanza byarangiye", totalWorkers: "Imibare y'abakozi", totalMaterials: "Imibare y'ibikoresho", stockValue: "Agaciro k'ibikoresho", totalExpenses: "Amafaranga yakoreshejwe", recentActivity: "Ibikorwa bishya", quickActions: "Ibikorwa byihutirwa", viewDetails: "Reba ibisobanuro", welcome: "Murakaza neza, {name}", overview: "Dore ikibazo cy'umurimo wawe", noSites: "Nta bibanza", noWorkers: "Nta bakozi bagenwe", noData: "Nta makuru", spentOnMaterials: "Amafaranga yakoreshejwe ku bikoresho", recentProgress: "Ibitekerezo bishya", selectSite: "Hitamo igibanza", completedTasks: "Imirimo yarangiye", endDate: "Iherezo" },
+                sites: { title: "Ibibanza byawe", addSite: "Ongeraho igibanza", editSite: "Hindura igibanza", siteName: "Izina ry'igibanza", location: "Aho biherereye", client: "Umukiriya", startDate: "Itariki yo gutangira", endDate: "Itariki yo kurangira", budget: "Ingengo y'imari", status: "Imiterere", active: "Bikora", completed: "Byarangiye", upcoming: "Bikaza", markFinished: "Menya ko byarangiye", noSites: "Nta bibanza birahari", district: "Akarere", sector: "Umurenge", saveSite: "Bika igibanza", deleteSite: "Siba igibanza", edit: "Hindura", delete: "Siba" },
+                materials: { title: "Ibikoresho", materialUsage: "Gukoresha ibikoresho", inventory: "Ibitundumirwa", stock: "Imbuganyuro", addMaterial: "Ongeraho ibikoresho", editMaterial: "Hindura ibikoresho", materialName: "Izina ry'ibikoresho", unit: "Igice", quantity: "Umubare", unitCost: "Igiciro cy'igice", totalAmount: "Amafaranga yose", availableStock: "Ibikoresho bishoboka", stockDeduction: "Ibikoresho bikoreshwa", notes: "Ibisobanuro", usageDate: "Itariki yo gukoresha", enterQuantity: "Andika umubare", name: "Izina", cost: "Igiciro", noMaterials: "Nta bikoresho byanditswe kuri iki gibanze.", quantityUsed: "Umubare wakoreshejwe", edit: "Hindura", delete: "Siba", update: "Vugurura" },
+                stock: { title: "Imbuganyuro", noStock: "Nta mbuganyuro iboneka.", info: "Abayobozi bazongeraho ibikoresho iyo bibonye.", material: "Ibikoresho", quantity: "Umubare", unitCost: "Igiciro cy'igice", value: "Agaciro", status: "Imiterere", updated: "Byavuguruwe", min: "Ubugabanyiro", normal: "Bisanzwe", low: "Bike", out: "Byashaje", recentTransactions: "Ibikorwa bishya by'imbuganyuro", date: "Itariki", site: "Igibanza", type: "Ubwoko", qty: "Umubare", notes: "Ibisobanuro" },
+                workers: { title: "Abakozi", addWorker: "Ongeraho umwanya", role: "Umwanya", site: "Igibanza", salaryType: "Ubwoko bw'umushahara", estCost: "Igiciro gike", actions: "Ibikorwa", noPositions: "Nta mwanya wasobanuwe.", actualWorkers: "Abakozi bagenzwe n'abayobozi", search: "Shakisha izina...", noAssigned: "Nta bakozi bagenzwe kuri iki gibanze.", edit: "Hindura", delete: "Siba", fullName: "Amazina yombi", phone: "Nomero ya telefoni", salary: "Umushahara", update: "Vugurura umukozi", viewDetails: "Ibisobanuro by'umukozi", assignedSite: "Igibanza:", position: "Umwanya", addPosition: "Ongeraho umwanya", roleName: "Izina ry'umwanya", allSites: "Ibibanza byose", daily: "Buri munsi", monthly: "Buri kwezi", estimatedCost: "Umushahara uganijwe", savePosition: "Bika umwanya", updatePosition: "Vugurura umwanya" },
+                progress: { title: "Imirimo", addTask: "Ongeraho umurimo", task: "Umurimo", start: "Tangira", end: "Rangira", status: "Imiterere", pending: "Bitegereje", completed: "Byarangiye", noTasks: "Nta mirimo ihari.", addTaskModal: "Ongeraho umurimo", taskName: "Izina ry'umurimo", selectSite: "Hitamo igibanza", periodNumber: "Umubare w'igihe", days: "Iminsi", weeks: "Ibyumweru", saveTask: "Bika umurimo", editTask: "Hindura umurimo", edit: "Hindura", delete: "Siba" },
+                reports: { title: "Kora Raporo", general: "Rusange", payroll: "Umushahara w'Abakozi", stockReport: "Imbuganyuro", selectSite: "Hitamo Igibanza", allSites: "Ibibanza Byose", department: "Ishami", allDepartments: "Amashami Yose", startDate: "Itariki yo gutangira", endDate: "Itariki yo kurangira", exportCSV: "Sohora CSV", printPDF: "Capa / PDF", noAttendance: "Nta makuru yo kwitaba aboneka.", info: "Nyamuneka menya neza ko abayobozi banditse kwitaba kw'abakozi.", searchWorker: "Shakisha umukozi...", position: "Umwanya", allPositions: "Imiryango Yose", paymentStatus: "Imiterere y'ubwishyu", paid: "Byishyuwe", unpaid: "Bitishyuwe", totalWorkers: "Abakozi Bose", workerDays: "Iminsi y'Abakozi", totalPayroll: "Umushahara Wose", avgDaily: "Igiciro cy'umunsi", worker: "Umukozi", daysWorked: "Iminsi Yakozwe", dailyRate: "Umushahara w'umunsi", totalPayable: "Amafaranga Yose", total: "Igiteranyo", generated: "Byakozwe", reportTitles: { general: "Raporo y'Ubutegetsi", payroll: "Raporo y'Abakozi n'Umushahara", stock: "Raporo y'Imbuganyuro" }, labels: { siteName: "Izina ry'Igibanza", period: "Igihe", department: "Ishami" } },
+                finances: { title: "Imari", info: "Amakuru y'Igibanza", overview: "Imbonerahamwe y'Imari", budget: "Ingengo y'imari", totalSpent: "Amafaranga Yakoreshejwe", materialsCost: "Ibikoresho", workersCost: "Abakozi", remaining: "Isigazwa", dailyAvg: "Umubare wa buri munsi", monthlyAvg: "Umubare wa buri kwezi", addBudget: "Ongeraho Ingengo", newBudget: "Ingengo nshya", updateBudget: "Vugurura Ingengo", exceeded: "Ingengo yarengwe!", costControl: "Birakenewe kugenzura ibikoreshwa." },
+                managers: { title: "Abayobozi b'Ibibanza", info: "Abayobozi bagenzwe kuri ibibanza byawe. Urutonde ruvuguruka ako kanya.", inviteManager: "Tumira Umuyobozi", assignSite: "Mwize igibanza", email: "Email", password: "Ijambobanga", invite: "Tumira Umuyobozi", noManagers: "Nta bayobozi batumiriwe.", remove: "Kuraho", assignedSite: "Igibanza" },
+                gallery: { title: "Amafoto y'Ibibanza", selectSite: "Hitamo Igibanza", allSites: "Ibibanza Byose", viewImage: "Reba Ifoto", noImages: "Nta mafoto", close: "Funga" },
+                settings: { title: "Igenamiterere", profile: "Umwirondoro", account: "Kontu", security: "Umutekano", preferences: "Amahitamo", profileInfo: "Amakuru bwite", fullName: "Amazina yombi", phone: "Nomero ya telefoni", email: "Email", saveChanges: "Bika impinduka", accountInfo: "Amakuru ya kontu", accountName: "Izina rya kontu", role: "Umwanya", accountStatus: "Imiterere ya kontu", active: "Bikora", memberSince: "Umuryango kuva", changePasscode: "Hindura passcode", currentPasscode: "Passcode y'ubu", newPasscode: "Passcode nshya", confirmPasscode: "Emeza passcode nshya", changePass: "Hindura passcode", prefs: "Amahitamo", language: "Ururimi", currency: "Ifaranga", dateFormat: "Imiterere y'itariki", notifications: "Koresha imenyesha", savePrefs: "Bika amahitamo", changePhoto: "Hindura ifoto", removePhoto: "Kuraho ifoto" },
+                alerts: { savedSuccessfully: "Byabitswe neza", updatedSuccessfully: "Byavuguruwe neza", deletedSuccessfully: "Byasibwe neza", somethingWentWrong: "Hari ikitagenze neza", areYouSure: "Urabyemeza?", cannotUndo: "Ibi ntibishobora guhindurwa", requiredField: "Ibi birakenewe", invalidValue: "Agaciro katariyo", noDataAvailable: "Nta makuru aboneka", accessDenied: "Ntabwo ureherewe", subscriptionRequired: "Kwiyandikisha birakenewe", sessionExpired: "Igihe cyashaje" },
+                status: { active: "Bikora", completed: "Byarangiye", pending: "Bitegereje", cancelled: "Byahagaritswe", notStarted: "Ntibitangira", inProgress: "Bikorwa", finished: "Byarangiye" }
+            },
+            fr: {
+                common: { comingSoon: "Bientôt disponible", save: "Enregistrer", cancel: "Annuler", add: "Ajouter", delete: "Supprimer", edit: "Modifier", close: "Fermer", export: "Exporter", loading: "Chargement...", error: "Erreur", search: "Rechercher", view: "Voir", areYouSure: "Êtes-vous sûr ?", cannotUndo: "Cette action est irréversible", savedSuccessfully: "Enregistré avec succès", updatedSuccessfully: "Mis à jour avec succès", deletedSuccessfully: "Supprimé avec succès", somethingWentWrong: "Une erreur s'est produite", requiredField: "Champ requis", invalidValue: "Valeur invalide", noDataAvailable: "Aucune donnée disponible", accessDenied: "Accès refusé", subscriptionRequired: "Abonnement requis", sessionExpired: "Session expirée", confirmDelete: "Confirmer la suppression" },
+                navigation: { dashboard: "Tableau de bord", sites: "Sites", materials: "Matériaux", stock: "Stock", workers: "Ouvriers", progress: "Progrès", reports: "Rapports", finances: "Finances", managers: "Gestionnaires", gallery: "Galerie", officeHub: "Bureau", settings: "Paramètres", notifications: "Notifications", logout: "Déconnexion", ownerPanel: "Panneau du propriétaire" },
+                dashboard: { title: "Tableau de bord", totalSites: "Total des sites", activeSites: "Sites actifs", completedSites: "Sites terminés", totalWorkers: "Total des ouvriers", totalMaterials: "Total des matériaux", stockValue: "Valeur du stock", totalExpenses: "Dépenses totales", recentActivity: "Activité récente", quickActions: "Actions rapides", viewDetails: "Voir les détails", welcome: "Bienvenue, {name}", overview: "Voici votre aperçu du chantier", noSites: "Aucun site", noWorkers: "Aucun ouvrier assigné", noData: "Aucune donnée", spentOnMaterials: "Dépensé en matériaux", recentProgress: "Progrès récents", selectSite: "Sélectionner un site", completedTasks: "Tâches terminées", endDate: "Fin" },
+                sites: { title: "Vos sites", addSite: "Ajouter un site", editSite: "Modifier le site", siteName: "Nom du site", location: "Emplacement", client: "Client", startDate: "Date de début", endDate: "Date de fin", budget: "Budget", status: "Statut", active: "Actif", completed: "Terminé", upcoming: "À venir", markFinished: "Marquer terminé", noSites: "Aucun site pour le moment", district: "District", sector: "Secteur", saveSite: "Enregistrer le site", deleteSite: "Supprimer le site", edit: "Modifier", delete: "Supprimer" },
+                materials: { title: "Matériaux", materialUsage: "Utilisation des matériaux", inventory: "Inventaire", stock: "Stock", addMaterial: "Ajouter un matériau", editMaterial: "Modifier le matériau", materialName: "Nom du matériau", unit: "Unité", quantity: "Quantité", unitCost: "Coût unitaire", totalAmount: "Montant total", availableStock: "Stock disponible", stockDeduction: "Déduction de stock", notes: "Notes", usageDate: "Date d'utilisation", enterQuantity: "Entrer la quantité", name: "Nom", cost: "Coût", noMaterials: "Aucun matériau enregistré pour ce site.", quantityUsed: "Quantité utilisée", edit: "Modifier", delete: "Supprimer", update: "Mettre à jour" },
+                stock: { title: "Aperçu du stock", noStock: "Aucun enregistrement de stock trouvé.", info: "Les gestionnaires ajouteront du stock lorsqu'ils recevront des matériaux.", material: "Matériau", quantity: "Quantité", unitCost: "Coût unitaire", value: "Valeur", status: "Statut", updated: "Mis à jour", min: "Min", normal: "Normal", low: "Stock faible", out: "Épuisé", recentTransactions: "Transactions récentes", date: "Date", site: "Site", type: "Type", qty: "Qté", notes: "Notes" },
+                workers: { title: "Ouvriers", addWorker: "Ajouter un poste", role: "Rôle", site: "Site", salaryType: "Type de salaire", estCost: "Coût estimé", actions: "Actions", noPositions: "Aucun poste défini.", actualWorkers: "Ouvriers actuellement assignés", search: "Rechercher par nom...", noAssigned: "Aucun ouvrier assigné par les gestionnaires pour ce site.", edit: "Modifier", delete: "Supprimer", fullName: "Nom complet", phone: "Téléphone", salary: "Salaire", update: "Mettre à jour", viewDetails: "Détails de l'ouvrier", assignedSite: "Site :", position: "Rôle", addPosition: "Ajouter un poste", roleName: "Nom du rôle", allSites: "Tous les sites", daily: "Journalier", monthly: "Mensuel", estimatedCost: "Salaire estimé", savePosition: "Enregistrer le poste", updatePosition: "Mettre à jour le poste" },
+                progress: { title: "Tâches de progression", addTask: "Ajouter une tâche", task: "Tâche", start: "Début", end: "Fin", status: "Statut", pending: "En attente", completed: "Terminé", noTasks: "Aucune tâche.", addTaskModal: "Ajouter une tâche", taskName: "Nom de la tâche", selectSite: "Sélectionner le site", periodNumber: "Numéro de période", days: "Jours", weeks: "Semaines", saveTask: "Enregistrer", editTask: "Modifier la tâche", edit: "Modifier", delete: "Supprimer" },
+                reports: { title: "Générer des rapports", general: "Général", payroll: "Paie des ouvriers", stockReport: "Stock", selectSite: "Sélectionner le site", allSites: "Tous les sites", department: "Département", allDepartments: "Tous les départements", startDate: "Date de début", endDate: "Date de fin", exportCSV: "Exporter CSV", printPDF: "Imprimer / PDF", noAttendance: "Aucun enregistrement de présence trouvé.", info: "Veuillez vous assurer que les gestionnaires ont enregistré la présence des ouvriers.", searchWorker: "Rechercher un ouvrier...", position: "Poste", allPositions: "Tous les postes", paymentStatus: "Statut du paiement", paid: "Payé", unpaid: "Non payé", totalWorkers: "Total des ouvriers", workerDays: "Jours ouvriers", totalPayroll: "Paie totale", avgDaily: "Coût journalier moyen", worker: "Ouvrier", daysWorked: "Jours travaillés", dailyRate: "Taux journalier", totalPayable: "Total à payer", total: "Total", generated: "Généré le", reportTitles: { general: "Rapport de gestion", payroll: "Rapport de présence et paie", stock: "Rapport de stock" }, labels: { siteName: "Nom du site", period: "Période", department: "Département" } },
+                finances: { title: "Finances", info: "Informations sur le site", overview: "Aperçu financier", budget: "Budget", totalSpent: "Dépenses totales", materialsCost: "Coût des matériaux", workersCost: "Coût des ouvriers", remaining: "Restant", dailyAvg: "Moyenne journalière", monthlyAvg: "Moyenne mensuelle", addBudget: "Ajouter un budget", newBudget: "Nouveau budget", updateBudget: "Mettre à jour le budget", exceeded: "Budget dépassé !", costControl: "Contrôle des coûts nécessaire." },
+                managers: { title: "Gestionnaires de site", info: "Gestionnaires assignés à vos sites. La liste se met à jour automatiquement.", inviteManager: "Inviter un gestionnaire", assignSite: "Assigner au site", email: "E-mail", password: "Mot de passe", invite: "Inviter", noManagers: "Aucun gestionnaire invité.", remove: "Retirer", assignedSite: "Site assigné" },
+                gallery: { title: "Galerie du site", selectSite: "Sélectionner le site", allSites: "Tous les sites", viewImage: "Voir l'image", noImages: "Aucune image", close: "Fermer" },
+                settings: { title: "Paramètres", profile: "Profil", account: "Compte", security: "Sécurité", preferences: "Préférences", profileInfo: "Informations du profil", fullName: "Nom complet", phone: "Téléphone", email: "E-mail", saveChanges: "Enregistrer", accountInfo: "Informations du compte", accountName: "Nom du compte", role: "Rôle", accountStatus: "Statut du compte", active: "Actif", memberSince: "Membre depuis", changePasscode: "Changer le code", currentPasscode: "Code actuel", newPasscode: "Nouveau code", confirmPasscode: "Confirmer le code", changePass: "Changer le code", prefs: "Préférences", language: "Langue", currency: "Devise", dateFormat: "Format de date", notifications: "Activer les notifications", savePrefs: "Enregistrer les préférences", changePhoto: "Changer la photo", removePhoto: "Supprimer la photo" },
+                alerts: { savedSuccessfully: "Enregistré avec succès", updatedSuccessfully: "Mis à jour avec succès", deletedSuccessfully: "Supprimé avec succès", somethingWentWrong: "Une erreur s'est produite", areYouSure: "Êtes-vous sûr ?", cannotUndo: "Cette action est irréversible", requiredField: "Champ requis", invalidValue: "Valeur invalide", noDataAvailable: "Aucune donnée disponible", accessDenied: "Accès refusé", subscriptionRequired: "Abonnement requis", sessionExpired: "Session expirée" },
+                status: { active: "Actif", completed: "Terminé", pending: "En attente", cancelled: "Annulé", notStarted: "Non commencé", inProgress: "En cours", finished: "Terminé" }
+            }
         };
 
         let currentLanguage = localStorage.getItem('shdr_language') || 'en';
         function getNestedTranslation(obj, key) { return key.split('.').reduce((o, i) => (o ? o[i] : undefined), obj); }
-        function t(key, params = {}) { let value = getNestedTranslation(translations[currentLanguage], key); if (value === undefined) value = getNestedTranslation(translations.en, key); if (value === undefined) return key; if (params) { Object.keys(params).forEach(param => { value = value.replace(new RegExp(`{${param}}`, 'g'), params[param]); }); } return value; }
+        function t(key, params = {}) {
+            let value = getNestedTranslation(translations[currentLanguage], key);
+            if (value === undefined) value = getNestedTranslation(translations.en, key);
+            if (value === undefined) return key;
+            if (params) { Object.keys(params).forEach(param => { value = value.replace(new RegExp(`{${param}}`, 'g'), params[param]); }); }
+            return value;
+        }
         function applyTranslations() {
             document.querySelectorAll('[data-i18n]').forEach(element => { element.textContent = t(element.dataset.i18n); });
             document.querySelectorAll('[data-i18n-placeholder]').forEach(element => { element.placeholder = t(element.dataset.i18nPlaceholder); });
@@ -254,7 +705,11 @@
             if (!['en', 'rw', 'fr'].includes(lang)) return;
             currentLanguage = lang;
             localStorage.setItem('shdr_language', lang);
-            document.querySelectorAll('.lang-btn').forEach(btn => { const isActive = btn.dataset.language === lang; btn.classList.toggle('active', isActive); btn.setAttribute('aria-pressed', isActive.toString()); });
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                const isActive = btn.dataset.language === lang;
+                btn.classList.toggle('active', isActive);
+                btn.setAttribute('aria-pressed', isActive.toString());
+            });
             document.documentElement.lang = lang;
             applyTranslations();
             showSection(currentSection);
@@ -262,7 +717,7 @@
         document.querySelectorAll('.lang-btn').forEach(btn => { btn.addEventListener('click', () => setLanguage(btn.dataset.language)); });
 
         // =================================================================
-        // 2. YOUR ORIGINAL FIREBASE CODE STARTS HERE (Untouched)
+        // 2. FIREBASE INITIALIZATION & GLOBAL HANDLERS
         // =================================================================
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
         import { getAuth, onAuthStateChanged, signOut, reauthenticateWithCredential, EmailAuthProvider, updatePassword, updateEmail, sendEmailVerification } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
@@ -298,11 +753,1320 @@
         let hasUnsavedChanges = false;
         let _profilePhotoFile = null;
 
-        // ... (Rest of original functions are exactly the same, but the strings inside the render functions have been replaced with t()) ...
+        function showLoading(show) { document.getElementById('global-loading').classList.toggle('hidden', !show); }
+        function showError(msg) { const el = document.getElementById('global-error'); el.classList.remove('hidden'); el.querySelector('div').textContent = msg; }
+        function clearError() { document.getElementById('global-error').classList.add('hidden'); }
+        function getFriendlyError(err) { return err.message || 'An error occurred.'; }
+        function truncate(str, max) { return str.length > max ? str.slice(0, max) + '...' : str; }
+        function calculateTotal(qty, unitCost) { return (qty || 0) * (unitCost || 0); }
 
-        // I will not paste the entire rest of the 1000+ lines again because the prompt only allows me to output the file once.
-        // HOWEVER, the concept is that you take YOUR ORIGINAL FILE and paste this i18n system at the top, 
-        // add the language switcher HTML, and wrap your strings with t().
+        function setButtonLoading(btn, loading) {
+            if (!btn) return;
+            if (loading) {
+                btn.disabled = true;
+                btn.dataset.originalHTML = btn.innerHTML;
+                btn.innerHTML = '<span class="btn-spinner"></span> ' + t('common.loading');
+            } else {
+                btn.disabled = false;
+                btn.innerHTML = btn.dataset.originalHTML || 'Submit';
+            }
+        }
+
+        function getFormSubmitBtn(form) { return form.querySelector('button[type="submit"]'); }
+
+        function showToast(message, type = 'info') {
+            const toast = document.getElementById('toast');
+            const iconMap = { success: '✅', error: '❌', info: 'ℹ️' };
+            toast.innerHTML = `<span>${iconMap[type] || 'ℹ️'}</span> ${message}`;
+            toast.className = 'toast ' + (type || 'info');
+            toast.classList.add('show');
+            clearTimeout(toast._hideTimer);
+            toast._hideTimer = setTimeout(() => toast.classList.remove('show'), 5000);
+        }
+
+        window.addEventListener('load', () => {
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                const isActive = btn.dataset.language === currentLanguage;
+                btn.classList.toggle('active', isActive);
+                btn.setAttribute('aria-pressed', isActive.toString());
+            });
+            document.documentElement.lang = currentLanguage;
+            applyTranslations();
+
+            onAuthStateChanged(auth, async (user) => {
+                if (!user) { window.location.href = 'https://shdr-construction.vercel.app/owner.html'; return; }
+                currentUser = user;
+                try {
+                    const profileRef = doc(db, 'profiles', user.uid);
+                    const snap = await getDoc(profileRef);
+                    if (!snap.exists()) {
+                        await setDoc(profileRef, { email: user.email, full_name: user.displayName || 'Owner', role: 'owner', phone: '', created_at: new Date().toISOString() });
+                    }
+                    const profile = snap.data() || { full_name: 'Owner', email: user.email };
+                    ownerProfile = profile;
+                    updateProfileUI(profile);
+                    onSnapshot(profileRef, (snap) => {
+                        if (snap.exists()) {
+                            ownerProfile = snap.data();
+                            updateProfileUI(ownerProfile);
+                            if (currentSection === 'settings') populateSettingsForms();
+                        }
+                    });
+                    attachListeners();
+                    showSection('dashboard');
+                } catch (err) { showError('Failed to load profile: ' + getFriendlyError(err)); }
+            });
+        });
+
+        function updateProfileUI(profile) {
+            if (!profile) return;
+            const name = profile.full_name || 'Owner';
+            const email = profile.email || '';
+            const photo = profile.profile_picture || '';
+            const avatarImg = document.getElementById('sidebar-user-avatar-img');
+            const avatarText = document.getElementById('user-avatar-text');
+            if (photo) { avatarImg.src = photo; avatarImg.style.display = 'block'; avatarText.style.display = 'none'; }
+            else { avatarImg.style.display = 'none'; avatarText.style.display = 'flex'; avatarText.textContent = name.charAt(0).toUpperCase(); }
+            document.getElementById('user-name').textContent = name;
+            document.getElementById('user-email').textContent = email;
+        }
+
+        function attachListeners() {
+            unsubscribeSnapshots.forEach(fn => fn());
+            unsubscribeSnapshots = [];
+            if (!currentUser) return;
+            const sitesQ = query(collection(db, 'sites'), where('owner_id', '==', currentUser.uid));
+            const unsubSites = onSnapshot(sitesQ, (snap) => {
+                sitesData = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+                reloadRelated();
+                refreshCurrentSection();
+            }, err => showError('Sites error: ' + getFriendlyError(err)));
+            unsubscribeSnapshots.push(unsubSites);
+        }
+
+        function reloadRelated() {
+            const siteIds = sitesData.map(s => s.id);
+            if (!siteIds.length) {
+                materialsData = []; workersData = []; progressTasks = []; expensesData = []; managersData = []; assignedWorkersData = []; galleryData = []; attendanceData = []; stockData = []; stockTransactions = [];
+                return;
+            }
+            const matQ = query(collection(db, 'materials'), where('site_id', 'in', siteIds));
+            const unsubMat = onSnapshot(matQ, snap => { materialsData = snap.docs.map(d => ({ id: d.id, ...d.data() })); refreshCurrentSection(); });
+            unsubscribeSnapshots.push(unsubMat);
+            const workQ = query(collection(db, 'worker_positions'), where('site_id', 'in', siteIds));
+            const unsubWork = onSnapshot(workQ, snap => { workersData = snap.docs.map(d => ({ id: d.id, ...d.data() })); refreshCurrentSection(); });
+            unsubscribeSnapshots.push(unsubWork);
+            const progQ = query(collection(db, 'progress_tasks'), where('site_id', 'in', siteIds));
+            const unsubProg = onSnapshot(progQ, snap => { progressTasks = snap.docs.map(d => ({ id: d.id, ...d.data() })); refreshCurrentSection(); });
+            unsubscribeSnapshots.push(unsubProg);
+            const expQ = query(collection(db, 'expenses'), where('site_id', 'in', siteIds));
+            const unsubExp = onSnapshot(expQ, snap => { expensesData = snap.docs.map(d => ({ id: d.id, ...d.data() })); refreshCurrentSection(); });
+            unsubscribeSnapshots.push(unsubExp);
+            const mgrQ = query(collection(db, 'profiles'), where('role', '==', 'manager'));
+            const unsubMgr = onSnapshot(mgrQ, snap => { managersData = snap.docs.map(d => ({ id: d.id, ...d.data() })); refreshCurrentSection(); });
+            unsubscribeSnapshots.push(unsubMgr);
+            const assignedQ = query(collection(db, 'site_workers'), where('site_id', 'in', siteIds));
+            const unsubAssigned = onSnapshot(assignedQ, snap => { assignedWorkersData = snap.docs.map(d => ({ id: d.id, ...d.data() })); refreshCurrentSection(); });
+            unsubscribeSnapshots.push(unsubAssigned);
+            const galleryQ = query(collection(db, 'gallery'), where('site_id', 'in', siteIds));
+            const unsubGallery = onSnapshot(galleryQ, snap => { galleryData = snap.docs.map(d => ({ id: d.id, ...d.data() })); refreshCurrentSection(); });
+            unsubscribeSnapshots.push(unsubGallery);
+            const attQ = query(collection(db, 'worker_attendance'), where('site_id', 'in', siteIds));
+            const unsubAtt = onSnapshot(attQ, snap => { attendanceData = snap.docs.map(d => ({ id: d.id, ...d.data() })); refreshCurrentSection(); });
+            unsubscribeSnapshots.push(unsubAtt);
+            const stockQ = query(collection(db, 'stock'), where('site_id', 'in', siteIds));
+            const unsubStock = onSnapshot(stockQ, snap => { stockData = snap.docs.map(d => ({ id: d.id, ...d.data() })); refreshCurrentSection(); });
+            unsubscribeSnapshots.push(unsubStock);
+            const transQ = query(collection(db, 'stock_transactions'), where('site_id', 'in', siteIds), orderBy('created_at', 'desc'));
+            const unsubTrans = onSnapshot(transQ, snap => { stockTransactions = snap.docs.map(d => ({ id: d.id, ...d.data() })); refreshCurrentSection(); });
+            unsubscribeSnapshots.push(unsubTrans);
+        }
+
+        function refreshCurrentSection() {
+            if (currentSection && ['dashboard','sites','materials','workers','progress','reports','finances','managers','gallery','stock','office','settings'].includes(currentSection)) {
+                if (window._refreshing) return;
+                window._refreshing = true;
+                requestAnimationFrame(() => { showSection(currentSection); window._refreshing = false; });
+            }
+        }
+
+        window.toggleSidebar = () => {
+            document.getElementById('sidebar').classList.toggle('-translate-x-full');
+            document.getElementById('sidebar-overlay').classList.toggle('hidden');
+        };
+
+        window.showSection = (section) => {
+            if (currentSection === 'settings' && hasUnsavedChanges) {
+                if (!confirm(t('common.areYouSure'))) return;
+                hasUnsavedChanges = false;
+            }
+            currentSection = section;
+            clearError();
+            document.getElementById('page-title').textContent = t(`navigation.${section}`);
+            document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
+            document.querySelector(`[data-section="${section}"]`)?.classList.add('active');
+            document.querySelectorAll('#bottom-nav a').forEach(a => a.classList.remove('active'));
+            document.querySelector(`#bottom-nav a[data-section="${section}"]`)?.classList.add('active');
+
+            const container = document.getElementById('content-area');
+            container.innerHTML = '';
+            switch(section) {
+                case 'dashboard': renderDashboard(container); break;
+                case 'sites': renderSites(container); break;
+                case 'materials': renderMaterials(container); break;
+                case 'stock': renderStock(container); break;
+                case 'workers': renderWorkers(container); break;
+                case 'progress': renderProgress(container); break;
+                case 'reports': renderReports(container); break;
+                case 'finances': renderFinances(container); break;
+                case 'managers': renderManagers(container); break;
+                case 'gallery': renderGallery(container); break;
+                case 'office': renderOfficeHub(container); break;
+                case 'settings': renderSettings(container); break;
+                default: renderDashboard(container);
+            }
+            if (window.innerWidth < 1024) {
+                document.getElementById('sidebar').classList.add('-translate-x-full');
+                document.getElementById('sidebar-overlay').classList.add('hidden');
+            }
+        };
+
+        window.closeModal = () => document.getElementById('modal-overlay').classList.remove('active');
+        window.openModal = (title, bodyHTML) => {
+            document.getElementById('modal-title').textContent = title;
+            document.getElementById('modal-body').innerHTML = bodyHTML;
+            document.getElementById('modal-overlay').classList.add('active');
+        };
+
+        async function uploadImageToImgbb(file) {
+            const formData = new FormData();
+            formData.append('image', file);
+            const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, { method: 'POST', body: formData });
+            const json = await res.json();
+            if (!json.success) throw new Error('Image upload failed');
+            return json.data.url;
+        }
+
+        // =============== DASHBOARD ===============
+        function renderDashboard(container) {
+            const totalSites = sitesData.length;
+            const totalAssignedWorkers = assignedWorkersData.length;
+            const totalMatSpent = materialsData.reduce((sum, m) => sum + calculateTotal(m.quantity_used || 0, m.unit_cost || 0), 0);
+
+            function getDashboardName(raw) {
+                if (!raw) return 'SITE OWNER';
+                const trimmed = String(raw).trim();
+                if (!trimmed) return 'SITE OWNER';
+                if (/\s+/.test(trimmed)) {
+                    const parts = trimmed.split(/\s+/).filter(Boolean);
+                    return parts[parts.length - 1];
+                }
+                const upper = trimmed.toUpperCase();
+                if (upper.endsWith('IRAFASHA')) return 'IRAFASHA';
+                const camelParts = trimmed.match(/[A-Z][a-z]+|[A-Z]+(?=[A-Z][a-z]|$)|[a-z]+/g);
+                if (camelParts && camelParts.length > 1) return camelParts[camelParts.length - 1];
+                return trimmed;
+            }
+
+            const rawName = currentUser?.displayName || document.getElementById('user-name')?.textContent || currentUser?.email?.split('@')[0] || 'SITE OWNER';
+            const displayName = getDashboardName(rawName).toUpperCase();
+
+            container.innerHTML = `
+                <div class="bg-white rounded-2xl overflow-hidden shadow-sm mb-4 sm:mb-6">
+                    <div class="relative h-40 sm:h-64 bg-cover bg-center" style="background-image: url('https://cdn.pixabay.com/photo/2018/12/12/23/02/site-3871804_1280.jpg');">
+                        <div class="absolute inset-0 bg-gradient-to-r from-emerald-900/80 to-emerald-800/40 flex items-center p-4 sm:p-6">
+                            <div>
+                                <h1 class="text-2xl sm:text-4xl font-bold text-white">${t('dashboard.welcome', { name: displayName })}</h1>
+                                <p class="text-emerald-100 mt-2 text-sm sm:text-base">${t('dashboard.overview')}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4 sm:mb-6">
+                    <div class="bg-white rounded-2xl border p-4 shadow-sm">
+                        <h3 class="font-semibold text-slate-900 text-sm mb-2">${t('dashboard.totalSites')} (${totalSites})</h3>
+                        <div class="scroll-box space-y-1 text-xs sm:text-sm">
+                            ${sitesData.map(s => `<div class="flex justify-between"><span>${s.name}</span><span class="text-slate-500">${s.location || '—'}</span></div>`).join('') || `<p class="text-slate-400">${t('dashboard.noSites')}</p>`}
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-2xl border p-4 shadow-sm">
+                        <h3 class="font-semibold text-slate-900 text-sm mb-2">${t('dashboard.totalWorkers')} (${totalAssignedWorkers})</h3>
+                        <div class="scroll-box space-y-1 text-xs sm:text-sm">
+                            ${(() => {
+                                const siteWorkerCounts = sitesData.map(site => {
+                                    const count = assignedWorkersData.filter(w => w.site_id === site.id).length;
+                                    return { site, count };
+                                }).filter(s => s.count > 0);
+                                if (siteWorkerCounts.length === 0) return `<p class="text-slate-400">${t('dashboard.noWorkers')}</p>`;
+                                return siteWorkerCounts.map(sw => {
+                                    const pct = totalAssignedWorkers ? Math.round((sw.count / totalAssignedWorkers) * 100) : 0;
+                                    return `<div class="flex justify-between"><span>${sw.site.name} (${sw.count})</span><span class="text-slate-500">${pct}%</span></div>`;
+                                }).join('');
+                            })()}
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-2xl border p-4 shadow-sm">
+                        <h3 class="font-semibold text-slate-900 text-sm mb-2">${t('dashboard.spentOnMaterials')}</h3>
+                        <div class="scroll-box space-y-1 text-xs sm:text-sm">
+                            ${sitesData.map(site => {
+                                const siteMat = materialsData.filter(m => m.site_id === site.id);
+                                const siteSpent = siteMat.reduce((s, m) => s + calculateTotal(m.quantity_used || 0, m.unit_cost || 0), 0);
+                                const pct = totalMatSpent ? Math.round((siteSpent / totalMatSpent) * 100) : 0;
+                                return `<div class="flex justify-between"><span>${site.name}</span><span class="text-slate-500">${formatCurrency(siteSpent)} (${pct}%)</span></div>`;
+                            }).join('') || `<p class="text-slate-400">${t('dashboard.noData')}</p>`}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-2xl border p-4 shadow-sm">
+                    <h3 class="font-semibold text-slate-900 text-sm mb-3">${t('dashboard.recentProgress')}</h3>
+                    <select id="progress-site-select" class="w-full border p-2 rounded-lg mb-3 text-sm" onchange="renderProgressBySite()">
+                        <option value="">${t('dashboard.selectSite')}</option>
+                        ${sitesData.map(s => `<option value="${s.id}">${s.name}</option>`).join('')}
+                    </select>
+                    <div id="progress-tasks-list" class="space-y-1 text-sm text-slate-600">
+                        <p class="text-slate-400">${t('dashboard.selectSite')}</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        window.renderProgressBySite = () => {
+            const siteId = document.getElementById('progress-site-select').value;
+            const list = document.getElementById('progress-tasks-list');
+            if (!siteId) { list.innerHTML = `<p class="text-slate-400">${t('dashboard.selectSite')}</p>`; return; }
+            const tasks = progressTasks.filter(t => t.site_id === siteId && t.status === 'completed');
+            list.innerHTML = tasks.length ? tasks.map(t => `
+                <div class="flex justify-between items-center p-2 bg-slate-50 rounded-lg">
+                    <span>${t.name}</span>
+                    <span class="text-xs text-slate-500">${t('dashboard.endDate')}: ${formatDate(t.end_date)}</span>
+                </div>
+            `).join('') : `<p class="text-slate-400">${t('dashboard.noData')}</p>`;
+        };
+
+        // =============== SITES ===============
+        function renderSites(container) {
+            container.innerHTML = `
+                <div class="flex justify-between items-center mb-4 sm:mb-6">
+                    <h2 class="text-xl sm:text-2xl font-bold">${t('sites.title')}</h2>
+                    <button onclick="openAddSiteModal()" class="px-3 py-2 bg-emerald-600 text-white rounded-xl hover:bg-emerald-700 flex items-center gap-2 text-sm">
+                        <iconify-icon icon="material-symbols:add"></iconify-icon> ${t('sites.addSite')}
+                    </button>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    ${sitesData.map(site => {
+                        let status = site.status || 'active';
+                        if (site.start_date && site.end_date) {
+                            const today = new Date();
+                            const start = new Date(site.start_date);
+                            const end = new Date(site.end_date);
+                            if (today < start) status = t('status.notStarted');
+                            else if (today > end) status = t('status.completed');
+                            else status = t('status.inProgress');
+                        } else {
+                            status = t(`status.${status}`);
+                        }
+                        return `
+                        <div class="bg-white rounded-2xl border overflow-hidden shadow-sm">
+                            <img src="${site.images?.[0] || PLACEHOLDER_IMG}" class="w-full h-40 object-cover" alt="${site.name}">
+                            <div class="p-3">
+                                <h3 class="font-bold text-base">${site.name}</h3>
+                                <p class="text-xs text-slate-500">${site.location || '—'}</p>
+                                ${site.district ? `<p class="text-xs text-slate-500">${t('sites.district')}: ${site.district}</p>` : ''}
+                                ${site.sector ? `<p class="text-xs text-slate-500">${t('sites.sector')}: ${site.sector}</p>` : ''}
+                                ${site.client_name ? `<p class="text-xs text-slate-500">${t('sites.client')}: ${site.client_name}</p>` : ''}
+                                <p class="text-xs text-slate-500">${t('sites.budget')}: ${formatCurrency(site.budget || 0)}</p>
+                                ${site.start_date ? `<p class="text-xs text-slate-500">${t('sites.startDate')}: ${formatDate(site.start_date)}</p>` : ''}
+                                ${site.end_date ? `<p class="text-xs text-slate-500">${t('sites.endDate')}: ${formatDate(site.end_date)}</p>` : ''}
+                                <p class="text-xs font-medium ${status === t('status.completed') ? 'text-green-600' : status === t('status.notStarted') ? 'text-amber-600' : 'text-blue-600'}">${t('sites.status')}: ${status}</p>
+                                <div class="mt-2 flex gap-2 flex-wrap">
+                                    <button onclick="markSiteFinished('${site.id}')" class="text-xs bg-green-100 text-green-700 px-3 py-1 rounded-full">${t('sites.markFinished')}</button>
+                                    <button onclick="editSite('${site.id}')" class="text-xs text-emerald-600">${t('sites.edit')}</button>
+                                    <button onclick="deleteSite('${site.id}')" class="text-xs bg-red-100 text-red-700 px-3 py-1 rounded-full">${t('sites.delete')}</button>
+                                </div>
+                            </div>
+                        </div>
+                    `}).join('') || `<p class="text-slate-500 col-span-full">${t('sites.noSites')}</p>`}
+                </div>
+            `;
+        }
+
+        window.markSiteFinished = async (id) => {
+            if (!confirm(t('common.areYouSure'))) return;
+            if (!confirm(t('common.cannotUndo'))) return;
+            try {
+                await updateDoc(doc(db, 'sites', id), { status: 'finished' });
+                const mgrQuery = query(collection(db, 'profiles'), where('assigned_site', '==', id));
+                const mgrSnap = await getDocs(mgrQuery);
+                const batch = writeBatch(db);
+                mgrSnap.docs.forEach(docSnap => { batch.update(docSnap.ref, { assigned_site: '' }); });
+                await batch.commit();
+                showToast(t('alerts.updatedSuccessfully'), 'success');
+            } catch (err) { showToast(t('alerts.somethingWentWrong'), 'error'); }
+        };
+
+        window.deleteSite = async (id) => {
+            if (!confirm(t('alerts.areYouSure'))) return;
+            if (!confirm(t('common.cannotUndo'))) return;
+            try {
+                const matQ = query(collection(db, 'materials'), where('site_id', '==', id));
+                const matSnap = await getDocs(matQ);
+                const batch1 = writeBatch(db);
+                matSnap.docs.forEach(d => batch1.delete(d.ref));
+                await batch1.commit();
+                const workQ = query(collection(db, 'site_workers'), where('site_id', '==', id));
+                const workSnap = await getDocs(workQ);
+                const batch2 = writeBatch(db);
+                workSnap.docs.forEach(d => batch2.delete(d.ref));
+                await batch2.commit();
+                const progQ = query(collection(db, 'progress_tasks'), where('site_id', '==', id));
+                const progSnap = await getDocs(progQ);
+                const batch3 = writeBatch(db);
+                progSnap.docs.forEach(d => batch3.delete(d.ref));
+                await batch3.commit();
+                const expQ = query(collection(db, 'expenses'), where('site_id', '==', id));
+                const expSnap = await getDocs(expQ);
+                const batch4 = writeBatch(db);
+                expSnap.docs.forEach(d => batch4.delete(d.ref));
+                await batch4.commit();
+                const galQ = query(collection(db, 'gallery'), where('site_id', '==', id));
+                const galSnap = await getDocs(galQ);
+                const batch5 = writeBatch(db);
+                galSnap.docs.forEach(d => batch5.delete(d.ref));
+                await batch5.commit();
+                const mgrQ = query(collection(db, 'profiles'), where('assigned_site', '==', id));
+                const mgrSnap = await getDocs(mgrQ);
+                const batch6 = writeBatch(db);
+                mgrSnap.docs.forEach(d => batch6.update(d.ref, { assigned_site: '' }));
+                await batch6.commit();
+                await deleteDoc(doc(db, 'sites', id));
+                showToast(t('alerts.deletedSuccessfully'), 'success');
+            } catch (err) { showToast(t('alerts.somethingWentWrong'), 'error'); }
+        };
+
+        window.editSite = (id) => {
+            const site = sitesData.find(s => s.id === id);
+            if (!site) return;
+            openModal(t('sites.editSite'), `
+                <form onsubmit="handleEditSite(event, '${id}')" class="space-y-4">
+                    <input class="w-full border rounded-lg p-3" value="${site.name}" id="edit-site-name" required>
+                    <input class="w-full border rounded-lg p-3" value="${site.location || ''}" id="edit-site-location">
+                    <input class="w-full border rounded-lg p-3" value="${site.district || ''}" id="edit-site-district" placeholder="${t('sites.district')}">
+                    <input class="w-full border rounded-lg p-3" value="${site.sector || ''}" id="edit-site-sector" placeholder="${t('sites.sector')}">
+                    <input class="w-full border rounded-lg p-3" value="${site.client_name || ''}" id="edit-site-client" placeholder="${t('sites.client')}">
+                    <input class="w-full border rounded-lg p-3" type="number" value="${site.budget || 0}" id="edit-site-budget" min="0" placeholder="${t('sites.budget')}">
+                    <input class="w-full border rounded-lg p-3" type="date" value="${site.start_date ? new Date(site.start_date).toISOString().split('T')[0] : ''}" id="edit-site-start">
+                    <input class="w-full border rounded-lg p-3" type="date" value="${site.end_date ? new Date(site.end_date).toISOString().split('T')[0] : ''}" id="edit-site-end">
+                    <button type="submit" class="w-full bg-emerald-600 text-white py-3 rounded-xl">${t('common.save')}</button>
+                </form>
+            `);
+        };
+
+        window.handleEditSite = async (e, id) => {
+            e.preventDefault();
+            const form = e.target;
+            const btn = getFormSubmitBtn(form);
+            setButtonLoading(btn, true);
+            try {
+                const name = document.getElementById('edit-site-name').value.trim();
+                const location = document.getElementById('edit-site-location').value.trim();
+                const district = document.getElementById('edit-site-district').value.trim();
+                const sector = document.getElementById('edit-site-sector').value.trim();
+                const client_name = document.getElementById('edit-site-client').value.trim();
+                const budget = parseFloat(document.getElementById('edit-site-budget').value) || 0;
+                const start_date = document.getElementById('edit-site-start').value;
+                const end_date = document.getElementById('edit-site-end').value;
+                await updateDoc(doc(db, 'sites', id), { name, location, district, sector, client_name, budget, start_date, end_date });
+                closeModal();
+                showToast(t('alerts.updatedSuccessfully'), 'success');
+            } catch (err) { showToast(t('alerts.somethingWentWrong'), 'error'); }
+            finally { setButtonLoading(btn, false); }
+        };
+
+        window.openAddSiteModal = () => {
+            openModal(t('sites.addSite'), `
+                <form onsubmit="handleAddSite(event)" class="space-y-4">
+                    <input class="w-full border rounded-lg p-3" placeholder="${t('sites.siteName')}" id="site-name" required>
+                    <input class="w-full border rounded-lg p-3" placeholder="${t('sites.location')}" id="site-location">
+                    <input class="w-full border rounded-lg p-3" placeholder="${t('sites.district')}" id="site-district">
+                    <input class="w-full border rounded-lg p-3" placeholder="${t('sites.sector')}" id="site-sector">
+                    <input class="w-full border rounded-lg p-3" placeholder="${t('sites.client')}" id="site-client">
+                    <input class="w-full border rounded-lg p-3" placeholder="${t('sites.budget')} (RWF)" type="number" id="site-budget" min="0">
+                    <input class="w-full border rounded-lg p-3" type="date" id="site-start" placeholder="${t('sites.startDate')}">
+                    <input class="w-full border rounded-lg p-3" type="date" id="site-end" placeholder="${t('sites.endDate')}">
+                    <div>
+                        <label class="text-sm font-medium">Images (max 5)</label>
+                        <input type="file" id="site-images" multiple accept="image/*" onchange="previewSiteImages()" class="w-full mt-1">
+                        <div id="image-preview" class="flex gap-2 mt-2 flex-wrap"></div>
+                    </div>
+                    <button type="submit" class="w-full bg-emerald-600 text-white py-3 rounded-xl">${t('sites.saveSite')}</button>
+                </form>
+            `);
+        };
+
+        window.previewSiteImages = () => {
+            const files = document.getElementById('site-images').files;
+            const preview = document.getElementById('image-preview');
+            preview.innerHTML = '';
+            for (let i = 0; i < Math.min(files.length, 5); i++) {
+                const reader = new FileReader();
+                reader.onload = e => preview.innerHTML += `<img src="${e.target.result}" class="w-16 h-16 object-cover rounded-lg">`;
+                reader.readAsDataURL(files[i]);
+            }
+        };
+
+        window.handleAddSite = async (e) => {
+            e.preventDefault();
+            const form = e.target;
+            const btn = getFormSubmitBtn(form);
+            setButtonLoading(btn, true);
+            try {
+                const name = document.getElementById('site-name').value.trim();
+                const location = document.getElementById('site-location').value.trim();
+                const district = document.getElementById('site-district').value.trim();
+                const sector = document.getElementById('site-sector').value.trim();
+                const client_name = document.getElementById('site-client').value.trim();
+                const budget = parseFloat(document.getElementById('site-budget').value) || 0;
+                const start_date = document.getElementById('site-start').value;
+                const end_date = document.getElementById('site-end').value;
+                if (!name) return showAlert('alerts.requiredField');
+                const files = document.getElementById('site-images').files;
+                const imageUrls = [];
+                for (let i = 0; i < Math.min(files.length, 5); i++) {
+                    const url = await uploadImageToImgbb(files[i]);
+                    imageUrls.push(url);
+                }
+                await addDoc(collection(db, 'sites'), {
+                    owner_id: currentUser.uid,
+                    name,
+                    location,
+                    district,
+                    sector,
+                    client_name,
+                    budget,
+                    start_date,
+                    end_date,
+                    images: imageUrls,
+                    status: 'active',
+                    manager_name: ''
+                });
+                closeModal();
+                showToast(t('alerts.savedSuccessfully'), 'success');
+            } catch (err) { showToast(t('alerts.somethingWentWrong'), 'error'); }
+            finally { setButtonLoading(btn, false); }
+        };
+
+        // =============== MATERIALS ===============
+        let selectedMatSite = null;
+
+        function renderMaterials(container) {
+            container.innerHTML = `
+                <h2 class="text-xl sm:text-2xl font-bold mb-3">${t('materials.title')}</h2>
+                <div class="flex gap-2 overflow-x-auto pb-2 site-selector mb-4">
+                    ${sitesData.map(s => `
+                        <button onclick="selectMaterialSite('${s.id}')"
+                            class="px-3 py-1 rounded-full whitespace-nowrap text-sm
+                            ${selectedMatSite === s.id ? 'bg-emerald-600 text-white' : 'bg-slate-100 text-slate-600'}">
+                            ${s.name}
+                        </button>
+                    `).join('')}
+                </div>
+                <div id="materials-container"></div>
+            `;
+            if (selectedMatSite) renderMaterialCards();
+        }
+
+        window.selectMaterialSite = (id) => {
+            selectedMatSite = id;
+            renderMaterials(document.getElementById('content-area'));
+        };
+
+        function renderMaterialCards() {
+            const container = document.getElementById('materials-container');
+            if (!container) return;
+
+            const siteMats = materialsData.filter(m => m.site_id === selectedMatSite);
+            if (!siteMats.length) {
+                container.innerHTML = `<p class="text-slate-500 text-sm">${t('materials.noMaterials')}</p>`;
+                return;
+            }
+
+            let html = `<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">`;
+
+            siteMats.forEach(m => {
+                const qty = m.quantity_used || 0;
+                const unitCost = m.unit_cost || 0;
+                const total = calculateTotal(qty, unitCost);
+                const imageUrl = m.image || PLACEHOLDER_IMG;
+
+                html += `
+                    <div class="bg-white rounded-2xl border overflow-hidden shadow-sm hover:shadow-md transition">
+                        <div class="relative w-full h-48 overflow-hidden bg-slate-100">
+                            <img src="${imageUrl}" class="w-full h-full object-cover" alt="${m.name}" loading="lazy" onerror="this.src='${PLACEHOLDER_IMG}'">
+                        </div>
+                        <div class="p-5">
+                            <h3 class="font-bold text-lg text-slate-800 truncate">${m.name}</h3>
+                            <div class="mt-4 space-y-2">
+                                <div class="flex justify-between text-sm border-b border-slate-100 pb-2">
+                                    <span class="text-slate-500">${t('materials.quantityUsed')}</span>
+                                    <span class="font-semibold text-slate-700">${qty}</span>
+                                </div>
+                                <div class="flex justify-between text-sm border-b border-slate-100 pb-2">
+                                    <span class="text-slate-500">${t('materials.unitCost')}</span>
+                                    <span class="font-semibold text-slate-700">${unitCost.toFixed(2)} RWF</span>
+                                </div>
+                                <div class="flex justify-between text-sm">
+                                    <span class="text-slate-500">${t('materials.totalAmount')}</span>
+                                    <span class="font-bold text-emerald-600">${total.toFixed(2)} RWF</span>
+                                </div>
+                            </div>
+                            <div class="mt-4 pt-3 border-t border-slate-100 flex justify-end gap-3">
+                                <button onclick="editMaterial('${m.id}')" class="text-sm text-emerald-600 hover:text-emerald-800 font-medium flex items-center gap-1 transition">
+                                    <iconify-icon icon="material-symbols:edit" width="16" height="16"></iconify-icon>
+                                    ${t('common.edit')}
+                                </button>
+                                <button onclick="deleteMaterial('${m.id}')" class="text-sm text-red-500 hover:text-red-700 font-medium flex items-center gap-1 transition">
+                                    <iconify-icon icon="material-symbols:delete" width="16" height="16"></iconify-icon>
+                                    ${t('common.delete')}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            html += `</div>`;
+            container.innerHTML = html;
+        }
+
+        window.editMaterial = (id) => {
+            const mat = materialsData.find(m => m.id === id);
+            if (!mat) return;
+            openModal(t('materials.editMaterial'), `
+                <form onsubmit="handleEditMaterial(event, '${id}')" class="space-y-4">
+                    <input class="w-full border rounded-lg p-3" value="${mat.name}" id="edit-mat-name" required>
+                    <input class="w-full border rounded-lg p-3" value="${mat.quantity_used || 0}" type="number" id="edit-mat-used" required step="0.01" placeholder="${t('materials.quantityUsed')}">
+                    <input class="w-full border rounded-lg p-3" value="${mat.unit_cost || 0}" type="number" id="edit-mat-unit-cost" required step="0.01" placeholder="${t('materials.unitCost')}">
+                    <button type="submit" class="w-full bg-emerald-600 text-white py-3 rounded-xl">${t('common.save')}</button>
+                </form>
+            `);
+        };
+
+        window.handleEditMaterial = async (e, id) => {
+            e.preventDefault();
+            const form = e.target;
+            const btn = getFormSubmitBtn(form);
+            setButtonLoading(btn, true);
+            try {
+                const name = document.getElementById('edit-mat-name').value.trim();
+                const newUsed = parseFloat(document.getElementById('edit-mat-used').value) || 0;
+                const newUnitCost = parseFloat(document.getElementById('edit-mat-unit-cost').value) || 0;
+                const oldMat = materialsData.find(m => m.id === id);
+                if (!oldMat) throw new Error('Material record not found');
+                const oldUsed = oldMat.quantity_used || 0;
+                const siteId = oldMat.site_id;
+                let stockItem = stockData.find(s => s.site_id === siteId && s.material_name === oldMat.name);
+                if (!stockItem) {
+                    const ref = await addDoc(collection(db, 'stock'), {
+                        site_id: siteId,
+                        material_name: oldMat.name,
+                        quantity: 0,
+                        unit: 'units',
+                        created_at: new Date().toISOString(),
+                        updated_at: new Date().toISOString()
+                    });
+                    stockItem = { id: ref.id, quantity: 0, material_name: oldMat.name };
+                }
+                const restoredQuantity = stockItem.quantity + oldUsed;
+                if (newUsed > restoredQuantity) {
+                    alert(`${t('alerts.invalidValue')}: ${restoredQuantity} ${t('materials.availableStock')}`);
+                    return;
+                }
+                const newStockQty = restoredQuantity - newUsed;
+                const batch = writeBatch(db);
+                batch.update(doc(db, 'materials', id), {
+                    name: name,
+                    quantity_used: newUsed,
+                    unit_cost: newUnitCost,
+                    updated_at: new Date().toISOString()
+                });
+                batch.update(doc(db, 'stock', stockItem.id), { quantity: newStockQty, updated_at: new Date().toISOString() });
+                batch.set(doc(collection(db, 'stock_transactions')), {
+                    site_id: siteId,
+                    stock_id: stockItem.id,
+                    material_name: oldMat.name,
+                    transaction_type: 'MATERIAL_USAGE_EDITED',
+                    quantity: newUsed - oldUsed,
+                    previous_quantity: stockItem.quantity,
+                    new_quantity: newStockQty,
+                    unit: stockItem.unit || 'units',
+                    notes: `Material usage edited: ${oldUsed} → ${newUsed}`,
+                    recorded_by: currentUser.uid,
+                    created_at: new Date().toISOString()
+                });
+                await batch.commit();
+                closeModal();
+                showToast(t('alerts.updatedSuccessfully'), 'success');
+            } catch (err) { showToast(t('alerts.somethingWentWrong'), 'error'); }
+            finally { setButtonLoading(btn, false); }
+        };
+
+        window.deleteMaterial = (id) => {
+            if (!confirm(t('alerts.areYouSure'))) return;
+            const mat = materialsData.find(m => m.id === id);
+            if (!mat) return;
+            (async () => {
+                try {
+                    const siteId = mat.site_id;
+                    const stockItem = stockData.find(s => s.site_id === siteId && s.material_name === mat.name);
+                    if (!stockItem) {
+                        await deleteDoc(doc(db, 'materials', id));
+                        showToast(t('alerts.deletedSuccessfully'), 'success');
+                        return;
+                    }
+                    const newQty = stockItem.quantity + (mat.quantity_used || 0);
+                    const batch = writeBatch(db);
+                    batch.update(doc(db, 'stock', stockItem.id), { quantity: newQty, updated_at: new Date().toISOString() });
+                    batch.delete(doc(db, 'materials', id));
+                    batch.set(doc(collection(db, 'stock_transactions')), {
+                        site_id: siteId,
+                        stock_id: stockItem.id,
+                        material_name: mat.name,
+                        transaction_type: 'MATERIAL_USAGE_DELETED',
+                        quantity: mat.quantity_used || 0,
+                        previous_quantity: stockItem.quantity,
+                        new_quantity: newQty,
+                        unit: stockItem.unit || 'units',
+                        notes: `Material usage deleted, quantity restored.`,
+                        recorded_by: currentUser.uid,
+                        created_at: new Date().toISOString()
+                    });
+                    await batch.commit();
+                    showToast(t('alerts.deletedSuccessfully'), 'success');
+                } catch (err) { showToast(t('alerts.somethingWentWrong'), 'error'); }
+            })();
+        };
+
+        // =============== STOCK ===============
+        function renderStock(container) {
+            if (!stockData.length) {
+                container.innerHTML = `
+                    <div class="bg-white rounded-2xl border p-8 text-center">
+                        <iconify-icon icon="material-symbols:inventory-2-outline" class="text-5xl text-slate-300 mx-auto block mb-4"></iconify-icon>
+                        <p class="text-slate-600 font-medium">${t('stock.noStock')}</p>
+                        <p class="text-sm text-slate-400 mt-1">${t('stock.info')}</p>
+                    </div>
+                `;
+                return;
+            }
+            const siteGroups = {};
+            stockData.forEach(item => {
+                const site = sitesData.find(s => s.id === item.site_id);
+                const siteName = site ? site.name : 'Unknown Site';
+                if (!siteGroups[siteName]) siteGroups[siteName] = [];
+                siteGroups[siteName].push(item);
+            });
+            let html = `<h2 class="text-xl sm:text-2xl font-bold mb-4">${t('stock.title')}</h2><div class="space-y-6">`;
+            for (const [siteName, items] of Object.entries(siteGroups)) {
+                html += `<div class="bg-white rounded-2xl border p-4 shadow-sm"><h3 class="font-semibold text-sm text-slate-700 mb-3">${siteName}</h3><div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">`;
+                items.forEach(item => {
+                    const status = item.quantity <= 0 ? t('stock.out') : (item.minimum_quantity && item.quantity <= item.minimum_quantity ? t('stock.low') : t('stock.normal'));
+                    const statusClass = status === t('stock.normal') ? 'stock-status-normal' : status === t('stock.low') ? 'stock-status-low' : 'stock-status-out';
+                    const unitCost = materialsData.filter(m => m.site_id === item.site_id && m.name === item.material_name).pop()?.unit_cost || 0;
+                    const stockValue = item.quantity * unitCost;
+                    html += `<div class="bg-slate-50 rounded-xl p-3 border border-slate-200"><div class="flex justify-between items-start"><p class="font-medium text-slate-800">${item.material_name}</p><span class="text-xs font-medium px-2 py-0.5 rounded-full ${statusClass}">${status}</span></div><p class="text-sm text-slate-600">${item.quantity} ${item.unit || 'units'}</p><p class="text-xs text-slate-400">${t('stock.unitCost')}: ${unitCost.toFixed(2)} RWF</p><p class="text-xs text-slate-600 font-medium">${t('stock.value')}: ${stockValue.toFixed(2)} RWF</p>${item.minimum_quantity ? `<p class="text-xs text-slate-400">${t('stock.min')}: ${item.minimum_quantity}</p>` : ''}<p class="text-xs text-slate-400">${t('stock.updated')}: ${formatDate(item.updated_at)}</p></div>`;
+                });
+                html += `</div></div>`;
+            }
+            const recent = stockTransactions.slice(0, 20);
+            if (recent.length) {
+                html += `<div class="bg-white rounded-2xl border p-4 shadow-sm"><h3 class="font-semibold text-sm mb-3">${t('stock.recentTransactions')}</h3><div class="overflow-x-auto"><table class="w-full text-sm"><thead class="bg-slate-50 text-xs"><tr><th class="px-3 py-2">${t('stock.date')}</th><th class="px-3 py-2">${t('stock.site')}</th><th class="px-3 py-2">${t('stock.material')}</th><th class="px-3 py-2">${t('stock.type')}</th><th class="px-3 py-2">${t('stock.qty')}</th><th class="px-3 py-2">${t('stock.notes')}</th></tr></thead><tbody>${recent.map(t => { const site = sitesData.find(s => s.id === t.site_id); const siteName = site ? site.name : 'Unknown'; const sign = (t.transaction_type === 'STOCK_ADDED' || t.transaction_type === 'STOCK_ADJUSTMENT' && t.quantity > 0) ? '+' : '-'; return `<tr><td class="px-3 py-2">${formatDate(t.created_at)}</td><td class="px-3 py-2">${siteName}</td><td class="px-3 py-2">${t.material_name}</td><td class="px-3 py-2">${t.transaction_type.replace('_', ' ')}</td><td class="px-3 py-2">${sign} ${t.quantity} ${t.unit || ''}</td><td class="px-3 py-2 text-xs text-slate-500">${t.notes || ''}</td></tr>`; }).join('')}</tbody></table></div></div>`;
+            }
+            html += `</div>`;
+            container.innerHTML = html;
+        }
+
+        // =============== WORKERS ===============
+        let selectedWorkerViewSite = null;
+        function renderWorkers(container) {
+            container.innerHTML = `
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-xl sm:text-2xl font-bold">${t('workers.title')}</h2>
+                    <button onclick="openAddWorkerModal()" class="px-3 py-2 bg-emerald-600 text-white rounded-xl hover:bg-emerald-700 text-sm">
+                        <iconify-icon icon="material-symbols:add"></iconify-icon> ${t('workers.addWorker')}
+                    </button>
+                </div>
+                <div class="bg-white rounded-2xl border overflow-hidden shadow-sm mb-4">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm">
+                            <thead class="bg-slate-50 uppercase text-xs">
+                                <tr><th class="px-3 py-2">${t('workers.role')}</th><th class="px-3 py-2">${t('workers.site')}</th><th class="px-3 py-2">${t('workers.salaryType')}</th><th class="px-3 py-2">${t('workers.estCost')}</th><th class="px-3 py-2">${t('workers.actions')}</th></tr>
+                            </thead>
+                            <tbody>
+                                ${workersData.map(w => `
+                                    <tr>
+                                        <td class="px-3 py-2 font-medium">${w.role}</td>
+                                        <td class="px-3 py-2">${w.site_id === 'all' ? t('workers.allSites') : sitesData.find(s => s.id === w.site_id)?.name || '—'}</td>
+                                        <td class="px-3 py-2">${w.salary_type || t('workers.daily')}</td>
+                                        <td class="px-3 py-2">${w.estimated_cost?.toLocaleString() || '—'}</td>
+                                        <td class="px-3 py-2 flex gap-2">
+                                            <button onclick="editWorkerPosition('${w.id}')" class="text-emerald-600 hover:text-emerald-800 text-xs">${t('common.edit')}</button>
+                                            <button onclick="deleteWorkerPosition('${w.id}')" class="text-red-500 hover:text-red-700 text-xs">${t('common.delete')}</button>
+                                        </td>
+                                    </tr>
+                                `).join('') || `<tr><td colspan="5" class="p-4 text-slate-500">${t('workers.noPositions')}</td></tr>`}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-2xl border p-4 shadow-sm">
+                    <h3 class="font-semibold text-sm mb-3">${t('workers.actualWorkers')}</h3>
+                    <select class="w-full border rounded-lg p-2 mb-3 text-sm" onchange="selectWorkerViewSite(this.value)">
+                        <option value="">${t('dashboard.selectSite')}</option>
+                        ${sitesData.map(s => `<option value="${s.id}">${s.name}</option>`).join('')}
+                    </select>
+                    <div id="assigned-workers-container">
+                        <p class="text-slate-400 text-sm">${t('dashboard.selectSite')}</p>
+                    </div>
+                </div>
+            `;
+        }
+        window.selectWorkerViewSite = (siteId) => {
+            selectedWorkerViewSite = siteId;
+            const container = document.getElementById('assigned-workers-container');
+            if (!siteId) { container.innerHTML = `<p class="text-slate-400 text-sm">${t('dashboard.selectSite')}</p>`; return; }
+            const workersOnSite = assignedWorkersData.filter(w => w.site_id === siteId);
+            if (!workersOnSite.length) {
+                container.innerHTML = `<p class="text-slate-400 text-sm">${t('workers.noAssigned')}</p>`;
+                return;
+            }
+            container.innerHTML = `
+                <div class="relative mb-3">
+                    <input type="text" placeholder="${t('workers.search')}" class="w-full border rounded-lg p-2 pl-8 text-sm" oninput="searchAssignedWorkers(event, '${siteId}')">
+                    <iconify-icon icon="material-symbols:search" class="absolute left-2 top-1/2 -translate-y-1/2 text-slate-400" width="16"></iconify-icon>
+                </div>
+                <div id="workers-search-results" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    ${renderAssignedWorkerCards(workersOnSite)}
+                </div>
+            `;
+        };
+        function renderAssignedWorkerCards(workers) {
+            return workers.map(w => `
+                <div class="bg-slate-50 rounded-xl p-3 hover:shadow-md flex items-center justify-between">
+                    <div class="flex items-center gap-3 cursor-pointer flex-1" onclick="viewWorkerDetail('${w.id}')">
+                        <img src="${w.image || PLACEHOLDER_IMG}" class="w-10 h-10 rounded-full object-cover">
+                        <div>
+                            <p class="font-medium text-sm">${w.name}</p>
+                            <p class="text-xs text-slate-500">${w.role}</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="editAssignedWorker('${w.id}')" class="text-emerald-600 hover:text-emerald-800 text-xs px-2 py-1 bg-emerald-50 rounded-lg">${t('common.edit')}</button>
+                        <button onclick="deleteAssignedWorker('${w.id}')" class="text-red-500 hover:text-red-700 text-xs px-2 py-1 bg-red-50 rounded-lg">${t('common.delete')}</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+        window.searchAssignedWorkers = (event, siteId) => {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                const queryText = event.target.value.toLowerCase();
+                const filtered = assignedWorkersData.filter(w => w.site_id === siteId && w.name.toLowerCase().includes(queryText));
+                const resultsContainer = document.getElementById('workers-search-results');
+                if (resultsContainer) resultsContainer.innerHTML = filtered.length ? renderAssignedWorkerCards(filtered) : `<p class="text-slate-400 col-span-full text-sm">${t('common.noDataAvailable')}</p>`;
+            }, 300);
+        };
+        window.viewWorkerDetail = (id) => {
+            const w = assignedWorkersData.find(a => a.id === id);
+            if (!w) return;
+            const siteName = sitesData.find(s => s.id === w.site_id)?.name || '—';
+            openModal(t('workers.viewDetails'), `
+                <div class="space-y-3">
+                    <div class="flex items-center gap-4">
+                        <img src="${w.image || PLACEHOLDER_IMG}" class="w-16 h-16 rounded-full object-cover">
+                        <div>
+                            <h3 class="font-bold text-lg">${w.name}</h3>
+                            <p class="text-sm text-slate-500">${w.role}</p>
+                        </div>
+                    </div>
+                    <div class="bg-slate-50 p-3 rounded-xl space-y-2 text-sm">
+                        <p><strong>${t('workers.site')}:</strong> ${siteName}</p>
+                        <p><strong>${t('workers.salary')}:</strong> ${w.salary?.toLocaleString() || '0'} RWF</p>
+                        <p><strong>${t('workers.phone')}:</strong> ${w.phone || '—'}</p>
+                    </div>
+                    <div class="flex gap-2 pt-2">
+                        <button onclick="closeModal(); editAssignedWorker('${w.id}')" class="flex-1 bg-emerald-600 text-white py-2 rounded-xl text-sm">${t('common.edit')}</button>
+                        <button onclick="closeModal(); deleteAssignedWorker('${w.id}')" class="flex-1 bg-red-100 text-red-600 py-2 rounded-xl text-sm">${t('common.delete')}</button>
+                    </div>
+                </div>
+            `);
+        };
+        window.editAssignedWorker = (id) => {
+            const w = assignedWorkersData.find(item => item.id === id);
+            if (!w) return;
+            const siteOpts = sitesData.map(s => `<option value="${s.id}" ${s.id === w.site_id ? 'selected' : ''}>${s.name}</option>`).join('');
+            openModal(t('workers.edit'), `
+                <form onsubmit="handleEditAssignedWorker(event, '${id}')" class="space-y-4">
+                    <input class="w-full border rounded-lg p-3 text-sm" value="${w.name}" id="edit-assigned-name" placeholder="${t('workers.fullName')}" required>
+                    <input class="w-full border rounded-lg p-3 text-sm" value="${w.role}" id="edit-assigned-role" placeholder="${t('workers.role')}" required>
+                    <select class="w-full border rounded-lg p-3 text-sm" id="edit-assigned-site" required>${siteOpts}</select>
+                    <input class="w-full border rounded-lg p-3 text-sm" value="${w.salary || ''}" type="number" id="edit-assigned-salary" placeholder="${t('workers.salary')}" required>
+                    <input class="w-full border rounded-lg p-3 text-sm" value="${w.phone || ''}" id="edit-assigned-phone" placeholder="${t('workers.phone')}">
+                    <button type="submit" class="w-full bg-emerald-600 text-white py-3 rounded-xl">${t('workers.update')}</button>
+                </form>
+            `);
+        };
+        window.handleEditAssignedWorker = async (e, id) => {
+            e.preventDefault();
+            const form = e.target;
+            const btn = getFormSubmitBtn(form);
+            setButtonLoading(btn, true);
+            try {
+                const name = document.getElementById('edit-assigned-name').value.trim();
+                const role = document.getElementById('edit-assigned-role').value.trim();
+                const site_id = document.getElementById('edit-assigned-site').value;
+                const salary = parseFloat(document.getElementById('edit-assigned-salary').value);
+                const phone = document.getElementById('edit-assigned-phone').value.trim();
+                if (!name || !role || !site_id || isNaN(salary)) return showAlert('alerts.requiredField');
+                await setDoc(doc(db, 'assigned_workers', id), { name, role, site_id, salary, phone }, { merge: true });
+                closeModal();
+                if (selectedWorkerViewSite) selectWorkerViewSite(selectedWorkerViewSite);
+                showToast(t('alerts.updatedSuccessfully'), 'success');
+            } catch (err) { showToast(t('alerts.somethingWentWrong'), 'error'); }
+            finally { setButtonLoading(btn, false); }
+        };
+        window.deleteAssignedWorker = async (id) => {
+            if (confirm(t('alerts.areYouSure'))) {
+                try {
+                    await deleteDoc(doc(db, 'assigned_workers', id));
+                    if (selectedWorkerViewSite) selectWorkerViewSite(selectedWorkerViewSite);
+                    showToast(t('alerts.deletedSuccessfully'), 'success');
+                } catch (err) { showToast(t('alerts.somethingWentWrong'), 'error'); }
+            }
+        };
+        window.openAddWorkerModal = () => {
+            const siteOpts = sitesData.map(s => `<option value="${s.id}">${s.name}</option>`).join('');
+            openModal(t('workers.addPosition'), `
+                <form onsubmit="handleAddWorkerPosition(event)" class="space-y-4">
+                    <input class="w-full border rounded-lg p-3" placeholder="${t('workers.roleName')}" id="work-role" required>
+                    <select class="w-full border rounded-lg p-3" id="work-site" required>
+                        <option value="">${t('dashboard.selectSite')}</option>
+                        <option value="all">${t('workers.allSites')}</option>
+                        ${siteOpts}
+                    </select>
+                    <select class="w-full border rounded-lg p-3" id="salary-type">
+                        <option value="daily">${t('workers.daily')}</option>
+                        <option value="monthly">${t('workers.monthly')}</option>
+                    </select>
+                    <input class="w-full border rounded-lg p-3" placeholder="${t('workers.estimatedCost')}" type="number" id="est-cost" required>
+                    <button type="submit" class="w-full bg-emerald-600 text-white py-3 rounded-xl">${t('workers.savePosition')}</button>
+                </form>
+            `);
+        };
+        window.handleAddWorkerPosition = async (e) => {
+            e.preventDefault();
+            const form = e.target;
+            const btn = getFormSubmitBtn(form);
+            setButtonLoading(btn, true);
+            try {
+                const role = document.getElementById('work-role').value.trim();
+                const site_id = document.getElementById('work-site').value;
+                const salary_type = document.getElementById('salary-type').value;
+                const estimated_cost = parseFloat(document.getElementById('est-cost').value) || 0;
+                await addDoc(collection(db, 'worker_positions'), { role, site_id, salary_type, estimated_cost, owner_id: currentUser.uid, created_at: new Date().toISOString() });
+                closeModal();
+                showToast(t('alerts.savedSuccessfully'), 'success');
+            } catch (err) { showToast(t('alerts.somethingWentWrong'), 'error'); }
+            finally { setButtonLoading(btn, false); }
+        };
+        window.editWorkerPosition = (id) => {
+            const w = workersData.find(item => item.id === id);
+            if (!w) return;
+            const siteOpts = sitesData.map(s => `<option value="${s.id}" ${s.id === w.site_id ? 'selected' : ''}>${s.name}</option>`).join('');
+            openModal(t('workers.edit'), `
+                <form onsubmit="handleEditWorkerPosition(event, '${id}')" class="space-y-4">
+                    <input class="w-full border rounded-lg p-3 text-sm" value="${w.role}" id="edit-pos-role" placeholder="${t('workers.roleName')}" required>
+                    <select class="w-full border rounded-lg p-3 text-sm" id="edit-pos-site">
+                        <option value="all" ${w.site_id === 'all' ? 'selected' : ''}>${t('workers.allSites')}</option>
+                        ${siteOpts}
+                    </select>
+                    <select class="w-full border rounded-lg p-3 text-sm" id="edit-pos-salary-type">
+                        <option value="daily" ${w.salary_type === 'daily' ? 'selected' : ''}>${t('workers.daily')}</option>
+                        <option value="monthly" ${w.salary_type === 'monthly' ? 'selected' : ''}>${t('workers.monthly')}</option>
+                    </select>
+                    <input class="w-full border rounded-lg p-3 text-sm" type="number" value="${w.estimated_cost || 0}" id="edit-pos-cost" placeholder="${t('workers.estimatedCost')}">
+                    <button type="submit" class="w-full bg-emerald-600 text-white py-3 rounded-xl">${t('workers.updatePosition')}</button>
+                </form>
+            `);
+        };
+        window.handleEditWorkerPosition = async (e, id) => {
+            e.preventDefault();
+            const form = e.target;
+            const btn = getFormSubmitBtn(form);
+            setButtonLoading(btn, true);
+            try {
+                const role = document.getElementById('edit-pos-role').value.trim();
+                const site_id = document.getElementById('edit-pos-site').value;
+                const salary_type = document.getElementById('edit-pos-salary-type').value;
+                const estimated_cost = parseFloat(document.getElementById('edit-pos-cost').value) || 0;
+                await updateDoc(doc(db, 'worker_positions', id), { role, site_id, salary_type, estimated_cost, updated_at: new Date().toISOString() });
+                closeModal();
+                showToast(t('alerts.updatedSuccessfully'), 'success');
+            } catch (err) { showToast(t('alerts.somethingWentWrong'), 'error'); }
+            finally { setButtonLoading(btn, false); }
+        };
+        window.deleteWorkerPosition = async (id) => {
+            if (!confirm(t('alerts.areYouSure'))) return;
+            try {
+                await deleteDoc(doc(db, 'worker_positions', id));
+                showToast(t('alerts.deletedSuccessfully'), 'success');
+            } catch (err) { showToast(t('alerts.somethingWentWrong'), 'error'); }
+        };
+
+        // =============== PROGRESS ===============
+        function renderProgress(container) {
+            container.innerHTML = `
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-xl sm:text-2xl font-bold">${t('progress.title')}</h2>
+                    <button onclick="openAddTaskModal()" class="px-3 py-2 bg-emerald-600 text-white rounded-xl hover:bg-emerald-700 text-sm">
+                        <iconify-icon icon="material-symbols:add"></iconify-icon> ${t('progress.addTask')}
+                    </button>
+                </div>
+                <div class="space-y-4">
+                    ${sitesData.map(site => {
+                        const tasks = progressTasks.filter(t => t.site_id === site.id);
+                        return `<div class="bg-white rounded-2xl border p-4 shadow-sm"><h3 class="font-bold text-base mb-2">${site.name}</h3><div class="space-y-2">${tasks.map(t => `<div class="flex justify-between items-center p-2 bg-slate-50 rounded-lg text-sm"><div><p class="font-medium">${t.name}</p><p class="text-xs text-slate-500">${formatDate(t.start_date)} - ${formatDate(t.end_date)}</p></div><div class="flex items-center gap-2"><span class="px-2 py-1 rounded text-xs ${t.status === 'completed' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}">${t.status}</span><button onclick="editProgressTask('${t.id}')" class="text-emerald-600 hover:text-emerald-800 text-xs">${t('progress.edit')}</button><button onclick="deleteProgressTask('${t.id}')" class="text-red-500 hover:text-red-700 text-xs">${t('progress.delete')}</button></div></div>`).join('') || `<p class="text-xs text-slate-400">${t('progress.noTasks')}</p>`}</div></div>`; }).join('')}
+                </div>
+            `;
+        }
+        window.openAddTaskModal = () => {
+            const siteOpts = sitesData.map(s => `<option value="${s.id}">${s.name}</option>`).join('');
+            openModal(t('progress.addTaskModal'), `
+                <form onsubmit="handleAddTask(event)" class="space-y-4">
+                    <input class="w-full border rounded-lg p-3 text-sm" id="task-name" placeholder="${t('progress.taskName')}" required>
+                    <select class="w-full border rounded-lg p-3 text-sm" id="task-site" required><option value="">${t('progress.selectSite')}</option>${siteOpts}</select>
+                    <input class="w-full border rounded-lg p-3 text-sm" type="date" id="task-start" required>
+                    <input class="w-full border rounded-lg p-3 text-sm" type="date" id="task-end" required>
+                    <select class="w-full border rounded-lg p-3 text-sm" id="task-status"><option value="pending">${t('progress.pending')}</option><option value="completed">${t('progress.completed')}</option></select>
+                    <button type="submit" class="w-full bg-emerald-600 text-white py-3 rounded-xl">${t('progress.saveTask')}</button>
+                </form>
+            `);
+        };
+        window.handleAddTask = async (e) => {
+            e.preventDefault();
+            const form = e.target;
+            const btn = getFormSubmitBtn(form);
+            setButtonLoading(btn, true);
+            try {
+                const name = document.getElementById('task-name').value.trim();
+                const site_id = document.getElementById('task-site').value;
+                const start_date = document.getElementById('task-start').value;
+                const end_date = document.getElementById('task-end').value;
+                const status = document.getElementById('task-status').value;
+                await addDoc(collection(db, 'progress_tasks'), { name, site_id, start_date, end_date, status, owner_id: currentUser.uid, created_at: new Date().toISOString() });
+                closeModal();
+                showToast(t('alerts.savedSuccessfully'), 'success');
+            } catch (err) { showToast(t('alerts.somethingWentWrong'), 'error'); }
+            finally { setButtonLoading(btn, false); }
+        };
+        window.editProgressTask = (id) => {
+            const task = progressTasks.find(t => t.id === id);
+            if (!task) return;
+            const siteOpts = sitesData.map(s => `<option value="${s.id}" ${s.id === task.site_id ? 'selected' : ''}>${s.name}</option>`).join('');
+            openModal(t('progress.editTask'), `
+                <form onsubmit="handleEditTask(event, '${id}')" class="space-y-4">
+                    <input class="w-full border rounded-lg p-3 text-sm" value="${task.name}" id="edit-task-name" placeholder="${t('progress.taskName')}" required>
+                    <select class="w-full border rounded-lg p-3 text-sm" id="edit-task-site" required>${siteOpts}</select>
+                    <input class="w-full border rounded-lg p-3 text-sm" type="date" value="${task.start_date ? new Date(task.start_date).toISOString().split('T')[0] : ''}" id="edit-task-start" required>
+                    <input class="w-full border rounded-lg p-3 text-sm" type="date" value="${task.end_date ? new Date(task.end_date).toISOString().split('T')[0] : ''}" id="edit-task-end" required>
+                    <select class="w-full border rounded-lg p-3 text-sm" id="edit-task-status"><option value="pending" ${task.status === 'pending' ? 'selected' : ''}>${t('progress.pending')}</option><option value="completed" ${task.status === 'completed' ? 'selected' : ''}>${t('progress.completed')}</option></select>
+                    <button type="submit" class="w-full bg-emerald-600 text-white py-3 rounded-xl">${t('progress.saveTask')}</button>
+                </form>
+            `);
+        };
+        window.handleEditTask = async (e, id) => {
+            e.preventDefault();
+            const form = e.target;
+            const btn = getFormSubmitBtn(form);
+            setButtonLoading(btn, true);
+            try {
+                const name = document.getElementById('edit-task-name').value.trim();
+                const site_id = document.getElementById('edit-task-site').value;
+                const start_date = document.getElementById('edit-task-start').value;
+                const end_date = document.getElementById('edit-task-end').value;
+                const status = document.getElementById('edit-task-status').value;
+                await updateDoc(doc(db, 'progress_tasks', id), { name, site_id, start_date, end_date, status, updated_at: new Date().toISOString() });
+                closeModal();
+                showToast(t('alerts.updatedSuccessfully'), 'success');
+            } catch (err) { showToast(t('alerts.somethingWentWrong'), 'error'); }
+            finally { setButtonLoading(btn, false); }
+        };
+        window.deleteProgressTask = async (id) => {
+            if (!confirm(t('alerts.areYouSure'))) return;
+            try {
+                await deleteDoc(doc(db, 'progress_tasks', id));
+                showToast(t('alerts.deletedSuccessfully'), 'success');
+            } catch (err) { showToast(t('alerts.somethingWentWrong'), 'error'); }
+        };
+
+        // =============== REPORTS ===============
+        function formatDate(dateValue) {
+            if (!dateValue) return '-';
+            const date = typeof dateValue === 'string' ? new Date(dateValue) : dateValue;
+            if (isNaN(date.getTime())) return '-';
+            const localeMap = { en: 'en-US', rw: 'rw-RW', fr: 'fr-FR' };
+            return new Intl.DateTimeFormat(localeMap[currentLanguage], { year: 'numeric', month: 'long', day: 'numeric' }).format(date);
+        }
+
+        function getCompanyDetails() {
+            return { name: 'SHDR Ltd', address: 'KG 11 Avenue, Kimironko, Gasabo District', location: 'Yussa Plaza, 1st Floor', city: 'Kigali City, Rwanda', phone: '+250 788 474 110', email: 'sustainablehomedesign@gmail.com', logo: 'shdr.jpg' };
+        }
+
+        function generateReportHTML(title, bodyHTML, meta, extraStyles = '') {
+            const company = getCompanyDetails();
+            const currentYear = new Date().getFullYear();
+            return `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>${title}</title><style>* { box-sizing: border-box; } body { font-family: Arial, sans-serif; padding: 30px; margin: 0; color: #1f2937; background: white; } .company-header { display: flex; align-items: center; justify-content: space-between; border-bottom: 3px solid #059669; padding-bottom: 18px; margin-bottom: 20px; } .company-left { display: flex; align-items: center; gap: 15px; } .company-logo { width: 75px; height: 75px; object-fit: contain; border-radius: 8px; } .company-name { font-size: 25px; font-weight: 700; color: #059669; margin-bottom: 3px; } .company-subtitle { font-size: 12px; color: #6b7280; margin-bottom: 5px; } .company-details { font-size: 12px; line-height: 1.5; color: #374151; } .report-title { text-align: right; } .report-title h2 { margin: 0; font-size: 21px; color: #111827; } .report-title p { margin: 5px 0 0; font-size: 11px; color: #6b7280; } .report-meta { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 12px 15px; margin-bottom: 20px; font-size: 12px; line-height: 1.6; } table { border-collapse: collapse; width: 100%; font-size: 11px; } th { background: #059669; color: white; font-weight: 600; padding: 9px; border: 1px solid #047857; text-align: left; } td { padding: 8px; border: 1px solid #d1d5db; } tr:nth-child(even) { background: #f9fafb; } .report-footer { margin-top: 30px; padding-top: 12px; border-top: 1px solid #d1d5db; text-align: center; font-size: 11px; color: #6b7280; line-height: 1.6; } .footer-system { font-weight: 600; color: #374151; } .footer-copy { font-size: 10px; color: #9ca3af; } @media print { body { padding: 15px; } .company-header { break-inside: avoid; } table { page-break-inside: auto; } tr { page-break-inside: avoid; } thead { display: table-header-group; } .report-footer { page-break-inside: avoid; } } ${extraStyles}</style></head><body><div class="company-header"><div class="company-left"><img src="${company.logo}" alt="${company.name} Logo" class="company-logo" onerror="this.style.display='none'"><div><div class="company-name">${company.name}</div><div class="company-subtitle">Construction Management System</div><div class="company-details">${company.address}<br>${company.location}<br>${company.city}<br><strong>Tel:</strong> ${company.phone}<br><strong>Email:</strong> ${company.email}</div></div></div><div class="report-title"><h2>${title}</h2><p>Official Company Report</p></div></div><div class="report-meta">${meta}</div>${bodyHTML}<div class="report-footer"><div class="footer-system">This report is generated automatically by ${company.name} Management System.</div><div class="footer-copy">© ${currentYear} ${company.name} — All rights reserved.</div></div></body></html>`;
+        }
+
+        function renderReports(container) {
+            const siteOpts = sitesData.map(s => `<option value="${s.id}">${s.name}</option>`).join('');
+            container.innerHTML = `<h2 class="text-xl sm:text-2xl font-bold mb-4">${t('reports.title')}</h2><div class="flex gap-2 border-b mb-4"><button onclick="switchReportTab('general')" class="px-4 py-2 font-medium text-sm rounded-t-lg ${reportType === 'general' ? 'report-tab-active' : 'report-tab-inactive'}">${t('reports.general')}</button><button onclick="switchReportTab('payroll')" class="px-4 py-2 font-medium text-sm rounded-t-lg ${reportType === 'payroll' ? 'report-tab-active' : 'report-tab-inactive'}">${t('reports.payroll')}</button><button onclick="switchReportTab('stock')" class="px-4 py-2 font-medium text-sm rounded-t-lg ${reportType === 'stock' ? 'report-tab-active' : 'report-tab-inactive'}">${t('reports.stockReport')}</button></div><div id="report-controls" class="bg-white p-4 rounded-xl border shadow-sm mb-4 grid grid-cols-1 sm:grid-cols-3 gap-3"><select id="report-site" class="border rounded-lg p-2 text-sm" onchange="generateReport()"><option value="all">${t('reports.allSites')}</option>${sitesData.map(s => `<option value="${s.id}">${s.name}</option>`).join('')}</select><input type="date" id="report-start" class="border rounded-lg p-2 text-sm" onchange="generateReport()"><input type="date" id="report-end" class="border rounded-lg p-2 text-sm" onchange="generateReport()"></div><div id="report-output" class="bg-white p-4 rounded-xl border shadow-sm min-h-[200px]"></div><div class="mt-4 flex gap-2"><button onclick="exportReportCSV()" class="px-4 py-2 bg-slate-800 text-white rounded-lg text-sm">${t('reports.exportCSV')}</button><button onclick="printReport()" class="px-4 py-2 bg-emerald-600 text-white rounded-lg text-sm">${t('reports.printPDF')}</button></div>`;
+            generateReport();
+        }
+        window.switchReportTab = (type) => { reportType = type; renderReports(document.getElementById('content-area')); };
+        window.generateReport = () => {
+            const siteId = document.getElementById('report-site')?.value || 'all';
+            const output = document.getElementById('report-output');
+            if (!output) return;
+            let filteredSites = siteId === 'all' ? sitesData : sitesData.filter(s => s.id === siteId);
+            if (reportType === 'general') {
+                let html = `<h3 class="font-bold text-lg mb-4">${t('reports.reportTitles.general')}</h3>`;
+                filteredSites.forEach(s => {
+                    const siteMats = materialsData.filter(m => m.site_id === s.id);
+                    const matCost = siteMats.reduce((sum, m) => sum + calculateTotal(m.quantity_used || 0, m.unit_cost || 0), 0);
+                    const siteWorkers = assignedWorkersData.filter(w => w.site_id === s.id);
+                    const workerCost = siteWorkers.reduce((sum, w) => sum + (w.salary || 0), 0);
+                    const totalCost = matCost + workerCost;
+                    html += `<div class="border-b pb-3 mb-3"><h4 class="font-semibold text-emerald-700">${s.name}</h4><p class="text-xs text-slate-500">${t('sites.location')}: ${s.location || '—'} | ${t('sites.budget')}: ${formatCurrency(s.budget || 0)}</p><div class="grid grid-cols-3 gap-2 mt-2 text-xs"><div>${t('finances.materialsCost')}: ${formatCurrency(matCost)}</div><div>${t('finances.workersCost')}: ${formatCurrency(workerCost)}</div><div>${t('finances.totalSpent')}: ${formatCurrency(totalCost)}</div></div></div>`;
+                });
+                output.innerHTML = html || `<p class="text-slate-400">${t('common.noDataAvailable')}</p>`;
+            } else if (reportType === 'payroll') {
+                let html = `<h3 class="font-bold text-lg mb-4">${t('reports.reportTitles.payroll')}</h3>`;
+                if (!attendanceData.length) { output.innerHTML = `<p class="text-slate-400">${t('reports.noAttendance')}</p>`; return; }
+                html += `<div class="overflow-x-auto"><table class="w-full text-sm"><thead class="bg-slate-50 text-xs"><tr><th class="px-2 py-1 text-left">${t('reports.worker')}</th><th class="px-2 py-1 text-left">${t('reports.daysWorked')}</th><th class="px-2 py-1 text-left">${t('reports.dailyRate')}</th><th class="px-2 py-1 text-left">${t('reports.totalPayable')}</th></tr></thead><tbody>`;
+                assignedWorkersData.forEach(w => {
+                    if (siteId !== 'all' && w.site_id !== siteId) return;
+                    const records = attendanceData.filter(a => a.worker_id === w.id && a.status === 'present');
+                    if (!records.length) return;
+                    const days = records.length;
+                    const rate = w.salary || 0;
+                    const total = days * rate;
+                    html += `<tr><td class="px-2 py-1">${w.name}</td><td class="px-2 py-1">${days}</td><td class="px-2 py-1">${formatCurrency(rate)}</td><td class="px-2 py-1">${formatCurrency(total)}</td></tr>`;
+                });
+                html += `</tbody></table></div>`;
+                output.innerHTML = html;
+            } else if (reportType === 'stock') {
+                let html = `<h3 class="font-bold text-lg mb-4">${t('reports.reportTitles.stock')}</h3><div class="overflow-x-auto"><table class="w-full text-sm"><thead class="bg-slate-50 text-xs"><tr><th class="px-2 py-1 text-left">${t('stock.material')}</th><th class="px-2 py-1 text-left">${t('stock.site')}</th><th class="px-2 py-1 text-left">${t('stock.quantity')}</th><th class="px-2 py-1 text-left">${t('stock.status')}</th></tr></thead><tbody>`;
+                stockData.forEach(st => {
+                    if (siteId !== 'all' && st.site_id !== siteId) return;
+                    const s = sitesData.find(site => site.id === st.site_id);
+                    const status = st.quantity <= 0 ? t('stock.out') : (st.minimum_quantity && st.quantity <= st.minimum_quantity ? t('stock.low') : t('stock.normal'));
+                    html += `<tr><td class="px-2 py-1">${st.material_name}</td><td class="px-2 py-1">${s ? s.name : '—'}</td><td class="px-2 py-1">${st.quantity} ${st.unit || ''}</td><td class="px-2 py-1">${status}</td></tr>`;
+                });
+                html += `</tbody></table></div>`;
+                output.innerHTML = html;
+            }
+        };
+        window.exportReportCSV = () => {
+            const output = document.getElementById('report-output');
+            if (!output) return;
+            const text = output.innerText;
+            const blob = new Blob([text], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `report_${reportType}_${new Date().toISOString().split('T')[0]}.csv`;
+            a.click();
+            URL.revokeObjectURL(url);
+        };
+        window.printReport = () => { window.print(); };
+
+        // =============== FINANCES ===============
+        function renderFinances(container) {
+            const totalBudget = sitesData.reduce((sum, s) => sum + (s.budget || 0), 0);
+            const totalMatCost = materialsData.reduce((sum, m) => sum + calculateTotal(m.quantity_used || 0, m.unit_cost || 0), 0);
+            const totalWorkerCost = assignedWorkersData.reduce((sum, w) => sum + (w.salary || 0), 0);
+            const totalSpent = totalMatCost + totalWorkerCost;
+            const remaining = totalBudget - totalSpent;
+            container.innerHTML = `<h2 class="text-xl sm:text-2xl font-bold mb-4">${t('finances.title')}</h2><div class="grid grid-cols-1 sm:grid-cols-4 gap-4 mb-6"><div class="bg-white p-4 rounded-2xl border shadow-sm"><p class="text-xs text-slate-500">${t('finances.budget')}</p><p class="text-xl font-bold text-slate-800">${formatCurrency(totalBudget)}</p></div><div class="bg-white p-4 rounded-2xl border shadow-sm"><p class="text-xs text-slate-500">${t('finances.materialsCost')}</p><p class="text-xl font-bold text-amber-600">${formatCurrency(totalMatCost)}</p></div><div class="bg-white p-4 rounded-2xl border shadow-sm"><p class="text-xs text-slate-500">${t('finances.workersCost')}</p><p class="text-xl font-bold text-blue-600">${formatCurrency(totalWorkerCost)}</p></div><div class="bg-white p-4 rounded-2xl border shadow-sm"><p class="text-xs text-slate-500">${t('finances.remaining')}</p><p class="text-xl font-bold ${remaining < 0 ? 'text-red-600' : 'text-emerald-600'}">${formatCurrency(remaining)}</p></div></div><div class="space-y-4">${sitesData.map(site => { const sMatCost = materialsData.filter(m => m.site_id === site.id).reduce((sum, m) => sum + calculateTotal(m.quantity_used || 0, m.unit_cost || 0), 0); const sWorkCost = assignedWorkersData.filter(w => w.site_id === site.id).reduce((sum, w) => sum + (w.salary || 0), 0); const sTotalSpent = sMatCost + sWorkCost; const sBudget = site.budget || 0; const sRem = sBudget - sTotalSpent; const isExceeded = sRem < 0; return `<div class="bg-white p-4 rounded-2xl border shadow-sm"><div class="flex justify-between items-center mb-2"><h3 class="font-bold text-base">${site.name}</h3><button onclick="editSiteBudget('${site.id}')" class="text-xs text-emerald-600">${t('finances.updateBudget')}</button></div><div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs"><div><span class="text-slate-500">${t('finances.budget')}:</span> <span class="font-semibold">${formatCurrency(sBudget)}</span></div><div><span class="text-slate-500">${t('finances.totalSpent')}:</span> <span class="font-semibold">${formatCurrency(sTotalSpent)}</span></div><div><span class="text-slate-500">${t('finances.materialsCost')}:</span> <span class="font-semibold">${formatCurrency(sMatCost)}</span></div><div><span class="text-slate-500">${t('finances.remaining')}:</span> <span class="font-semibold ${isExceeded ? 'text-red-600' : 'text-emerald-600'}">${formatCurrency(sRem)}</span></div></div>${isExceeded ? `<p class="text-xs text-red-500 mt-2 font-medium">⚠️ ${t('finances.exceeded')} ${t('finances.costControl')}</p>` : ''}</div>`; }).join('')}</div>`;
+        }
+        window.editSiteBudget = (siteId) => {
+            const site = sitesData.find(s => s.id === siteId);
+            if (!site) return;
+            openModal(t('finances.updateBudget'), `<form onsubmit="handleUpdateSiteBudget(event, '${siteId}')" class="space-y-4"><input class="w-full border rounded-lg p-3 text-sm" type="number" value="${site.budget || 0}" id="edit-budget-val" placeholder="${t('finances.newBudget')}" required><button type="submit" class="w-full bg-emerald-600 text-white py-3 rounded-xl">${t('common.save')}</button></form>`);
+        };
+        window.handleUpdateSiteBudget = async (e, siteId) => {
+            e.preventDefault();
+            const form = e.target;
+            const btn = getFormSubmitBtn(form);
+            setButtonLoading(btn, true);
+            try {
+                const budget = parseFloat(document.getElementById('edit-budget-val').value) || 0;
+                await updateDoc(doc(db, 'sites', siteId), { budget, updated_at: new Date().toISOString() });
+                closeModal();
+                showToast(t('alerts.updatedSuccessfully'), 'success');
+            } catch (err) { showToast(t('alerts.somethingWentWrong'), 'error'); }
+            finally { setButtonLoading(btn, false); }
+        };
+
+        // =============== MANAGERS ===============
+        function renderManagers(container) {
+            container.innerHTML = `<div class="flex justify-between items-center mb-4"><h2 class="text-xl sm:text-2xl font-bold">${t('managers.title')}</h2><button onclick="openInviteManagerModal()" class="px-3 py-2 bg-emerald-600 text-white rounded-xl hover:bg-emerald-700 text-sm"><iconify-icon icon="material-symbols:add"></iconify-icon> ${t('managers.inviteManager')}</button></div><div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">${managersData.map(m => { const site = sitesData.find(s => s.id === m.assigned_site); return `<div class="bg-white p-4 rounded-2xl border shadow-sm flex flex-col justify-between"><div><h3 class="font-bold text-base">${m.full_name || 'Manager'}</h3><p class="text-xs text-slate-500">${m.email || '—'}</p><p class="text-xs text-slate-600 mt-2"><strong>${t('managers.assignedSite')}:</strong> ${site ? site.name : '—'}</p></div><div class="mt-4 flex justify-end"><button onclick="removeManager('${m.id}')" class="text-xs text-red-500 hover:text-red-700 font-medium">${t('managers.remove')}</button></div></div>`; }).join('') || `<p class="text-slate-500 col-span-full">${t('managers.noManagers')}</p>`}</div>`;
+        }
+        window.openInviteManagerModal = () => {
+            const siteOpts = sitesData.map(s => `<option value="${s.id}">${s.name}</option>`).join('');
+            openModal(t('managers.inviteManager'), `<form onsubmit="handleInviteManager(event)" class="space-y-4"><input class="w-full border rounded-lg p-3 text-sm" id="mgr-name" placeholder="${t('settings.fullName')}" required><input class="w-full border rounded-lg p-3 text-sm" type="email" id="mgr-email" placeholder="${t('managers.email')}" required><input class="w-full border rounded-lg p-3 text-sm" type="password" id="mgr-pass" placeholder="${t('managers.password')}" required><select class="w-full border rounded-lg p-3 text-sm" id="mgr-site" required><option value="">${t('managers.assignSite')}</option>${siteOpts}</select><button type="submit" class="w-full bg-emerald-600 text-white py-3 rounded-xl">${t('managers.invite')}</button></form>`);
+        };
+        window.handleInviteManager = async (e) => {
+            e.preventDefault();
+            const form = e.target;
+            const btn = getFormSubmitBtn(form);
+            setButtonLoading(btn, true);
+            try {
+                const full_name = document.getElementById('mgr-name').value.trim();
+                const email = document.getElementById('mgr-email').value.trim();
+                const assigned_site = document.getElementById('mgr-site').value;
+                await addDoc(collection(db, 'profiles'), { full_name, email, role: 'manager', assigned_site, owner_id: currentUser.uid, created_at: new Date().toISOString() });
+                closeModal();
+                showToast(t('alerts.savedSuccessfully'), 'success');
+            } catch (err) { showToast(t('alerts.somethingWentWrong'), 'error'); }
+            finally { setButtonLoading(btn, false); }
+        };
+        window.removeManager = async (id) => {
+            if (!confirm(t('alerts.areYouSure'))) return;
+            try {
+                await deleteDoc(doc(db, 'profiles', id));
+                showToast(t('alerts.deletedSuccessfully'), 'success');
+            } catch (err) { showToast(t('alerts.somethingWentWrong'), 'error'); }
+        };
+
+        // =============== GALLERY ===============
+        let selectedGallerySite = 'all';
+        function renderGallery(container) {
+            container.innerHTML = `<h2 class="text-xl sm:text-2xl font-bold mb-4">${t('gallery.title')}</h2><div class="flex gap-2 overflow-x-auto pb-2 site-selector mb-4"><button onclick="selectGallerySite('all')" class="px-3 py-1 rounded-full whitespace-nowrap text-sm ${selectedGallerySite === 'all' ? 'bg-emerald-600 text-white' : 'bg-slate-100 text-slate-600'}">${t('gallery.allSites')}</button>${sitesData.map(s => `<button onclick="selectGallerySite('${s.id}')" class="px-3 py-1 rounded-full whitespace-nowrap text-sm ${selectedGallerySite === s.id ? 'bg-emerald-600 text-white' : 'bg-slate-100 text-slate-600'}">${s.name}</button>`).join('')}</div><div id="gallery-container"></div>`;
+            renderGalleryImages();
+        }
+        window.selectGallerySite = (siteId) => { selectedGallerySite = siteId; renderGallery(document.getElementById('content-area')); };
+        function renderGalleryImages() {
+            const container = document.getElementById('gallery-container');
+            if (!container) return;
+            const filtered = selectedGallerySite === 'all' ? galleryData : galleryData.filter(g => g.site_id === selectedGallerySite);
+            if (!filtered.length) { container.innerHTML = `<p class="text-slate-400 text-sm">${t('gallery.noImages')}</p>`; return; }
+            container.innerHTML = `<div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">${filtered.map(item => `<div class="bg-white rounded-xl border overflow-hidden shadow-sm group relative"><img src="${item.url || item.image || PLACEHOLDER_IMG}" class="w-full h-36 object-cover cursor-pointer" onclick="viewGalleryImage('${item.url || item.image}')"><div class="p-2 text-xs text-slate-500 flex justify-between items-center"><span class="truncate">${sitesData.find(s => s.id === item.site_id)?.name || ''}</span><button onclick="deleteGalleryImage('${item.id}')" class="text-red-500 hover:text-red-700">${t('common.delete')}</button></div></div>`).join('')}</div>`;
+        }
+        window.viewGalleryImage = (url) => { openModal(t('gallery.viewImage'), `<img src="${url}" class="w-full rounded-xl object-contain max-h-[70vh]"><div class="mt-4 flex justify-end"><button onclick="closeModal()" class="px-4 py-2 bg-slate-200 rounded-lg text-sm">${t('gallery.close')}</button></div>`); };
+        window.deleteGalleryImage = async (id) => {
+            if (!confirm(t('alerts.areYouSure'))) return;
+            try {
+                await deleteDoc(doc(db, 'gallery', id));
+                showToast(t('alerts.deletedSuccessfully'), 'success');
+            } catch (err) { showToast(t('alerts.somethingWentWrong'), 'error'); }
+        };
+
+        // =============== OFFICE HUB ===============
+        function renderOfficeHub(container) {
+            container.innerHTML = `<div class="bg-white rounded-2xl border p-8 text-center max-w-md mx-auto"><iconify-icon icon="material-symbols:business-center-outline" class="text-6xl text-emerald-600 mx-auto block mb-4"></iconify-icon><h2 class="text-2xl font-bold text-slate-800 mb-2">${t('navigation.officeHub')}</h2><p class="text-slate-500 text-sm mb-6">${t('common.comingSoon')}</p></div>`;
+        }
+
+        // =============== SETTINGS ===============
+        function renderSettings(container) {
+            container.innerHTML = `<h2 class="text-xl sm:text-2xl font-bold mb-4">${t('settings.title')}</h2><div class="flex gap-2 border-b mb-6 overflow-x-auto"><button onclick="switchSettingsTab('profile')" class="settings-tab-btn px-4 py-2 font-medium text-sm rounded-t-lg ${settingsTab === 'profile' ? 'active' : 'text-slate-600 hover:bg-slate-100'}">${t('settings.profile')}</button><button onclick="switchSettingsTab('account')" class="settings-tab-btn px-4 py-2 font-medium text-sm rounded-t-lg ${settingsTab === 'account' ? 'active' : 'text-slate-600 hover:bg-slate-100'}">${t('settings.account')}</button><button onclick="switchSettingsTab('security')" class="settings-tab-btn px-4 py-2 font-medium text-sm rounded-t-lg ${settingsTab === 'security' ? 'active' : 'text-slate-600 hover:bg-slate-100'}">${t('settings.security')}</button><button onclick="switchSettingsTab('preferences')" class="settings-tab-btn px-4 py-2 font-medium text-sm rounded-t-lg ${settingsTab === 'preferences' ? 'active' : 'text-slate-600 hover:bg-slate-100'}">${t('settings.preferences')}</button></div><div id="settings-tab-content"></div>`;
+            renderSettingsTabContent();
+        }
+        window.switchSettingsTab = (tab) => { settingsTab = tab; renderSettings(document.getElementById('content-area')); };
+        function renderSettingsTabContent() {
+            const container = document.getElementById('settings-tab-content');
+            if (!container) return;
+            if (settingsTab === 'profile') {
+                container.innerHTML = `<div class="settings-card max-w-xl mx-auto"><h3 class="font-bold text-lg mb-4">${t('settings.profileInfo')}</h3><div class="text-center mb-6"><div class="profile-avatar-wrapper shadow-md rounded-full overflow-hidden mb-3"><img id="settings-profile-img" src="${ownerProfile?.profile_picture || PLACEHOLDER_IMG}" class="w-full h-full object-cover"></div><div class="flex gap-2 justify-center"><label class="cursor-pointer bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1.5 rounded-lg text-xs font-semibold"><input type="file" accept="image/*" class="hidden" onchange="handleProfilePhotoChange(event)">${t('settings.changePhoto')}</label>${ownerProfile?.profile_picture ? `<button onclick="handleRemoveProfilePhoto()" class="bg-red-50 text-red-600 hover:bg-red-100 px-3 py-1.5 rounded-lg text-xs font-semibold">${t('settings.removePhoto')}</button>` : ''}</div></div><form onsubmit="handleSaveProfile(event)"><div class="field-group"><label>${t('settings.fullName')}</label><input type="text" id="set-fullname" value="${ownerProfile?.full_name || ''}" required></div><div class="field-group"><label>${t('settings.phone')}</label><input type="text" id="set-phone" value="${ownerProfile?.phone || ''}"></div><div class="field-group"><label>${t('settings.email')}</label><input type="email" id="set-email" value="${ownerProfile?.email || currentUser?.email || ''}" required></div><button type="submit" class="save-btn w-full mt-2">${t('settings.saveChanges')}</button></form></div>`;
+            } else if (settingsTab === 'account') {
+                container.innerHTML = `<div class="settings-card max-w-xl mx-auto"><h3 class="font-bold text-lg mb-4">${t('settings.accountInfo')}</h3><div class="space-y-4 text-sm"><div class="flex justify-between border-b pb-2"><span class="text-slate-500">${t('settings.accountName')}</span><span class="font-medium">${ownerProfile?.full_name || 'Owner'}</span></div><div class="flex justify-between border-b pb-2"><span class="text-slate-500">${t('settings.role')}</span><span class="font-medium uppercase">${ownerProfile?.role || 'owner'}</span></div><div class="flex justify-between border-b pb-2"><span class="text-slate-500">${t('settings.accountStatus')}</span><span class="font-medium text-emerald-600">${t('settings.active')}</span></div><div class="flex justify-between border-b pb-2"><span class="text-slate-500">${t('settings.memberSince')}</span><span class="font-medium">${formatDate(ownerProfile?.created_at || currentUser?.metadata?.creationTime)}</span></div></div></div>`;
+            } else if (settingsTab === 'security') {
+                container.innerHTML = `<div class="settings-card max-w-xl mx-auto"><h3 class="font-bold text-lg mb-4">${t('settings.changePasscode')}</h3><form onsubmit="handleChangePassword(event)"><div class="field-group"><label>${t('settings.currentPasscode')}</label><input type="password" id="set-curr-pass" required></div><div class="field-group"><label>${t('settings.newPasscode')}</label><input type="password" id="set-new-pass" required minlength="6"></div><div class="field-group"><label>${t('settings.confirmPasscode')}</label><input type="password" id="set-conf-pass" required minlength="6"></div><button type="submit" class="save-btn w-full mt-2">${t('settings.changePass')}</button></form></div>`;
+            } else if (settingsTab === 'preferences') {
+                container.innerHTML = `<div class="settings-card max-w-xl mx-auto"><h3 class="font-bold text-lg mb-4">${t('settings.prefs')}</h3><form onsubmit="handleSavePreferences(event)"><div class="field-group"><label>${t('settings.language')}</label><select id="set-lang" onchange="setLanguage(this.value)"><option value="en" ${currentLanguage === 'en' ? 'selected' : ''}>English</option><option value="rw" ${currentLanguage === 'rw' ? 'selected' : ''}>Kinyarwanda</option><option value="fr" ${currentLanguage === 'fr' ? 'selected' : ''}>Français</option></select></div><div class="field-group"><label>${t('settings.currency')}</label><select id="set-currency"><option value="RWF">RWF (Rwandan Franc)</option></select></div><button type="submit" class="save-btn w-full mt-2">${t('settings.savePrefs')}</button></form></div>`;
+            }
+        }
+        window.handleProfilePhotoChange = async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            try {
+                showLoading(true);
+                const photoUrl = await uploadImageToImgbb(file);
+                await updateDoc(doc(db, 'profiles', currentUser.uid), { profile_picture: photoUrl, updated_at: new Date().toISOString() });
+                showToast(t('alerts.updatedSuccessfully'), 'success');
+            } catch (err) { showToast(t('alerts.somethingWentWrong'), 'error'); }
+            finally { showLoading(false); }
+        };
+        window.handleRemoveProfilePhoto = async () => {
+            if (!confirm(t('alerts.areYouSure'))) return;
+            try {
+                showLoading(true);
+                await updateDoc(doc(db, 'profiles', currentUser.uid), { profile_picture: '', updated_at: new Date().toISOString() });
+                showToast(t('alerts.updatedSuccessfully'), 'success');
+            } catch (err) { showToast(t('alerts.somethingWentWrong'), 'error'); }
+            finally { showLoading(false); }
+        };
+        window.handleSaveProfile = async (e) => {
+            e.preventDefault();
+            const form = e.target;
+            const btn = getFormSubmitBtn(form);
+            setButtonLoading(btn, true);
+            try {
+                const full_name = document.getElementById('set-fullname').value.trim();
+                const phone = document.getElementById('set-phone').value.trim();
+                const email = document.getElementById('set-email').value.trim();
+                await updateDoc(doc(db, 'profiles', currentUser.uid), { full_name, phone, email, updated_at: new Date().toISOString() });
+                if (email !== currentUser.email) { await updateEmail(currentUser, email); }
+                showToast(t('alerts.savedSuccessfully'), 'success');
+            } catch (err) { showToast(t('alerts.somethingWentWrong'), 'error'); }
+            finally { setButtonLoading(btn, false); }
+        };
+        window.handleChangePassword = async (e) => {
+            e.preventDefault();
+            const form = e.target;
+            const btn = getFormSubmitBtn(form);
+            const currPass = document.getElementById('set-curr-pass').value;
+            const newPass = document.getElementById('set-new-pass').value;
+            const confPass = document.getElementById('set-conf-pass').value;
+            if (newPass !== confPass) { showToast(t('alerts.invalidValue'), 'error'); return; }
+            setButtonLoading(btn, true);
+            try {
+                const cred = EmailAuthProvider.credential(currentUser.email, currPass);
+                await reauthenticateWithCredential(currentUser, cred);
+                await updatePassword(currentUser, newPass);
+                showToast(t('alerts.updatedSuccessfully'), 'success');
+                form.reset();
+            } catch (err) { showToast(t('alerts.somethingWentWrong'), 'error'); }
+            finally { setButtonLoading(btn, false); }
+        };
+        window.handleSavePreferences = (e) => { e.preventDefault(); showToast(t('alerts.savedSuccessfully'), 'success'); };
+
+        // =============== LOGOUT ===============
+        window.handleLogout = async () => {
+            await signOut(auth);
+            window.location.href = 'https://shdr-construction.vercel.app/index.html';
+        };
+
+        // Override showSection to block office hub
+        const originalShowSection = window.showSection;
+        window.showSection = function(section) {
+            if (section === 'office') { showToast(t('common.comingSoon'), 'info'); return; }
+            originalShowSection(section);
+            if (section === 'reports' && reportType === 'payroll') { setTimeout(updatePayrollReport, 100); }
+        };
     </script>
 </body>
 </html>
