@@ -1898,32 +1898,57 @@
             } catch (err) { showToast(t('alerts.somethingWentWrong'), 'error'); }
         };
 
-        // =============== PROGRESS ===============
+         // =============== PROGRESS ===============
         function renderProgress(container) {
             container.innerHTML = `
                 <div class="flex justify-between items-center mb-4">
-                    <h2 class="text-xl sm:text-2xl font-bold">${t('progress.title')}</h2>
+                    <h2 class="text-xl sm:text-2xl font-bold">Progress Tasks</h2>
                     <button onclick="openAddTaskModal()" class="px-3 py-2 bg-emerald-600 text-white rounded-xl hover:bg-emerald-700 text-sm">
-                        <iconify-icon icon="material-symbols:add"></iconify-icon> ${t('progress.addTask')}
+                        <iconify-icon icon="material-symbols:add"></iconify-icon> Add Task
                     </button>
                 </div>
-                <div class="space-y-4">
-                    ${sitesData.map(site => {
-                        const tasks = progressTasks.filter(t => t.site_id === site.id);
-                        return `<div class="bg-white rounded-2xl border p-4 shadow-sm"><h3 class="font-bold text-base mb-2">${site.name}</h3><div class="space-y-2">${tasks.map(t => `<div class="flex justify-between items-center p-2 bg-slate-50 rounded-lg text-sm"><div><p class="font-medium">${t.name}</p><p class="text-xs text-slate-500">${formatDate(t.start_date)} - ${formatDate(t.end_date)}</p></div><div class="flex items-center gap-2"><span class="px-2 py-1 rounded text-xs ${t.status === 'completed' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}">${t.status}</span><button onclick="editProgressTask('${t.id}')" class="text-emerald-600 hover:text-emerald-800 text-xs">${t('progress.edit')}</button><button onclick="deleteProgressTask('${t.id}')" class="text-red-500 hover:text-red-700 text-xs">${t('progress.delete')}</button></div></div>`).join('') || `<p class="text-xs text-slate-400">${t('progress.noTasks')}</p>`}</div></div>`; }).join('')}
+                <div class="bg-white rounded-2xl border overflow-hidden shadow-sm">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm">
+                            <thead class="bg-slate-50 uppercase text-xs">
+                                <tr><th class="px-3 py-2">Task</th><th class="px-3 py-2">Site</th><th class="px-3 py-2">Start</th><th class="px-3 py-2">End</th><th class="px-3 py-2">Status</th><th class="px-3 py-2">Actions</th></tr>
+                            </thead>
+                            <tbody>
+                                ${progressTasks.map(t => `
+                                    <tr>
+                                        <td class="px-3 py-2 font-medium">${t.name}</td>
+                                        <td class="px-3 py-2">${sitesData.find(s => s.id === t.site_id)?.name || '—'}</td>
+                                        <td class="px-3 py-2">${new Date(t.start_date).toLocaleDateString()}</td>
+                                        <td class="px-3 py-2">${new Date(t.end_date).toLocaleDateString()}</td>
+                                        <td class="px-3 py-2">${t.status || 'pending'}</td>
+                                        <td class="px-3 py-2 flex gap-2">
+                                            <button onclick="editTask('${t.id}')" class="text-emerald-600 hover:text-emerald-800 text-xs">Edit</button>
+                                            <button onclick="deleteTask('${t.id}')" class="text-red-500 hover:text-red-700 text-xs">Delete</button>
+                                        </td>
+                                    </tr>
+                                `).join('') || '<tr><td colspan="6" class="p-4 text-slate-500">No tasks yet.</td></tr>'}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             `;
         }
+
         window.openAddTaskModal = () => {
             const siteOpts = sitesData.map(s => `<option value="${s.id}">${s.name}</option>`).join('');
-            openModal(t('progress.addTaskModal'), `
+            openModal('Add Progress Task', `
                 <form onsubmit="handleAddTask(event)" class="space-y-4">
-                    <input class="w-full border rounded-lg p-3 text-sm" id="task-name" placeholder="${t('progress.taskName')}" required>
-                    <select class="w-full border rounded-lg p-3 text-sm" id="task-site" required><option value="">${t('progress.selectSite')}</option>${siteOpts}</select>
-                    <input class="w-full border rounded-lg p-3 text-sm" type="date" id="task-start" required>
-                    <input class="w-full border rounded-lg p-3 text-sm" type="date" id="task-end" required>
-                    <select class="w-full border rounded-lg p-3 text-sm" id="task-status"><option value="pending">${t('progress.pending')}</option><option value="completed">${t('progress.completed')}</option></select>
-                    <button type="submit" class="w-full bg-emerald-600 text-white py-3 rounded-xl">${t('progress.saveTask')}</button>
+                    <input class="w-full border rounded-lg p-3" placeholder="Task name" id="task-name" required>
+                    <select class="w-full border rounded-lg p-3" id="task-site" required><option value="">Select site</option>${siteOpts}</select>
+                    <input class="w-full border rounded-lg p-3" type="date" id="task-start" required>
+                    <div class="flex gap-2">
+                        <input class="w-1/2 border rounded-lg p-3" placeholder="Period number" type="number" id="task-period-num" min="1" required>
+                        <select class="w-1/2 border rounded-lg p-3" id="task-period-unit">
+                            <option value="days">Days</option>
+                            <option value="weeks">Weeks</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="w-full bg-emerald-600 text-white py-3 rounded-xl">Save Task</button>
                 </form>
             `);
         };
@@ -1936,26 +1961,42 @@
                 const name = document.getElementById('task-name').value.trim();
                 const site_id = document.getElementById('task-site').value;
                 const start_date = document.getElementById('task-start').value;
-                const end_date = document.getElementById('task-end').value;
-                const status = document.getElementById('task-status').value;
-                await addDoc(collection(db, 'progress_tasks'), { name, site_id, start_date, end_date, status, owner_id: currentUser.uid, created_at: new Date().toISOString() });
+                const periodNum = parseInt(document.getElementById('task-period-num').value);
+                const periodUnit = document.getElementById('task-period-unit').value;
+                if (!name || !site_id || !start_date) return alert('All fields required.');
+                const start = new Date(start_date);
+                let end = new Date(start);
+                if (periodUnit === 'days') end.setDate(end.getDate() + periodNum);
+                else end.setDate(end.getDate() + periodNum * 7);
+                await addDoc(collection(db, 'progress_tasks'), {
+                    site_id,
+                    name,
+                    start_date: start.toISOString(),
+                    end_date: end.toISOString(),
+                    status: 'pending'
+                });
                 closeModal();
-                showToast(t('alerts.savedSuccessfully'), 'success');
-            } catch (err) { showToast(t('alerts.somethingWentWrong'), 'error'); }
+            } catch (err) { alert('Error: ' + getFriendlyError(err)); }
             finally { setButtonLoading(btn, false); }
         };
-        window.editProgressTask = (id) => {
+
+        window.editTask = (id) => {
             const task = progressTasks.find(t => t.id === id);
             if (!task) return;
             const siteOpts = sitesData.map(s => `<option value="${s.id}" ${s.id === task.site_id ? 'selected' : ''}>${s.name}</option>`).join('');
-            openModal(t('progress.editTask'), `
+            openModal('Edit Progress Task', `
                 <form onsubmit="handleEditTask(event, '${id}')" class="space-y-4">
-                    <input class="w-full border rounded-lg p-3 text-sm" value="${task.name}" id="edit-task-name" placeholder="${t('progress.taskName')}" required>
-                    <select class="w-full border rounded-lg p-3 text-sm" id="edit-task-site" required>${siteOpts}</select>
-                    <input class="w-full border rounded-lg p-3 text-sm" type="date" value="${task.start_date ? new Date(task.start_date).toISOString().split('T')[0] : ''}" id="edit-task-start" required>
-                    <input class="w-full border rounded-lg p-3 text-sm" type="date" value="${task.end_date ? new Date(task.end_date).toISOString().split('T')[0] : ''}" id="edit-task-end" required>
-                    <select class="w-full border rounded-lg p-3 text-sm" id="edit-task-status"><option value="pending" ${task.status === 'pending' ? 'selected' : ''}>${t('progress.pending')}</option><option value="completed" ${task.status === 'completed' ? 'selected' : ''}>${t('progress.completed')}</option></select>
-                    <button type="submit" class="w-full bg-emerald-600 text-white py-3 rounded-xl">${t('progress.saveTask')}</button>
+                    <input class="w-full border rounded-lg p-3" value="${task.name}" id="edit-task-name" required>
+                    <select class="w-full border rounded-lg p-3" id="edit-task-site" required>
+                        ${siteOpts}
+                    </select>
+                    <input class="w-full border rounded-lg p-3" type="date" value="${task.start_date ? new Date(task.start_date).toISOString().split('T')[0] : ''}" id="edit-task-start" required>
+                    <input class="w-full border rounded-lg p-3" type="date" value="${task.end_date ? new Date(task.end_date).toISOString().split('T')[0] : ''}" id="edit-task-end" required>
+                    <select class="w-full border rounded-lg p-3" id="edit-task-status">
+                        <option value="pending" ${task.status === 'pending' ? 'selected' : ''}>Pending</option>
+                        <option value="completed" ${task.status === 'completed' ? 'selected' : ''}>Completed</option>
+                    </select>
+                    <button type="submit" class="w-full bg-emerald-600 text-white py-3 rounded-xl">Update Task</button>
                 </form>
             `);
         };
@@ -1970,20 +2011,23 @@
                 const start_date = document.getElementById('edit-task-start').value;
                 const end_date = document.getElementById('edit-task-end').value;
                 const status = document.getElementById('edit-task-status').value;
-                await updateDoc(doc(db, 'progress_tasks', id), { name, site_id, start_date, end_date, status, updated_at: new Date().toISOString() });
+                if (!name || !site_id || !start_date || !end_date) return alert('All fields required.');
+                await updateDoc(doc(db, 'progress_tasks', id), {
+                    name,
+                    site_id,
+                    start_date: new Date(start_date).toISOString(),
+                    end_date: new Date(end_date).toISOString(),
+                    status
+                });
                 closeModal();
-                showToast(t('alerts.updatedSuccessfully'), 'success');
-            } catch (err) { showToast(t('alerts.somethingWentWrong'), 'error'); }
+            } catch (err) { alert('Error: ' + getFriendlyError(err)); }
             finally { setButtonLoading(btn, false); }
         };
-        window.deleteProgressTask = async (id) => {
-            if (!confirm(t('alerts.areYouSure'))) return;
-            try {
-                await deleteDoc(doc(db, 'progress_tasks', id));
-                showToast(t('alerts.deletedSuccessfully'), 'success');
-            } catch (err) { showToast(t('alerts.somethingWentWrong'), 'error'); }
+        window.deleteTask = (id) => {
+            if (confirm('Delete this task?')) {
+                deleteDoc(doc(db, 'progress_tasks', id)).catch(err => alert('Error: ' + getFriendlyError(err)));
+            }
         };
-
         // =============== REPORTS ===============
 
         // ── Date formatter (unified) ──
