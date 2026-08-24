@@ -648,21 +648,22 @@
                     let siteIds = [];
                     if (managerProfile.assigned_sites && Array.isArray(managerProfile.assigned_sites)) siteIds = managerProfile.assigned_sites;
                     else if (managerProfile.assigned_site) siteIds = [managerProfile.assigned_site];
-                    else { showError('No site assigned.'); return; }
-
-                    const sitePromises = siteIds.map(id => getDoc(doc(db, 'sites', id)));
-                    const siteSnaps = await Promise.all(sitePromises);
-                    assignedSites = siteSnaps.filter(snap => snap.exists()).map(snap => ({ id: snap.id, ...snap.data() }));
-                    if (assignedSites.length === 0) { showError('Assigned site(s) not found.'); return; }
-
-                    currentSiteId = assignedSites[0].id;
-                    const selector = document.getElementById('site-selector');
-                    if (assignedSites.length > 1) {
-                        selector.classList.remove('hidden');
-                        selector.innerHTML = assignedSites.map(s => `<option value="${s.id}" ${s.id === currentSiteId ? 'selected' : ''}>${s.name}</option>`).join('');
-                    } else { selector.classList.add('hidden'); }
-
-                    attachListeners();
+                    // No site assigned: keep assignedSites empty, but don't break the whole app
+                    if (siteIds.length) {
+                        const sitePromises = siteIds.map(id => getDoc(doc(db, 'sites', id)));
+                        const siteSnaps = await Promise.all(sitePromises);
+                        assignedSites = siteSnaps.filter(snap => snap.exists()).map(snap => ({ id: snap.id, ...snap.data() }));
+                        if (assignedSites.length) {
+                            currentSiteId = assignedSites[0].id;
+                            const selector = document.getElementById('site-selector');
+                            if (assignedSites.length > 1) {
+                                selector.classList.remove('hidden');
+                                selector.innerHTML = assignedSites.map(s => `<option value="${s.id}" ${s.id === currentSiteId ? 'selected' : ''}>${s.name}</option>`).join('');
+                            } else { selector.classList.add('hidden'); }
+                            attachListeners();
+                        }
+                    }
+                    // Show dashboard (even if no sites, it will display a message)
                     showSection('dashboard');
                 } catch (err) { showError('Failed to initialize: ' + err.message); }
             });
@@ -738,7 +739,24 @@
             const container = document.getElementById('content-area');
             container.innerHTML = '';
             switch(section) {
-                case 'dashboard': renderDashboard(container); break;
+                case 'dashboard':
+                    if (!assignedSites.length) {
+                        container.innerHTML = `
+                            <div class="bg-yellow-50 border-l-4 border-yellow-400 p-6 rounded-xl text-yellow-800 max-w-2xl mx-auto mt-10">
+                                <div class="flex items-start gap-3">
+                                    <iconify-icon icon="material-symbols:warning" width="28" class="text-yellow-600 flex-shrink-0"></iconify-icon>
+                                    <div>
+                                        <h3 class="font-semibold text-lg">⚠️ No site assigned</h3>
+                                        <p class="text-sm mt-1">You haven't been assigned to any site yet. Please contact the owner to assign you to a site.</p>
+                                        <p class="text-xs mt-2 text-yellow-700">If you think this is an error, check your profile in Firestore and add <code class="bg-yellow-100 px-1 rounded">assigned_sites</code> or <code class="bg-yellow-100 px-1 rounded">assigned_site</code>.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    } else {
+                        renderDashboard(container);
+                    }
+                    break;
                 case 'materials': renderMaterials(container); break;
                 case 'stock': renderStock(container); break;
                 case 'workers': renderWorkers(container); break;
