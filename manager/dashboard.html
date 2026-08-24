@@ -1550,7 +1550,7 @@
         };
 
 
- // =============== WORKERS (Full Implementation) ===============
+ // =============== WORKERS (Full Implementation - Updated) ===============
         function renderWorkers(container) {
             container.innerHTML = `
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
@@ -1561,6 +1561,9 @@
                         <button onclick="switchWorkersTab('record')" class="px-4 py-2 rounded-lg text-sm font-semibold transition ${workersTab === 'record' ? 'tab-active shadow-sm' : 'tab-inactive'}" id="tab-btn-record">
                             <iconify-icon icon="material-symbols:edit-calendar" class="inline mr-1"></iconify-icon> Record Attendance
                         </button>
+                        <button onclick="switchWorkersTab('report')" class="px-4 py-2 rounded-lg text-sm font-semibold transition ${workersTab === 'report' ? 'tab-active shadow-sm' : 'tab-inactive'}" id="tab-btn-report">
+                            <iconify-icon icon="material-symbols:lab-profile" class="inline mr-1"></iconify-icon> Report
+                        </button>
                     </div>
                     ${workersTab === 'view' ? `
                         <button onclick="openAddWorkerModal()" class="px-4 py-2 bg-emerald-600 text-white rounded-xl hover:bg-emerald-700 flex items-center gap-2 text-sm font-medium shadow-sm">
@@ -1569,7 +1572,7 @@
                     ` : ''}
                 </div>
                 <div id="workers-content">
-                    ${workersTab === 'view' ? renderWorkersView() : renderWorkersRecord()}
+                    ${workersTab === 'view' ? renderWorkersView() : workersTab === 'record' ? renderWorkersRecord() : renderWorkersReport()}
                 </div>
             `;
             if (workersTab === 'record') {
@@ -1823,6 +1826,7 @@
                                             <div class="flex-1 min-w-0"><p class="text-sm font-medium text-slate-800 truncate">${w.name}</p><p class="text-xs text-slate-500 truncate">${w.role || 'Worker'}</p></div>
                                             <div class="text-right flex-shrink-0"><span class="text-xs font-semibold text-emerald-700">${dailyRate.toLocaleString()} RWF</span><span class="text-[10px] text-slate-400 block">/ day</span></div>
                                         </div>
+                                        <!-- FIXED: Added 'flex' class here to perfectly center the check icon -->
                                         <div class="absolute top-2 right-2 w-5 h-5 rounded-full bg-emerald-600 text-white flex items-center justify-center opacity-0 scale-75 transition-all duration-200" data-checkmark><iconify-icon icon="material-symbols:check" class="text-xs"></iconify-icon></div>
                                     </div>
                                 `;
@@ -2060,7 +2064,7 @@ function renderWorkersReport() {
     const avgDailyCost = totalDays > 0 ? (totalPayroll / totalDays).toFixed(3) : 0;
 
     if (!workers.length) {
-        return `<div class="bg-white rounded-2xl border p-8 text-center"><p class="text-slate-500">${t('common.noDataAvailable')}</p></div>`;
+        return `<div class="bg-white rounded-2xl border p-8 text-center"><p class="text-slate-500">No data available</p></div>`;
     }
 
     let tableRows = workers.map(w => `
@@ -2171,9 +2175,6 @@ window.exportWorkersCSV = () => {
     link.click();
     document.body.removeChild(link);
 };
-
-
-        
 
         // =================================================================
         // PROGRESS (original but with fixed translation and global update)
