@@ -864,8 +864,14 @@ function renderDashboard(container) {
         const recentMaterials = Array.isArray(materialsData)
             ? [...materialsData]
                 .sort((a, b) => {
-                    const dateA = new Date(a.date_used || a.created_at || 0);
-                    const dateB = new Date(b.date_used || b.created_at || 0);
+                    const dateA = new Date(
+                        a.date_used || a.created_at || 0
+                    );
+
+                    const dateB = new Date(
+                        b.date_used || b.created_at || 0
+                    );
+
                     return dateB - dateA;
                 })
                 .slice(0, 4)
@@ -886,7 +892,9 @@ function renderDashboard(container) {
         const managerName = managerProfile?.full_name || 'You';
 
         container.innerHTML = `
-            <!-- Site Header -->
+            <!-- =====================================================
+                 SITE HEADER
+                 ===================================================== -->
             <div class="bg-white rounded-2xl overflow-hidden shadow-sm mb-4 sm:mb-6">
 
                 <div
@@ -894,6 +902,7 @@ function renderDashboard(container) {
                     style="background-image: url('${siteImage}');"
                 >
                     <div class="absolute inset-0 bg-gradient-to-r from-emerald-900/80 to-emerald-800/40 flex items-center p-4 sm:p-6">
+
                         <div>
                             <h1 class="text-2xl sm:text-4xl font-bold text-white">
                                 ${siteName}
@@ -903,6 +912,7 @@ function renderDashboard(container) {
                                 ${siteLocation}
                             </p>
                         </div>
+
                     </div>
                 </div>
 
@@ -931,45 +941,31 @@ function renderDashboard(container) {
                 </div>
             </div>
 
-            <!-- Statistics -->
+
+            <!-- =====================================================
+                 STATISTICS
+                 PROGRESS = LEFT
+                 WORKERS = RIGHT
+                 ===================================================== -->
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4 sm:mb-6">
 
+                <!-- Progress — LEFT -->
                 <div class="stat-card bg-white rounded-2xl p-4 border border-slate-200 shadow-sm">
-                    <div class="flex items-center gap-4">
 
-                        <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
-                            <iconify-icon
-                                icon="material-symbols:engineering"
-                                width="24"
-                                class="text-blue-700">
-                            </iconify-icon>
-                        </div>
-
-                        <div>
-                            <p class="text-sm text-slate-500">
-                                ${t('dashboard.workersOnSite')}
-                            </p>
-
-                            <p class="text-2xl font-bold">
-                                ${totalWorkers}
-                            </p>
-                        </div>
-
-                    </div>
-                </div>
-
-                <div class="stat-card bg-white rounded-2xl p-4 border border-slate-200 shadow-sm">
                     <div class="flex items-center gap-4">
 
                         <div class="w-12 h-12 bg-amber-100 rounded-xl flex items-center justify-center">
+
                             <iconify-icon
                                 icon="material-symbols:trending-up"
                                 width="24"
                                 class="text-amber-700">
                             </iconify-icon>
+
                         </div>
 
                         <div>
+
                             <p class="text-sm text-slate-500">
                                 ${t('dashboard.progress')}
                             </p>
@@ -977,20 +973,61 @@ function renderDashboard(container) {
                             <p class="text-2xl font-bold">
                                 ${completionPercent}%
                             </p>
+
                         </div>
 
                     </div>
+
+                </div>
+
+
+                <!-- Workers On Site — RIGHT -->
+                <div class="stat-card bg-white rounded-2xl p-4 border border-slate-200 shadow-sm">
+
+                    <div class="flex items-center gap-4">
+
+                        <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
+
+                            <iconify-icon
+                                icon="material-symbols:engineering"
+                                width="24"
+                                class="text-blue-700">
+                            </iconify-icon>
+
+                        </div>
+
+                        <div>
+
+                            <p class="text-sm text-slate-500">
+                                ${t('dashboard.workersOnSite')}
+                            </p>
+
+                            <p class="text-2xl font-bold">
+                                ${totalWorkers}
+                            </p>
+
+                        </div>
+
+                    </div>
+
                 </div>
 
             </div>
 
-            <!-- Dashboard Details -->
+
+            <!-- =====================================================
+                 DASHBOARD DETAILS
+                 RECENT MATERIALS = LEFT
+                 PENDING TASKS = RIGHT
+                 ===================================================== -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
 
-                <!-- Recent Materials -->
-                <div class="bg-white rounded-2xl border p-4 shadow-sm">
+                <!-- =================================================
+                     RECENT MATERIALS — LEFT
+                     ================================================= -->
+                <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-sm">
 
-                    <h3 class="font-semibold text-sm mb-3">
+                    <h3 class="font-semibold text-sm mb-4">
                         ${t('dashboard.recentMaterials')}
                     </h3>
 
@@ -999,7 +1036,8 @@ function renderDashboard(container) {
                         ${
                             recentMaterials.length
                                 ? recentMaterials.map(material => `
-                                    <div class="flex justify-between gap-3 border-b border-slate-100 pb-2 last:border-0">
+                                    <div class="flex items-center justify-between gap-3 border-b border-slate-100 pb-2 last:border-0">
+
                                         <span class="truncate">
                                             ${material.name || 'Unnamed Material'}
                                         </span>
@@ -1007,7 +1045,9 @@ function renderDashboard(container) {
                                         <span class="text-slate-400 whitespace-nowrap">
                                             ${Number(material.quantity_used || 0)} used
                                         </span>
-                                    `).join('')
+
+                                    </div>
+                                `).join('')
                                 : `
                                     <p class="text-slate-400">
                                         ${t('common.noDataAvailable')}
@@ -1016,12 +1056,16 @@ function renderDashboard(container) {
                         }
 
                     </div>
+
                 </div>
 
-                <!-- Pending Tasks -->
-                <div class="bg-white rounded-2xl border p-4 shadow-sm">
 
-                    <h3 class="font-semibold text-sm mb-3">
+                <!-- =================================================
+                     PENDING TASKS — RIGHT
+                     ================================================= -->
+                <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-sm">
+
+                    <h3 class="font-semibold text-sm mb-4">
                         ${t('dashboard.pendingTasks')}
                     </h3>
 
@@ -1030,14 +1074,14 @@ function renderDashboard(container) {
                         ${
                             pendingTasks.length
                                 ? pendingTasks.map(task => `
-                                    <div class="flex justify-between gap-3 border-b border-slate-100 pb-2 last:border-0">
+                                    <div class="flex items-center justify-between gap-3 border-b border-slate-100 pb-2 last:border-0">
 
                                         <span class="truncate">
                                             ${task.name || t('progress.task')}
                                         </span>
 
                                         <span class="text-slate-400 whitespace-nowrap">
-                                            ${t('progress.end')}: 
+                                            ${t('progress.end')}:
                                             ${formatDate(task.end_date)}
                                         </span>
 
@@ -1051,16 +1095,19 @@ function renderDashboard(container) {
                         }
 
                     </div>
+
                 </div>
 
             </div>
         `;
 
     } catch (err) {
+
         console.error('Error in renderDashboard:', err);
 
         container.innerHTML = `
             <div class="bg-red-50 border border-red-200 rounded-2xl p-6 text-red-800">
+
                 <p class="font-semibold">
                     ${t('common.somethingWentWrong')}
                 </p>
@@ -1072,6 +1119,7 @@ function renderDashboard(container) {
                 <p class="text-xs mt-2 text-red-600">
                     Check the browser console for more details.
                 </p>
+
             </div>
         `;
     }
