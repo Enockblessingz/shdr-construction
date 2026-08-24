@@ -1125,333 +1125,1994 @@ function renderDashboard(container) {
     }
 }
 
-       // =================================================================
-// MATERIALS (with Image Upload)
-// =================================================================
-function renderMaterials(container) {
-    const grouped = {};
-    materialsData.forEach(m => {
-        const date = m.date_used ? formatDate(m.date_used) : t('common.noDataAvailable');
-        if (!grouped[date]) grouped[date] = [];
-        grouped[date].push(m);
-    });
-    const currentSite = assignedSites.find(s => s.id === currentSiteId);
-    const siteName = currentSite ? currentSite.name : 'Unknown Site';
-    let html = `<div class="flex justify-between items-center mb-4 sm:mb-6"><h2 class="text-xl sm:text-2xl font-bold">${t('materials.title')}</h2><button onclick="openAddMaterialModal()" class="px-3 py-2 bg-emerald-600 text-white rounded-xl hover:bg-emerald-700 flex items-center gap-2 text-sm"><iconify-icon icon="material-symbols:add"></iconify-icon> ${t('materials.recordUsage')}</button></div>`;
-    if (Object.keys(grouped).length === 0) html += `<p class="text-slate-500">${t('materials.noMaterials')}</p>`;
-    else {
-        const sortedDates = Object.keys(grouped).sort((a, b) => new Date(b) - new Date(a));
-        sortedDates.forEach(date => {
-            const materials = grouped[date];
-            html += `<div class="mb-6"><h3 class="font-bold text-sm text-slate-700 mb-3 flex items-center gap-2"><iconify-icon icon="material-symbols:calendar-month" class="text-emerald-500"></iconify-icon>${date}</h3><div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">`;
-            materials.forEach(m => {
-                const qty = m.quantity_used || 0, unitCost = m.unit_cost || 0, total = calculateTotal(qty, unitCost), imageUrl = m.image || PLACEHOLDER_IMG;
-                html += `<div class="bg-white rounded-2xl border overflow-hidden shadow-sm hover:shadow-md transition"><div class="relative w-full h-48 overflow-hidden bg-slate-100"><img src="${imageUrl}" class="w-full h-full object-cover" onerror="this.src='${PLACEHOLDER_IMG}'"><div class="absolute top-3 left-3 bg-emerald-600/90 text-white text-xs font-medium px-2.5 py-1 rounded-full">${siteName}</div></div><div class="p-5"><h3 class="font-bold text-lg text-slate-800 truncate">${m.name}</h3><div class="mt-4 space-y-2"><div class="flex justify-between text-sm border-b border-slate-100 pb-2"><span class="text-slate-500">${t('materials.quantityUsed')}</span><span class="font-semibold text-slate-700">${qty}</span></div><div class="flex justify-between text-sm border-b border-slate-100 pb-2"><span class="text-slate-500">${t('materials.unitCost')}</span><span class="font-semibold text-slate-700">${unitCost.toFixed(2)} RWF</span></div><div class="flex justify-between text-sm"><span class="text-slate-500">${t('materials.totalAmount')}</span><span class="font-bold text-emerald-600">${total.toFixed(2)} RWF</span></div></div><div class="mt-4 pt-3 border-t border-slate-100 flex justify-end gap-3"><button onclick="editMaterial('${m.id}')" class="text-sm text-emerald-600 font-medium">${t('common.edit')}</button><button onclick="deleteMaterial('${m.id}')" class="text-sm text-red-500 font-medium">${t('common.delete')}</button></div></div></div>`;
-            });
-            html += `</div></div>`;
-        });
-    }
-    container.innerHTML = html;
+       // ============================================================================
+// MATERIALS + STOCK MANAGEMENT
+// SHDR Ltd Construction Site Management System
+// ============================================================================
+//
+// IMPORTANT INVENTORY RULES
+// ----------------------------------------------------------------------------
+// RECEIVE STOCK:
+//     newStock = currentStock + receivedQuantity
+//
+// USE MATERIAL:
+//     newStock = currentStock - usedQuantity
+//
+// EDIT MATERIAL USAGE:
+//     newStock = currentStock + oldUsage - newUsage
+//
+// DELETE MATERIAL USAGE:
+//     newStock = currentStock + deletedUsage
+//
+// STOCK VALUE:
+//     stockValue = currentStock * unitCost
+//
+// MATERIAL TOTAL:
+//     totalAmount = quantityUsed * unitCost
+//
+// ============================================================================
+
+
+// ============================================================================
+// HELPER FUNCTIONS
+// ============================================================================
+
+function normalizeMaterialName(name) {
+    return String(name || '')
+        .trim()
+        .replace(/\s+/g, ' ')
+        .toLowerCase();
 }
 
-window.editMaterial = (id) => {
-    const mat = materialsData.find(m => m.id === id);
-    if (!mat) return;
-    openModal(t('materials.editMaterial'), `
-        <form onsubmit="handleEditMaterial(event, '${id}')" class="space-y-4">
-            <input class="w-full border rounded-lg p-3" value="${mat.name}" id="edit-mat-name" required>
-            <input class="w-full border rounded-lg p-3" value="${mat.quantity_used || 0}" type="number" id="edit-mat-used" required step="0.01" placeholder="${t('materials.quantityUsed')}">
-            <input class="w-full border rounded-lg p-3" value="${mat.unit_cost || 0}" type="number" id="edit-mat-unit-cost" required step="0.01" placeholder="${t('materials.unitCost')}">
-            <div>
-                <label class="text-sm font-medium">${t('common.add')} (optional)</label>
-                <input type="file" id="edit-mat-image" accept="image/*" class="w-full mt-1">
-            </div>
-            <button type="submit" class="w-full bg-emerald-600 text-white py-3 rounded-xl">${t('common.save')}</button>
-        </form>
-    `);
-};
 
-window.handleEditMaterial = async (e, id) => {
-    e.preventDefault();
-    const form = e.target, btn = getFormSubmitBtn(form); setButtonLoading(btn, true);
-    try {
-        const name = document.getElementById('edit-mat-name').value.trim();
-        const newUsed = parseFloat(document.getElementById('edit-mat-used').value) || 0;
-        const newUnitCost = parseFloat(document.getElementById('edit-mat-unit-cost').value) || 0;
-        const imageFile = document.getElementById('edit-mat-image').files[0];
+function getMaterialDisplayName(name) {
+    return String(name || '')
+        .trim()
+        .replace(/\s+/g, ' ');
+}
 
-        const oldMat = materialsData.find(m => m.id === id);
-        const oldUsed = oldMat.quantity_used || 0;
-        const siteId = oldMat.site_id;
-        let stockItem = stockData.find(s => s.site_id === siteId && s.material_name === oldMat.name);
-        if (!stockItem) {
-            const ref = await addDoc(collection(db, 'stock'), { site_id: siteId, material_name: oldMat.name, quantity: 0, unit: 'units', created_at: new Date().toISOString(), updated_at: new Date().toISOString() });
-            stockItem = { id: ref.id, quantity: 0 };
-        }
-        const restored = stockItem.quantity + oldUsed;
-        if (newUsed > restored) { alert(t('common.invalidValue')); return; }
-        const newStock = restored - newUsed;
 
-        // Upload new image if provided
-        let imageUrl = oldMat.image || '';
-        if (imageFile) {
-            imageUrl = await uploadImageToImgbb(imageFile);
-        }
+function toNumber(value, fallback = 0) {
+    const number = Number(value);
+    return Number.isFinite(number) ? number : fallback;
+}
 
-        const batch = writeBatch(db);
-        batch.update(doc(db, 'materials', id), { name, quantity_used: newUsed, unit_cost: newUnitCost, image: imageUrl, updated_at: new Date().toISOString() });
-        batch.update(doc(db, 'stock', stockItem.id), { quantity: newStock, updated_at: new Date().toISOString() });
-        batch.set(doc(collection(db, 'stock_transactions')), { site_id: siteId, stock_id: stockItem.id, material_name: oldMat.name, transaction_type: 'MATERIAL_USAGE_EDITED', quantity: newUsed - oldUsed, previous_quantity: stockItem.quantity, new_quantity: newStock, unit: stockItem.unit || 'units', notes: `Edited`, recorded_by: currentUser.uid, created_at: new Date().toISOString() });
-        await batch.commit(); closeModal(); showToast(t('common.updatedSuccessfully'), 'success');
-    } catch (err) { showToast(t('common.somethingWentWrong'), 'error'); } finally { setButtonLoading(btn, false); }
-};
 
-window.deleteMaterial = (id) => {
-    if (!confirm(t('common.areYouSure'))) return;
-    const mat = materialsData.find(m => m.id === id); if (!mat) return;
-    (async () => {
-        try {
-            const stockItem = stockData.find(s => s.site_id === mat.site_id && s.material_name === mat.name);
-            if (stockItem) {
-                const newQty = stockItem.quantity + (mat.quantity_used || 0);
-                const batch = writeBatch(db);
-                batch.update(doc(db, 'stock', stockItem.id), { quantity: newQty });
-                batch.delete(doc(db, 'materials', id));
-                batch.set(doc(collection(db, 'stock_transactions')), { site_id: mat.site_id, stock_id: stockItem.id, material_name: mat.name, transaction_type: 'MATERIAL_USAGE_DELETED', quantity: mat.quantity_used || 0, previous_quantity: stockItem.quantity, new_quantity: newQty, unit: stockItem.unit || 'units', notes: `Deleted`, recorded_by: currentUser.uid, created_at: new Date().toISOString() });
-                await batch.commit();
-            } else await deleteDoc(doc(db, 'materials', id));
-            showToast(t('common.deletedSuccessfully'), 'success');
-        } catch (err) { showToast(t('common.somethingWentWrong'), 'error'); }
-    })();
-};
+function roundNumber(value, decimals = 2) {
+    const factor = Math.pow(10, decimals);
+    return Math.round((toNumber(value) + Number.EPSILON) * factor) / factor;
+}
 
-window.openAddMaterialModal = () => {
-    let count = 0;
-    const addEntry = () => {
-        count++;
-        const container = document.getElementById('material-entries');
-        const entry = document.createElement('div'); entry.className = 'material-entry';
-        entry.innerHTML = `
-            <div class="grid grid-cols-2 gap-2">
-                <input class="border rounded-lg p-2 text-sm" placeholder="${t('materials.materialName')}" name="mat-name-${count}" required>
-                <input class="border rounded-lg p-2 text-sm" placeholder="${t('materials.quantityUsed')}" type="number" name="mat-used-${count}" required step="0.01">
-            </div>
-            <div class="grid grid-cols-2 gap-2 mt-2">
-                <input class="border rounded-lg p-2 text-sm" placeholder="${t('materials.unitCost')}" type="number" name="mat-unit-cost-${count}" step="0.01">
-                <input class="border rounded-lg p-2 text-sm" type="file" accept="image/*" name="mat-image-${count}">
-            </div>
-        `;
-        container.appendChild(entry);
-    };
-    openModal(t('materials.recordUsage'), `
-        <div class="mb-4">
-            <label class="block text-sm font-medium">${t('reports.startDate')}</label>
-            <input type="date" id="usageDate" value="${getTodayISO()}" class="border rounded-lg p-2 text-sm w-full" required>
-        </div>
-        <div id="material-entries"></div>
-        <button type="button" onclick="addEntry()" class="text-emerald-600 text-sm mt-2">+ ${t('materials.addMaterial')}</button>
-        <button onclick="submitBatchMaterials()" class="w-full bg-emerald-600 text-white py-2 rounded-xl mt-4">${t('common.save')}</button>
-    `);
-    addEntry(); window.addEntry = addEntry;
-};
 
-window.submitBatchMaterials = async () => {
-    const dateInput = document.getElementById('usageDate'), selectedDate = dateInput ? dateInput.value : getTodayISO();
-    if (!selectedDate) { alert(t('common.requiredField')); return; }
-    const dateObj = new Date(selectedDate + 'T00:00:00.000Z');
-    const entries = document.querySelectorAll('#material-entries .material-entry');
-    if (!entries.length) { alert(t('common.noDataAvailable')); return; }
-    const usageEntries = [];
-    for (const entry of entries) {
-        const name = entry.querySelector('[name^="mat-name-"]').value.trim();
-        const used = parseFloat(entry.querySelector('[name^="mat-used-"]').value) || 0;
-        const unitCost = parseFloat(entry.querySelector('[name^="mat-unit-cost-"]').value) || 0;
-        const imageFile = entry.querySelector('[name^="mat-image-"]').files[0];
-        if (!name) continue;
-        usageEntries.push({ name, used, unitCost, imageFile });
-    }
-    if (!usageEntries.length) { alert(t('common.noDataAvailable')); return; }
-    try {
-        const batch = writeBatch(db);
-        const materialPromises = usageEntries.map(async (entry) => {
-            let imageUrl = '';
-            if (entry.imageFile) {
-                try { imageUrl = await uploadImageToImgbb(entry.imageFile); }
-                catch (e) { alert(t('common.somethingWentWrong') + ': ' + entry.name); throw e; }
-            }
-            const docRef = doc(collection(db, 'materials'));
-            batch.set(docRef, { site_id: currentSiteId, name: entry.name, quantity_used: entry.used, unit_cost: entry.unitCost, image: imageUrl, date_used: dateObj.toISOString(), created_at: new Date().toISOString() });
-            const stockItem = stockData.find(s => s.site_id === currentSiteId && s.material_name === entry.name);
-            if (stockItem) {
-                const newQty = stockItem.quantity - entry.used;
-                batch.update(doc(db, 'stock', stockItem.id), { quantity: newQty, updated_at: new Date().toISOString() });
-                batch.set(doc(collection(db, 'stock_transactions')), { site_id: currentSiteId, stock_id: stockItem.id, material_name: entry.name, transaction_type: 'MATERIAL_USAGE', quantity: entry.used, previous_quantity: stockItem.quantity, new_quantity: newQty, unit: stockItem.unit || 'units', notes: `Used`, recorded_by: currentUser.uid, created_at: new Date().toISOString() });
-            }
+function calculateTotal(quantity, unitCost) {
+    return roundNumber(
+        toNumber(quantity) * toNumber(unitCost)
+    );
+}
+
+
+function formatRWF(value) {
+    return `${toNumber(value).toLocaleString('en-RW', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+    })} RWF`;
+}
+
+
+function getTodayISO() {
+    const now = new Date();
+
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+
+    return `${year}-${month}-${day}`;
+}
+
+
+function getDateValue(value) {
+    if (!value) return 0;
+
+    const date = new Date(value);
+    const time = date.getTime();
+
+    return Number.isFinite(time) ? time : 0;
+}
+
+
+function getCurrentTimestamp() {
+    return new Date().toISOString();
+}
+
+
+function getCurrentUserId() {
+    return currentUser?.uid || null;
+}
+
+
+function findStockItem(siteId, materialName) {
+    const normalized = normalizeMaterialName(materialName);
+
+    return stockData.find(item =>
+        item.site_id === siteId &&
+        normalizeMaterialName(item.material_name) === normalized
+    );
+}
+
+
+function findMaterialUnitCost(siteId, materialName) {
+
+    const normalized = normalizeMaterialName(materialName);
+
+    const matches = materialsData
+        .filter(material =>
+            material.site_id === siteId &&
+            normalizeMaterialName(material.name) === normalized &&
+            toNumber(material.unit_cost) > 0
+        )
+        .sort((a, b) => {
+
+            const dateA = getDateValue(
+                a.date_used ||
+                a.updated_at ||
+                a.created_at
+            );
+
+            const dateB = getDateValue(
+                b.date_used ||
+                b.updated_at ||
+                b.created_at
+            );
+
+            return dateB - dateA;
         });
-        await Promise.all(materialPromises);
-        await batch.commit(); closeModal(); showToast(t('common.savedSuccessfully'), 'success');
-    } catch (err) { alert(t('common.somethingWentWrong') + ': ' + err.message); }
-};
+
+    return matches.length
+        ? toNumber(matches[0].unit_cost)
+        : 0;
+}
 
 
+function getStockUnitCost(item) {
 
+    const stockCost = toNumber(item?.unit_cost);
 
-// =================================================================
-// STOCK
-// =================================================================
-function renderStock(container) {
-    const site = assignedSites.find(s => s.id === currentSiteId);
-
-    if (!site) {
-        container.innerHTML = `
-            <p class="text-red-500">
-                ${t('common.noDataAvailable')}
-            </p>
-        `;
-        return;
+    if (stockCost > 0) {
+        return stockCost;
     }
 
-    const siteStock = stockData.filter(
-        s => s.site_id === currentSiteId
+    return findMaterialUnitCost(
+        item?.site_id,
+        item?.material_name
+    );
+}
+
+
+function getTransactionSign(type) {
+
+    switch (type) {
+
+        case 'STOCK_ADDED':
+            return '+';
+
+        case 'MATERIAL_USAGE':
+            return '-';
+
+        case 'MATERIAL_USAGE_EDITED':
+            return '';
+
+        case 'MATERIAL_USAGE_DELETED':
+            return '+';
+
+        case 'STOCK_ADJUSTMENT_IN':
+            return '+';
+
+        case 'STOCK_ADJUSTMENT_OUT':
+            return '-';
+
+        default:
+            return '';
+    }
+}
+
+
+function getTransactionLabel(type) {
+
+    switch (type) {
+
+        case 'STOCK_ADDED':
+            return 'Stock received';
+
+        case 'MATERIAL_USAGE':
+            return 'Material used';
+
+        case 'MATERIAL_USAGE_EDITED':
+            return 'Material usage edited';
+
+        case 'MATERIAL_USAGE_DELETED':
+            return 'Material usage deleted';
+
+        case 'STOCK_ADJUSTMENT_IN':
+            return 'Stock increased';
+
+        case 'STOCK_ADJUSTMENT_OUT':
+            return 'Stock decreased';
+
+        default:
+            return 'Stock transaction';
+    }
+}
+
+
+// ============================================================================
+// FIND STOCK ITEM DIRECTLY FROM FIRESTORE
+// ============================================================================
+
+async function getStockItemFromFirestore(siteId, materialName) {
+
+    const normalized = normalizeMaterialName(materialName);
+
+    const snapshot = await getDocs(
+        collection(db, 'stock')
     );
 
-    // Find the latest known material unit cost.
-    // Matching is case-insensitive.
-    const getMaterialUnitCost = (materialName) => {
-        if (!materialName) return 0;
+    let found = null;
 
-        const normalizedName = materialName.trim().toLowerCase();
+    snapshot.forEach(docSnap => {
 
-        const matches = materialsData
-            .filter(m =>
-                m.site_id === currentSiteId &&
-                String(m.name || '').trim().toLowerCase() === normalizedName &&
-                Number(m.unit_cost) > 0
-            )
-            .sort((a, b) => {
-                const dateA = new Date(
-                    a.date_used ||
-                    a.created_at ||
-                    a.updated_at ||
-                    0
-                );
+        const data = docSnap.data();
 
-                const dateB = new Date(
-                    b.date_used ||
-                    b.created_at ||
-                    b.updated_at ||
-                    0
-                );
+        if (
+            data.site_id === siteId &&
+            normalizeMaterialName(data.material_name) === normalized
+        ) {
 
-                return dateB - dateA;
-            });
+            found = {
+                id: docSnap.id,
+                ...data
+            };
+        }
+    });
 
-        return matches.length
-            ? Number(matches[0].unit_cost) || 0
-            : 0;
+    return found;
+}
+
+
+// ============================================================================
+// CREATE STOCK TRANSACTION
+// ============================================================================
+
+async function createStockTransaction(data) {
+
+    const transaction = {
+        site_id: data.site_id,
+        stock_id: data.stock_id || null,
+        material_name: data.material_name || '',
+        transaction_type: data.transaction_type,
+
+        quantity: roundNumber(data.quantity),
+
+        previous_quantity:
+            roundNumber(data.previous_quantity),
+
+        new_quantity:
+            roundNumber(data.new_quantity),
+
+        unit: data.unit || 'units',
+
+        unit_cost:
+            roundNumber(data.unit_cost),
+
+        total_value:
+            calculateTotal(
+                data.quantity,
+                data.unit_cost
+            ),
+
+        notes: data.notes || '',
+
+        recorded_by:
+            getCurrentUserId(),
+
+        created_at:
+            getCurrentTimestamp()
     };
 
-    // Get stock unit cost.
-    // First use the cost stored directly on stock.
-    // If unavailable, fall back to materialsData.
-    const getStockUnitCost = (item) => {
-        const storedCost = Number(item.unit_cost);
+    return addDoc(
+        collection(db, 'stock_transactions'),
+        transaction
+    );
+}
 
-        if (storedCost > 0) {
-            return storedCost;
+
+// ============================================================================
+// MATERIALS
+// ============================================================================
+
+function renderMaterials(container) {
+
+    const currentSite =
+        assignedSites.find(
+            site => site.id === currentSiteId
+        );
+
+    const siteName =
+        currentSite?.name || 'Unknown Site';
+
+    const siteMaterials =
+        materialsData
+            .filter(
+                material =>
+                    material.site_id === currentSiteId
+            );
+
+    const grouped = {};
+
+    siteMaterials.forEach(material => {
+
+        const dateKey =
+            material.date_used
+                ? formatDate(material.date_used)
+                : t('common.noDataAvailable');
+
+        if (!grouped[dateKey]) {
+            grouped[dateKey] = [];
         }
 
-        return getMaterialUnitCost(item.material_name);
-    };
+        grouped[dateKey].push(material);
+    });
+
 
     let html = `
-        <div class="flex justify-between items-center mb-4">
+
+        <div class="flex justify-between items-center mb-4 sm:mb-6">
 
             <h2 class="text-xl sm:text-2xl font-bold">
-                ${t('stock.title')}
+                ${t('materials.title')}
             </h2>
 
             <button
-                onclick="openAddStockModal()"
-                class="px-3 py-2 bg-emerald-600 text-white rounded-xl hover:bg-emerald-700 flex items-center gap-2 text-sm"
+                onclick="openAddMaterialModal()"
+                class="px-3 py-2 bg-emerald-600 text-white rounded-xl
+                       hover:bg-emerald-700 flex items-center gap-2 text-sm"
             >
-                <iconify-icon icon="material-symbols:add"></iconify-icon>
-                ${t('stock.receiveStock')}
+                <iconify-icon
+                    icon="material-symbols:add">
+                </iconify-icon>
+
+                ${t('materials.recordUsage')}
             </button>
 
         </div>
 
-        <div class="bg-white rounded-2xl border p-4 shadow-sm mb-4">
+        <div class="bg-white rounded-2xl border p-4 mb-5 shadow-sm">
 
             <p class="text-sm text-slate-600">
-                <strong>${t('navigation.dashboard')}:</strong>
-                ${site.name}
+
+                <strong>
+                    ${t('navigation.dashboard')}:
+                </strong>
+
+                ${siteName}
+
             </p>
 
         </div>
     `;
 
+
+    if (!siteMaterials.length) {
+
+        html += `
+
+            <p class="text-slate-500">
+                ${t('materials.noMaterials')}
+            </p>
+
+        `;
+
+        container.innerHTML = html;
+
+        return;
+    }
+
+
+    const sortedDates =
+        Object.keys(grouped).sort(
+            (a, b) =>
+                new Date(b) - new Date(a)
+        );
+
+
+    sortedDates.forEach(date => {
+
+        const materials =
+            grouped[date]
+                .sort(
+                    (a, b) =>
+                        getDateValue(b.created_at) -
+                        getDateValue(a.created_at)
+                );
+
+
+        html += `
+
+            <div class="mb-6">
+
+                <h3
+                    class="font-bold text-sm text-slate-700 mb-3
+                           flex items-center gap-2"
+                >
+
+                    <iconify-icon
+                        icon="material-symbols:calendar-month"
+                        class="text-emerald-500">
+                    </iconify-icon>
+
+                    ${date}
+
+                </h3>
+
+                <div
+                    class="grid grid-cols-1 sm:grid-cols-2
+                           lg:grid-cols-3 gap-5"
+                >
+        `;
+
+
+        materials.forEach(material => {
+
+            const quantity =
+                toNumber(material.quantity_used);
+
+            const unitCost =
+                toNumber(material.unit_cost);
+
+            const total =
+                calculateTotal(
+                    quantity,
+                    unitCost
+                );
+
+            const imageUrl =
+                material.image ||
+                PLACEHOLDER_IMG;
+
+
+            html += `
+
+                <div
+                    class="bg-white rounded-2xl border overflow-hidden
+                           shadow-sm hover:shadow-md transition"
+                >
+
+                    <div
+                        class="relative w-full h-48 overflow-hidden
+                               bg-slate-100"
+                    >
+
+                        <img
+                            src="${imageUrl}"
+                            class="w-full h-full object-cover"
+                            onerror="this.src='${PLACEHOLDER_IMG}'"
+                        >
+
+                        <div
+                            class="absolute top-3 left-3
+                                   bg-emerald-600/90 text-white
+                                   text-xs font-medium px-2.5 py-1
+                                   rounded-full"
+                        >
+                            ${siteName}
+                        </div>
+
+                    </div>
+
+
+                    <div class="p-5">
+
+                        <h3
+                            class="font-bold text-lg text-slate-800 truncate"
+                        >
+                            ${material.name}
+                        </h3>
+
+
+                        <div class="mt-4 space-y-2">
+
+                            <div
+                                class="flex justify-between text-sm
+                                       border-b border-slate-100 pb-2"
+                            >
+
+                                <span class="text-slate-500">
+                                    ${t('materials.quantityUsed')}
+                                </span>
+
+                                <span class="font-semibold">
+                                    ${quantity}
+                                </span>
+
+                            </div>
+
+
+                            <div
+                                class="flex justify-between text-sm
+                                       border-b border-slate-100 pb-2"
+                            >
+
+                                <span class="text-slate-500">
+                                    ${t('materials.unitCost')}
+                                </span>
+
+                                <span class="font-semibold">
+                                    ${formatRWF(unitCost)}
+                                </span>
+
+                            </div>
+
+
+                            <div
+                                class="flex justify-between text-sm"
+                            >
+
+                                <span class="text-slate-500">
+                                    ${t('materials.totalAmount')}
+                                </span>
+
+                                <span
+                                    class="font-bold text-emerald-600"
+                                >
+                                    ${formatRWF(total)}
+                                </span>
+
+                            </div>
+
+                        </div>
+
+
+                        <div
+                            class="mt-4 pt-3 border-t border-slate-100
+                                   flex justify-end gap-3"
+                        >
+
+                            <button
+                                onclick="editMaterial('${material.id}')"
+                                class="text-sm text-emerald-600
+                                       font-medium hover:text-emerald-800"
+                            >
+                                ${t('common.edit')}
+                            </button>
+
+                            <button
+                                onclick="deleteMaterial('${material.id}')"
+                                class="text-sm text-red-500
+                                       font-medium hover:text-red-700"
+                            >
+                                ${t('common.delete')}
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            `;
+        });
+
+
+        html += `
+
+                </div>
+
+            </div>
+
+        `;
+    });
+
+
+    container.innerHTML = html;
+}
+
+
+// ============================================================================
+// EDIT MATERIAL USAGE
+// ============================================================================
+
+window.editMaterial = (id) => {
+
+    const material =
+        materialsData.find(
+            item => item.id === id
+        );
+
+    if (!material) return;
+
+
+    openModal(
+        t('materials.editMaterial'),
+
+        `
+
+        <form
+            onsubmit="handleEditMaterial(event, '${id}')"
+            class="space-y-4"
+        >
+
+            <div>
+
+                <label class="block text-sm font-medium mb-1">
+                    ${t('materials.materialName')}
+                </label>
+
+                <input
+                    id="edit-mat-name"
+                    value="${material.name || ''}"
+                    class="w-full border rounded-lg p-3"
+                    required
+                >
+
+            </div>
+
+
+            <div>
+
+                <label class="block text-sm font-medium mb-1">
+                    ${t('materials.quantityUsed')}
+                </label>
+
+                <input
+                    id="edit-mat-used"
+                    type="number"
+                    min="0.01"
+                    step="0.01"
+                    value="${toNumber(material.quantity_used)}"
+                    class="w-full border rounded-lg p-3"
+                    required
+                >
+
+            </div>
+
+
+            <div>
+
+                <label class="block text-sm font-medium mb-1">
+                    ${t('materials.unitCost')}
+                </label>
+
+                <input
+                    id="edit-mat-unit-cost"
+                    type="number"
+                    min="0"
+                    step="0.01"
+                    value="${toNumber(material.unit_cost)}"
+                    class="w-full border rounded-lg p-3"
+                    required
+                >
+
+            </div>
+
+
+            <div>
+
+                <label class="block text-sm font-medium mb-1">
+                    ${t('common.add')} (optional)
+                </label>
+
+                <input
+                    id="edit-mat-image"
+                    type="file"
+                    accept="image/*"
+                    class="w-full border rounded-lg p-3"
+                >
+
+            </div>
+
+
+            <button
+                type="submit"
+                class="w-full bg-emerald-600
+                       hover:bg-emerald-700
+                       text-white py-3 rounded-xl"
+            >
+                ${t('common.save')}
+            </button>
+
+        </form>
+
+        `
+    );
+};
+
+
+// ============================================================================
+// HANDLE EDIT MATERIAL
+// ============================================================================
+
+window.handleEditMaterial = async (e, id) => {
+
+    e.preventDefault();
+
+    const form = e.target;
+
+    const btn =
+        getFormSubmitBtn(form);
+
+    setButtonLoading(btn, true);
+
+
+    try {
+
+        const oldMaterial =
+            materialsData.find(
+                item => item.id === id
+            );
+
+        if (!oldMaterial) {
+            throw new Error(
+                'Material usage record not found.'
+            );
+        }
+
+
+        const name =
+            getMaterialDisplayName(
+                document
+                    .getElementById('edit-mat-name')
+                    .value
+            );
+
+
+        const newUsed =
+            parseFloat(
+                document
+                    .getElementById('edit-mat-used')
+                    .value
+            );
+
+
+        const newUnitCost =
+            parseFloat(
+                document
+                    .getElementById('edit-mat-unit-cost')
+                    .value
+            );
+
+
+        const imageFile =
+            document
+                .getElementById('edit-mat-image')
+                ?.files?.[0];
+
+
+        if (!name || !Number.isFinite(newUsed) || newUsed <= 0) {
+
+            alert(
+                t('common.invalidValue')
+            );
+
+            return;
+        }
+
+
+        if (
+            !Number.isFinite(newUnitCost) ||
+            newUnitCost < 0
+        ) {
+
+            alert(
+                t('common.invalidValue')
+            );
+
+            return;
+        }
+
+
+        const siteId =
+            oldMaterial.site_id;
+
+
+        const oldUsed =
+            toNumber(
+                oldMaterial.quantity_used
+            );
+
+
+        const oldName =
+            oldMaterial.name;
+
+
+        // ------------------------------------------------------------
+        // Get latest stock directly from Firestore
+        // ------------------------------------------------------------
+
+        let stockItem =
+            await getStockItemFromFirestore(
+                siteId,
+                oldName
+            );
+
+
+        if (!stockItem) {
+
+            throw new Error(
+                `No stock record exists for "${oldName}".`
+            );
+        }
+
+
+        const currentStock =
+            toNumber(
+                stockItem.quantity
+            );
+
+
+        // ------------------------------------------------------------
+        // Restore old usage first
+        // ------------------------------------------------------------
+
+        const restoredStock =
+            roundNumber(
+                currentStock + oldUsed
+            );
+
+
+        // ------------------------------------------------------------
+        // Then apply new usage
+        // ------------------------------------------------------------
+
+        if (newUsed > restoredStock) {
+
+            alert(
+                `Not enough stock available.\n\n` +
+                `Available after restoring old usage: ${restoredStock} ` +
+                `${stockItem.unit || 'units'}\n` +
+                `New usage requested: ${newUsed} ` +
+                `${stockItem.unit || 'units'}`
+            );
+
+            return;
+        }
+
+
+        const newStock =
+            roundNumber(
+                restoredStock - newUsed
+            );
+
+
+        let imageUrl =
+            oldMaterial.image || '';
+
+
+        if (imageFile) {
+
+            imageUrl =
+                await uploadImageToImgbb(
+                    imageFile
+                );
+        }
+
+
+        const now =
+            getCurrentTimestamp();
+
+
+        const batch =
+            writeBatch(db);
+
+
+        // ------------------------------------------------------------
+        // Update material usage
+        // ------------------------------------------------------------
+
+        batch.update(
+            doc(db, 'materials', id),
+            {
+                name,
+                quantity_used: newUsed,
+                unit_cost: newUnitCost,
+                image: imageUrl,
+                updated_at: now
+            }
+        );
+
+
+        // ------------------------------------------------------------
+        // Update stock
+        // ------------------------------------------------------------
+
+        batch.update(
+            doc(db, 'stock', stockItem.id),
+            {
+                quantity: newStock,
+                updated_at: now
+            }
+        );
+
+
+        // ------------------------------------------------------------
+        // Record complete adjustment
+        // ------------------------------------------------------------
+
+        batch.set(
+            doc(
+                collection(
+                    db,
+                    'stock_transactions'
+                )
+            ),
+            {
+                site_id: siteId,
+
+                stock_id: stockItem.id,
+
+                material_name:
+                    stockItem.material_name,
+
+                transaction_type:
+                    'MATERIAL_USAGE_EDITED',
+
+                quantity:
+                    roundNumber(
+                        newUsed - oldUsed
+                    ),
+
+                previous_quantity:
+                    currentStock,
+
+                new_quantity:
+                    newStock,
+
+                unit:
+                    stockItem.unit || 'units',
+
+                unit_cost:
+                    newUnitCost,
+
+                total_value:
+                    calculateTotal(
+                        Math.abs(newUsed - oldUsed),
+                        newUnitCost
+                    ),
+
+                notes:
+                    `Usage changed from ${oldUsed} to ${newUsed}`,
+
+                recorded_by:
+                    getCurrentUserId(),
+
+                created_at:
+                    now
+            }
+        );
+
+
+        await batch.commit();
+
+
+        closeModal();
+
+        showToast(
+            t('common.updatedSuccessfully'),
+            'success'
+        );
+
+    } catch (error) {
+
+        console.error(
+            'Error editing material usage:',
+            error
+        );
+
+        alert(
+            error.message ||
+            t('common.somethingWentWrong')
+        );
+
+    } finally {
+
+        setButtonLoading(
+            btn,
+            false
+        );
+    }
+};
+
+
+// ============================================================================
+// DELETE MATERIAL USAGE
+// ============================================================================
+
+window.deleteMaterial = async (id) => {
+
+    if (
+        !confirm(
+            t('common.areYouSure')
+        )
+    ) {
+        return;
+    }
+
+
+    const material =
+        materialsData.find(
+            item => item.id === id
+        );
+
+
+    if (!material) {
+        return;
+    }
+
+
+    try {
+
+        const siteId =
+            material.site_id;
+
+        const usedQuantity =
+            toNumber(
+                material.quantity_used
+            );
+
+
+        const stockItem =
+            await getStockItemFromFirestore(
+                siteId,
+                material.name
+            );
+
+
+        if (!stockItem) {
+
+            throw new Error(
+                `Stock record for "${material.name}" was not found.`
+            );
+        }
+
+
+        const previousQuantity =
+            toNumber(
+                stockItem.quantity
+            );
+
+
+        const newQuantity =
+            roundNumber(
+                previousQuantity +
+                usedQuantity
+            );
+
+
+        const now =
+            getCurrentTimestamp();
+
+
+        const batch =
+            writeBatch(db);
+
+
+        batch.update(
+            doc(db, 'stock', stockItem.id),
+            {
+                quantity: newQuantity,
+                updated_at: now
+            }
+        );
+
+
+        batch.delete(
+            doc(db, 'materials', id)
+        );
+
+
+        batch.set(
+            doc(
+                collection(
+                    db,
+                    'stock_transactions'
+                )
+            ),
+            {
+                site_id: siteId,
+
+                stock_id:
+                    stockItem.id,
+
+                material_name:
+                    stockItem.material_name,
+
+                transaction_type:
+                    'MATERIAL_USAGE_DELETED',
+
+                quantity:
+                    usedQuantity,
+
+                previous_quantity:
+                    previousQuantity,
+
+                new_quantity:
+                    newQuantity,
+
+                unit:
+                    stockItem.unit || 'units',
+
+                unit_cost:
+                    toNumber(stockItem.unit_cost),
+
+                total_value:
+                    calculateTotal(
+                        usedQuantity,
+                        toNumber(stockItem.unit_cost)
+                    ),
+
+                notes:
+                    `Deleted usage record and restored ${usedQuantity} ` +
+                    `${stockItem.unit || 'units'}`,
+
+                recorded_by:
+                    getCurrentUserId(),
+
+                created_at:
+                    now
+            }
+        );
+
+
+        await batch.commit();
+
+
+        showToast(
+            t('common.deletedSuccessfully'),
+            'success'
+        );
+
+    } catch (error) {
+
+        console.error(
+            'Error deleting material:',
+            error
+        );
+
+        alert(
+            error.message ||
+            t('common.somethingWentWrong')
+        );
+    }
+};
+
+
+// ============================================================================
+// ADD MATERIAL USAGE MODAL
+// ============================================================================
+
+window.openAddMaterialModal = () => {
+
+    let count = 0;
+
+
+    const addEntry = () => {
+
+        count++;
+
+
+        const container =
+            document.getElementById(
+                'material-entries'
+            );
+
+
+        if (!container) return;
+
+
+        const entry =
+            document.createElement('div');
+
+
+        entry.className =
+            'material-entry bg-slate-50 border rounded-xl p-3 mb-3';
+
+
+        entry.innerHTML = `
+
+            <div
+                class="grid grid-cols-1 sm:grid-cols-2 gap-2"
+            >
+
+                <input
+                    class="border rounded-lg p-2 text-sm"
+                    placeholder="${t('materials.materialName')}"
+                    name="mat-name-${count}"
+                    required
+                >
+
+                <input
+                    class="border rounded-lg p-2 text-sm"
+                    placeholder="${t('materials.quantityUsed')}"
+                    type="number"
+                    min="0.01"
+                    step="0.01"
+                    name="mat-used-${count}"
+                    required
+                >
+
+            </div>
+
+
+            <div
+                class="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-2"
+            >
+
+                <input
+                    class="border rounded-lg p-2 text-sm"
+                    placeholder="${t('materials.unitCost')}"
+                    type="number"
+                    min="0"
+                    step="0.01"
+                    name="mat-unit-cost-${count}"
+                    required
+                >
+
+                <input
+                    class="border rounded-lg p-2 text-sm"
+                    type="file"
+                    accept="image/*"
+                    name="mat-image-${count}"
+                >
+
+            </div>
+
+        `;
+
+
+        container.appendChild(entry);
+    };
+
+
+    openModal(
+        t('materials.recordUsage'),
+
+        `
+
+        <div class="mb-4">
+
+            <label class="block text-sm font-medium mb-1">
+                ${t('reports.startDate')}
+            </label>
+
+            <input
+                type="date"
+                id="usageDate"
+                value="${getTodayISO()}"
+                class="border rounded-lg p-2 text-sm w-full"
+                required
+            >
+
+        </div>
+
+
+        <div id="material-entries"></div>
+
+
+        <button
+            type="button"
+            onclick="addMaterialEntry()"
+            class="text-emerald-600 text-sm mt-2"
+        >
+            + ${t('materials.addMaterial')}
+        </button>
+
+
+        <button
+            type="button"
+            onclick="submitBatchMaterials()"
+            class="w-full bg-emerald-600
+                   hover:bg-emerald-700
+                   text-white py-3 rounded-xl mt-4"
+        >
+            ${t('common.save')}
+        </button>
+
+        `
+    );
+
+
+    window.addMaterialEntry =
+        addEntry;
+
+
+    addEntry();
+};
+
+
+// ============================================================================
+// SUBMIT MATERIAL USAGE
+// ============================================================================
+
+window.submitBatchMaterials = async () => {
+
+    const dateInput =
+        document.getElementById(
+            'usageDate'
+        );
+
+
+    const selectedDate =
+        dateInput?.value ||
+        getTodayISO();
+
+
+    if (!selectedDate) {
+
+        alert(
+            t('common.requiredField')
+        );
+
+        return;
+    }
+
+
+    const entries =
+        Array.from(
+            document.querySelectorAll(
+                '#material-entries .material-entry'
+            )
+        );
+
+
+    if (!entries.length) {
+
+        alert(
+            t('common.noDataAvailable')
+        );
+
+        return;
+    }
+
+
+    try {
+
+        // ------------------------------------------------------------
+        // Read all entries first
+        // ------------------------------------------------------------
+
+        const usageEntries = [];
+
+
+        for (const entry of entries) {
+
+            const nameInput =
+                entry.querySelector(
+                    '[name^="mat-name-"]'
+                );
+
+            const quantityInput =
+                entry.querySelector(
+                    '[name^="mat-used-"]'
+                );
+
+            const costInput =
+                entry.querySelector(
+                    '[name^="mat-unit-cost-"]'
+                );
+
+            const imageInput =
+                entry.querySelector(
+                    '[name^="mat-image-"]'
+                );
+
+
+            const name =
+                getMaterialDisplayName(
+                    nameInput?.value
+                );
+
+
+            const quantity =
+                parseFloat(
+                    quantityInput?.value
+                );
+
+
+            const unitCost =
+                parseFloat(
+                    costInput?.value
+                );
+
+
+            const imageFile =
+                imageInput?.files?.[0];
+
+
+            if (!name) continue;
+
+
+            if (
+                !Number.isFinite(quantity) ||
+                quantity <= 0
+            ) {
+
+                throw new Error(
+                    `Invalid quantity for "${name}".`
+                );
+            }
+
+
+            if (
+                !Number.isFinite(unitCost) ||
+                unitCost < 0
+            ) {
+
+                throw new Error(
+                    `Invalid unit cost for "${name}".`
+                );
+            }
+
+
+            usageEntries.push({
+                name,
+                quantity,
+                unitCost,
+                imageFile
+            });
+        }
+
+
+        if (!usageEntries.length) {
+
+            alert(
+                t('common.noDataAvailable')
+            );
+
+            return;
+        }
+
+
+        // ------------------------------------------------------------
+        // Combine duplicate material names in the same submission
+        // ------------------------------------------------------------
+
+        const combined = new Map();
+
+
+        usageEntries.forEach(entry => {
+
+            const key =
+                normalizeMaterialName(
+                    entry.name
+                );
+
+
+            if (!combined.has(key)) {
+
+                combined.set(
+                    key,
+                    {
+                        name: entry.name,
+                        quantity: 0,
+                        unitCost: entry.unitCost,
+                        imageFile: entry.imageFile
+                    }
+                );
+
+            }
+
+
+            const existing =
+                combined.get(key);
+
+
+            existing.quantity =
+                roundNumber(
+                    existing.quantity +
+                    entry.quantity
+                );
+
+
+            if (
+                entry.unitCost > 0
+            ) {
+
+                existing.unitCost =
+                    entry.unitCost;
+            }
+
+
+            if (entry.imageFile) {
+
+                existing.imageFile =
+                    entry.imageFile;
+            }
+        });
+
+
+        const finalEntries =
+            Array.from(
+                combined.values()
+            );
+
+
+        // ------------------------------------------------------------
+        // Validate stock BEFORE making any database changes
+        // ------------------------------------------------------------
+
+        const stockRecords = [];
+
+
+        for (const entry of finalEntries) {
+
+            const stockItem =
+                await getStockItemFromFirestore(
+                    currentSiteId,
+                    entry.name
+                );
+
+
+            if (!stockItem) {
+
+                throw new Error(
+                    `No stock exists for "${entry.name}". ` +
+                    `Receive this material into stock first.`
+                );
+            }
+
+
+            const currentQuantity =
+                toNumber(
+                    stockItem.quantity
+                );
+
+
+            if (
+                entry.quantity >
+                currentQuantity
+            ) {
+
+                throw new Error(
+                    `Insufficient stock for "${entry.name}". ` +
+                    `Available: ${currentQuantity} ` +
+                    `${stockItem.unit || 'units'}. ` +
+                    `Requested: ${entry.quantity}.`
+                );
+            }
+
+
+            stockRecords.push({
+                entry,
+                stockItem,
+                previousQuantity:
+                    currentQuantity,
+
+                newQuantity:
+                    roundNumber(
+                        currentQuantity -
+                        entry.quantity
+                    )
+            });
+        }
+
+
+        // ------------------------------------------------------------
+        // Upload images BEFORE Firestore batch
+        // ------------------------------------------------------------
+
+        for (const record of stockRecords) {
+
+            if (
+                record.entry.imageFile
+            ) {
+
+                record.imageUrl =
+                    await uploadImageToImgbb(
+                        record.entry.imageFile
+                    );
+
+            } else {
+
+                record.imageUrl = '';
+            }
+        }
+
+
+        // ------------------------------------------------------------
+        // Prepare batch
+        // ------------------------------------------------------------
+
+        const batch =
+            writeBatch(db);
+
+
+        const now =
+            getCurrentTimestamp();
+
+
+        const usageDate =
+            new Date(
+                `${selectedDate}T00:00:00.000Z`
+            ).toISOString();
+
+
+        for (const record of stockRecords) {
+
+            const {
+                entry,
+                stockItem,
+                previousQuantity,
+                newQuantity
+            } = record;
+
+
+            const materialRef =
+                doc(
+                    collection(
+                        db,
+                        'materials'
+                    )
+                );
+
+
+            batch.set(
+                materialRef,
+                {
+                    site_id:
+                        currentSiteId,
+
+                    name:
+                        entry.name,
+
+                    quantity_used:
+                        entry.quantity,
+
+                    unit:
+                        stockItem.unit ||
+                        'units',
+
+                    unit_cost:
+                        entry.unitCost,
+
+                    total_amount:
+                        calculateTotal(
+                            entry.quantity,
+                            entry.unitCost
+                        ),
+
+                    image:
+                        record.imageUrl || '',
+
+                    date_used:
+                        usageDate,
+
+                    created_at:
+                        now,
+
+                    updated_at:
+                        now
+                }
+            );
+
+
+            // Update stock
+
+            batch.update(
+                doc(
+                    db,
+                    'stock',
+                    stockItem.id
+                ),
+                {
+                    quantity:
+                        newQuantity,
+
+                    updated_at:
+                        now
+                }
+            );
+
+
+            // Create transaction
+
+            const transactionRef =
+                doc(
+                    collection(
+                        db,
+                        'stock_transactions'
+                    )
+                );
+
+
+            batch.set(
+                transactionRef,
+                {
+                    site_id:
+                        currentSiteId,
+
+                    stock_id:
+                        stockItem.id,
+
+                    material_name:
+                        stockItem.material_name,
+
+                    transaction_type:
+                        'MATERIAL_USAGE',
+
+                    quantity:
+                        entry.quantity,
+
+                    previous_quantity:
+                        previousQuantity,
+
+                    new_quantity:
+                        newQuantity,
+
+                    unit:
+                        stockItem.unit ||
+                        'units',
+
+                    unit_cost:
+                        entry.unitCost,
+
+                    total_value:
+                        calculateTotal(
+                            entry.quantity,
+                            entry.unitCost
+                        ),
+
+                    notes:
+                        'Material used',
+
+                    recorded_by:
+                        getCurrentUserId(),
+
+                    created_at:
+                        now
+                }
+            );
+        }
+
+
+        await batch.commit();
+
+
+        closeModal();
+
+
+        showToast(
+            t('common.savedSuccessfully'),
+            'success'
+        );
+
+    } catch (error) {
+
+        console.error(
+            'Error recording material usage:',
+            error
+        );
+
+
+        alert(
+            error.message ||
+            t('common.somethingWentWrong')
+        );
+    }
+};
+
+
+// ============================================================================
+// STOCK
+// ============================================================================
+
+function renderStock(container) {
+
+    const site =
+        assignedSites.find(
+            site => site.id === currentSiteId
+        );
+
+
+    if (!site) {
+
+        container.innerHTML = `
+
+            <p class="text-red-500">
+                ${t('common.noDataAvailable')}
+            </p>
+
+        `;
+
+        return;
+    }
+
+
+    const siteStock =
+        stockData
+            .filter(
+                item =>
+                    item.site_id === currentSiteId
+            )
+            .sort((a, b) =>
+                normalizeMaterialName(
+                    a.material_name
+                ).localeCompare(
+                    normalizeMaterialName(
+                        b.material_name
+                    )
+                )
+            );
+
+
+    let html = `
+
+        <div
+            class="flex justify-between items-center mb-4"
+        >
+
+            <h2 class="text-xl sm:text-2xl font-bold">
+                ${t('stock.title')}
+            </h2>
+
+
+            <button
+                onclick="openAddStockModal()"
+                class="px-3 py-2 bg-emerald-600
+                       text-white rounded-xl
+                       hover:bg-emerald-700
+                       flex items-center gap-2 text-sm"
+            >
+
+                <iconify-icon
+                    icon="material-symbols:add">
+                </iconify-icon>
+
+                ${t('stock.receiveStock')}
+
+            </button>
+
+        </div>
+
+
+        <div
+            class="bg-white rounded-2xl border
+                   p-4 shadow-sm mb-5"
+        >
+
+            <p class="text-sm text-slate-600">
+
+                <strong>
+                    ${t('navigation.dashboard')}:
+                </strong>
+
+                ${site.name}
+
+            </p>
+
+        </div>
+
+    `;
+
+
     if (!siteStock.length) {
 
         html += `
+
             <p class="text-slate-500 text-sm">
                 ${t('common.noDataAvailable')}
             </p>
+
         `;
 
     } else {
 
         html += `
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+
+            <div
+                class="grid grid-cols-1
+                       sm:grid-cols-2
+                       lg:grid-cols-3 gap-5"
+            >
+
         `;
+
 
         siteStock.forEach(item => {
 
-            const quantity = Number(item.quantity) || 0;
-            const minimumQuantity = Number(item.minimum_quantity) || 0;
+            const quantity =
+                toNumber(
+                    item.quantity
+                );
 
-            const unitCost = getStockUnitCost(item);
 
-            const value = quantity * unitCost;
+            const minimumQuantity =
+                toNumber(
+                    item.minimum_quantity
+                );
+
+
+            const unitCost =
+                getStockUnitCost(
+                    item
+                );
+
+
+            const value =
+                calculateTotal(
+                    quantity,
+                    unitCost
+                );
+
 
             let status;
             let statusClass;
 
+
             if (quantity <= 0) {
-                status = t('stock.outOfStock');
-                statusClass = 'stock-status-out';
+
+                status =
+                    t('stock.outOfStock');
+
+                statusClass =
+                    'stock-status-out';
+
             } else if (
                 minimumQuantity > 0 &&
                 quantity <= minimumQuantity
             ) {
-                status = t('stock.lowStock');
-                statusClass = 'stock-status-low';
+
+                status =
+                    t('stock.lowStock');
+
+                statusClass =
+                    'stock-status-low';
+
             } else {
-                status = t('stock.normal');
-                statusClass = 'stock-status-normal';
+
+                status =
+                    t('stock.normal');
+
+                statusClass =
+                    'stock-status-normal';
             }
 
+
             html += `
-                <div class="bg-white rounded-2xl border overflow-hidden shadow-sm hover:shadow-md transition">
+
+                <div
+                    class="bg-white rounded-2xl
+                           border overflow-hidden
+                           shadow-sm hover:shadow-md
+                           transition"
+                >
 
                     <div class="p-5">
 
-                        <!-- Header -->
-                        <div class="flex justify-between items-start gap-3">
+                        <div
+                            class="flex justify-between
+                                   items-start gap-3"
+                        >
 
-                            <h3 class="font-bold text-lg text-slate-800">
+                            <h3
+                                class="font-bold text-lg
+                                       text-slate-800"
+                            >
                                 ${item.material_name || 'Unknown'}
                             </h3>
 
-                            <span class="text-xs font-medium px-2 py-1 rounded-full ${statusClass}">
+
+                            <span
+                                class="text-xs font-medium
+                                       px-2 py-1 rounded-full
+                                       ${statusClass}"
+                            >
                                 ${status}
                             </span>
 
                         </div>
 
 
-                        <!-- Stock Information -->
-                        <div class="mt-3 space-y-2 text-sm">
+                        <div
+                            class="mt-4 space-y-2 text-sm"
+                        >
 
                             <p>
                                 <strong>
@@ -1462,43 +3123,47 @@ function renderStock(container) {
                                 ${item.unit || 'units'}
                             </p>
 
+
                             <p>
+
                                 <strong>
                                     Unit Cost:
                                 </strong>
 
-                                ${unitCost.toLocaleString(
-                                    'en-RW',
-                                    {
-                                        minimumFractionDigits: 2,
-                                        maximumFractionDigits: 2
-                                    }
-                                )} RWF
+                                ${formatRWF(unitCost)}
+
                             </p>
 
+
                             <p>
+
                                 <strong>
                                     ${t('stock.value')}:
                                 </strong>
 
-                                <span class="font-semibold text-emerald-700">
-                                    ${value.toLocaleString(
-                                        'en-RW',
-                                        {
-                                            minimumFractionDigits: 2,
-                                            maximumFractionDigits: 2
-                                        }
-                                    )} RWF
+                                <span
+                                    class="font-semibold
+                                           text-emerald-700"
+                                >
+                                    ${formatRWF(value)}
                                 </span>
+
                             </p>
 
+
                             <p>
+
                                 <strong>
                                     ${t('stock.lastUpdated')}:
                                 </strong>
 
-                                ${formatDate(item.updated_at)}
+                                ${formatDate(
+                                    item.updated_at ||
+                                    item.created_at
+                                )}
+
                             </p>
+
 
                             ${
                                 item.notes
@@ -1517,19 +3182,27 @@ function renderStock(container) {
                         </div>
 
 
-                        <!-- Actions -->
-                        <div class="mt-4 flex gap-3">
+                        <div
+                            class="mt-4 pt-3
+                                   border-t border-slate-100
+                                   flex gap-4"
+                        >
 
                             <button
                                 onclick="editStockItem('${item.id}')"
-                                class="text-xs text-emerald-600 font-medium hover:text-emerald-800"
+                                class="text-xs text-emerald-600
+                                       font-medium
+                                       hover:text-emerald-800"
                             >
                                 ${t('common.edit')}
                             </button>
 
+
                             <button
                                 onclick="viewStockHistory('${item.id}')"
-                                class="text-xs text-blue-600 font-medium hover:text-blue-800"
+                                class="text-xs text-blue-600
+                                       font-medium
+                                       hover:text-blue-800"
                             >
                                 ${t('stock.stockHistory')}
                             </button>
@@ -1539,91 +3212,157 @@ function renderStock(container) {
                     </div>
 
                 </div>
+
             `;
         });
+
 
         html += `</div>`;
     }
 
 
-    // =============================================================
-    // RECENT STOCK TRANSACTIONS
-    // =============================================================
-    const recentTrans = stockTransactions
-        .filter(t => t.site_id === currentSiteId)
-        .slice(0, 10);
+    // ------------------------------------------------------------------------
+    // RECENT TRANSACTIONS
+    // ------------------------------------------------------------------------
 
-    if (recentTrans.length) {
+    const recentTransactions =
+        stockTransactions
+            .filter(
+                transaction =>
+                    transaction.site_id === currentSiteId
+            )
+            .sort(
+                (a, b) =>
+                    getDateValue(b.created_at) -
+                    getDateValue(a.created_at)
+            )
+            .slice(0, 10);
+
+
+    if (recentTransactions.length) {
 
         html += `
-            <div class="mt-6 bg-white rounded-2xl border p-4 shadow-sm">
+
+            <div
+                class="mt-6 bg-white rounded-2xl
+                       border p-4 shadow-sm"
+            >
 
                 <h3 class="font-semibold text-sm mb-3">
                     ${t('stock.stockHistory')}
                 </h3>
 
+
                 <div class="space-y-2">
 
-                    ${recentTrans.map(transaction => `
+                    ${recentTransactions.map(
+                        transaction => {
 
-                        <div class="flex justify-between gap-3 text-sm border-b border-slate-100 pb-2 last:border-0">
+                            const sign =
+                                getTransactionSign(
+                                    transaction.transaction_type
+                                );
 
-                            <div>
 
-                                <span class="font-medium">
-                                    ${transaction.material_name}
-                                </span>
+                            return `
 
-                                <span class="text-xs text-slate-500 ml-2">
+                                <div
+                                    class="flex justify-between
+                                           gap-3 text-sm
+                                           border-b
+                                           border-slate-100
+                                           pb-2 last:border-0"
+                                >
 
-                                    ${
-                                        transaction.transaction_type === 'STOCK_ADDED'
-                                            ? '+'
-                                            : transaction.transaction_type === 'STOCK_DEDUCTED'
-                                                ? '-'
-                                                : ''
-                                    }
+                                    <div>
 
-                                    ${transaction.quantity}
-                                    ${transaction.unit || ''}
+                                        <span
+                                            class="font-medium"
+                                        >
+                                            ${transaction.material_name}
+                                        </span>
 
-                                </span>
 
-                            </div>
+                                        <span
+                                            class="text-xs
+                                                   text-slate-500 ml-2"
+                                        >
 
-                            <span class="text-xs text-slate-400 whitespace-nowrap">
-                                ${formatDate(transaction.created_at)}
-                            </span>
+                                            ${sign}
 
-                        </div>
+                                            ${toNumber(
+                                                transaction.quantity
+                                            )}
 
-                    `).join('')}
+                                            ${transaction.unit || ''}
+
+                                            —
+                                            ${getTransactionLabel(
+                                                transaction.transaction_type
+                                            )}
+
+                                        </span>
+
+                                    </div>
+
+
+                                    <span
+                                        class="text-xs
+                                               text-slate-400
+                                               whitespace-nowrap"
+                                    >
+                                        ${formatDate(
+                                            transaction.created_at
+                                        )}
+                                    </span>
+
+                                </div>
+
+                            `;
+                        }
+                    ).join('')}
 
                 </div>
 
             </div>
+
         `;
     }
+
 
     container.innerHTML = html;
 }
 
 
-// =================================================================
-// RECEIVE STOCK
-// =================================================================
+// ============================================================================
+// RECEIVE STOCK MODAL
+// ============================================================================
+
 window.openAddStockModal = () => {
 
-    const materialNames = [
-        ...new Map(
-            materialsData
-                .filter(m => m.name)
-                .map(m => [
-                    String(m.name).trim().toLowerCase(),
-                    String(m.name).trim()
-                ])
-        ).values()
-    ];
+    const materialNames =
+        [
+            ...new Map(
+                materialsData
+                    .filter(
+                        material =>
+                            material.site_id === currentSiteId &&
+                            material.name
+                    )
+                    .map(material => [
+
+                        normalizeMaterialName(
+                            material.name
+                        ),
+
+                        getMaterialDisplayName(
+                            material.name
+                        )
+
+                    ])
+            ).values()
+        ];
+
 
     const units = [
         'bags',
@@ -1632,328 +3371,405 @@ window.openAddStockModal = () => {
         'litres',
         'pieces',
         'rolls',
-        'cubic meters'
+        'cubic meters',
+        'm²',
+        'm³',
+        'units'
     ];
 
+
     openModal(
+
         t('stock.receiveStock'),
 
         `
+
         <form
             onsubmit="handleAddStock(event)"
             class="space-y-4"
         >
 
-            <!-- Material -->
             <div>
 
-                <label class="block text-sm font-medium">
+                <label
+                    class="block text-sm font-medium mb-1"
+                >
                     ${t('materials.materialName')}
                 </label>
 
+
                 <input
-                    list="mat-list"
-                    class="w-full border rounded-lg p-2.5 text-sm"
+                    list="stock-material-list"
                     id="stock-material"
+                    class="w-full border
+                           rounded-lg p-2.5 text-sm"
                     required
                 >
 
-                <datalist id="mat-list">
-                    ${materialNames.map(name => `
-                        <option value="${name}">
-                    `).join('')}
+
+                <datalist id="stock-material-list">
+
+                    ${materialNames.map(
+                        name => `
+                            <option value="${name}">
+                        `
+                    ).join('')}
+
                 </datalist>
 
             </div>
 
 
-            <!-- Quantity -->
             <div>
 
-                <label class="block text-sm font-medium">
+                <label
+                    class="block text-sm font-medium mb-1"
+                >
                     ${t('stock.quantity')}
                 </label>
 
+
                 <input
                     type="number"
-                    step="0.01"
-                    min="0.01"
-                    class="w-full border rounded-lg p-2.5 text-sm"
                     id="stock-quantity"
+                    min="0.01"
+                    step="0.01"
+                    class="w-full border
+                           rounded-lg p-2.5 text-sm"
                     required
                 >
 
             </div>
 
 
-            <!-- Unit -->
             <div>
 
-                <label class="block text-sm font-medium">
+                <label
+                    class="block text-sm font-medium mb-1"
+                >
                     Unit
                 </label>
 
+
                 <select
-                    class="w-full border rounded-lg p-2.5 text-sm"
                     id="stock-unit"
+                    class="w-full border
+                           rounded-lg p-2.5 text-sm"
                 >
-                    ${units.map(u => `
-                        <option value="${u}">
-                            ${u}
-                        </option>
-                    `).join('')}
+
+                    ${units.map(
+                        unit => `
+                            <option value="${unit}">
+                                ${unit}
+                            </option>
+                        `
+                    ).join('')}
+
                 </select>
 
             </div>
 
 
-            <!-- Unit Cost -->
             <div>
 
-                <label class="block text-sm font-medium">
+                <label
+                    class="block text-sm font-medium mb-1"
+                >
                     Unit Cost (RWF)
                 </label>
 
+
                 <input
                     type="number"
-                    step="0.01"
-                    min="0"
-                    class="w-full border rounded-lg p-2.5 text-sm"
                     id="stock-unit-cost"
+                    min="0"
+                    step="0.01"
+                    class="w-full border
+                           rounded-lg p-2.5 text-sm"
                     placeholder="e.g. 5500"
                 >
 
-                <p class="text-xs text-slate-400 mt-1">
-                    Used to calculate stock value.
-                </p>
-
             </div>
 
 
-            <!-- Minimum Stock -->
             <div>
 
-                <label class="block text-sm font-medium">
+                <label
+                    class="block text-sm font-medium mb-1"
+                >
                     ${t('stock.minimumStock')}
                 </label>
 
+
                 <input
                     type="number"
-                    step="0.01"
-                    min="0"
-                    class="w-full border rounded-lg p-2.5 text-sm"
                     id="stock-min"
+                    min="0"
+                    step="0.01"
+                    class="w-full border
+                           rounded-lg p-2.5 text-sm"
                 >
 
             </div>
 
 
-            <!-- Save -->
             <button
                 type="submit"
-                class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-xl"
+                class="w-full bg-emerald-600
+                       hover:bg-emerald-700
+                       text-white py-3 rounded-xl"
             >
                 ${t('common.save')}
             </button>
 
         </form>
+
         `
     );
 };
 
 
-// =================================================================
+// ============================================================================
 // HANDLE RECEIVE STOCK
-// =================================================================
+// ============================================================================
+
 window.handleAddStock = async (e) => {
 
     e.preventDefault();
 
-    const form = e.target;
-    const btn = getFormSubmitBtn(form);
 
-    setButtonLoading(btn, true);
+    const form =
+        e.target;
+
+
+    const btn =
+        getFormSubmitBtn(form);
+
+
+    setButtonLoading(
+        btn,
+        true
+    );
+
 
     try {
 
         const materialName =
-            document
-                .getElementById('stock-material')
-                .value
-                .trim();
+            getMaterialDisplayName(
+                document
+                    .getElementById('stock-material')
+                    .value
+            );
+
 
         const quantity =
             parseFloat(
-                document.getElementById('stock-quantity').value
-            ) || 0;
+                document
+                    .getElementById('stock-quantity')
+                    .value
+            );
+
 
         const unit =
-            document.getElementById('stock-unit').value;
+            document
+                .getElementById('stock-unit')
+                .value ||
+            'units';
+
 
         const enteredUnitCost =
             parseFloat(
-                document.getElementById('stock-unit-cost').value
-            ) || 0;
+                document
+                    .getElementById('stock-unit-cost')
+                    .value
+            );
 
-        const minQty =
+
+        const minimumQuantity =
             parseFloat(
-                document.getElementById('stock-min').value
-            ) || null;
+                document
+                    .getElementById('stock-min')
+                    .value
+            );
 
 
-        if (!materialName || quantity <= 0) {
+        if (
+            !materialName ||
+            !Number.isFinite(quantity) ||
+            quantity <= 0
+        ) {
 
-            alert(t('common.requiredField'));
+            alert(
+                t('common.invalidValue')
+            );
 
             return;
         }
 
 
-        // Case-insensitive existing-stock lookup
-        const normalizedName =
-            materialName.toLowerCase();
-
-        const existing = stockData.find(
-            s =>
-                s.site_id === currentSiteId &&
-                String(s.material_name || '')
-                    .trim()
-                    .toLowerCase() === normalizedName
-        );
+        const existing =
+            await getStockItemFromFirestore(
+                currentSiteId,
+                materialName
+            );
 
 
-        // If no unit cost was entered, use the latest material cost.
-        const fallbackUnitCost =
-            materialsData
-                .filter(m =>
-                    m.site_id === currentSiteId &&
-                    String(m.name || '')
-                        .trim()
-                        .toLowerCase() === normalizedName &&
-                    Number(m.unit_cost) > 0
-                )
-                .sort((a, b) =>
-                    new Date(
-                        b.date_used ||
-                        b.created_at ||
-                        b.updated_at ||
-                        0
-                    ) -
-                    new Date(
-                        a.date_used ||
-                        a.created_at ||
-                        a.updated_at ||
-                        0
-                    )
-                )[0]?.unit_cost || 0;
+        const fallbackCost =
+            findMaterialUnitCost(
+                currentSiteId,
+                materialName
+            );
 
 
         const unitCost =
+            Number.isFinite(enteredUnitCost) &&
             enteredUnitCost > 0
+
                 ? enteredUnitCost
-                : Number(existing?.unit_cost) > 0
-                    ? Number(existing.unit_cost)
-                    : Number(fallbackUnitCost) || 0;
+
+                : existing &&
+                  toNumber(existing.unit_cost) > 0
+
+                    ? toNumber(
+                        existing.unit_cost
+                    )
+
+                    : fallbackCost;
 
 
-        let stockRef;
-        let previousQuantity = 0;
-        let newQuantity = quantity;
+        const previousQuantity =
+            existing
+                ? toNumber(
+                    existing.quantity
+                )
+                : 0;
 
 
-        // =========================================================
-        // EXISTING STOCK
-        // =========================================================
+        const newQuantity =
+            roundNumber(
+                previousQuantity +
+                quantity
+            );
+
+
+        const now =
+            getCurrentTimestamp();
+
+
+        const batch =
+            writeBatch(db);
+
+
+        let stockId;
+
+
         if (existing) {
 
-            stockRef = doc(
-                db,
-                'stock',
-                existing.id
-            );
-
-            previousQuantity =
-                Number(existing.quantity) || 0;
-
-            newQuantity =
-                previousQuantity + quantity;
+            stockId =
+                existing.id;
 
 
-            await updateDoc(
-                stockRef,
+            batch.update(
+                doc(
+                    db,
+                    'stock',
+                    existing.id
+                ),
                 {
-                    // Preserve the first saved spelling.
-                    material_name: existing.material_name,
+                    quantity:
+                        newQuantity,
 
-                    quantity: newQuantity,
-
-                    unit: unit || existing.unit || 'units',
+                    unit:
+                        unit ||
+                        existing.unit ||
+                        'units',
 
                     unit_cost:
-                        unitCost > 0
-                            ? unitCost
-                            : Number(existing.unit_cost) || 0,
+                        unitCost,
 
                     minimum_quantity:
-                        minQty !== null
-                            ? minQty
-                            : existing.minimum_quantity ?? null,
+                        Number.isFinite(
+                            minimumQuantity
+                        )
+                            ? minimumQuantity
+                            : existing.minimum_quantity ??
+                              null,
 
                     updated_at:
-                        new Date().toISOString()
+                        now
                 }
             );
 
-        }
+        } else {
 
-        // =========================================================
-        // NEW STOCK
-        // =========================================================
-        else {
+            const stockRef =
+                doc(
+                    collection(
+                        db,
+                        'stock'
+                    )
+                );
 
-            stockRef = await addDoc(
-                collection(db, 'stock'),
+
+            stockId =
+                stockRef.id;
+
+
+            batch.set(
+                stockRef,
                 {
-                    site_id: currentSiteId,
+                    site_id:
+                        currentSiteId,
 
-                    material_name: materialName,
+                    material_name:
+                        materialName,
 
-                    quantity,
+                    quantity:
+                        newQuantity,
 
-                    unit: unit || 'units',
+                    unit,
 
-                    unit_cost: unitCost,
+                    unit_cost:
+                        unitCost,
 
-                    minimum_quantity: minQty,
+                    minimum_quantity:
+                        Number.isFinite(
+                            minimumQuantity
+                        )
+                            ? minimumQuantity
+                            : null,
 
                     created_at:
-                        new Date().toISOString(),
+                        now,
 
                     updated_at:
-                        new Date().toISOString()
+                        now
                 }
             );
-
         }
 
 
-        // =========================================================
-        // STOCK TRANSACTION
-        // =========================================================
-        await addDoc(
-            collection(db, 'stock_transactions'),
+        const transactionRef =
+            doc(
+                collection(
+                    db,
+                    'stock_transactions'
+                )
+            );
+
+
+        batch.set(
+            transactionRef,
             {
-                site_id: currentSiteId,
+                site_id:
+                    currentSiteId,
 
                 stock_id:
-                    existing
-                        ? existing.id
-                        : stockRef.id,
+                    stockId,
 
                 material_name:
-                    existing
-                        ? existing.material_name
-                        : materialName,
+                    existing?.material_name ||
+                    materialName,
 
                 transaction_type:
                     'STOCK_ADDED',
@@ -1972,37 +3788,45 @@ window.handleAddStock = async (e) => {
                     unitCost,
 
                 total_value:
-                    quantity * unitCost,
+                    calculateTotal(
+                        quantity,
+                        unitCost
+                    ),
 
                 notes:
-                    'Received',
+                    'Received stock',
 
                 recorded_by:
-                    currentUser.uid,
+                    getCurrentUserId(),
 
                 created_at:
-                    new Date().toISOString()
+                    now
             }
         );
 
 
+        await batch.commit();
+
+
         closeModal();
+
 
         showToast(
             t('common.savedSuccessfully'),
             'success'
         );
 
-    } catch (err) {
+    } catch (error) {
 
         console.error(
             'Error receiving stock:',
-            err
+            error
         );
 
-        showToast(
-            t('common.somethingWentWrong'),
-            'error'
+
+        alert(
+            error.message ||
+            t('common.somethingWentWrong')
         );
 
     } finally {
@@ -2015,26 +3839,27 @@ window.handleAddStock = async (e) => {
 };
 
 
-// =================================================================
+// ============================================================================
 // EDIT STOCK
-// =================================================================
+// ============================================================================
+
 window.editStockItem = (id) => {
 
     const item =
-        stockData.find(s => s.id === id);
+        stockData.find(
+            stock => stock.id === id
+        );
+
 
     if (!item) return;
 
 
-    const unitCost =
-        Number(item.unit_cost) ||
-        0;
-
-
     openModal(
+
         t('stock.editStock'),
 
         `
+
         <form
             onsubmit="handleEditStock(event, '${id}')"
             class="space-y-4"
@@ -2042,14 +3867,14 @@ window.editStockItem = (id) => {
 
             <div>
 
-                <label class="block text-sm font-medium">
+                <label class="block text-sm font-medium mb-1">
                     ${t('materials.materialName')}
                 </label>
 
                 <input
-                    class="w-full border rounded-lg p-2.5 text-sm"
-                    value="${item.material_name || ''}"
                     id="edit-stock-material"
+                    value="${item.material_name || ''}"
+                    class="w-full border rounded-lg p-2.5"
                     required
                 >
 
@@ -2058,17 +3883,17 @@ window.editStockItem = (id) => {
 
             <div>
 
-                <label class="block text-sm font-medium">
+                <label class="block text-sm font-medium mb-1">
                     ${t('stock.quantity')}
                 </label>
 
                 <input
-                    type="number"
-                    step="0.01"
-                    min="0"
-                    value="${item.quantity || 0}"
                     id="edit-stock-quantity"
-                    class="w-full border rounded-lg p-2.5 text-sm"
+                    type="number"
+                    min="0"
+                    step="0.01"
+                    value="${toNumber(item.quantity)}"
+                    class="w-full border rounded-lg p-2.5"
                     required
                 >
 
@@ -2077,17 +3902,15 @@ window.editStockItem = (id) => {
 
             <div>
 
-                <label class="block text-sm font-medium">
-                    Unit Cost (RWF)
+                <label class="block text-sm font-medium mb-1">
+                    Unit
                 </label>
 
                 <input
-                    type="number"
-                    step="0.01"
-                    min="0"
-                    value="${unitCost}"
-                    id="edit-stock-unit-cost"
-                    class="w-full border rounded-lg p-2.5 text-sm"
+                    id="edit-stock-unit"
+                    value="${item.unit || 'units'}"
+                    class="w-full border rounded-lg p-2.5"
+                    required
                 >
 
             </div>
@@ -2095,17 +3918,38 @@ window.editStockItem = (id) => {
 
             <div>
 
-                <label class="block text-sm font-medium">
+                <label class="block text-sm font-medium mb-1">
+                    Unit Cost (RWF)
+                </label>
+
+                <input
+                    id="edit-stock-unit-cost"
+                    type="number"
+                    min="0"
+                    step="0.01"
+                    value="${toNumber(item.unit_cost)}"
+                    class="w-full border rounded-lg p-2.5"
+                >
+
+            </div>
+
+
+            <div>
+
+                <label class="block text-sm font-medium mb-1">
                     ${t('stock.minimumStock')}
                 </label>
 
                 <input
-                    value="${item.minimum_quantity ?? ''}"
                     id="edit-stock-min"
                     type="number"
-                    step="0.01"
                     min="0"
-                    class="w-full border rounded-lg p-2.5 text-sm"
+                    step="0.01"
+                    value="${
+                        item.minimum_quantity ??
+                        ''
+                    }"
+                    class="w-full border rounded-lg p-2.5"
                 >
 
             </div>
@@ -2113,102 +3957,221 @@ window.editStockItem = (id) => {
 
             <button
                 type="submit"
-                class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-xl"
+                class="w-full bg-emerald-600
+                       hover:bg-emerald-700
+                       text-white py-3 rounded-xl"
             >
                 ${t('common.save')}
             </button>
 
         </form>
+
         `
     );
 };
 
 
-// =================================================================
+// ============================================================================
 // HANDLE EDIT STOCK
-// =================================================================
+// ============================================================================
+
 window.handleEditStock = async (e, id) => {
 
     e.preventDefault();
 
-    const form = e.target;
-    const btn = getFormSubmitBtn(form);
 
-    setButtonLoading(btn, true);
+    const form =
+        e.target;
+
+
+    const btn =
+        getFormSubmitBtn(form);
+
+
+    setButtonLoading(
+        btn,
+        true
+    );
+
 
     try {
 
+        const item =
+            await getStockItemFromFirestoreById(
+                id
+            );
+
+
+        if (!item) {
+
+            throw new Error(
+                'Stock item not found.'
+            );
+        }
+
+
         const materialName =
-            document
-                .getElementById('edit-stock-material')
-                .value
-                .trim();
+            getMaterialDisplayName(
+                document
+                    .getElementById(
+                        'edit-stock-material'
+                    )
+                    .value
+            );
+
 
         const quantity =
             parseFloat(
-                document.getElementById('edit-stock-quantity').value
-            ) || 0;
+                document
+                    .getElementById(
+                        'edit-stock-quantity'
+                    )
+                    .value
+            );
+
+
+        const unit =
+            document
+                .getElementById(
+                    'edit-stock-unit'
+                )
+                .value
+                .trim() ||
+            'units';
+
 
         const unitCost =
             parseFloat(
-                document.getElementById('edit-stock-unit-cost').value
-            ) || 0;
+                document
+                    .getElementById(
+                        'edit-stock-unit-cost'
+                    )
+                    .value
+            );
 
-        const minQty =
+
+        const minimumQuantity =
             parseFloat(
-                document.getElementById('edit-stock-min').value
-            ) || null;
+                document
+                    .getElementById(
+                        'edit-stock-min'
+                    )
+                    .value
+            );
 
 
-        const item =
-            stockData.find(s => s.id === id);
+        if (
+            !materialName ||
+            !Number.isFinite(quantity) ||
+            quantity < 0
+        ) {
 
-        if (!item) {
-            throw new Error('Stock item not found.');
+            alert(
+                t('common.invalidValue')
+            );
+
+            return;
+        }
+
+
+        if (
+            !Number.isFinite(unitCost) ||
+            unitCost < 0
+        ) {
+
+            alert(
+                t('common.invalidValue')
+            );
+
+            return;
         }
 
 
         const previousQuantity =
-            Number(item.quantity) || 0;
+            toNumber(
+                item.quantity
+            );
 
 
-        await updateDoc(
-            doc(db, 'stock', id),
+        const difference =
+            roundNumber(
+                quantity -
+                previousQuantity
+            );
+
+
+        const now =
+            getCurrentTimestamp();
+
+
+        const batch =
+            writeBatch(db);
+
+
+        batch.update(
+            doc(
+                db,
+                'stock',
+                id
+            ),
             {
-                material_name: materialName,
+                material_name:
+                    materialName,
 
                 quantity,
 
-                unit_cost: unitCost,
+                unit,
 
-                minimum_quantity: minQty,
+                unit_cost:
+                    unitCost,
+
+                minimum_quantity:
+                    Number.isFinite(
+                        minimumQuantity
+                    )
+                        ? minimumQuantity
+                        : null,
 
                 updated_at:
-                    new Date().toISOString()
+                    now
             }
         );
 
 
-        // Record quantity adjustment
-        if (quantity !== previousQuantity) {
+        if (difference !== 0) {
 
-            await addDoc(
-                collection(db, 'stock_transactions'),
+            const transactionType =
+                difference > 0
+                    ? 'STOCK_ADJUSTMENT_IN'
+                    : 'STOCK_ADJUSTMENT_OUT';
+
+
+            const transactionRef =
+                doc(
+                    collection(
+                        db,
+                        'stock_transactions'
+                    )
+                );
+
+
+            batch.set(
+                transactionRef,
                 {
-                    site_id: currentSiteId,
+                    site_id:
+                        item.site_id,
 
-                    stock_id: id,
+                    stock_id:
+                        id,
 
-                    material_name: materialName,
+                    material_name:
+                        materialName,
 
                     transaction_type:
-                        'STOCK_ADJUSTMENT',
+                        transactionType,
 
                     quantity:
-                        Math.abs(
-                            quantity -
-                            previousQuantity
-                        ),
+                        Math.abs(difference),
 
                     previous_quantity:
                         previousQuantity,
@@ -2216,48 +4179,52 @@ window.handleEditStock = async (e, id) => {
                     new_quantity:
                         quantity,
 
-                    unit:
-                        item.unit || 'units',
+                    unit,
 
                     unit_cost:
                         unitCost,
 
                     total_value:
-                        Math.abs(
-                            quantity -
-                            previousQuantity
-                        ) * unitCost,
+                        calculateTotal(
+                            Math.abs(difference),
+                            unitCost
+                        ),
 
                     notes:
-                        'Manual adjustment',
+                        'Manual stock adjustment',
 
                     recorded_by:
-                        currentUser.uid,
+                        getCurrentUserId(),
 
                     created_at:
-                        new Date().toISOString()
+                        now
                 }
             );
         }
 
 
+        await batch.commit();
+
+
         closeModal();
+
 
         showToast(
             t('common.updatedSuccessfully'),
             'success'
         );
 
-    } catch (err) {
+    } catch (error) {
 
         console.error(
             'Error editing stock:',
-            err
+            error
         );
 
-        showToast(
-            t('common.somethingWentWrong'),
-            'error'
+
+        alert(
+            error.message ||
+            t('common.somethingWentWrong')
         );
 
     } finally {
@@ -2270,77 +4237,286 @@ window.handleEditStock = async (e, id) => {
 };
 
 
-// =================================================================
-// VIEW STOCK HISTORY
-// =================================================================
-window.viewStockHistory = (stockId) => {
+// ============================================================================
+// GET STOCK BY ID
+// ============================================================================
 
-    const transactions =
-        stockTransactions.filter(
-            transaction =>
-                transaction.stock_id === stockId
+async function getStockItemFromFirestoreById(id) {
+
+    const snapshot =
+        await getDoc(
+            doc(
+                db,
+                'stock',
+                id
+            )
         );
 
-    if (!transactions.length) {
 
-        alert(
-            t('common.noDataAvailable')
-        );
-
-        return;
+    if (!snapshot.exists()) {
+        return null;
     }
 
 
-    const html = `
-        <div class="space-y-2">
+    return {
+        id: snapshot.id,
+        ...snapshot.data()
+    };
+}
 
-            ${transactions.map(transaction => `
 
-                <div class="flex justify-between gap-3 text-sm border-b border-slate-100 pb-2">
+// ============================================================================
+// STOCK HISTORY
+// ============================================================================
 
-                    <span>
+window.viewStockHistory = async (stockId) => {
 
-                        ${
-                            transaction.transaction_type === 'STOCK_ADDED'
-                                ? '+'
-                                : transaction.transaction_type === 'STOCK_DEDUCTED'
-                                    ? '-'
-                                    : ''
-                        }
+    try {
 
-                        ${transaction.quantity}
-                        ${transaction.unit || ''}
+        let transactions =
+            stockTransactions.filter(
+                transaction =>
+                    transaction.stock_id === stockId
+            );
 
-                        — ${transaction.notes || ''}
 
-                        ${
-                            transaction.unit_cost
-                                ? `
-                                    <span class="text-xs text-slate-400">
-                                        @ ${Number(transaction.unit_cost).toLocaleString()} RWF
+        // Fallback: retrieve directly from Firestore
+        // if local data has not been refreshed yet.
+
+        if (!transactions.length) {
+
+            const snapshot =
+                await getDocs(
+                    collection(
+                        db,
+                        'stock_transactions'
+                    )
+                );
+
+
+            snapshot.forEach(
+                docSnap => {
+
+                    const data =
+                        docSnap.data();
+
+
+                    if (
+                        data.stock_id === stockId
+                    ) {
+
+                        transactions.push({
+                            id:
+                                docSnap.id,
+
+                            ...data
+                        });
+
+                    }
+                }
+            );
+        }
+
+
+        transactions.sort(
+            (a, b) =>
+                getDateValue(
+                    b.created_at
+                ) -
+                getDateValue(
+                    a.created_at
+                )
+        );
+
+
+        if (!transactions.length) {
+
+            openModal(
+                t('stock.stockHistory'),
+
+                `
+                    <p class="text-sm text-slate-500">
+                        ${t('common.noDataAvailable')}
+                    </p>
+                `
+            );
+
+            return;
+        }
+
+
+        const html = `
+
+            <div class="space-y-3">
+
+                ${transactions.map(
+                    transaction => {
+
+                        const type =
+                            transaction.transaction_type;
+
+
+                        const sign =
+                            getTransactionSign(type);
+
+
+                        const quantity =
+                            toNumber(
+                                transaction.quantity
+                            );
+
+
+                        const previous =
+                            toNumber(
+                                transaction.previous_quantity
+                            );
+
+
+                        const current =
+                            toNumber(
+                                transaction.new_quantity
+                            );
+
+
+                        return `
+
+                            <div
+                                class="border rounded-xl
+                                       p-3 bg-slate-50"
+                            >
+
+                                <div
+                                    class="flex justify-between
+                                           gap-3"
+                                >
+
+                                    <div>
+
+                                        <p
+                                            class="font-semibold
+                                                   text-slate-800"
+                                        >
+                                            ${getTransactionLabel(type)}
+                                        </p>
+
+
+                                        <p
+                                            class="text-sm
+                                                   text-slate-600 mt-1"
+                                        >
+
+                                            ${
+                                                sign
+                                                    ? `${sign}${quantity}`
+                                                    : quantity
+                                            }
+
+                                            ${transaction.unit || 'units'}
+
+                                        </p>
+
+                                    </div>
+
+
+                                    <span
+                                        class="text-xs
+                                               text-slate-400
+                                               whitespace-nowrap"
+                                    >
+                                        ${formatDate(
+                                            transaction.created_at
+                                        )}
                                     </span>
-                                `
-                                : ''
-                        }
 
-                    </span>
-
-                    <span class="text-slate-400 whitespace-nowrap">
-                        ${formatDate(transaction.created_at)}
-                    </span>
-
-                </div>
-
-            `).join('')}
-
-        </div>
-    `;
+                                </div>
 
 
-    openModal(
-        t('stock.stockHistory'),
-        html
-    );
+                                <div
+                                    class="mt-2 text-xs
+                                           text-slate-500
+                                           grid grid-cols-2 gap-2"
+                                >
+
+                                    <span>
+                                        Before:
+                                        <strong>
+                                            ${previous}
+                                        </strong>
+                                    </span>
+
+
+                                    <span>
+                                        After:
+                                        <strong>
+                                            ${current}
+                                        </strong>
+                                    </span>
+
+
+                                    <span>
+                                        Unit Cost:
+                                        <strong>
+                                            ${formatRWF(
+                                                transaction.unit_cost
+                                            )}
+                                        </strong>
+                                    </span>
+
+
+                                    <span>
+                                        Value:
+                                        <strong>
+                                            ${formatRWF(
+                                                transaction.total_value
+                                            )}
+                                        </strong>
+                                    </span>
+
+                                </div>
+
+
+                                ${
+                                    transaction.notes
+                                        ? `
+                                            <p
+                                                class="text-xs
+                                                       text-slate-400
+                                                       mt-2"
+                                            >
+                                                ${transaction.notes}
+                                            </p>
+                                        `
+                                        : ''
+                                }
+
+                            </div>
+
+                        `;
+                    }
+                ).join('')}
+
+            </div>
+
+        `;
+
+
+        openModal(
+            t('stock.stockHistory'),
+            html
+        );
+
+    } catch (error) {
+
+        console.error(
+            'Error loading stock history:',
+            error
+        );
+
+
+        alert(
+            t('common.somethingWentWrong')
+        );
+    }
 };
 
 
