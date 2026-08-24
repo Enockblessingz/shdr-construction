@@ -1551,8 +1551,8 @@
 
 
 
-      // =================================================================
-// WORKERS (Complete with photo support and fixed selection)
+     // =================================================================
+// WORKERS (Complete with photo support, fixed selection & centered checkmark)
 // =================================================================
 
 function renderWorkers(container) {
@@ -1806,7 +1806,8 @@ function renderWorkersRecord() {
                                     <p class="text-xs text-slate-500">${w.role || t('workers.view')}</p>
                                 </div>
                             </div>
-                            <div class="absolute top-2 right-2 w-5 h-5 rounded-full bg-emerald-600 text-white items-center justify-center opacity-0 scale-75 transition"
+                            <!-- FIXED: Added 'flex' class here to perfectly center the check icon -->
+                            <div class="absolute top-2 right-2 w-5 h-5 rounded-full bg-emerald-600 text-white flex items-center justify-center opacity-0 scale-75 transition"
                                  data-checkmark>
                                 <iconify-icon icon="material-symbols:check" class="text-xs"></iconify-icon>
                             </div>
