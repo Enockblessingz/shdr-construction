@@ -1549,309 +1549,422 @@
             openModal(`${t('stock.stockHistory')} — ${stockItem?.material_name || ''}`, html);
         };
 
-        // =================================================================
-        // WORKERS (existing original code, unchanged)
-        // =================================================================
-        function renderWorkers(container) {
-            container.innerHTML = `
-                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-                    <div class="flex gap-2 p-1 bg-slate-200/60 rounded-xl">
-                        <button onclick="switchWorkersTab('view')" class="px-4 py-2 rounded-lg text-sm font-semibold transition ${workersTab === 'view' ? 'tab-active shadow-sm' : 'tab-inactive'}">
-                            <iconify-icon icon="material-symbols:grid-view" class="inline mr-1"></iconify-icon> ${t('workers.view')}
-                        </button>
-                        <button onclick="switchWorkersTab('record')" class="px-4 py-2 rounded-lg text-sm font-semibold transition ${workersTab === 'record' ? 'tab-active shadow-sm' : 'tab-inactive'}">
-                            <iconify-icon icon="material-symbols:edit-calendar" class="inline mr-1"></iconify-icon> ${t('workers.recordAttendance')}
-                        </button>
-                    </div>
-                    ${workersTab === 'view' ? `
-                        <button onclick="openAddWorkerModal()" class="px-4 py-2 bg-emerald-600 text-white rounded-xl hover:bg-emerald-700 flex items-center gap-2 text-sm font-medium shadow-sm">
-                            <iconify-icon icon="material-symbols:person-add-outline"></iconify-icon> ${t('workers.addWorker')}
-                        </button>
-                    ` : ''}
+
+
+      // =================================================================
+// WORKERS (Complete with photo support and fixed selection)
+// =================================================================
+
+function renderWorkers(container) {
+    container.innerHTML = `
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+            <div class="flex gap-2 p-1 bg-slate-200/60 rounded-xl">
+                <button onclick="switchWorkersTab('view')" class="px-4 py-2 rounded-lg text-sm font-semibold transition ${workersTab === 'view' ? 'tab-active shadow-sm' : 'tab-inactive'}">
+                    <iconify-icon icon="material-symbols:grid-view" class="inline mr-1"></iconify-icon> ${t('workers.view')}
+                </button>
+                <button onclick="switchWorkersTab('record')" class="px-4 py-2 rounded-lg text-sm font-semibold transition ${workersTab === 'record' ? 'tab-active shadow-sm' : 'tab-inactive'}">
+                    <iconify-icon icon="material-symbols:edit-calendar" class="inline mr-1"></iconify-icon> ${t('workers.recordAttendance')}
+                </button>
+            </div>
+            ${workersTab === 'view' ? `
+                <button onclick="openAddWorkerModal()" class="px-4 py-2 bg-emerald-600 text-white rounded-xl hover:bg-emerald-700 flex items-center gap-2 text-sm font-medium shadow-sm">
+                    <iconify-icon icon="material-symbols:person-add-outline"></iconify-icon> ${t('workers.addWorker')}
+                </button>
+            ` : ''}
+        </div>
+        <div id="workers-content">
+            ${workersTab === 'view' ? renderWorkersView() : renderWorkersRecord()}
+        </div>
+    `;
+    if (workersTab === 'record') setTimeout(updateAttendanceSummary, 100);
+}
+
+window.switchWorkersTab = (tab) => {
+    workersTab = tab;
+    showSection('workers');
+};
+
+window.openAddWorkerModal = () => {
+    const allRoles = workerPositions.map(p => p.role).filter(Boolean);
+    const commonRoles = ['Mason','Mason Helper','Carpenter','Carpenter Helper','Steel Fixer','Steel Fixer Helper','Plumber','Electrician','Welder','Painter','Tiler','Roofer','Concrete Worker','Excavation Worker','Truck Driver','Cleaner','Site Security Guard'];
+    const roles = [...new Set([...commonRoles, ...allRoles])];
+    const roleOptions = roles.map(r => `<div class="role-option px-3 py-2 cursor-pointer" data-role="${r}">${r}</div>`).join('');
+
+    openModal(t('workers.addWorker'), `
+        <form onsubmit="handleAddWorker(event)" class="space-y-4">
+            <div>
+                <label class="block text-sm font-medium">${t('workers.fullName')}</label>
+                <input class="w-full border rounded-lg p-2.5 text-sm" id="worker-name" required>
+            </div>
+            <div class="relative">
+                <label class="block text-sm font-medium">${t('workers.role')}</label>
+                <div id="role-selector" class="border rounded-lg p-2.5 bg-white flex items-center justify-between cursor-pointer text-sm" onclick="document.getElementById('role-dropdown').classList.toggle('hidden')">
+                    <span id="selected-role-text" class="text-slate-400">${t('workers.selectWorkerRole')}</span>
+                    <iconify-icon icon="material-symbols:arrow-drop-down" width="20"></iconify-icon>
                 </div>
-                <div id="workers-content">
-                    ${workersTab === 'view' ? renderWorkersView() : renderWorkersRecord()}
+                <input type="hidden" id="worker-role" required>
+                <div id="role-dropdown" class="hidden absolute z-20 w-full bg-white border rounded-lg mt-1 max-h-48 overflow-y-auto shadow-lg">
+                    <input type="text" id="role-search" class="w-full border-b p-2 text-sm sticky top-0 bg-white" placeholder="${t('workers.searchRole')}" oninput="filterRoleDropdown()">
+                    <div id="role-options-container">${roleOptions}</div>
                 </div>
-            `;
-            if (workersTab === 'record') setTimeout(updateAttendanceSummary, 100);
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+                <div>
+                    <label class="block text-sm font-medium">${t('workers.paymentType')}</label>
+                    <select id="worker-payment" class="w-full border rounded-lg p-2.5 text-sm" required>
+                        <option value="daily">${t('workers.dailyRate')}</option>
+                        <option value="monthly">${t('workers.monthlySalary')}</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium">${t('workers.salary')}</label>
+                    <input type="number" id="worker-salary" class="w-full border rounded-lg p-2.5 text-sm" required min="0">
+                </div>
+            </div>
+            <div>
+                <label class="block text-sm font-medium">${t('workers.phone')}</label>
+                <input type="tel" id="worker-phone" class="w-full border rounded-lg p-2.5 text-sm">
+            </div>
+            <!-- New photo upload field -->
+            <div>
+                <label class="block text-sm font-medium">${t('workers.photo')}</label>
+                <input type="file" id="worker-photo" accept="image/*" class="w-full border rounded-lg p-2.5 text-sm">
+            </div>
+            <button type="submit" class="w-full bg-emerald-600 text-white py-3 rounded-xl">${t('workers.saveWorker')}</button>
+        </form>
+    `);
+
+    document.querySelectorAll('.role-option').forEach(item => item.addEventListener('click', () => {
+        const role = item.dataset.role;
+        document.getElementById('worker-role').value = role;
+        document.getElementById('selected-role-text').textContent = role;
+        document.getElementById('selected-role-text').classList.remove('text-slate-400');
+        document.getElementById('role-dropdown').classList.add('hidden');
+    }));
+
+    window.filterRoleDropdown = () => {
+        const filter = document.getElementById('role-search').value.toLowerCase();
+        document.querySelectorAll('.role-option').forEach(opt => {
+            opt.style.display = opt.dataset.role.toLowerCase().includes(filter) ? '' : 'none';
+        });
+    };
+};
+
+window.handleAddWorker = async (e) => {
+    e.preventDefault();
+    const form = e.target;
+    const btn = getFormSubmitBtn(form);
+    setButtonLoading(btn, true);
+    try {
+        const name = document.getElementById('worker-name').value.trim();
+        const role = document.getElementById('worker-role').value;
+        const payment = document.getElementById('worker-payment').value;
+        const salary = parseFloat(document.getElementById('worker-salary').value) || 0;
+        const phone = document.getElementById('worker-phone').value.trim();
+        const photoFile = document.getElementById('worker-photo')?.files?.[0];
+
+        if (!name || !role || !payment) {
+            alert(t('common.requiredField'));
+            return;
         }
 
-        window.switchWorkersTab = (tab) => { workersTab = tab; showSection('workers'); };
-        window.openAddWorkerModal = () => {
-            const allRoles = workerPositions.map(p => p.role).filter(Boolean);
-            const commonRoles = ['Mason','Mason Helper','Carpenter','Carpenter Helper','Steel Fixer','Steel Fixer Helper','Plumber','Electrician','Welder','Painter','Tiler','Roofer','Concrete Worker','Excavation Worker','Truck Driver','Cleaner','Site Security Guard'];
-            const roles = [...new Set([...commonRoles, ...allRoles])];
-            const roleOptions = roles.map(r => `<div class="role-option px-3 py-2 cursor-pointer" data-role="${r}">${r}</div>`).join('');
-            openModal(t('workers.addWorker'), `
-                <form onsubmit="handleAddWorker(event)" class="space-y-4">
-                    <div><label class="block text-sm font-medium">${t('workers.fullName')}</label><input class="w-full border rounded-lg p-2.5 text-sm" id="worker-name" required></div>
-                    <div class="relative">
-                        <label class="block text-sm font-medium">${t('workers.role')}</label>
-                        <div id="role-selector" class="border rounded-lg p-2.5 bg-white flex items-center justify-between cursor-pointer text-sm" onclick="document.getElementById('role-dropdown').classList.toggle('hidden')">
-                            <span id="selected-role-text" class="text-slate-400">${t('workers.selectWorkerRole')}</span>
-                            <iconify-icon icon="material-symbols:arrow-drop-down" width="20"></iconify-icon>
-                        </div>
-                        <input type="hidden" id="worker-role" required>
-                        <div id="role-dropdown" class="hidden absolute z-20 w-full bg-white border rounded-lg mt-1 max-h-48 overflow-y-auto shadow-lg">
-                            <input type="text" id="role-search" class="w-full border-b p-2 text-sm sticky top-0 bg-white" placeholder="${t('workers.searchRole')}" oninput="filterRoleDropdown()">
-                            <div id="role-options-container">${roleOptions}</div>
-                        </div>
-                    </div>
-                    <div class="grid grid-cols-2 gap-3">
-                        <div><label class="block text-sm font-medium">${t('workers.paymentType')}</label><select id="worker-payment" class="w-full border rounded-lg p-2.5 text-sm" required><option value="daily">${t('workers.dailyRate')}</option><option value="monthly">${t('workers.monthlySalary')}</option></select></div>
-                        <div><label class="block text-sm font-medium">${t('workers.salary')}</label><input type="number" id="worker-salary" class="w-full border rounded-lg p-2.5 text-sm" required min="0"></div>
-                    </div>
-                    <div><label class="block text-sm font-medium">${t('workers.phone')}</label><input type="tel" id="worker-phone" class="w-full border rounded-lg p-2.5 text-sm"></div>
-                    <button type="submit" class="w-full bg-emerald-600 text-white py-3 rounded-xl">${t('workers.saveWorker')}</button>
-                </form>
-            `);
-            document.querySelectorAll('.role-option').forEach(item => item.addEventListener('click', () => {
-                const role = item.dataset.role;
-                document.getElementById('worker-role').value = role;
-                document.getElementById('selected-role-text').textContent = role;
-                document.getElementById('selected-role-text').classList.remove('text-slate-400');
-                document.getElementById('role-dropdown').classList.add('hidden');
-            }));
-            window.filterRoleDropdown = () => {
-                const filter = document.getElementById('role-search').value.toLowerCase();
-                document.querySelectorAll('.role-option').forEach(opt => {
-                    opt.style.display = opt.dataset.role.toLowerCase().includes(filter) ? '' : 'none';
-                });
-            };
-        };
-
-        window.handleAddWorker = async (e) => {
-            e.preventDefault();
-            const form = e.target;
-            const btn = getFormSubmitBtn(form);
-            setButtonLoading(btn, true);
-            try {
-                const name = document.getElementById('worker-name').value.trim();
-                const role = document.getElementById('worker-role').value;
-                const payment = document.getElementById('worker-payment').value;
-                const salary = parseFloat(document.getElementById('worker-salary').value) || 0;
-                const phone = document.getElementById('worker-phone').value.trim();
-                if (!name || !role || !payment) { alert(t('common.requiredField')); return; }
-                await addDoc(collection(db, 'site_workers'), { site_id: currentSiteId, name, role, payment_method: payment, salary, phone, added_at: new Date().toISOString() });
-                closeModal();
-                showToast(t('common.savedSuccessfully'), 'success');
-            } catch (err) { alert(t('common.somethingWentWrong') + ': ' + err.message); }
-            finally { setButtonLoading(btn, false); }
-        };
-
-        window.openWorkerImage = (index) => {
-            const worker = siteWorkersData[index];
-            if (!worker) return;
-            const imageUrl = worker.image || PLACEHOLDER_IMG;
-            const viewer = document.createElement('div');
-            viewer.className = 'fixed inset-0 z-[9999] bg-black/95 flex items-center justify-center p-4';
-            viewer.innerHTML = `<button onclick="this.parentElement.remove(); document.body.style.overflow='';" class="absolute top-4 right-4 z-50 w-11 h-11 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center"><iconify-icon icon="material-symbols:close" class="text-3xl"></iconify-icon></button><img src="${imageUrl}" class="max-w-full max-h-[90vh] object-contain rounded-xl shadow-2xl"><div class="absolute bottom-8 text-white bg-black/60 px-4 py-2 rounded-lg text-sm">${worker.name} — ${worker.role || t('workers.view')}</div>`;
-            document.body.appendChild(viewer);
-            document.body.style.overflow = 'hidden';
-            viewer.addEventListener('click', () => { viewer.remove(); document.body.style.overflow = ''; });
-        };
-
-        window.viewWorkerDetail = (id) => {
-            const w = siteWorkersData.find(w => w.id === id);
-            if (!w) return;
-            openModal(t('workers.workerDetails'), `
-                <div class="space-y-2 text-sm">
-                    <p><strong>${t('workers.fullName')}:</strong> ${w.name}</p>
-                    <p><strong>${t('workers.role')}:</strong> ${w.role || '—'}</p>
-                    <p><strong>${t('workers.paymentType')}:</strong> ${w.payment_method || '—'}</p>
-                    <p><strong>${t('workers.salary')}:</strong> ${(Number(w.salary) || 0).toLocaleString()} RWF</p>
-                    <p><strong>${t('workers.phone')}:</strong> ${w.phone || '—'}</p>
-                </div>
-            `);
-        };
-
-        function renderWorkersView() {
-            if (!siteWorkersData.length) return `<div class="bg-white rounded-2xl border p-6 text-center"><p class="text-slate-500">${t('workers.noWorkers')}</p></div>`;
-            let html = `<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">`;
-            siteWorkersData.forEach((w, idx) => {
-                const img = w.image || PLACEHOLDER_IMG;
-                html += `
-                    <div class="bg-white rounded-2xl border overflow-hidden shadow-sm">
-                        <div class="relative h-64 cursor-pointer" onclick="openWorkerImage(${idx})">
-                            <img src="${img}" class="w-full h-full object-cover" onerror="this.src='${PLACEHOLDER_IMG}'">
-                            <div class="absolute inset-0 bg-black/0 hover:bg-black/20 transition"></div>
-                        </div>
-                        <div class="p-5">
-                            <h3 class="font-bold text-lg">${w.name}</h3>
-                            <p class="text-sm text-emerald-600">${w.role || t('workers.view')}</p>
-                            <div class="mt-3 flex justify-between text-sm"><span class="text-slate-500">${t('workers.salary')}</span><span class="font-semibold">${(Number(w.salary) || 0).toLocaleString()} RWF</span></div>
-                            <div class="mt-2 flex justify-between text-sm"><span class="text-slate-500">${t('workers.phone')}</span><span>${w.phone || '—'}</span></div>
-                            <button onclick="viewWorkerDetail('${w.id}')" class="mt-4 text-xs text-emerald-600 font-medium">${t('workers.viewDetails')}</button>
-                        </div>
-                    </div>
-                `;
-            });
-            html += '</div>';
-            return html;
+        let imageUrl = '';
+        if (photoFile) {
+            imageUrl = await uploadImageToImgbb(photoFile);
         }
 
-        function renderWorkersRecord() {
-            if (!siteWorkersData.length) return `<div class="bg-white rounded-2xl border p-8 text-center"><p class="text-slate-500">${t('workers.noWorkers')}</p></div>`;
-            const today = getTodayISO();
-            return `
-                <div class="space-y-6">
-                    <div class="bg-white rounded-2xl border p-4 shadow-sm">
-                        <div class="flex justify-between items-center">
-                            <h3 class="text-sm font-semibold">${t('workers.recordAttendance')}</h3>
-                            <div class="flex items-center gap-2">
-                                <button onclick="changeAttendanceDate(-1)" class="p-2 rounded-lg border"><iconify-icon icon="material-symbols:chevron-left"></iconify-icon></button>
-                                <input type="date" id="attendance-date" value="${today}" class="border rounded-lg px-3 py-2 text-sm w-40" onchange="updateAttendanceSummary()">
-                                <button onclick="changeAttendanceDate(0)" class="px-3 py-2 bg-emerald-50 text-emerald-700 rounded-lg text-sm">${t('common.today')}</button>
-                                <button onclick="changeAttendanceDate(1)" class="p-2 rounded-lg border"><iconify-icon icon="material-symbols:chevron-right"></iconify-icon></button>
-                            </div>
-                        </div>
+        await addDoc(collection(db, 'site_workers'), {
+            site_id: currentSiteId,
+            name,
+            role,
+            payment_method: payment,
+            salary,
+            phone,
+            image: imageUrl,
+            added_at: new Date().toISOString()
+        });
+        closeModal();
+        showToast(t('common.savedSuccessfully'), 'success');
+    } catch (err) {
+        alert(t('common.somethingWentWrong') + ': ' + err.message);
+    } finally {
+        setButtonLoading(btn, false);
+    }
+};
+
+window.openWorkerImage = (index) => {
+    const worker = siteWorkersData[index];
+    if (!worker) return;
+    const imageUrl = worker.image || PLACEHOLDER_IMG;
+    const viewer = document.createElement('div');
+    viewer.className = 'fixed inset-0 z-[9999] bg-black/95 flex items-center justify-center p-4';
+    viewer.innerHTML = `<button onclick="this.parentElement.remove(); document.body.style.overflow='';" class="absolute top-4 right-4 z-50 w-11 h-11 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center"><iconify-icon icon="material-symbols:close" class="text-3xl"></iconify-icon></button><img src="${imageUrl}" class="max-w-full max-h-[90vh] object-contain rounded-xl shadow-2xl"><div class="absolute bottom-8 text-white bg-black/60 px-4 py-2 rounded-lg text-sm">${worker.name} — ${worker.role || t('workers.view')}</div>`;
+    document.body.appendChild(viewer);
+    document.body.style.overflow = 'hidden';
+    viewer.addEventListener('click', () => { viewer.remove(); document.body.style.overflow = ''; });
+};
+
+window.viewWorkerDetail = (id) => {
+    const w = siteWorkersData.find(w => w.id === id);
+    if (!w) return;
+    openModal(t('workers.workerDetails'), `
+        <div class="space-y-2 text-sm">
+            <p><strong>${t('workers.fullName')}:</strong> ${w.name}</p>
+            <p><strong>${t('workers.role')}:</strong> ${w.role || '—'}</p>
+            <p><strong>${t('workers.paymentType')}:</strong> ${w.payment_method || '—'}</p>
+            <p><strong>${t('workers.salary')}:</strong> ${(Number(w.salary) || 0).toLocaleString()} RWF</p>
+            <p><strong>${t('workers.phone')}:</strong> ${w.phone || '—'}</p>
+        </div>
+    `);
+};
+
+function renderWorkersView() {
+    if (!siteWorkersData.length) return `<div class="bg-white rounded-2xl border p-6 text-center"><p class="text-slate-500">${t('workers.noWorkers')}</p></div>`;
+    let html = `<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">`;
+    siteWorkersData.forEach((w, idx) => {
+        const img = w.image || PLACEHOLDER_IMG;
+        html += `
+            <div class="bg-white rounded-2xl border overflow-hidden shadow-sm">
+                <div class="relative h-64 cursor-pointer" onclick="openWorkerImage(${idx})">
+                    <img src="${img}" class="w-full h-full object-cover" onerror="this.src='${PLACEHOLDER_IMG}'">
+                    <div class="absolute inset-0 bg-black/0 hover:bg-black/20 transition"></div>
+                </div>
+                <div class="p-5">
+                    <h3 class="font-bold text-lg">${w.name}</h3>
+                    <p class="text-sm text-emerald-600">${w.role || t('workers.view')}</p>
+                    <div class="mt-3 flex justify-between text-sm">
+                        <span class="text-slate-500">${t('workers.salary')}</span>
+                        <span class="font-semibold">${(Number(w.salary) || 0).toLocaleString()} RWF</span>
                     </div>
-                    <div class="bg-white rounded-2xl border p-4 shadow-sm">
-                        <div class="flex justify-between items-center mb-4">
-                            <h4 class="text-sm font-medium">${t('workers.view')} (${siteWorkersData.length})</h4>
-                            <button onclick="toggleSelectAllWorkers()" id="select-all-btn" class="text-xs text-emerald-600">${t('common.selectAll')}</button>
-                        </div>
-                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                            ${siteWorkersData.map(w => `
-                                <div class="worker-card relative bg-slate-50 border-2 border-transparent rounded-xl p-3 cursor-pointer" data-worker-id="${w.id}" onclick="toggleWorkerSelection('${w.id}')">
-                                    <input type="checkbox" id="worker-chk-${w.id}" value="${w.id}" class="hidden worker-checkbox-input">
-                                    <div class="flex items-center gap-3">
-                                        <div class="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-700 font-bold">${(w.name||'W').charAt(0).toUpperCase()}</div>
-                                        <div><p class="text-sm font-medium">${w.name}</p><p class="text-xs text-slate-500">${w.role || t('workers.view')}</p></div>
-                                    </div>
-                                    <div class="absolute top-2 right-2 w-5 h-5 rounded-full bg-emerald-600 text-white items-center justify-center opacity-0 scale-75 transition" data-checkmark><iconify-icon icon="material-symbols:check" class="text-xs"></iconify-icon></div>
+                    <div class="mt-2 flex justify-between text-sm">
+                        <span class="text-slate-500">${t('workers.phone')}</span>
+                        <span>${w.phone || '—'}</span>
+                    </div>
+                    <button onclick="viewWorkerDetail('${w.id}')" class="mt-4 text-xs text-emerald-600 font-medium">${t('workers.viewDetails')}</button>
+                </div>
+            </div>
+        `;
+    });
+    html += '</div>';
+    return html;
+}
+
+function renderWorkersRecord() {
+    if (!siteWorkersData.length) {
+        return `<div class="bg-white rounded-2xl border p-8 text-center">
+            <p class="text-slate-500">${t('workers.noWorkers')}</p>
+        </div>`;
+    }
+    const today = getTodayISO();
+    return `
+        <div class="space-y-6">
+            <div class="bg-white rounded-2xl border p-4 shadow-sm">
+                <div class="flex justify-between items-center">
+                    <h3 class="text-sm font-semibold">${t('workers.recordAttendance')}</h3>
+                    <div class="flex items-center gap-2">
+                        <button onclick="changeAttendanceDate(-1)" class="p-2 rounded-lg border">
+                            <iconify-icon icon="material-symbols:chevron-left"></iconify-icon>
+                        </button>
+                        <input type="date" id="attendance-date" value="${today}"
+                               class="border rounded-lg px-3 py-2 text-sm w-40"
+                               onchange="updateAttendanceSummary()">
+                        <button onclick="changeAttendanceDate(0)" class="px-3 py-2 bg-emerald-50 text-emerald-700 rounded-lg text-sm">
+                            ${t('common.today')}
+                        </button>
+                        <button onclick="changeAttendanceDate(1)" class="p-2 rounded-lg border">
+                            <iconify-icon icon="material-symbols:chevron-right"></iconify-icon>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-2xl border p-4 shadow-sm">
+                <div class="flex justify-between items-center mb-4">
+                    <h4 class="text-sm font-medium">${t('workers.view')} (${siteWorkersData.length})</h4>
+                    <button onclick="toggleSelectAllWorkers()" id="select-all-btn" class="text-xs text-emerald-600">
+                        ${t('common.selectAll')}
+                    </button>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                    ${siteWorkersData.map(w => `
+                        <div class="worker-card relative bg-slate-50 border-2 border-transparent rounded-xl p-3 cursor-pointer"
+                             data-worker-id="${w.id}"
+                             onclick="toggleWorkerSelection('${w.id}')">
+                            <input type="checkbox" id="worker-chk-${w.id}" value="${w.id}" class="hidden worker-checkbox-input">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-full overflow-hidden flex-shrink-0 bg-emerald-100 flex items-center justify-center">
+                                    ${w.image ? `
+                                        <img src="${w.image}" class="w-full h-full object-cover"
+                                             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                        <span class="font-bold text-emerald-700 hidden">${(w.name||'W').charAt(0).toUpperCase()}</span>
+                                    ` : `
+                                        <span class="font-bold text-emerald-700">${(w.name||'W').charAt(0).toUpperCase()}</span>
+                                    `}
                                 </div>
-                            `).join('')}
-                        </div>
-                    </div>
-                    <div id="attendance-summary" class="bg-white rounded-2xl border p-4 shadow-sm hidden">
-                        <div class="flex justify-between items-center">
-                            <div class="flex gap-6">
-                                <div><p class="text-xs text-slate-500">${t('workers.view')}</p><p class="text-2xl font-bold"><span id="selected-count">0</span> / ${siteWorkersData.length}</p></div>
-                                <div><p class="text-xs text-slate-500">${t('reports.totalPayroll')}</p><p class="text-2xl font-bold text-emerald-600"><span id="total-cost">0</span> RWF</p></div>
+                                <div>
+                                    <p class="text-sm font-medium">${w.name}</p>
+                                    <p class="text-xs text-slate-500">${w.role || t('workers.view')}</p>
+                                </div>
                             </div>
-                            <button onclick="submitAttendance(this)" class="px-6 py-2 bg-emerald-600 text-white rounded-xl text-sm font-semibold"><iconify-icon icon="material-symbols:save"></iconify-icon> ${t('common.save')}</button>
+                            <div class="absolute top-2 right-2 w-5 h-5 rounded-full bg-emerald-600 text-white items-center justify-center opacity-0 scale-75 transition"
+                                 data-checkmark>
+                                <iconify-icon icon="material-symbols:check" class="text-xs"></iconify-icon>
+                            </div>
                         </div>
-                    </div>
-                    <div class="bg-white rounded-2xl border p-4 shadow-sm">
-                        <h4 class="text-sm font-medium">${t('workers.attendanceLogs')}</h4>
-                        <div id="attendance-history-container">${attendanceData.length ? renderAttendanceHistory() : `<p class="text-sm text-slate-400">${t('common.noDataAvailable')}</p>`}</div>
-                    </div>
+                    `).join('')}
                 </div>
-            `;
-        }
+            </div>
 
-        function setWorkerSelection(id, checked) {
-            const card = document.querySelector(`.worker-card[data-worker-id="${id}"]`);
-            const checkbox = document.getElementById(`worker-chk-${id}`);
-            if (!card || !checkbox) return;
-            checkbox.checked = checked;
-            const checkmark = card.querySelector('[data-checkmark]');
-            if (checked) {
-                card.classList.add('border-emerald-500', 'bg-emerald-50', 'shadow-md');
-                checkmark.classList.remove('opacity-0', 'scale-75');
-                checkmark.classList.add('opacity-100', 'scale-100');
-            } else {
-                card.classList.remove('border-emerald-500', 'bg-emerald-50', 'shadow-md');
-                checkmark.classList.add('opacity-0', 'scale-75');
-                checkmark.classList.remove('opacity-100', 'scale-100');
-            }
-        }
-
-        window.toggleWorkerSelection = (id) => {
-            const checkbox = document.getElementById(`worker-chk-${id}`);
-            if (!checkbox) return;
-            setWorkerSelection(id, !checkbox.checked);
-            updateAttendanceSummary();
-        };
-
-        window.toggleSelectAllWorkers = () => {
-            const checkboxes = document.querySelectorAll('.worker-checkbox-input');
-            const anyUnchecked = Array.from(checkboxes).some(cb => !cb.checked);
-            const newState = anyUnchecked;
-            checkboxes.forEach(cb => setWorkerSelection(cb.value, newState));
-            updateAttendanceSummary();
-        };
-
-        window.changeAttendanceDate = (delta) => {
-            const input = document.getElementById('attendance-date');
-            if (!input) return;
-            let date = new Date(input.value || getTodayISO());
-            if (delta === 0) date = new Date();
-            else date.setDate(date.getDate() + delta);
-            input.value = date.toISOString().split('T')[0];
-            updateAttendanceSummary();
-        };
-
-        window.updateAttendanceSummary = () => {
-            const date = document.getElementById('attendance-date')?.value || getTodayISO();
-            const checked = document.querySelectorAll('.worker-checkbox-input:checked');
-            const summary = document.getElementById('attendance-summary');
-            if (!summary) return;
-            if (!checked.length) { summary.classList.add('hidden'); return; }
-            summary.classList.remove('hidden');
-            document.getElementById('selected-count').textContent = checked.length;
-            let total = 0;
-            checked.forEach(cb => {
-                const w = siteWorkersData.find(x => x.id === cb.value);
-                if (w) total += w.payment_method === 'daily' ? Number(w.salary)||0 : Math.round((Number(w.salary)||0)/30);
-            });
-            document.getElementById('total-cost').textContent = total.toLocaleString();
-        };
-
-        window.submitAttendance = async (btn) => {
-            const date = document.getElementById('attendance-date')?.value || getTodayISO();
-            const checked = document.querySelectorAll('.worker-checkbox-input:checked');
-            if (!checked.length) { alert(t('common.requiredField')); return; }
-            setButtonLoading(btn, true);
-            try {
-                const existingSnap = await getDocs(query(collection(db, 'worker_attendance'), where('site_id','==',currentSiteId), where('date','==',date)));
-                const batch = writeBatch(db);
-                existingSnap.docs.forEach(d => batch.delete(d.ref));
-                checked.forEach(cb => {
-                    const w = siteWorkersData.find(x => x.id === cb.value);
-                    if (!w) return;
-                    const rate = w.payment_method === 'daily' ? Number(w.salary)||0 : Math.round((Number(w.salary)||0)/30);
-                    batch.set(doc(collection(db, 'worker_attendance')), {
-                        site_id: currentSiteId, worker_id: w.id, name: w.name, role: w.role, daily_rate: rate,
-                        date, status: 'present', recorded_by: currentUser.uid, recorded_at: new Date().toISOString()
-                    });
-                });
-                await batch.commit();
-                showToast(t('common.savedSuccessfully'), 'success');
-            } catch (err) {
-                showToast(t('common.somethingWentWrong'), 'error');
-            } finally {
-                setButtonLoading(btn, false);
-            }
-        };
-
-        function renderAttendanceHistory() {
-            const groups = {};
-            attendanceData.forEach(a => {
-                const date = a.date || 'Unknown';
-                if (!groups[date]) groups[date] = [];
-                groups[date].push(a);
-            });
-            let html = '';
-            const sortedDates = Object.keys(groups).sort((a, b) => new Date(b) - new Date(a));
-            sortedDates.forEach(date => {
-                const workers = groups[date];
-                const total = workers.reduce((sum, a) => sum + (Number(a.daily_rate) || 0), 0);
-                html += `
-                    <div class="mb-3 last:mb-0 p-3 bg-slate-50 rounded-xl border border-slate-100">
-                        <div class="flex justify-between items-center mb-2">
-                            <span class="text-sm font-semibold">${date}</span>
-                            <span class="text-xs text-slate-500">${workers.length} ${t('workers.workers')} • ${total.toLocaleString()} RWF</span>
+            <div id="attendance-summary" class="bg-white rounded-2xl border p-4 shadow-sm hidden">
+                <div class="flex justify-between items-center">
+                    <div class="flex gap-6">
+                        <div>
+                            <p class="text-xs text-slate-500">${t('workers.view')}</p>
+                            <p class="text-2xl font-bold"><span id="selected-count">0</span> / ${siteWorkersData.length}</p>
                         </div>
-                        <div class="flex flex-wrap gap-1">
-                            ${workers.map(a => `<span class="inline-flex items-center gap-1 bg-white border px-2 py-0.5 rounded text-xs">${a.name} <span class="text-[10px] text-slate-400">(${a.role})</span></span>`).join('')}
+                        <div>
+                            <p class="text-xs text-slate-500">${t('reports.totalPayroll')}</p>
+                            <p class="text-2xl font-bold text-emerald-600"><span id="total-cost">0</span> RWF</p>
                         </div>
                     </div>
-                `;
+                    <button onclick="submitAttendance(this)"
+                            class="px-6 py-2 bg-emerald-600 text-white rounded-xl text-sm font-semibold">
+                        <iconify-icon icon="material-symbols:save"></iconify-icon> ${t('common.save')}
+                    </button>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-2xl border p-4 shadow-sm">
+                <h4 class="text-sm font-medium">${t('workers.attendanceLogs')}</h4>
+                <div id="attendance-history-container">
+                    ${attendanceData.length ? renderAttendanceHistory() : `<p class="text-sm text-slate-400">${t('common.noDataAvailable')}</p>`}
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+function setWorkerSelection(id, checked) {
+    const card = document.querySelector(`.worker-card[data-worker-id="${id}"]`);
+    const checkbox = document.getElementById(`worker-chk-${id}`);
+    if (!card || !checkbox) return;
+    checkbox.checked = checked;
+    const checkmark = card.querySelector('[data-checkmark]');
+    if (checked) {
+        card.classList.add('border-emerald-500', 'bg-emerald-50', 'shadow-md');
+        checkmark.classList.remove('opacity-0', 'scale-75');
+        checkmark.classList.add('opacity-100', 'scale-100');
+    } else {
+        card.classList.remove('border-emerald-500', 'bg-emerald-50', 'shadow-md');
+        checkmark.classList.add('opacity-0', 'scale-75');
+        checkmark.classList.remove('opacity-100', 'scale-100');
+    }
+}
+
+window.toggleWorkerSelection = (id) => {
+    const checkbox = document.getElementById(`worker-chk-${id}`);
+    if (!checkbox) return;
+    setWorkerSelection(id, !checkbox.checked);
+    updateAttendanceSummary();
+};
+
+window.toggleSelectAllWorkers = () => {
+    const checkboxes = document.querySelectorAll('.worker-checkbox-input');
+    const allSelected = Array.from(checkboxes).every(cb => cb.checked);
+    const newState = !allSelected;
+    checkboxes.forEach(cb => setWorkerSelection(cb.value, newState));
+    updateAttendanceSummary();
+};
+
+window.changeAttendanceDate = (delta) => {
+    const input = document.getElementById('attendance-date');
+    if (!input) return;
+    let date = new Date(input.value || getTodayISO());
+    if (delta === 0) date = new Date();
+    else date.setDate(date.getDate() + delta);
+    input.value = date.toISOString().split('T')[0];
+    updateAttendanceSummary();
+};
+
+window.updateAttendanceSummary = () => {
+    const date = document.getElementById('attendance-date')?.value || getTodayISO();
+    const checked = document.querySelectorAll('.worker-checkbox-input:checked');
+    const summary = document.getElementById('attendance-summary');
+    if (!summary) return;
+    if (!checked.length) { summary.classList.add('hidden'); return; }
+    summary.classList.remove('hidden');
+    document.getElementById('selected-count').textContent = checked.length;
+    let total = 0;
+    checked.forEach(cb => {
+        const w = siteWorkersData.find(x => x.id === cb.value);
+        if (w) total += w.payment_method === 'daily' ? Number(w.salary)||0 : Math.round((Number(w.salary)||0)/30);
+    });
+    document.getElementById('total-cost').textContent = total.toLocaleString();
+};
+
+window.submitAttendance = async (btn) => {
+    const date = document.getElementById('attendance-date')?.value || getTodayISO();
+    const checked = document.querySelectorAll('.worker-checkbox-input:checked');
+    if (!checked.length) { alert(t('common.requiredField')); return; }
+    setButtonLoading(btn, true);
+    try {
+        const existingSnap = await getDocs(query(collection(db, 'worker_attendance'), where('site_id','==',currentSiteId), where('date','==',date)));
+        const batch = writeBatch(db);
+        existingSnap.docs.forEach(d => batch.delete(d.ref));
+        checked.forEach(cb => {
+            const w = siteWorkersData.find(x => x.id === cb.value);
+            if (!w) return;
+            const rate = w.payment_method === 'daily' ? Number(w.salary)||0 : Math.round((Number(w.salary)||0)/30);
+            batch.set(doc(collection(db, 'worker_attendance')), {
+                site_id: currentSiteId,
+                worker_id: w.id,
+                name: w.name,
+                role: w.role,
+                daily_rate: rate,
+                date,
+                status: 'present',
+                recorded_by: currentUser.uid,
+                recorded_at: new Date().toISOString()
             });
-            return html;
-        }
+        });
+        await batch.commit();
+        showToast(t('common.savedSuccessfully'), 'success');
+    } catch (err) {
+        showToast(t('common.somethingWentWrong'), 'error');
+    } finally {
+        setButtonLoading(btn, false);
+    }
+};
+
+function renderAttendanceHistory() {
+    const groups = {};
+    attendanceData.forEach(a => {
+        const date = a.date || 'Unknown';
+        if (!groups[date]) groups[date] = [];
+        groups[date].push(a);
+    });
+    let html = '';
+    const sortedDates = Object.keys(groups).sort((a, b) => new Date(b) - new Date(a));
+    sortedDates.forEach(date => {
+        const workers = groups[date];
+        const total = workers.reduce((sum, a) => sum + (Number(a.daily_rate) || 0), 0);
+        html += `
+            <div class="mb-3 last:mb-0 p-3 bg-slate-50 rounded-xl border border-slate-100">
+                <div class="flex justify-between items-center mb-2">
+                    <span class="text-sm font-semibold">${date}</span>
+                    <span class="text-xs text-slate-500">${workers.length} ${t('workers.workers')} • ${total.toLocaleString()} RWF</span>
+                </div>
+                <div class="flex flex-wrap gap-1">
+                    ${workers.map(a => `<span class="inline-flex items-center gap-1 bg-white border px-2 py-0.5 rounded text-xs">${a.name} <span class="text-[10px] text-slate-400">(${a.role})</span></span>`).join('')}
+                </div>
+            </div>
+        `;
+    });
+    return html;
+}
+
+
+        
 
         // =================================================================
         // PROGRESS (original but with fixed translation and global update)
