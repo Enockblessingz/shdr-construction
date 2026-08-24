@@ -1542,23 +1542,20 @@
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
                     <div class="flex gap-2 p-1 bg-slate-200/60 rounded-xl">
                         <button onclick="switchWorkersTab('view')" class="px-4 py-2 rounded-lg text-sm font-semibold transition ${workersTab === 'view' ? 'tab-active shadow-sm' : 'tab-inactive'}" id="tab-btn-view">
-                            <iconify-icon icon="material-symbols:grid-view" class="inline mr-1"></iconify-icon> All Workers
+                            <iconify-icon icon="material-symbols:grid-view" class="inline mr-1"></iconify-icon> ${t('workers.view')}
                         </button>
                         <button onclick="switchWorkersTab('record')" class="px-4 py-2 rounded-lg text-sm font-semibold transition ${workersTab === 'record' ? 'tab-active shadow-sm' : 'tab-inactive'}" id="tab-btn-record">
-                            <iconify-icon icon="material-symbols:edit-calendar" class="inline mr-1"></iconify-icon> Record Attendance
-                        </button>
-                        <button onclick="switchWorkersTab('report')" class="px-4 py-2 rounded-lg text-sm font-semibold transition ${workersTab === 'report' ? 'tab-active shadow-sm' : 'tab-inactive'}" id="tab-btn-report">
-                            <iconify-icon icon="material-symbols:lab-profile" class="inline mr-1"></iconify-icon> Report
+                            <iconify-icon icon="material-symbols:edit-calendar" class="inline mr-1"></iconify-icon> ${t('workers.recordAttendance')}
                         </button>
                     </div>
                     ${workersTab === 'view' ? `
                         <button onclick="openAddWorkerModal()" class="px-4 py-2 bg-emerald-600 text-white rounded-xl hover:bg-emerald-700 flex items-center gap-2 text-sm font-medium shadow-sm">
-                            <iconify-icon icon="material-symbols:person-add-outline"></iconify-icon> Add New Worker
+                            <iconify-icon icon="material-symbols:person-add-outline"></iconify-icon> ${t('workers.addWorker')}
                         </button>
                     ` : ''}
                 </div>
                 <div id="workers-content">
-                    ${workersTab === 'view' ? renderWorkersView() : workersTab === 'record' ? renderWorkersRecord() : renderWorkersReport()}
+                    ${workersTab === 'view' ? renderWorkersView() : renderWorkersRecord()}
                 </div>
             `;
             if (workersTab === 'record') {
@@ -1591,30 +1588,30 @@
 
             const modalContent = `
                 <form onsubmit="handleAddWorker(event)" class="space-y-4">
-                    <div><label class="block text-sm font-medium text-slate-700 mb-1">Full Name</label><input class="w-full border rounded-lg p-2.5 text-sm" placeholder="Worker full name" id="worker-name" required></div>
+                    <div><label class="block text-sm font-medium text-slate-700 mb-1">${t('workers.fullName')}</label><input class="w-full border rounded-lg p-2.5 text-sm" placeholder="${t('workers.fullName')}" id="worker-name" required></div>
                     <div class="relative">
-                        <label class="block text-sm font-medium text-slate-700 mb-1">Role (select option)</label>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">${t('workers.role')} (select option)</label>
                         <div id="role-selector" class="border rounded-lg p-2.5 bg-white flex items-center justify-between cursor-pointer text-sm" onclick="document.getElementById('role-dropdown').classList.toggle('hidden')">
-                            <span id="selected-role-text" class="text-slate-400">Choose worker role...</span>
+                            <span id="selected-role-text" class="text-slate-400">${t('workers.selectWorkerRole')}</span>
                             <iconify-icon icon="material-symbols:arrow-drop-down" width="20"></iconify-icon>
                         </div>
                         <input type="hidden" id="worker-role" required>
                         <div id="role-dropdown" class="hidden absolute z-20 w-full bg-white border rounded-lg mt-1 max-h-48 overflow-y-auto shadow-lg">
-                            <input type="text" id="role-search" class="w-full border-b p-2 text-sm sticky top-0 bg-white" placeholder="Search role..." oninput="filterRoleDropdown()">
+                            <input type="text" id="role-search" class="w-full border-b p-2 text-sm sticky top-0 bg-white" placeholder="${t('workers.searchRole')}" oninput="filterRoleDropdown()">
                             <div id="role-options-container">${roleOptions}</div>
                         </div>
                     </div>
                     <div class="grid grid-cols-2 gap-3">
-                        <div><label class="block text-sm font-medium text-slate-700 mb-1">Payment Type</label><select id="worker-payment" class="w-full border rounded-lg p-2.5 text-sm" required><option value="">Select...</option><option value="daily">Daily Rate</option><option value="monthly">Monthly Salary</option></select></div>
-                        <div><label class="block text-sm font-medium text-slate-700 mb-1">Salary / Rate (RWF)</label><input class="w-full border rounded-lg p-2.5 text-sm" placeholder="e.g. 5000" type="number" id="worker-salary" required min="0"></div>
+                        <div><label class="block text-sm font-medium text-slate-700 mb-1">${t('workers.paymentType')}</label><select id="worker-payment" class="w-full border rounded-lg p-2.5 text-sm" required><option value="">Select...</option><option value="daily">${t('workers.dailyRate')}</option><option value="monthly">${t('workers.monthlySalary')}</option></select></div>
+                        <div><label class="block text-sm font-medium text-slate-700 mb-1">${t('workers.salary')} (RWF)</label><input class="w-full border rounded-lg p-2.5 text-sm" placeholder="e.g. 5000" type="number" id="worker-salary" required min="0"></div>
                     </div>
-                    <div><label class="block text-sm font-medium text-slate-700 mb-1">Phone Number</label><input class="w-full border rounded-lg p-2.5 text-sm" placeholder="078XXXXXXX" type="tel" id="worker-phone"></div>
-                    <div><label class="block text-sm font-medium text-slate-700 mb-1">Photo (Optional)</label><input type="file" id="worker-image" accept="image/*" class="w-full text-sm"></div>
-                    <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-3 rounded-xl transition">Save Worker</button>
+                    <div><label class="block text-sm font-medium text-slate-700 mb-1">${t('workers.phone')}</label><input class="w-full border rounded-lg p-2.5 text-sm" placeholder="078XXXXXXX" type="tel" id="worker-phone"></div>
+                    <div><label class="block text-sm font-medium text-slate-700 mb-1">${t('workers.photo')} (Optional)</label><input type="file" id="worker-image" accept="image/*" class="w-full text-sm"></div>
+                    <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-3 rounded-xl transition">${t('workers.saveWorker')}</button>
                 </form>
             `;
 
-            openModal('Add New Worker', modalContent);
+            openModal(t('workers.addWorker'), modalContent);
 
             document.querySelectorAll('.role-option').forEach(item => {
                 item.addEventListener('click', () => {
@@ -1649,7 +1646,7 @@
                 const imageFile = document.getElementById('worker-image').files[0];
 
                 if (!name || !role || !payment) {
-                    alert('Name, Role, and Payment Method are required.');
+                    alert(t('common.requiredField'));
                     return;
                 }
 
@@ -1658,7 +1655,7 @@
                     try {
                         imageUrl = await uploadImageToImgbb(imageFile);
                     } catch (err) {
-                        alert('Image upload failed: ' + err.message);
+                        alert(t('common.somethingWentWrong') + ' ' + err.message);
                         return;
                     }
                 }
@@ -1676,9 +1673,9 @@
                 });
 
                 closeModal();
-                alert('Worker added successfully!');
+                showToast(t('common.savedSuccessfully'), 'success');
             } catch (err) {
-                alert('Error adding worker: ' + err.message);
+                showToast(t('common.somethingWentWrong'), 'error');
             } finally {
                 setButtonLoading(btn, false);
             }
@@ -1700,7 +1697,7 @@
                     <img src="${imageUrl}" class="max-w-full max-h-[90vh] object-contain rounded-xl shadow-2xl" alt="${worker.name}">
                 </div>
                 <div class="absolute bottom-8 left-1/2 -translate-x-1/2 text-white bg-black/60 px-4 py-2 rounded-lg text-sm">
-                    ${worker.name} — ${worker.role || 'Worker'}
+                    ${worker.name} — ${worker.role || t('workers.view')}
                 </div>
             `;
             document.body.appendChild(viewer);
@@ -1717,21 +1714,21 @@
 
             const details = `
                 <div class="space-y-2 text-sm">
-                    <p><strong>Name:</strong> ${worker.name}</p>
-                    <p><strong>Role:</strong> ${worker.role || '—'}</p>
-                    <p><strong>Payment Method:</strong> ${worker.payment_method || '—'}</p>
-                    <p><strong>Salary:</strong> ${(Number(worker.salary) || 0).toLocaleString()} RWF</p>
-                    <p><strong>Phone:</strong> ${worker.phone || '—'}</p>
+                    <p><strong>${t('workers.fullName')}:</strong> ${worker.name}</p>
+                    <p><strong>${t('workers.role')}:</strong> ${worker.role || '—'}</p>
+                    <p><strong>${t('workers.paymentType')}:</strong> ${worker.payment_method || '—'}</p>
+                    <p><strong>${t('workers.salary')}:</strong> ${(Number(worker.salary) || 0).toLocaleString()} RWF</p>
+                    <p><strong>${t('workers.phone')}:</strong> ${worker.phone || '—'}</p>
                     <p><strong>ID:</strong> ${worker.id}</p>
-                    <p><strong>Added:</strong> ${worker.added_at ? new Date(worker.added_at).toLocaleString() : 'Unknown'}</p>
+                    <p><strong>${t('common.add')}:</strong> ${worker.added_at ? new Date(worker.added_at).toLocaleString() : 'Unknown'}</p>
                 </div>
             `;
-            openModal('Worker Details', details);
+            openModal(t('workers.workerDetails'), details);
         };
 
         function renderWorkersView() {
             if (!siteWorkersData.length) {
-                return `<div class="bg-white rounded-2xl border p-6 text-center"><p class="text-slate-500">No workers added yet.</p></div>`;
+                return `<div class="bg-white rounded-2xl border p-6 text-center"><p class="text-slate-500">${t('workers.noWorkers')}</p></div>`;
             }
 
             let html = `<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">`;
@@ -1750,17 +1747,17 @@
                         </div>
                         <div class="p-5">
                             <div class="flex items-start justify-between gap-3">
-                                <div class="min-w-0"><p class="font-bold text-lg text-slate-800 truncate">${w.name}</p><p class="text-sm text-emerald-600 font-medium mt-1">${w.role || 'Worker'}</p></div>
+                                <div class="min-w-0"><p class="font-bold text-lg text-slate-800 truncate">${w.name}</p><p class="text-sm text-emerald-600 font-medium mt-1">${w.role || t('workers.view')}</p></div>
                                 <span class="text-xs bg-emerald-50 text-emerald-700 px-2.5 py-1 rounded-full whitespace-nowrap capitalize">${w.payment_method || 'N/A'}</span>
                             </div>
                             <div class="mt-5 space-y-3">
-                                <div class="flex justify-between items-center text-sm border-b border-slate-100 pb-2"><span class="text-slate-500">Salary</span><span class="font-semibold text-slate-700">${(Number(w.salary) || 0).toLocaleString()} RWF</span></div>
-                                <div class="flex justify-between items-center text-sm"><span class="text-slate-500">Phone</span><span class="font-medium text-slate-700">${w.phone || '—'}</span></div>
+                                <div class="flex justify-between items-center text-sm border-b border-slate-100 pb-2"><span class="text-slate-500">${t('workers.salary')}</span><span class="font-semibold text-slate-700">${(Number(w.salary) || 0).toLocaleString()} RWF</span></div>
+                                <div class="flex justify-between items-center text-sm"><span class="text-slate-500">${t('workers.phone')}</span><span class="font-medium text-slate-700">${w.phone || '—'}</span></div>
                             </div>
                             <div class="mt-4 pt-3 border-t border-slate-100 flex justify-end">
                                 <button onclick="viewWorkerDetail('${w.id}')" class="text-xs text-emerald-600 hover:text-emerald-800 font-medium flex items-center gap-1 transition">
                                     <iconify-icon icon="material-symbols:info" width="14" height="14"></iconify-icon>
-                                    View Details
+                                    ${t('workers.viewDetails')}
                                 </button>
                             </div>
                         </div>
@@ -1775,7 +1772,7 @@
         // ── Record Attendance ──
         function renderWorkersRecord() {
             if (!siteWorkersData.length) {
-                return `<div class="bg-white rounded-2xl border p-8 text-center"><iconify-icon icon="material-symbols:engineering-outline" class="text-5xl text-slate-300 mx-auto block mb-4"></iconify-icon><p class="text-slate-500">No workers yet. Add workers to record daily attendance.</p></div>`;
+                return `<div class="bg-white rounded-2xl border p-8 text-center"><iconify-icon icon="material-symbols:engineering-outline" class="text-5xl text-slate-300 mx-auto block mb-4"></iconify-icon><p class="text-slate-500">${t('workers.noWorkers')}</p></div>`;
             }
 
             const today = getTodayISO();
@@ -1784,11 +1781,11 @@
                 <div class="space-y-6">
                     <div class="bg-white rounded-2xl border p-4 shadow-sm">
                         <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                            <div><h3 class="text-sm font-semibold text-slate-600 flex items-center gap-2"><iconify-icon icon="material-symbols:calendar-today" class="text-emerald-600"></iconify-icon> Attendance Date</h3></div>
+                            <div><h3 class="text-sm font-semibold text-slate-600 flex items-center gap-2"><iconify-icon icon="material-symbols:calendar-today" class="text-emerald-600"></iconify-icon> ${t('workers.attendanceLogs')}</h3></div>
                             <div class="flex items-center gap-2">
                                 <button onclick="changeAttendanceDate(-1)" class="p-2 rounded-lg border hover:bg-slate-50 transition"><iconify-icon icon="material-symbols:chevron-left" class="text-slate-600"></iconify-icon></button>
                                 <input type="date" id="attendance-date" value="${today}" class="border rounded-lg px-3 py-2 text-sm w-40 focus:ring-2 focus:ring-emerald-500 outline-none" onchange="updateAttendanceSummary()">
-                                <button onclick="changeAttendanceDate(0)" class="px-3 py-2 bg-emerald-50 text-emerald-700 rounded-lg text-sm font-medium hover:bg-emerald-100 transition">Today</button>
+                                <button onclick="changeAttendanceDate(0)" class="px-3 py-2 bg-emerald-50 text-emerald-700 rounded-lg text-sm font-medium hover:bg-emerald-100 transition">${t('common.today')}</button>
                                 <button onclick="changeAttendanceDate(1)" class="p-2 rounded-lg border hover:bg-slate-50 transition"><iconify-icon icon="material-symbols:chevron-right" class="text-slate-600"></iconify-icon></button>
                             </div>
                         </div>
@@ -1797,8 +1794,8 @@
 
                     <div class="bg-white rounded-2xl border p-4 shadow-sm">
                         <div class="flex items-center justify-between mb-4">
-                            <h4 class="text-sm font-medium text-slate-700 flex items-center gap-2"><iconify-icon icon="material-symbols:people" class="text-emerald-600"></iconify-icon> Select Present Workers <span class="text-xs text-slate-400 font-normal">(${siteWorkersData.length})</span></h4>
-                            <button onclick="toggleSelectAllWorkers()" id="select-all-btn" class="text-xs text-emerald-600 hover:text-emerald-800 font-medium flex items-center gap-1 transition"><iconify-icon icon="material-symbols:select-all" class="text-sm"></iconify-icon><span>Select All</span></button>
+                            <h4 class="text-sm font-medium text-slate-700 flex items-center gap-2"><iconify-icon icon="material-symbols:people" class="text-emerald-600"></iconify-icon> ${t('workers.view')} <span class="text-xs text-slate-400 font-normal">(${siteWorkersData.length})</span></h4>
+                            <button onclick="toggleSelectAllWorkers()" id="select-all-btn" class="text-xs text-emerald-600 hover:text-emerald-800 font-medium flex items-center gap-1 transition"><iconify-icon icon="material-symbols:select-all" class="text-sm"></iconify-icon><span>${t('common.selectAll')}</span></button>
                         </div>
                         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 max-h-80 overflow-y-auto pr-1">
                             ${siteWorkersData.map(w => {
@@ -1810,7 +1807,7 @@
                                         <div class="flex items-center gap-3">
                                             <div class="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-700 font-bold text-sm overflow-hidden flex-shrink-0">${w.image ? `<img src="${w.image}" class="w-full h-full object-cover" alt="${w.name}">` : initial}</div>
                                             <div class="flex-1 min-w-0"><p class="text-sm font-medium text-slate-800 truncate">${w.name}</p><p class="text-xs text-slate-500 truncate">${w.role || 'Worker'}</p></div>
-                                            <div class="text-right flex-shrink-0"><span class="text-xs font-semibold text-emerald-700">${dailyRate.toLocaleString()} RWF</span><span class="text-[10px] text-slate-400 block">/ day</span></div>
+                                            <div class="text-right flex-shrink-0"><span class="text-xs font-semibold text-emerald-700">${dailyRate.toLocaleString()} RWF</span><span class="text-[10px] text-slate-400 block">/ ${t('workers.dailyRate')}</span></div>
                                         </div>
                                         <!-- FIXED: Added 'flex' class here to perfectly center the check icon -->
                                         <div class="absolute top-2 right-2 w-5 h-5 rounded-full bg-emerald-600 text-white flex items-center justify-center opacity-0 scale-75 transition-all duration-200" data-checkmark><iconify-icon icon="material-symbols:check" class="text-xs"></iconify-icon></div>
@@ -1829,14 +1826,14 @@
                             </div>
                             <div class="flex items-center gap-3">
                                 <div class="w-32 h-2 bg-slate-100 rounded-full overflow-hidden"><div id="selection-progress" class="h-full bg-emerald-500 rounded-full transition-all duration-500" style="width:0%"></div></div>
-                                <button onclick="submitAttendance(this)" class="px-6 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-sm font-semibold shadow-md transition-all flex items-center gap-2"><iconify-icon icon="material-symbols:save"></iconify-icon> Save Attendance</button>
+                                <button onclick="submitAttendance(this)" class="px-6 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-sm font-semibold shadow-md transition-all flex items-center gap-2"><iconify-icon icon="material-symbols:save"></iconify-icon> ${t('common.save')}</button>
                             </div>
                         </div>
                     </div>
 
                     <div class="bg-white rounded-2xl border p-4 shadow-sm">
-                        <h4 class="text-sm font-medium text-slate-700 flex items-center gap-2 mb-3"><iconify-icon icon="material-symbols:history" class="text-emerald-600"></iconify-icon> Attendance Logs</h4>
-                        <div id="attendance-history-container">${attendanceData.length ? renderAttendanceHistory() : '<p class="text-sm text-slate-400">No records found.</p>'}</div>
+                        <h4 class="text-sm font-medium text-slate-700 flex items-center gap-2 mb-3"><iconify-icon icon="material-symbols:history" class="text-emerald-600"></iconify-icon> ${t('workers.attendanceLogs')}</h4>
+                        <div id="attendance-history-container">${attendanceData.length ? renderAttendanceHistory() : '<p class="text-sm text-slate-400">' + t('common.noDataAvailable') + '</p>'}</div>
                     </div>
                 </div>
             `;
@@ -1892,7 +1889,7 @@
             });
             const btn = document.getElementById('select-all-btn');
             if (btn) {
-                btn.querySelector('span').textContent = allWorkersSelected ? 'Deselect All' : 'Select All';
+                btn.querySelector('span').textContent = allWorkersSelected ? t('common.selectAll') : t('common.selectAll');
                 btn.querySelector('iconify-icon').icon = allWorkersSelected ? 'material-symbols:deselect' : 'material-symbols:select-all';
             }
             updateAttendanceSummary();
@@ -1943,7 +1940,7 @@
             const selectedIds = Array.from(checkedBoxes).map(cb => cb.value);
 
             if (selectedIds.length === 0) {
-                alert('Select at least one worker.');
+                alert(t('common.requiredField'));
                 return;
             }
 
@@ -2027,15 +2024,10 @@
                 // 4. Commit all changes atomically
                 await batch.commit();
                 
-                alert(`Attendance saved for ${selectedIds.length} worker(s) on ${selectedDate}. Daily payable cost: ${dailyWorkersPayableCost.toLocaleString()} RWF.`);
-                
-                // Refresh reports if currently on the report page
-                if (currentSection === 'reports' && reportType === 'payroll') {
-                    setTimeout(updatePayrollReport, 300);
-                }
+                showToast(`${t('common.savedSuccessfully')} (${dailyWorkersPayableCost.toLocaleString()} RWF)`, 'success');
                 
             } catch (err) {
-                alert('Error saving attendance: ' + err.message);
+                showToast(t('common.somethingWentWrong'), 'error');
             } finally {
                 setButtonLoading(btn, false);
             }
@@ -2058,7 +2050,7 @@
                     <div class="mb-3 last:mb-0 p-3 bg-slate-50 rounded-xl border border-slate-100 transition hover:shadow-sm">
                         <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
                             <span class="text-sm font-semibold text-slate-700 flex items-center gap-2"><iconify-icon icon="material-symbols:calendar-month" class="text-emerald-500 text-sm"></iconify-icon> ${date}</span>
-                            <span class="text-xs text-slate-500">${workers.length} worker${workers.length > 1 ? 's' : ''} • ${total.toLocaleString()} RWF</span>
+                            <span class="text-xs text-slate-500">${workers.length} ${t('workers.workers')} • ${total.toLocaleString()} RWF</span>
                         </div>
                         <div class="flex flex-wrap gap-1">${workers.map(a => `<span class="inline-flex items-center gap-1 bg-white border border-slate-200 px-2 py-0.5 rounded text-xs text-slate-600">${a.name} <span class="text-[10px] text-slate-400">(${a.role})</span></span>`).join('')}</div>
                     </div>
@@ -2066,157 +2058,6 @@
             });
             return html;
         }
-
-// =================================================================
-// WORKERS PAYROLL REPORT VIEW (Matches the screenshot)
-// =================================================================
-
-function renderWorkersReport() {
-    // Aggregate data from attendanceData
-    const report = {};
-    let totalDays = 0;
-    let totalPayroll = 0;
-
-    attendanceData.forEach(record => {
-        const worker = siteWorkersData.find(w => w.id === record.worker_id);
-        if (!worker) return;
-
-        if (!report[record.worker_id]) {
-            report[record.worker_id] = {
-                id: worker.id,
-                name: worker.name,
-                role: worker.role || '—',
-                days_worked: 0,
-                daily_rate: worker.payment_method === 'daily' 
-                    ? Number(worker.salary) || 0 
-                    : Math.round((Number(worker.salary) || 0) / 30)
-            };
-        }
-        report[record.worker_id].days_worked += 1;
-    });
-
-    const workers = Object.values(report);
-    const totalWorkers = workers.length;
-    workers.forEach(w => {
-        w.total_payable = w.days_worked * w.daily_rate;
-        totalDays += w.days_worked;
-        totalPayroll += w.total_payable;
-    });
-    
-    const avgDailyCost = totalDays > 0 ? (totalPayroll / totalDays).toFixed(3) : 0;
-
-    if (!workers.length) {
-        return `<div class="bg-white rounded-2xl border p-8 text-center"><p class="text-slate-500">No data available</p></div>`;
-    }
-
-    let tableRows = workers.map(w => `
-        <tr class="border-b border-slate-100 hover:bg-slate-50">
-            <td class="p-4 font-medium">${w.name}</td>
-            <td class="p-4 text-slate-500">${w.role}</td>
-            <td class="p-4">${w.days_worked}</td>
-            <td class="p-4">${w.daily_rate.toLocaleString()} RWF</td>
-            <td class="p-4 font-semibold text-emerald-600">${w.total_payable.toLocaleString()} RWF</td>
-        </tr>
-    `).join('');
-
-    return `
-        <div class="space-y-6">
-            <!-- Top Stats Cards -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div class="bg-white rounded-2xl border p-6 shadow-sm">
-                    <p class="text-sm text-slate-500">Total Workers</p>
-                    <p class="text-3xl font-bold mt-2">${totalWorkers}</p>
-                </div>
-                <div class="bg-white rounded-2xl border p-6 shadow-sm">
-                    <p class="text-sm text-slate-500">Worker-Days</p>
-                    <p class="text-3xl font-bold mt-2">${totalDays}</p>
-                </div>
-                <div class="bg-white rounded-2xl border p-6 shadow-sm">
-                    <p class="text-sm text-slate-500">Total Payroll</p>
-                    <p class="text-3xl font-bold mt-2 text-emerald-600">${totalPayroll.toLocaleString()} RWF</p>
-                </div>
-                <div class="bg-white rounded-2xl border p-6 shadow-sm">
-                    <p class="text-sm text-slate-500">Avg. Daily Labor Cost</p>
-                    <p class="text-3xl font-bold mt-2">${avgDailyCost} RWF</p>
-                </div>
-            </div>
-
-            <!-- Main Table -->
-            <div class="bg-white rounded-2xl border shadow-sm overflow-hidden">
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left text-sm">
-                        <thead class="bg-slate-50 text-slate-500 uppercase text-xs">
-                            <tr>
-                                <th class="p-4">Worker</th>
-                                <th class="p-4">Position</th>
-                                <th class="p-4">Days Worked</th>
-                                <th class="p-4">Daily Rate</th>
-                                <th class="p-4">Total Payable</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            ${tableRows}
-                            <tr class="bg-slate-50 font-bold border-t border-slate-200">
-                                <td class="p-4 text-right" colspan="2">Total</td>
-                                <td class="p-4">${totalDays}</td>
-                                <td class="p-4"></td>
-                                <td class="p-4 text-emerald-600">${totalPayroll.toLocaleString()} RWF</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- Buttons -->
-            <div class="flex justify-end gap-3">
-                <button onclick="exportWorkersCSV()" class="px-6 py-2 bg-emerald-600 text-white rounded-xl text-sm font-semibold hover:bg-emerald-700">
-                    Export CSV
-                </button>
-                <button onclick="window.print()" class="px-6 py-2 bg-slate-800 text-white rounded-xl text-sm font-semibold hover:bg-slate-900">
-                    Print/PDF
-                </button>
-            </div>
-        </div>
-    `;
-}
-
-// Function to export the report data as a CSV file
-window.exportWorkersCSV = () => {
-    // (Re-use the same logic to build the report data)
-    const report = {};
-    attendanceData.forEach(record => {
-        const worker = siteWorkersData.find(w => w.id === record.worker_id);
-        if (!worker) return;
-        if (!report[record.worker_id]) {
-            report[record.worker_id] = {
-                name: worker.name, role: worker.role || '—', days_worked: 0,
-                daily_rate: worker.payment_method === 'daily' ? Number(worker.salary)||0 : Math.round((Number(worker.salary)||0)/30)
-            };
-        }
-        report[record.worker_id].days_worked += 1;
-    });
-
-    const workers = Object.values(report);
-    const totalDays = workers.reduce((sum, w) => sum + w.days_worked, 0);
-    const totalPayroll = workers.reduce((sum, w) => sum + (w.days_worked * w.daily_rate), 0);
-    
-    // Build CSV string
-    let csv = 'Worker,Position,Days Worked,Daily Rate,Total Payable\n';
-    workers.forEach(w => {
-        csv += `"${w.name}",${w.role},${w.days_worked},${w.daily_rate},${(w.days_worked * w.daily_rate)}\n`;
-    });
-    csv += `Total,,${totalDays},,${totalPayroll}\n`;
-
-    // Create Blob and download
-    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement("a");
-    const url = URL.createObjectURL(blob);
-    link.setAttribute("href", url);
-    link.setAttribute("download", "worker_payroll_report.csv");
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-};
 
         // =================================================================
         // PROGRESS (original but with fixed translation and global update)
