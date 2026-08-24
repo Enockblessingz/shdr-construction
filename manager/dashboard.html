@@ -227,22 +227,12 @@
         // =================================================================
         const translations = {
             en: {
-                navigation: { 
-                    managerPanel: "Manager's Panel", dashboard: "Dashboard", materials: "Materials", stock: "Stock", workers: "Workers", progress: "Progress", reports: "Reports", gallery: "Gallery", settings: "Settings", logout: "Sign Out", finances: "Finances" 
-                },
+                navigation: { managerPanel: "Manager's Panel", dashboard: "Dashboard", materials: "Materials", stock: "Stock", workers: "Workers", progress: "Progress", reports: "Reports", gallery: "Gallery", settings: "Settings", logout: "Sign Out", finances: "Finances" },
                 common: { save: "Save", cancel: "Cancel", close: "Close", add: "Add", edit: "Edit", delete: "Delete", view: "View", upload: "Upload", search: "Search", loading: "Loading...", areYouSure: "Are you sure?", cannotUndo: "This action cannot be undone", savedSuccessfully: "Saved successfully", updatedSuccessfully: "Updated successfully", deletedSuccessfully: "Deleted successfully", somethingWentWrong: "Something went wrong", noDataAvailable: "No data available", requiredField: "Required field", invalidValue: "Invalid value", selectAll: "Select All", today: "Today" },
                 dashboard: { siteStatus: "Status", siteManager: "Manager", workersOnSite: "Workers On Site", progress: "Progress", recentMaterials: "Recent Materials", pendingTasks: "Pending Tasks" },
-                materials: { 
-                    title: "Materials Used", recordUsage: "Record Usage", addMaterial: "Add Material", editMaterial: "Edit Material", materialName: "Material Name", quantityUsed: "Qty Used", unitCost: "Unit Cost", totalAmount: "Total Amount", noMaterials: "No materials recorded yet.", materialUnit: "Unit" 
-                },
-                stock: { 
-                    title: "Stock Management", receiveStock: "Receive Stock", addStock: "Add Stock", editStock: "Edit Stock", stockHistory: "Stock History", quantity: "Quantity", minimumStock: "Minimum Stock", stockValue: "Stock Value", lastUpdated: "Last Updated", notes: "Notes", normal: "Normal", lowStock: "Low Stock", outOfStock: "Out of Stock", unit: "Unit", unitCost: "Unit Cost",
-                    transactionReceived: "Stock received", transactionUsed: "Material used", transactionEdited: "Material usage edited", transactionDeleted: "Material usage deleted", transactionAdjusted: "Stock adjusted", transactionOther: "Stock transaction",
-                    currentStock: "Current Stock", before: "Before", after: "After", date: "Date"
-                },
-                workers: { 
-                    title: "Workers", addWorker: "Add New Worker", view: "All Workers", recordAttendance: "Record Attendance", fullName: "Full Name", role: "Role", paymentType: "Payment Type", dailyRate: "Daily Rate", monthlySalary: "Monthly Salary", salary: "Salary", phone: "Phone", photo: "Photo", saveWorker: "Save Worker", selectWorkerRole: "Choose worker role...", searchRole: "Search role...", workerDetails: "Worker Details", noWorkers: "No workers added yet.", workers: "Workers", viewDetails: "View Details", attendanceLogs: "Attendance Logs" 
-                },
+                materials: { title: "Materials Used", recordUsage: "Record Usage", addMaterial: "Add Material", editMaterial: "Edit Material", materialName: "Material Name", quantityUsed: "Qty Used", unitCost: "Unit Cost", totalAmount: "Total Amount", noMaterials: "No materials recorded yet.", materialUnit: "Unit" },
+                stock: { title: "Stock Management", receiveStock: "Receive Stock", addStock: "Add Stock", editStock: "Edit Stock", stockHistory: "Stock History", quantity: "Quantity", minimumStock: "Minimum Stock", stockValue: "Stock Value", lastUpdated: "Last Updated", notes: "Notes", normal: "Normal", lowStock: "Low Stock", outOfStock: "Out of Stock", unit: "Unit", unitCost: "Unit Cost", transactionReceived: "Stock received", transactionUsed: "Material used", transactionEdited: "Material usage edited", transactionDeleted: "Material usage deleted", transactionAdjusted: "Stock adjusted", transactionOther: "Stock transaction", currentStock: "Current Stock", before: "Before", after: "After", date: "Date" },
+                workers: { title: "Workers", addWorker: "Add New Worker", view: "All Workers", recordAttendance: "Record Attendance", fullName: "Full Name", role: "Role", paymentType: "Payment Type", dailyRate: "Daily Rate", monthlySalary: "Monthly Salary", salary: "Salary", phone: "Phone", photo: "Photo", saveWorker: "Save Worker", selectWorkerRole: "Choose worker role...", searchRole: "Search role...", workerDetails: "Worker Details", noWorkers: "No workers added yet.", workers: "Workers", viewDetails: "View Details", attendanceLogs: "Attendance Logs" },
                 progress: { title: "Progress Tasks", task: "Task", start: "Start", end: "End", status: "Status", pending: "Pending", completed: "Completed", markCompleted: "Mark as completed", noTasks: "No tasks assigned." },
                 reports: { title: "Generate Reports", general: "General", workerPayroll: "Worker Payroll", exportCSV: "Export CSV", printPDF: "Print / PDF", department: "Department", allDepartments: "All Departments", startDate: "Start Date", endDate: "End Date", searchWorker: "Search worker...", totalWorkers: "Total Workers", workerDays: "Worker-Days", totalPayroll: "Total Payroll", avgDaily: "Avg. Daily Labor Cost" },
                 gallery: { title: "Site Gallery", uploadImage: "Upload New Image", description: "Description", upload: "Upload", noImages: "No images uploaded yet.", close: "Close" },
@@ -253,9 +243,7 @@
                 common: { save: "Bika", cancel: "Hagarika", close: "Funga", add: "Ongeraho", edit: "Hindura", delete: "Siba", view: "Reba", upload: "Ohereza", search: "Shakisha", loading: "Birimo gutegura...", areYouSure: "Urabyemeza?", cannotUndo: "Ibi ntibishobora guhindurwa", savedSuccessfully: "Byabitswe neza", updatedSuccessfully: "Byavuguruwe neza", deletedSuccessfully: "Byasibwe neza", somethingWentWrong: "Hari ikitagenze neza", noDataAvailable: "Nta makuru aboneka", requiredField: "Ibi birakenewe", invalidValue: "Agaciro katariyo", selectAll: "Hitamo Byose", today: "Uyu Munsi" },
                 dashboard: { siteStatus: "Imiterere", siteManager: "Umuyobozi", workersOnSite: "Abakozi ku kibanza", progress: "Ibitekerezo", recentMaterials: "Ibikoresho bishya", pendingTasks: "Imirimo itegereje" },
                 materials: { title: "Ibikoresho Byakoreshejwe", recordUsage: "Andika Gukoresha", addMaterial: "Ongeraho ibikoresho", editMaterial: "Hindura ibikoresho", materialName: "Izina ry'ibikoresho", quantityUsed: "Umubare wakoreshejwe", unitCost: "Igiciro cy'igice", totalAmount: "Amafaranga yose", noMaterials: "Nta bikoresho byanditswe.", materialUnit: "Igice" },
-                stock: { title: "Gucunga Imbuganyuro", receiveStock: "Akira Imbuganyuro", addStock: "Ongeraho Imbuganyuro", editStock: "Hindura Imbuganyuro", stockHistory: "Amateka y'Imbuganyuro", quantity: "Umubare", minimumStock: "Ubugabanyiro ntarengwa", stockValue: "Agaciro k'Imbuganyuro", lastUpdated: "Byavuguruwe", notes: "Ibisobanuro", normal: "Bisanzwe", lowStock: "Imbuganyuro nke", outOfStock: "Imbuganyuro yashaje", unit: "Igice", unitCost: "Igiciro cy'igice",
-                    transactionReceived: "Byakiriwe", transactionUsed: "Byakoreshejwe", transactionEdited: "Byahinduwe", transactionDeleted: "Byasibwe", transactionAdjusted: "Byahinduwe", transactionOther: "Ikindo",
-                    currentStock: "Imbuganyuro ziriho", before: "Mbere", after: "Nyuma", date: "Itariki" },
+                stock: { title: "Gucunga Imbuganyuro", receiveStock: "Akira Imbuganyuro", addStock: "Ongeraho Imbuganyuro", editStock: "Hindura Imbuganyuro", stockHistory: "Amateka y'Imbuganyuro", quantity: "Umubare", minimumStock: "Ubugabanyiro ntarengwa", stockValue: "Agaciro k'Imbuganyuro", lastUpdated: "Byavuguruwe", notes: "Ibisobanuro", normal: "Bisanzwe", lowStock: "Imbuganyuro nke", outOfStock: "Imbuganyuro yashaje", unit: "Igice", unitCost: "Igiciro cy'igice", transactionReceived: "Byakiriwe", transactionUsed: "Byakoreshejwe", transactionEdited: "Byahinduwe", transactionDeleted: "Byasibwe", transactionAdjusted: "Byahinduwe", transactionOther: "Ikindo", currentStock: "Imbuganyuro ziriho", before: "Mbere", after: "Nyuma", date: "Itariki" },
                 workers: { title: "Abakozi", addWorker: "Ongeraho Umukozi", view: "Abakozi Bose", recordAttendance: "Andika Kwitaba", fullName: "Amazina yombi", role: "Umwanya", paymentType: "Uburyo bwo Kwishyura", dailyRate: "Umushahara w'umunsi", monthlySalary: "Umushahara w'ukwezi", salary: "Umushahara", phone: "Telefoni", photo: "Ifoto", saveWorker: "Bika Umukozi", selectWorkerRole: "Hitamo umwanya...", searchRole: "Shakisha umwanya...", workerDetails: "Ibisobanuro by'Umukozi", noWorkers: "Nta bakozi bahari.", workers: "Abakozi", viewDetails: "Reba Ibisobanuro", attendanceLogs: "Amateka yo Kwitaba" },
                 progress: { title: "Imirimo", task: "Umurimo", start: "Tangira", end: "Rangira", status: "Imiterere", pending: "Bitegereje", completed: "Byarangiye", markCompleted: "Menya ko byarangiye", noTasks: "Nta mirimo ihari." },
                 reports: { title: "Kora Raporo", general: "Rusange", workerPayroll: "Umushahara w'Abakozi", exportCSV: "Sohora CSV", printPDF: "Capa / PDF", department: "Ishami", allDepartments: "Amashami Yose", startDate: "Itariki yo gutangira", endDate: "Itariki yo kurangira", searchWorker: "Shakisha umukozi...", totalWorkers: "Abakozi Bose", workerDays: "Iminsi y'Abakozi", totalPayroll: "Umushahara Wose", avgDaily: "Igiciro cy'umunsi" },
@@ -267,9 +255,7 @@
                 common: { save: "Enregistrer", cancel: "Annuler", close: "Fermer", add: "Ajouter", edit: "Modifier", delete: "Supprimer", view: "Voir", upload: "Télécharger", search: "Rechercher", loading: "Chargement...", areYouSure: "Êtes-vous sûr ?", cannotUndo: "Cette action est irréversible", savedSuccessfully: "Enregistré avec succès", updatedSuccessfully: "Mis à jour avec succès", deletedSuccessfully: "Supprimé avec succès", somethingWentWrong: "Une erreur s'est produite", noDataAvailable: "Aucune donnée disponible", requiredField: "Champ requis", invalidValue: "Valeur invalide", selectAll: "Tout Sélectionner", today: "Aujourd'hui" },
                 dashboard: { siteStatus: "Statut", siteManager: "Gestionnaire", workersOnSite: "Ouvriers sur site", progress: "Progrès", recentMaterials: "Matériaux récents", pendingTasks: "Tâches en attente" },
                 materials: { title: "Matériaux utilisés", recordUsage: "Enregistrer l'utilisation", addMaterial: "Ajouter un matériau", editMaterial: "Modifier le matériau", materialName: "Nom du matériau", quantityUsed: "Qté utilisée", unitCost: "Coût unitaire", totalAmount: "Montant total", noMaterials: "Aucun matériau enregistré.", materialUnit: "Unité" },
-                stock: { title: "Gestion du stock", receiveStock: "Recevoir du stock", addStock: "Ajouter du stock", editStock: "Modifier le stock", stockHistory: "Historique du stock", quantity: "Quantité", minimumStock: "Stock minimum", stockValue: "Valeur du stock", lastUpdated: "Mis à jour", notes: "Notes", normal: "Normal", lowStock: "Stock faible", outOfStock: "Épuisé", unit: "Unité", unitCost: "Coût unitaire",
-                    transactionReceived: "Stock reçu", transactionUsed: "Matériel utilisé", transactionEdited: "Utilisation modifiée", transactionDeleted: "Utilisation supprimée", transactionAdjusted: "Stock ajusté", transactionOther: "Transaction",
-                    currentStock: "Stock actuel", before: "Avant", after: "Après", date: "Date" },
+                stock: { title: "Gestion du stock", receiveStock: "Recevoir du stock", addStock: "Ajouter du stock", editStock: "Modifier le stock", stockHistory: "Historique du stock", quantity: "Quantité", minimumStock: "Stock minimum", stockValue: "Valeur du stock", lastUpdated: "Mis à jour", notes: "Notes", normal: "Normal", lowStock: "Stock faible", outOfStock: "Épuisé", unit: "Unité", unitCost: "Coût unitaire", transactionReceived: "Stock reçu", transactionUsed: "Matériel utilisé", transactionEdited: "Utilisation modifiée", transactionDeleted: "Utilisation supprimée", transactionAdjusted: "Stock ajusté", transactionOther: "Transaction", currentStock: "Stock actuel", before: "Avant", after: "Après", date: "Date" },
                 workers: { title: "Ouvriers", addWorker: "Ajouter un ouvrier", view: "Tous les ouvriers", recordAttendance: "Enregistrer la présence", fullName: "Nom complet", role: "Rôle", paymentType: "Type de paiement", dailyRate: "Taux journalier", monthlySalary: "Salaire mensuel", salary: "Salaire", phone: "Téléphone", photo: "Photo", saveWorker: "Enregistrer l'ouvrier", selectWorkerRole: "Choisir un rôle...", searchRole: "Rechercher un rôle...", workerDetails: "Détails de l'ouvrier", noWorkers: "Aucun ouvrier ajouté.", workers: "Ouvriers", viewDetails: "Voir les détails", attendanceLogs: "Journaux de présence" },
                 progress: { title: "Tâches de progression", task: "Tâche", start: "Début", end: "Fin", status: "Statut", pending: "En attente", completed: "Terminé", markCompleted: "Marquer comme terminé", noTasks: "Aucune tâche assignée." },
                 reports: { title: "Générer des rapports", general: "Général", workerPayroll: "Paie des ouvriers", exportCSV: "Exporter CSV", printPDF: "Imprimer / PDF", department: "Département", allDepartments: "Tous les départements", startDate: "Date de début", endDate: "Date de fin", searchWorker: "Rechercher un ouvrier...", totalWorkers: "Total des ouvriers", workerDays: "Jours ouvriers", totalPayroll: "Paie totale", avgDaily: "Coût journalier moyen" },
@@ -1964,15 +1950,38 @@
             setButtonLoading(btn, true);
 
             try {
+                // 1. Get existing attendance records to clear them for re-saving
                 const existingSnap = await getDocs(query(collection(db, 'worker_attendance'), where('site_id', '==', currentSiteId), where('date', '==', selectedDate)));
+                
                 const batch = writeBatch(db);
-
                 existingSnap.docs.forEach(d => batch.delete(d.ref));
+
+                // 2. Calculate payroll details based on the selected workers
+                let dailyWorkersPayableCost = 0;
+                const workersForPayroll = [];
 
                 selectedIds.forEach(id => {
                     const w = siteWorkersData.find(item => item.id === id);
                     if (!w) return;
-                    const dailyRate = w.payment_method === 'daily' ? Number(w.salary) || 0 : Math.round((Number(w.salary) || 0) / 30);
+
+                    // Calculate exact daily rate (same logic as previous code)
+                    const dailyRate = w.payment_method === 'daily' 
+                        ? Number(w.salary) || 0 
+                        : Math.round((Number(w.salary) || 0) / 30);
+
+                    // Accumulate total cost
+                    dailyWorkersPayableCost += dailyRate;
+
+                    // Build workers array for the payroll document
+                    workersForPayroll.push({
+                        worker_id: w.id,
+                        name: w.name,
+                        role: w.role || 'Worker',
+                        daily_rate: dailyRate,
+                        payable: dailyRate
+                    });
+
+                    // Create attendance records
                     const newDocRef = doc(collection(db, 'worker_attendance'));
                     batch.set(newDocRef, {
                         site_id: currentSiteId,
@@ -1987,11 +1996,44 @@
                     });
                 });
 
+                // 3. Save / Update the Daily Workers Payable Cost (in worker_daily_payroll collection)
+                const payrollQuery = query(
+                    collection(db, 'worker_daily_payroll'), 
+                    where('site_id', '==', currentSiteId), 
+                    where('date', '==', selectedDate)
+                );
+                const payrollSnap = await getDocs(payrollQuery);
+
+                const payrollData = {
+                    site_id: currentSiteId,
+                    date: selectedDate,
+                    total_workers: selectedIds.length,
+                    worker_days: selectedIds.length,
+                    total_payable: dailyWorkersPayableCost,
+                    workers: workersForPayroll,
+                    recorded_by: currentUser.uid,
+                    recorded_at: new Date().toISOString()
+                };
+
+                // If a payroll document already exists for this site + date, update it. Otherwise, create a new one.
+                if (!payrollSnap.empty) {
+                    const payrollDocRef = payrollSnap.docs[0].ref;
+                    batch.update(payrollDocRef, payrollData);
+                } else {
+                    const payrollDocRef = doc(collection(db, 'worker_daily_payroll'));
+                    batch.set(payrollDocRef, payrollData);
+                }
+
+                // 4. Commit all changes atomically
                 await batch.commit();
-                alert(`Attendance saved for ${selectedIds.length} worker(s) on ${selectedDate}.`);
+                
+                alert(`Attendance saved for ${selectedIds.length} worker(s) on ${selectedDate}. Daily payable cost: ${dailyWorkersPayableCost.toLocaleString()} RWF.`);
+                
+                // Refresh reports if currently on the report page
                 if (currentSection === 'reports' && reportType === 'payroll') {
                     setTimeout(updatePayrollReport, 300);
                 }
+                
             } catch (err) {
                 alert('Error saving attendance: ' + err.message);
             } finally {
