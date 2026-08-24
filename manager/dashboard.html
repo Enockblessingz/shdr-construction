@@ -352,7 +352,7 @@
                 <span id="user-avatar-text">M</span>
             </div>
             <div class="flex-1 min-w-0">
-                <p class="text-sm font-medium text-slate-900 truncate" id="user-name">Manager's Name</p>
+                <p class="text-sm font-medium text-slate-900 truncate" id="user-name">Manager</p>
                 <p class="text-xs text-slate-500 truncate" id="user-email"></p>
             </div>
         </div>
@@ -810,8 +810,8 @@
         }
 
         // =================================================================
-// DASHBOARD
-// =================================================================
+     // DASHBOARD
+  // =================================================================
 function renderDashboard(container) {
     if (!container) return;
 
@@ -1293,75 +1293,1059 @@ window.submitBatchMaterials = async () => {
     } catch (err) { alert(t('common.somethingWentWrong') + ': ' + err.message); }
 };
 
-        // =================================================================
-        // STOCK
-        // =================================================================
-        function renderStock(container) {
-            const site = assignedSites.find(s => s.id === currentSiteId);
-            if (!site) { container.innerHTML = '<p class="text-red-500">Site not found.</p>'; return; }
-            const siteStock = stockData.filter(s => s.site_id === currentSiteId);
-            let html = `<div class="flex justify-between items-center mb-4"><h2 class="text-xl sm:text-2xl font-bold">${t('stock.title')}</h2><button onclick="openAddStockModal()" class="px-3 py-2 bg-emerald-600 text-white rounded-xl hover:bg-emerald-700 flex items-center gap-2 text-sm"><iconify-icon icon="material-symbols:add"></iconify-icon> ${t('stock.receiveStock')}</button></div><div class="bg-white rounded-2xl border p-4 shadow-sm mb-4"><p class="text-sm text-slate-600"><strong>${t('navigation.dashboard')}:</strong> ${site.name}</p></div>`;
-            if (!siteStock.length) html += `<p class="text-slate-500 text-sm">${t('common.noDataAvailable')}</p>`;
-            else {
-                html += `<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">`;
-                siteStock.forEach(item => {
-                    const status = item.quantity <= 0 ? t('stock.outOfStock') : (item.minimum_quantity && item.quantity <= item.minimum_quantity ? t('stock.lowStock') : t('stock.normal'));
-                    const statusClass = status === t('stock.normal') ? 'stock-status-normal' : status === t('stock.lowStock') ? 'stock-status-low' : 'stock-status-out';
-                    const unitCost = materialsData.filter(m => m.site_id === currentSiteId && m.name === item.material_name).pop()?.unit_cost || 0;
-                    const value = item.quantity * unitCost;
-                    html += `<div class="bg-white rounded-2xl border overflow-hidden shadow-sm hover:shadow-md transition"><div class="p-5"><div class="flex justify-between items-start"><h3 class="font-bold text-lg text-slate-800">${item.material_name || 'Unknown'}</h3><span class="text-xs font-medium px-2 py-1 rounded-full ${statusClass}">${status}</span></div><div class="mt-3 space-y-1 text-sm"><p><strong>${t('stock.quantity')}:</strong> ${item.quantity} ${item.unit || 'units'}</p><p><strong>${t('stock.value')}:</strong> ${value.toFixed(2)} RWF</p><p><strong>${t('stock.lastUpdated')}:</strong> ${formatDate(item.updated_at)}</p>${item.notes ? `<p><strong>${t('stock.notes')}:</strong> ${item.notes}</p>` : ''}</div><div class="mt-4 flex gap-2"><button onclick="editStockItem('${item.id}')" class="text-xs text-emerald-600 font-medium">${t('common.edit')}</button><button onclick="viewStockHistory('${item.id}')" class="text-xs text-blue-600 font-medium">${t('stock.stockHistory')}</button></div></div></div>`;
-                });
-                html += `</div>`;
-            }
-            const recentTrans = stockTransactions.slice(0, 10);
-            if (recentTrans.length) html += `<div class="mt-6 bg-white rounded-2xl border p-4 shadow-sm"><h3 class="font-semibold text-sm mb-3">${t('stock.stockHistory')}</h3><div class="space-y-2">${recentTrans.map(t => `<div class="flex justify-between text-sm border-b border-slate-100 pb-2"><div><span class="font-medium">${t.material_name}</span><span class="text-xs text-slate-500 ml-2">${t.transaction_type === 'STOCK_ADDED' ? '+' : ''}${t.quantity} ${t.unit || ''}</span></div><span class="text-xs text-slate-400">${formatDate(t.created_at)}</span></div>`).join('')}</div></div>`;
-            container.innerHTML = html;
+
+
+
+// =================================================================
+// STOCK
+// =================================================================
+function renderStock(container) {
+    const site = assignedSites.find(s => s.id === currentSiteId);
+
+    if (!site) {
+        container.innerHTML = `
+            <p class="text-red-500">
+                ${t('common.noDataAvailable')}
+            </p>
+        `;
+        return;
+    }
+
+    const siteStock = stockData.filter(
+        s => s.site_id === currentSiteId
+    );
+
+    // Find the latest known material unit cost.
+    // Matching is case-insensitive.
+    const getMaterialUnitCost = (materialName) => {
+        if (!materialName) return 0;
+
+        const normalizedName = materialName.trim().toLowerCase();
+
+        const matches = materialsData
+            .filter(m =>
+                m.site_id === currentSiteId &&
+                String(m.name || '').trim().toLowerCase() === normalizedName &&
+                Number(m.unit_cost) > 0
+            )
+            .sort((a, b) => {
+                const dateA = new Date(
+                    a.date_used ||
+                    a.created_at ||
+                    a.updated_at ||
+                    0
+                );
+
+                const dateB = new Date(
+                    b.date_used ||
+                    b.created_at ||
+                    b.updated_at ||
+                    0
+                );
+
+                return dateB - dateA;
+            });
+
+        return matches.length
+            ? Number(matches[0].unit_cost) || 0
+            : 0;
+    };
+
+    // Get stock unit cost.
+    // First use the cost stored directly on stock.
+    // If unavailable, fall back to materialsData.
+    const getStockUnitCost = (item) => {
+        const storedCost = Number(item.unit_cost);
+
+        if (storedCost > 0) {
+            return storedCost;
         }
 
-        window.openAddStockModal = () => {
-            const materialNames = [...new Set(materialsData.map(m => m.name).filter(Boolean))];
-            const units = ['bags','tons','kg','litres','pieces','rolls','cubic meters'];
-            openModal(t('stock.receiveStock'), `<form onsubmit="handleAddStock(event)" class="space-y-4"><div><label class="block text-sm font-medium">${t('materials.materialName')}</label><input list="mat-list" class="w-full border rounded-lg p-2.5 text-sm" id="stock-material" required><datalist id="mat-list">${materialNames.map(n => `<option value="${n}">${n}</option>`).join('')}</datalist></div><div><label class="block text-sm font-medium">${t('stock.quantity')}</label><input type="number" step="0.01" class="w-full border rounded-lg p-2.5 text-sm" id="stock-quantity" required min="0"></div><div><label class="block text-sm font-medium">${t('common.add')}</label><select class="w-full border rounded-lg p-2.5 text-sm" id="stock-unit">${units.map(u => `<option>${u}</option>`).join('')}</select></div><div><label class="block text-sm font-medium">${t('stock.minimumStock')}</label><input type="number" step="0.01" class="w-full border rounded-lg p-2.5 text-sm" id="stock-min"></div><button type="submit" class="w-full bg-emerald-600 text-white py-3 rounded-xl">${t('common.save')}</button></form>`);
-        };
+        return getMaterialUnitCost(item.material_name);
+    };
 
-        window.handleAddStock = async (e) => {
-            e.preventDefault(); const form = e.target, btn = getFormSubmitBtn(form); setButtonLoading(btn, true);
-            try {
-                const materialName = document.getElementById('stock-material').value.trim(), quantity = parseFloat(document.getElementById('stock-quantity').value) || 0, unit = document.getElementById('stock-unit').value, minQty = parseFloat(document.getElementById('stock-min').value) || null;
-                if (!materialName || quantity <= 0) { alert(t('common.requiredField')); return; }
-                const existing = stockData.find(s => s.site_id === currentSiteId && s.material_name === materialName);
-                let stockRef;
-                if (existing) { stockRef = doc(db, 'stock', existing.id); await updateDoc(stockRef, { quantity: existing.quantity + quantity, unit, minimum_quantity: minQty ?? existing.minimum_quantity, updated_at: new Date().toISOString() }); }
-                else { stockRef = await addDoc(collection(db, 'stock'), { site_id: currentSiteId, material_name: materialName, quantity, unit, minimum_quantity: minQty, created_at: new Date().toISOString(), updated_at: new Date().toISOString() }); }
-                await addDoc(collection(db, 'stock_transactions'), { site_id: currentSiteId, stock_id: existing ? existing.id : stockRef.id, material_name: materialName, transaction_type: 'STOCK_ADDED', quantity, previous_quantity: existing ? existing.quantity : 0, new_quantity: existing ? existing.quantity + quantity : quantity, unit, notes: 'Received', recorded_by: currentUser.uid, created_at: new Date().toISOString() });
-                closeModal(); showToast(t('common.savedSuccessfully'), 'success');
-            } catch (err) { showToast(t('common.somethingWentWrong'), 'error'); } finally { setButtonLoading(btn, false); }
-        };
+    let html = `
+        <div class="flex justify-between items-center mb-4">
 
-        window.editStockItem = (id) => {
-            const item = stockData.find(s => s.id === id); if (!item) return;
-            openModal(t('stock.editStock'), `<form onsubmit="handleEditStock(event, '${id}')" class="space-y-4"><input class="w-full border rounded-lg p-2.5 text-sm" value="${item.material_name || ''}" id="edit-stock-material" required><input type="number" step="0.01" value="${item.quantity || 0}" id="edit-stock-quantity" class="w-full border rounded-lg p-2.5 text-sm" required min="0"><input value="${item.minimum_quantity || ''}" id="edit-stock-min" type="number" step="0.01" class="w-full border rounded-lg p-2.5 text-sm"><button type="submit" class="w-full bg-emerald-600 text-white py-3 rounded-xl">${t('common.save')}</button></form>`);
-        };
+            <h2 class="text-xl sm:text-2xl font-bold">
+                ${t('stock.title')}
+            </h2>
 
-        window.handleEditStock = async (e, id) => {
-            e.preventDefault(); const form = e.target, btn = getFormSubmitBtn(form); setButtonLoading(btn, true);
-            try {
-                const materialName = document.getElementById('edit-stock-material').value.trim(), quantity = parseFloat(document.getElementById('edit-stock-quantity').value) || 0, minQty = parseFloat(document.getElementById('edit-stock-min').value) || null;
-                const item = stockData.find(s => s.id === id);
-                await updateDoc(doc(db, 'stock', id), { material_name: materialName, quantity, minimum_quantity: minQty, updated_at: new Date().toISOString() });
-                const diff = quantity - item.quantity;
-                if (diff !== 0) await addDoc(collection(db, 'stock_transactions'), { site_id: currentSiteId, stock_id: id, material_name: materialName, transaction_type: 'STOCK_ADJUSTMENT', quantity: Math.abs(diff), previous_quantity: item.quantity, new_quantity: quantity, unit: item.unit || 'units', notes: 'Manual', recorded_by: currentUser.uid, created_at: new Date().toISOString() });
-                closeModal(); showToast(t('common.updatedSuccessfully'), 'success');
-            } catch (err) { showToast(t('common.somethingWentWrong'), 'error'); } finally { setButtonLoading(btn, false); }
-        };
+            <button
+                onclick="openAddStockModal()"
+                class="px-3 py-2 bg-emerald-600 text-white rounded-xl hover:bg-emerald-700 flex items-center gap-2 text-sm"
+            >
+                <iconify-icon icon="material-symbols:add"></iconify-icon>
+                ${t('stock.receiveStock')}
+            </button>
 
-        window.viewStockHistory = (stockId) => {
-            const transactions = stockTransactions.filter(t => t.stock_id === stockId);
-            if (!transactions.length) { alert(t('common.noDataAvailable')); return; }
-            let html = `<div class="space-y-2">${transactions.map(t => `<div class="flex justify-between text-sm"><span>${t.transaction_type === 'STOCK_ADDED' ? '+' : ''}${t.quantity} ${t.unit || ''} — ${t.notes || ''}</span><span class="text-slate-400">${formatDate(t.created_at)}</span></div>`).join('')}</div>`;
-            openModal(t('stock.stockHistory'), html);
-        };
+        </div>
 
+        <div class="bg-white rounded-2xl border p-4 shadow-sm mb-4">
+
+            <p class="text-sm text-slate-600">
+                <strong>${t('navigation.dashboard')}:</strong>
+                ${site.name}
+            </p>
+
+        </div>
+    `;
+
+    if (!siteStock.length) {
+
+        html += `
+            <p class="text-slate-500 text-sm">
+                ${t('common.noDataAvailable')}
+            </p>
+        `;
+
+    } else {
+
+        html += `
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        `;
+
+        siteStock.forEach(item => {
+
+            const quantity = Number(item.quantity) || 0;
+            const minimumQuantity = Number(item.minimum_quantity) || 0;
+
+            const unitCost = getStockUnitCost(item);
+
+            const value = quantity * unitCost;
+
+            let status;
+            let statusClass;
+
+            if (quantity <= 0) {
+                status = t('stock.outOfStock');
+                statusClass = 'stock-status-out';
+            } else if (
+                minimumQuantity > 0 &&
+                quantity <= minimumQuantity
+            ) {
+                status = t('stock.lowStock');
+                statusClass = 'stock-status-low';
+            } else {
+                status = t('stock.normal');
+                statusClass = 'stock-status-normal';
+            }
+
+            html += `
+                <div class="bg-white rounded-2xl border overflow-hidden shadow-sm hover:shadow-md transition">
+
+                    <div class="p-5">
+
+                        <!-- Header -->
+                        <div class="flex justify-between items-start gap-3">
+
+                            <h3 class="font-bold text-lg text-slate-800">
+                                ${item.material_name || 'Unknown'}
+                            </h3>
+
+                            <span class="text-xs font-medium px-2 py-1 rounded-full ${statusClass}">
+                                ${status}
+                            </span>
+
+                        </div>
+
+
+                        <!-- Stock Information -->
+                        <div class="mt-3 space-y-2 text-sm">
+
+                            <p>
+                                <strong>
+                                    ${t('stock.quantity')}:
+                                </strong>
+
+                                ${quantity}
+                                ${item.unit || 'units'}
+                            </p>
+
+                            <p>
+                                <strong>
+                                    Unit Cost:
+                                </strong>
+
+                                ${unitCost.toLocaleString(
+                                    'en-RW',
+                                    {
+                                        minimumFractionDigits: 2,
+                                        maximumFractionDigits: 2
+                                    }
+                                )} RWF
+                            </p>
+
+                            <p>
+                                <strong>
+                                    ${t('stock.value')}:
+                                </strong>
+
+                                <span class="font-semibold text-emerald-700">
+                                    ${value.toLocaleString(
+                                        'en-RW',
+                                        {
+                                            minimumFractionDigits: 2,
+                                            maximumFractionDigits: 2
+                                        }
+                                    )} RWF
+                                </span>
+                            </p>
+
+                            <p>
+                                <strong>
+                                    ${t('stock.lastUpdated')}:
+                                </strong>
+
+                                ${formatDate(item.updated_at)}
+                            </p>
+
+                            ${
+                                item.notes
+                                    ? `
+                                        <p>
+                                            <strong>
+                                                ${t('stock.notes')}:
+                                            </strong>
+
+                                            ${item.notes}
+                                        </p>
+                                    `
+                                    : ''
+                            }
+
+                        </div>
+
+
+                        <!-- Actions -->
+                        <div class="mt-4 flex gap-3">
+
+                            <button
+                                onclick="editStockItem('${item.id}')"
+                                class="text-xs text-emerald-600 font-medium hover:text-emerald-800"
+                            >
+                                ${t('common.edit')}
+                            </button>
+
+                            <button
+                                onclick="viewStockHistory('${item.id}')"
+                                class="text-xs text-blue-600 font-medium hover:text-blue-800"
+                            >
+                                ${t('stock.stockHistory')}
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </div>
+            `;
+        });
+
+        html += `</div>`;
+    }
+
+
+    // =============================================================
+    // RECENT STOCK TRANSACTIONS
+    // =============================================================
+    const recentTrans = stockTransactions
+        .filter(t => t.site_id === currentSiteId)
+        .slice(0, 10);
+
+    if (recentTrans.length) {
+
+        html += `
+            <div class="mt-6 bg-white rounded-2xl border p-4 shadow-sm">
+
+                <h3 class="font-semibold text-sm mb-3">
+                    ${t('stock.stockHistory')}
+                </h3>
+
+                <div class="space-y-2">
+
+                    ${recentTrans.map(transaction => `
+
+                        <div class="flex justify-between gap-3 text-sm border-b border-slate-100 pb-2 last:border-0">
+
+                            <div>
+
+                                <span class="font-medium">
+                                    ${transaction.material_name}
+                                </span>
+
+                                <span class="text-xs text-slate-500 ml-2">
+
+                                    ${
+                                        transaction.transaction_type === 'STOCK_ADDED'
+                                            ? '+'
+                                            : transaction.transaction_type === 'STOCK_DEDUCTED'
+                                                ? '-'
+                                                : ''
+                                    }
+
+                                    ${transaction.quantity}
+                                    ${transaction.unit || ''}
+
+                                </span>
+
+                            </div>
+
+                            <span class="text-xs text-slate-400 whitespace-nowrap">
+                                ${formatDate(transaction.created_at)}
+                            </span>
+
+                        </div>
+
+                    `).join('')}
+
+                </div>
+
+            </div>
+        `;
+    }
+
+    container.innerHTML = html;
+}
+
+
+// =================================================================
+// RECEIVE STOCK
+// =================================================================
+window.openAddStockModal = () => {
+
+    const materialNames = [
+        ...new Map(
+            materialsData
+                .filter(m => m.name)
+                .map(m => [
+                    String(m.name).trim().toLowerCase(),
+                    String(m.name).trim()
+                ])
+        ).values()
+    ];
+
+    const units = [
+        'bags',
+        'tons',
+        'kg',
+        'litres',
+        'pieces',
+        'rolls',
+        'cubic meters'
+    ];
+
+    openModal(
+        t('stock.receiveStock'),
+
+        `
+        <form
+            onsubmit="handleAddStock(event)"
+            class="space-y-4"
+        >
+
+            <!-- Material -->
+            <div>
+
+                <label class="block text-sm font-medium">
+                    ${t('materials.materialName')}
+                </label>
+
+                <input
+                    list="mat-list"
+                    class="w-full border rounded-lg p-2.5 text-sm"
+                    id="stock-material"
+                    required
+                >
+
+                <datalist id="mat-list">
+                    ${materialNames.map(name => `
+                        <option value="${name}">
+                    `).join('')}
+                </datalist>
+
+            </div>
+
+
+            <!-- Quantity -->
+            <div>
+
+                <label class="block text-sm font-medium">
+                    ${t('stock.quantity')}
+                </label>
+
+                <input
+                    type="number"
+                    step="0.01"
+                    min="0.01"
+                    class="w-full border rounded-lg p-2.5 text-sm"
+                    id="stock-quantity"
+                    required
+                >
+
+            </div>
+
+
+            <!-- Unit -->
+            <div>
+
+                <label class="block text-sm font-medium">
+                    Unit
+                </label>
+
+                <select
+                    class="w-full border rounded-lg p-2.5 text-sm"
+                    id="stock-unit"
+                >
+                    ${units.map(u => `
+                        <option value="${u}">
+                            ${u}
+                        </option>
+                    `).join('')}
+                </select>
+
+            </div>
+
+
+            <!-- Unit Cost -->
+            <div>
+
+                <label class="block text-sm font-medium">
+                    Unit Cost (RWF)
+                </label>
+
+                <input
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    class="w-full border rounded-lg p-2.5 text-sm"
+                    id="stock-unit-cost"
+                    placeholder="e.g. 5500"
+                >
+
+                <p class="text-xs text-slate-400 mt-1">
+                    Used to calculate stock value.
+                </p>
+
+            </div>
+
+
+            <!-- Minimum Stock -->
+            <div>
+
+                <label class="block text-sm font-medium">
+                    ${t('stock.minimumStock')}
+                </label>
+
+                <input
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    class="w-full border rounded-lg p-2.5 text-sm"
+                    id="stock-min"
+                >
+
+            </div>
+
+
+            <!-- Save -->
+            <button
+                type="submit"
+                class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-xl"
+            >
+                ${t('common.save')}
+            </button>
+
+        </form>
+        `
+    );
+};
+
+
+// =================================================================
+// HANDLE RECEIVE STOCK
+// =================================================================
+window.handleAddStock = async (e) => {
+
+    e.preventDefault();
+
+    const form = e.target;
+    const btn = getFormSubmitBtn(form);
+
+    setButtonLoading(btn, true);
+
+    try {
+
+        const materialName =
+            document
+                .getElementById('stock-material')
+                .value
+                .trim();
+
+        const quantity =
+            parseFloat(
+                document.getElementById('stock-quantity').value
+            ) || 0;
+
+        const unit =
+            document.getElementById('stock-unit').value;
+
+        const enteredUnitCost =
+            parseFloat(
+                document.getElementById('stock-unit-cost').value
+            ) || 0;
+
+        const minQty =
+            parseFloat(
+                document.getElementById('stock-min').value
+            ) || null;
+
+
+        if (!materialName || quantity <= 0) {
+
+            alert(t('common.requiredField'));
+
+            return;
+        }
+
+
+        // Case-insensitive existing-stock lookup
+        const normalizedName =
+            materialName.toLowerCase();
+
+        const existing = stockData.find(
+            s =>
+                s.site_id === currentSiteId &&
+                String(s.material_name || '')
+                    .trim()
+                    .toLowerCase() === normalizedName
+        );
+
+
+        // If no unit cost was entered, use the latest material cost.
+        const fallbackUnitCost =
+            materialsData
+                .filter(m =>
+                    m.site_id === currentSiteId &&
+                    String(m.name || '')
+                        .trim()
+                        .toLowerCase() === normalizedName &&
+                    Number(m.unit_cost) > 0
+                )
+                .sort((a, b) =>
+                    new Date(
+                        b.date_used ||
+                        b.created_at ||
+                        b.updated_at ||
+                        0
+                    ) -
+                    new Date(
+                        a.date_used ||
+                        a.created_at ||
+                        a.updated_at ||
+                        0
+                    )
+                )[0]?.unit_cost || 0;
+
+
+        const unitCost =
+            enteredUnitCost > 0
+                ? enteredUnitCost
+                : Number(existing?.unit_cost) > 0
+                    ? Number(existing.unit_cost)
+                    : Number(fallbackUnitCost) || 0;
+
+
+        let stockRef;
+        let previousQuantity = 0;
+        let newQuantity = quantity;
+
+
+        // =========================================================
+        // EXISTING STOCK
+        // =========================================================
+        if (existing) {
+
+            stockRef = doc(
+                db,
+                'stock',
+                existing.id
+            );
+
+            previousQuantity =
+                Number(existing.quantity) || 0;
+
+            newQuantity =
+                previousQuantity + quantity;
+
+
+            await updateDoc(
+                stockRef,
+                {
+                    // Preserve the first saved spelling.
+                    material_name: existing.material_name,
+
+                    quantity: newQuantity,
+
+                    unit: unit || existing.unit || 'units',
+
+                    unit_cost:
+                        unitCost > 0
+                            ? unitCost
+                            : Number(existing.unit_cost) || 0,
+
+                    minimum_quantity:
+                        minQty !== null
+                            ? minQty
+                            : existing.minimum_quantity ?? null,
+
+                    updated_at:
+                        new Date().toISOString()
+                }
+            );
+
+        }
+
+        // =========================================================
+        // NEW STOCK
+        // =========================================================
+        else {
+
+            stockRef = await addDoc(
+                collection(db, 'stock'),
+                {
+                    site_id: currentSiteId,
+
+                    material_name: materialName,
+
+                    quantity,
+
+                    unit: unit || 'units',
+
+                    unit_cost: unitCost,
+
+                    minimum_quantity: minQty,
+
+                    created_at:
+                        new Date().toISOString(),
+
+                    updated_at:
+                        new Date().toISOString()
+                }
+            );
+
+        }
+
+
+        // =========================================================
+        // STOCK TRANSACTION
+        // =========================================================
+        await addDoc(
+            collection(db, 'stock_transactions'),
+            {
+                site_id: currentSiteId,
+
+                stock_id:
+                    existing
+                        ? existing.id
+                        : stockRef.id,
+
+                material_name:
+                    existing
+                        ? existing.material_name
+                        : materialName,
+
+                transaction_type:
+                    'STOCK_ADDED',
+
+                quantity,
+
+                previous_quantity:
+                    previousQuantity,
+
+                new_quantity:
+                    newQuantity,
+
+                unit,
+
+                unit_cost:
+                    unitCost,
+
+                total_value:
+                    quantity * unitCost,
+
+                notes:
+                    'Received',
+
+                recorded_by:
+                    currentUser.uid,
+
+                created_at:
+                    new Date().toISOString()
+            }
+        );
+
+
+        closeModal();
+
+        showToast(
+            t('common.savedSuccessfully'),
+            'success'
+        );
+
+    } catch (err) {
+
+        console.error(
+            'Error receiving stock:',
+            err
+        );
+
+        showToast(
+            t('common.somethingWentWrong'),
+            'error'
+        );
+
+    } finally {
+
+        setButtonLoading(
+            btn,
+            false
+        );
+    }
+};
+
+
+// =================================================================
+// EDIT STOCK
+// =================================================================
+window.editStockItem = (id) => {
+
+    const item =
+        stockData.find(s => s.id === id);
+
+    if (!item) return;
+
+
+    const unitCost =
+        Number(item.unit_cost) ||
+        0;
+
+
+    openModal(
+        t('stock.editStock'),
+
+        `
+        <form
+            onsubmit="handleEditStock(event, '${id}')"
+            class="space-y-4"
+        >
+
+            <div>
+
+                <label class="block text-sm font-medium">
+                    ${t('materials.materialName')}
+                </label>
+
+                <input
+                    class="w-full border rounded-lg p-2.5 text-sm"
+                    value="${item.material_name || ''}"
+                    id="edit-stock-material"
+                    required
+                >
+
+            </div>
+
+
+            <div>
+
+                <label class="block text-sm font-medium">
+                    ${t('stock.quantity')}
+                </label>
+
+                <input
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    value="${item.quantity || 0}"
+                    id="edit-stock-quantity"
+                    class="w-full border rounded-lg p-2.5 text-sm"
+                    required
+                >
+
+            </div>
+
+
+            <div>
+
+                <label class="block text-sm font-medium">
+                    Unit Cost (RWF)
+                </label>
+
+                <input
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    value="${unitCost}"
+                    id="edit-stock-unit-cost"
+                    class="w-full border rounded-lg p-2.5 text-sm"
+                >
+
+            </div>
+
+
+            <div>
+
+                <label class="block text-sm font-medium">
+                    ${t('stock.minimumStock')}
+                </label>
+
+                <input
+                    value="${item.minimum_quantity ?? ''}"
+                    id="edit-stock-min"
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    class="w-full border rounded-lg p-2.5 text-sm"
+                >
+
+            </div>
+
+
+            <button
+                type="submit"
+                class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-xl"
+            >
+                ${t('common.save')}
+            </button>
+
+        </form>
+        `
+    );
+};
+
+
+// =================================================================
+// HANDLE EDIT STOCK
+// =================================================================
+window.handleEditStock = async (e, id) => {
+
+    e.preventDefault();
+
+    const form = e.target;
+    const btn = getFormSubmitBtn(form);
+
+    setButtonLoading(btn, true);
+
+    try {
+
+        const materialName =
+            document
+                .getElementById('edit-stock-material')
+                .value
+                .trim();
+
+        const quantity =
+            parseFloat(
+                document.getElementById('edit-stock-quantity').value
+            ) || 0;
+
+        const unitCost =
+            parseFloat(
+                document.getElementById('edit-stock-unit-cost').value
+            ) || 0;
+
+        const minQty =
+            parseFloat(
+                document.getElementById('edit-stock-min').value
+            ) || null;
+
+
+        const item =
+            stockData.find(s => s.id === id);
+
+        if (!item) {
+            throw new Error('Stock item not found.');
+        }
+
+
+        const previousQuantity =
+            Number(item.quantity) || 0;
+
+
+        await updateDoc(
+            doc(db, 'stock', id),
+            {
+                material_name: materialName,
+
+                quantity,
+
+                unit_cost: unitCost,
+
+                minimum_quantity: minQty,
+
+                updated_at:
+                    new Date().toISOString()
+            }
+        );
+
+
+        // Record quantity adjustment
+        if (quantity !== previousQuantity) {
+
+            await addDoc(
+                collection(db, 'stock_transactions'),
+                {
+                    site_id: currentSiteId,
+
+                    stock_id: id,
+
+                    material_name: materialName,
+
+                    transaction_type:
+                        'STOCK_ADJUSTMENT',
+
+                    quantity:
+                        Math.abs(
+                            quantity -
+                            previousQuantity
+                        ),
+
+                    previous_quantity:
+                        previousQuantity,
+
+                    new_quantity:
+                        quantity,
+
+                    unit:
+                        item.unit || 'units',
+
+                    unit_cost:
+                        unitCost,
+
+                    total_value:
+                        Math.abs(
+                            quantity -
+                            previousQuantity
+                        ) * unitCost,
+
+                    notes:
+                        'Manual adjustment',
+
+                    recorded_by:
+                        currentUser.uid,
+
+                    created_at:
+                        new Date().toISOString()
+                }
+            );
+        }
+
+
+        closeModal();
+
+        showToast(
+            t('common.updatedSuccessfully'),
+            'success'
+        );
+
+    } catch (err) {
+
+        console.error(
+            'Error editing stock:',
+            err
+        );
+
+        showToast(
+            t('common.somethingWentWrong'),
+            'error'
+        );
+
+    } finally {
+
+        setButtonLoading(
+            btn,
+            false
+        );
+    }
+};
+
+
+// =================================================================
+// VIEW STOCK HISTORY
+// =================================================================
+window.viewStockHistory = (stockId) => {
+
+    const transactions =
+        stockTransactions.filter(
+            transaction =>
+                transaction.stock_id === stockId
+        );
+
+    if (!transactions.length) {
+
+        alert(
+            t('common.noDataAvailable')
+        );
+
+        return;
+    }
+
+
+    const html = `
+        <div class="space-y-2">
+
+            ${transactions.map(transaction => `
+
+                <div class="flex justify-between gap-3 text-sm border-b border-slate-100 pb-2">
+
+                    <span>
+
+                        ${
+                            transaction.transaction_type === 'STOCK_ADDED'
+                                ? '+'
+                                : transaction.transaction_type === 'STOCK_DEDUCTED'
+                                    ? '-'
+                                    : ''
+                        }
+
+                        ${transaction.quantity}
+                        ${transaction.unit || ''}
+
+                        — ${transaction.notes || ''}
+
+                        ${
+                            transaction.unit_cost
+                                ? `
+                                    <span class="text-xs text-slate-400">
+                                        @ ${Number(transaction.unit_cost).toLocaleString()} RWF
+                                    </span>
+                                `
+                                : ''
+                        }
+
+                    </span>
+
+                    <span class="text-slate-400 whitespace-nowrap">
+                        ${formatDate(transaction.created_at)}
+                    </span>
+
+                </div>
+
+            `).join('')}
+
+        </div>
+    `;
+
+
+    openModal(
+        t('stock.stockHistory'),
+        html
+    );
+};
+
+
+
+        
         // =================================================================
         // WORKERS (Reset & Fully Functional)
         // =================================================================
