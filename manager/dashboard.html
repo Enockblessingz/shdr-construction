@@ -823,130 +823,173 @@
             `;
         }
 
-        // =================================================================
-        // MATERIALS
-        // =================================================================
-        function renderMaterials(container) {
-            const grouped = {};
-            materialsData.forEach(m => {
-                const date = m.date_used ? formatDate(m.date_used) : t('common.noDataAvailable');
-                if (!grouped[date]) grouped[date] = [];
-                grouped[date].push(m);
+       // =================================================================
+// MATERIALS (with Image Upload)
+// =================================================================
+function renderMaterials(container) {
+    const grouped = {};
+    materialsData.forEach(m => {
+        const date = m.date_used ? formatDate(m.date_used) : t('common.noDataAvailable');
+        if (!grouped[date]) grouped[date] = [];
+        grouped[date].push(m);
+    });
+    const currentSite = assignedSites.find(s => s.id === currentSiteId);
+    const siteName = currentSite ? currentSite.name : 'Unknown Site';
+    let html = `<div class="flex justify-between items-center mb-4 sm:mb-6"><h2 class="text-xl sm:text-2xl font-bold">${t('materials.title')}</h2><button onclick="openAddMaterialModal()" class="px-3 py-2 bg-emerald-600 text-white rounded-xl hover:bg-emerald-700 flex items-center gap-2 text-sm"><iconify-icon icon="material-symbols:add"></iconify-icon> ${t('materials.recordUsage')}</button></div>`;
+    if (Object.keys(grouped).length === 0) html += `<p class="text-slate-500">${t('materials.noMaterials')}</p>`;
+    else {
+        const sortedDates = Object.keys(grouped).sort((a, b) => new Date(b) - new Date(a));
+        sortedDates.forEach(date => {
+            const materials = grouped[date];
+            html += `<div class="mb-6"><h3 class="font-bold text-sm text-slate-700 mb-3 flex items-center gap-2"><iconify-icon icon="material-symbols:calendar-month" class="text-emerald-500"></iconify-icon>${date}</h3><div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">`;
+            materials.forEach(m => {
+                const qty = m.quantity_used || 0, unitCost = m.unit_cost || 0, total = calculateTotal(qty, unitCost), imageUrl = m.image || PLACEHOLDER_IMG;
+                html += `<div class="bg-white rounded-2xl border overflow-hidden shadow-sm hover:shadow-md transition"><div class="relative w-full h-48 overflow-hidden bg-slate-100"><img src="${imageUrl}" class="w-full h-full object-cover" onerror="this.src='${PLACEHOLDER_IMG}'"><div class="absolute top-3 left-3 bg-emerald-600/90 text-white text-xs font-medium px-2.5 py-1 rounded-full">${siteName}</div></div><div class="p-5"><h3 class="font-bold text-lg text-slate-800 truncate">${m.name}</h3><div class="mt-4 space-y-2"><div class="flex justify-between text-sm border-b border-slate-100 pb-2"><span class="text-slate-500">${t('materials.quantityUsed')}</span><span class="font-semibold text-slate-700">${qty}</span></div><div class="flex justify-between text-sm border-b border-slate-100 pb-2"><span class="text-slate-500">${t('materials.unitCost')}</span><span class="font-semibold text-slate-700">${unitCost.toFixed(2)} RWF</span></div><div class="flex justify-between text-sm"><span class="text-slate-500">${t('materials.totalAmount')}</span><span class="font-bold text-emerald-600">${total.toFixed(2)} RWF</span></div></div><div class="mt-4 pt-3 border-t border-slate-100 flex justify-end gap-3"><button onclick="editMaterial('${m.id}')" class="text-sm text-emerald-600 font-medium">${t('common.edit')}</button><button onclick="deleteMaterial('${m.id}')" class="text-sm text-red-500 font-medium">${t('common.delete')}</button></div></div></div>`;
             });
-            const currentSite = assignedSites.find(s => s.id === currentSiteId);
-            const siteName = currentSite ? currentSite.name : 'Unknown Site';
-            let html = `<div class="flex justify-between items-center mb-4 sm:mb-6"><h2 class="text-xl sm:text-2xl font-bold">${t('materials.title')}</h2><button onclick="openAddMaterialModal()" class="px-3 py-2 bg-emerald-600 text-white rounded-xl hover:bg-emerald-700 flex items-center gap-2 text-sm"><iconify-icon icon="material-symbols:add"></iconify-icon> ${t('materials.recordUsage')}</button></div>`;
-            if (Object.keys(grouped).length === 0) html += `<p class="text-slate-500">${t('materials.noMaterials')}</p>`;
-            else {
-                const sortedDates = Object.keys(grouped).sort((a, b) => new Date(b) - new Date(a));
-                sortedDates.forEach(date => {
-                    const materials = grouped[date];
-                    html += `<div class="mb-6"><h3 class="font-bold text-sm text-slate-700 mb-3 flex items-center gap-2"><iconify-icon icon="material-symbols:calendar-month" class="text-emerald-500"></iconify-icon>${date}</h3><div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">`;
-                    materials.forEach(m => {
-                        const qty = m.quantity_used || 0, unitCost = m.unit_cost || 0, total = calculateTotal(qty, unitCost), imageUrl = m.image || PLACEHOLDER_IMG;
-                        html += `<div class="bg-white rounded-2xl border overflow-hidden shadow-sm hover:shadow-md transition"><div class="relative w-full h-48 overflow-hidden bg-slate-100"><img src="${imageUrl}" class="w-full h-full object-cover" onerror="this.src='${PLACEHOLDER_IMG}'"><div class="absolute top-3 left-3 bg-emerald-600/90 text-white text-xs font-medium px-2.5 py-1 rounded-full">${siteName}</div></div><div class="p-5"><h3 class="font-bold text-lg text-slate-800 truncate">${m.name}</h3><div class="mt-4 space-y-2"><div class="flex justify-between text-sm border-b border-slate-100 pb-2"><span class="text-slate-500">${t('materials.quantityUsed')}</span><span class="font-semibold text-slate-700">${qty}</span></div><div class="flex justify-between text-sm border-b border-slate-100 pb-2"><span class="text-slate-500">${t('materials.unitCost')}</span><span class="font-semibold text-slate-700">${unitCost.toFixed(2)} RWF</span></div><div class="flex justify-between text-sm"><span class="text-slate-500">${t('materials.totalAmount')}</span><span class="font-bold text-emerald-600">${total.toFixed(2)} RWF</span></div></div><div class="mt-4 pt-3 border-t border-slate-100 flex justify-end gap-3"><button onclick="editMaterial('${m.id}')" class="text-sm text-emerald-600 font-medium">${t('common.edit')}</button><button onclick="deleteMaterial('${m.id}')" class="text-sm text-red-500 font-medium">${t('common.delete')}</button></div></div></div>`;
-                    });
-                    html += `</div></div>`;
-                });
-            }
-            container.innerHTML = html;
+            html += `</div></div>`;
+        });
+    }
+    container.innerHTML = html;
+}
+
+window.editMaterial = (id) => {
+    const mat = materialsData.find(m => m.id === id);
+    if (!mat) return;
+    openModal(t('materials.editMaterial'), `
+        <form onsubmit="handleEditMaterial(event, '${id}')" class="space-y-4">
+            <input class="w-full border rounded-lg p-3" value="${mat.name}" id="edit-mat-name" required>
+            <input class="w-full border rounded-lg p-3" value="${mat.quantity_used || 0}" type="number" id="edit-mat-used" required step="0.01" placeholder="${t('materials.quantityUsed')}">
+            <input class="w-full border rounded-lg p-3" value="${mat.unit_cost || 0}" type="number" id="edit-mat-unit-cost" required step="0.01" placeholder="${t('materials.unitCost')}">
+            <div>
+                <label class="text-sm font-medium">${t('common.add')} (optional)</label>
+                <input type="file" id="edit-mat-image" accept="image/*" class="w-full mt-1">
+            </div>
+            <button type="submit" class="w-full bg-emerald-600 text-white py-3 rounded-xl">${t('common.save')}</button>
+        </form>
+    `);
+};
+
+window.handleEditMaterial = async (e, id) => {
+    e.preventDefault();
+    const form = e.target, btn = getFormSubmitBtn(form); setButtonLoading(btn, true);
+    try {
+        const name = document.getElementById('edit-mat-name').value.trim();
+        const newUsed = parseFloat(document.getElementById('edit-mat-used').value) || 0;
+        const newUnitCost = parseFloat(document.getElementById('edit-mat-unit-cost').value) || 0;
+        const imageFile = document.getElementById('edit-mat-image').files[0];
+
+        const oldMat = materialsData.find(m => m.id === id);
+        const oldUsed = oldMat.quantity_used || 0;
+        const siteId = oldMat.site_id;
+        let stockItem = stockData.find(s => s.site_id === siteId && s.material_name === oldMat.name);
+        if (!stockItem) {
+            const ref = await addDoc(collection(db, 'stock'), { site_id: siteId, material_name: oldMat.name, quantity: 0, unit: 'units', created_at: new Date().toISOString(), updated_at: new Date().toISOString() });
+            stockItem = { id: ref.id, quantity: 0 };
+        }
+        const restored = stockItem.quantity + oldUsed;
+        if (newUsed > restored) { alert(t('common.invalidValue')); return; }
+        const newStock = restored - newUsed;
+
+        // Upload new image if provided
+        let imageUrl = oldMat.image || '';
+        if (imageFile) {
+            imageUrl = await uploadImageToImgbb(imageFile);
         }
 
-        window.editMaterial = (id) => {
-            const mat = materialsData.find(m => m.id === id);
-            if (!mat) return;
-            openModal(t('materials.editMaterial'), `<form onsubmit="handleEditMaterial(event, '${id}')" class="space-y-4"><input class="w-full border rounded-lg p-3" value="${mat.name}" id="edit-mat-name" required><input class="w-full border rounded-lg p-3" value="${mat.quantity_used || 0}" type="number" id="edit-mat-used" required step="0.01"><input class="w-full border rounded-lg p-3" value="${mat.unit_cost || 0}" type="number" id="edit-mat-unit-cost" required step="0.01"><button type="submit" class="w-full bg-emerald-600 text-white py-3 rounded-xl">${t('common.save')}</button></form>`);
-        };
+        const batch = writeBatch(db);
+        batch.update(doc(db, 'materials', id), { name, quantity_used: newUsed, unit_cost: newUnitCost, image: imageUrl, updated_at: new Date().toISOString() });
+        batch.update(doc(db, 'stock', stockItem.id), { quantity: newStock, updated_at: new Date().toISOString() });
+        batch.set(doc(collection(db, 'stock_transactions')), { site_id: siteId, stock_id: stockItem.id, material_name: oldMat.name, transaction_type: 'MATERIAL_USAGE_EDITED', quantity: newUsed - oldUsed, previous_quantity: stockItem.quantity, new_quantity: newStock, unit: stockItem.unit || 'units', notes: `Edited`, recorded_by: currentUser.uid, created_at: new Date().toISOString() });
+        await batch.commit(); closeModal(); showToast(t('common.updatedSuccessfully'), 'success');
+    } catch (err) { showToast(t('common.somethingWentWrong'), 'error'); } finally { setButtonLoading(btn, false); }
+};
 
-        window.handleEditMaterial = async (e, id) => {
-            e.preventDefault();
-            const form = e.target, btn = getFormSubmitBtn(form); setButtonLoading(btn, true);
-            try {
-                const name = document.getElementById('edit-mat-name').value.trim();
-                const newUsed = parseFloat(document.getElementById('edit-mat-used').value) || 0;
-                const newUnitCost = parseFloat(document.getElementById('edit-mat-unit-cost').value) || 0;
-                const oldMat = materialsData.find(m => m.id === id);
-                const oldUsed = oldMat.quantity_used || 0;
-                const siteId = oldMat.site_id;
-                let stockItem = stockData.find(s => s.site_id === siteId && s.material_name === oldMat.name);
-                if (!stockItem) {
-                    const ref = await addDoc(collection(db, 'stock'), { site_id: siteId, material_name: oldMat.name, quantity: 0, unit: 'units', created_at: new Date().toISOString(), updated_at: new Date().toISOString() });
-                    stockItem = { id: ref.id, quantity: 0 };
-                }
-                const restored = stockItem.quantity + oldUsed;
-                if (newUsed > restored) { alert(t('common.invalidValue')); return; }
-                const newStock = restored - newUsed;
+window.deleteMaterial = (id) => {
+    if (!confirm(t('common.areYouSure'))) return;
+    const mat = materialsData.find(m => m.id === id); if (!mat) return;
+    (async () => {
+        try {
+            const stockItem = stockData.find(s => s.site_id === mat.site_id && s.material_name === mat.name);
+            if (stockItem) {
+                const newQty = stockItem.quantity + (mat.quantity_used || 0);
                 const batch = writeBatch(db);
-                batch.update(doc(db, 'materials', id), { name, quantity_used: newUsed, unit_cost: newUnitCost, updated_at: new Date().toISOString() });
-                batch.update(doc(db, 'stock', stockItem.id), { quantity: newStock, updated_at: new Date().toISOString() });
-                batch.set(doc(collection(db, 'stock_transactions')), { site_id: siteId, stock_id: stockItem.id, material_name: oldMat.name, transaction_type: 'MATERIAL_USAGE_EDITED', quantity: newUsed - oldUsed, previous_quantity: stockItem.quantity, new_quantity: newStock, unit: stockItem.unit || 'units', notes: `Edited`, recorded_by: currentUser.uid, created_at: new Date().toISOString() });
-                await batch.commit(); closeModal(); showToast(t('common.updatedSuccessfully'), 'success');
-            } catch (err) { showToast(t('common.somethingWentWrong'), 'error'); } finally { setButtonLoading(btn, false); }
-        };
+                batch.update(doc(db, 'stock', stockItem.id), { quantity: newQty });
+                batch.delete(doc(db, 'materials', id));
+                batch.set(doc(collection(db, 'stock_transactions')), { site_id: mat.site_id, stock_id: stockItem.id, material_name: mat.name, transaction_type: 'MATERIAL_USAGE_DELETED', quantity: mat.quantity_used || 0, previous_quantity: stockItem.quantity, new_quantity: newQty, unit: stockItem.unit || 'units', notes: `Deleted`, recorded_by: currentUser.uid, created_at: new Date().toISOString() });
+                await batch.commit();
+            } else await deleteDoc(doc(db, 'materials', id));
+            showToast(t('common.deletedSuccessfully'), 'success');
+        } catch (err) { showToast(t('common.somethingWentWrong'), 'error'); }
+    })();
+};
 
-        window.deleteMaterial = (id) => {
-            if (!confirm(t('common.areYouSure'))) return;
-            const mat = materialsData.find(m => m.id === id); if (!mat) return;
-            (async () => {
-                try {
-                    const stockItem = stockData.find(s => s.site_id === mat.site_id && s.material_name === mat.name);
-                    if (stockItem) {
-                        const newQty = stockItem.quantity + (mat.quantity_used || 0);
-                        const batch = writeBatch(db);
-                        batch.update(doc(db, 'stock', stockItem.id), { quantity: newQty });
-                        batch.delete(doc(db, 'materials', id));
-                        batch.set(doc(collection(db, 'stock_transactions')), { site_id: mat.site_id, stock_id: stockItem.id, material_name: mat.name, transaction_type: 'MATERIAL_USAGE_DELETED', quantity: mat.quantity_used || 0, previous_quantity: stockItem.quantity, new_quantity: newQty, unit: stockItem.unit || 'units', notes: `Deleted`, recorded_by: currentUser.uid, created_at: new Date().toISOString() });
-                        await batch.commit();
-                    } else await deleteDoc(doc(db, 'materials', id));
-                    showToast(t('common.deletedSuccessfully'), 'success');
-                } catch (err) { showToast(t('common.somethingWentWrong'), 'error'); }
-            })();
-        };
+window.openAddMaterialModal = () => {
+    let count = 0;
+    const addEntry = () => {
+        count++;
+        const container = document.getElementById('material-entries');
+        const entry = document.createElement('div'); entry.className = 'material-entry';
+        entry.innerHTML = `
+            <div class="grid grid-cols-2 gap-2">
+                <input class="border rounded-lg p-2 text-sm" placeholder="${t('materials.materialName')}" name="mat-name-${count}" required>
+                <input class="border rounded-lg p-2 text-sm" placeholder="${t('materials.quantityUsed')}" type="number" name="mat-used-${count}" required step="0.01">
+            </div>
+            <div class="grid grid-cols-2 gap-2 mt-2">
+                <input class="border rounded-lg p-2 text-sm" placeholder="${t('materials.unitCost')}" type="number" name="mat-unit-cost-${count}" step="0.01">
+                <input class="border rounded-lg p-2 text-sm" type="file" accept="image/*" name="mat-image-${count}">
+            </div>
+        `;
+        container.appendChild(entry);
+    };
+    openModal(t('materials.recordUsage'), `
+        <div class="mb-4">
+            <label class="block text-sm font-medium">${t('reports.startDate')}</label>
+            <input type="date" id="usageDate" value="${getTodayISO()}" class="border rounded-lg p-2 text-sm w-full" required>
+        </div>
+        <div id="material-entries"></div>
+        <button type="button" onclick="addEntry()" class="text-emerald-600 text-sm mt-2">+ ${t('materials.addMaterial')}</button>
+        <button onclick="submitBatchMaterials()" class="w-full bg-emerald-600 text-white py-2 rounded-xl mt-4">${t('common.save')}</button>
+    `);
+    addEntry(); window.addEntry = addEntry;
+};
 
-        window.openAddMaterialModal = () => {
-            let count = 0;
-            const addEntry = () => {
-                count++;
-                const container = document.getElementById('material-entries');
-                const entry = document.createElement('div'); entry.className = 'material-entry';
-                entry.innerHTML = `<div class="grid grid-cols-2 gap-2"><input class="border rounded-lg p-2 text-sm" placeholder="${t('materials.materialName')}" name="mat-name-${count}" required><input class="border rounded-lg p-2 text-sm" placeholder="${t('materials.quantityUsed')}" type="number" name="mat-used-${count}" required step="0.01"></div><div class="grid grid-cols-2 gap-2 mt-2"><input class="border rounded-lg p-2 text-sm" placeholder="${t('materials.unitCost')}" type="number" name="mat-unit-cost-${count}" step="0.01"></div>`;
-                container.appendChild(entry);
-            };
-            openModal(t('materials.recordUsage'), `<div class="mb-4"><label class="block text-sm font-medium">${t('reports.startDate')}</label><input type="date" id="usageDate" value="${getTodayISO()}" class="border rounded-lg p-2 text-sm w-full" required></div><div id="material-entries"></div><button type="button" onclick="addEntry()" class="text-emerald-600 text-sm mt-2">+ ${t('materials.addMaterial')}</button><button onclick="submitBatchMaterials()" class="w-full bg-emerald-600 text-white py-2 rounded-xl mt-4">${t('common.save')}</button>`);
-            addEntry(); window.addEntry = addEntry;
-        };
-
-        window.submitBatchMaterials = async () => {
-            const dateInput = document.getElementById('usageDate'), selectedDate = dateInput ? dateInput.value : getTodayISO();
-            if (!selectedDate) { alert(t('common.requiredField')); return; }
-            const dateObj = new Date(selectedDate + 'T00:00:00.000Z');
-            const entries = document.querySelectorAll('#material-entries .material-entry');
-            if (!entries.length) { alert(t('common.noDataAvailable')); return; }
-            const usageEntries = [];
-            for (const entry of entries) {
-                const name = entry.querySelector('[name^="mat-name-"]').value.trim();
-                const used = parseFloat(entry.querySelector('[name^="mat-used-"]').value) || 0;
-                const unitCost = parseFloat(entry.querySelector('[name^="mat-unit-cost-"]').value) || 0;
-                if (!name) continue;
-                usageEntries.push({ name, used, unitCost });
+window.submitBatchMaterials = async () => {
+    const dateInput = document.getElementById('usageDate'), selectedDate = dateInput ? dateInput.value : getTodayISO();
+    if (!selectedDate) { alert(t('common.requiredField')); return; }
+    const dateObj = new Date(selectedDate + 'T00:00:00.000Z');
+    const entries = document.querySelectorAll('#material-entries .material-entry');
+    if (!entries.length) { alert(t('common.noDataAvailable')); return; }
+    const usageEntries = [];
+    for (const entry of entries) {
+        const name = entry.querySelector('[name^="mat-name-"]').value.trim();
+        const used = parseFloat(entry.querySelector('[name^="mat-used-"]').value) || 0;
+        const unitCost = parseFloat(entry.querySelector('[name^="mat-unit-cost-"]').value) || 0;
+        const imageFile = entry.querySelector('[name^="mat-image-"]').files[0];
+        if (!name) continue;
+        usageEntries.push({ name, used, unitCost, imageFile });
+    }
+    if (!usageEntries.length) { alert(t('common.noDataAvailable')); return; }
+    try {
+        const batch = writeBatch(db);
+        const materialPromises = usageEntries.map(async (entry) => {
+            let imageUrl = '';
+            if (entry.imageFile) {
+                try { imageUrl = await uploadImageToImgbb(entry.imageFile); }
+                catch (e) { alert(t('common.somethingWentWrong') + ': ' + entry.name); throw e; }
             }
-            if (!usageEntries.length) { alert(t('common.noDataAvailable')); return; }
-            try {
-                const batch = writeBatch(db);
-                const materialPromises = usageEntries.map(async (entry) => {
-                    const docRef = doc(collection(db, 'materials'));
-                    batch.set(docRef, { site_id: currentSiteId, name: entry.name, quantity_used: entry.used, unit_cost: entry.unitCost, date_used: dateObj.toISOString(), created_at: new Date().toISOString() });
-                    const stockItem = stockData.find(s => s.site_id === currentSiteId && s.material_name === entry.name);
-                    if (stockItem) {
-                        const newQty = stockItem.quantity - entry.used;
-                        batch.update(doc(db, 'stock', stockItem.id), { quantity: newQty, updated_at: new Date().toISOString() });
-                        batch.set(doc(collection(db, 'stock_transactions')), { site_id: currentSiteId, stock_id: stockItem.id, material_name: entry.name, transaction_type: 'MATERIAL_USAGE', quantity: entry.used, previous_quantity: stockItem.quantity, new_quantity: newQty, unit: stockItem.unit || 'units', notes: `Used`, recorded_by: currentUser.uid, created_at: new Date().toISOString() });
-                    }
-                });
-                await Promise.all(materialPromises);
-                await batch.commit(); closeModal(); showToast(t('common.savedSuccessfully'), 'success');
-            } catch (err) { alert(t('common.somethingWentWrong') + ': ' + err.message); }
-        };
+            const docRef = doc(collection(db, 'materials'));
+            batch.set(docRef, { site_id: currentSiteId, name: entry.name, quantity_used: entry.used, unit_cost: entry.unitCost, image: imageUrl, date_used: dateObj.toISOString(), created_at: new Date().toISOString() });
+            const stockItem = stockData.find(s => s.site_id === currentSiteId && s.material_name === entry.name);
+            if (stockItem) {
+                const newQty = stockItem.quantity - entry.used;
+                batch.update(doc(db, 'stock', stockItem.id), { quantity: newQty, updated_at: new Date().toISOString() });
+                batch.set(doc(collection(db, 'stock_transactions')), { site_id: currentSiteId, stock_id: stockItem.id, material_name: entry.name, transaction_type: 'MATERIAL_USAGE', quantity: entry.used, previous_quantity: stockItem.quantity, new_quantity: newQty, unit: stockItem.unit || 'units', notes: `Used`, recorded_by: currentUser.uid, created_at: new Date().toISOString() });
+            }
+        });
+        await Promise.all(materialPromises);
+        await batch.commit(); closeModal(); showToast(t('common.savedSuccessfully'), 'success');
+    } catch (err) { alert(t('common.somethingWentWrong') + ': ' + err.message); }
+};
 
         // =================================================================
         // STOCK
