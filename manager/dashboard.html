@@ -810,78 +810,272 @@
         }
 
         // =================================================================
-        // DASHBOARD
-        // =================================================================
-        function renderDashboard(container) {
-            console.log('renderDashboard called with container:', container);
-            console.log('assignedSites:', assignedSites);
-            console.log('currentSiteId:', currentSiteId);
-            
-            try {
-                const site = assignedSites.find(s => s.id === currentSiteId);
-                if (!site) {
-                    console.error('Site not found for currentSiteId:', currentSiteId);
-                    container.innerHTML = `<p class="text-red-500 p-4">Site not found. Check console for details.</p>`;
-                    return;
-                }
-                const totalWorkers = siteWorkersData.length;
-                const completedTasks = progressTasks.filter(t => t.status === 'completed').length;
-                const totalTasks = progressTasks.length;
-                const completionPercent = totalTasks ? Math.round((completedTasks / totalTasks) * 100) : 0;
+// DASHBOARD
+// =================================================================
+function renderDashboard(container) {
+    if (!container) return;
 
-                container.innerHTML = `
-                    <div class="bg-white rounded-2xl overflow-hidden shadow-sm mb-4 sm:mb-6">
-                        <div class="relative h-48 md:h-64 bg-cover bg-center" style="background-image: url('${site.images?.[0] || PLACEHOLDER_IMG}');">
-                            <div class="absolute inset-0 bg-gradient-to-r from-emerald-900/80 to-emerald-800/40 flex items-center p-4 sm:p-6">
-                                <div>
-                                    <h1 class="text-2xl sm:text-4xl font-bold text-white">${site.name}</h1>
-                                    <p class="text-emerald-100 mt-2 text-sm sm:text-base">${site.location || ''}</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="p-4 sm:p-6 grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div><span class="text-sm text-slate-500">${t('dashboard.siteStatus')}</span><p class="text-lg font-bold capitalize">${site.status || 'active'}</p></div>
-                            <div><span class="text-sm text-slate-500">${t('dashboard.siteManager')}</span><p class="text-lg font-bold">${managerProfile.full_name || 'You'}</p></div>
-                        </div>
-                    </div>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4 sm:mb-6">
-                        <div class="stat-card bg-white rounded-2xl p-4 border border-slate-200 shadow-sm">
-                            <div class="flex items-center gap-4">
-                                <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center"><iconify-icon icon="material-symbols:engineering" width="24" class="text-blue-700"></iconify-icon></div>
-                                <div><p class="text-sm text-slate-500">${t('dashboard.workersOnSite')}</p><p class="text-2xl font-bold">${totalWorkers}</p></div>
-                            </div>
-                        </div>
-                        <div class="stat-card bg-white rounded-2xl p-4 border border-slate-200 shadow-sm">
-                            <div class="flex items-center gap-4">
-                                <div class="w-12 h-12 bg-amber-100 rounded-xl flex items-center justify-center"><iconify-icon icon="material-symbols:trending-up" width="24" class="text-amber-700"></iconify-icon></div>
-                                <div><p class="text-sm text-slate-500">${t('dashboard.progress')}</p><p class="text-2xl font-bold">${completionPercent}%</p></div>
-                            </div>
+    try {
+        const site = assignedSites.find(s => s.id === currentSiteId);
+
+        if (!site) {
+            container.innerHTML = `
+                <div class="bg-yellow-50 border border-yellow-200 rounded-2xl p-6 text-yellow-800">
+                    <div class="flex items-start gap-3">
+                        <iconify-icon
+                            icon="material-symbols:warning"
+                            width="28"
+                            class="text-yellow-600 flex-shrink-0">
+                        </iconify-icon>
+
+                        <div>
+                            <h3 class="font-semibold text-lg">
+                                ${t('common.noDataAvailable')}
+                            </h3>
+
+                            <p class="text-sm mt-1">
+                                No valid site is currently selected.
+                            </p>
                         </div>
                     </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div class="bg-white rounded-2xl border p-4 shadow-sm">
-                            <h3 class="font-semibold text-sm mb-3">${t('dashboard.recentMaterials')}</h3>
-                            <div class="space-y-1 text-sm">
-                                ${materialsData.slice(-4).reverse().map(m => `<div class="flex justify-between"><span>${m.name}</span><span class="text-slate-400">${m.quantity_used || 0} used</span></div>`).join('') || `<p class="text-slate-400">${t('common.noDataAvailable')}</p>`}
-                            </div>
-                        </div>
-                        <div class="bg-white rounded-2xl border p-4 shadow-sm">
-                            <h3 class="font-semibold text-sm mb-3">${t('dashboard.pendingTasks')}</h3>
-                            <div class="space-y-1 text-sm">
-                                ${progressTasks.filter(t => t.status === 'pending').slice(0,4).map(t => `<div class="flex justify-between"><span>${t.name}</span><span class="text-slate-400">${t('progress.end')}: ${formatDate(t.end_date)}</span></div>`).join('') || `<p class="text-slate-400">${t('common.noDataAvailable')}</p>`}
-                            </div>
-                        </div>
-                    </div>
-                `;
-                console.log('Dashboard rendered successfully');
-            } catch (err) {
-                console.error('Error in renderDashboard:', err);
-                container.innerHTML = `<div class="bg-red-50 border border-red-200 rounded-2xl p-6 text-red-800">
-                    <p class="font-semibold">❌ Failed to render dashboard</p>
-                    <p class="text-sm mt-1">${err.message}</p>
-                </div>`;
-            }
+                </div>
+            `;
+            return;
         }
+
+        const totalWorkers = Array.isArray(siteWorkersData)
+            ? siteWorkersData.length
+            : 0;
+
+        const tasks = Array.isArray(progressTasks)
+            ? progressTasks
+            : [];
+
+        const completedTasks = tasks.filter(
+            task => task.status === 'completed'
+        ).length;
+
+        const totalTasks = tasks.length;
+
+        const completionPercent = totalTasks > 0
+            ? Math.round((completedTasks / totalTasks) * 100)
+            : 0;
+
+        const recentMaterials = Array.isArray(materialsData)
+            ? [...materialsData]
+                .sort((a, b) => {
+                    const dateA = new Date(a.date_used || a.created_at || 0);
+                    const dateB = new Date(b.date_used || b.created_at || 0);
+                    return dateB - dateA;
+                })
+                .slice(0, 4)
+            : [];
+
+        const pendingTasks = tasks
+            .filter(task => task.status !== 'completed')
+            .slice(0, 4);
+
+        const siteImage =
+            Array.isArray(site.images) && site.images.length
+                ? site.images[0]
+                : PLACEHOLDER_IMG;
+
+        const siteName = site.name || 'Unnamed Site';
+        const siteLocation = site.location || '—';
+        const siteStatus = site.status || 'active';
+        const managerName = managerProfile?.full_name || 'You';
+
+        container.innerHTML = `
+            <!-- Site Header -->
+            <div class="bg-white rounded-2xl overflow-hidden shadow-sm mb-4 sm:mb-6">
+
+                <div
+                    class="relative h-48 md:h-64 bg-cover bg-center"
+                    style="background-image: url('${siteImage}');"
+                >
+                    <div class="absolute inset-0 bg-gradient-to-r from-emerald-900/80 to-emerald-800/40 flex items-center p-4 sm:p-6">
+                        <div>
+                            <h1 class="text-2xl sm:text-4xl font-bold text-white">
+                                ${siteName}
+                            </h1>
+
+                            <p class="text-emerald-100 mt-2 text-sm sm:text-base">
+                                ${siteLocation}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-4 sm:p-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+
+                    <div>
+                        <span class="text-sm text-slate-500">
+                            ${t('dashboard.siteStatus')}
+                        </span>
+
+                        <p class="text-lg font-bold capitalize">
+                            ${siteStatus}
+                        </p>
+                    </div>
+
+                    <div>
+                        <span class="text-sm text-slate-500">
+                            ${t('dashboard.siteManager')}
+                        </span>
+
+                        <p class="text-lg font-bold">
+                            ${managerName}
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Statistics -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4 sm:mb-6">
+
+                <div class="stat-card bg-white rounded-2xl p-4 border border-slate-200 shadow-sm">
+                    <div class="flex items-center gap-4">
+
+                        <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
+                            <iconify-icon
+                                icon="material-symbols:engineering"
+                                width="24"
+                                class="text-blue-700">
+                            </iconify-icon>
+                        </div>
+
+                        <div>
+                            <p class="text-sm text-slate-500">
+                                ${t('dashboard.workersOnSite')}
+                            </p>
+
+                            <p class="text-2xl font-bold">
+                                ${totalWorkers}
+                            </p>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="stat-card bg-white rounded-2xl p-4 border border-slate-200 shadow-sm">
+                    <div class="flex items-center gap-4">
+
+                        <div class="w-12 h-12 bg-amber-100 rounded-xl flex items-center justify-center">
+                            <iconify-icon
+                                icon="material-symbols:trending-up"
+                                width="24"
+                                class="text-amber-700">
+                            </iconify-icon>
+                        </div>
+
+                        <div>
+                            <p class="text-sm text-slate-500">
+                                ${t('dashboard.progress')}
+                            </p>
+
+                            <p class="text-2xl font-bold">
+                                ${completionPercent}%
+                            </p>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Dashboard Details -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+                <!-- Recent Materials -->
+                <div class="bg-white rounded-2xl border p-4 shadow-sm">
+
+                    <h3 class="font-semibold text-sm mb-3">
+                        ${t('dashboard.recentMaterials')}
+                    </h3>
+
+                    <div class="space-y-2 text-sm">
+
+                        ${
+                            recentMaterials.length
+                                ? recentMaterials.map(material => `
+                                    <div class="flex justify-between gap-3 border-b border-slate-100 pb-2 last:border-0">
+                                        <span class="truncate">
+                                            ${material.name || 'Unnamed Material'}
+                                        </span>
+
+                                        <span class="text-slate-400 whitespace-nowrap">
+                                            ${Number(material.quantity_used || 0)} used
+                                        </span>
+                                    `).join('')
+                                : `
+                                    <p class="text-slate-400">
+                                        ${t('common.noDataAvailable')}
+                                    </p>
+                                `
+                        }
+
+                    </div>
+                </div>
+
+                <!-- Pending Tasks -->
+                <div class="bg-white rounded-2xl border p-4 shadow-sm">
+
+                    <h3 class="font-semibold text-sm mb-3">
+                        ${t('dashboard.pendingTasks')}
+                    </h3>
+
+                    <div class="space-y-2 text-sm">
+
+                        ${
+                            pendingTasks.length
+                                ? pendingTasks.map(task => `
+                                    <div class="flex justify-between gap-3 border-b border-slate-100 pb-2 last:border-0">
+
+                                        <span class="truncate">
+                                            ${task.name || t('progress.task')}
+                                        </span>
+
+                                        <span class="text-slate-400 whitespace-nowrap">
+                                            ${t('progress.end')}: 
+                                            ${formatDate(task.end_date)}
+                                        </span>
+
+                                    </div>
+                                `).join('')
+                                : `
+                                    <p class="text-slate-400">
+                                        ${t('common.noDataAvailable')}
+                                    </p>
+                                `
+                        }
+
+                    </div>
+                </div>
+
+            </div>
+        `;
+
+    } catch (err) {
+        console.error('Error in renderDashboard:', err);
+
+        container.innerHTML = `
+            <div class="bg-red-50 border border-red-200 rounded-2xl p-6 text-red-800">
+                <p class="font-semibold">
+                    ${t('common.somethingWentWrong')}
+                </p>
+
+                <p class="text-sm mt-2">
+                    ${err.message || 'Unknown dashboard error'}
+                </p>
+
+                <p class="text-xs mt-2 text-red-600">
+                    Check the browser console for more details.
+                </p>
+            </div>
+        `;
+    }
+}
 
        // =================================================================
 // MATERIALS (with Image Upload)
