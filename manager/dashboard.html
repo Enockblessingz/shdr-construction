@@ -573,7 +573,10 @@
         let managerProfile = null;
         let assignedSites = [];
         let currentSiteId = null;
-        let materialsData = [], siteWorkersData = [], progressTasks = [], workerPositions = [], galleryData = [], attendanceData = [];
+        let materialsData = [], siteWorkersData = [];
+        let progressTasks = [];
+        window.progressTasks = progressTasks; // <-- FIX: expose to global scope for renderProgress
+        let workerPositions = [], galleryData = [], attendanceData = [];
         let stockData = [], stockTransactions = [];
         let unsubscribeSnapshots = [];
         let currentSection = 'dashboard';
@@ -687,8 +690,15 @@
             unsubscribeSnapshots.push(onSnapshot(matQ, snap => { materialsData = snap.docs.map(d => ({ id: d.id, ...d.data() })); refreshCurrentSection(); }));
             const workQ = query(collection(db, 'site_workers'), where('site_id', '==', siteId));
             unsubscribeSnapshots.push(onSnapshot(workQ, snap => { siteWorkersData = snap.docs.map(d => ({ id: d.id, ...d.data() })); refreshCurrentSection(); }));
+            // ─── PROGRESS LISTENER ───
             const progQ = query(collection(db, 'progress_tasks'), where('site_id', '==', siteId));
-            unsubscribeSnapshots.push(onSnapshot(progQ, snap => { progressTasks = snap.docs.map(d => ({ id: d.id, ...d.data() })); refreshCurrentSection(); }));
+            unsubscribeSnapshots.push(onSnapshot(progQ, snap => {
+                const tasks = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+                progressTasks = tasks;
+                window.progressTasks = tasks; // <-- FIX: keep global in sync
+                refreshCurrentSection();
+            }));
+            // ─── end of progress fix ───
             const posQ = query(collection(db, 'worker_positions'), where('site_id', 'in', [siteId, 'all']));
             unsubscribeSnapshots.push(onSnapshot(posQ, snap => { workerPositions = snap.docs.map(d => ({ id: d.id, ...d.data() })); refreshCurrentSection(); }));
             const galleryQ = query(collection(db, 'gallery'), where('site_id', '==', siteId));
@@ -1422,7 +1432,7 @@ window.submitBatchMaterials = async () => {
         }
 
         // =================================================================
-// PROGRESS
+// PROGRESS (Fixed)
 // =================================================================
 function renderProgress(container) {
     // Safety: ensure container exists
