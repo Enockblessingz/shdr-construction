@@ -1552,7 +1552,7 @@
 
 
      // =================================================================
-// WORKERS (Complete with photo support, fixed selection & centered checkmark)
+// WORKERS (Complete with photo support, fixed selection & report view)
 // =================================================================
 
 function renderWorkers(container) {
@@ -1565,6 +1565,9 @@ function renderWorkers(container) {
                 <button onclick="switchWorkersTab('record')" class="px-4 py-2 rounded-lg text-sm font-semibold transition ${workersTab === 'record' ? 'tab-active shadow-sm' : 'tab-inactive'}">
                     <iconify-icon icon="material-symbols:edit-calendar" class="inline mr-1"></iconify-icon> ${t('workers.recordAttendance')}
                 </button>
+                <button onclick="switchWorkersTab('report')" class="px-4 py-2 rounded-lg text-sm font-semibold transition ${workersTab === 'report' ? 'tab-active shadow-sm' : 'tab-inactive'}">
+                    <iconify-icon icon="material-symbols:lab-profile" class="inline mr-1"></iconify-icon> Report
+                </button>
             </div>
             ${workersTab === 'view' ? `
                 <button onclick="openAddWorkerModal()" class="px-4 py-2 bg-emerald-600 text-white rounded-xl hover:bg-emerald-700 flex items-center gap-2 text-sm font-medium shadow-sm">
@@ -1573,7 +1576,7 @@ function renderWorkers(container) {
             ` : ''}
         </div>
         <div id="workers-content">
-            ${workersTab === 'view' ? renderWorkersView() : renderWorkersRecord()}
+            ${workersTab === 'view' ? renderWorkersView() : workersTab === 'record' ? renderWorkersRecord() : renderWorkersReport()}
         </div>
     `;
     if (workersTab === 'record') setTimeout(updateAttendanceSummary, 100);
@@ -1963,6 +1966,157 @@ function renderAttendanceHistory() {
     });
     return html;
 }
+
+// =================================================================
+// WORKERS PAYROLL REPORT VIEW (Matches the screenshot)
+// =================================================================
+
+function renderWorkersReport() {
+    // Aggregate data from attendanceData
+    const report = {};
+    let totalDays = 0;
+    let totalPayroll = 0;
+
+    attendanceData.forEach(record => {
+        const worker = siteWorkersData.find(w => w.id === record.worker_id);
+        if (!worker) return;
+
+        if (!report[record.worker_id]) {
+            report[record.worker_id] = {
+                id: worker.id,
+                name: worker.name,
+                role: worker.role || '—',
+                days_worked: 0,
+                daily_rate: worker.payment_method === 'daily' 
+                    ? Number(worker.salary) || 0 
+                    : Math.round((Number(worker.salary) || 0) / 30)
+            };
+        }
+        report[record.worker_id].days_worked += 1;
+    });
+
+    const workers = Object.values(report);
+    const totalWorkers = workers.length;
+    workers.forEach(w => {
+        w.total_payable = w.days_worked * w.daily_rate;
+        totalDays += w.days_worked;
+        totalPayroll += w.total_payable;
+    });
+    
+    const avgDailyCost = totalDays > 0 ? (totalPayroll / totalDays).toFixed(3) : 0;
+
+    if (!workers.length) {
+        return `<div class="bg-white rounded-2xl border p-8 text-center"><p class="text-slate-500">${t('common.noDataAvailable')}</p></div>`;
+    }
+
+    let tableRows = workers.map(w => `
+        <tr class="border-b border-slate-100 hover:bg-slate-50">
+            <td class="p-4 font-medium">${w.name}</td>
+            <td class="p-4 text-slate-500">${w.role}</td>
+            <td class="p-4">${w.days_worked}</td>
+            <td class="p-4">${w.daily_rate.toLocaleString()} RWF</td>
+            <td class="p-4 font-semibold text-emerald-600">${w.total_payable.toLocaleString()} RWF</td>
+        </tr>
+    `).join('');
+
+    return `
+        <div class="space-y-6">
+            <!-- Top Stats Cards -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="bg-white rounded-2xl border p-6 shadow-sm">
+                    <p class="text-sm text-slate-500">Total Workers</p>
+                    <p class="text-3xl font-bold mt-2">${totalWorkers}</p>
+                </div>
+                <div class="bg-white rounded-2xl border p-6 shadow-sm">
+                    <p class="text-sm text-slate-500">Worker-Days</p>
+                    <p class="text-3xl font-bold mt-2">${totalDays}</p>
+                </div>
+                <div class="bg-white rounded-2xl border p-6 shadow-sm">
+                    <p class="text-sm text-slate-500">Total Payroll</p>
+                    <p class="text-3xl font-bold mt-2 text-emerald-600">${totalPayroll.toLocaleString()} RWF</p>
+                </div>
+                <div class="bg-white rounded-2xl border p-6 shadow-sm">
+                    <p class="text-sm text-slate-500">Avg. Daily Labor Cost</p>
+                    <p class="text-3xl font-bold mt-2">${avgDailyCost} RWF</p>
+                </div>
+            </div>
+
+            <!-- Main Table -->
+            <div class="bg-white rounded-2xl border shadow-sm overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-sm">
+                        <thead class="bg-slate-50 text-slate-500 uppercase text-xs">
+                            <tr>
+                                <th class="p-4">Worker</th>
+                                <th class="p-4">Position</th>
+                                <th class="p-4">Days Worked</th>
+                                <th class="p-4">Daily Rate</th>
+                                <th class="p-4">Total Payable</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${tableRows}
+                            <tr class="bg-slate-50 font-bold border-t border-slate-200">
+                                <td class="p-4 text-right" colspan="2">Total</td>
+                                <td class="p-4">${totalDays}</td>
+                                <td class="p-4"></td>
+                                <td class="p-4 text-emerald-600">${totalPayroll.toLocaleString()} RWF</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Buttons -->
+            <div class="flex justify-end gap-3">
+                <button onclick="exportWorkersCSV()" class="px-6 py-2 bg-emerald-600 text-white rounded-xl text-sm font-semibold hover:bg-emerald-700">
+                    Export CSV
+                </button>
+                <button onclick="window.print()" class="px-6 py-2 bg-slate-800 text-white rounded-xl text-sm font-semibold hover:bg-slate-900">
+                    Print/PDF
+                </button>
+            </div>
+        </div>
+    `;
+}
+
+// Function to export the report data as a CSV file
+window.exportWorkersCSV = () => {
+    // (Re-use the same logic to build the report data)
+    const report = {};
+    attendanceData.forEach(record => {
+        const worker = siteWorkersData.find(w => w.id === record.worker_id);
+        if (!worker) return;
+        if (!report[record.worker_id]) {
+            report[record.worker_id] = {
+                name: worker.name, role: worker.role || '—', days_worked: 0,
+                daily_rate: worker.payment_method === 'daily' ? Number(worker.salary)||0 : Math.round((Number(worker.salary)||0)/30)
+            };
+        }
+        report[record.worker_id].days_worked += 1;
+    });
+
+    const workers = Object.values(report);
+    const totalDays = workers.reduce((sum, w) => sum + w.days_worked, 0);
+    const totalPayroll = workers.reduce((sum, w) => sum + (w.days_worked * w.daily_rate), 0);
+    
+    // Build CSV string
+    let csv = 'Worker,Position,Days Worked,Daily Rate,Total Payable\n';
+    workers.forEach(w => {
+        csv += `"${w.name}",${w.role},${w.days_worked},${w.daily_rate},${(w.days_worked * w.daily_rate)}\n`;
+    });
+    csv += `Total,,${totalDays},,${totalPayroll}\n`;
+
+    // Create Blob and download
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement("a");
+    const url = URL.createObjectURL(blob);
+    link.setAttribute("href", url);
+    link.setAttribute("download", "worker_payroll_report.csv");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+};
 
 
         
