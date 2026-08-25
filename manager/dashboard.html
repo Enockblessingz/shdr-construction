@@ -107,6 +107,9 @@
         <a href="#" onclick="showSection('stock')" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg text-slate-600 hover:bg-slate-50 transition-colors" data-section="stock">
             <iconify-icon icon="material-symbols:inventory-2-outline" width="20" height="20"></iconify-icon> <span data-i18n="navigation.stock">Stock</span>
         </a>
+        <a href="#" onclick="showSection('material_requests')" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg text-slate-600 hover:bg-slate-50 transition-colors" data-section="material_requests">
+            <iconify-icon icon="material-symbols:assignment-outline" width="20" height="20"></iconify-icon> <span>Material Requests</span>
+        </a>
         <a href="#" onclick="showSection('workers')" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg text-slate-600 hover:bg-slate-50 transition-colors" data-section="workers">
             <iconify-icon icon="material-symbols:engineering-outline" width="20" height="20"></iconify-icon> <span data-i18n="navigation.workers">Workers</span>
         </a>
@@ -189,6 +192,10 @@
             <iconify-icon icon="material-symbols:package-2-outline"></iconify-icon>
             <span data-i18n="navigation.materials">Materials</span>
         </a>
+        <a href="#" onclick="showSection('material_requests')" data-section="material_requests">
+            <iconify-icon icon="material-symbols:assignment-outline"></iconify-icon>
+            <span>Requests</span>
+        </a>
         <a href="#" onclick="showSection('workers')" data-section="workers">
             <iconify-icon icon="material-symbols:engineering-outline"></iconify-icon>
             <span data-i18n="navigation.workers">Workers</span>
@@ -196,14 +203,6 @@
         <a href="#" onclick="showSection('reports')" data-section="reports">
             <iconify-icon icon="material-symbols:description-outline"></iconify-icon>
             <span data-i18n="navigation.reports">Reports</span>
-        </a>
-        <a href="#" onclick="showSection('gallery')" data-section="gallery">
-            <iconify-icon icon="material-symbols:photo-library-outline"></iconify-icon>
-            <span data-i18n="navigation.gallery">Gallery</span>
-        </a>
-        <a href="#" onclick="showSection('settings')" data-section="settings">
-            <iconify-icon icon="material-symbols:settings-outline"></iconify-icon>
-            <span data-i18n="navigation.settings">Settings</span>
         </a>
     </div>
 
@@ -316,7 +315,7 @@
         // =================================================================
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
         import { getAuth, onAuthStateChanged, signOut, reauthenticateWithCredential, EmailAuthProvider, updatePassword, updateEmail, sendEmailVerification } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
-        import { getFirestore, collection, query, where, onSnapshot, addDoc, updateDoc, doc, getDoc, deleteDoc, getDocs, writeBatch, orderBy, setDoc } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
+        import { getFirestore, collection, query, where, onSnapshot, addDoc, updateDoc, doc, getDoc, deleteDoc, getDocs, writeBatch, orderBy, setDoc, increment } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBVTLxC6nWpWL6a4BLI3xghdgUoR_cgGzw",
@@ -353,9 +352,11 @@
         window.progressTasks = progressTasks; // expose for renderProgress
         let workerPositions = [], galleryData = [], attendanceData = [];
         let stockData = [], stockTransactions = [];
+        let materialRequestsData = [], materialRequestItemsData = []; // New
         let unsubscribeSnapshots = [];
         let currentSection = 'dashboard';
         let workersTab = 'view';
+        let materialRequestsTab = 'my_requests'; // New
         let reportType = 'general';
         let settingsTab = 'profile';
         let hasUnsavedChanges = false;
@@ -484,6 +485,13 @@
             unsubscribeSnapshots.push(onSnapshot(stockQ, snap => { stockData = snap.docs.map(d => ({ id: d.id, ...d.data() })); refreshCurrentSection(); }));
             const transQ = query(collection(db, 'stock_transactions'), where('site_id', '==', siteId), orderBy('created_at', 'desc'));
             unsubscribeSnapshots.push(onSnapshot(transQ, snap => { stockTransactions = snap.docs.map(d => ({ id: d.id, ...d.data() })); refreshCurrentSection(); }));
+            
+            // Material Requests Listener
+            const reqQ = query(collection(db, 'material_requests'), where('requested_by', '==', currentUser.uid));
+            unsubscribeSnapshots.push(onSnapshot(reqQ, snap => { materialRequestsData = snap.docs.map(d => ({ id: d.id, ...d.data() })); refreshCurrentSection(); }));
+            // Material Request Items Listener
+            const reqItemsQ = query(collection(db, 'material_request_items'), where('requested_by', '==', currentUser.uid));
+            unsubscribeSnapshots.push(onSnapshot(reqItemsQ, snap => { materialRequestItemsData = snap.docs.map(d => ({ id: d.id, ...d.data() })); refreshCurrentSection(); }));
         }
 
         function refreshCurrentSection() {
@@ -535,6 +543,7 @@
                         break;
                     case 'materials': renderMaterials(container); break;
                     case 'stock': renderStock(container); break;
+                    case 'material_requests': renderMaterialRequests(container); break;
                     case 'workers': renderWorkers(container); break;
                     case 'progress': renderProgress(container); break;
                     case 'reports': renderReports(container); break;
@@ -580,10 +589,305 @@
         }
 
         // =================================================================
+        // MATERIAL REQUESTS MODULE (Manager Side)
+        // =================================================================
+        function getStatusBadge(status) {
+            const statusColors = {
+                'Pending': 'bg-amber-100 text-amber-700',
+                'Approved': 'bg-blue-100 text-blue-700',
+                'Rejected': 'bg-red-100 text-red-700',
+                'Partially Fulfilled': 'bg-yellow-100 text-yellow-700',
+                'Fulfilled': 'bg-emerald-100 text-emerald-700',
+                'Cancelled': 'bg-slate-100 text-slate-600'
+            };
+            return `<span class="px-2 py-1 rounded-full text-xs font-semibold ${statusColors[status] || 'bg-slate-100 text-slate-600'}">${status}</span>`;
+        }
+
+        function generateRequestNumber() {
+            const year = new Date().getFullYear();
+            const count = materialRequestsData.length;
+            return `MR-${year}-${String(count + 1).padStart(4, '0')}`;
+        }
+
+        function renderMaterialRequests(container) {
+            container.innerHTML = `
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+                    <div class="flex gap-2 p-1 bg-slate-200/60 rounded-xl">
+                        <button onclick="switchMaterialRequestsTab('my_requests')" class="px-4 py-2 rounded-lg text-sm font-semibold transition ${materialRequestsTab === 'my_requests' ? 'tab-active shadow-sm' : 'tab-inactive'}">
+                            <iconify-icon icon="material-symbols:list-alt" class="inline mr-1"></iconify-icon> My Requests
+                        </button>
+                        <button onclick="switchMaterialRequestsTab('new_request')" class="px-4 py-2 rounded-lg text-sm font-semibold transition ${materialRequestsTab === 'new_request' ? 'tab-active shadow-sm' : 'tab-inactive'}">
+                            <iconify-icon icon="material-symbols:add-circle-outline" class="inline mr-1"></iconify-icon> New Request
+                        </button>
+                    </div>
+                </div>
+                <div id="material-requests-content">
+                    ${materialRequestsTab === 'my_requests' ? renderMyMaterialRequests() : renderNewMaterialRequest()}
+                </div>
+            `;
+        }
+
+        window.switchMaterialRequestsTab = (tab) => {
+            materialRequestsTab = tab;
+            showSection('material_requests');
+        };
+
+        function renderMyMaterialRequests() {
+            const myRequests = materialRequestsData.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+            
+            if (!myRequests.length) {
+                return `<div class="bg-white rounded-2xl border p-6 text-center"><p class="text-slate-500">No material requests yet.</p></div>`;
+            }
+
+            let html = `<div class="grid grid-cols-1 md:grid-cols-2 gap-4">`;
+            myRequests.forEach(request => {
+                const requestItems = materialRequestItemsData.filter(item => item.request_id === request.id);
+                const site = assignedSites.find(s => s.id === request.site_id);
+                const siteName = site ? site.name : 'Unknown Site';
+                const totalItems = requestItems.reduce((sum, item) => sum + (Number(item.quantity_requested) || 0), 0);
+
+                html += `
+                    <div class="bg-white rounded-2xl border shadow-sm p-4">
+                        <div class="flex justify-between items-center mb-2">
+                            <h3 class="font-bold text-emerald-600">${request.request_number}</h3>
+                            ${getStatusBadge(request.priority === 'Urgent' ? 'Urgent' : request.status)}
+                        </div>
+                        <p class="text-sm text-slate-500">Site: ${siteName}</p>
+                        <p class="text-sm text-slate-500">Required Date: ${formatDate(request.required_date)}</p>
+                        <p class="text-sm text-slate-500">Items: ${requestItems.length} (${totalItems} units)</p>
+                        <p class="text-xs text-slate-400 mt-1">${request.notes || 'No notes'}</p>
+                        <div class="mt-3 flex gap-2">
+                            <button onclick="viewMaterialRequest('${request.id}')" class="text-xs bg-blue-50 text-blue-700 px-3 py-1 rounded-lg hover:bg-blue-100">View</button>
+                            ${request.status === 'Rejected' ? `<span class="text-xs text-red-500 ml-2">Reason: ${request.rejection_reason || 'N/A'}</span>` : ''}
+                        </div>
+                    </div>
+                `;
+            });
+            html += `</div>`;
+            return html;
+        }
+
+        function renderNewMaterialRequest() {
+            if (!assignedSites.length) {
+                return `<div class="bg-white rounded-2xl border p-6 text-center"><p class="text-slate-500">No sites assigned to you.</p></div>`;
+            }
+
+            const sitesOptions = assignedSites.map(site => `<option value="${site.id}">${site.name}</option>`).join('');
+            const stockOptions = stockData.map(item => `<option value="${item.id}" data-name="${item.material_name}" data-stock="${item.quantity}" data-unit="${item.unit || 'units'}">${item.material_name} (Stock: ${item.quantity || 0} ${item.unit || 'units'})</option>`).join('');
+
+            return `
+                <div class="bg-white rounded-2xl border p-4 max-w-4xl mx-auto">
+                    <form id="material-request-form" onsubmit="submitMaterialRequest(event)" class="space-y-4">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-1">Site</label>
+                                <select id="request-site" class="w-full border rounded-lg p-2.5 text-sm" required>${sitesOptions}</select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-1">Request Date</label>
+                                <input type="text" value="${getTodayISO()}" class="w-full border rounded-lg p-2.5 text-sm bg-slate-50" readonly>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-1">Required Date</label>
+                                <input type="date" id="request-required-date" value="${getTodayISO()}" class="w-full border rounded-lg p-2.5 text-sm" required>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-1">Priority</label>
+                                <select id="request-priority" class="w-full border rounded-lg p-2.5 text-sm" required>
+                                    <option value="Normal">Normal</option>
+                                    <option value="Urgent">Urgent</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="mt-4">
+                            <div class="flex justify-between items-center mb-2">
+                                <label class="block text-sm font-medium text-slate-700">Materials</label>
+                                <button type="button" onclick="addMaterialRequestRow()" class="text-emerald-600 font-medium text-sm">+ Add Material</button>
+                            </div>
+                            <div id="material-request-rows" class="space-y-3"></div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1">General Notes</label>
+                            <textarea id="request-notes" rows="3" class="w-full border rounded-lg p-2.5 text-sm" placeholder="Notes for the owner..."></textarea>
+                        </div>
+
+                        <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-3 rounded-xl">Submit Request</button>
+                    </form>
+                </div>
+            `;
+        }
+
+        window.addMaterialRequestRow = () => {
+            const rowsContainer = document.getElementById('material-request-rows');
+            if (!rowsContainer) return;
+            const rowCount = rowsContainer.children.length;
+            const stockOptions = stockData.map(item => `<option value="${item.id}" data-name="${item.material_name}" data-stock="${item.quantity}" data-unit="${item.unit || 'units'}">${item.material_name} (Stock: ${item.quantity || 0} ${item.unit || 'units'})</option>`).join('');
+
+            const row = document.createElement('div');
+            row.className = 'grid grid-cols-12 gap-3 bg-slate-50 p-3 rounded-lg items-end';
+            row.innerHTML = `
+                <div class="col-span-12 sm:col-span-6">
+                    <label class="block text-xs font-medium text-slate-500 mb-1">Material</label>
+                    <select class="w-full border rounded-lg p-2 text-sm" onchange="updateStockDisplay(this)">
+                        <option value="">Select Material...</option>
+                        ${stockOptions}
+                    </select>
+                </div>
+                <div class="col-span-4 sm:col-span-2">
+                    <label class="block text-xs font-medium text-slate-500 mb-1">Available Stock</label>
+                    <div class="border rounded-lg p-2 text-sm bg-white text-center font-medium">0</div>
+                </div>
+                <div class="col-span-4 sm:col-span-2">
+                    <label class="block text-xs font-medium text-slate-500 mb-1">Qty Requested</label>
+                    <input type="number" class="w-full border rounded-lg p-2 text-sm" min="1" step="0.01" required>
+                </div>
+                <div class="col-span-2 sm:col-span-1">
+                    <label class="block text-xs font-medium text-slate-500 mb-1">Unit</label>
+                    <div class="border rounded-lg p-2 text-sm bg-white text-center">units</div>
+                </div>
+                <div class="col-span-2 sm:col-span-1">
+                    <label class="block text-xs font-medium text-slate-500 mb-1">&nbsp;</label>
+                    <button type="button" onclick="this.parentElement.parentElement.remove()" class="w-full text-red-500 hover:bg-red-50 p-2 rounded-lg"><iconify-icon icon="material-symbols:delete"></iconify-icon></button>
+                </div>
+            `;
+            rowsContainer.appendChild(row);
+        };
+
+        window.updateStockDisplay = (select) => {
+            const selected = select.options[select.selectedIndex];
+            const stock = selected.dataset.stock || '0';
+            const unit = selected.dataset.unit || 'units';
+            const row = select.closest('.grid');
+            row.querySelector('.col-span-4 div').textContent = stock;
+            row.querySelector('.col-span-2 div').textContent = unit;
+        };
+
+        window.submitMaterialRequest = async (e) => {
+            e.preventDefault();
+            const form = e.target;
+            const btn = getFormSubmitBtn(form);
+            setButtonLoading(btn, true);
+
+            try {
+                const siteId = document.getElementById('request-site').value;
+                const requiredDate = document.getElementById('request-required-date').value;
+                const priority = document.getElementById('request-priority').value;
+                const notes = document.getElementById('request-notes').value.trim();
+                const rows = document.querySelectorAll('#material-request-rows .grid');
+                
+                if (!siteId) { alert(t('common.requiredField')); setButtonLoading(btn, false); return; }
+                if (!requiredDate) { alert(t('common.requiredField')); setButtonLoading(btn, false); return; }
+                if (!rows.length) { alert('Please add at least one material.'); setButtonLoading(btn, false); return; }
+
+                const requestItems = [];
+                const seenMaterials = new Set();
+                for (const row of rows) {
+                    const matSelect = row.querySelector('select');
+                    const matId = matSelect.value;
+                    const qty = parseFloat(row.querySelector('input[type="number"]').value);
+                    if (!matId) { alert('Please select a material for all rows.'); setButtonLoading(btn, false); return; }
+                    if (seenMaterials.has(matId)) { alert('Duplicate materials are not allowed in the same request.'); setButtonLoading(btn, false); return; }
+                    if (!qty || qty <= 0) { alert('Quantity must be greater than 0.'); setButtonLoading(btn, false); return; }
+                    seenMaterials.add(matId);
+                    requestItems.push({
+                        material_id: matId,
+                        material_name: matSelect.options[matSelect.selectedIndex].dataset.name,
+                        quantity_requested: qty,
+                        unit: matSelect.options[matSelect.selectedIndex].dataset.unit || 'units',
+                        notes: ''
+                    });
+                }
+
+                const requestNumber = generateRequestNumber();
+                const now = new Date().toISOString();
+
+                // Create parent request
+                const batch = writeBatch(db);
+                const requestRef = doc(collection(db, 'material_requests'));
+                batch.set(requestRef, {
+                    request_number: requestNumber,
+                    site_id: siteId,
+                    requested_by: currentUser.uid,
+                    request_date: now,
+                    required_date: requiredDate,
+                    priority: priority,
+                    status: 'Pending',
+                    notes: notes,
+                    rejection_reason: '',
+                    approved_by: '',
+                    approved_at: null,
+                    fulfilled_by: '',
+                    fulfilled_at: null,
+                    created_at: now,
+                    updated_at: now
+                });
+
+                // Create child items
+                requestItems.forEach(item => {
+                    const itemRef = doc(collection(db, 'material_request_items'));
+                    batch.set(itemRef, {
+                        request_id: requestRef.id,
+                        material_id: item.material_id,
+                        material_name: item.material_name,
+                        quantity_requested: item.quantity_requested,
+                        quantity_issued: 0,
+                        unit: item.unit,
+                        notes: item.notes,
+                        created_at: now,
+                        updated_at: now
+                    });
+                });
+
+                await batch.commit();
+                closeModal();
+                materialRequestsTab = 'my_requests';
+                showSection('material_requests');
+                showToast('Material request submitted successfully!', 'success');
+            } catch (err) {
+                console.error('Error submitting request:', err);
+                showToast(t('common.somethingWentWrong'), 'error');
+            } finally {
+                setButtonLoading(btn, false);
+            }
+        };
+
+        window.viewMaterialRequest = (requestId) => {
+            const request = materialRequestsData.find(r => r.id === requestId);
+            if (!request) return;
+            const items = materialRequestItemsData.filter(i => i.request_id === requestId);
+            const site = assignedSites.find(s => s.id === request.site_id);
+            const siteName = site ? site.name : 'Unknown Site';
+
+            let itemsHtml = '';
+            if (items.length) {
+                itemsHtml = `<table class="w-full text-sm mt-4"><thead class="bg-slate-50"><tr><th class="p-2 text-left">Material</th><th class="p-2 text-right">Requested</th><th class="p-2 text-right">Issued</th><th class="p-2 text-right">Unit</th></tr></thead><tbody>`;
+                items.forEach(item => {
+                    itemsHtml += `<tr class="border-b"><td class="p-2">${item.material_name || 'Unknown'}</td><td class="p-2 text-right">${item.quantity_requested}</td><td class="p-2 text-right">${item.quantity_issued || 0}</td><td class="p-2 text-right">${item.unit || 'units'}</td></tr>`;
+                });
+                itemsHtml += `</tbody></table>`;
+            } else {
+                itemsHtml = `<p class="text-sm text-slate-500 mt-4">No materials listed.</p>`;
+            }
+
+            openModal(`Request ${request.request_number}`, `
+                <div class="space-y-2">
+                    <p><strong>Status:</strong> ${getStatusBadge(request.status)}</p>
+                    <p><strong>Site:</strong> ${siteName}</p>
+                    <p><strong>Required Date:</strong> ${formatDate(request.required_date)}</p>
+                    <p><strong>Priority:</strong> ${request.priority}</p>
+                    <p><strong>Notes:</strong> ${request.notes || '—'}</p>
+                    ${request.rejection_reason ? `<p class="text-red-600"><strong>Rejection Reason:</strong> ${request.rejection_reason}</p>` : ''}
+                    ${itemsHtml}
+                </div>
+            `);
+        };
+
+        // =================================================================
         // DASHBOARD
         // =================================================================
         function renderDashboard(container) {
-            console.log('renderDashboard called');
             try {
                 const site = assignedSites.find(s => s.id === currentSiteId);
                 if (!site) {
@@ -594,6 +898,8 @@
                 const completedTasks = progressTasks.filter(t => t.status === 'completed').length;
                 const totalTasks = progressTasks.length;
                 const completionPercent = totalTasks ? Math.round((completedTasks / totalTasks) * 100) : 0;
+                const pendingRequests = materialRequestsData.filter(r => r.status === 'Pending').length;
+                const urgentRequests = materialRequestsData.filter(r => r.priority === 'Urgent' && r.status === 'Pending').length;
 
                 container.innerHTML = `
                     <div class="bg-white rounded-2xl overflow-hidden shadow-sm mb-4 sm:mb-6">
@@ -610,7 +916,7 @@
                             <div><span class="text-sm text-slate-500">${t('dashboard.siteManager')}</span><p class="text-lg font-bold">${managerProfile.full_name || 'You'}</p></div>
                         </div>
                     </div>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4 sm:mb-6">
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4 sm:mb-6">
                         <div class="stat-card bg-white rounded-2xl p-4 border border-slate-200 shadow-sm">
                             <div class="flex items-center gap-4">
                                 <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center"><iconify-icon icon="material-symbols:engineering" width="24" class="text-blue-700"></iconify-icon></div>
@@ -621,6 +927,18 @@
                             <div class="flex items-center gap-4">
                                 <div class="w-12 h-12 bg-amber-100 rounded-xl flex items-center justify-center"><iconify-icon icon="material-symbols:trending-up" width="24" class="text-amber-700"></iconify-icon></div>
                                 <div><p class="text-sm text-slate-500">${t('dashboard.progress')}</p><p class="text-2xl font-bold">${completionPercent}%</p></div>
+                            </div>
+                        </div>
+                        <div class="stat-card bg-white rounded-2xl p-4 border border-slate-200 shadow-sm">
+                            <div class="flex items-center gap-4">
+                                <div class="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center"><iconify-icon icon="material-symbols:assignment" width="24" class="text-orange-700"></iconify-icon></div>
+                                <div><p class="text-sm text-slate-500">Pending Requests</p><p class="text-2xl font-bold">${pendingRequests}</p></div>
+                            </div>
+                        </div>
+                        <div class="stat-card bg-white rounded-2xl p-4 border border-slate-200 shadow-sm">
+                            <div class="flex items-center gap-4">
+                                <div class="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center"><iconify-icon icon="material-symbols:urgent" width="24" class="text-red-700"></iconify-icon></div>
+                                <div><p class="text-sm text-slate-500">Urgent Requests</p><p class="text-2xl font-bold">${urgentRequests}</p></div>
                             </div>
                         </div>
                     </div>
