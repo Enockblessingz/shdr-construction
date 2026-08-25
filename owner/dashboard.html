@@ -1556,7 +1556,8 @@
                 }
             })();
         };
-        // =============== STOCK (Owner View) ===============
+
+        // =============== STOCK (Owner View) - FIXED & ADDED ===============
         function renderStock(container) {
             if (!stockData.length) {
                 container.innerHTML = `
@@ -1624,18 +1625,18 @@
                                     <tr><th class="px-3 py-2">${t('stock.date')}</th><th class="px-3 py-2">${t('stock.site')}</th><th class="px-3 py-2">${t('stock.material')}</th><th class="px-3 py-2">${t('stock.type')}</th><th class="px-3 py-2">${t('stock.qty')}</th><th class="px-3 py-2">${t('stock.notes')}</th></tr>
                                 </thead>
                                 <tbody>
-                                    ${recent.map(t => {
-                                        const site = sitesData.find(s => s.id === t.site_id);
+                                    ${recent.map(tr => {
+                                        const site = sitesData.find(s => s.id === tr.site_id);
                                         const siteName = site ? site.name : 'Unknown';
-                                        const sign = (t.transaction_type === 'STOCK_ADDED' || t.transaction_type === 'STOCK_ADJUSTMENT' && t.quantity > 0) ? '+' : '-';
+                                        const sign = (tr.transaction_type === 'STOCK_ADDED' || tr.transaction_type === 'STOCK_ADJUSTMENT' && tr.quantity > 0) ? '+' : '-';
                                         return `
                                             <tr>
-                                                <td class="px-3 py-2">${formatDate(t.created_at)}</td>
+                                                <td class="px-3 py-2">${formatDate(tr.created_at)}</td>
                                                 <td class="px-3 py-2">${siteName}</td>
-                                                <td class="px-3 py-2">${t.material_name}</td>
-                                                <td class="px-3 py-2">${t.transaction_type.replace('_', ' ')}</td>
-                                                <td class="px-3 py-2">${sign} ${t.quantity} ${t.unit || ''}</td>
-                                                <td class="px-3 py-2 text-xs text-slate-500">${t.notes || ''}</td>
+                                                <td class="px-3 py-2">${tr.material_name}</td>
+                                                <td class="px-3 py-2">${tr.transaction_type.replace('_', ' ')}</td>
+                                                <td class="px-3 py-2">${sign} ${tr.quantity} ${tr.unit || ''}</td>
+                                                <td class="px-3 py-2 text-xs text-slate-500">${tr.notes || ''}</td>
                                             </tr>
                                         `;
                                     }).join('')}
@@ -1898,35 +1899,35 @@
             } catch (err) { showToast(t('alerts.somethingWentWrong'), 'error'); }
         };
 
-         // =============== PROGRESS ===============
+        // =============== PROGRESS - FIXED & ADDED ===============
         function renderProgress(container) {
             container.innerHTML = `
                 <div class="flex justify-between items-center mb-4">
-                    <h2 class="text-xl sm:text-2xl font-bold">Progress Tasks</h2>
+                    <h2 class="text-xl sm:text-2xl font-bold">${t('progress.title')}</h2>
                     <button onclick="openAddTaskModal()" class="px-3 py-2 bg-emerald-600 text-white rounded-xl hover:bg-emerald-700 text-sm">
-                        <iconify-icon icon="material-symbols:add"></iconify-icon> Add Task
+                        <iconify-icon icon="material-symbols:add"></iconify-icon> ${t('progress.addTask')}
                     </button>
                 </div>
                 <div class="bg-white rounded-2xl border overflow-hidden shadow-sm">
                     <div class="overflow-x-auto">
                         <table class="w-full text-sm">
                             <thead class="bg-slate-50 uppercase text-xs">
-                                <tr><th class="px-3 py-2">Task</th><th class="px-3 py-2">Site</th><th class="px-3 py-2">Start</th><th class="px-3 py-2">End</th><th class="px-3 py-2">Status</th><th class="px-3 py-2">Actions</th></tr>
+                                <tr><th class="px-3 py-2">${t('progress.task')}</th><th class="px-3 py-2">${t('workers.site')}</th><th class="px-3 py-2">${t('progress.start')}</th><th class="px-3 py-2">${t('progress.end')}</th><th class="px-3 py-2">${t('progress.status')}</th><th class="px-3 py-2">${t('workers.actions')}</th></tr>
                             </thead>
                             <tbody>
                                 ${progressTasks.map(t => `
                                     <tr>
                                         <td class="px-3 py-2 font-medium">${t.name}</td>
                                         <td class="px-3 py-2">${sitesData.find(s => s.id === t.site_id)?.name || '—'}</td>
-                                        <td class="px-3 py-2">${new Date(t.start_date).toLocaleDateString()}</td>
-                                        <td class="px-3 py-2">${new Date(t.end_date).toLocaleDateString()}</td>
+                                        <td class="px-3 py-2">${formatDate(t.start_date)}</td>
+                                        <td class="px-3 py-2">${formatDate(t.end_date)}</td>
                                         <td class="px-3 py-2">${t.status || 'pending'}</td>
                                         <td class="px-3 py-2 flex gap-2">
-                                            <button onclick="editTask('${t.id}')" class="text-emerald-600 hover:text-emerald-800 text-xs">Edit</button>
-                                            <button onclick="deleteTask('${t.id}')" class="text-red-500 hover:text-red-700 text-xs">Delete</button>
+                                            <button onclick="editTask('${t.id}')" class="text-emerald-600 hover:text-emerald-800 text-xs">${t('common.edit')}</button>
+                                            <button onclick="deleteTask('${t.id}')" class="text-red-500 hover:text-red-700 text-xs">${t('common.delete')}</button>
                                         </td>
                                     </tr>
-                                `).join('') || '<tr><td colspan="6" class="p-4 text-slate-500">No tasks yet.</td></tr>'}
+                                `).join('') || `<tr><td colspan="6" class="p-4 text-slate-500">${t('progress.noTasks')}</td></tr>`}
                             </tbody>
                         </table>
                     </div>
@@ -1936,19 +1937,19 @@
 
         window.openAddTaskModal = () => {
             const siteOpts = sitesData.map(s => `<option value="${s.id}">${s.name}</option>`).join('');
-            openModal('Add Progress Task', `
+            openModal(t('progress.addTaskModal'), `
                 <form onsubmit="handleAddTask(event)" class="space-y-4">
-                    <input class="w-full border rounded-lg p-3" placeholder="Task name" id="task-name" required>
-                    <select class="w-full border rounded-lg p-3" id="task-site" required><option value="">Select site</option>${siteOpts}</select>
+                    <input class="w-full border rounded-lg p-3" placeholder="${t('progress.taskName')}" id="task-name" required>
+                    <select class="w-full border rounded-lg p-3" id="task-site" required><option value="">${t('progress.selectSite')}</option>${siteOpts}</select>
                     <input class="w-full border rounded-lg p-3" type="date" id="task-start" required>
                     <div class="flex gap-2">
-                        <input class="w-1/2 border rounded-lg p-3" placeholder="Period number" type="number" id="task-period-num" min="1" required>
+                        <input class="w-1/2 border rounded-lg p-3" placeholder="${t('progress.periodNumber')}" type="number" id="task-period-num" min="1" required>
                         <select class="w-1/2 border rounded-lg p-3" id="task-period-unit">
-                            <option value="days">Days</option>
-                            <option value="weeks">Weeks</option>
+                            <option value="days">${t('progress.days')}</option>
+                            <option value="weeks">${t('progress.weeks')}</option>
                         </select>
                     </div>
-                    <button type="submit" class="w-full bg-emerald-600 text-white py-3 rounded-xl">Save Task</button>
+                    <button type="submit" class="w-full bg-emerald-600 text-white py-3 rounded-xl">${t('progress.saveTask')}</button>
                 </form>
             `);
         };
@@ -1963,7 +1964,7 @@
                 const start_date = document.getElementById('task-start').value;
                 const periodNum = parseInt(document.getElementById('task-period-num').value);
                 const periodUnit = document.getElementById('task-period-unit').value;
-                if (!name || !site_id || !start_date) return alert('All fields required.');
+                if (!name || !site_id || !start_date) return alert(t('alerts.requiredField'));
                 const start = new Date(start_date);
                 let end = new Date(start);
                 if (periodUnit === 'days') end.setDate(end.getDate() + periodNum);
@@ -1976,7 +1977,7 @@
                     status: 'pending'
                 });
                 closeModal();
-            } catch (err) { alert('Error: ' + getFriendlyError(err)); }
+            } catch (err) { alert(t('alerts.somethingWentWrong')); }
             finally { setButtonLoading(btn, false); }
         };
 
@@ -1984,7 +1985,7 @@
             const task = progressTasks.find(t => t.id === id);
             if (!task) return;
             const siteOpts = sitesData.map(s => `<option value="${s.id}" ${s.id === task.site_id ? 'selected' : ''}>${s.name}</option>`).join('');
-            openModal('Edit Progress Task', `
+            openModal(t('progress.editTask'), `
                 <form onsubmit="handleEditTask(event, '${id}')" class="space-y-4">
                     <input class="w-full border rounded-lg p-3" value="${task.name}" id="edit-task-name" required>
                     <select class="w-full border rounded-lg p-3" id="edit-task-site" required>
@@ -1993,10 +1994,10 @@
                     <input class="w-full border rounded-lg p-3" type="date" value="${task.start_date ? new Date(task.start_date).toISOString().split('T')[0] : ''}" id="edit-task-start" required>
                     <input class="w-full border rounded-lg p-3" type="date" value="${task.end_date ? new Date(task.end_date).toISOString().split('T')[0] : ''}" id="edit-task-end" required>
                     <select class="w-full border rounded-lg p-3" id="edit-task-status">
-                        <option value="pending" ${task.status === 'pending' ? 'selected' : ''}>Pending</option>
-                        <option value="completed" ${task.status === 'completed' ? 'selected' : ''}>Completed</option>
+                        <option value="pending" ${task.status === 'pending' ? 'selected' : ''}>${t('progress.pending')}</option>
+                        <option value="completed" ${task.status === 'completed' ? 'selected' : ''}>${t('progress.completed')}</option>
                     </select>
-                    <button type="submit" class="w-full bg-emerald-600 text-white py-3 rounded-xl">Update Task</button>
+                    <button type="submit" class="w-full bg-emerald-600 text-white py-3 rounded-xl">${t('common.save')}</button>
                 </form>
             `);
         };
@@ -2011,23 +2012,23 @@
                 const start_date = document.getElementById('edit-task-start').value;
                 const end_date = document.getElementById('edit-task-end').value;
                 const status = document.getElementById('edit-task-status').value;
-                if (!name || !site_id || !start_date || !end_date) return alert('All fields required.');
+                if (!name || !site_id || !start_date || !end_date) return alert(t('alerts.requiredField'));
                 await updateDoc(doc(db, 'progress_tasks', id), {
-                    name,
-                    site_id,
+                    name, site_id,
                     start_date: new Date(start_date).toISOString(),
                     end_date: new Date(end_date).toISOString(),
                     status
                 });
                 closeModal();
-            } catch (err) { alert('Error: ' + getFriendlyError(err)); }
+            } catch (err) { alert(t('alerts.somethingWentWrong')); }
             finally { setButtonLoading(btn, false); }
         };
         window.deleteTask = (id) => {
-            if (confirm('Delete this task?')) {
-                deleteDoc(doc(db, 'progress_tasks', id)).catch(err => alert('Error: ' + getFriendlyError(err)));
+            if (confirm(t('alerts.areYouSure'))) {
+                deleteDoc(doc(db, 'progress_tasks', id)).catch(err => alert(t('alerts.somethingWentWrong')));
             }
         };
+
         // =============== REPORTS ===============
 
         // ── Date formatter (unified) ──
@@ -2796,6 +2797,7 @@ window.deleteGalleryItem = async (id) => {
         showToast(t('alerts.somethingWentWrong'), 'error');
     }
 };
+
         // =============== OFFICE MANAGEMENT HUB ===============
         // ── Toggle: true = fully functional, false = coming soon ──
         const OFFICE_HUB_ENABLED = false;  // Change to true to enable the full hub
