@@ -236,11 +236,6 @@
             height: 18px;
         }
 
-        .social-btn.apple-btn svg {
-            width: 20px;
-            height: 20px;
-        }
-
         .social-btn:disabled {
             opacity: 0.6;
             cursor: not-allowed;
@@ -526,14 +521,6 @@
                             Continue with Google
                         </button>
 
-                        <button type="button" class="social-btn apple-btn" id="apple-login-btn" onclick="signInWithApple()">
-                            <!-- Apple SVG -->
-                            <svg viewBox="0 0 30 30" fill="currentColor">
-                                <path d="M25.1 10.2c-.4.3-3.1 1.8-3.1 5.6 0 4.3 3.7 5.8 3.9 5.9-.1.2-.6 2-1.9 3.9-1.2 1.7-2.4 3.4-4.3 3.4-1.8 0-2.4-1.1-4.5-1.1-2.1 0-2.8 1.1-4.6 1.1-2 0-3.4-1.9-4.7-3.6-1.8-2.6-3.1-6.6-3.1-10.5 0-5.6 3.6-8.5 7.1-8.5 1.9 0 3.5 1.3 4.7 1.3 1.1 0 3-1.3 4.9-1.3 1.6 0 5.3.3 6.9 4.1zm-5.3-4.7c1.3-1.6 2.2-3.8 2-5.5-2 .1-4.3 1.3-5.7 2.9-1.3 1.4-2.4 3.7-2.1 5.9 2.2.2 4.4-1.1 5.8-3.3z"/>
-                            </svg>
-                            Continue with Apple
-                        </button>
-
                         <div class="divider">Or</div>
                     </div>
 
@@ -620,7 +607,6 @@
             signOut,
             signInWithPopup,
             GoogleAuthProvider,
-            OAuthProvider,
             fetchSignInMethodsForEmail
         } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
         import {
@@ -645,14 +631,10 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // ─── Providers ───
+        // ─── Provider ───
         const googleProvider = new GoogleAuthProvider();
         googleProvider.addScope('profile');
         googleProvider.addScope('email');
-
-        const appleProvider = new OAuthProvider('apple.com');
-        appleProvider.addScope('email');
-        appleProvider.addScope('name');
 
         // ─── UI Helpers ───
         function switchTo(form) {
@@ -751,36 +733,29 @@
             return true;
         }
 
-        // ─── Social sign-in helpers ───
-        async function socialSignIn(provider, providerName) {
+        // ─── Google sign-in ───
+        async function signInWithGoogle() {
             const loginBtn = document.getElementById('login-btn');
             const googleBtn = document.getElementById('google-login-btn');
-            const appleBtn = document.getElementById('apple-login-btn');
 
-            // disable all buttons during sign-in
-            const btns = [loginBtn, googleBtn, appleBtn];
+            const btns = [loginBtn, googleBtn];
             btns.forEach(b => { if (b) b.disabled = true; });
 
             hideMessage();
 
             try {
-                const result = await signInWithPopup(auth, provider);
+                const result = await signInWithPopup(auth, googleProvider);
                 const user = result.user;
 
-                // Check / create owner profile
                 await ensureOwnerProfile(user, user.displayName);
 
-                // Remember email
                 if (user.email && document.getElementById('login-remember')?.checked) {
                     localStorage.setItem('shdr_owner_remember', user.email);
                 }
 
-                // redirect
                 window.location.href = 'owner/dashboard.html';
-
             } catch (error) {
                 if (error.code === 'auth/account-exists-with-different-credential') {
-                    // try to link
                     try {
                         const email = error.customData?.email;
                         if (email) {
@@ -802,14 +777,7 @@
                 btns.forEach(b => { if (b) b.disabled = false; });
             }
         }
-
-        window.signInWithGoogle = function() {
-            socialSignIn(googleProvider, 'Google');
-        };
-
-        window.signInWithApple = function() {
-            socialSignIn(appleProvider, 'Apple');
-        };
+        window.signInWithGoogle = signInWithGoogle;
 
         // ─── Session check ───
         onAuthStateChanged(auth, async (user) => {
@@ -817,7 +785,6 @@
                 try {
                     const profileSnap = await getDoc(doc(db, 'profiles', user.uid));
                     if (profileSnap.exists() && profileSnap.data().role === 'owner') {
-                        // already logged in as owner → dashboard
                         window.location.href = 'owner/dashboard.html';
                     } else {
                         await signOut(auth);
@@ -926,8 +893,7 @@
         window.handleSignUp = window.handleSignUp;
         window.switchTo = switchTo;
         window.togglePassword = togglePassword;
-        window.signInWithGoogle = window.signInWithGoogle;
-        window.signInWithApple = window.signInWithApple;
+        window.signInWithGoogle = signInWithGoogle;
     </script>
 </body>
 </html>
