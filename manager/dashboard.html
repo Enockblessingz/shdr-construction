@@ -416,23 +416,88 @@
             border-radius: 5px;
         }
 
-        /* Batch Material Usage - redesigned to match screenshot */
-        .batch-material-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-            gap: 8px;
+        /* BATCH MATERIAL USAGE — exact match to screenshot */
+        .batch-date-site {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 20px;
         }
-        .batch-material-grid .mat-card {
+        .batch-date-site .date-group {
             display: flex;
             align-items: center;
             gap: 8px;
-            padding: 8px 12px;
+        }
+        .batch-date-site .date-group label {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #1e293b;
+        }
+        .batch-date-site .date-group input {
+            border: 1px solid #d1d5db;
             border-radius: 8px;
+            padding: 6px 12px;
+            font-size: 0.9rem;
+            outline: none;
+            background: white;
+        }
+        .batch-date-site .date-group input:focus {
+            border-color: #059669;
+            box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.15);
+        }
+        .batch-date-site .assigned-site {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #1e293b;
+            background: #f1f5f9;
+            padding: 4px 16px;
+            border-radius: 20px;
+            display: inline-block;
+        }
+
+        .batch-select-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        .batch-select-header h3 {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #1e293b;
+        }
+        .batch-select-header .select-all-link {
+            color: #059669;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            text-decoration: none;
+            background: none;
+            border: none;
+        }
+        .batch-select-header .select-all-link:hover {
+            text-decoration: underline;
+        }
+
+        .batch-material-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 10px;
+            margin-bottom: 4px;
+        }
+        .batch-material-grid .mat-card {
             border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            padding: 10px 8px;
             background: white;
             cursor: pointer;
             transition: all 0.15s ease;
-            font-size: 0.85rem;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 2px;
             user-select: none;
         }
         .batch-material-grid .mat-card:hover {
@@ -443,36 +508,65 @@
             border-color: #059669;
             background: #ecfdf5;
         }
-        .batch-material-grid .mat-card input[type="checkbox"] {
+        .batch-material-grid .mat-card .card-top {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            width: 100%;
+        }
+        .batch-material-grid .mat-card .card-top input[type="checkbox"] {
             width: 16px;
             height: 16px;
             accent-color: #059669;
             flex-shrink: 0;
             cursor: pointer;
         }
-        .batch-material-grid .mat-card .mat-name {
-            flex: 1;
-            font-weight: 500;
+        .batch-material-grid .mat-card .card-top .mat-name {
+            font-weight: 700;
+            font-size: 0.85rem;
             color: #1e293b;
-            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            flex: 1;
         }
         .batch-material-grid .mat-card .mat-unit {
-            font-size: 0.65rem;
+            font-size: 0.7rem;
             color: #6b7280;
             font-weight: 400;
-            white-space: nowrap;
+            margin-left: 28px;
+            /* align with name after checkbox */;
         }
         .batch-material-grid .mat-card .mat-avail {
             font-size: 0.6rem;
             color: #9ca3af;
-            white-space: nowrap;
+            margin-left: 28px;
         }
 
-        .batch-selection-hint {
+        .batch-hint {
             font-size: 0.8rem;
             color: #6b7280;
             text-align: center;
-            padding: 6px 0 2px 0;
+            padding: 4px 0 10px 0;
+        }
+
+        .batch-items-section {
+            margin-top: 20px;
+        }
+        .batch-items-section .section-title {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 10px;
+        }
+
+        .batch-empty-placeholder {
+            border: 2px dashed #d1d5db;
+            border-radius: 12px;
+            padding: 30px 20px;
+            text-align: center;
+            color: #6b7280;
+            font-size: 0.9rem;
+            background: #fafafa;
         }
 
         .batch-row-card {
@@ -485,6 +579,7 @@
             flex-wrap: wrap;
             align-items: center;
             gap: 12px;
+            margin-bottom: 8px;
         }
         .batch-row-card.invalid {
             border-color: #fca5a5;
@@ -578,10 +673,11 @@
             align-items: center;
             flex-wrap: wrap;
             gap: 12px;
+            margin-top: 16px;
         }
         .batch-total-bar .total-label {
             font-size: 0.9rem;
-            font-weight: 500;
+            font-weight: 600;
             color: #1e293b;
         }
         .batch-total-bar .total-amount {
@@ -605,6 +701,7 @@
             align-items: center;
             justify-content: center;
             gap: 8px;
+            margin-top: 16px;
         }
         .batch-save-btn:hover {
             background: #047857;
@@ -614,19 +711,9 @@
             cursor: not-allowed;
         }
 
-        .assigned-site-label {
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: #1e293b;
-            background: #f1f5f9;
-            padding: 4px 14px;
-            border-radius: 20px;
-            display: inline-block;
-        }
-
         @media (max-width: 640px) {
             .batch-material-grid {
-                grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
             }
             .batch-row-card {
                 flex-direction: column;
@@ -642,6 +729,10 @@
                 flex-direction: column;
                 align-items: stretch;
                 text-align: center;
+            }
+            .batch-date-site {
+                flex-direction: column;
+                align-items: stretch;
             }
         }
     </style>
@@ -964,8 +1055,8 @@
 
             function roundQuantity(value) { return Math.round(toNumber(value) * 100) / 100; }
 
-            function formatRWF(value) { return toNumber(value).toLocaleString('en-RW', { minimumFractionDigits: 0,
-                    maximumFractionDigits: 0 }) + ' RWF'; }
+            function formatRWF(value) { return toNumber(value).toLocaleString('en-RW', { minimumFractionDigits: 2,
+                    maximumFractionDigits: 2 }) + 'RWF'; }
 
             function normalizeMaterialName(name) { return String(name || '').trim().replace(/\s+/g, ' ').toLowerCase(); }
 
@@ -1010,7 +1101,7 @@
             }
 
             // =================================================================
-            // 3. BATCH MATERIAL USAGE — REDESIGNED TO MATCH SCREENSHOT
+            // 3. BATCH MATERIAL USAGE — EXACTLY MATCHING SCREENSHOT
             // =================================================================
 
             let _batchSelectedMaterials = new Map();
@@ -1034,55 +1125,54 @@
                 // Build material cards
                 const cardsHtml = siteStock.map(item => {
                     const name = cleanMaterialName(item.material_name || 'Unknown');
-                    const qty = getStockQuantity(item);
                     const unit = getStockUnit(item);
                     const stockId = item.id;
                     return `
                                 <div class="mat-card" data-stock-id="${stockId}" onclick="toggleBatchMaterialCard('${stockId}')">
-                                    <input type="checkbox" id="batch-mat-${stockId}" class="batch-mat-checkbox" data-stock-id="${stockId}" onchange="toggleBatchMaterialCard('${stockId}')" />
-                                    <span class="mat-name">${name}</span>
+                                    <div class="card-top">
+                                        <input type="checkbox" id="batch-mat-${stockId}" class="batch-mat-checkbox" data-stock-id="${stockId}" onchange="toggleBatchMaterialCard('${stockId}')" />
+                                        <span class="mat-name">${name}</span>
+                                    </div>
                                     <span class="mat-unit">${unit}</span>
                                 </div>
                             `;
                 }).join('');
 
                 const html = `
-                            <form id="batch-usage-form" onsubmit="submitBatchUsage(event)" class="space-y-5">
-                                <!-- Date + Assigned Site -->
-                                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-                                    <div>
-                                        <label class="block text-sm font-semibold text-slate-700 mb-1">${t('materials.dateUsed')}</label>
-                                        <input type="date" id="batch-usage-date" value="${today}" class="w-full sm:w-auto border rounded-lg px-4 py-2.5 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none" required />
+                            <form id="batch-usage-form" onsubmit="submitBatchUsage(event)" class="space-y-4">
+                                <!-- Date & Assigned Site -->
+                                <div class="batch-date-site">
+                                    <div class="date-group">
+                                        <label for="batch-usage-date">${t('materials.dateUsed')}</label>
+                                        <input type="date" id="batch-usage-date" value="${today}" required />
                                     </div>
-                                    <div>
-                                        <span class="text-sm font-medium text-slate-500">Assigned Site:</span>
-                                        <span class="assigned-site-label">${siteName}</span>
-                                    </div>
+                                    <span class="assigned-site">Assigned Site: ${siteName}</span>
                                 </div>
 
                                 <!-- Select Materials -->
                                 <div>
-                                    <div class="flex items-center justify-between mb-2">
-                                        <label class="text-sm font-semibold text-slate-700">${t('materials.selectMaterials')}</label>
-                                        <button type="button" onclick="toggleAllBatchMaterials(true)" class="text-sm text-emerald-600 hover:text-emerald-800 font-medium">${t('common.selectAll')}</button>
+                                    <div class="batch-select-header">
+                                        <h3>${t('materials.selectMaterials')}</h3>
+                                        <button type="button" class="select-all-link" onclick="toggleAllBatchMaterials(true)">${t('common.selectAll')}</button>
                                     </div>
                                     <div class="batch-material-grid">
                                         ${cardsHtml}
                                     </div>
-                                    <p class="batch-selection-hint">${t('materials.selectMaterialsHint')}</p>
-                                    <p id="batch-selection-count" class="text-xs text-slate-500 mt-1 text-center">0 ${t('materials.materials') || 'materials'} selected</p>
+                                    <p class="batch-hint">${t('materials.selectMaterialsHint')}</p>
                                 </div>
 
-                                <!-- Material Items (selected rows) -->
-                                <div>
-                                    <label class="text-sm font-semibold text-slate-700 block mb-2">Material Items</label>
-                                    <div id="batch-material-rows" class="space-y-3"></div>
+                                <!-- Material Items -->
+                                <div class="batch-items-section">
+                                    <div class="section-title">${t('materials.materialItems') || 'Material Items'}</div>
+                                    <div id="batch-material-rows">
+                                        <!-- placeholder or rows will be rendered here -->
+                                    </div>
                                 </div>
 
                                 <!-- Total Batch Amount -->
-                                <div id="batch-total-container" class="hidden batch-total-bar">
+                                <div id="batch-total-container" class="batch-total-bar hidden">
                                     <span class="total-label">${t('materials.batchTotal')}</span>
-                                    <span class="total-amount" id="batch-total-amount">0.00 RWF</span>
+                                    <span class="total-amount" id="batch-total-amount">0.00RWF</span>
                                 </div>
 
                                 <!-- Save Button -->
@@ -1130,9 +1220,6 @@
                     _batchSelectedMaterials.delete(stockId);
                 }
 
-                document.getElementById('batch-selection-count').textContent =
-                    `${_batchSelectedMaterials.size} ${t('materials.materials') || 'materials'} selected`;
-
                 updateBatchMaterialRows();
                 updateBatchTotal();
             };
@@ -1167,8 +1254,6 @@
                         _batchSelectedMaterials.delete(stockId);
                     }
                 });
-                document.getElementById('batch-selection-count').textContent =
-                    `${_batchSelectedMaterials.size} ${t('materials.materials') || 'materials'} selected`;
                 updateBatchMaterialRows();
                 updateBatchTotal();
             };
@@ -1181,7 +1266,11 @@
                 const entries = Array.from(_batchSelectedMaterials.entries());
 
                 if (entries.length === 0) {
-                    container.innerHTML = '';
+                    container.innerHTML = `
+                                <div class="batch-empty-placeholder">
+                                    ${t('materials.selectMaterials')}
+                                </div>
+                            `;
                     document.getElementById('batch-total-container').classList.add('hidden');
                     return;
                 }
@@ -1197,7 +1286,7 @@
                     rowsHtml += `
                                 <div class="batch-row-card ${isInvalid ? 'invalid' : ''}" data-stock-id="${stockId}">
                                     <span class="row-name">${data.materialName}</span>
-                                    <span class="row-avail">${t('materials.available') || 'Avail'}: ${data.available} ${data.unit}</span>
+                                    <span class="row-avail">${t('materials.available')}: ${data.available} ${data.unit}</span>
                                     <input type="number" step="0.01" min="0" value="${qtyUsed}" class="row-qty" data-stock-id="${stockId}" onchange="updateBatchRow('${stockId}', 'quantity', this.value)" placeholder="Qty" />
                                     <input type="number" step="0.01" min="0" value="${unitCost}" class="row-cost" data-stock-id="${stockId}" onchange="updateBatchRow('${stockId}', 'unitCost', this.value)" placeholder="Cost" />
                                     <span class="row-total">${formatRWF(totalAmount)}</span>
@@ -1248,8 +1337,6 @@
                         card.classList.remove('selected');
                     }
                 }
-                document.getElementById('batch-selection-count').textContent =
-                    `${_batchSelectedMaterials.size} ${t('materials.materials') || 'materials'} selected`;
                 updateBatchMaterialRows();
                 updateBatchTotal();
             };
@@ -2505,75 +2592,21 @@
             window.handleLogout = async () => { await signOut(auth);
                 window.location.href = '../index.html'; };
 
-            // Apply extra translations
+            // Add missing translation keys for "Material Items"
             const extraTranslations = {
                 en: {
                     materials: {
-                        batchMaterialUsage: 'Batch Material Usage',
-                        dateUsed: 'Date *',
-                        selectMaterials: 'Select Materials to Add',
-                        selectMaterialsHint: 'Click to select / deselect materials',
-                        batchTotal: 'Total Batch Amount',
-                        saveUsageBatch: 'Save Batch',
-                        selectAtLeastOneMaterial: 'Please select at least one material with quantity > 0.',
-                        quantityMustBePositive: 'Quantity must be > 0',
-                        unitCostCannotBeNegative: 'Unit cost cannot be negative',
-                        insufficientStock: 'Insufficient stock',
-                        stockNotFound: 'Stock item not found',
-                        batchSaved: 'Batch saved successfully!',
-                        currentStock: 'Current Stock',
-                        originalUsage: 'Original Usage',
-                        restoredStock: 'Restored Stock',
-                        newTotal: 'New Total',
-                        maxAvailable: 'Maximum available',
-                        quantityExceedsAvailable: 'Quantity exceeds available stock',
-                        clearAll: 'Clear All'
+                        materialItems: 'Material Items'
                     }
                 },
                 rw: {
                     materials: {
-                        batchMaterialUsage: 'Gukoresha Ibikoresho Byinshi',
-                        dateUsed: 'Itariki *',
-                        selectMaterials: 'Hitamo Ibikoresho',
-                        selectMaterialsHint: 'Kanda kugira uhitamo / ukureho ibikoresho',
-                        batchTotal: 'Igiteranyo Cyose',
-                        saveUsageBatch: 'Bika Byose',
-                        selectAtLeastOneMaterial: 'Hitamo byibura ikintu kimwe gifite umubare > 0.',
-                        quantityMustBePositive: 'Umubare ugomba kuba > 0',
-                        unitCostCannotBeNegative: 'Igiciro ntigishobora kuba nini',
-                        insufficientStock: 'Imbuganyuro ntihagije',
-                        stockNotFound: 'Imbuganyuro ntiboneka',
-                        batchSaved: 'Byabitswe neza!',
-                        currentStock: 'Imbuganyuro ziriho',
-                        originalUsage: 'Byakoreshejwe mbere',
-                        restoredStock: 'Imbuganyuro zisubijwe',
-                        newTotal: 'Igiteranyo Gishya',
-                        maxAvailable: 'Igiteranyo cyo hejuru',
-                        quantityExceedsAvailable: 'Umubare urenze ibiboneka',
-                        clearAll: 'Kuraho Byose'
+                        materialItems: 'Ibikoresho'
                     }
                 },
                 fr: {
                     materials: {
-                        batchMaterialUsage: 'Utilisation par lot de matériaux',
-                        dateUsed: 'Date *',
-                        selectMaterials: 'Sélectionner des matériaux',
-                        selectMaterialsHint: 'Cliquez pour sélectionner / désélectionner des matériaux',
-                        batchTotal: 'Montant total du lot',
-                        saveUsageBatch: 'Enregistrer le lot',
-                        selectAtLeastOneMaterial: 'Veuillez sélectionner au moins un matériau avec une quantité > 0.',
-                        quantityMustBePositive: 'La quantité doit être > 0',
-                        unitCostCannotBeNegative: 'Le coût unitaire ne peut pas être négatif',
-                        insufficientStock: 'Stock insuffisant',
-                        stockNotFound: 'Article de stock introuvable',
-                        batchSaved: 'Lot enregistré avec succès !',
-                        currentStock: 'Stock actuel',
-                        originalUsage: 'Utilisation originale',
-                        restoredStock: 'Stock restauré',
-                        newTotal: 'Nouveau total',
-                        maxAvailable: 'Maximum disponible',
-                        quantityExceedsAvailable: 'La quantité dépasse le stock disponible',
-                        clearAll: 'Tout effacer'
+                        materialItems: 'Articles'
                     }
                 }
             };
