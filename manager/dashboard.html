@@ -416,7 +416,7 @@
             border-radius: 5px;
         }
 
-        /* Batch Entry specific styles */
+        /* Batch specific */
         .material-card {
             transition: all 0.2s ease;
             cursor: pointer;
@@ -477,26 +477,6 @@
             font-size: 2rem;
             font-weight: 800;
             color: #065f46;
-        }
-        .batch-filter-bar {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.75rem;
-            align-items: center;
-        }
-        .batch-filter-bar input,
-        .batch-filter-bar select {
-            border-radius: 8px;
-            border: 1px solid #e2e8f0;
-            padding: 0.5rem 0.75rem;
-            font-size: 0.9rem;
-            background: white;
-        }
-        .batch-filter-bar input:focus,
-        .batch-filter-bar select:focus {
-            border-color: #059669;
-            outline: none;
-            box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.15);
         }
         .batch-status-badge {
             padding: 2px 10px;
@@ -571,8 +551,6 @@
             background: #f8fafc;
             border-top: 2px solid #e2e8f0;
         }
-
-        /* Scrollable material grid */
         .material-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
@@ -632,8 +610,6 @@
         .material-grid .material-card.selected:hover {
             border-color: #059669;
         }
-
-        /* Empty state */
         .empty-state {
             display: flex;
             flex-direction: column;
@@ -650,8 +626,6 @@
         .empty-state p {
             font-size: 0.9rem;
         }
-
-        /* Responsive table for batch list */
         .batch-list-table {
             width: 100%;
             border-collapse: collapse;
@@ -698,8 +672,6 @@
                 font-size: 1.5rem;
             }
         }
-
-        /* Scrollable modal body */
         .modal-body-scroll {
             max-height: 70vh;
             overflow-y: auto;
@@ -716,8 +688,9 @@
             background: #cbd5e1;
             border-radius: 4px;
         }
-
-        /* Animations */
+        .fade-in-up {
+            animation: fadeInUp 0.3s ease forwards;
+        }
         @keyframes fadeInUp {
             from {
                 opacity: 0;
@@ -728,22 +701,6 @@
                 transform: translateY(0);
             }
         }
-        .fade-in-up {
-            animation: fadeInUp 0.3s ease forwards;
-        }
-        .fade-in-up-d1 {
-            animation-delay: 0.05s;
-            opacity: 0;
-        }
-        .fade-in-up-d2 {
-            animation-delay: 0.1s;
-            opacity: 0;
-        }
-        .fade-in-up-d3 {
-            animation-delay: 0.15s;
-            opacity: 0;
-        }
-
         .batch-section-tab {
             transition: all 0.2s;
             cursor: pointer;
@@ -790,14 +747,10 @@
                 <iconify-icon icon="material-symbols:dashboard-outline" width="20" height="20"></iconify-icon> <span data-i18n="navigation.dashboard">Dashboard</span>
             </a>
             <a href="#" onclick="showSection('materials')" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg text-slate-600 hover:bg-slate-50 transition-colors" data-section="materials">
-                <iconify-icon icon="material-symbols:package-2-outline" width="20" height="20"></iconify-icon> <span data-i18n="navigation.materials">Materials</span>
+                <iconify-icon icon="material-symbols:inbox-outline" width="20" height="20"></iconify-icon> <span>Batch Receiving</span>
             </a>
             <a href="#" onclick="showSection('stock')" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg text-slate-600 hover:bg-slate-50 transition-colors" data-section="stock">
                 <iconify-icon icon="material-symbols:inventory-2-outline" width="20" height="20"></iconify-icon> <span data-i18n="navigation.stock">Stock</span>
-            </a>
-            <!-- NEW: Batch Receiving -->
-            <a href="#" onclick="showSection('batch')" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg text-slate-600 hover:bg-slate-50 transition-colors" data-section="batch">
-                <iconify-icon icon="material-symbols:inbox-outline" width="20" height="20"></iconify-icon> <span>Batch Receiving</span>
             </a>
             <a href="#" onclick="showSection('workers')" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg text-slate-600 hover:bg-slate-50 transition-colors" data-section="workers">
                 <iconify-icon icon="material-symbols:engineering-outline" width="20" height="20"></iconify-icon> <span data-i18n="navigation.workers">Workers</span>
@@ -878,16 +831,12 @@
                 <span data-i18n="navigation.dashboard">Home</span>
             </a>
             <a href="#" onclick="showSection('materials')" data-section="materials">
-                <iconify-icon icon="material-symbols:package-2-outline"></iconify-icon>
-                <span data-i18n="navigation.materials">Materials</span>
+                <iconify-icon icon="material-symbols:inbox-outline"></iconify-icon>
+                <span>Batch</span>
             </a>
             <a href="#" onclick="showSection('stock')" data-section="stock">
                 <iconify-icon icon="material-symbols:inventory-2-outline"></iconify-icon>
                 <span data-i18n="navigation.stock">Stock</span>
-            </a>
-            <a href="#" onclick="showSection('batch')" data-section="batch">
-                <iconify-icon icon="material-symbols:inbox-outline"></iconify-icon>
-                <span>Batch</span>
             </a>
             <a href="#" onclick="showSection('workers')" data-section="workers">
                 <iconify-icon icon="material-symbols:engineering-outline"></iconify-icon>
@@ -927,10 +876,9 @@
             // =================================================================
             const translations = {
                 en: {
-                    navigation: { managerPanel: "Manager's Panel", dashboard: "Dashboard", materials: "Materials", stock: "Stock", workers: "Workers", progress: "Progress", reports: "Reports", gallery: "Gallery", settings: "Settings", logout: "Sign Out", finances: "Finances" },
+                    navigation: { managerPanel: "Manager's Panel", dashboard: "Dashboard", materials: "Batch Receiving", stock: "Stock", workers: "Workers", progress: "Progress", reports: "Reports", gallery: "Gallery", settings: "Settings", logout: "Sign Out", finances: "Finances" },
                     common: { save: "Save", cancel: "Cancel", close: "Close", add: "Add", edit: "Edit", delete: "Delete", view: "View", upload: "Upload", search: "Search", loading: "Loading...", areYouSure: "Are you sure?", cannotUndo: "This action cannot be undone", savedSuccessfully: "Saved successfully", updatedSuccessfully: "Updated successfully", deletedSuccessfully: "Deleted successfully", somethingWentWrong: "Something went wrong", noDataAvailable: "No data available", requiredField: "Required field", invalidValue: "Invalid value", selectAll: "Select All", today: "Today" },
                     dashboard: { siteStatus: "Status", siteManager: "Manager", workersOnSite: "Workers On Site", progress: "Progress", recentMaterials: "Recent Materials", pendingTasks: "Pending Tasks" },
-                    materials: { title: "Materials Used", recordUsage: "Record Usage", addMaterial: "Add Material", editMaterial: "Edit Material", materialName: "Material Name", quantityUsed: "Qty Used", unitCost: "Unit Cost", totalAmount: "Total Amount", noMaterials: "No materials recorded yet.", materialUnit: "Unit", requisitions: "Requisitions", newRequisition: "+ New Requisition", request: "Requisition", requested: "Requested", supplied: "Supplied", remaining: "Remaining", reqNumber: "Requisition Number", site: "Site", requestedBy: "Requested By", requestDate: "Request Date", requiredDate: "Required Date", materialsCount: "Materials", priority: "Priority", status: "Status", actions: "Actions", pending: "Pending", urgent: "Urgent", approved: "Approved", partiallySupplied: "Partially Supplied", suppliedStatus: "Supplied", normal: "Normal", createRequisition: "New Material Requisition", submitRequisition: "Submit Requisition", notes: "Notes", material: "Material", available: "Available", requestedQty: "Requested Qty", unit: "Unit", noRequisitions: "No requisitions found." },
                     stock: { title: "Stock Management", receiveStock: "Receive Stock", addStock: "Add Stock", editStock: "Edit Stock", stockHistory: "Stock History", quantity: "Quantity", minimumStock: "Minimum Stock", stockValue: "Stock Value", lastUpdated: "Last Updated", notes: "Notes", normal: "Normal", lowStock: "Low Stock", outOfStock: "Out of Stock", unit: "Unit", unitCost: "Unit Cost", transactionReceived: "Stock received", transactionUsed: "Material used", transactionEdited: "Material usage edited", transactionDeleted: "Material usage deleted", transactionAdjusted: "Stock adjusted", transactionOther: "Stock transaction", currentStock: "Current Stock", before: "Before", after: "After", date: "Date" },
                     workers: { title: "Workers", addWorker: "Add New Worker", view: "All Workers", recordAttendance: "Record Attendance", fullName: "Full Name", role: "Role", paymentType: "Payment Type", dailyRate: "Daily Rate", monthlySalary: "Monthly Salary", salary: "Salary", phone: "Phone", photo: "Photo", saveWorker: "Save Worker", selectWorkerRole: "Choose worker role...", searchRole: "Search role...", workerDetails: "Worker Details", noWorkers: "No workers added yet.", workers: "Workers", viewDetails: "View Details", attendanceLogs: "Attendance Logs" },
                     progress: { title: "Progress Tasks", task: "Task", start: "Start", end: "End", status: "Status", pending: "Pending", completed: "Completed", markCompleted: "Mark as completed", noTasks: "No tasks assigned." },
@@ -940,10 +888,9 @@
                     batch: { title: "Batch Material Receiving", newBatch: "New Batch Entry", viewBatches: "View Batches", assignedSite: "Assigned Site", date: "Date", selectMaterials: "Select Materials to Add", material: "Material", unit: "Unit", quantityAdded: "Quantity Added", unitCost: "Unit Cost", totalAmount: "Total Amount", notes: "Notes", batchTotal: "Total Batch Amount", saveBatch: "Save Batch", batchNumber: "Batch Number", entryDate: "Entry Date", addedBy: "Added By", actions: "Actions", noBatches: "No batches found.", batchDetails: "Batch Details", editBatch: "Edit Batch", deleteBatch: "Delete Batch", items: "Items", totalMaterials: "Total Materials", originalQty: "Original Qty", updatedQty: "Updated Qty", previousQuantity: "Previous Quantity", newQuantity: "New Quantity", receive: "Receive", receiving: "Receiving...", confirmDelete: "Delete this batch? This will reverse all quantity changes.", editBatchTitle: "Edit Batch", deleteBatchTitle: "Delete Batch", batchDeleted: "Batch deleted successfully", batchEdited: "Batch edited successfully", batchSaved: "Batch saved successfully", selectAtLeastOne: "Please select at least one material.", quantityRequired: "Quantity is required and must be greater than zero.", unitCostRequired: "Unit cost is required and must be greater than or equal to zero." }
                 },
                 rw: {
-                    navigation: { managerPanel: "Ipaneli y'umuyobozi", dashboard: "Imbonerahamwe", materials: "Ibikoresho", stock: "Imbuganyuro", workers: "Abakozi", progress: "Ibitekerezo", reports: "Raporo", gallery: "Amafoto", settings: "Igenamiterere", logout: "Sohoka", finances: "Imari" },
+                    navigation: { managerPanel: "Ipaneli y'umuyobozi", dashboard: "Imbonerahamwe", materials: "Kwakira Ibikoresho", stock: "Imbuganyuro", workers: "Abakozi", progress: "Ibitekerezo", reports: "Raporo", gallery: "Amafoto", settings: "Igenamiterere", logout: "Sohoka", finances: "Imari" },
                     common: { save: "Bika", cancel: "Hagarika", close: "Funga", add: "Ongeraho", edit: "Hindura", delete: "Siba", view: "Reba", upload: "Ohereza", search: "Shakisha", loading: "Birimo gutegura...", areYouSure: "Urabyemeza?", cannotUndo: "Ibi ntibishobora guhindurwa", savedSuccessfully: "Byabitswe neza", updatedSuccessfully: "Byavuguruwe neza", deletedSuccessfully: "Byasibwe neza", somethingWentWrong: "Hari ikitagenze neza", noDataAvailable: "Nta makuru aboneka", requiredField: "Ibi birakenewe", invalidValue: "Agaciro katariyo", selectAll: "Hitamo Byose", today: "Uyu Munsi" },
                     dashboard: { siteStatus: "Imiterere", siteManager: "Umuyobozi", workersOnSite: "Abakozi ku kibanza", progress: "Ibitekerezo", recentMaterials: "Ibikoresho bishya", pendingTasks: "Imirimo itegereje" },
-                    materials: { title: "Ibikoresho Byakoreshejwe", recordUsage: "Andika Gukoresha", addMaterial: "Ongeraho ibikoresho", editMaterial: "Hindura ibikoresho", materialName: "Izina ry'ibikoresho", quantityUsed: "Umubare wakoreshejwe", unitCost: "Igiciro cy'igice", totalAmount: "Amafaranga yose", noMaterials: "Nta bikoresho byanditswe.", materialUnit: "Igice", requisitions: "Ubusabe bw'Ibikoresho", newRequisition: "+ Ubusabe Bushya", request: "Ubusabe", requested: "Basabwe", supplied: "Byatanzwe", remaining: "Bisigaye", reqNumber: "Nomero y'Ubusabe", site: "Ukibanza", requestedBy: "Wasabye", requestDate: "Itariki yo Gusaba", requiredDate: "Itariki Ikenewe", materialsCount: "Ibikoresho", priority: "Ubwihutirwa", status: "Imiterere", actions: "Ibikorwa", pending: "Bitegereje", urgent: "Byihutirwa", approved: "Byemewe", partiallySupplied: "Byatanzwe Igice", suppliedStatus: "Byatanzwe", normal: "Bisanzwe", createRequisition: "Ubusabe Bushya bw'Ibikoresho", submitRequisition: "Ohereza Ubusabe", notes: "Ibisobanuro", material: "Ibikoresho", available: "Biboneka", requestedQty: "Umubare Wasabwe", unit: "Igice", noRequisitions: "Nta busabe buboneka." },
                     stock: { title: "Gucunga Imbuganyuro", receiveStock: "Akira Imbuganyuro", addStock: "Ongeraho Imbuganyuro", editStock: "Hindura Imbuganyuro", stockHistory: "Amateka y'Imbuganyuro", quantity: "Umubare", minimumStock: "Ubugabanyiro ntarengwa", stockValue: "Agaciro k'Imbuganyuro", lastUpdated: "Byavuguruwe", notes: "Ibisobanuro", normal: "Bisanzwe", lowStock: "Imbuganyuro nke", outOfStock: "Imbuganyuro yashaje", unit: "Igice", unitCost: "Igiciro cy'igice", transactionReceived: "Byakiriwe", transactionUsed: "Byakoreshejwe", transactionEdited: "Byahinduwe", transactionDeleted: "Byasibwe", transactionAdjusted: "Byahinduwe", transactionOther: "Ikindo", currentStock: "Imbuganyuro ziriho", before: "Mbere", after: "Nyuma", date: "Itariki" },
                     workers: { title: "Abakozi", addWorker: "Ongeraho Umukozi", view: "Abakozi Bose", recordAttendance: "Andika Kwitaba", fullName: "Amazina yombi", role: "Umwanya", paymentType: "Uburyo bwo Kwishyura", dailyRate: "Umushahara w'umunsi", monthlySalary: "Umushahara w'ukwezi", salary: "Umushahara", phone: "Telefoni", photo: "Ifoto", saveWorker: "Bika Umukozi", selectWorkerRole: "Hitamo umwanya...", searchRole: "Shakisha umwanya...", workerDetails: "Ibisobanuro by'Umukozi", noWorkers: "Nta bakozi bahari.", workers: "Abakozi", viewDetails: "Reba Ibisobanuro", attendanceLogs: "Amateka yo Kwitaba" },
                     progress: { title: "Imirimo", task: "Umurimo", start: "Tangira", end: "Rangira", status: "Imiterere", pending: "Bitegereje", completed: "Byarangiye", markCompleted: "Menya ko byarangiye", noTasks: "Nta mirimo ihari." },
@@ -953,10 +900,9 @@
                     batch: { title: "Kwakira Ibikoresho mu Byiciro", newBatch: "Kwinjiza Byiciro Bishya", viewBatches: "Reba Ibyiciro", assignedSite: "Ikibanza Cyagenewe", date: "Itariki", selectMaterials: "Hitamo Ibikoresho", material: "Ibikoresho", unit: "Igice", quantityAdded: "Umubare Wongewe", unitCost: "Igiciro cy'Igice", totalAmount: "Amafaranga Yose", notes: "Ibisobanuro", batchTotal: "Amafaranga Yose mu Byiciro", saveBatch: "Bika Ibyiciro", batchNumber: "Nomero y'Ibyiciro", entryDate: "Itariki yo Kwinjiza", addedBy: "Yongewe na", actions: "Ibikorwa", noBatches: "Nta byiciro biboneka.", batchDetails: "Ibisobanuro by'Ibyiciro", editBatch: "Hindura Ibyiciro", deleteBatch: "Siba Ibyiciro", items: "Ibikoresho", totalMaterials: "Ibikoresho Byose", originalQty: "Umubare wa Mbere", updatedQty: "Umubare Wahinduwe", previousQuantity: "Umubare wa Mbere", newQuantity: "Umubare Mushya", receive: "Akira", receiving: "Akira...", confirmDelete: "Ukosora ibi byiciro? Ibi bizahindura umubare w'ibikoresho.", editBatchTitle: "Hindura Ibyiciro", deleteBatchTitle: "Siba Ibyiciro", batchDeleted: "Ibyiciro byasibwe neza", batchEdited: "Ibyiciro byahinduwe neza", batchSaved: "Ibyiciro byabitswe neza", selectAtLeastOne: "Hitamo nibura ikoresho rimwe.", quantityRequired: "Umubare urakenewe kandi ugomba kuba munini ya zeru.", unitCostRequired: "Igiciro cy'igice kirakenewe kandi kigomba kuba kirenze cyangwa kingana na zeru." }
                 },
                 fr: {
-                    navigation: { managerPanel: "Panneau du gestionnaire", dashboard: "Tableau de bord", materials: "Matériaux", stock: "Stock", workers: "Ouvriers", progress: "Progrès", reports: "Rapports", gallery: "Galerie", settings: "Paramètres", logout: "Déconnexion", finances: "Finances" },
+                    navigation: { managerPanel: "Panneau du gestionnaire", dashboard: "Tableau de bord", materials: "Réception par Lot", stock: "Stock", workers: "Ouvriers", progress: "Progrès", reports: "Rapports", gallery: "Galerie", settings: "Paramètres", logout: "Déconnexion", finances: "Finances" },
                     common: { save: "Enregistrer", cancel: "Annuler", close: "Fermer", add: "Ajouter", edit: "Modifier", delete: "Supprimer", view: "Voir", upload: "Télécharger", search: "Rechercher", loading: "Chargement...", areYouSure: "Êtes-vous sûr ?", cannotUndo: "Cette action est irréversible", savedSuccessfully: "Enregistré avec succès", updatedSuccessfully: "Mis à jour avec succès", deletedSuccessfully: "Supprimé avec succès", somethingWentWrong: "Une erreur s'est produite", noDataAvailable: "Aucune donnée disponible", requiredField: "Champ requis", invalidValue: "Valeur invalide", selectAll: "Tout Sélectionner", today: "Aujourd'hui" },
                     dashboard: { siteStatus: "Statut", siteManager: "Gestionnaire", workersOnSite: "Ouvriers sur site", progress: "Progrès", recentMaterials: "Matériaux récents", pendingTasks: "Tâches en attente" },
-                    materials: { title: "Matériaux utilisés", recordUsage: "Enregistrer l'utilisation", addMaterial: "Ajouter un matériau", editMaterial: "Modifier le matériau", materialName: "Nom du matériau", quantityUsed: "Qté utilisée", unitCost: "Coût unitaire", totalAmount: "Montant total", noMaterials: "Aucun matériau enregistré.", materialUnit: "Unité", requisitions: "Réquisitions", newRequisition: "+ Nouvelle Réquisition", request: "Réquisition", requested: "Demandé", supplied: "Fourni", remaining: "Restant", reqNumber: "Numéro de Réquisition", site: "Chantier", requestedBy: "Demandé par", requestDate: "Date de Demande", requiredDate: "Date Requise", materialsCount: "Matériaux", priority: "Priorité", status: "Statut", actions: "Actions", pending: "En attente", urgent: "Urgent", approved: "Approuvé", partiallySupplied: "Partiellement Fourni", suppliedStatus: "Fourni", normal: "Normal", createRequisition: "Nouvelle Réquisition de Matériaux", submitRequisition: "Soumettre la Réquisition", notes: "Notes", material: "Matériau", available: "Disponible", requestedQty: "Qté Demandée", unit: "Unité", noRequisitions: "Aucune réquisition trouvée." },
                     stock: { title: "Gestion du stock", receiveStock: "Recevoir du stock", addStock: "Ajouter du stock", editStock: "Modifier le stock", stockHistory: "Historique du stock", quantity: "Quantité", minimumStock: "Stock minimum", stockValue: "Valeur du stock", lastUpdated: "Mis à jour", notes: "Notes", normal: "Normal", lowStock: "Stock faible", outOfStock: "Épuisé", unit: "Unité", unitCost: "Coût unitaire", transactionReceived: "Stock reçu", transactionUsed: "Matériel utilisé", transactionEdited: "Utilisation modifiée", transactionDeleted: "Utilisation supprimée", transactionAdjusted: "Stock ajusté", transactionOther: "Transaction", currentStock: "Stock actuel", before: "Avant", after: "Après", date: "Date" },
                     workers: { title: "Ouvriers", addWorker: "Ajouter un ouvrier", view: "Tous les ouvriers", recordAttendance: "Enregistrer la présence", fullName: "Nom complet", role: "Rôle", paymentType: "Type de paiement", dailyRate: "Taux journalier", monthlySalary: "Salaire mensuel", salary: "Salaire", phone: "Téléphone", photo: "Photo", saveWorker: "Enregistrer l'ouvrier", selectWorkerRole: "Choisir un rôle...", searchRole: "Rechercher un rôle...", workerDetails: "Détails de l'ouvrier", noWorkers: "Aucun ouvrier ajouté.", workers: "Ouvriers", viewDetails: "Voir les détails", attendanceLogs: "Journaux de présence" },
                     progress: { title: "Tâches de progression", task: "Tâche", start: "Début", end: "Fin", status: "Statut", pending: "En attente", completed: "Terminé", markCompleted: "Marquer comme terminé", noTasks: "Aucune tâche assignée." },
@@ -1004,7 +950,7 @@
             // =================================================================
             import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
             import { getAuth, onAuthStateChanged, signOut, reauthenticateWithCredential, EmailAuthProvider, updatePassword, updateEmail, sendEmailVerification } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
-            import { getFirestore, collection, query, where, onSnapshot, addDoc, updateDoc, doc, getDoc, deleteDoc, getDocs, writeBatch, orderBy, setDoc, Timestamp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
+            import { getFirestore, collection, query, where, onSnapshot, addDoc, updateDoc, doc, getDoc, deleteDoc, getDocs, writeBatch, orderBy, setDoc } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
 
             const firebaseConfig = {
                 apiKey: "AIzaSyBVTLxC6nWpWL6a4BLI3xghdgUoR_cgGzw",
@@ -1045,15 +991,11 @@
                 attendanceData = [];
             let stockData = [],
                 stockTransactions = [];
-            let requisitionsData = [],
-                requisitionItemsData = [],
-                requisitionHistoryData = [];
             let batchesData = [],
                 batchItemsData = [];
             let unsubscribeSnapshots = [];
             let currentSection = 'dashboard';
             let workersTab = 'view';
-            let materialsTab = 'materials';
             let reportType = 'general';
             let settingsTab = 'profile';
             let hasUnsavedChanges = false;
@@ -1095,15 +1037,9 @@
 
             function getStockByName(siteId, materialName) { const normalized = normalizeMaterialName(materialName); return stockData.find(s => s.site_id === siteId && normalizeMaterialName(s.material_name) === normalized) || null; }
 
-            function getMaterialByName(siteId, materialName) { const normalized = normalizeMaterialName(materialName); return materialsData.filter(m => m.site_id === siteId && normalizeMaterialName(m.name) === normalized).sort((a, b) => { const dateA = new Date(a.date_used || a.created_at || a.updated_at || 0); const dateB = new Date(b.date_used || b.created_at || b.updated_at || 0); return dateB - dateA; })[0] || null; }
-
-            function getLatestMaterialUnitCost(siteId, materialName) { const material = getMaterialByName(siteId, materialName); return material ? toNumber(material.unit_cost) : 0; }
-
-            function getStockUnitCost(stockItem) { if (!stockItem) return 0; const storedCost = toNumber(stockItem.unit_cost); if (storedCost > 0) return storedCost; return getLatestMaterialUnitCost(stockItem.site_id, stockItem.material_name); }
-
             function getTransactionChange(transaction) { if (transaction.quantity_change !== undefined && transaction.quantity_change !== null) return toNumber(transaction.quantity_change); switch (transaction.transaction_type) { case 'STOCK_ADDED': return Math.abs(toNumber(transaction.quantity)); case 'MATERIAL_USAGE': case 'STOCK_DEDUCTED': return -Math.abs(toNumber(transaction.quantity)); case 'MATERIAL_USAGE_DELETED': return Math.abs(toNumber(transaction.quantity)); case 'STOCK_ADJUSTMENT': case 'MATERIAL_USAGE_EDITED': return toNumber(transaction.new_quantity) - toNumber(transaction.previous_quantity); default: return 0; } }
 
-            function getTransactionLabel(transaction) { switch (transaction.transaction_type) { case 'STOCK_ADDED': return t('stock.transactionReceived'); case 'MATERIAL_USAGE': return t('stock.transactionUsed'); case 'MATERIAL_USAGE_EDITED': return t('stock.transactionEdited'); case 'MATERIAL_USAGE_DELETED': return t('stock.transactionDeleted'); case 'STOCK_ADJUSTMENT': return t('stock.transactionAdjusted'); case 'REQUISITION_SUPPLY': return 'Requisition Supply'; case 'BATCH_RECEIVED': return 'Batch Received'; case 'BATCH_EDITED': return 'Batch Edited'; case 'BATCH_DELETED': return 'Batch Deleted'; default: return transaction.notes || t('stock.transactionOther'); } }
+            function getTransactionLabel(transaction) { switch (transaction.transaction_type) { case 'STOCK_ADDED': return t('stock.transactionReceived'); case 'MATERIAL_USAGE': return t('stock.transactionUsed'); case 'MATERIAL_USAGE_EDITED': return t('stock.transactionEdited'); case 'MATERIAL_USAGE_DELETED': return t('stock.transactionDeleted'); case 'STOCK_ADJUSTMENT': return t('stock.transactionAdjusted'); case 'BATCH_RECEIVED': return 'Batch Received'; case 'BATCH_EDITED': return 'Batch Edited'; case 'BATCH_DELETED': return 'Batch Deleted'; default: return transaction.notes || t('stock.transactionOther'); } }
 
             function getTransactionColor(change) { if (change > 0) return 'text-emerald-600'; if (change < 0) return 'text-red-500'; return 'text-slate-500'; }
 
@@ -1126,28 +1062,25 @@
             // =================================================================
             function generateBatchNumber() {
                 const year = new Date().getFullYear();
-                // Count existing batches for this site to get next sequence
-                const siteBatches = batchesData.filter(b => b.site_id === currentSiteId);
+                const siteBatches = batchesData.filter(b => b.siteId === currentSiteId);
                 const count = siteBatches.length + 1;
                 return `SHDR-${year}-${String(count).padStart(4, '0')}`;
             }
 
             // =================================================================
-            // BATCH SECTION
+            // BATCH RENDER FUNCTIONS
             // =================================================================
-            function renderBatch(container) {
+            function renderBatchContent() {
                 const site = assignedSites.find(s => s.id === currentSiteId);
                 if (!site) {
-                    container.innerHTML = `<div class="bg-yellow-50 border-l-4 border-yellow-400 p-6 rounded-xl text-yellow-800">
+                    return `<div class="bg-yellow-50 border-l-4 border-yellow-400 p-6 rounded-xl text-yellow-800">
                         <p>${t('common.noDataAvailable')} — Site not found.</p>
                     </div>`;
-                    return;
                 }
 
-                // Get all stock items for this site to use as material list
                 const siteStock = stockData.filter(s => s.site_id === currentSiteId);
 
-                container.innerHTML = `
+                let html = `
                     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
                         <div class="flex gap-2 p-1 bg-slate-200/60 rounded-xl">
                             <button onclick="switchBatchTab('new')" class="batch-section-tab ${batchTab === 'new' ? 'active' : ''}">
@@ -1167,20 +1100,17 @@
                     </div>
                 `;
 
-                // If new tab, attach event listeners for dynamic calculations
-                if (batchTab === 'new') {
-                    setTimeout(() => {
+                setTimeout(() => {
+                    if (batchTab === 'new') {
                         attachBatchFormEvents();
                         updateBatchTotal();
-                    }, 100);
-                }
+                    }
+                }, 100);
+
+                return html;
             }
 
-            // ──────────────────────────────────────────────────────────────
-            // BATCH NEW FORM
-            // ──────────────────────────────────────────────────────────────
             function renderBatchNewForm(site, siteStock) {
-                // Build material list from stock, or use fallback list if empty
                 let materials = [];
                 if (siteStock.length) {
                     materials = siteStock.map(s => ({
@@ -1190,7 +1120,6 @@
                         stockQty: toNumber(s.quantity)
                     }));
                 } else {
-                    // Fallback predefined materials
                     const fallback = [
                         { name: 'Cement', unit: 'Bags' },
                         { name: 'Sand', unit: 'Tons' },
@@ -1214,13 +1143,10 @@
                     ];
                     materials = fallback.map(m => ({ id: null, name: m.name, unit: m.unit, stockQty: 0 }));
                 }
-
-                // Sort materials alphabetically
                 materials.sort((a, b) => a.name.localeCompare(b.name));
 
                 const today = getTodayISO();
 
-                // Build material cards
                 let cardsHtml = materials.map((mat, idx) => `
                     <div class="material-card" data-idx="${idx}" data-mat-id="${mat.id || ''}" data-mat-name="${mat.name}" data-mat-unit="${mat.unit}" onclick="toggleMaterialSelection(this)">
                         <div class="material-icon">📦</div>
@@ -1232,7 +1158,6 @@
 
                 return `
                     <div class="space-y-6">
-                        <!-- Date -->
                         <div class="bg-white rounded-2xl border p-4 shadow-sm">
                             <div class="flex flex-wrap items-center gap-4">
                                 <div>
@@ -1246,7 +1171,6 @@
                             </div>
                         </div>
 
-                        <!-- Material Selection -->
                         <div class="bg-white rounded-2xl border p-4 shadow-sm">
                             <div class="flex justify-between items-center mb-3">
                                 <h3 class="font-semibold text-slate-800">${t('batch.selectMaterials')}</h3>
@@ -1260,7 +1184,6 @@
                             <p class="text-xs text-slate-400 mt-2">Click to select / deselect materials</p>
                         </div>
 
-                        <!-- Dynamic Entry Rows -->
                         <div id="batch-entries-container" class="bg-white rounded-2xl border p-4 shadow-sm">
                             <div class="flex justify-between items-center mb-3">
                                 <h3 class="font-semibold text-slate-800">${t('batch.material')} ${t('batch.items')}</h3>
@@ -1274,7 +1197,6 @@
                             </div>
                         </div>
 
-                        <!-- Batch Total -->
                         <div class="batch-total-card fade-in-up">
                             <div class="flex flex-wrap justify-between items-center">
                                 <div>
@@ -1286,7 +1208,6 @@
                             </div>
                         </div>
 
-                        <!-- Save Button -->
                         <button type="button" id="save-batch-btn" onclick="handleSaveBatch()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-4 rounded-xl font-bold text-lg transition shadow-lg hover:shadow-emerald-200 flex items-center justify-center gap-2">
                             <iconify-icon icon="material-symbols:save" width="24"></iconify-icon>
                             ${t('batch.saveBatch')}
@@ -1295,9 +1216,93 @@
                 `;
             }
 
-            // ──────────────────────────────────────────────────────────────
+            function renderBatchList(site) {
+                const siteBatches = batchesData.filter(b => b.siteId === currentSiteId)
+                    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+                if (!siteBatches.length) {
+                    return `
+                        <div class="bg-white rounded-2xl border p-8 text-center">
+                            <div class="empty-state">
+                                <iconify-icon icon="material-symbols:inbox-outline" style="font-size:3rem;"></iconify-icon>
+                                <p class="text-slate-500">${t('batch.noBatches')}</p>
+                                <button onclick="switchBatchTab('new')" class="mt-4 px-6 py-2 bg-emerald-600 text-white rounded-xl hover:bg-emerald-700 transition">
+                                    ${t('batch.newBatch')}
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                }
+
+                let html = `
+                    <div class="bg-white rounded-2xl border shadow-sm overflow-hidden">
+                        <div class="overflow-x-auto">
+                            <table class="batch-list-table">
+                                <thead>
+                                    <tr>
+                                        <th>${t('batch.batchNumber')}</th>
+                                        <th>${t('batch.date')}</th>
+                                        <th>${t('batch.totalMaterials')}</th>
+                                        <th>${t('batch.totalAmount')}</th>
+                                        <th>${t('batch.addedBy')}</th>
+                                        <th>${t('batch.actions')}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                `;
+
+                siteBatches.forEach(batch => {
+                    const items = batchItemsData.filter(i => i.batchId === batch.id);
+                    const totalItems = items.length;
+                    const isDeleted = batch.status === 'deleted';
+                    const isEdited = batch.status === 'edited';
+
+                    let statusBadge = '';
+                    if (isDeleted) statusBadge = `<span class="batch-status-badge deleted">Deleted</span>`;
+                    else if (isEdited) statusBadge = `<span class="batch-status-badge edited">Edited</span>`;
+                    else statusBadge = `<span class="batch-status-badge active">Active</span>`;
+
+                    html += `
+                        <tr class="${isDeleted ? 'opacity-60' : ''}">
+                            <td><a href="#" onclick="viewBatch('${batch.id}')" class="batch-number-link">${batch.batchNumber}</a></td>
+                            <td>${formatDate(batch.entryDate)}</td>
+                            <td>${totalItems}</td>
+                            <td class="font-semibold text-emerald-600">${formatRWF(batch.totalAmount)}</td>
+                            <td>${managerProfile?.full_name || 'Manager'}</td>
+                            <td>
+                                <div class="flex flex-wrap gap-1">
+                                    <button onclick="viewBatch('${batch.id}')" class="text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded hover:bg-blue-100" title="${t('common.view')}">
+                                        <iconify-icon icon="material-symbols:visibility" width="16"></iconify-icon>
+                                    </button>
+                                    ${!isDeleted ? `
+                                        <button onclick="editBatch('${batch.id}')" class="text-xs bg-amber-50 text-amber-700 px-2 py-1 rounded hover:bg-amber-100" title="${t('common.edit')}">
+                                            <iconify-icon icon="material-symbols:edit" width="16"></iconify-icon>
+                                        </button>
+                                        <button onclick="deleteBatch('${batch.id}')" class="text-xs bg-red-50 text-red-700 px-2 py-1 rounded hover:bg-red-100" title="${t('common.delete')}">
+                                            <iconify-icon icon="material-symbols:delete" width="16"></iconify-icon>
+                                        </button>
+                                    ` : `
+                                        <span class="text-xs text-slate-400 italic">${t('common.deletedSuccessfully')}</span>
+                                    `}
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                });
+
+                html += `
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                `;
+
+                return html;
+            }
+
+            // =================================================================
             // BATCH FORM EVENTS
-            // ──────────────────────────────────────────────────────────────
+            // =================================================================
             let selectedMaterials = [];
 
             window.toggleMaterialSelection = function(el) {
@@ -1414,7 +1419,6 @@
             window.updateBatchEntry = function(idx, field, value) {
                 if (idx >= 0 && idx < selectedMaterials.length) {
                     selectedMaterials[idx][field] = value;
-                    // Update the total cell
                     const qty = toNumber(selectedMaterials[idx].quantity);
                     const cost = toNumber(selectedMaterials[idx].unitCost);
                     const total = calculateTotal(qty, cost);
@@ -1426,10 +1430,8 @@
 
             window.removeSelectedMaterial = function(idx) {
                 if (idx >= 0 && idx < selectedMaterials.length) {
-                    // Remove from selected list
                     const name = selectedMaterials[idx].name;
                     selectedMaterials.splice(idx, 1);
-                    // Also uncheck the card
                     const cards = document.querySelectorAll('#material-grid .material-card');
                     cards.forEach(c => {
                         if (c.dataset.matName === name) {
@@ -1438,7 +1440,6 @@
                     });
                     renderBatchEntries();
                     updateBatchTotal();
-                    // Update selected count
                     const count = document.getElementById('selected-count');
                     if (count) count.textContent = `${selectedMaterials.length} ${t('batch.material')}${selectedMaterials.length !== 1 ? 's' : ''}`;
                 }
@@ -1457,31 +1458,26 @@
             }
 
             function attachBatchFormEvents() {
-                // Additional event listeners if needed
                 const dateInput = document.getElementById('batch-date');
                 if (dateInput) {
                     dateInput.addEventListener('change', () => { /* no-op */ });
                 }
             }
 
-            // ──────────────────────────────────────────────────────────────
+            // =================================================================
             // SAVE BATCH
-            // ──────────────────────────────────────────────────────────────
+            // =================================================================
             window.handleSaveBatch = async function() {
                 const btn = document.getElementById('save-batch-btn');
                 if (!btn) return;
-
-                // Prevent duplicate submissions
                 if (btn.disabled) return;
 
-                // 1. Validate
                 const date = document.getElementById('batch-date')?.value;
                 if (!date) {
                     showToast(t('common.requiredField'), 'error');
                     return;
                 }
 
-                // Filter out materials with no quantity or no cost
                 const validEntries = selectedMaterials.filter(mat => {
                     const qty = toNumber(mat.quantity);
                     const cost = toNumber(mat.unitCost);
@@ -1493,7 +1489,6 @@
                     return;
                 }
 
-                // Validate each entry has quantity and cost
                 for (const mat of validEntries) {
                     if (toNumber(mat.quantity) <= 0) {
                         showToast(`${mat.name}: ${t('batch.quantityRequired')}`, 'error');
@@ -1505,7 +1500,6 @@
                     }
                 }
 
-                // 2. Build batch data
                 const site = assignedSites.find(s => s.id === currentSiteId);
                 if (!site) {
                     showToast(t('common.somethingWentWrong'), 'error');
@@ -1531,12 +1525,10 @@
                     };
                 });
 
-                // 3. Start Firestore batch transaction
                 setButtonLoading(btn, true);
                 try {
                     const firestoreBatch = writeBatch(db);
 
-                    // 3a. Create batch document
                     const batchRef = doc(collection(db, 'batches'));
                     firestoreBatch.set(batchRef, {
                         batchNumber: batchNumber,
@@ -1549,7 +1541,6 @@
                         status: 'active'
                     });
 
-                    // 3b. Create batch items
                     const itemRefs = [];
                     items.forEach(item => {
                         const itemRef = doc(collection(db, 'batch_items'));
@@ -1568,7 +1559,6 @@
                         });
                     });
 
-                    // 3c. Update stock quantities and create transactions
                     for (const item of items) {
                         const stockItem = getStockByName(currentSiteId, item.materialName);
                         if (stockItem) {
@@ -1581,7 +1571,6 @@
                                 updated_at: now
                             });
 
-                            // Transaction record
                             const transRef = doc(collection(db, 'stock_transactions'));
                             firestoreBatch.set(transRef, {
                                 site_id: currentSiteId,
@@ -1601,14 +1590,12 @@
                                 created_at: now
                             });
 
-                            // Update local cache
                             refreshLocalStockCache(stockItem.id, {
                                 quantity: newQty,
                                 unit_cost: item.unitCost > 0 ? item.unitCost : toNumber(stockItem.unit_cost),
                                 updated_at: now
                             });
                         } else {
-                            // Material doesn't exist in stock - create it
                             const stockRef = doc(collection(db, 'stock'));
                             firestoreBatch.set(stockRef, {
                                 site_id: currentSiteId,
@@ -1621,7 +1608,6 @@
                                 updated_at: now
                             });
 
-                            // Transaction record
                             const transRef = doc(collection(db, 'stock_transactions'));
                             firestoreBatch.set(transRef, {
                                 site_id: currentSiteId,
@@ -1641,7 +1627,6 @@
                                 created_at: now
                             });
 
-                            // Add to local cache
                             const newStock = {
                                 id: stockRef.id,
                                 site_id: currentSiteId,
@@ -1657,10 +1642,8 @@
                         }
                     }
 
-                    // 3d. Commit everything
                     await firestoreBatch.commit();
 
-                    // 4. Update local batches data
                     const newBatch = {
                         id: batchRef.id,
                         batchNumber: batchNumber,
@@ -1674,7 +1657,6 @@
                     };
                     batchesData.push(newBatch);
 
-                    // Add items to local cache
                     items.forEach((item, idx) => {
                         batchItemsData.push({
                             id: itemRefs[idx]?.id || 'local-' + Date.now() + '-' + idx,
@@ -1693,12 +1675,9 @@
 
                     showToast(t('batch.batchSaved'), 'success');
 
-                    // Reset form
                     resetBatchForm();
-
-                    // Switch to list view
                     batchTab = 'list';
-                    showSection('batch');
+                    showSection('materials');
 
                 } catch (err) {
                     console.error('Save batch error:', err);
@@ -1709,17 +1688,14 @@
             };
 
             function resetBatchForm() {
-                // Clear selections
                 document.querySelectorAll('#material-grid .material-card').forEach(c => c.classList.remove('selected'));
                 selectedMaterials = [];
                 renderBatchEntries();
                 updateBatchTotal();
                 const count = document.getElementById('selected-count');
                 if (count) count.textContent = '0 materials';
-                // Reset date to today
                 const dateInput = document.getElementById('batch-date');
                 if (dateInput) dateInput.value = getTodayISO();
-                // Clear entries
                 const container = document.getElementById('batch-entries');
                 if (container) {
                     container.innerHTML = `
@@ -1733,96 +1709,9 @@
                 if (display) display.textContent = '0 RWF';
             }
 
-            // ──────────────────────────────────────────────────────────────
-            // BATCH LIST VIEW
-            // ──────────────────────────────────────────────────────────────
-            function renderBatchList(site) {
-                const siteBatches = batchesData.filter(b => b.site_id === currentSiteId)
-                    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-
-                if (!siteBatches.length) {
-                    return `
-                        <div class="bg-white rounded-2xl border p-8 text-center">
-                            <div class="empty-state">
-                                <iconify-icon icon="material-symbols:inbox-outline" style="font-size:3rem;"></iconify-icon>
-                                <p class="text-slate-500">${t('batch.noBatches')}</p>
-                                <button onclick="switchBatchTab('new')" class="mt-4 px-6 py-2 bg-emerald-600 text-white rounded-xl hover:bg-emerald-700 transition">
-                                    ${t('batch.newBatch')}
-                                </button>
-                            </div>
-                        </div>
-                    `;
-                }
-
-                let html = `
-                    <div class="bg-white rounded-2xl border shadow-sm overflow-hidden">
-                        <div class="overflow-x-auto">
-                            <table class="batch-list-table">
-                                <thead>
-                                    <tr>
-                                        <th>${t('batch.batchNumber')}</th>
-                                        <th>${t('batch.date')}</th>
-                                        <th>${t('batch.totalMaterials')}</th>
-                                        <th>${t('batch.totalAmount')}</th>
-                                        <th>${t('batch.addedBy')}</th>
-                                        <th>${t('batch.actions')}</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                `;
-
-                siteBatches.forEach(batch => {
-                    const items = batchItemsData.filter(i => i.batchId === batch.id);
-                    const totalItems = items.length;
-                    const isDeleted = batch.status === 'deleted';
-                    const isEdited = batch.status === 'edited';
-
-                    let statusBadge = '';
-                    if (isDeleted) statusBadge = `<span class="batch-status-badge deleted">Deleted</span>`;
-                    else if (isEdited) statusBadge = `<span class="batch-status-badge edited">Edited</span>`;
-                    else statusBadge = `<span class="batch-status-badge active">Active</span>`;
-
-                    html += `
-                        <tr class="${isDeleted ? 'opacity-60' : ''}">
-                            <td><a href="#" onclick="viewBatch('${batch.id}')" class="batch-number-link">${batch.batchNumber}</a></td>
-                            <td>${formatDate(batch.entryDate)}</td>
-                            <td>${totalItems}</td>
-                            <td class="font-semibold text-emerald-600">${formatRWF(batch.totalAmount)}</td>
-                            <td>${managerProfile?.full_name || 'Manager'}</td>
-                            <td>
-                                <div class="flex flex-wrap gap-1">
-                                    <button onclick="viewBatch('${batch.id}')" class="text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded hover:bg-blue-100" title="${t('common.view')}">
-                                        <iconify-icon icon="material-symbols:visibility" width="16"></iconify-icon>
-                                    </button>
-                                    ${!isDeleted ? `
-                                        <button onclick="editBatch('${batch.id}')" class="text-xs bg-amber-50 text-amber-700 px-2 py-1 rounded hover:bg-amber-100" title="${t('common.edit')}">
-                                            <iconify-icon icon="material-symbols:edit" width="16"></iconify-icon>
-                                        </button>
-                                        <button onclick="deleteBatch('${batch.id}')" class="text-xs bg-red-50 text-red-700 px-2 py-1 rounded hover:bg-red-100" title="${t('common.delete')}">
-                                            <iconify-icon icon="material-symbols:delete" width="16"></iconify-icon>
-                                        </button>
-                                    ` : `
-                                        <span class="text-xs text-slate-400 italic">${t('common.deletedSuccessfully')}</span>
-                                    `}
-                                </div>
-                            </td>
-                        </tr>
-                    `;
-                });
-
-                html += `
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                `;
-
-                return html;
-            }
-
-            // ──────────────────────────────────────────────────────────────
+            // =================================================================
             // VIEW BATCH
-            // ──────────────────────────────────────────────────────────────
+            // =================================================================
             window.viewBatch = function(batchId) {
                 const batch = batchesData.find(b => b.id === batchId);
                 if (!batch) { showToast(t('common.noDataAvailable'), 'error'); return; }
@@ -1903,9 +1792,9 @@
                 `);
             };
 
-            // ──────────────────────────────────────────────────────────────
+            // =================================================================
             // EDIT BATCH
-            // ──────────────────────────────────────────────────────────────
+            // =================================================================
             window.editBatch = function(batchId) {
                 const batch = batchesData.find(b => b.id === batchId);
                 if (!batch) { showToast(t('common.noDataAvailable'), 'error'); return; }
@@ -1913,7 +1802,6 @@
 
                 const items = batchItemsData.filter(i => i.batchId === batchId);
 
-                // Build edit form with current values
                 let itemsHtml = items.map((item, idx) => `
                     <div class="batch-entry-row border-b pb-3 mb-3 last:border-b-0 last:mb-0" data-item-idx="${idx}">
                         <div class="grid grid-cols-12 gap-2 items-end">
@@ -1950,7 +1838,6 @@
                     </div>
                 `).join('');
 
-                // Also allow adding new materials to the batch
                 const availableMaterials = stockData.filter(s => s.site_id === currentSiteId);
                 const matOptions = availableMaterials.map(s => `<option value="${s.material_name}" data-unit="${s.unit || 'units'}">${s.material_name} (${s.unit || 'units'})</option>`).join('');
 
@@ -1995,7 +1882,6 @@
                     </form>
                 `);
 
-                // Attach live calculation for edit form
                 setTimeout(() => {
                     document.querySelectorAll('.edit-qty, .edit-cost').forEach(el => {
                         el.addEventListener('input', function() {
@@ -2008,7 +1894,6 @@
                     updateEditTotals();
                 }, 100);
 
-                // Add row function
                 window.addEditRow = function() {
                     const container = document.getElementById('edit-items-container');
                     if (!container) return;
@@ -2052,7 +1937,6 @@
                         </div>
                     `;
                     container.appendChild(row);
-                    // Attach events
                     row.querySelectorAll('.edit-qty, .edit-cost').forEach(el => {
                         el.addEventListener('input', updateEditTotals);
                     });
@@ -2089,9 +1973,9 @@
                 if (display) display.textContent = formatRWF(total);
             }
 
-            // ──────────────────────────────────────────────────────────────
+            // =================================================================
             // HANDLE EDIT BATCH
-            // ──────────────────────────────────────────────────────────────
+            // =================================================================
             window.handleEditBatch = async function(e, batchId) {
                 e.preventDefault();
                 const form = e.target;
@@ -2134,7 +2018,6 @@
                         const total = calculateTotal(qty, cost);
                         batchTotal += total;
 
-                        // Find materialId from stock
                         const stockItem = getStockByName(currentSiteId, name);
                         items.push({
                             materialName: name,
@@ -2156,14 +2039,12 @@
                     const now = new Date().toISOString();
                     const firestoreBatch = writeBatch(db);
 
-                    // 1. Get original items for this batch
                     const originalItems = batchItemsData.filter(i => i.batchId === batchId);
                     const originalTotals = {};
                     originalItems.forEach(oi => {
                         originalTotals[oi.materialName] = toNumber(oi.quantityAdded);
                     });
 
-                    // 2. Update batch document
                     const batchRef = doc(db, 'batches', batchId);
                     firestoreBatch.update(batchRef, {
                         entryDate: date,
@@ -2172,13 +2053,11 @@
                         status: 'edited'
                     });
 
-                    // 3. Delete old batch items
                     for (const oi of originalItems) {
                         const itemRef = doc(db, 'batch_items', oi.id);
                         firestoreBatch.delete(itemRef);
                     }
 
-                    // 4. Create new batch items
                     const newItemRefs = [];
                     for (const item of items) {
                         const itemRef = doc(collection(db, 'batch_items'));
@@ -2197,7 +2076,6 @@
                         });
                     }
 
-                    // 5. Update stock quantities: reverse original, apply new
                     const processed = new Set();
                     for (const item of items) {
                         const name = item.materialName;
@@ -2217,7 +2095,6 @@
                                 updated_at: now
                             });
 
-                            // Transaction record
                             const transRef = doc(collection(db, 'stock_transactions'));
                             firestoreBatch.set(transRef, {
                                 site_id: currentSiteId,
@@ -2237,14 +2114,12 @@
                                 created_at: now
                             });
 
-                            // Update local cache
                             refreshLocalStockCache(stockItem.id, {
                                 quantity: newQty,
                                 unit_cost: item.unitCost > 0 ? item.unitCost : toNumber(stockItem.unit_cost),
                                 updated_at: now
                             });
                         } else {
-                            // New material - create stock
                             const stockRef = doc(collection(db, 'stock'));
                             firestoreBatch.set(stockRef, {
                                 site_id: currentSiteId,
@@ -2290,7 +2165,6 @@
                         }
                     }
 
-                    // Handle materials that were removed from the batch
                     for (const [name, qty] of Object.entries(originalTotals)) {
                         if (!items.some(i => i.materialName === name)) {
                             const stockItem = getStockByName(currentSiteId, name);
@@ -2327,10 +2201,8 @@
                         }
                     }
 
-                    // Commit
                     await firestoreBatch.commit();
 
-                    // Update local batch data
                     const updatedBatch = {
                         ...batch,
                         entryDate: date,
@@ -2341,7 +2213,6 @@
                     const batchIdx = batchesData.findIndex(b => b.id === batchId);
                     if (batchIdx !== -1) batchesData[batchIdx] = updatedBatch;
 
-                    // Replace local batch items
                     batchItemsData = batchItemsData.filter(i => i.batchId !== batchId);
                     items.forEach((item, idx) => {
                         batchItemsData.push({
@@ -2361,7 +2232,7 @@
 
                     closeModal();
                     showToast(t('batch.batchEdited'), 'success');
-                    showSection('batch');
+                    showSection('materials');
 
                 } catch (err) {
                     console.error('Edit batch error:', err);
@@ -2371,9 +2242,9 @@
                 }
             };
 
-            // ──────────────────────────────────────────────────────────────
+            // =================================================================
             // DELETE BATCH
-            // ──────────────────────────────────────────────────────────────
+            // =================================================================
             window.deleteBatch = function(batchId) {
                 const batch = batchesData.find(b => b.id === batchId);
                 if (!batch) { showToast(t('common.noDataAvailable'), 'error'); return; }
@@ -2381,21 +2252,18 @@
 
                 if (!confirm(t('batch.confirmDelete'))) return;
 
-                // Proceed with deletion
                 (async function() {
                     try {
                         const now = new Date().toISOString();
                         const items = batchItemsData.filter(i => i.batchId === batchId);
                         const firestoreBatch = writeBatch(db);
 
-                        // 1. Mark batch as deleted
                         const batchRef = doc(db, 'batches', batchId);
                         firestoreBatch.update(batchRef, {
                             status: 'deleted',
                             updatedAt: now
                         });
 
-                        // 2. Reverse stock quantities
                         const processed = new Set();
                         for (const item of items) {
                             const name = item.materialName;
@@ -2437,7 +2305,6 @@
                             }
                         }
 
-                        // 3. Delete batch items (or keep for history - we'll mark them)
                         for (const item of items) {
                             const itemRef = doc(db, 'batch_items', item.id);
                             firestoreBatch.delete(itemRef);
@@ -2445,7 +2312,6 @@
 
                         await firestoreBatch.commit();
 
-                        // Update local data
                         const batchIdx = batchesData.findIndex(b => b.id === batchId);
                         if (batchIdx !== -1) {
                             batchesData[batchIdx] = { ...batchesData[batchIdx], status: 'deleted', updatedAt: now };
@@ -2453,7 +2319,7 @@
                         batchItemsData = batchItemsData.filter(i => i.batchId !== batchId);
 
                         showToast(t('batch.batchDeleted'), 'success');
-                        showSection('batch');
+                        showSection('materials');
 
                     } catch (err) {
                         console.error('Delete batch error:', err);
@@ -2462,148 +2328,721 @@
                 })();
             };
 
-            // ──────────────────────────────────────────────────────────────
+            // =================================================================
             // SWITCH BATCH TAB
-            // ──────────────────────────────────────────────────────────────
+            // =================================================================
             window.switchBatchTab = function(tab) {
                 batchTab = tab;
-                showSection('batch');
+                showSection('materials');
             };
 
             // =================================================================
-            // INTEGRATION WITH EXISTING SYSTEM
+            // MATERIALS SECTION (NOW ONLY BATCH)
             // =================================================================
+            function renderMaterials(container) {
+                document.getElementById('page-title').textContent = t('batch.title');
+                container.innerHTML = renderBatchContent();
+                if (batchTab === 'new') {
+                    setTimeout(() => {
+                        attachBatchFormEvents();
+                        updateBatchTotal();
+                    }, 100);
+                }
+            }
 
-            // Add batch to the main showSection switch
-            const originalShowSection = window.showSection;
+            // =================================================================
+            // DASHBOARD
+            // =================================================================
+            function renderDashboard(container) {
+                const site = assignedSites.find(s => s.id === currentSiteId);
+                if (!site) { container.innerHTML = `<p class="text-red-500 p-4">Site not found.</p>`; return; }
+                const totalWorkers = siteWorkersData.length;
+                const completedTasks = progressTasks.filter(t => t.status === 'completed').length;
+                const totalTasks = progressTasks.length;
+                const completionPercent = totalTasks ? Math.round((completedTasks / totalTasks) * 100) : 0;
+                // Recent batches count
+                const recentBatches = batchesData.filter(b => b.siteId === currentSiteId).slice(-4).reverse();
+
+                container.innerHTML = `
+                    <div class="bg-white rounded-2xl overflow-hidden shadow-sm mb-4 sm:mb-6">
+                        <div class="relative h-48 md:h-64 bg-cover bg-center" style="background-image: url('${site.images?.[0] || PLACEHOLDER_IMG}');">
+                            <div class="absolute inset-0 bg-gradient-to-r from-emerald-900/80 to-emerald-800/40 flex items-center p-4 sm:p-6">
+                                <div><h1 class="text-2xl sm:text-4xl font-bold text-white">${site.name}</h1><p class="text-emerald-100 mt-2 text-sm sm:text-base">${site.location || ''}</p></div>
+                            </div>
+                        </div>
+                        <div class="p-4 sm:p-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div><span class="text-sm text-slate-500">${t('dashboard.siteStatus')}</span><p class="text-lg font-bold capitalize">${site.status || 'active'}</p></div>
+                            <div><span class="text-sm text-slate-500">${t('dashboard.siteManager')}</span><p class="text-lg font-bold">${managerProfile.full_name || 'You'}</p></div>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4 sm:mb-6">
+                        <div class="stat-card bg-white rounded-2xl p-4 border border-slate-200 shadow-sm"><div class="flex items-center gap-4"><div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center"><iconify-icon icon="material-symbols:engineering" width="24" class="text-blue-700"></iconify-icon></div><div><p class="text-sm text-slate-500">${t('dashboard.workersOnSite')}</p><p class="text-2xl font-bold">${totalWorkers}</p></div></div></div>
+                        <div class="stat-card bg-white rounded-2xl p-4 border border-slate-200 shadow-sm"><div class="flex items-center gap-4"><div class="w-12 h-12 bg-amber-100 rounded-xl flex items-center justify-center"><iconify-icon icon="material-symbols:trending-up" width="24" class="text-amber-700"></iconify-icon></div><div><p class="text-sm text-slate-500">${t('dashboard.progress')}</p><p class="text-2xl font-bold">${completionPercent}%</p></div></div></div>
+                        <div class="stat-card bg-white rounded-2xl p-4 border border-slate-200 shadow-sm"><div class="flex items-center gap-4"><div class="w-12 h-12 bg-emerald-100 rounded-xl flex items-center justify-center"><iconify-icon icon="material-symbols:inbox" width="24" class="text-emerald-700"></iconify-icon></div><div><p class="text-sm text-slate-500">Batches</p><p class="text-2xl font-bold">${batchesData.filter(b => b.siteId === currentSiteId).length}</p></div></div></div>
+                        <div class="stat-card bg-white rounded-2xl p-4 border border-slate-200 shadow-sm"><div class="flex items-center gap-4"><div class="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center"><iconify-icon icon="material-symbols:warning" width="24" class="text-red-700"></iconify-icon></div><div><p class="text-sm text-slate-500">Low Stock</p><p class="text-2xl font-bold">${stockData.filter(s => s.site_id === currentSiteId && toNumber(s.quantity) <= toNumber(s.minimum_quantity)).length}</p></div></div></div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="bg-white rounded-2xl border p-4 shadow-sm"><h3 class="font-semibold text-sm mb-3">Recent Batches</h3><div class="space-y-1 text-sm">${recentBatches.length ? recentBatches.map(b => `<div class="flex justify-between"><span class="text-emerald-600 font-medium">${b.batchNumber}</span><span class="text-slate-400">${formatRWF(b.totalAmount)}</span></div>`).join('') : `<p class="text-slate-400">${t('common.noDataAvailable')}</p>`}</div></div>
+                        <div class="bg-white rounded-2xl border p-4 shadow-sm"><h3 class="font-semibold text-sm mb-3">${t('dashboard.pendingTasks')}</h3><div class="space-y-1 text-sm">${progressTasks.filter(t => t.status === 'pending').slice(0,4).map(t => `<div class="flex justify-between"><span>${t.name}</span><span class="text-slate-400">${t('progress.end')}: ${formatDate(t.end_date)}</span></div>`).join('') || `<p class="text-slate-400">${t('common.noDataAvailable')}</p>`}</div></div>
+                    </div>
+                `;
+            }
+
+            // =================================================================
+            // STOCK
+            // =================================================================
+            function renderStock(container) {
+                const site = assignedSites.find(s => s.id === currentSiteId);
+                if (!site) { container.innerHTML = `<p class="text-red-500">${t('common.noDataAvailable')}</p>`; return; }
+                const siteStock = stockData.filter(s => s.site_id === currentSiteId).sort((a, b) => String(a.material_name || '').localeCompare(String(b.material_name || '')));
+                let html = `<div class="flex justify-between items-center mb-4"><h2 class="text-xl sm:text-2xl font-bold">${t('stock.title')}</h2><button type="button" onclick="openAddStockModal()" class="px-3 py-2 bg-emerald-600 text-white rounded-xl hover:bg-emerald-700 flex items-center gap-2 text-sm"><iconify-icon icon="material-symbols:add"></iconify-icon> ${t('stock.receiveStock')}</button></div><div class="bg-white rounded-2xl border p-4 shadow-sm mb-5"><p class="text-sm text-slate-600"><strong>${t('navigation.dashboard')}:</strong> ${site.name}</p></div>`;
+                if (!siteStock.length) { html += `<div class="bg-white rounded-2xl border p-6 text-center"><p class="text-slate-500 text-sm">${t('common.noDataAvailable')}</p><button type="button" onclick="openAddStockModal()" class="mt-3 text-emerald-600 font-medium text-sm">+ ${t('stock.receiveStock')}</button></div>`; } else {
+                    html += `<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">`;
+                    siteStock.forEach(item => {
+                        const quantity = toNumber(item.quantity);
+                        const minimumQuantity = toNumber(item.minimum_quantity);
+                        const unitCost = toNumber(item.unit_cost);
+                        const value = quantity * unitCost;
+                        const status = quantity <= 0 ? { label: t('stock.outOfStock'), className: 'stock-status-out' } : (minimumQuantity > 0 && quantity <= minimumQuantity ? { label: t('stock.lowStock'), className: 'stock-status-low' } : { label: t('stock.normal'), className: 'stock-status-normal' });
+                        html += `<div class="bg-white rounded-2xl border overflow-hidden shadow-sm hover:shadow-md transition"><div class="p-5"><div class="flex justify-between items-start gap-3"><h3 class="font-bold text-lg text-slate-800">${item.material_name || 'Unknown Material'}</h3><span class="text-xs font-medium px-2 py-1 rounded-full ${status.className}">${status.label}</span></div><div class="mt-4 space-y-2 text-sm"><div class="flex justify-between border-b border-slate-100 pb-2"><span class="text-slate-500">${t('stock.quantity')}</span><span class="font-semibold">${quantity} ${item.unit || 'units'}</span></div><div class="flex justify-between border-b border-slate-100 pb-2"><span class="text-slate-500">${t('stock.unitCost')}</span><span class="font-semibold">${formatRWF(unitCost)}</span></div><div class="flex justify-between border-b border-slate-100 pb-2"><span class="text-slate-500">${t('stock.minimumStock')}</span><span class="font-semibold">${minimumQuantity}</span></div><div class="flex justify-between"><span class="text-slate-500">${t('stock.stockValue')}</span><span class="font-bold text-emerald-700">${formatRWF(value)}</span></div><div class="pt-2 text-xs text-slate-400">${t('stock.lastUpdated')}: ${item.updated_at ? formatDate(item.updated_at) : t('common.noDataAvailable')}</div></div><div class="mt-4 pt-3 border-t border-slate-100 flex gap-4"><button type="button" onclick="editStockItem('${item.id}')" class="text-xs text-emerald-600 font-medium hover:text-emerald-800">${t('common.edit')}</button><button type="button" onclick="viewStockHistory('${item.id}')" class="text-xs text-blue-600 font-medium hover:text-blue-800">${t('stock.stockHistory')}</button></div></div></div>`;
+                    });
+                    html += `</div>`;
+                }
+                const recentTransactions = stockTransactions.filter(tr => tr.site_id === currentSiteId).sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0)).slice(0, 10);
+                if (recentTransactions.length) {
+                    html += `<div class="mt-6 bg-white rounded-2xl border p-4 shadow-sm"><h3 class="font-semibold text-sm mb-3">${t('stock.stockHistory')}</h3><div class="space-y-2">${recentTransactions.map(transaction => { const change = getTransactionChange(transaction); const changeClass = getTransactionColor(change); const sign = change > 0 ? '+' : change < 0 ? '-' : ''; return `<div class="flex justify-between gap-3 text-sm border-b border-slate-100 pb-2 last:border-0"><div class="min-w-0"><div class="font-medium truncate">${transaction.material_name || 'Unknown Material'}</div><div class="text-xs text-slate-500">${getTransactionLabel(transaction)}</div></div><div class="text-right whitespace-nowrap"><div class="font-semibold ${changeClass}">${sign}${Math.abs(change)} ${transaction.unit || ''}</div><div class="text-xs text-slate-400">${transaction.created_at ? formatDate(transaction.created_at) : ''}</div></div></div>`; }).join('')}</div></div>`;
+                }
+                container.innerHTML = html;
+            }
+
+            window.openAddStockModal = () => {
+                const materialNames = [...new Set(stockData.filter(s => s.site_id === currentSiteId).map(s => s.material_name))];
+                const units = ['bags','tons','kg','litres','pieces','rolls','cubic meters'];
+                openModal(t('stock.receiveStock'), `<form onsubmit="handleAddStock(event)" class="space-y-4"><div><label class="block text-sm font-medium mb-1">${t('materials.materialName')}</label><input list="stock-material-list" class="w-full border rounded-lg p-2.5 text-sm" id="stock-material" required><datalist id="stock-material-list">${materialNames.map(name => `<option value="${name}">`).join('')}</datalist></div><div><label class="block text-sm font-medium mb-1">${t('stock.quantity')}</label><input type="number" step="0.01" min="0.01" class="w-full border rounded-lg p-2.5 text-sm" id="stock-quantity" required></div><div><label class="block text-sm font-medium mb-1">${t('stock.unit')}</label><select class="w-full border rounded-lg p-2.5 text-sm" id="stock-unit">${units.map(unit => `<option value="${unit}">${unit}</option>`).join('')}</select></div><div><label class="block text-sm font-medium mb-1">${t('stock.unitCost')} (RWF)</label><input type="number" step="0.01" min="0" class="w-full border rounded-lg p-2.5 text-sm" id="stock-unit-cost" placeholder="e.g. 5500"></div><div><label class="block text-sm font-medium mb-1">${t('stock.minimumStock')}</label><input type="number" step="0.01" min="0" class="w-full border rounded-lg p-2.5 text-sm" id="stock-min"></div><button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-xl">${t('common.save')}</button></form>`);
+            };
+
+            window.handleAddStock = async (e) => {
+                e.preventDefault();
+                const form = e.target;
+                const btn = getFormSubmitBtn(form);
+                setButtonLoading(btn, true);
+                try {
+                    const materialName = cleanMaterialName(document.getElementById('stock-material').value);
+                    const quantity = toNumber(document.getElementById('stock-quantity').value);
+                    const unit = document.getElementById('stock-unit').value || 'units';
+                    const unitCost = toNumber(document.getElementById('stock-unit-cost').value);
+                    const minimumQuantityRaw = document.getElementById('stock-min').value;
+                    const minimumQuantity = minimumQuantityRaw === '' ? null : toNumber(minimumQuantityRaw);
+                    if (!materialName) throw new Error('Material name is required.');
+                    if (quantity <= 0) throw new Error('Quantity must be greater than zero.');
+                    if (unitCost < 0) throw new Error('Unit cost cannot be negative.');
+                    if (minimumQuantity !== null && minimumQuantity < 0) throw new Error('Minimum stock cannot be negative.');
+                    const existing = getStockByName(currentSiteId, materialName);
+                    const now = new Date().toISOString();
+                    if (existing) {
+                        const previousQty = toNumber(existing.quantity);
+                        const newQty = roundQuantity(previousQty + quantity);
+                        const finalMinimum = minimumQuantity !== null ? minimumQuantity : (existing.minimum_quantity ?? null);
+                        const finalUnitCost = unitCost > 0 ? unitCost : toNumber(existing.unit_cost);
+                        const batch = writeBatch(db);
+                        batch.update(doc(db, 'stock', existing.id), { material_name: existing.material_name, quantity: newQty, unit: unit || existing.unit || 'units', unit_cost: finalUnitCost, minimum_quantity: finalMinimum, updated_at: now });
+                        const transRef = doc(collection(db, 'stock_transactions'));
+                        batch.set(transRef, { site_id: currentSiteId, stock_id: existing.id, material_name: existing.material_name, transaction_type: 'STOCK_ADDED', quantity: quantity, quantity_change: quantity, previous_quantity: previousQty, new_quantity: newQty, unit: unit || existing.unit || 'units', unit_cost: finalUnitCost, total_value: quantity * finalUnitCost, notes: 'Stock received', recorded_by: currentUser.uid, created_at: now });
+                        await batch.commit();
+                        refreshLocalStockCache(existing.id, { material_name: existing.material_name, quantity: newQty, unit: unit || existing.unit || 'units', unit_cost: finalUnitCost, minimum_quantity: finalMinimum, updated_at: now });
+                        addLocalTransaction({ id: transRef.id, site_id: currentSiteId, stock_id: existing.id, material_name: existing.material_name, transaction_type: 'STOCK_ADDED', quantity, quantity_change: quantity, previous_quantity: previousQty, new_quantity: newQty, unit: unit || existing.unit || 'units', unit_cost: finalUnitCost, total_value: quantity * finalUnitCost, notes: 'Stock received', created_at: now });
+                    } else {
+                        const stockRef = doc(collection(db, 'stock'));
+                        const transRef = doc(collection(db, 'stock_transactions'));
+                        const batch = writeBatch(db);
+                        batch.set(stockRef, { site_id: currentSiteId, material_name: materialName, quantity: quantity, unit: unit, unit_cost: unitCost, minimum_quantity: minimumQuantity, created_at: now, updated_at: now });
+                        batch.set(transRef, { site_id: currentSiteId, stock_id: stockRef.id, material_name: materialName, transaction_type: 'STOCK_ADDED', quantity: quantity, quantity_change: quantity, previous_quantity: 0, new_quantity: quantity, unit: unit, unit_cost: unitCost, total_value: quantity * unitCost, notes: 'Initial stock received', recorded_by: currentUser.uid, created_at: now });
+                        await batch.commit();
+                        const newStock = { id: stockRef.id, site_id: currentSiteId, material_name: materialName, quantity: quantity, unit: unit, unit_cost: unitCost, minimum_quantity: minimumQuantity, created_at: now, updated_at: now };
+                        stockData.push(newStock);
+                        addLocalTransaction({ id: transRef.id, site_id: currentSiteId, stock_id: stockRef.id, material_name: materialName, transaction_type: 'STOCK_ADDED', quantity, quantity_change: quantity, previous_quantity: 0, new_quantity: quantity, unit: unit, unit_cost: unitCost, total_value: quantity * unitCost, notes: 'Initial stock received', created_at: now });
+                    }
+                    closeModal();
+                    showToast(t('common.savedSuccessfully'), 'success');
+                } catch (err) { showToast(err.message || t('common.somethingWentWrong'), 'error'); } finally { setButtonLoading(btn, false); }
+            };
+
+            window.editStockItem = (id) => {
+                const item = stockData.find(s => s.id === id);
+                if (!item) { showToast('Stock item not found.', 'error'); return; }
+                const units = ['bags','tons','kg','litres','pieces','rolls','cubic meters'];
+                openModal(t('stock.editStock'), `<form onsubmit="handleEditStock(event, '${id}')" class="space-y-4"><div><label class="block text-sm font-medium mb-1">${t('materials.materialName')}</label><input class="w-full border rounded-lg p-2.5 text-sm" value="${item.material_name || ''}" id="edit-stock-material" required></div><div><label class="block text-sm font-medium mb-1">${t('stock.quantity')}</label><input type="number" step="0.01" min="0" value="${toNumber(item.quantity)}" id="edit-stock-quantity" class="w-full border rounded-lg p-2.5 text-sm" required></div><div><label class="block text-sm font-medium mb-1">${t('stock.unit')}</label><select id="edit-stock-unit" class="w-full border rounded-lg p-2.5 text-sm">${units.map(unit => `<option value="${unit}" ${item.unit === unit ? 'selected' : ''}>${unit}</option>`).join('')}</select></div><div><label class="block text-sm font-medium mb-1">${t('stock.unitCost')} (RWF)</label><input type="number" step="0.01" min="0" value="${toNumber(item.unit_cost)}" id="edit-stock-unit-cost" class="w-full border rounded-lg p-2.5 text-sm"></div><div><label class="block text-sm font-medium mb-1">${t('stock.minimumStock')}</label><input value="${item.minimum_quantity ?? ''}" id="edit-stock-min" type="number" step="0.01" min="0" class="w-full border rounded-lg p-2.5 text-sm"></div><button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-xl">${t('common.save')}</button></form>`);
+            };
+
+            window.handleEditStock = async (e, id) => {
+                e.preventDefault();
+                const form = e.target;
+                const btn = getFormSubmitBtn(form);
+                setButtonLoading(btn, true);
+                try {
+                    const item = stockData.find(s => s.id === id);
+                    if (!item) throw new Error('Stock item not found.');
+                    const oldName = cleanMaterialName(item.material_name);
+                    const newName = cleanMaterialName(document.getElementById('edit-stock-material').value);
+                    const previousQuantity = toNumber(item.quantity);
+                    const newQuantity = toNumber(document.getElementById('edit-stock-quantity').value);
+                    const unit = document.getElementById('edit-stock-unit').value || 'units';
+                    const unitCost = toNumber(document.getElementById('edit-stock-unit-cost').value);
+                    const minimumRaw = document.getElementById('edit-stock-min').value;
+                    const minimumQuantity = minimumRaw === '' ? null : toNumber(minimumRaw);
+                    if (!newName) throw new Error('Material name is required.');
+                    if (newQuantity < 0) throw new Error('Stock quantity cannot be negative.');
+                    if (unitCost < 0) throw new Error('Unit cost cannot be negative.');
+                    if (minimumQuantity !== null && minimumQuantity < 0) throw new Error('Minimum stock cannot be negative.');
+                    const now = new Date().toISOString();
+                    if (normalizeMaterialName(oldName) === normalizeMaterialName(newName)) {
+                        const quantityChange = roundQuantity(newQuantity - previousQuantity);
+                        const batch = writeBatch(db);
+                        batch.update(doc(db, 'stock', id), { material_name: item.material_name, quantity: newQuantity, unit: unit, unit_cost: unitCost, minimum_quantity: minimumQuantity, updated_at: now });
+                        if (quantityChange !== 0) {
+                            const transRef = doc(collection(db, 'stock_transactions'));
+                            batch.set(transRef, { site_id: currentSiteId, stock_id: id, material_name: item.material_name, transaction_type: 'STOCK_ADJUSTMENT', quantity: Math.abs(quantityChange), quantity_change: quantityChange, previous_quantity: previousQuantity, new_quantity: newQuantity, unit: unit, unit_cost: unitCost, total_value: Math.abs(quantityChange) * unitCost, notes: 'Manual stock adjustment', recorded_by: currentUser.uid, created_at: now });
+                            await batch.commit();
+                            addLocalTransaction({ id: transRef.id, site_id: currentSiteId, stock_id: id, material_name: item.material_name, transaction_type: 'STOCK_ADJUSTMENT', quantity: Math.abs(quantityChange), quantity_change: quantityChange, previous_quantity: previousQuantity, new_quantity: newQuantity, unit: unit, unit_cost: unitCost, total_value: Math.abs(quantityChange) * unitCost, notes: 'Manual stock adjustment', created_at: now });
+                        } else { await batch.commit(); }
+                        refreshLocalStockCache(id, { material_name: item.material_name, quantity: newQuantity, unit: unit, unit_cost: unitCost, minimum_quantity: minimumQuantity, updated_at: now });
+                    } else {
+                        const duplicate = getStockByName(currentSiteId, newName);
+                        if (duplicate) throw new Error(`A stock record already exists for "${duplicate.material_name}". Rename it first or keep the existing material name.`);
+                        const batch = writeBatch(db);
+                        batch.update(doc(db, 'stock', id), { material_name: newName, quantity: newQuantity, unit: unit, unit_cost: unitCost, minimum_quantity: minimumQuantity, updated_at: now });
+                        const transRef = doc(collection(db, 'stock_transactions'));
+                        batch.set(transRef, { site_id: currentSiteId, stock_id: id, material_name: newName, transaction_type: 'STOCK_ADJUSTMENT', quantity: Math.abs(newQuantity - previousQuantity), quantity_change: roundQuantity(newQuantity - previousQuantity), previous_quantity: previousQuantity, new_quantity: newQuantity, unit: unit, unit_cost: unitCost, total_value: Math.abs(newQuantity - previousQuantity) * unitCost, notes: `Stock renamed from "${oldName}" to "${newName}".`, recorded_by: currentUser.uid, created_at: now });
+                        await batch.commit();
+                        refreshLocalStockCache(id, { material_name: newName, quantity: newQuantity, unit: unit, unit_cost: unitCost, minimum_quantity: minimumQuantity, updated_at: now });
+                        addLocalTransaction({ id: transRef.id, site_id: currentSiteId, stock_id: id, material_name: newName, transaction_type: 'STOCK_ADJUSTMENT', quantity: Math.abs(newQuantity - previousQuantity), quantity_change: roundQuantity(newQuantity - previousQuantity), previous_quantity: previousQuantity, new_quantity: newQuantity, unit: unit, unit_cost: unitCost, notes: `Stock renamed from "${oldName}" to "${newName}".`, created_at: now });
+                    }
+                    closeModal();
+                    showToast(t('common.updatedSuccessfully'), 'success');
+                } catch (err) { showToast(err.message || t('common.somethingWentWrong'), 'error'); } finally { setButtonLoading(btn, false); }
+            };
+
+            window.viewStockHistory = (stockId) => {
+                const stockItem = stockData.find(s => s.id === stockId);
+                const transactions = stockTransactions.filter(tr => tr.stock_id === stockId).sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
+                if (!transactions.length) { openModal(t('stock.stockHistory'), `<div class="text-center py-6"><p class="text-slate-500 text-sm">${t('common.noDataAvailable')}</p></div>`); return; }
+                const currentQuantity = stockItem ? toNumber(stockItem.quantity) : 0;
+                const unit = stockItem?.unit || 'units';
+                const html = `<div class="space-y-4"><div class="bg-slate-50 rounded-xl p-4"><div class="flex justify-between"><span class="text-sm text-slate-500">${t('stock.currentStock')}</span><span class="font-bold text-slate-800">${currentQuantity} ${unit}</span></div></div><div class="space-y-3">${transactions.map(transaction => { const change = getTransactionChange(transaction); const color = getTransactionColor(change); const sign = change > 0 ? '+' : change < 0 ? '-' : ''; const label = getTransactionLabel(transaction); return `<div class="border rounded-xl p-3"><div class="flex justify-between gap-3"><div class="min-w-0"><div class="font-medium text-sm text-slate-800">${label}</div><div class="text-xs text-slate-500 mt-1">${transaction.notes || ''}</div></div><div class="text-right whitespace-nowrap"><div class="font-bold ${color}">${sign}${Math.abs(change)} ${transaction.unit || unit}</div></div></div><div class="mt-3 pt-2 border-t border-slate-100 grid grid-cols-2 gap-2 text-xs"><div><span class="text-slate-400">${t('stock.before')}</span><div class="font-medium">${toNumber(transaction.previous_quantity)} ${transaction.unit || unit}</div></div><div><span class="text-slate-400">${t('stock.after')}</span><div class="font-medium">${toNumber(transaction.new_quantity)} ${transaction.unit || unit}</div></div><div><span class="text-slate-400">${t('stock.unitCost')}</span><div class="font-medium">${formatRWF(transaction.unit_cost)}</div></div><div><span class="text-slate-400">${t('stock.date')}</span><div class="font-medium">${transaction.created_at ? formatDate(transaction.created_at) : ''}</div></div></div></div>`; }).join('')}</div></div>`;
+                openModal(`${t('stock.stockHistory')} — ${stockItem?.material_name || ''}`, html);
+            };
+
+            // =================================================================
+            // WORKERS
+            // =================================================================
+            function renderWorkers(container) {
+                container.innerHTML = `<div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6"><div class="flex gap-2 p-1 bg-slate-200/60 rounded-xl"><button onclick="switchWorkersTab('view')" class="px-4 py-2 rounded-lg text-sm font-semibold transition ${workersTab === 'view' ? 'tab-active shadow-sm' : 'tab-inactive'}"><iconify-icon icon="material-symbols:grid-view" class="inline mr-1"></iconify-icon> ${t('workers.view')}</button><button onclick="switchWorkersTab('record')" class="px-4 py-2 rounded-lg text-sm font-semibold transition ${workersTab === 'record' ? 'tab-active shadow-sm' : 'tab-inactive'}"><iconify-icon icon="material-symbols:edit-calendar" class="inline mr-1"></iconify-icon> ${t('workers.recordAttendance')}</button></div>${workersTab === 'view' ? `<button onclick="openAddWorkerModal()" class="px-4 py-2 bg-emerald-600 text-white rounded-xl hover:bg-emerald-700 flex items-center gap-2 text-sm font-medium shadow-sm"><iconify-icon icon="material-symbols:person-add-outline"></iconify-icon> ${t('workers.addWorker')}</button>` : ''}</div><div id="workers-content">${workersTab === 'view' ? renderWorkersView() : renderWorkersRecord()}</div>`;
+                if (workersTab === 'record') setTimeout(updateAttendanceSummary, 100);
+            }
+            window.switchWorkersTab = (tab) => { workersTab = tab;
+                showSection('workers'); };
+            window.openAddWorkerModal = () => {
+                const allRoles = workerPositions.map(p => p.role).filter(Boolean);
+                const commonRoles = ['Mason','Mason Helper','Carpenter','Carpenter Helper','Steel Fixer','Steel Fixer Helper','Plumber','Electrician','Welder','Painter','Tiler','Roofer','Concrete Worker','Excavation Worker','Truck Driver','Cleaner','Site Security Guard'];
+                const roles = [...new Set([...commonRoles, ...allRoles])];
+                const roleOptions = roles.map(r => `<div class="role-option px-3 py-2 cursor-pointer" data-role="${r}">${r}</div>`).join('');
+                openModal(t('workers.addWorker'), `<form onsubmit="handleAddWorker(event)" class="space-y-4"><div><label class="block text-sm font-medium">${t('workers.fullName')}</label><input class="w-full border rounded-lg p-2.5 text-sm" id="worker-name" required></div><div class="relative"><label class="block text-sm font-medium">${t('workers.role')}</label><div id="role-selector" class="border rounded-lg p-2.5 bg-white flex items-center justify-between cursor-pointer text-sm" onclick="document.getElementById('role-dropdown').classList.toggle('hidden')"><span id="selected-role-text" class="text-slate-400">${t('workers.selectWorkerRole')}</span><iconify-icon icon="material-symbols:arrow-drop-down" width="20"></iconify-icon></div><input type="hidden" id="worker-role" required><div id="role-dropdown" class="hidden absolute z-20 w-full bg-white border rounded-lg mt-1 max-h-48 overflow-y-auto shadow-lg"><input type="text" id="role-search" class="w-full border-b p-2 text-sm sticky top-0 bg-white" placeholder="${t('workers.searchRole')}" oninput="filterRoleDropdown()"><div id="role-options-container">${roleOptions}</div></div></div><div class="grid grid-cols-2 gap-3"><div><label class="block text-sm font-medium">${t('workers.paymentType')}</label><select id="worker-payment" class="w-full border rounded-lg p-2.5 text-sm" required><option value="daily">${t('workers.dailyRate')}</option><option value="monthly">${t('workers.monthlySalary')}</option></select></div><div><label class="block text-sm font-medium">${t('workers.salary')}</label><input type="number" id="worker-salary" class="w-full border rounded-lg p-2.5 text-sm" required min="0"></div></div><div><label class="block text-sm font-medium">${t('workers.phone')}</label><input type="tel" id="worker-phone" class="w-full border rounded-lg p-2.5 text-sm"></div><div><label class="block text-sm font-medium">${t('workers.photo')}</label><input type="file" id="worker-photo" accept="image/*" class="w-full border rounded-lg p-2.5 text-sm"></div><button type="submit" class="w-full bg-emerald-600 text-white py-3 rounded-xl">${t('workers.saveWorker')}</button></form>`);
+                document.querySelectorAll('.role-option').forEach(item => item.addEventListener('click', () => { const role = item.dataset.role;
+                    document.getElementById('worker-role').value = role;
+                    document.getElementById('selected-role-text').textContent = role;
+                    document.getElementById('selected-role-text').classList.remove('text-slate-400');
+                    document.getElementById('role-dropdown').classList.add('hidden'); }));
+                window.filterRoleDropdown = () => { const filter = document.getElementById('role-search').value.toLowerCase();
+                    document.querySelectorAll('.role-option').forEach(opt => { opt.style.display = opt.dataset.role.toLowerCase().includes(filter) ? '' : 'none'; }); };
+            };
+            window.handleAddWorker = async (e) => { e.preventDefault(); const form = e.target; const btn = getFormSubmitBtn(form);
+                setButtonLoading(btn, true); try { const name = document.getElementById('worker-name').value.trim(); const role = document.getElementById('worker-role').value; const payment = document.getElementById('worker-payment').value; const salary = parseFloat(document.getElementById('worker-salary').value) || 0; const phone = document.getElementById('worker-phone').value.trim(); const photoFile = document.getElementById('worker-photo')?.files?.[0]; if (!name || !role || !payment) { alert(t('common.requiredField')); return; } let imageUrl = ''; if (photoFile) imageUrl = await uploadImageToImgbb(photoFile); await addDoc(collection(db, 'site_workers'), { site_id: currentSiteId, name, role, payment_method: payment, salary, phone, image: imageUrl, added_at: new Date().toISOString() }); closeModal();
+                    showToast(t('common.savedSuccessfully'), 'success'); } catch (err) { alert(t('common.somethingWentWrong') + ': ' + err.message); } finally { setButtonLoading(btn, false); } };
+            window.openWorkerImage = (index) => { const worker = siteWorkersData[index]; if (!worker) return; const imageUrl = worker.image || PLACEHOLDER_IMG; const viewer = document.createElement('div');
+                viewer.className = 'fixed inset-0 z-[9999] bg-black/95 flex items-center justify-center p-4';
+                viewer.innerHTML = `<button onclick="this.parentElement.remove(); document.body.style.overflow='';" class="absolute top-4 right-4 z-50 w-11 h-11 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center"><iconify-icon icon="material-symbols:close" class="text-3xl"></iconify-icon></button><img src="${imageUrl}" class="max-w-full max-h-[90vh] object-contain rounded-xl shadow-2xl"><div class="absolute bottom-8 text-white bg-black/60 px-4 py-2 rounded-lg text-sm">${worker.name} — ${worker.role || t('workers.view')}</div>`;
+                document.body.appendChild(viewer);
+                document.body.style.overflow = 'hidden';
+                viewer.addEventListener('click', () => { viewer.remove();
+                    document.body.style.overflow = ''; }); };
+            window.viewWorkerDetail = (id) => { const w = siteWorkersData.find(w => w.id === id); if (!w) return;
+                openModal(t('workers.workerDetails'), `<div class="space-y-2 text-sm"><p><strong>${t('workers.fullName')}:</strong> ${w.name}</p><p><strong>${t('workers.role')}:</strong> ${w.role || '—'}</p><p><strong>${t('workers.paymentType')}:</strong> ${w.payment_method || '—'}</p><p><strong>${t('workers.salary')}:</strong> ${(Number(w.salary) || 0).toLocaleString()} RWF</p><p><strong>${t('workers.phone')}:</strong> ${w.phone || '—'}</p></div>`); };
+            function renderWorkersView() { if (!siteWorkersData.length) return `<div class="bg-white rounded-2xl border p-6 text-center"><p class="text-slate-500">${t('workers.noWorkers')}</p></div>`; let html = `<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">`;
+                siteWorkersData.forEach((w, idx) => { const img = w.image || PLACEHOLDER_IMG;
+                    html += `<div class="bg-white rounded-2xl border overflow-hidden shadow-sm"><div class="relative h-64 cursor-pointer" onclick="openWorkerImage(${idx})"><img src="${img}" class="w-full h-full object-cover" onerror="this.src='${PLACEHOLDER_IMG}'"><div class="absolute inset-0 bg-black/0 hover:bg-black/20 transition"></div></div><div class="p-5"><h3 class="font-bold text-lg">${w.name}</h3><p class="text-sm text-emerald-600">${w.role || t('workers.view')}</p><div class="mt-3 flex justify-between text-sm"><span class="text-slate-500">${t('workers.salary')}</span><span class="font-semibold">${(Number(w.salary) || 0).toLocaleString()} RWF</span></div><div class="mt-2 flex justify-between text-sm"><span class="text-slate-500">${t('workers.phone')}</span><span>${w.phone || '—'}</span></div><button onclick="viewWorkerDetail('${w.id}')" class="mt-4 text-xs text-emerald-600 font-medium">${t('workers.viewDetails')}</button></div></div>`; });
+                html += '</div>'; return html; }
+
+            function renderWorkersRecord() { if (!siteWorkersData.length) return `<div class="bg-white rounded-2xl border p-8 text-center"><p class="text-slate-500">${t('workers.noWorkers')}</p></div>`; const today = getTodayISO(); return `<div class="space-y-6"><div class="bg-white rounded-2xl border p-4 shadow-sm"><div class="flex justify-between items-center"><h3 class="text-sm font-semibold">${t('workers.recordAttendance')}</h3><div class="flex items-center gap-2"><button onclick="changeAttendanceDate(-1)" class="p-2 rounded-lg border"><iconify-icon icon="material-symbols:chevron-left"></iconify-icon></button><input type="date" id="attendance-date" value="${today}" class="border rounded-lg px-3 py-2 text-sm w-40" onchange="updateAttendanceSummary()"><button onclick="changeAttendanceDate(0)" class="px-3 py-2 bg-emerald-50 text-emerald-700 rounded-lg text-sm">${t('common.today')}</button><button onclick="changeAttendanceDate(1)" class="p-2 rounded-lg border"><iconify-icon icon="material-symbols:chevron-right"></iconify-icon></button></div></div></div><div class="bg-white rounded-2xl border p-4 shadow-sm"><div class="flex justify-between items-center mb-4"><h4 class="text-sm font-medium">${t('workers.view')} (${siteWorkersData.length})</h4><button onclick="toggleSelectAllWorkers()" id="select-all-btn" class="text-xs text-emerald-600">${t('common.selectAll')}</button></div><div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">${siteWorkersData.map(w => `<div class="worker-card relative bg-slate-50 border-2 border-transparent rounded-xl p-3 cursor-pointer" data-worker-id="${w.id}" onclick="toggleWorkerSelection('${w.id}')"><input type="checkbox" id="worker-chk-${w.id}" value="${w.id}" class="hidden worker-checkbox-input"><div class="flex items-center gap-3"><div class="w-10 h-10 rounded-full overflow-hidden flex-shrink-0 bg-emerald-100 flex items-center justify-center">${w.image ? `<img src="${w.image}" class="w-full h-full object-cover" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"><span class="font-bold text-emerald-700 hidden">${(w.name||'W').charAt(0).toUpperCase()}</span>` : `<span class="font-bold text-emerald-700">${(w.name||'W').charAt(0).toUpperCase()}</span>`}</div><div><p class="text-sm font-medium">${w.name}</p><p class="text-xs text-slate-500">${w.role || t('workers.view')}</p></div></div><div class="absolute top-2 right-2 w-5 h-5 rounded-full bg-emerald-600 text-white flex items-center justify-center opacity-0 scale-75 transition" data-checkmark><iconify-icon icon="material-symbols:check" class="text-xs"></iconify-icon></div></div>`).join('')}</div></div><div id="attendance-summary" class="bg-white rounded-2xl border p-4 shadow-sm hidden"><div class="flex justify-between items-center"><div class="flex gap-6"><div><p class="text-xs text-slate-500">${t('workers.view')}</p><p class="text-2xl font-bold"><span id="selected-count">0</span> / ${siteWorkersData.length}</p></div><div><p class="text-xs text-slate-500">${t('reports.totalPayroll')}</p><p class="text-2xl font-bold text-emerald-600"><span id="total-cost">0</span> RWF</p></div></div><button onclick="submitAttendance(this)" class="px-6 py-2 bg-emerald-600 text-white rounded-xl text-sm font-semibold"><iconify-icon icon="material-symbols:save"></iconify-icon> ${t('common.save')}</button></div></div><div class="bg-white rounded-2xl border p-4 shadow-sm"><h4 class="text-sm font-medium">${t('workers.attendanceLogs')}</h4><div id="attendance-history-container">${attendanceData.length ? renderAttendanceHistory() : `<p class="text-sm text-slate-400">${t('common.noDataAvailable')}</p>`}</div></div></div>`; }
+            function setWorkerSelection(id, checked) { const card = document.querySelector(`.worker-card[data-worker-id="${id}"]`); const checkbox = document.getElementById(`worker-chk-${id}`); if (!card || !checkbox) return;
+                checkbox.checked = checked; const checkmark = card.querySelector('[data-checkmark]'); if (checked) { card.classList.add('border-emerald-500', 'bg-emerald-50', 'shadow-md');
+                    checkmark.classList.remove('opacity-0', 'scale-75');
+                    checkmark.classList.add('opacity-100', 'scale-100'); } else { card.classList.remove('border-emerald-500', 'bg-emerald-50', 'shadow-md');
+                    checkmark.classList.add('opacity-0', 'scale-75');
+                    checkmark.classList.remove('opacity-100', 'scale-100'); } }
+            window.toggleWorkerSelection = (id) => { const checkbox = document.getElementById(`worker-chk-${id}`); if (!checkbox) return;
+                setWorkerSelection(id, !checkbox.checked);
+                updateAttendanceSummary(); };
+            window.toggleSelectAllWorkers = () => { const checkboxes = document.querySelectorAll('.worker-checkbox-input'); const allSelected = Array.from(checkboxes).every(cb => cb.checked); const newState = !allSelected;
+                checkboxes.forEach(cb => setWorkerSelection(cb.value, newState));
+                updateAttendanceSummary(); };
+            window.changeAttendanceDate = (delta) => { const input = document.getElementById('attendance-date'); if (!input) return; let date = new Date(input.value || getTodayISO()); if (delta === 0) date = new Date(); else date.setDate(date.getDate() + delta);
+                input.value = date.toISOString().split('T')[0];
+                updateAttendanceSummary(); };
+            window.updateAttendanceSummary = () => { const date = document.getElementById('attendance-date')?.value || getTodayISO(); const checked = document.querySelectorAll('.worker-checkbox-input:checked'); const summary = document.getElementById('attendance-summary'); if (!summary) return; if (!checked.length) { summary.classList.add('hidden'); return; }
+                summary.classList.remove('hidden');
+                document.getElementById('selected-count').textContent = checked.length; let total = 0;
+                checked.forEach(cb => { const w = siteWorkersData.find(x => x.id === cb.value); if (w) total += w.payment_method === 'daily' ? Number(w.salary) || 0 : Math.round((Number(w.salary) || 0) / 30); });
+                document.getElementById('total-cost').textContent = total.toLocaleString(); };
+            window.submitAttendance = async (btn) => { const date = document.getElementById('attendance-date')?.value || getTodayISO(); const checked = document.querySelectorAll('.worker-checkbox-input:checked'); if (!checked.length) { alert(t('common.requiredField')); return; }
+                setButtonLoading(btn, true); try { const existingSnap = await getDocs(query(collection(db, 'worker_attendance'), where('site_id', '==', currentSiteId), where('date', '==', date))); const batch = writeBatch(db);
+                    existingSnap.docs.forEach(d => batch.delete(d.ref));
+                    checked.forEach(cb => { const w = siteWorkersData.find(x => x.id === cb.value); if (!w) return; const rate = w.payment_method === 'daily' ? Number(w.salary) || 0 : Math.round((Number(w.salary) || 0) / 30);
+                        batch.set(doc(collection(db, 'worker_attendance')), { site_id: currentSiteId, worker_id: w.id, name: w.name, role: w.role, daily_rate: rate, date, status: 'present', recorded_by: currentUser.uid, recorded_at: new Date().toISOString() }); });
+                    await batch.commit();
+                    showToast(t('common.savedSuccessfully'), 'success'); } catch (err) { showToast(t('common.somethingWentWrong'), 'error'); } finally { setButtonLoading(btn, false); } };
+
+            function renderAttendanceHistory() { const groups = {};
+                attendanceData.forEach(a => { const date = a.date || 'Unknown'; if (!groups[date]) groups[date] = [];
+                    groups[date].push(a); }); let html = ''; const sortedDates = Object.keys(groups).sort((a, b) => new Date(b) - new Date(a));
+                sortedDates.forEach(date => { const workers = groups[date]; const total = workers.reduce((sum, a) => sum + (Number(a.daily_rate) || 0), 0);
+                    html += `<div class="mb-3 last:mb-0 p-3 bg-slate-50 rounded-xl border border-slate-100"><div class="flex justify-between items-center mb-2"><span class="text-sm font-semibold">${date}</span><span class="text-xs text-slate-500">${workers.length} ${t('workers.workers')} • ${total.toLocaleString()} RWF</span></div><div class="flex flex-wrap gap-1">${workers.map(a => `<span class="inline-flex items-center gap-1 bg-white border px-2 py-0.5 rounded text-xs">${a.name} <span class="text-[10px] text-slate-400">(${a.role})</span></span>`).join('')}</div></div>`; }); return html; }
+
+            // =================================================================
+            // PROGRESS
+            // =================================================================
+            function renderProgress(container) {
+                const tasks = window.progressTasks || [];
+                let html = `<h2 class="text-xl sm:text-2xl font-bold mb-4">${t('progress.title')}</h2>`;
+                if (!tasks.length) { html += `<div class="bg-white rounded-2xl border p-6 text-center"><p class="text-slate-500">${t('progress.noTasks')}</p></div>`; container.innerHTML = html; return; }
+                const rows = tasks.map(task => {
+                    const isCompleted = task.status === 'completed';
+                    const actionCell = isCompleted ? `<span class="text-emerald-600"><iconify-icon icon="material-symbols:check-circle" width="20"></iconify-icon></span>` : `<button onclick="markTaskCompleted('${task.id}')" class="bg-gray-300 hover:bg-gray-400 text-white w-8 h-8 rounded-full inline-flex items-center justify-center" title="${t('progress.markCompleted')}"><iconify-icon icon="material-symbols:check" width="18"></iconify-icon></button>`;
+                    const statusClass = isCompleted ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700';
+                    const statusText = isCompleted ? t('progress.completed') : t('progress.pending');
+                    return `<tr><td class="px-3 py-2 text-center">${actionCell}</td><td class="px-3 py-2 font-medium">${task.name || 'Unnamed'}</td><td class="px-3 py-2">${formatDate(task.start_date)}</td><td class="px-3 py-2">${formatDate(task.end_date)}</td><td class="px-3 py-2"><span class="px-2 py-1 rounded-full text-xs ${statusClass}">${statusText}</span></td></tr>`;
+                }).join('');
+                html += `<div class="bg-white rounded-2xl border overflow-hidden shadow-sm"><div class="overflow-x-auto"><table class="w-full text-sm"><thead class="bg-slate-50 uppercase text-xs"><tr><th class="px-3 py-2 text-center">${t('common.add')}</th><th class="px-3 py-2">${t('progress.task')}</th><th class="px-3 py-2">${t('progress.start')}</th><th class="px-3 py-2">${t('progress.end')}</th><th class="px-3 py-2">${t('progress.status')}</th></tr></thead><tbody>${rows}</tbody></table></div></div>`;
+                container.innerHTML = html;
+            }
+
+            window.markTaskCompleted = async (taskId) => { if (!confirm(t('common.areYouSure'))) return; try { await updateDoc(doc(db, 'progress_tasks', taskId), { status: 'completed',
+                        updated_at: new Date().toISOString() });
+                    showToast(t('common.updatedSuccessfully'), 'success'); } catch (err) { showToast(t('common.somethingWentWrong'), 'error'); } };
+
+            // =================================================================
+            // REPORTS
+            // =================================================================
+            function getCompanyDetails() { return { name: 'SHDR Ltd', address: 'KG 11 Avenue, Kimironko, Gasabo District', location: 'Yussa Plaza, 1st Floor', city: 'Kigali City, Rwanda', phone: '+250 788 474 110', email: 'sustainablehomedesign@gmail.com', logo: 'shdr.jpg' }; }
+
+            function generateReportHTML(title, bodyHTML, meta, extraStyles = '') { const company = getCompanyDetails(); const currentYear = new Date().getFullYear(); return `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>${title}</title><style>* { box-sizing: border-box; } body { font-family: Arial, sans-serif; padding: 30px; margin: 0; color: #1f2937; background: white; } .company-header { display: flex; align-items: center; justify-content: space-between; border-bottom: 3px solid #059669; padding-bottom: 18px; margin-bottom: 20px; } .company-left { display: flex; align-items: center; gap: 15px; } .company-logo { width: 75px; height: 75px; object-fit: contain; } .company-name { font-size: 25px; font-weight: 700; color: #059669; margin-bottom: 3px; } .company-subtitle { font-size: 12px; color: #6b7280; } .company-details { font-size: 12px; color: #374151; line-height: 1.5; } .report-title { text-align: right; } .report-title h2 { margin: 0; font-size: 21px; color: #111827; } .report-title p { margin: 5px 0 0; font-size: 11px; color: #6b7280; } .report-meta { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 12px 15px; margin-bottom: 20px; font-size: 12px; line-height: 1.6; } table { border-collapse: collapse; width: 100%; font-size: 11px; } th { background: #059669; color: white; padding: 9px; border: 1px solid #047857; text-align: left; } td { padding: 8px; border: 1px solid #d1d5db; } tr:nth-child(even) { background: #f9fafb; } .report-footer { margin-top: 30px; padding-top: 12px; border-top: 1px solid #d1d5db; text-align: center; font-size: 11px; color: #6b7280; } @media print { body { padding: 15px; } }${extraStyles}</style></head><body><div class="company-header"><div class="company-left"><img src="${company.logo}" alt="${company.name}" class="company-logo"><div><div class="company-name">${company.name}</div><div class="company-subtitle">Construction Management System</div><div class="company-details">${company.address}<br>${company.location}<br>${company.city}<br><strong>Tel:</strong> ${company.phone}<br><strong>Email:</strong> ${company.email}</div></div></div><div class="report-title"><h2>${title}</h2><p>Official Company Report</p></div></div><div class="report-meta">${meta}</div>${bodyHTML}<div class="report-footer">This report is generated automatically by ${company.name} Management System.<br>© ${currentYear} ${company.name} — All rights reserved.</div></body></html>`; }
+
+            function renderReports(container) { container.innerHTML = `<h2 class="text-xl sm:text-2xl font-bold mb-4">${t('reports.title')}</h2><div class="flex gap-2 p-1 bg-slate-200/60 rounded-xl mb-6 max-w-md"><button onclick="setReportType('general')" class="flex-1 px-4 py-2 rounded-lg text-sm font-semibold transition ${reportType === 'general' ? 'report-tab-active' : 'report-tab-inactive'}">${t('reports.general')}</button><button onclick="setReportType('payroll')" class="flex-1 px-4 py-2 rounded-lg text-sm font-semibold transition ${reportType === 'payroll' ? 'report-tab-active' : 'report-tab-inactive'}">${t('reports.workerPayroll')}</button></div><div id="report-content">${reportType === 'general' ? renderGeneralReport() : renderPayrollReport()}</div>`; }
+            window.setReportType = (type) => { reportType = type;
+                showSection('reports'); if (type === 'payroll') setTimeout(updatePayrollReport, 150); };
+
+            function renderGeneralReport() { return `<div class="bg-white rounded-2xl border p-4 max-w-lg space-y-4"><div><label class="block text-sm font-medium">${t('reports.department')}</label><select id="report-dept" class="w-full border rounded-lg p-3"><option value="all">${t('reports.allDepartments')}</option><option value="materials">${t('navigation.materials')}</option><option value="workers">${t('navigation.workers')}</option><option value="finances">${t('navigation.finances')}</option></select></div><div><label class="block text-sm font-medium">${t('reports.startDate')}</label><input type="date" id="report-start" class="w-full border rounded-lg p-3"></div><div><label class="block text-sm font-medium">${t('reports.endDate')}</label><input type="date" id="report-end" class="w-full border rounded-lg p-3"></div><div class="flex gap-3"><button onclick="exportReport('csv')" class="flex-1 bg-emerald-600 text-white py-3 rounded-xl">${t('reports.exportCSV')}</button><button onclick="exportReport('print')" class="flex-1 bg-slate-800 text-white py-3 rounded-xl">${t('reports.printPDF')}</button></div></div>`; }
+
+            function renderPayrollReport() { return `<div class="space-y-6"><div class="bg-white rounded-2xl border p-4 grid grid-cols-1 md:grid-cols-3 gap-4"><div><label class="block text-sm font-medium">${t('reports.startDate')}</label><input type="date" id="payroll-start" class="w-full border rounded-lg p-2.5 text-sm" onchange="updatePayrollReport()"></div><div><label class="block text-sm font-medium">${t('reports.endDate')}</label><input type="date" id="payroll-end" class="w-full border rounded-lg p-2.5 text-sm" onchange="updatePayrollReport()"></div><div><label class="block text-sm font-medium">${t('reports.searchWorker')}</label><input type="text" id="payroll-worker-search" class="w-full border rounded-lg p-2.5 text-sm" placeholder="${t('reports.searchWorker')}" oninput="updatePayrollReport()"></div></div><div id="payroll-summary-cards" class="grid grid-cols-2 md:grid-cols-4 gap-4"></div><div id="payroll-table-container" class="bg-white rounded-2xl border overflow-hidden shadow-sm"></div><div class="flex gap-3 justify-end"><button onclick="exportPayrollReport('csv')" class="px-6 py-2 bg-emerald-600 text-white rounded-xl">${t('reports.exportCSV')}</button><button onclick="exportPayrollReport('print')" class="px-6 py-2 bg-slate-800 text-white rounded-xl">${t('reports.printPDF')}</button></div></div>`; }
+            window.updatePayrollReport = () => { const startDate = document.getElementById('payroll-start')?.value || '',
+                    endDate = document.getElementById('payroll-end')?.value || '',
+                    workerSearch = document.getElementById('payroll-worker-search')?.value?.toLowerCase() || ''; let filtered = attendanceData.filter(a => a.site_id === currentSiteId); if (startDate) filtered = filtered.filter(a => a.date >= startDate); if (endDate) filtered = filtered.filter(a => a.date <= endDate); if (workerSearch) filtered = filtered.filter(a => a.name.toLowerCase().includes(workerSearch)); const workerMap = {};
+                filtered.forEach(rec => { const key = rec.worker_id || rec.id; if (!workerMap[key]) workerMap[key] = { name: rec.name, role: rec.role, dailyRate: rec.daily_rate || 0, days: [],
+                        totalPayable: 0 };
+                    workerMap[key].days.push(rec.date);
+                    workerMap[key].totalPayable += rec.daily_rate || 0; }); const workers = Object.values(workerMap); const totalWorkers = workers.length,
+                    totalDays = workers.reduce((s, w) => s + w.days.length, 0),
+                    totalPayroll = workers.reduce((s, w) => s + w.totalPayable, 0),
+                    avgDaily = totalDays > 0 ? totalPayroll / totalDays : 0; const cards = document.getElementById('payroll-summary-cards'); if (cards) cards.innerHTML =
+                    `<div class="payroll-card bg-white rounded-2xl border p-4 shadow-sm"><p class="text-xs text-slate-500">${t('reports.totalWorkers')}</p><p class="text-2xl font-bold">${totalWorkers}</p></div><div class="payroll-card bg-white rounded-2xl border p-4 shadow-sm"><p class="text-xs text-slate-500">${t('reports.workerDays')}</p><p class="text-2xl font-bold">${totalDays}</p></div><div class="payroll-card bg-white rounded-2xl border p-4 shadow-sm"><p class="text-xs text-slate-500">${t('reports.totalPayroll')}</p><p class="text-2xl font-bold text-emerald-600">${totalPayroll.toLocaleString()} RWF</p></div><div class="payroll-card bg-white rounded-2xl border p-4 shadow-sm"><p class="text-xs text-slate-500">${t('reports.avgDaily')}</p><p class="text-2xl font-bold">${avgDaily.toLocaleString()} RWF</p></div>`; const table = document.getElementById('payroll-table-container'); if (table) { if (!workers.length) { table.innerHTML =
+                        `<p class="p-4 text-slate-500">${t('common.noDataAvailable')}</p>`; return; }
+                    table.innerHTML =
+                    `<div class="overflow-x-auto"><table class="w-full text-sm"><thead class="bg-slate-50 text-xs"><tr><th class="px-3 py-2">${t('workers.fullName')}</th><th class="px-3 py-2">${t('workers.role')}</th><th class="px-3 py-2">${t('reports.workerDays')}</th><th class="px-3 py-2">${t('reports.totalPayroll')}</th></tr></thead><tbody>${workers.map(w => `<tr><td class="px-3 py-2 font-medium">${w.name}</td><td class="px-3 py-2">${w.role||'—'}</td><td class="px-3 py-2 text-center">${w.days.length}</td><td class="px-3 py-2 text-right font-semibold text-emerald-600">${w.totalPayable.toLocaleString()} RWF</td></tr>`).join('')}</tbody><tfoot class="bg-slate-50 font-bold"><tr><td colspan="2" class="px-3 py-2">Total</td><td class="px-3 py-2 text-center">${totalDays}</td><td class="px-3 py-2 text-right">${totalPayroll.toLocaleString()} RWF</td></tr></tfoot></table></div>`; } };
+            window.exportPayrollReport = (format) => { const startDate = document.getElementById('payroll-start')?.value || '',
+                    endDate = document.getElementById('payroll-end')?.value || ''; let filtered = attendanceData.filter(a => a.site_id === currentSiteId); if (startDate) filtered = filtered.filter(a => a.date >= startDate); if (endDate) filtered = filtered.filter(a => a.date <= endDate); const workerMap = {};
+                filtered.forEach(rec => { const key = rec.worker_id || rec.id; if (!workerMap[key]) workerMap[key] = { name: rec.name, role: rec.role, dailyRate: rec.daily_rate || 0, days: [],
+                        totalPayable: 0 };
+                    workerMap[key].days.push(rec.date);
+                    workerMap[key].totalPayable += rec.daily_rate || 0; }); const workers = Object.values(workerMap); const totalDays = workers.reduce((s, w) => s + w.days.length, 0),
+                    totalPayroll = workers.reduce((s, w) => s + w.totalPayable, 0); const company = getCompanyDetails(),
+                    site = assignedSites.find(s => s.id === currentSiteId),
+                    siteName = site?.name || 'Site'; const generatedDate = new Date().toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit',
+                        hour12: false }).replace(',', ', '); const period = startDate && endDate ? `${startDate} to ${endDate}` : 'All Time'; if (format === 'csv') { const headers = [t('workers.fullName'), t('workers.role'), t('reports.workerDays'), t('reports.totalPayroll')]; const rows = [`"${company.name}"`, `"${company.address}"`, `"${company.location}"`, `"${company.city}"`, `"Tel: ${company.phone}"`, `"Email: ${company.email}"`, `"Generated on: ${generatedDate}"`, headers.join(',')];
+                    workers.forEach(w => rows.push([w.name, w.role || '—', w.days.length, w.totalPayable.toLocaleString()].join(',')));
+                    rows.push(`Total,${totalDays},${totalPayroll.toLocaleString()}`); const blob = new Blob([rows.join('\n')], { type: 'text/csv' }); const a = document.createElement('a');
+                    a.href = URL.createObjectURL(blob);
+                    a.download = `Payroll_${siteName}.csv`;
+                    a.click(); return; } const meta =
+                    `<strong>Site Name:</strong> ${siteName} &nbsp;|&nbsp; <strong>Period:</strong> ${period} &nbsp;|&nbsp; <strong>Generated on:</strong> ${generatedDate}`; const headers = [t('workers.fullName'), t('workers.role'), t('reports.workerDays'), t('reports.totalPayroll')]; const tableRows = workers.map(w =>
+                    `<tr><td>${w.name}</td><td>${w.role||'—'}</td><td style="text-align:center">${w.days.length}</td><td style="text-align:right">${w.totalPayable.toLocaleString()} RWF</td></tr>`).join(''); const bodyHTML =
+                    `<table><thead><tr>${headers.map(h=>`<th>${h}</th>`).join('')}</tr></thead><tbody>${tableRows}</tbody><tfoot><tr><td colspan="2"><strong>Total</strong></td><td style="text-align:center">${totalDays}</td><td style="text-align:right"><strong>${totalPayroll.toLocaleString()} RWF</strong></td></tr></tfoot></table>`; const fullHTML = generateReportHTML("Workers' Attendance & Payroll Report", bodyHTML, meta); const win = window.open('', '_blank');
+                win.document.write(fullHTML);
+                win.document.close();
+                setTimeout(() => win.print(), 500); };
+            window.exportReport = (format) => { const dept = document.getElementById('report-dept').value,
+                    startDate = document.getElementById('report-start').value,
+                    endDate = document.getElementById('report-end').value; const site = assignedSites.find(s => s.id === currentSiteId),
+                    siteName = site?.name || 'Site',
+                    company = getCompanyDetails(); let data = []; const filterByDate = (items, dateField) => { if (!startDate && !endDate) return items; return items.filter(i => { const d = new Date(i[dateField]); if (startDate && d < new Date(startDate)) return false; if (endDate && d > new Date(endDate + 'T23:59:59')) return false; return true; }); }; if (dept === 'all' || dept === 'materials') { let mats = materialsData.filter(m => m.site_id === currentSiteId);
+                    mats = filterByDate(mats, 'date_used');
+                    data = data.concat(mats.map(m => ({ Department: t('navigation.materials'), Site: siteName, Name: m.name, 'Quantity Used': m.quantity_used || 0, 'Unit Cost (RWF)': m.unit_cost || 0, 'Total Amount (RWF)': (m.quantity_used || 0) * (m.unit_cost || 0),
+                        Period: formatDate(m.date_used) }))); } if (dept === 'all' || dept === 'workers') data = data.concat(siteWorkersData.map(w => ({ Department: t('navigation.workers'), Site: siteName, Name: w.name, Role: w.role, Salary: w.salary,
+                        Phone: w.phone }))); if (dept === 'all' || dept === 'finances') { const attCost = attendanceData.reduce((s, a) => s + (a.daily_rate || 0), 0),
+                        matCost = materialsData.reduce((s, m) => s + ((m.quantity_used || 0) * (m.unit_cost || 0)), 0);
+                    data.push({ Department: t('navigation.finances'), Site: siteName, Category: t('navigation.materials'), Amount: matCost, Description: 'Materials' });
+                    data.push({ Department: t('navigation.finances'), Site: siteName, Category: t('navigation.workers'), Amount: attCost, Description: 'Workers' }); } if (!data.length) { alert(t('common.noDataAvailable')); return; } const allKeys = new Set();
+                    data.forEach(row => Object.keys(row).forEach(k => allKeys.add(k))); const keys = Array.from(allKeys); const normalizedData = data.map(row => { const newRow = {};
+                        keys.forEach(k => newRow[k] = row[k] ?? ''); return newRow; }); const generatedDate = new Date().toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit',
+                        hour12: false }).replace(',', ', '); const deptLabel = dept === 'all' ? t('reports.allDepartments') : dept.charAt(0).toUpperCase() + dept.slice(1); if (format === 'csv') { const headers = keys; const rows = [`"${company.name}"`, `"${company.address}"`, `"${company.location}"`, `"${company.city}"`, `"Generated on: ${generatedDate}"`, headers.join(',')];
+                    normalizedData.forEach(row => rows.push(headers.map(h => `"${row[h]??''}"`).join(','))); const blob = new Blob([rows.join('\n')], { type: 'text/csv' }); const a = document.createElement('a');
+                    a.href = URL.createObjectURL(blob);
+                    a.download = `Report_${siteName}.csv`;
+                    a.click(); return; } const tableRows = normalizedData.map(row =>
+                    `<tr>${keys.map(h => `<td>${row[h]??''}</td>`).join('')}</tr>`).join(''); const meta =
+                    `<strong>Site Name:</strong> ${siteName} &nbsp;|&nbsp; <strong>Department:</strong> ${deptLabel}<br><strong>Generated on:</strong> ${generatedDate}`; const bodyHTML =
+                    `<table><thead><tr>${keys.map(h => `<th>${h}</th>`).join('')}</tr></thead><tbody>${tableRows}</tbody></table>`; const fullHTML = generateReportHTML('Management Report', bodyHTML, meta); const win = window.open('', '_blank');
+                win.document.write(fullHTML);
+                win.document.close();
+                setTimeout(() => win.print(), 500); };
+
+            // =================================================================
+            // GALLERY
+            // =================================================================
+            function renderGallery(container) { container.innerHTML = `<h2 class="text-xl sm:text-2xl font-bold mb-4">${t('gallery.title')}</h2><div class="bg-white rounded-2xl border p-4 mb-4"><h3 class="font-semibold text-sm mb-3">${t('gallery.uploadImage')}</h3><form onsubmit="handleGalleryUpload(event)" class="space-y-3"><input type="file" id="gallery-image" accept="image/*" required class="w-full border rounded-lg p-2 text-sm"><textarea id="gallery-description" placeholder="${t('gallery.description')}" rows="2" class="w-full border rounded-lg p-2 text-sm"></textarea><button type="submit" class="w-full bg-emerald-600 text-white py-2 rounded-xl text-sm font-medium">${t('gallery.upload')}</button></form></div><div id="gallery-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">${galleryData.length ? galleryData.map((item, index) => `<div class="bg-white rounded-2xl border overflow-hidden shadow-sm flex flex-col"><div class="relative w-full h-40 overflow-hidden cursor-pointer group bg-slate-100" onclick="openGalleryImage(${index})"><img src="${item.image || PLACEHOLDER_IMG}" class="w-full h-full object-cover transition group-hover:scale-105" onerror="this.src='${PLACEHOLDER_IMG}'"><div class="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition"></div></div><div class="p-3 flex-1"><p class="text-sm text-slate-700">${item.description || t('common.noDataAvailable')}</p><p class="text-xs text-slate-400 mt-1">${formatDate(item.uploaded_at)}</p><div class="mt-3 pt-2 border-t flex justify-end gap-2"><button onclick="editGalleryItem('${item.id}')" class="text-xs text-emerald-600">${t('common.edit')}</button><button onclick="deleteGalleryItem('${item.id}')" class="text-xs text-red-500">${t('common.delete')}</button></div></div></div>`).join('') : `<p class="text-slate-400 col-span-full text-sm">${t('gallery.noImages')}</p>`}</div>`; }
+            window.openGalleryImage = (index) => { if (!galleryData.length) return; const viewer = document.createElement('div');
+                viewer.className = 'fixed inset-0 z-[9999] bg-black/95 flex items-center justify-center p-4';
+                viewer.innerHTML = `<button onclick="this.parentElement.remove(); document.body.style.overflow='';" class="absolute top-4 right-4 z-50 w-11 h-11 rounded-full bg-white/10 text-white flex items-center justify-center"><iconify-icon icon="material-symbols:close" class="text-3xl"></iconify-icon></button><img src="${galleryData[index].image || PLACEHOLDER_IMG}" class="max-w-full max-h-[90vh] object-contain rounded-xl"><div class="absolute bottom-8 text-white bg-black/60 px-4 py-2 rounded-lg text-sm">${galleryData[index].description || t('common.noDataAvailable')}</div>`;
+                document.body.appendChild(viewer);
+                document.body.style.overflow = 'hidden';
+                viewer.addEventListener('click', () => { viewer.remove();
+                    document.body.style.overflow = ''; }); };
+            window.editGalleryItem = (id) => { const item = galleryData.find(g => g.id === id); if (!item) return;
+                openModal(t('common.edit'), `<form onsubmit="handleEditGalleryItem(event, '${id}')" class="space-y-4"><input class="w-full border rounded-lg p-3 text-sm" value="${item.description || ''}" id="edit-gallery-desc"><input type="file" id="edit-gallery-image" accept="image/*" class="w-full border rounded-lg p-2 text-sm"><button type="submit" class="w-full bg-emerald-600 text-white py-3 rounded-xl">${t('common.save')}</button></form>`); };
+            window.handleEditGalleryItem = async (e, id) => { e.preventDefault(); const btn = getFormSubmitBtn(e.target);
+                setButtonLoading(btn, true); try { const description = document.getElementById('edit-gallery-desc').value.trim(); const file = document.getElementById('edit-gallery-image').files[0]; const updateData = { description,
+                        updated_at: new Date().toISOString() }; if (file) updateData.image = await uploadImageToImgbb(file); await updateDoc(doc(db, 'gallery', id), updateData);
+                    closeModal();
+                    showToast(t('common.updatedSuccessfully'), 'success'); } catch (err) { showToast(t('common.somethingWentWrong'), 'error'); } finally { setButtonLoading(btn, false); } };
+            window.deleteGalleryItem = async (id) => { if (!confirm(t('common.areYouSure'))) return; try { await deleteDoc(doc(db, 'gallery', id));
+                    showToast(t('common.deletedSuccessfully'), 'success'); } catch (err) { showToast(t('common.somethingWentWrong'), 'error'); } };
+            window.handleGalleryUpload = async (e) => { e.preventDefault(); const form = e.target,
+                    btn = form.querySelector('button[type="submit"]');
+                setButtonLoading(btn, true); try { const file = document.getElementById('gallery-image').files[0]; if (!file) return alert(t('common.requiredField')); const description = document.getElementById('gallery-description').value.trim(); const url = await uploadImageToImgbb(file); await addDoc(collection(db, 'gallery'), { site_id: currentSiteId, image: url, description,
+                        uploaded_at: new Date().toISOString() });
+                    form.reset(); } catch (err) { showToast(t('common.somethingWentWrong'), 'error'); } finally { setButtonLoading(btn, false); } };
+
+            // =================================================================
+            // SETTINGS
+            // =================================================================
+            function renderSettings(container) { container.innerHTML = `<h2 class="text-xl sm:text-2xl font-bold mb-6">${t('settings.title')}</h2><div class="flex flex-wrap gap-2 mb-6 p-1 bg-slate-200/60 rounded-xl"><button class="settings-tab-btn px-4 py-2 rounded-lg text-sm font-semibold transition ${settingsTab === 'profile' ? 'active' : ''}" onclick="switchSettingsTab('profile')"><iconify-icon icon="material-symbols:person-outline" class="inline mr-1"></iconify-icon> ${t('settings.profile')}</button><button class="settings-tab-btn px-4 py-2 rounded-lg text-sm font-semibold transition ${settingsTab === 'account' ? 'active' : ''}" onclick="switchSettingsTab('account')"><iconify-icon icon="material-symbols:account-box-outline" class="inline mr-1"></iconify-icon> ${t('settings.account')}</button><button class="settings-tab-btn px-4 py-2 rounded-lg text-sm font-semibold transition ${settingsTab === 'security' ? 'active' : ''}" onclick="switchSettingsTab('security')"><iconify-icon icon="material-symbols:lock-outline" class="inline mr-1"></iconify-icon> ${t('settings.security')}</button><button class="settings-tab-btn px-4 py-2 rounded-lg text-sm font-semibold transition ${settingsTab === 'preferences' ? 'active' : ''}" onclick="switchSettingsTab('preferences')"><iconify-icon icon="material-symbols:settings-outline" class="inline mr-1"></iconify-icon> ${t('settings.preferences')}</button></div><div class="settings-sections"><div id="settings-profile" class="settings-section ${settingsTab === 'profile' ? 'active' : ''}">${renderProfileSection()}</div><div id="settings-account" class="settings-section ${settingsTab === 'account' ? 'active' : ''}">${renderAccountSection()}</div><div id="settings-security" class="settings-section ${settingsTab === 'security' ? 'active' : ''}">${renderSecuritySection()}</div><div id="settings-preferences" class="settings-section ${settingsTab === 'preferences' ? 'active' : ''}">${renderPreferencesSection()}</div></div>`; populateSettingsForms();
+                attachSettingsChangeListeners(); }
+
+            function renderProfileSection() { const profile = managerProfile || {}; const photo = profile.profile_picture || PLACEHOLDER_IMG; return `<div class="settings-card"><h3><iconify-icon icon="material-symbols:person-outline" class="text-emerald-600"></iconify-icon> ${t('settings.profileInfo')}</h3><form id="profile-form" onsubmit="handleProfileSave(event)"><div class="field-group text-center"><div class="profile-avatar-wrapper"><img id="settings-profile-photo-img" src="${photo}" alt="Profile Photo"><label class="change-photo-btn" title="${t('settings.changePhoto')}"><iconify-icon icon="material-symbols:photo-camera" width="20"></iconify-icon><input type="file" id="settings-profile-photo-input" accept="image/*" style="display:none;" onchange="previewProfilePhoto(event)"></label></div><button type="button" id="settings-remove-photo-btn" class="remove-photo-btn mt-2" onclick="removeProfilePhoto()">${t('settings.removePhoto')}</button></div><div class="field-group"><label for="settings-full-name">${t('settings.fullName')}</label><input type="text" id="settings-full-name" placeholder="${t('settings.fullName')}" value="${profile.full_name || ''}"></div><div class="field-group"><label for="settings-phone">${t('settings.phone')}</label><input type="tel" id="settings-phone" placeholder="+250 7XX XXX XXX" value="${profile.phone || ''}"></div><div class="field-group"><label for="settings-email">${t('settings.email')}</label><input type="email" id="settings-email" placeholder="example@email.com" value="${profile.email || ''}"></div><button type="submit" class="save-btn">${t('settings.saveProfile')}</button></form></div>`; }
+
+            function renderAccountSection() { const profile = managerProfile || {}; return `<div class="settings-card"><h3><iconify-icon icon="material-symbols:account-box-outline" class="text-emerald-600"></iconify-icon> ${t('settings.accountInfo')}</h3><div class="field-group"><label>${t('settings.accountName')}</label><div class="readonly-field">${profile.full_name || 'N/A'}</div></div><div class="field-group"><label>${t('settings.role')}</label><div class="readonly-field" id="settings-role">${profile.role || 'Manager'}</div></div><div class="field-group"><label>${t('settings.email')}</label><div class="readonly-field">${profile.email || 'N/A'}</div></div><div class="field-group"><label>${t('settings.phone')}</label><div class="readonly-field">${profile.phone || 'N/A'}</div></div><div class="field-group"><label>${t('settings.accountStatus')}</label><div class="readonly-field" id="settings-status">${profile.status || t('settings.active')}</div></div><div class="field-group"><label>${t('settings.memberSince')}</label><div class="readonly-field" id="settings-since">${formatDate(profile.created_at)}</div></div></div>`; }
+
+            function renderSecuritySection() { return `<div class="settings-card"><h3><iconify-icon icon="material-symbols:lock-outline" class="text-emerald-600"></iconify-icon> ${t('settings.changePassword')}</h3><form id="security-form" onsubmit="handlePasswordChange(event)"><div class="field-group"><label for="current-password">${t('settings.currentPassword')}</label><input type="password" id="current-password" placeholder="${t('settings.currentPassword')}" required></div><div class="field-group"><label for="new-password">${t('settings.newPassword')}</label><input type="password" id="new-password" placeholder="${t('settings.newPassword')}" required minlength="6"></div><div class="field-group"><label for="confirm-password">${t('settings.confirmPassword')}</label><input type="password" id="confirm-password" placeholder="${t('settings.confirmPassword')}" required></div><button type="submit" class="save-btn">${t('settings.changePassBtn')}</button></form></div>`; }
+
+            function renderPreferencesSection() { const profile = managerProfile || {}; const prefs = profile.preferences || {}; return `<div class="settings-card"><h3><iconify-icon icon="material-symbols:settings-outline" class="text-emerald-600"></iconify-icon> ${t('settings.preferences')}</h3><form id="preferences-form" onsubmit="handlePreferencesSave(event)"><div class="field-group"><label for="settings-language">${t('settings.language')}</label><select id="settings-language"><option value="en">English</option><option value="fr">French</option><option value="rw">Kinyarwanda</option></select></div><div class="field-group"><label for="settings-currency">${t('settings.currency')}</label><select id="settings-currency"><option value="RWF">RWF — Rwandan Franc</option><option value="USD">USD — US Dollar</option><option value="EUR">EUR — Euro</option></select></div><div class="field-group"><label for="settings-date-format">${t('settings.dateFormat')}</label><select id="settings-date-format"><option value="DD/MM/YYYY">DD/MM/YYYY</option><option value="MM/DD/YYYY">MM/DD/YYYY</option><option value="YYYY-MM-DD">YYYY-MM-DD</option></select></div><div class="field-group flex items-center gap-3"><input type="checkbox" id="settings-notifications" class="w-5 h-5 text-emerald-600"><label for="settings-notifications" class="mb-0">${t('settings.notifications')}</label></div><button type="submit" class="save-btn">${t('settings.savePrefs')}</button></form></div>`; }
+
+            function populateSettingsForms() { const profile = managerProfile || {}; const nameInput = document.getElementById('settings-full-name'); if (nameInput) nameInput.value = profile.full_name || ''; const phoneInput = document.getElementById('settings-phone'); if (phoneInput) phoneInput.value = profile.phone || ''; const emailInput = document.getElementById('settings-email'); if (emailInput) emailInput.value = profile.email || ''; const photoImg = document.getElementById('settings-profile-photo-img'); if (photoImg) photoImg.src = profile.profile_picture || PLACEHOLDER_IMG; const roleDisplay = document.getElementById('settings-role'); if (roleDisplay) roleDisplay.textContent = profile.role || 'Manager'; const statusDisplay = document.getElementById('settings-status'); if (statusDisplay) statusDisplay.textContent = profile.status || 'Active'; const sinceDisplay = document.getElementById('settings-since'); if (sinceDisplay) sinceDisplay.textContent = formatDate(profile.created_at); const langSelect = document.getElementById('settings-language'); if (langSelect) langSelect.value = profile.preferences?.language || currentLanguage; const currencySelect = document.getElementById('settings-currency'); if (currencySelect) currencySelect.value = profile.preferences?.currency || 'RWF'; const dateFormatSelect = document.getElementById('settings-date-format'); if (dateFormatSelect) dateFormatSelect.value = profile.preferences?.dateFormat || 'DD/MM/YYYY'; const notifToggle = document.getElementById('settings-notifications'); if (notifToggle) notifToggle.checked = profile.preferences?.notifications !== false; }
+
+            function attachSettingsChangeListeners() { const inputs = document.querySelectorAll('#settings-profile input, #settings-preferences input, #settings-preferences select, #settings-security input');
+                inputs.forEach(el => { el.addEventListener('input', () => { if (!hasUnsavedChanges) hasUnsavedChanges = true; });
+                    el.addEventListener('change', () => { if (!hasUnsavedChanges) hasUnsavedChanges = true; }); }); const fileInput = document.getElementById('settings-profile-photo-input'); if (fileInput) fileInput.addEventListener('change', () => { hasUnsavedChanges = true; }); const removeBtn = document.getElementById('settings-remove-photo-btn'); if (removeBtn) removeBtn.addEventListener('click', () => { hasUnsavedChanges = true; }); }
+            window.switchSettingsTab = (tab) => { if (hasUnsavedChanges) { if (!confirm(t('common.areYouSure'))) return;
+                    hasUnsavedChanges = false; }
+                settingsTab = tab;
+                document.querySelectorAll('.settings-tab-btn').forEach(btn => btn.classList.remove('active'));
+                document.querySelector(`.settings-tab-btn[onclick*="${tab}"]`)?.classList.add('active');
+                document.querySelectorAll('.settings-section').forEach(el => el.classList.remove('active'));
+                document.getElementById(`settings-${tab}`)?.classList.add('active');
+                populateSettingsForms();
+                attachSettingsChangeListeners(); };
+            window.previewProfilePhoto = (event) => { const file = event.target.files[0]; if (!file) return; const reader = new FileReader();
+                reader.onload = (e) => { const img = document.getElementById('settings-profile-photo-img'); if (img) img.src = e.target.result;
+                    _profilePhotoFile = file;
+                    hasUnsavedChanges = true; };
+                reader.readAsDataURL(file); };
+            window.removeProfilePhoto = () => { if (!confirm(t('common.areYouSure'))) return; const img = document.getElementById('settings-profile-photo-img'); if (img) img.src = PLACEHOLDER_IMG;
+                _profilePhotoFile = null; const input = document.getElementById('settings-profile-photo-input'); if (input) input.value = '';
+                hasUnsavedChanges = true; };
+            window.handleProfileSave = async (e) => { e.preventDefault(); const form = e.target; const btn = form.querySelector('.save-btn');
+                setButtonLoading(btn, true); try { const name = document.getElementById('settings-full-name').value.trim(); const phone = document.getElementById('settings-phone').value.trim(); const email = document.getElementById('settings-email').value.trim(); if (!name) { alert(t('common.requiredField'));
+                        setButtonLoading(btn, false); return; } if (phone && !/^\+?[0-9\s-]{7,15}$/.test(phone)) { alert(t('common.invalidValue'));
+                        setButtonLoading(btn, false); return; } if (email && !/^\S+@\S+\.\S+$/.test(email)) { alert(t('common.invalidValue'));
+                        setButtonLoading(btn, false); return; } const updateData = { full_name: name, phone: phone, email: email,
+                        updated_at: new Date().toISOString() }; if (_profilePhotoFile) { try { const photoUrl = await uploadImageToImgbb(_profilePhotoFile);
+                            updateData.profile_picture = photoUrl;
+                            _profilePhotoFile = null; } catch (err) { alert(t('common.somethingWentWrong'));
+                            setButtonLoading(btn, false); return; } } const profileRef = doc(db, 'profiles', currentUser.uid); await updateDoc(profileRef, updateData); if (email && email !== currentUser.email) { const password = prompt(t('settings.currentPassword')); if (!password) { alert(t('common.somethingWentWrong'));
+                        setButtonLoading(btn, false); return; } const credential = EmailAuthProvider.credential(currentUser.email, password); await reauthenticateWithCredential(currentUser, credential); await updateEmail(currentUser, email); await sendEmailVerification(currentUser);
+                        showToast(t('common.savedSuccessfully'), 'success'); }
+                    managerProfile = { ...managerProfile, ...updateData };
+                    updateProfileUI(managerProfile);
+                    hasUnsavedChanges = false;
+                    showToast(t('common.updatedSuccessfully'), 'success');
+                    populateSettingsForms(); } catch (err) { showToast(t('common.somethingWentWrong'), 'error'); } finally { setButtonLoading(btn, false); } };
+            window.handlePasswordChange = async (e) => { e.preventDefault(); const form = e.target; const btn = form.querySelector('.save-btn');
+                setButtonLoading(btn, true); const current = document.getElementById('current-password').value; const newPass = document.getElementById('new-password').value; const confirm = document.getElementById('confirm-password').value; if (newPass !== confirm) { alert(t('common.invalidValue'));
+                    setButtonLoading(btn, false); return; } if (newPass.length < 6) { alert(t('common.invalidValue'));
+                    setButtonLoading(btn, false); return; } try { const credential = EmailAuthProvider.credential(currentUser.email, current); await reauthenticateWithCredential(currentUser, credential); await updatePassword(currentUser, newPass);
+                    showToast(t('common.updatedSuccessfully'), 'success');
+                    form.reset();
+                    hasUnsavedChanges = false; } catch (err) { alert(t('common.somethingWentWrong')); } finally { setButtonLoading(btn, false); } };
+            window.handlePreferencesSave = async (e) => { e.preventDefault(); const form = e.target; const btn = form.querySelector('.save-btn');
+                setButtonLoading(btn, true); try { const language = document.getElementById('settings-language').value; const currency = document.getElementById('settings-currency').value; const dateFormat = document.getElementById('settings-date-format').value; const notifications = document.getElementById('settings-notifications').checked; const prefs = { language, currency, dateFormat,
+                        notifications }; const profileRef = doc(db, 'profiles', currentUser.uid); await updateDoc(profileRef, { preferences: prefs,
+                        updated_at: new Date().toISOString() });
+                    managerProfile.preferences = prefs;
+                    hasUnsavedChanges = false; if (language !== currentLanguage) setLanguage(language);
+                    showToast(t('common.savedSuccessfully'), 'success'); } catch (err) { showToast(t('common.somethingWentWrong'), 'error'); } finally { setButtonLoading(btn, false); } };
+
+            // =================================================================
+            // MAIN ROUTING
+            // =================================================================
             window.showSection = function(section) {
-                if (section === 'batch') {
-                    currentSection = section;
-                    clearError();
-                    document.getElementById('page-title').textContent = 'Batch Receiving';
-                    document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
-                    document.querySelector(`[data-section="batch"]`)?.classList.add('active');
-                    document.querySelectorAll('#bottom-nav a').forEach(a => a.classList.remove('active'));
-                    document.querySelector(`#bottom-nav a[data-section="batch"]`)?.classList.add('active');
-                    const container = document.getElementById('content-area');
-                    container.innerHTML = '';
-                    renderBatch(container);
-                    if (window.innerWidth < 1024) {
-                        document.getElementById('sidebar').classList.add('-translate-x-full');
-                        document.getElementById('sidebar-overlay').classList.add('hidden');
+                if (currentSection === 'settings' && hasUnsavedChanges) { if (!confirm(t('common.areYouSure'))) return;
+                    hasUnsavedChanges = false; }
+                currentSection = section;
+                clearError();
+                document.getElementById('page-title').textContent = t(`navigation.${section}`) || section;
+                document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
+                document.querySelector(`[data-section="${section}"]`)?.classList.add('active');
+                document.querySelectorAll('#bottom-nav a').forEach(a => a.classList.remove('active'));
+                document.querySelector(`#bottom-nav a[data-section="${section}"]`)?.classList.add('active');
+
+                const container = document.getElementById('content-area');
+                container.innerHTML = '';
+                try {
+                    switch (section) {
+                        case 'dashboard':
+                            renderDashboard(container);
+                            break;
+                        case 'materials':
+                            renderMaterials(container);
+                            break;
+                        case 'stock':
+                            renderStock(container);
+                            break;
+                        case 'workers':
+                            renderWorkers(container);
+                            break;
+                        case 'progress':
+                            renderProgress(container);
+                            break;
+                        case 'reports':
+                            renderReports(container);
+                            break;
+                        case 'gallery':
+                            renderGallery(container);
+                            break;
+                        case 'settings':
+                            renderSettings(container);
+                            break;
+                        default:
+                            renderDashboard(container);
                     }
-                    return;
+                } catch (err) {
+                    console.error('Error rendering section:', err);
+                    container.innerHTML =
+                        `<div class="bg-red-50 border border-red-200 rounded-2xl p-6 text-red-800 max-w-2xl mx-auto mt-10"><p class="font-semibold">⚠️ Something went wrong</p><p class="text-sm mt-1">${err.message}</p><p class="text-xs mt-2 text-red-600">Check the console for details.</p></div>`;
                 }
-                // Call original
-                if (typeof originalShowSection === 'function') {
-                    originalShowSection(section);
-                } else {
-                    // Fallback: use the original logic from the page
-                    // Since we're in a module, we need to access the global showSection
-                    const globalShow = window._originalShowSection || window.showSection;
-                    if (globalShow && globalShow !== window.showSection) {
-                        globalShow(section);
-                    }
+                if (window.innerWidth < 1024) {
+                    document.getElementById('sidebar').classList.add('-translate-x-full');
+                    document.getElementById('sidebar-overlay').classList.add('hidden');
                 }
             };
 
-            // Store original for fallback
-            window._originalShowSection = originalShowSection;
+            window.closeModal = () => document.getElementById('modal-overlay').classList.remove('active');
+            window.openModal = (title, bodyHTML) => {
+                document.getElementById('modal-title').textContent = title;
+                document.getElementById('modal-body').innerHTML = bodyHTML;
+                document.getElementById('modal-overlay').classList.add('active');
+            };
 
-            // Also patch the bottom nav
-            document.querySelectorAll('#bottom-nav a[data-section]').forEach(a => {
-                a.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    const section = a.dataset.section;
-                    window.showSection(section);
+            window.handleLogout = async () => { await signOut(auth);
+                window.location.href = '../index.html'; };
+
+            // =================================================================
+            // FIREBASE AUTH & LISTENERS
+            // =================================================================
+            window.addEventListener('load', () => {
+                document.querySelectorAll('.lang-btn').forEach(btn => {
+                    const isActive = btn.dataset.language === currentLanguage;
+                    btn.classList.toggle('active', isActive);
+                    btn.setAttribute('aria-pressed', isActive.toString());
+                });
+                document.documentElement.lang = currentLanguage;
+                applyTranslations();
+
+                onAuthStateChanged(auth, async (user) => {
+                    if (!user) { window.location.href = '../manager.html'; return; }
+                    currentUser = user;
+                    try {
+                        const profileRef = doc(db, 'profiles', user.uid);
+                        const profileSnap = await getDoc(profileRef);
+                        if (!profileSnap.exists() || profileSnap.data().role !== 'manager') {
+                            await signOut(auth);
+                            window.location.href = '../manager.html';
+                            return;
+                        }
+                        managerProfile = profileSnap.data();
+                        updateProfileUI(managerProfile);
+                        onSnapshot(profileRef, (snap) => {
+                            if (snap.exists()) {
+                                managerProfile = snap.data();
+                                updateProfileUI(managerProfile);
+                                if (currentSection === 'settings') populateSettingsForms();
+                            }
+                        });
+
+                        let siteIds = [];
+                        if (managerProfile.assigned_sites && Array.isArray(managerProfile.assigned_sites)) siteIds = managerProfile
+                            .assigned_sites;
+                        else if (managerProfile.assigned_site) siteIds = [managerProfile.assigned_site];
+                        if (siteIds.length) {
+                            const sitePromises = siteIds.map(id => getDoc(doc(db, 'sites', id)));
+                            const siteSnaps = await Promise.all(sitePromises);
+                            assignedSites = siteSnaps.filter(snap => snap.exists()).map(snap => ({ id: snap.id,
+                                ...snap.data() }));
+                            if (assignedSites.length) {
+                                currentSiteId = assignedSites[0].id;
+                                const selector = document.getElementById('site-selector');
+                                if (assignedSites.length > 1) {
+                                    selector.classList.remove('hidden');
+                                    selector.innerHTML = assignedSites.map(s =>
+                                        `<option value="${s.id}" ${s.id === currentSiteId ? 'selected' : ''}>${s.name}</option>`
+                                        ).join('');
+                                } else { selector.classList.add('hidden'); }
+                                attachListeners();
+                            }
+                        }
+                        showSection('dashboard');
+                    } catch (err) {
+                        console.error('Init error:', err);
+                        showError('Failed to initialize: ' + err.message);
+                    }
                 });
             });
 
-            // =================================================================
-            // INIT - after auth, attach batch listeners
-            // =================================================================
+            function updateProfileUI(profile) {
+                if (!profile) return;
+                const name = profile.full_name || 'Manager';
+                const email = profile.email || '';
+                const photo = profile.profile_picture || '';
+                const avatarImg = document.getElementById('sidebar-user-avatar-img');
+                const avatarText = document.getElementById('user-avatar-text');
+                if (photo) { avatarImg.src = photo;
+                    avatarImg.style.display = 'block';
+                    avatarText.style.display = 'none'; } else { avatarImg.style.display = 'none';
+                    avatarText.style.display = 'flex';
+                    avatarText.textContent = name.charAt(0).toUpperCase(); }
+                document.getElementById('user-name').textContent = name;
+                document.getElementById('user-email').textContent = email;
+            }
 
-            // Extend attachListeners to include batches
-            const originalAttachListeners = window.attachListeners || function() {};
-            window.attachListeners = function() {
-                // Call original
-                if (typeof originalAttachListeners === 'function') {
-                    originalAttachListeners();
-                }
-                // Add batch listeners
+            function attachListeners() {
+                unsubscribeSnapshots.forEach(fn => fn());
+                unsubscribeSnapshots = [];
                 if (!currentSiteId) return;
-                const batchQ = query(collection(db, 'batches'), where('siteId', '==', currentSiteId));
+                const siteId = currentSiteId;
+                // materials (we still need for reports, etc.)
+                const matQ = query(collection(db, 'materials'), where('site_id', '==', siteId));
+                unsubscribeSnapshots.push(onSnapshot(matQ, snap => { materialsData = snap.docs.map(d => ({ id: d.id,
+                        ...d.data() })); }));
+                const workQ = query(collection(db, 'site_workers'), where('site_id', '==', siteId));
+                unsubscribeSnapshots.push(onSnapshot(workQ, snap => { siteWorkersData = snap.docs.map(d => ({ id: d.id,
+                        ...d.data() }));
+                    refreshCurrentSection(); }));
+                const progQ = query(collection(db, 'progress_tasks'), where('site_id', '==', siteId));
+                unsubscribeSnapshots.push(onSnapshot(progQ, snap => { const tasks = snap.docs.map(d => ({ id: d.id,
+                        ...d.data() }));
+                    progressTasks = tasks;
+                    window.progressTasks = tasks;
+                    refreshCurrentSection(); }));
+                const posQ = query(collection(db, 'worker_positions'), where('site_id', 'in', [siteId, 'all']));
+                unsubscribeSnapshots.push(onSnapshot(posQ, snap => { workerPositions = snap.docs.map(d => ({ id: d.id,
+                        ...d.data() }));
+                    refreshCurrentSection(); }));
+                const galleryQ = query(collection(db, 'gallery'), where('site_id', '==', siteId));
+                unsubscribeSnapshots.push(onSnapshot(galleryQ, snap => { galleryData = snap.docs.map(d => ({ id: d.id,
+                        ...d.data() }));
+                    refreshCurrentSection(); }));
+                const attQ = query(collection(db, 'worker_attendance'), where('site_id', '==', siteId));
+                unsubscribeSnapshots.push(onSnapshot(attQ, snap => { attendanceData = snap.docs.map(d => ({ id: d.id,
+                        ...d.data() }));
+                    refreshCurrentSection(); }));
+                const stockQ = query(collection(db, 'stock'), where('site_id', '==', siteId));
+                unsubscribeSnapshots.push(onSnapshot(stockQ, snap => { stockData = snap.docs.map(d => ({ id: d.id,
+                        ...d.data() }));
+                    refreshCurrentSection(); }));
+                const transQ = query(collection(db, 'stock_transactions'), where('site_id', '==', siteId), orderBy(
+                    'created_at', 'desc'));
+                unsubscribeSnapshots.push(onSnapshot(transQ, snap => { stockTransactions = snap.docs.map(d => ({ id: d.id,
+                        ...d.data() }));
+                    refreshCurrentSection(); }));
+
+                // Batch listeners
+                const batchQ = query(collection(db, 'batches'), where('siteId', '==', siteId));
                 const unsubBatch = onSnapshot(batchQ, snap => {
                     batchesData = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-                    // Also get batch items for these batches
                     const batchIds = batchesData.map(b => b.id);
                     if (batchIds.length) {
                         const itemsQ = query(collection(db, 'batch_items'), where('batchId', 'in', batchIds));
                         onSnapshot(itemsQ, snap2 => {
                             batchItemsData = snap2.docs.map(d => ({ id: d.id, ...d.data() }));
-                            // Refresh current section if on batch
-                            if (currentSection === 'batch') showSection('batch');
+                            refreshCurrentSection();
                         });
                     } else {
                         batchItemsData = [];
-                        if (currentSection === 'batch') showSection('batch');
+                        refreshCurrentSection();
                     }
-                    if (currentSection === 'batch') showSection('batch');
+                    refreshCurrentSection();
                 });
-                // Store for cleanup
                 if (!window._batchUnsubs) window._batchUnsubs = [];
                 window._batchUnsubs.push(unsubBatch);
-
-                // Also listen for batch items
                 const itemsQ = query(collection(db, 'batch_items'));
                 const unsubItems = onSnapshot(itemsQ, snap => {
-                    // Only keep items for our site's batches
                     const siteBatchIds = batchesData.map(b => b.id);
-                    batchItemsData = snap.docs
-                        .map(d => ({ id: d.id, ...d.data() }))
-                        .filter(i => siteBatchIds.includes(i.batchId));
-                    if (currentSection === 'batch') showSection('batch');
+                    batchItemsData = snap.docs.map(d => ({ id: d.id, ...d.data() })).filter(i => siteBatchIds.includes(i
+                        .batchId));
+                    refreshCurrentSection();
                 });
                 window._batchUnsubs.push(unsubItems);
+            }
+
+            function refreshCurrentSection() {
+                if (window._refreshing) return;
+                window._refreshing = true;
+                requestAnimationFrame(() => { showSection(currentSection);
+                    window._refreshing = false; });
+            }
+
+            window.switchSite = (siteId) => {
+                currentSiteId = siteId;
+                attachListeners();
+                showSection(currentSection);
             };
 
-            // Cleanup function
-            const originalCleanup = window._cleanupListeners || function() {};
-            window._cleanupListeners = function() {
+            async function uploadImageToImgbb(file) {
+                const formData = new FormData();
+                formData.append('image', file);
+                const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, { method: 'POST', body: formData });
+                const json = await res.json();
+                if (!json.success) throw new Error(t('common.somethingWentWrong'));
+                return json.data.url;
+            }
+
+            // Cleanup on page unload
+            window.addEventListener('beforeunload', () => {
                 if (window._batchUnsubs) {
                     window._batchUnsubs.forEach(fn => fn());
                     window._batchUnsubs = [];
                 }
-                originalCleanup();
-            };
+                unsubscribeSnapshots.forEach(fn => fn());
+            });
 
-            // Override refreshCurrentSection to handle batch
-            const originalRefresh = window.refreshCurrentSection || function() {};
-            window.refreshCurrentSection = function() {
-                if (currentSection === 'batch') {
-                    showSection('batch');
-                    return;
-                }
-                originalRefresh();
-            };
-
-            // =================================================================
-            // MAKE FUNCTIONS GLOBAL FOR INLINE ONCLICK
-            // =================================================================
-            window.toggleMaterialSelection = toggleMaterialSelection;
-            window.toggleAllMaterials = toggleAllMaterials;
-            window.updateBatchEntry = updateBatchEntry;
-            window.removeSelectedMaterial = removeSelectedMaterial;
-            window.handleSaveBatch = handleSaveBatch;
-            window.switchBatchTab = switchBatchTab;
-            window.viewBatch = viewBatch;
-            window.editBatch = editBatch;
-            window.deleteBatch = deleteBatch;
-            window.handleEditBatch = handleEditBatch;
-            window.updateEditTotals = updateEditTotals;
-            window.addEditRow = window.addEditRow || function() {};
-
-            console.log('✅ Batch Material Entry & Receiving feature loaded.');
+            console.log('✅ SHDR Manager Dashboard loaded with Batch Material Receiving');
         </script>
     </main>
 </body>
