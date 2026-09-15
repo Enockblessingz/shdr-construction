@@ -8,10 +8,8 @@
     <title>SHDR Ltd. — Manager Dashboard</title>
 
     <!-- ── Favicon (browser tab) – SHDR logo ── -->
-    <link rel="icon" type="image/png" href="shdr_logo Background Removed.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="shdr_logo Background Removed.png">
-```
-
+    <link rel="icon" type="image/png" href="shdr_logo%20Background%20Removed.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="shdr_logo%20Background%20Removed.png">
 
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com/3.4.17"></script>
@@ -105,7 +103,7 @@
     <div class="p-6 border-b border-slate-100">
         <div class="flex items-center gap-3">
             <div class="w-10 h-10 rounded-lg bg-emerald-100 flex items-center justify-center overflow-hidden shrink-0">
-                <img src="shdr-logo.png" alt="SHDR Ltd."
+                <img src="shdr_logo%20Background%20Removed.png" alt="SHDR Ltd."
                      class="w-10 h-10 object-contain"
                      onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 40 40%22%3E%3Crect width=%2240%22 height=%2240%22 rx=%228%22 fill=%22%23059669%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22white%22 font-family=%22Arial%22 font-weight=%22bold%22 font-size=%2216%22%3ESH%3C/text%3E%3C/svg%3E';">
             </div>
@@ -252,7 +250,7 @@
     let unsubscribeSnapshots = [];
     let currentSection = 'dashboard';
     let financeViewMode = 'monthly';
-    let materialDateFilter = ''; // for materials view
+    let materialDateFilter = '';
 
     // ── Helpers ──
     function showLoading(show) { document.getElementById('global-loading').classList.toggle('hidden', !show); }
@@ -492,7 +490,7 @@
         `;
     }
 
-    // =============== MATERIALS (with date filter & both modals) ===============
+    // =============== MATERIALS ===============
     function renderMaterials(container) {
         let filtered = materialsData;
         if (materialDateFilter) {
@@ -516,7 +514,6 @@
             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-4 sm:mb-6">
                 <h2 class="text-xl sm:text-2xl font-bold">Materials</h2>
                 <div class="flex flex-wrap items-center gap-2">
-                    <!-- Date Selector -->
                     <div class="flex items-center gap-2 bg-white border rounded-xl px-3 py-1.5 shadow-sm">
                         <iconify-icon icon="material-symbols:calendar-today" class="text-slate-400 text-lg"></iconify-icon>
                         <input type="date"
@@ -538,14 +535,12 @@
                         Today
                     </button>
 
-                    <!-- Order button -->
                     <button onclick="openAddMaterialModal()"
                             class="px-3 py-2 bg-emerald-600 text-white rounded-xl hover:bg-emerald-700 flex items-center gap-2 text-sm shadow-sm transition">
                         <iconify-icon icon="material-symbols:add"></iconify-icon>
                         Order
                     </button>
 
-                    <!-- Usage button -->
                     <button onclick="openAddMaterialUsageModal()"
                             class="px-3 py-2 bg-amber-600 text-white rounded-xl hover:bg-amber-700 flex items-center gap-2 text-sm shadow-sm transition">
                         <iconify-icon icon="material-symbols:playlist-add"></iconify-icon>
@@ -599,7 +594,6 @@
         `;
     }
 
-    // ── Date controls ──
     window.handleMaterialDateChange = (value) => {
         materialDateFilter = value || '';
         if (currentSection === 'materials') {
@@ -622,7 +616,6 @@
         }
     };
 
-    // ── Batch Order Modal (with date) ──
     window.openAddMaterialModal = () => {
         let entryCount = 0;
         const addEntry = () => {
@@ -693,7 +686,6 @@
         };
     };
 
-    // ── Usage Modal (with date) ──
     window.openAddMaterialUsageModal = () => {
         let entryCount = 0;
         const addEntry = () => {
