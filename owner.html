@@ -8,483 +8,149 @@
     <title>SHDR Owner — Sign In / Register</title>
 
     <style>
-        /* ── reset & base ── */
         * { margin: 0; padding: 0; box-sizing: border-box; }
-
         :root {
-            --green: #059669;
-            --green-hover: #047857;
-            --text: #1a1a2e;
-            --text-light: #6b7280;
-            --border: #e5e7eb;
-            --surface: #ffffff;
-            --radius: 12px;
-            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06);
+            --green: #059669; --green-hover: #047857;
+            --text: #1a1a2e; --text-light: #6b7280;
+            --border: #e5e7eb; --radius: 12px;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
         }
-
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: #f8fafc;
-            color: var(--text);
-            min-height: 100vh;
-            display: flex;
-            -webkit-font-smoothing: antialiased;
+            background: #f8fafc; color: var(--text);
+            min-height: 100vh; display: flex; -webkit-font-smoothing: antialiased;
         }
-
         .split-container { display: flex; width: 100%; min-height: 100vh; }
-
-        /* ── left brand panel ── */
         .brand-panel {
-            flex: 0 0 42%;
-            background: linear-gradient(135deg, #064e3b 0%, #047857 100%);
-            position: relative;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 40px;
-            color: #fff;
-            text-align: center;
+            flex: 0 0 42%; background: linear-gradient(135deg, #064e3b 0%, #047857 100%);
+            position: relative; overflow: hidden; display: flex; flex-direction: column;
+            align-items: center; justify-content: center; padding: 40px; color: #fff; text-align: center;
         }
-
         .brand-panel::before {
-            content: '';
-            position: absolute;
-            inset: 0;
+            content: ''; position: absolute; inset: 0;
             background: url('https://cdn.pixabay.com/photo/2018/12/12/23/02/site-3871804_1280.jpg') center/cover no-repeat;
-            opacity: 0.12;
-            z-index: 0;
+            opacity: 0.12; z-index: 0;
         }
-
         .brand-content { position: relative; z-index: 2; max-width: 360px; }
-
         .brand-logo {
-            width: 80px;
-            height: 80px;
-            border-radius: 20px;
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(10px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 24px;
-            font-size: 2rem;
-            font-weight: 700;
-            color: #fff;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            overflow: hidden;
+            width: 80px; height: 80px; border-radius: 20px;
+            background: rgba(255,255,255,0.15); backdrop-filter: blur(10px);
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 24px; font-size: 2rem; font-weight: 700; color: #fff;
+            border: 1px solid rgba(255,255,255,0.2); overflow: hidden;
         }
-
         .brand-logo img { width: 100%; height: 100%; border-radius: 20px; object-fit: cover; }
-
         .brand-panel h2 { font-size: 2rem; font-weight: 700; margin-bottom: 16px; letter-spacing: -0.5px; }
         .brand-panel p { font-size: 1rem; line-height: 1.7; opacity: 0.9; }
-
-        .brand-features {
-            margin-top: 40px;
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-            text-align: left;
-            width: 100%;
-            max-width: 300px;
-        }
-
-        .brand-feature {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-size: 0.9rem;
-            opacity: 0.85;
-        }
-
-        .brand-feature .icon {
-            width: 28px;
-            height: 28px;
-            background: rgba(255, 255, 255, 0.15);
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-        }
-
-        /* ── right form panel ── */
-        .form-panel {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 32px;
-            background: #fff;
-        }
-
+        .brand-features { margin-top: 40px; display: flex; flex-direction: column; gap: 16px; text-align: left; width: 100%; max-width: 300px; }
+        .brand-feature { display: flex; align-items: center; gap: 12px; font-size: 0.9rem; opacity: 0.85; }
+        .brand-feature .icon { width: 28px; height: 28px; background: rgba(255,255,255,0.15); border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .form-panel { flex: 1; display: flex; align-items: center; justify-content: center; padding: 32px; background: #fff; }
         .form-wrapper { width: 100%; max-width: 420px; }
-
         .form-header { margin-bottom: 28px; text-align: center; }
         .form-header h1 { font-size: 1.8rem; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 6px; }
         .form-header p { color: var(--text-light); font-size: 0.95rem; }
-
-        /* ── message ── */
-        .message {
-            padding: 12px 16px;
-            border-radius: 10px;
-            font-size: 0.85rem;
-            margin-bottom: 20px;
-            display: none;
-            line-height: 1.5;
-        }
-
+        .message { padding: 12px 16px; border-radius: 10px; font-size: 0.85rem; margin-bottom: 20px; display: none; line-height: 1.5; }
         .message.error { background: #fef2f2; color: #991b1b; border: 1px solid #fecaca; }
         .message.success { background: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; }
         .message.info { background: #eff6ff; color: #1e40af; border: 1px solid #bfdbfe; }
-
-        /* ── social login ── */
         .social-section { margin-bottom: 20px; }
-
         .social-btn {
-            width: 100%;
-            padding: 12px 16px;
-            border-radius: var(--radius);
-            border: 1.5px solid var(--border);
-            background: #fff;
-            font-size: 0.9rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: background 0.2s, border-color 0.2s, box-shadow 0.2s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            color: var(--text);
-            font-family: inherit;
-            margin-bottom: 10px;
+            width: 100%; padding: 12px 16px; border-radius: var(--radius);
+            border: 1.5px solid var(--border); background: #fff; font-size: 0.9rem;
+            font-weight: 500; cursor: pointer; transition: 0.2s; display: flex;
+            align-items: center; justify-content: center; gap: 10px; color: var(--text);
+            font-family: inherit; margin-bottom: 10px;
         }
-
         .social-btn:hover { background: #f9fafb; border-color: #d1d5db; box-shadow: var(--shadow-sm); }
         .social-btn:active { transform: scale(0.98); }
         .social-btn svg { width: 20px; height: 20px; flex-shrink: 0; }
         .social-btn.google-btn svg { width: 18px; height: 18px; }
         .social-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
-
-        .divider {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            color: var(--text-light);
-            font-size: 0.8rem;
-            margin: 16px 0 18px;
-        }
-
-        .divider::before,
-        .divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
-
-        /* ── form fields ── */
+        .divider { display: flex; align-items: center; gap: 16px; color: var(--text-light); font-size: 0.8rem; margin: 16px 0 18px; }
+        .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
         .form-group { margin-bottom: 18px; }
-        .form-group label {
-            display: block;
-            font-size: 0.85rem;
-            font-weight: 600;
-            margin-bottom: 6px;
-            color: var(--text);
-        }
-
+        .form-group label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 6px; color: var(--text); }
         .form-group input {
-            width: 100%;
-            padding: 12px 16px;
-            border: 1.5px solid var(--border);
-            border-radius: var(--radius);
-            font-size: 0.95rem;
-            transition: 0.2s;
-            background: #f9fafb;
-            font-family: inherit;
+            width: 100%; padding: 12px 16px; border: 1.5px solid var(--border);
+            border-radius: var(--radius); font-size: 0.95rem; transition: 0.2s;
+            background: #f9fafb; font-family: inherit;
         }
-
-        .form-group input:focus {
-            outline: none;
-            border-color: var(--green);
-            box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.08);
-            background: #fff;
-        }
-
+        .form-group input:focus { outline: none; border-color: var(--green); box-shadow: 0 0 0 3px rgba(5,150,105,0.08); background: #fff; }
         .password-wrap { position: relative; }
         .password-wrap input { padding-right: 48px; }
-
-        .toggle-pw {
-            position: absolute;
-            right: 14px;
-            top: 50%;
-            transform: translateY(-50%);
-            background: none;
-            border: none;
-            cursor: pointer;
-            font-size: 1.1rem;
-            color: #9ca3af;
-            padding: 4px;
-        }
-
-        .row-options {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 0.85rem;
-            margin-bottom: 20px;
-        }
-
-        .row-options label {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            cursor: pointer;
-            color: var(--text-light);
-        }
-
+        .toggle-pw { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; font-size: 1.1rem; color: #9ca3af; padding: 4px; }
+        .row-options { display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; margin-bottom: 20px; }
+        .row-options label { display: flex; align-items: center; gap: 6px; cursor: pointer; color: var(--text-light); }
         .row-options a { color: var(--green); text-decoration: none; font-weight: 500; }
         .row-options a:hover { text-decoration: underline; }
-
         .btn {
-            width: 100%;
-            padding: 13px;
-            border-radius: var(--radius);
-            border: none;
-            font-weight: 600;
-            font-size: 0.95rem;
-            cursor: pointer;
-            transition: background 0.2s;
-            background: var(--green);
-            color: #fff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            font-family: inherit;
+            width: 100%; padding: 13px; border-radius: var(--radius); border: none;
+            font-weight: 600; font-size: 0.95rem; cursor: pointer; transition: 0.2s;
+            background: var(--green); color: #fff; display: flex; align-items: center;
+            justify-content: center; gap: 8px; font-family: inherit;
         }
-
         .btn:hover { background: var(--green-hover); }
         .btn:disabled { opacity: 0.7; cursor: not-allowed; }
-
-        .btn-secondary {
-            background: #fff;
-            color: var(--text);
-            border: 1.5px solid var(--border);
-        }
+        .btn-secondary { background: #fff; color: var(--text); border: 1.5px solid var(--border); }
         .btn-secondary:hover { background: #f9fafb; border-color: #d1d5db; }
-
-        .switch-text {
-            text-align: center;
-            margin-top: 20px;
-            font-size: 0.9rem;
-            color: var(--text-light);
-        }
-
-        .switch-text button {
-            background: none;
-            border: none;
-            color: var(--green);
-            font-weight: 600;
-            cursor: pointer;
-            font-size: 0.9rem;
-            padding: 0 4px;
-        }
-
+        .switch-text { text-align: center; margin-top: 20px; font-size: 0.9rem; color: var(--text-light); }
+        .switch-text button { background: none; border: none; color: var(--green); font-weight: 600; cursor: pointer; font-size: 0.9rem; padding: 0 4px; }
         .switch-text button:hover { text-decoration: underline; }
-
         .hidden { display: none !important; }
-
-        .footer-text {
-            text-align: center;
-            margin-top: 24px;
-            font-size: 0.75rem;
-            color: var(--text-light);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 6px;
-            flex-wrap: wrap;
-        }
-
+        .footer-text { text-align: center; margin-top: 24px; font-size: 0.75rem; color: var(--text-light); display: flex; justify-content: center; align-items: center; gap: 6px; flex-wrap: wrap; }
         .footer-text a { color: var(--green); text-decoration: none; font-weight: 500; }
         .footer-text a:hover { text-decoration: underline; }
-
-        .spinner {
-            display: inline-block;
-            width: 16px;
-            height: 16px;
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            border-top: 2px solid #fff;
-            border-radius: 50%;
-            animation: spin 0.6s linear infinite;
-        }
-
-        .spinner-dark {
-            border: 2px solid rgba(5, 150, 105, 0.25);
-            border-top: 2px solid var(--green);
-        }
-
+        .spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.3); border-top: 2px solid #fff; border-radius: 50%; animation: spin 0.6s linear infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        /* ══════════════════════════════════════════
-           OTP VERIFICATION VIEW
-           ══════════════════════════════════════════ */
         .otp-view { text-align: center; }
-
         .otp-icon {
-            width: 76px;
-            height: 76px;
-            background: #ecfdf5;
-            color: var(--green);
-            border-radius: 22px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2.2rem;
-            margin: 0 auto 20px;
-            border: 1px solid #a7f3d0;
+            width: 76px; height: 76px; background: #ecfdf5; color: var(--green);
+            border-radius: 22px; display: flex; align-items: center; justify-content: center;
+            font-size: 2.2rem; margin: 0 auto 20px; border: 1px solid #a7f3d0;
         }
-
-        .otp-view h1 {
-            font-size: 1.7rem;
-            font-weight: 700;
-            letter-spacing: -0.5px;
-            margin-bottom: 8px;
-        }
-
-        .otp-view .otp-sub {
-            color: var(--text-light);
-            font-size: 0.95rem;
-            line-height: 1.6;
-            margin-bottom: 6px;
-        }
-
+        .otp-view h1 { font-size: 1.7rem; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 8px; }
+        .otp-view .otp-sub { color: var(--text-light); font-size: 0.95rem; line-height: 1.6; margin-bottom: 6px; }
         .otp-view .otp-email {
-            display: inline-block;
-            font-weight: 600;
-            color: var(--text);
-            background: #f1f5f9;
-            padding: 4px 12px;
-            border-radius: 100px;
-            font-size: 0.9rem;
-            margin-top: 4px;
-            word-break: break-all;
+            display: inline-block; font-weight: 600; color: var(--text);
+            background: #f1f5f9; padding: 4px 12px; border-radius: 100px;
+            font-size: 0.9rem; margin-top: 4px; word-break: break-all;
         }
-
-        .otp-inputs {
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-            margin: 28px 0 16px;
-        }
-
+        .otp-inputs { display: flex; gap: 10px; justify-content: center; margin: 28px 0 16px; }
         .otp-inputs input {
-            width: 52px;
-            height: 62px;
-            text-align: center;
-            font-size: 1.5rem;
-            font-weight: 700;
-            border: 1.5px solid var(--border);
-            border-radius: 12px;
-            background: #f9fafb;
-            transition: 0.2s;
-            font-family: inherit;
-            color: var(--text);
-            caret-color: var(--green);
+            width: 52px; height: 62px; text-align: center; font-size: 1.5rem;
+            font-weight: 700; border: 1.5px solid var(--border); border-radius: 12px;
+            background: #f9fafb; transition: 0.2s; font-family: inherit;
+            color: var(--text); caret-color: var(--green);
         }
-
-        .otp-inputs input:focus {
-            outline: none;
-            border-color: var(--green);
-            box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.1);
-            background: #fff;
-        }
-
-        .otp-inputs input.filled {
-            border-color: var(--green);
-            background: #fff;
-        }
-
-        .otp-inputs input.error {
-            border-color: #ef4444;
-            background: #fef2f2;
-            animation: shake 0.4s ease;
-        }
-
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-5px); }
-            75% { transform: translateX(5px); }
-        }
-
-        .otp-timer {
-            font-size: 0.82rem;
-            color: var(--text-light);
-            margin-bottom: 22px;
-        }
-
+        .otp-inputs input:focus { outline: none; border-color: var(--green); box-shadow: 0 0 0 3px rgba(5,150,105,0.1); background: #fff; }
+        .otp-inputs input.filled { border-color: var(--green); background: #fff; }
+        .otp-inputs input.error { border-color: #ef4444; background: #fef2f2; animation: shake 0.4s ease; }
+        @keyframes shake { 0%,100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+        .otp-timer { font-size: 0.82rem; color: var(--text-light); margin-bottom: 22px; }
         .otp-timer strong { color: var(--green); font-variant-numeric: tabular-nums; }
         .otp-timer.expired strong { color: #dc2626; }
-
-        .otp-resend {
-            margin-top: 20px;
-            font-size: 0.85rem;
-            color: var(--text-light);
-        }
-
-        .otp-resend button {
-            background: none;
-            border: none;
-            color: var(--green);
-            font-weight: 600;
-            cursor: pointer;
-            font-size: 0.85rem;
-            padding: 0 4px;
-            font-family: inherit;
-        }
-
+        .otp-resend { margin-top: 20px; font-size: 0.85rem; color: var(--text-light); }
+        .otp-resend button { background: none; border: none; color: var(--green); font-weight: 600; cursor: pointer; font-size: 0.85rem; padding: 0 4px; font-family: inherit; }
         .otp-resend button:hover:not(:disabled) { text-decoration: underline; }
         .otp-resend button:disabled { color: #9ca3af; cursor: not-allowed; }
-
-        .otp-back {
-            margin-top: 24px;
-            padding-top: 20px;
-            border-top: 1px solid var(--border);
-        }
-
-        .otp-back button {
-            background: none;
-            border: none;
-            color: var(--text-light);
-            font-size: 0.85rem;
-            cursor: pointer;
-            font-weight: 500;
-            font-family: inherit;
-        }
-
+        .otp-back { margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--border); }
+        .otp-back button { background: none; border: none; color: var(--text-light); font-size: 0.85rem; cursor: pointer; font-weight: 500; font-family: inherit; }
         .otp-back button:hover { color: var(--text); }
 
-        /* ── responsive ── */
         @media (max-width: 768px) {
             .split-container { flex-direction: column; }
-
-            .brand-panel {
-                flex: 0 0 auto;
-                padding: 40px 24px;
-                min-height: auto;
-                text-align: center;
-            }
-
+            .brand-panel { flex: 0 0 auto; padding: 40px 24px; min-height: auto; text-align: center; }
             .brand-panel h2 { font-size: 1.6rem; }
             .brand-features { display: none; }
             .brand-content { max-width: 100%; }
-
             .form-panel { padding: 24px; flex: 1; align-items: flex-start; }
         }
-
         @media (max-width: 480px) {
             .social-btn { font-size: 0.85rem; padding: 11px 14px; }
             .social-btn svg { width: 18px; height: 18px; }
             .form-wrapper { padding: 0 4px; }
-
             .otp-inputs { gap: 7px; }
             .otp-inputs input { width: 44px; height: 54px; font-size: 1.25rem; border-radius: 10px; }
         }
@@ -493,7 +159,6 @@
 <body>
 
     <div class="split-container">
-
         <!-- ─── LEFT: BRANDING ─── -->
         <div class="brand-panel">
             <div class="brand-content">
@@ -513,23 +178,17 @@
         <!-- ─── RIGHT: FORMS ─── -->
         <div class="form-panel">
             <div class="form-wrapper">
-
-                <!-- Global message area (shared by all views) -->
                 <div id="message" class="message"></div>
 
-                <!-- ═══════════════════════════════════════
-                     VIEW 1: AUTH (login + signup)
-                     ═══════════════════════════════════════ -->
+                <!-- VIEW 1: AUTH -->
                 <div id="auth-view">
-
                     <div class="form-header">
                         <h1 id="form-title">Sign In</h1>
                         <p id="form-desc">Access your owner dashboard</p>
                     </div>
 
-                    <!-- ═══ LOGIN FORM ═══ -->
+                    <!-- LOGIN -->
                     <form id="login-form" onsubmit="handleLogin(event)">
-
                         <div class="social-section">
                             <button type="button" class="social-btn google-btn" id="google-login-btn" onclick="signInWithGoogle()">
                                 <svg viewBox="0 0 48 48">
@@ -542,7 +201,6 @@
                             </button>
                             <div class="divider">Or</div>
                         </div>
-
                         <div class="form-group">
                             <label for="login-email">Email Address</label>
                             <input type="email" id="login-email" placeholder="owner@example.com" required autocomplete="email" />
@@ -551,9 +209,7 @@
                             <label for="login-password">Passcode</label>
                             <div class="password-wrap">
                                 <input type="password" id="login-password" placeholder="••••••••" required autocomplete="current-password" />
-                                <button type="button" class="toggle-pw" onclick="togglePassword('login-password', 'login-eye')">
-                                    <span id="login-eye">👁️</span>
-                                </button>
+                                <button type="button" class="toggle-pw" onclick="togglePassword('login-password','login-eye')"><span id="login-eye">👁️</span></button>
                             </div>
                         </div>
                         <div class="row-options">
@@ -567,9 +223,8 @@
                         </div>
                     </form>
 
-                    <!-- ═══ SIGNUP FORM ═══ -->
+                    <!-- SIGNUP -->
                     <form id="signup-form" class="hidden" onsubmit="handleSignUp(event)">
-
                         <div class="social-section">
                             <button type="button" class="social-btn google-btn" onclick="signInWithGoogle()">
                                 <svg viewBox="0 0 48 48">
@@ -582,7 +237,6 @@
                             </button>
                             <div class="divider">Or</div>
                         </div>
-
                         <div class="form-group">
                             <label for="signup-name">Full Name</label>
                             <input type="text" id="signup-name" placeholder="Your full name" required />
@@ -595,9 +249,7 @@
                             <label for="signup-password">Passcode</label>
                             <div class="password-wrap">
                                 <input type="password" id="signup-password" placeholder="Minimum 8 characters" minlength="8" required />
-                                <button type="button" class="toggle-pw" onclick="togglePassword('signup-password', 'signup-eye')">
-                                    <span id="signup-eye">👁️</span>
-                                </button>
+                                <button type="button" class="toggle-pw" onclick="togglePassword('signup-password','signup-eye')"><span id="signup-eye">👁️</span></button>
                             </div>
                         </div>
                         <div class="form-group">
@@ -609,18 +261,14 @@
                             Already have an account?
                             <button type="button" onclick="switchTo('login')">Sign In</button>
                         </div>
-                        <p class="switch-text" style="font-size:0.8rem; color:#b45309; margin-top:12px;">
+                        <p class="switch-text" style="font-size:0.8rem;color:#b45309;margin-top:12px;">
                             ⚠️ This portal is for owners only. Managers cannot register here.
                         </p>
                     </form>
+                </div>
 
-                </div><!-- /#auth-view -->
-
-                <!-- ═══════════════════════════════════════
-                     VIEW 2: OTP VERIFICATION
-                     ═══════════════════════════════════════ -->
+                <!-- VIEW 2: OTP -->
                 <div id="otp-view" class="otp-view hidden">
-
                     <div class="otp-icon">✉️</div>
                     <h1>Verify Your Email</h1>
                     <p class="otp-sub">A one-time code will confirm your identity next.</p>
@@ -640,9 +288,7 @@
                         Code expires in <strong id="otp-expiry">10:00</strong>
                     </div>
 
-                    <button type="button" id="otp-verify-btn" class="btn" onclick="handleVerifyOtp()">
-                        Verify Code
-                    </button>
+                    <button type="button" id="otp-verify-btn" class="btn" onclick="handleVerifyOtp()">Verify Code</button>
 
                     <div class="otp-resend">
                         Didn't get the code?
@@ -653,46 +299,33 @@
                     <div class="otp-back">
                         <button type="button" onclick="backToAuth()">← Back to sign in</button>
                     </div>
-
-                </div><!-- /#otp-view -->
+                </div>
 
                 <div class="footer-text">
                     <span>
                         Designed &amp; Powered by
-                        <a href="https://wa.me/250790020086" target="_blank" rel="noopener noreferrer" class="designer-name">
+                        <a href="https://wa.me/250790020086" target="_blank" rel="noopener noreferrer">
                             <strong>___Enock's___blessingz___</strong>
                         </a>
                     </span>
                 </div>
-
             </div>
         </div>
     </div>
 
-    <!-- ═══════════════════ EMAILJS SDK (loads before module) ═══════════════════ -->
+    <!-- EmailJS SDK -->
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 
-    <!-- ═══════════════════ FIREBASE + APP LOGIC ═══════════════════ -->
+    <!-- Firebase + app logic -->
     <script type="module">
-        // ─── Firebase ───
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
         import {
-            getAuth,
-            signInWithEmailAndPassword,
-            createUserWithEmailAndPassword,
-            onAuthStateChanged,
-            signOut,
-            signInWithPopup,
-            GoogleAuthProvider,
+            getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword,
+            onAuthStateChanged, signOut, signInWithPopup, GoogleAuthProvider,
             fetchSignInMethodsForEmail
         } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
         import {
-            getFirestore,
-            doc,
-            setDoc,
-            getDoc,
-            updateDoc,
-            deleteDoc
+            getFirestore, doc, setDoc, getDoc, updateDoc, deleteDoc
         } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
 
         const firebaseConfig = {
@@ -714,76 +347,44 @@
         googleProvider.addScope('profile');
         googleProvider.addScope('email');
 
-        /* ═══════════════════════════════════════════════════════════════════
-           ⚙️  EMAILJS CONFIGURATION — REPLACE WITH YOUR OWN VALUES
-           ─────────────────────────────────────────────────────────────────
-           Create a free account at https://emailjs.com
+        /* ═══════════════════════════════════════════════════════
+           EMAILJS CONFIG — fully wired ✅
+           ═══════════════════════════════════════════════════════ */
+        const EMAILJS_SERVICE_ID  = "service_jqr7qw5";
+        const EMAILJS_TEMPLATE_ID = "template_4w9lqy2";
+        const EMAILJS_PUBLIC_KEY  = "NvKLVM4K4r6Z_LqhK";
 
-           1. Add an Email Service (e.g. Gmail, Outlook, custom SMTP)
-              → copy the SERVICE ID below.
-
-           2. Create an Email Template with these variables:
-                  {{to_email}}         → recipient email
-                  {{to_name}}          → recipient name
-                  {{verification_code}}→ the 6-digit code
-                  {{expiry_minutes}}   → e.g. 10
-                  {{company_name}}     → e.g. SHDR Owner Portal
-              Suggested template body:
-
-                  Hi {{to_name}},
-
-                  Your {{company_name}} verification code is:
-
-                        {{verification_code}}
-
-                  This code expires in {{expiry_minutes}} minutes.
-                  If you didn't request this, you can safely ignore this email.
-
-              → copy the TEMPLATE ID below.
-
-           3. Go to Account → General → copy your PUBLIC KEY.
-           ═══════════════════════════════════════════════════════════════════ */
-        const EMAILJS_SERVICE_ID  = "YOUR_EMAILJS_SERVICE_ID";
-        const EMAILJS_TEMPLATE_ID = "YOUR_EMAILJS_TEMPLATE_ID";
-        const EMAILJS_PUBLIC_KEY  = "YOUR_EMAILJS_PUBLIC_KEY";
-
-        // Initialise EmailJS
         if (window.emailjs) {
             window.emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
         }
 
-        // ─── OTP settings ───
-        const OTP_LENGTH         = 6;
-        const OTP_TTL_MS         = 10 * 60 * 1000;   // 10 minutes
-        const OTP_MAX_ATTEMPTS   = 5;
-        const OTP_RESEND_COOLDOWN_S = 60;            // 60s between resends
+        const OTP_LENGTH = 6;
+        const OTP_TTL_MS = 10 * 60 * 1000;
+        const OTP_MAX_ATTEMPTS = 5;
+        const OTP_RESEND_COOLDOWN_S = 60;
 
-        // ─── Runtime state ───
-        let inOtpFlow         = false;   // guards onAuthStateChanged while OTP is showing
-        let currentOtpEmail   = '';
-        let currentOtpName    = '';
-        let currentOtpExpiry  = 0;       // ms timestamp
-        let expiryIntervalId  = null;
-        let resendIntervalId  = null;
-        let resendLockUntil   = 0;       // ms timestamp
+        let inOtpFlow = false;
+        let currentOtpEmail = '';
+        let currentOtpName = '';
+        let currentOtpExpiry = 0;
+        let expiryIntervalId = null;
+        let resendIntervalId = null;
+        let resendLockUntil = 0;
 
-        /* ═══════════════════════════════════════════════════════════════
-           UI HELPERS
-           ═══════════════════════════════════════════════════════════════ */
+        /* ─── UI helpers ─── */
         function switchTo(form) {
             document.getElementById('login-form').classList.toggle('hidden', form !== 'login');
             document.getElementById('signup-form').classList.toggle('hidden', form !== 'signup');
             document.getElementById('form-title').textContent = form === 'login' ? 'Sign In' : 'Register';
-            document.getElementById('form-desc').textContent  = form === 'login'
-                ? 'Access your owner dashboard'
-                : 'Create your owner account';
+            document.getElementById('form-desc').textContent = form === 'login'
+                ? 'Access your owner dashboard' : 'Create your owner account';
             hideMessage();
         }
         window.switchTo = switchTo;
 
         function togglePassword(inputId, eyeId) {
             const input = document.getElementById(inputId);
-            const eye   = document.getElementById(eyeId);
+            const eye = document.getElementById(eyeId);
             if (!input) return;
             input.type = input.type === 'password' ? 'text' : 'password';
             eye.textContent = input.type === 'password' ? '👁️' : '🙈';
@@ -797,13 +398,11 @@
             msg.classList.add(type);
             msg.style.display = 'block';
         }
-
         function hideMessage() {
             const msg = document.getElementById('message');
             msg.style.display = 'none';
             msg.textContent = '';
         }
-
         function setButtonLoading(btn, loading, loadingText = 'Loading...') {
             if (!btn) return;
             if (loading) {
@@ -815,131 +414,91 @@
                 btn.textContent = btn.dataset.originalText || btn.textContent;
             }
         }
-
         function getFriendlyErrorMessage(error) {
             const code = error?.code || '';
-            if (code === 'auth/invalid-email')             return 'Invalid email address format.';
-            if (code === 'auth/user-disabled')             return 'This account has been disabled.';
-            if (code === 'auth/user-not-found')            return 'No account found with this email.';
-            if (code === 'auth/wrong-password')            return 'Incorrect password. Please try again.';
-            if (code === 'auth/invalid-credential')        return 'Incorrect email or password.';
-            if (code === 'auth/email-already-in-use')      return 'An account with this email already exists.';
-            if (code === 'auth/weak-password')             return 'Password must be at least 6 characters.';
-            if (code === 'auth/too-many-requests')         return 'Too many attempts. Please wait a moment.';
-            if (code === 'auth/network-request-failed')    return 'Network error. Check your connection.';
-            if (code === 'auth/popup-closed-by-user')      return 'Sign-in popup was closed. Please try again.';
-            if (code === 'auth/account-exists-with-different-credential') {
+            if (code === 'auth/invalid-email') return 'Invalid email address format.';
+            if (code === 'auth/user-disabled') return 'This account has been disabled.';
+            if (code === 'auth/user-not-found') return 'No account found with this email.';
+            if (code === 'auth/wrong-password') return 'Incorrect password. Please try again.';
+            if (code === 'auth/invalid-credential') return 'Incorrect email or password.';
+            if (code === 'auth/email-already-in-use') return 'An account with this email already exists.';
+            if (code === 'auth/weak-password') return 'Password must be at least 6 characters.';
+            if (code === 'auth/too-many-requests') return 'Too many attempts. Please wait a moment.';
+            if (code === 'auth/network-request-failed') return 'Network error. Check your connection.';
+            if (code === 'auth/popup-closed-by-user') return 'Sign-in popup was closed. Please try again.';
+            if (code === 'auth/account-exists-with-different-credential')
                 return 'An account already exists with the same email but different sign-in method. Please sign in using your original method.';
-            }
             return error?.message || 'An unexpected error occurred.';
         }
 
-        /* ═══════════════════════════════════════════════════════════════
-           PROFILE HELPERS
-           ═══════════════════════════════════════════════════════════════ */
+        /* ─── Profile helpers ─── */
         async function ensureOwnerProfile(user, displayName = null, emailVerified = false) {
             const profileRef = doc(db, 'profiles', user.uid);
             const snap = await getDoc(profileRef);
-
-            const name  = displayName || user.displayName || 'Owner';
+            const name = displayName || user.displayName || 'Owner';
             const email = user.email || '';
-
             if (!snap.exists()) {
                 await setDoc(profileRef, {
-                    email,
-                    full_name: name,
-                    role: 'owner',
-                    phone: '',
-                    assigned_sites: [],
-                    email_verified: emailVerified,
+                    email, full_name: name, role: 'owner', phone: '',
+                    assigned_sites: [], email_verified: emailVerified,
                     created_at: new Date().toISOString()
                 });
                 return;
             }
-
             const data = snap.data();
-            if (data.role !== 'owner') {
-                throw new Error('Access denied. This portal is for owners only.');
-            }
-
+            if (data.role !== 'owner') throw new Error('Access denied. This portal is for owners only.');
             const updates = {};
-            if (data.full_name !== name)  updates.full_name = name;
-            if (data.email !== email)     updates.email = email;
+            if (data.full_name !== name) updates.full_name = name;
+            if (data.email !== email) updates.email = email;
             if (emailVerified && data.email_verified !== true) updates.email_verified = true;
-            if (Object.keys(updates).length) {
-                await setDoc(profileRef, updates, { merge: true });
-            }
+            if (Object.keys(updates).length) await setDoc(profileRef, updates, { merge: true });
         }
 
-        /* ═══════════════════════════════════════════════════════════════
-           OTP — GENERATE, SEND, VERIFY
-           ═══════════════════════════════════════════════════════════════ */
+        /* ─── OTP generation + send ─── */
         function generateOtp() {
             const arr = new Uint32Array(1);
             crypto.getRandomValues(arr);
             return String(arr[0] % 1_000_000).padStart(OTP_LENGTH, '0');
         }
 
-        /**
-         * Generates a fresh OTP, stores it in Firestore, and emails it via EmailJS.
-         * Returns the expiry timestamp (ms).
-         */
         async function sendOtp(email, name) {
             const user = auth.currentUser;
             if (!user) throw new Error('Not signed in.');
 
-            const code      = generateOtp();
+            const code = generateOtp();
             const expiresAt = Date.now() + OTP_TTL_MS;
 
-            // Save to Firestore (one doc per user — overwrite previous)
             await setDoc(doc(db, 'email_verifications', user.uid), {
-                email,
-                code,
-                expires_at: expiresAt,
-                attempts: 0,
-                created_at: Date.now()
+                email, code, expires_at: expiresAt, attempts: 0, created_at: Date.now()
             });
 
-            // Send email via EmailJS
-            if (!window.emailjs) {
-                throw new Error('Email service failed to load. Please refresh the page.');
-            }
-            if (
-                EMAILJS_SERVICE_ID  === 'YOUR_EMAILJS_SERVICE_ID' ||
-                EMAILJS_TEMPLATE_ID === 'YOUR_EMAILJS_TEMPLATE_ID' ||
-                EMAILJS_PUBLIC_KEY  === 'YOUR_EMAILJS_PUBLIC_KEY'
-            ) {
-                // Dev fallback so the flow can be tested before EmailJS is configured
-                console.warn(
-                    '%c[DEV] EmailJS not configured. Your OTP is: ' + code,
-                    'color:#059669;font-weight:700;font-size:14px;'
-                );
-            } else {
-                await window.emailjs.send(
-                    EMAILJS_SERVICE_ID,
-                    EMAILJS_TEMPLATE_ID,
-                    {
-                        to_email: email,
-                        to_name: name || 'there',
-                        verification_code: code,
-                        expiry_minutes: Math.round(OTP_TTL_MS / 60000),
-                        company_name: 'SHDR Owner Portal'
-                    },
-                    { publicKey: EMAILJS_PUBLIC_KEY }
-                );
-            }
+            if (!window.emailjs) throw new Error('Email service failed to load. Please refresh.');
 
+            await window.emailjs.send(
+                EMAILJS_SERVICE_ID,
+                EMAILJS_TEMPLATE_ID,
+                {
+                    to_email: email,
+                    to_name: name || 'there',
+                    verification_code: code,
+                    expiry_minutes: Math.round(OTP_TTL_MS / 60000),
+                    company_name: 'SHDR Owner Portal'
+                },
+                { publicKey: EMAILJS_PUBLIC_KEY }
+            );
+
+            console.log('%c[OTP] Sent via EmailJS to ' + email, 'color:#059669;font-weight:700;');
             return expiresAt;
         }
 
+        /* ─── Timers ─── */
         function clearOtpTimers() {
             if (expiryIntervalId) { clearInterval(expiryIntervalId); expiryIntervalId = null; }
             if (resendIntervalId) { clearInterval(resendIntervalId); resendIntervalId = null; }
         }
-
         function startExpiryTimer() {
             const label = document.getElementById('otp-expiry');
-            const wrap  = label.parentElement;
+            const wrap = label.parentElement;
             const tick = () => {
                 const remaining = currentOtpExpiry - Date.now();
                 if (remaining <= 0) {
@@ -950,36 +509,30 @@
                     return;
                 }
                 const s = Math.floor(remaining / 1000);
-                const mm = String(Math.floor(s / 60)).padStart(2, '0');
-                const ss = String(s % 60).padStart(2, '0');
-                label.textContent = `${mm}:${ss}`;
+                label.textContent = `${String(Math.floor(s/60)).padStart(2,'0')}:${String(s%60).padStart(2,'0')}`;
                 wrap.classList.remove('expired');
             };
             tick();
             expiryIntervalId = setInterval(tick, 1000);
         }
-
         function startResendCooldown() {
             resendLockUntil = Date.now() + OTP_RESEND_COOLDOWN_S * 1000;
-            const btn   = document.getElementById('otp-resend-btn');
+            const btn = document.getElementById('otp-resend-btn');
             const timer = document.getElementById('otp-resend-timer');
-
             const tick = () => {
                 const remaining = Math.ceil((resendLockUntil - Date.now()) / 1000);
                 if (remaining <= 0) {
-                    btn.disabled = false;
-                    timer.textContent = '';
-                    clearInterval(resendIntervalId);
-                    resendIntervalId = null;
+                    btn.disabled = false; timer.textContent = '';
+                    clearInterval(resendIntervalId); resendIntervalId = null;
                     return;
                 }
-                btn.disabled = true;
-                timer.textContent = ` (${remaining}s)`;
+                btn.disabled = true; timer.textContent = ` (${remaining}s)`;
             };
             tick();
             resendIntervalId = setInterval(tick, 1000);
         }
 
+        /* ─── OTP inputs ─── */
         function setupOtpInputs() {
             const inputs = document.querySelectorAll('#otp-inputs input');
             inputs.forEach((input, idx) => {
@@ -990,74 +543,52 @@
                     e.target.classList.remove('error');
                     if (e.target.value && idx < inputs.length - 1) inputs[idx + 1].focus();
                 });
-
                 input.addEventListener('keydown', (e) => {
                     if (e.key === 'Backspace' && !e.target.value && idx > 0) {
                         inputs[idx - 1].focus();
                         inputs[idx - 1].value = '';
                         inputs[idx - 1].classList.remove('filled');
                     }
-                    if (e.key === 'ArrowLeft'  && idx > 0)                  inputs[idx - 1].focus();
-                    if (e.key === 'ArrowRight' && idx < inputs.length - 1)  inputs[idx + 1].focus();
+                    if (e.key === 'ArrowLeft' && idx > 0) inputs[idx - 1].focus();
+                    if (e.key === 'ArrowRight' && idx < inputs.length - 1) inputs[idx + 1].focus();
                     if (e.key === 'Enter') handleVerifyOtp();
                 });
-
                 input.addEventListener('paste', (e) => {
                     e.preventDefault();
-                    const text = (e.clipboardData || window.clipboardData)
-                        .getData('text').replace(/\D/g, '').slice(0, OTP_LENGTH);
+                    const text = (e.clipboardData || window.clipboardData).getData('text').replace(/\D/g,'').slice(0, OTP_LENGTH);
                     if (!text) return;
                     text.split('').forEach((ch, i) => {
-                        if (inputs[i]) {
-                            inputs[i].value = ch;
-                            inputs[i].classList.add('filled');
-                            inputs[i].classList.remove('error');
-                        }
+                        if (inputs[i]) { inputs[i].value = ch; inputs[i].classList.add('filled'); inputs[i].classList.remove('error'); }
                     });
                     const last = Math.min(text.length, inputs.length) - 1;
                     inputs[last]?.focus();
                 });
-
                 input.addEventListener('focus', (e) => e.target.select());
             });
         }
-
         function getEnteredOtp() {
-            return Array.from(document.querySelectorAll('#otp-inputs input'))
-                .map(i => i.value).join('');
+            return Array.from(document.querySelectorAll('#otp-inputs input')).map(i => i.value).join('');
         }
-
         function clearOtpInputs() {
-            document.querySelectorAll('#otp-inputs input').forEach(i => {
-                i.value = '';
-                i.classList.remove('filled', 'error');
-            });
+            document.querySelectorAll('#otp-inputs input').forEach(i => { i.value = ''; i.classList.remove('filled', 'error'); });
             document.querySelector('#otp-inputs input')?.focus();
         }
-
         function markOtpInputsError() {
             document.querySelectorAll('#otp-inputs input').forEach(i => i.classList.add('error'));
-            setTimeout(() => {
-                document.querySelectorAll('#otp-inputs input').forEach(i => i.classList.remove('error'));
-            }, 600);
+            setTimeout(() => document.querySelectorAll('#otp-inputs input').forEach(i => i.classList.remove('error')), 600);
         }
 
-        /**
-         * Show the OTP view. Sends a fresh code if `sendCode` is true.
-         * purpose: 'signup' | 'login'
-         */
+        /* ─── Show OTP view ─── */
         async function showOtpView(user, name, purpose, sendCode = true) {
-            inOtpFlow        = true;
-            currentOtpEmail  = user.email || '';
-            currentOtpName   = name || user.displayName || '';
-
+            inOtpFlow = true;
+            currentOtpEmail = user.email || '';
+            currentOtpName = name || user.displayName || '';
             document.getElementById('otp-email-display').textContent = currentOtpEmail;
             document.getElementById('otp-purpose-msg').textContent =
                 purpose === 'signup'
                     ? "We've sent a 6-digit code to confirm your new account:"
                     : "We've sent a 6-digit code to confirm your identity:";
 
-            // Swap views
             document.getElementById('auth-view').classList.add('hidden');
             document.getElementById('otp-view').classList.remove('hidden');
             hideMessage();
@@ -1072,11 +603,8 @@
                     startResendCooldown();
                 } catch (err) {
                     console.error('[OTP send failed]', err);
-                    showMessage(
-                        'We could not send the verification email. ' +
-                        (err?.text || err?.message || 'Please try again.'),
-                        'error'
-                    );
+                    const msg = err?.text || err?.message || 'Please try again.';
+                    showMessage('Could not send verification email. ' + msg, 'error');
                     currentOtpExpiry = 0;
                 }
             }
@@ -1086,84 +614,43 @@
             clearOtpTimers();
             clearOtpInputs();
             inOtpFlow = false;
-            currentOtpEmail = '';
-            currentOtpName  = '';
-            currentOtpExpiry = 0;
-
+            currentOtpEmail = ''; currentOtpName = ''; currentOtpExpiry = 0;
             document.getElementById('otp-view').classList.add('hidden');
             document.getElementById('auth-view').classList.remove('hidden');
             hideMessage();
-
             try { await signOut(auth); } catch (_) {}
-
-            // Clean up any pending verification doc
-            // (optional — rules should allow the owner to delete their own)
-            try {
-                const u = auth.currentUser;
-                if (u) await deleteDoc(doc(db, 'email_verifications', u.uid));
-            } catch (_) { /* silent */ }
-
             switchTo('login');
         }
         window.backToAuth = backToAuth;
 
         async function handleVerifyOtp() {
-            const btn   = document.getElementById('otp-verify-btn');
-            const code  = getEnteredOtp();
-            const user  = auth.currentUser;
-
+            const btn = document.getElementById('otp-verify-btn');
+            const code = getEnteredOtp();
+            const user = auth.currentUser;
             hideMessage();
-
-            if (!user) {
-                showMessage('Session expired. Please sign in again.', 'error');
-                return;
-            }
-            if (code.length !== OTP_LENGTH) {
-                showMessage('Please enter the full 6-digit code.', 'error');
-                markOtpInputsError();
-                return;
-            }
+            if (!user) { showMessage('Session expired. Please sign in again.', 'error'); return; }
+            if (code.length !== OTP_LENGTH) { showMessage('Please enter the full 6-digit code.', 'error'); markOtpInputsError(); return; }
 
             setButtonLoading(btn, true, 'Verifying...');
             try {
                 const snap = await getDoc(doc(db, 'email_verifications', user.uid));
-                if (!snap.exists()) {
-                    throw new Error('No active verification code. Please request a new one.');
-                }
-
+                if (!snap.exists()) throw new Error('No active verification code. Please request a new one.');
                 const data = snap.data();
-
-                if (Date.now() > data.expires_at) {
-                    throw new Error('This code has expired. Please request a new one.');
-                }
-                if ((data.attempts || 0) >= OTP_MAX_ATTEMPTS) {
-                    throw new Error('Too many incorrect attempts. Please request a new code.');
-                }
+                if (Date.now() > data.expires_at) throw new Error('This code has expired. Please request a new one.');
+                if ((data.attempts || 0) >= OTP_MAX_ATTEMPTS) throw new Error('Too many incorrect attempts. Please request a new code.');
                 if (data.code !== code) {
-                    await updateDoc(doc(db, 'email_verifications', user.uid), {
-                        attempts: (data.attempts || 0) + 1
-                    });
+                    await updateDoc(doc(db, 'email_verifications', user.uid), { attempts: (data.attempts || 0) + 1 });
                     const left = OTP_MAX_ATTEMPTS - ((data.attempts || 0) + 1);
-                    throw new Error(
-                        left > 0
-                            ? `Incorrect code. ${left} attempt${left === 1 ? '' : 's'} remaining.`
-                            : 'Too many incorrect attempts. Please request a new code.'
-                    );
+                    throw new Error(left > 0 ? `Incorrect code. ${left} attempt${left === 1 ? '' : 's'} remaining.` : 'Too many incorrect attempts. Please request a new code.');
                 }
-
-                // ✅ Success — mark profile verified
                 await updateDoc(doc(db, 'profiles', user.uid), {
-                    email_verified: true,
-                    email_verified_at: new Date().toISOString()
+                    email_verified: true, email_verified_at: new Date().toISOString()
                 });
                 await deleteDoc(doc(db, 'email_verifications', user.uid));
-
                 clearOtpTimers();
                 inOtpFlow = false;
-
                 showMessage('Email verified! Redirecting to your dashboard…', 'success');
                 setTimeout(() => { window.location.href = 'owner/dashboard.html'; }, 900);
-
             } catch (err) {
                 console.error('[OTP verify]', err);
                 showMessage(err.message || 'Verification failed. Please try again.', 'error');
@@ -1176,18 +663,12 @@
         window.handleVerifyOtp = handleVerifyOtp;
 
         async function handleResendOtp() {
-            const btn  = document.getElementById('otp-resend-btn');
+            const btn = document.getElementById('otp-resend-btn');
             const user = auth.currentUser;
-
-            if (!user) {
-                showMessage('Session expired. Please sign in again.', 'error');
-                return;
-            }
+            if (!user) { showMessage('Session expired. Please sign in again.', 'error'); return; }
             if (Date.now() < resendLockUntil) return;
-
             hideMessage();
             btn.disabled = true;
-
             try {
                 currentOtpExpiry = await sendOtp(currentOtpEmail, currentOtpName);
                 clearOtpInputs();
@@ -1196,71 +677,46 @@
                 startResendCooldown();
             } catch (err) {
                 console.error('[OTP resend failed]', err);
-                showMessage(
-                    'Could not resend the code. ' +
-                    (err?.text || err?.message || 'Please try again.'),
-                    'error'
-                );
-                // Allow retry after 10 seconds on failure
+                showMessage('Could not resend the code. ' + (err?.text || err?.message || 'Please try again.'), 'error');
                 resendLockUntil = Date.now() + 10_000;
                 startResendCooldown();
             }
         }
         window.handleResendOtp = handleResendOtp;
 
-        /* ═══════════════════════════════════════════════════════════════
-           GOOGLE SIGN-IN
-           ═══════════════════════════════════════════════════════════════ */
+        /* ─── Google sign-in ─── */
         async function signInWithGoogle() {
             const allBtns = document.querySelectorAll('#google-login-btn, #signup-form .google-btn');
             allBtns.forEach(b => b.disabled = true);
             hideMessage();
-
             try {
                 const result = await signInWithPopup(auth, googleProvider);
-                const user   = result.user;
-
-                // Google emails are already verified by Google
+                const user = result.user;
                 await ensureOwnerProfile(user, user.displayName, true);
-
                 if (document.getElementById('login-remember')?.checked && user.email) {
                     localStorage.setItem('shdr_owner_remember', user.email);
                 }
-
                 window.location.href = 'owner/dashboard.html';
-
             } catch (error) {
                 if (error.code === 'auth/account-exists-with-different-credential') {
                     try {
                         const email = error.customData?.email;
                         if (email) {
                             const methods = await fetchSignInMethodsForEmail(auth, email);
-                            showMessage(
-                                `An account with ${email} already exists using ${methods.join(' or ')}. Please sign in with that method.`,
-                                'error'
-                            );
-                        } else {
-                            showMessage(getFriendlyErrorMessage(error), 'error');
-                        }
-                    } catch (_) {
-                        showMessage(getFriendlyErrorMessage(error), 'error');
-                    }
-                } else {
-                    showMessage(getFriendlyErrorMessage(error), 'error');
-                }
+                            showMessage(`An account with ${email} already exists using ${methods.join(' or ')}. Please sign in with that method.`, 'error');
+                        } else { showMessage(getFriendlyErrorMessage(error), 'error'); }
+                    } catch (_) { showMessage(getFriendlyErrorMessage(error), 'error'); }
+                } else { showMessage(getFriendlyErrorMessage(error), 'error'); }
             } finally {
                 allBtns.forEach(b => b.disabled = false);
             }
         }
         window.signInWithGoogle = signInWithGoogle;
 
-        /* ═══════════════════════════════════════════════════════════════
-           SESSION CHECK (runs on page load)
-           ═══════════════════════════════════════════════════════════════ */
+        /* ─── Session check ─── */
         onAuthStateChanged(auth, async (user) => {
             if (!user) return;
-            if (inOtpFlow) return;   // handled by signup / login flow
-
+            if (inOtpFlow) return;
             try {
                 const snap = await getDoc(doc(db, 'profiles', user.uid));
                 if (!snap.exists() || snap.data().role !== 'owner') {
@@ -1268,78 +724,52 @@
                     showMessage('Access denied. This portal is for owners only.', 'error');
                     return;
                 }
-
                 const data = snap.data();
-
-                // Unverified account — force verification on reload
                 if (data.email_verified !== true) {
                     await showOtpView(user, data.full_name, 'login', true);
                     return;
                 }
-
                 window.location.href = 'owner/dashboard.html';
-
-            } catch (err) {
-                console.error('[session check]', err);
-                // Don't spam the user — just leave them on the login screen
-            }
+            } catch (err) { console.error('[session check]', err); }
         });
 
         /* ─── Remember me prefill ─── */
         const remembered = localStorage.getItem('shdr_owner_remember');
         if (remembered) {
-            const emailInput   = document.getElementById('login-email');
+            const emailInput = document.getElementById('login-email');
             const rememberCheck = document.getElementById('login-remember');
-            if (emailInput)     emailInput.value = remembered;
-            if (rememberCheck)  rememberCheck.checked = true;
+            if (emailInput) emailInput.value = remembered;
+            if (rememberCheck) rememberCheck.checked = true;
         }
 
-        /* ═══════════════════════════════════════════════════════════════
-           LOGIN HANDLER
-           ═══════════════════════════════════════════════════════════════ */
+        /* ─── Login ─── */
         window.handleLogin = async function (e) {
             e.preventDefault();
-            const email    = document.getElementById('login-email').value.trim();
+            const email = document.getElementById('login-email').value.trim();
             const password = document.getElementById('login-password').value;
             const remember = document.getElementById('login-remember').checked;
-            const btn      = document.getElementById('login-btn');
-
+            const btn = document.getElementById('login-btn');
             hideMessage();
-
-            if (!email || !password) {
-                showMessage('Please fill in all fields.', 'error');
-                return;
-            }
-
+            if (!email || !password) { showMessage('Please fill in all fields.', 'error'); return; }
             inOtpFlow = true;
             setButtonLoading(btn, true, 'Signing in...');
-
             try {
                 const cred = await signInWithEmailAndPassword(auth, email, password);
                 const user = cred.user;
-
                 const snap = await getDoc(doc(db, 'profiles', user.uid));
                 if (!snap.exists() || snap.data().role !== 'owner') {
-                    await signOut(auth);
-                    inOtpFlow = false;
+                    await signOut(auth); inOtpFlow = false;
                     throw { code: 'custom/not-owner', message: 'Access denied. This portal is for owners only.' };
                 }
-
                 if (remember) localStorage.setItem('shdr_owner_remember', email);
-                else          localStorage.removeItem('shdr_owner_remember');
-
+                else localStorage.removeItem('shdr_owner_remember');
                 const data = snap.data();
-
-                // ── Not yet verified → require OTP ──
                 if (data.email_verified !== true) {
                     setButtonLoading(btn, false);
                     await showOtpView(user, data.full_name, 'login', true);
                     return;
                 }
-
-                // ── Verified → straight to dashboard ──
                 window.location.href = 'owner/dashboard.html';
-
             } catch (error) {
                 inOtpFlow = false;
                 showMessage(getFriendlyErrorMessage(error), 'error');
@@ -1348,54 +778,30 @@
             }
         };
 
-        /* ═══════════════════════════════════════════════════════════════
-           SIGNUP HANDLER
-           ═══════════════════════════════════════════════════════════════ */
+        /* ─── Signup ─── */
         window.handleSignUp = async function (e) {
             e.preventDefault();
-            const name     = document.getElementById('signup-name').value.trim();
-            const email    = document.getElementById('signup-email').value.trim();
+            const name = document.getElementById('signup-name').value.trim();
+            const email = document.getElementById('signup-email').value.trim();
             const password = document.getElementById('signup-password').value;
-            const confirm  = document.getElementById('signup-confirm').value;
-            const btn      = document.getElementById('signup-btn');
-
+            const confirm = document.getElementById('signup-confirm').value;
+            const btn = document.getElementById('signup-btn');
             hideMessage();
-
-            if (!name || !email || !password || !confirm) {
-                showMessage('Please fill in all fields.', 'error');
-                return;
-            }
-            if (password !== confirm) {
-                showMessage('Passwords do not match.', 'error');
-                return;
-            }
-            if (password.length < 8) {
-                showMessage('Password must be at least 8 characters.', 'error');
-                return;
-            }
-
+            if (!name || !email || !password || !confirm) { showMessage('Please fill in all fields.', 'error'); return; }
+            if (password !== confirm) { showMessage('Passwords do not match.', 'error'); return; }
+            if (password.length < 8) { showMessage('Password must be at least 8 characters.', 'error'); return; }
             inOtpFlow = true;
             setButtonLoading(btn, true, 'Creating account...');
-
             try {
                 const cred = await createUserWithEmailAndPassword(auth, email, password);
                 const user = cred.user;
-
                 await setDoc(doc(db, 'profiles', user.uid), {
-                    email,
-                    full_name: name,
-                    role: 'owner',
-                    phone: '',
-                    assigned_sites: [],
-                    email_verified: false,
+                    email, full_name: name, role: 'owner', phone: '',
+                    assigned_sites: [], email_verified: false,
                     created_at: new Date().toISOString()
                 });
-
                 setButtonLoading(btn, false);
-
-                // Send the OTP and switch to the verification screen
                 await showOtpView(user, name, 'signup', true);
-
             } catch (error) {
                 inOtpFlow = false;
                 showMessage(getFriendlyErrorMessage(error), 'error');
@@ -1404,8 +810,6 @@
             }
         };
 
-        /* ─── Init ─── */
         setupOtpInputs();
     </script>
 </body>
-</html>
