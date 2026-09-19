@@ -36,20 +36,19 @@
         }
         .brand-content { position: relative; z-index: 2; max-width: 360px; }
         
-        /* ── UPDATED BRAND LOGO ── */
         .brand-logo {
             width: 120px; height: 120px; border-radius: 20px;
-            background: transparent; /* Removed the glass background */
+            background: transparent;
             display: flex; align-items: center; justify-content: center;
             margin: 0 auto 24px; font-size: 2rem; font-weight: 700; color: #fff;
-            border: none; /* Removed border */
+            border: none;
             overflow: visible;
         }
         .brand-logo img { 
             width: 100%; 
             height: 100%; 
             object-fit: contain; 
-            background: transparent; /* Removed the white background */
+            background: transparent;
             padding: 0;
         }
 
@@ -81,7 +80,6 @@
         .social-btn.google-btn svg { width: 18px; height: 18px; }
         .social-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
 
-        /* ── Apple button (Official Black Style) ── */
         .social-btn.apple-btn {
             background: #000;
             color: #fff;
@@ -140,6 +138,7 @@
         .spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.3); border-top: 2px solid #fff; border-radius: 50%; animation: spin 0.6s linear infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
 
+        /* ── OTP View ── */
         .otp-view { text-align: center; }
         .otp-icon {
             width: 76px; height: 76px; background: #ecfdf5; color: var(--green);
@@ -153,7 +152,7 @@
             background: #f1f5f9; padding: 4px 12px; border-radius: 100px;
             font-size: 0.9rem; margin-top: 4px; word-break: break-all;
         }
-        .otp-inputs { display: flex; gap: 10px; justify-content: center; margin: 28px 0 16px; }
+        .otp-inputs { display: flex; gap: 10px; justify-content: center; margin: 28px 0 4px; }
         .otp-inputs input {
             width: 52px; height: 62px; text-align: center; font-size: 1.5rem;
             font-weight: 700; border: 1.5px solid var(--border); border-radius: 12px;
@@ -163,11 +162,74 @@
         .otp-inputs input:focus { outline: none; border-color: var(--green); box-shadow: 0 0 0 3px rgba(5,150,105,0.1); background: #fff; }
         .otp-inputs input.filled { border-color: var(--green); background: #fff; }
         .otp-inputs input.error { border-color: #ef4444; background: #fef2f2; animation: shake 0.4s ease; }
+        .otp-inputs input:disabled { opacity: 0.6; cursor: not-allowed; }
         @keyframes shake { 0%,100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
-        .otp-timer { font-size: 0.82rem; color: var(--text-light); margin-bottom: 22px; }
+        .otp-timer { font-size: 0.82rem; color: var(--text-light); margin-top: 12px; margin-bottom: 4px; }
         .otp-timer strong { color: var(--green); font-variant-numeric: tabular-nums; }
         .otp-timer.expired strong { color: #dc2626; }
-        .otp-resend { margin-top: 20px; font-size: 0.85rem; color: var(--text-light); }
+
+        /* ── Status area (auto-verify feedback) ── */
+        .otp-status {
+            min-height: 100px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 8px 0;
+            transition: all 0.3s ease;
+        }
+        .otp-status .status-text {
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-top: 12px;
+            text-align: center;
+            line-height: 1.5;
+        }
+        .otp-status.verifying .status-text { color: var(--text-light); }
+        .otp-status.verified .status-text { color: #059669; font-weight: 600; font-size: 0.95rem; }
+        .otp-status.error .status-text { color: #dc2626; font-weight: 500; }
+
+        .otp-spinner-large {
+            width: 44px;
+            height: 44px;
+            border: 3px solid #e2e8f0;
+            border-top: 3px solid #059669;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        .otp-checkmark {
+            width: 68px;
+            height: 68px;
+            animation: checkmarkPop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .otp-checkmark circle {
+            stroke: #059669;
+            stroke-width: 2.5;
+            fill: none;
+            stroke-dasharray: 166;
+            stroke-dashoffset: 166;
+            animation: checkmarkStroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+            transform-origin: center;
+        }
+        .otp-checkmark path {
+            stroke: #059669;
+            stroke-width: 3;
+            fill: none;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            stroke-dasharray: 48;
+            stroke-dashoffset: 48;
+            animation: checkmarkStroke 0.35s cubic-bezier(0.65, 0, 0.45, 1) 0.55s forwards;
+        }
+        @keyframes checkmarkStroke { 100% { stroke-dashoffset: 0; } }
+        @keyframes checkmarkPop {
+            0% { transform: scale(0.6); opacity: 0; }
+            60% { transform: scale(1.05); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .otp-resend { margin-top: 8px; font-size: 0.85rem; color: var(--text-light); }
         .otp-resend button { background: none; border: none; color: var(--green); font-weight: 600; cursor: pointer; font-size: 0.85rem; padding: 0 4px; font-family: inherit; }
         .otp-resend button:hover:not(:disabled) { text-decoration: underline; }
         .otp-resend button:disabled { color: #9ca3af; cursor: not-allowed; }
@@ -189,6 +251,8 @@
             .form-wrapper { padding: 0 4px; }
             .otp-inputs { gap: 7px; }
             .otp-inputs input { width: 44px; height: 54px; font-size: 1.25rem; border-radius: 10px; }
+            .otp-checkmark { width: 56px; height: 56px; }
+            .otp-spinner-large { width: 36px; height: 36px; }
         }
     </style>
 </head>
@@ -324,7 +388,7 @@
                     <span class="otp-email" id="otp-email-display">owner@example.com</span>
 
                     <div class="otp-inputs" id="otp-inputs">
-                        <input type="text" inputmode="numeric" maxlength="1" aria-label="Digit 1" />
+                        <input type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="1" aria-label="Digit 1" />
                         <input type="text" inputmode="numeric" maxlength="1" aria-label="Digit 2" />
                         <input type="text" inputmode="numeric" maxlength="1" aria-label="Digit 3" />
                         <input type="text" inputmode="numeric" maxlength="1" aria-label="Digit 4" />
@@ -336,7 +400,8 @@
                         Code expires in <strong id="otp-expiry">10:00</strong>
                     </div>
 
-                    <button type="button" id="otp-verify-btn" class="btn" onclick="handleVerifyOtp()">Verify Code</button>
+                    <!-- Auto-verify status area -->
+                    <div id="otp-status" class="otp-status" aria-live="polite"></div>
 
                     <div class="otp-resend">
                         Didn't get the code?
@@ -396,7 +461,6 @@
         googleProvider.addScope('profile');
         googleProvider.addScope('email');
 
-        // ── Apple Provider ──
         const appleProvider = new OAuthProvider('apple.com');
         appleProvider.addScope('email');
         appleProvider.addScope('name');
@@ -424,6 +488,10 @@
         let expiryIntervalId = null;
         let resendIntervalId = null;
         let resendLockUntil = 0;
+
+        // ── Auto-verify flags (prevent duplicates & re-submission after success) ──
+        let isVerifyingOtp = false;
+        let isOtpVerified  = false;
 
         /* ─── UI helpers ─── */
         function switchTo(form) {
@@ -588,18 +656,82 @@
             resendIntervalId = setInterval(tick, 1000);
         }
 
-        /* ─── OTP inputs ─── */
+        /* ─── OTP status indicators ─── */
+        function showOtpStatusIdle() {
+            const el = document.getElementById('otp-status');
+            if (!el) return;
+            el.className = 'otp-status';
+            el.innerHTML = '';
+        }
+        function showOtpStatusVerifying() {
+            const el = document.getElementById('otp-status');
+            if (!el) return;
+            el.className = 'otp-status verifying';
+            el.innerHTML = `
+                <div class="otp-spinner-large"></div>
+                <p class="status-text">Verifying your code…</p>
+            `;
+        }
+        function showOtpStatusVerified() {
+            const el = document.getElementById('otp-status');
+            if (!el) return;
+            el.className = 'otp-status verified';
+            el.innerHTML = `
+                <svg class="otp-checkmark" viewBox="0 0 52 52" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <circle cx="26" cy="26" r="25" fill="none"/>
+                    <path fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+                </svg>
+                <p class="status-text">✓ Email verified successfully</p>
+            `;
+        }
+        function showOtpStatusError(message) {
+            const el = document.getElementById('otp-status');
+            if (!el) return;
+            el.className = 'otp-status error';
+            el.innerHTML = `<p class="status-text">${message}</p>`;
+        }
+
+        /* ─── OTP inputs (auto-advance + auto-verify) ─── */
+        function setOtpInputsDisabled(disabled) {
+            document.querySelectorAll('#otp-inputs input').forEach(i => { i.disabled = disabled; });
+        }
+
         function setupOtpInputs() {
             const inputs = document.querySelectorAll('#otp-inputs input');
             inputs.forEach((input, idx) => {
                 input.addEventListener('input', (e) => {
-                    const val = e.target.value.replace(/\D/g, '');
-                    e.target.value = val.slice(-1);
-                    e.target.classList.toggle('filled', !!e.target.value);
+                    if (isVerifyingOtp || isOtpVerified) return;
+
+                    let val = e.target.value.replace(/\D/g, '');
+
+                    // Autofill / paste into a single box — distribute across boxes
+                    if (val.length > 1) {
+                        e.target.value = '';
+                        for (let i = 0; i < val.length && (idx + i) < inputs.length; i++) {
+                            inputs[idx + i].value = val[i];
+                            inputs[idx + i].classList.add('filled');
+                            inputs[idx + i].classList.remove('error');
+                        }
+                        const lastFilled = Math.min(idx + val.length, inputs.length) - 1;
+                        inputs[lastFilled].focus();
+                        if (getEnteredOtp().length === OTP_LENGTH) triggerAutoVerify();
+                        return;
+                    }
+
+                    e.target.value = val;
+                    e.target.classList.toggle('filled', !!val);
                     e.target.classList.remove('error');
-                    if (e.target.value && idx < inputs.length - 1) inputs[idx + 1].focus();
+
+                    if (val && idx < inputs.length - 1) {
+                        inputs[idx + 1].focus();
+                    } else if (val && idx === inputs.length - 1) {
+                        // 6th digit entered → auto-verify
+                        triggerAutoVerify();
+                    }
                 });
+
                 input.addEventListener('keydown', (e) => {
+                    if (isVerifyingOtp || isOtpVerified) { e.preventDefault(); return; }
                     if (e.key === 'Backspace' && !e.target.value && idx > 0) {
                         inputs[idx - 1].focus();
                         inputs[idx - 1].value = '';
@@ -607,36 +739,59 @@
                     }
                     if (e.key === 'ArrowLeft' && idx > 0) inputs[idx - 1].focus();
                     if (e.key === 'ArrowRight' && idx < inputs.length - 1) inputs[idx + 1].focus();
-                    if (e.key === 'Enter') handleVerifyOtp();
                 });
+
                 input.addEventListener('paste', (e) => {
+                    if (isVerifyingOtp || isOtpVerified) { e.preventDefault(); return; }
                     e.preventDefault();
                     const text = (e.clipboardData || window.clipboardData).getData('text').replace(/\D/g,'').slice(0, OTP_LENGTH);
                     if (!text) return;
                     text.split('').forEach((ch, i) => {
-                        if (inputs[i]) { inputs[i].value = ch; inputs[i].classList.add('filled'); inputs[i].classList.remove('error'); }
+                        if (inputs[i]) {
+                            inputs[i].value = ch;
+                            inputs[i].classList.add('filled');
+                            inputs[i].classList.remove('error');
+                        }
                     });
                     const last = Math.min(text.length, inputs.length) - 1;
                     inputs[last]?.focus();
+                    if (text.length === OTP_LENGTH) triggerAutoVerify();
                 });
+
                 input.addEventListener('focus', (e) => e.target.select());
             });
         }
+
         function getEnteredOtp() {
             return Array.from(document.querySelectorAll('#otp-inputs input')).map(i => i.value).join('');
         }
-        function clearOtpInputs() {
-            document.querySelectorAll('#otp-inputs input').forEach(i => { i.value = ''; i.classList.remove('filled', 'error'); });
-            document.querySelector('#otp-inputs input')?.focus();
+        function clearOtpInputs({ focus = true } = {}) {
+            document.querySelectorAll('#otp-inputs input').forEach(i => {
+                i.value = '';
+                i.classList.remove('filled', 'error');
+                i.disabled = false;
+            });
+            if (focus) document.querySelector('#otp-inputs input')?.focus();
         }
         function markOtpInputsError() {
             document.querySelectorAll('#otp-inputs input').forEach(i => i.classList.add('error'));
-            setTimeout(() => document.querySelectorAll('#otp-inputs input').forEach(i => i.classList.remove('error')), 600);
+            setTimeout(() => document.querySelectorAll('#otp-inputs input').forEach(i => i.classList.remove('error')), 700);
+        }
+
+        /* ─── Auto-verify trigger ─── */
+        function triggerAutoVerify() {
+            if (isVerifyingOtp || isOtpVerified) return;
+            const code = getEnteredOtp();
+            if (code.length !== OTP_LENGTH) return;
+            handleVerifyOtp();
         }
 
         /* ─── Show OTP view ─── */
         async function showOtpView(user, name, purpose, sendCode = true) {
             inOtpFlow = true;
+            isVerifyingOtp = false;
+            isOtpVerified = false;
+
             currentOtpEmail = user.email || '';
             currentOtpName = name || user.displayName || '';
             document.getElementById('otp-email-display').textContent = currentOtpEmail;
@@ -648,19 +803,19 @@
             document.getElementById('auth-view').classList.add('hidden');
             document.getElementById('otp-view').classList.remove('hidden');
             hideMessage();
+            showOtpStatusIdle();
             clearOtpInputs();
             document.querySelector('#otp-inputs input')?.focus();
 
             if (sendCode) {
                 try {
                     currentOtpExpiry = await sendOtp(currentOtpEmail, currentOtpName);
-                    showMessage(`Verification code sent to ${currentOtpEmail}.`, 'success');
                     startExpiryTimer();
                     startResendCooldown();
                 } catch (err) {
                     console.error('[OTP send failed]', err);
                     const msg = err?.text || err?.message || 'Please try again.';
-                    showMessage('Could not send verification email. ' + msg, 'error');
+                    showOtpStatusError('Could not send verification email. ' + msg);
                     currentOtpExpiry = 0;
                 }
             }
@@ -668,8 +823,11 @@
 
         async function backToAuth() {
             clearOtpTimers();
-            clearOtpInputs();
+            clearOtpInputs({ focus: false });
+            showOtpStatusIdle();
             inOtpFlow = false;
+            isVerifyingOtp = false;
+            isOtpVerified = false;
             currentOtpEmail = ''; currentOtpName = ''; currentOtpExpiry = 0;
             document.getElementById('otp-view').classList.add('hidden');
             document.getElementById('auth-view').classList.remove('hidden');
@@ -679,61 +837,94 @@
         }
         window.backToAuth = backToAuth;
 
+        /* ─── Verify OTP (auto-triggered, no button) ─── */
         async function handleVerifyOtp() {
-            const btn = document.getElementById('otp-verify-btn');
+            if (isVerifyingOtp || isOtpVerified) return;
+
             const code = getEnteredOtp();
             const user = auth.currentUser;
-            hideMessage();
-            if (!user) { showMessage('Session expired. Please sign in again.', 'error'); return; }
-            if (code.length !== OTP_LENGTH) { showMessage('Please enter the full 6-digit code.', 'error'); markOtpInputsError(); return; }
 
-            setButtonLoading(btn, true, 'Verifying...');
+            if (!user) {
+                showOtpStatusError('Session expired. Please sign in again.');
+                return;
+            }
+            if (code.length !== OTP_LENGTH) return;
+
+            // Lock UI
+            isVerifyingOtp = true;
+            setOtpInputsDisabled(true);
+            showOtpStatusVerifying();
+
             try {
+                // ── Backend verification (Firestore) ──
                 const snap = await getDoc(doc(db, 'email_verifications', user.uid));
                 if (!snap.exists()) throw new Error('No active verification code. Please request a new one.');
                 const data = snap.data();
+
                 if (Date.now() > data.expires_at) throw new Error('This code has expired. Please request a new one.');
                 if ((data.attempts || 0) >= OTP_MAX_ATTEMPTS) throw new Error('Too many incorrect attempts. Please request a new code.');
+
                 if (data.code !== code) {
                     await updateDoc(doc(db, 'email_verifications', user.uid), { attempts: (data.attempts || 0) + 1 });
                     const left = OTP_MAX_ATTEMPTS - ((data.attempts || 0) + 1);
-                    throw new Error(left > 0 ? `Incorrect code. ${left} attempt${left === 1 ? '' : 's'} remaining.` : 'Too many incorrect attempts. Please request a new code.');
+                    throw new Error(left > 0
+                        ? `Invalid verification code. ${left} attempt${left === 1 ? '' : 's'} remaining.`
+                        : 'Too many incorrect attempts. Please request a new code.');
                 }
+
+                // ── Success ──
                 await updateDoc(doc(db, 'profiles', user.uid), {
-                    email_verified: true, email_verified_at: new Date().toISOString()
+                    email_verified: true,
+                    email_verified_at: new Date().toISOString()
                 });
                 await deleteDoc(doc(db, 'email_verifications', user.uid));
+
                 clearOtpTimers();
+                isOtpVerified = true;
+                isVerifyingOtp = false;
                 inOtpFlow = false;
-                showMessage('Email verified! Redirecting to your dashboard…', 'success');
-                setTimeout(() => { window.location.href = 'owner/dashboard.html'; }, 900);
+
+                showOtpStatusVerified();
+
+                setTimeout(() => { window.location.href = 'owner/dashboard.html'; }, 1300);
             } catch (err) {
                 console.error('[OTP verify]', err);
-                showMessage(err.message || 'Verification failed. Please try again.', 'error');
+                isVerifyingOtp = false;
+                setOtpInputsDisabled(false);
+
+                showOtpStatusError(err.message || 'Verification failed. Please try again.');
                 markOtpInputsError();
-                clearOtpInputs();
-            } finally {
-                setButtonLoading(btn, false);
+
+                // Clear inputs so the user can re-enter, then focus the first box
+                setTimeout(() => {
+                    clearOtpInputs();
+                    showOtpStatusIdle();
+                }, 800);
             }
         }
-        window.handleVerifyOtp = handleVerifyOtp;
 
         async function handleResendOtp() {
             const btn = document.getElementById('otp-resend-btn');
             const user = auth.currentUser;
-            if (!user) { showMessage('Session expired. Please sign in again.', 'error'); return; }
+            if (!user) { showOtpStatusError('Session expired. Please sign in again.'); return; }
             if (Date.now() < resendLockUntil) return;
+
+            // Reset verification state on resend
+            isVerifyingOtp = false;
+            isOtpVerified = false;
+
             hideMessage();
+            showOtpStatusIdle();
             btn.disabled = true;
+
             try {
                 currentOtpExpiry = await sendOtp(currentOtpEmail, currentOtpName);
                 clearOtpInputs();
-                showMessage(`A new code has been sent to ${currentOtpEmail}.`, 'success');
                 startExpiryTimer();
                 startResendCooldown();
             } catch (err) {
                 console.error('[OTP resend failed]', err);
-                showMessage('Could not resend the code. ' + (err?.text || err?.message || 'Please try again.'), 'error');
+                showOtpStatusError('Could not resend the code. ' + (err?.text || err?.message || 'Please try again.'));
                 resendLockUntil = Date.now() + 10_000;
                 startResendCooldown();
             }
@@ -784,7 +975,6 @@
                 const result = await signInWithPopup(auth, appleProvider);
                 const user = result.user;
 
-                // Apple only returns the name on FIRST sign-in — capture it
                 let displayName = user.displayName;
                 if (!displayName && result._tokenResponse?.firstName) {
                     displayName = `${result._tokenResponse.firstName} ${result._tokenResponse.lastName || ''}`.trim();
