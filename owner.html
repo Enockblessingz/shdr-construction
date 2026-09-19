@@ -35,22 +35,24 @@
             opacity: 0.12; z-index: 0;
         }
         .brand-content { position: relative; z-index: 2; max-width: 360px; }
+        
+        /* ── UPDATED BRAND LOGO ── */
         .brand-logo {
-            width: 80px; height: 80px; border-radius: 20px;
-            background: rgba(255,255,255,0.15); backdrop-filter: blur(10px);
+            width: 120px; height: 120px; border-radius: 20px;
+            background: transparent; /* Removed the glass background */
             display: flex; align-items: center; justify-content: center;
             margin: 0 auto 24px; font-size: 2rem; font-weight: 700; color: #fff;
-            border: 1px solid rgba(255,255,255,0.2); overflow: hidden;
+            border: none; /* Removed border */
+            overflow: visible;
         }
-        /* Ensure the logo image fits nicely and has a white background if needed */
         .brand-logo img { 
             width: 100%; 
             height: 100%; 
             object-fit: contain; 
-            padding: 8px;
-            background: rgba(255, 255, 255, 0.9); /* Light background to make transparent PNG stand out */
-            border-radius: 20px;
+            background: transparent; /* Removed the white background */
+            padding: 0;
         }
+
         .brand-panel h2 { font-size: 2rem; font-weight: 700; margin-bottom: 16px; letter-spacing: -0.5px; }
         .brand-panel p { font-size: 1rem; line-height: 1.7; opacity: 0.9; }
         .brand-features { margin-top: 40px; display: flex; flex-direction: column; gap: 16px; text-align: left; width: 100%; max-width: 300px; }
@@ -197,7 +199,6 @@
         <div class="brand-panel">
             <div class="brand-content">
                 <div class="brand-logo">
-                    <!-- Updated to use the Background Removed PNG -->
                     <img src="shdr_logo Background Removed.png" alt="SHDR" onerror="this.style.display='none'; this.parentElement.textContent='SH';" />
                 </div>
                 <h2>SHDR Owner's Portal</h2>
@@ -316,7 +317,7 @@
 
                 <!-- VIEW 2: OTP -->
                 <div id="otp-view" class="otp-view hidden">
-                    <div class="otp-icon"></div>
+                    <div class="otp-icon">✉️</div>
                     <h1>Verify Your Email</h1>
                     <p class="otp-sub">A one-time code will confirm your identity next.</p>
                     <p class="otp-sub" id="otp-purpose-msg">We've sent a 6-digit code to:</p>
