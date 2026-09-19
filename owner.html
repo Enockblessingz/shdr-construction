@@ -152,23 +152,48 @@
             background: #f1f5f9; padding: 4px 12px; border-radius: 100px;
             font-size: 0.9rem; margin-top: 4px; word-break: break-all;
         }
+
+        /* ─────────────────────────────────────────────
+           OTP INPUTS — Entering Code state animation
+           ───────────────────────────────────────────── */
         .otp-inputs { display: flex; gap: 10px; justify-content: center; margin: 28px 0 4px; }
         .otp-inputs input {
             width: 52px; height: 62px; text-align: center; font-size: 1.5rem;
             font-weight: 700; border: 1.5px solid var(--border); border-radius: 12px;
-            background: #f9fafb; transition: 0.2s; font-family: inherit;
+            background: #f9fafb; font-family: inherit;
             color: var(--text); caret-color: var(--green);
+            /* smooth focus transition between boxes */
+            transition: border-color 0.18s ease, background 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
+            will-change: transform, opacity;
         }
-        .otp-inputs input:focus { outline: none; border-color: var(--green); box-shadow: 0 0 0 3px rgba(5,150,105,0.1); background: #fff; }
+        .otp-inputs input:focus {
+            outline: none; border-color: var(--green);
+            box-shadow: 0 0 0 3px rgba(5,150,105,0.1);
+            background: #fff;
+        }
         .otp-inputs input.filled { border-color: var(--green); background: #fff; }
+        /* subtle digit pop animation */
+        .otp-inputs input.pop {
+            animation: digitPop 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        @keyframes digitPop {
+            0%   { transform: scale(0.88); opacity: 0.55; }
+            60%  { transform: scale(1.04); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        /* error state (unchanged — no new animation) */
         .otp-inputs input.error { border-color: #ef4444; background: #fef2f2; animation: shake 0.4s ease; }
         .otp-inputs input:disabled { opacity: 0.6; cursor: not-allowed; }
         @keyframes shake { 0%,100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+
         .otp-timer { font-size: 0.82rem; color: var(--text-light); margin-top: 12px; margin-bottom: 4px; }
         .otp-timer strong { color: var(--green); font-variant-numeric: tabular-nums; }
         .otp-timer.expired strong { color: #dc2626; }
 
-        /* ── Status area (auto-verify feedback) ── */
+        /* ─────────────────────────────────────────────
+           OTP STATUS — Verifying → ✓ Verified transitions
+           (Only these two states are animated)
+           ───────────────────────────────────────────── */
         .otp-status {
             min-height: 100px;
             display: flex;
@@ -176,7 +201,7 @@
             align-items: center;
             justify-content: center;
             padding: 8px 0;
-            transition: all 0.3s ease;
+            position: relative;
         }
         .otp-status .status-text {
             font-size: 0.9rem;
@@ -189,19 +214,49 @@
         .otp-status.verified .status-text { color: #059669; font-weight: 600; font-size: 0.95rem; }
         .otp-status.error .status-text { color: #dc2626; font-weight: 500; }
 
+        /* ── Verifying state (200–300ms transition) ── */
+        .otp-status.verifying {
+            animation: stateSwapIn 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .otp-status.verifying .status-text {
+            animation: stateTextIn 0.25s ease-out;
+        }
         .otp-spinner-large {
             width: 44px;
             height: 44px;
             border: 3px solid #e2e8f0;
             border-top: 3px solid #059669;
             border-radius: 50%;
-            animation: spin 0.8s linear infinite;
+            animation: spin 0.8s linear infinite, stateSwapIn 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        @keyframes stateSwapIn {
+            0%   { opacity: 0; transform: scale(0.96); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+        @keyframes stateTextIn {
+            0%   { opacity: 0; transform: translateY(4px); }
+            100% { opacity: 1; transform: translateY(0); }
         }
 
+        /* ── ✓ Verified state ── */
+        .otp-status.verified {
+            animation: successPulse 0.55s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        @keyframes successPulse {
+            0%   { transform: scale(1); }
+            45%  { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        .otp-status.verified .status-text {
+            animation: stateTextIn 0.4s ease-out 0.55s backwards;
+        }
+
+        /* Animated SVG checkmark — scale + fade-in + stroke-draw */
         .otp-checkmark {
             width: 68px;
             height: 68px;
-            animation: checkmarkPop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            animation: checkmarkPop 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            filter: drop-shadow(0 4px 10px rgba(5, 150, 105, 0.18));
         }
         .otp-checkmark circle {
             stroke: #059669;
@@ -209,7 +264,7 @@
             fill: none;
             stroke-dasharray: 166;
             stroke-dashoffset: 166;
-            animation: checkmarkStroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+            animation: checkmarkStroke 0.55s cubic-bezier(0.65, 0, 0.45, 1) forwards;
             transform-origin: center;
         }
         .otp-checkmark path {
@@ -220,12 +275,12 @@
             stroke-linejoin: round;
             stroke-dasharray: 48;
             stroke-dashoffset: 48;
-            animation: checkmarkStroke 0.35s cubic-bezier(0.65, 0, 0.45, 1) 0.55s forwards;
+            animation: checkmarkStroke 0.32s cubic-bezier(0.65, 0, 0.45, 1) 0.5s forwards;
         }
         @keyframes checkmarkStroke { 100% { stroke-dashoffset: 0; } }
         @keyframes checkmarkPop {
-            0% { transform: scale(0.6); opacity: 0; }
-            60% { transform: scale(1.05); }
+            0%   { transform: scale(0.6); opacity: 0; }
+            60%  { transform: scale(1.05); opacity: 1; }
             100% { transform: scale(1); opacity: 1; }
         }
 
@@ -400,7 +455,7 @@
                         Code expires in <strong id="otp-expiry">10:00</strong>
                     </div>
 
-                    <!-- Auto-verify status area -->
+                    <!-- Auto-verify status area (Verifying → ✓ Verified) -->
                     <div id="otp-status" class="otp-status" aria-live="polite"></div>
 
                     <div class="otp-resend">
@@ -489,7 +544,7 @@
         let resendIntervalId = null;
         let resendLockUntil = 0;
 
-        // ── Auto-verify flags (prevent duplicates & re-submission after success) ──
+        // ── Auto-verify flags (prevent duplicate requests & re-submission) ──
         let isVerifyingOtp = false;
         let isOtpVerified  = false;
 
@@ -656,7 +711,7 @@
             resendIntervalId = setInterval(tick, 1000);
         }
 
-        /* ─── OTP status indicators ─── */
+        /* ─── OTP status indicators (only these states are animated) ─── */
         function showOtpStatusIdle() {
             const el = document.getElementById('otp-status');
             if (!el) return;
@@ -666,6 +721,9 @@
         function showOtpStatusVerifying() {
             const el = document.getElementById('otp-status');
             if (!el) return;
+            // reset class first so animation re-triggers reliably
+            el.className = 'otp-status';
+            void el.offsetWidth;
             el.className = 'otp-status verifying';
             el.innerHTML = `
                 <div class="otp-spinner-large"></div>
@@ -675,6 +733,8 @@
         function showOtpStatusVerified() {
             const el = document.getElementById('otp-status');
             if (!el) return;
+            el.className = 'otp-status';
+            void el.offsetWidth;
             el.className = 'otp-status verified';
             el.innerHTML = `
                 <svg class="otp-checkmark" viewBox="0 0 52 52" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -691,9 +751,18 @@
             el.innerHTML = `<p class="status-text">${message}</p>`;
         }
 
-        /* ─── OTP inputs (auto-advance + auto-verify) ─── */
+        /* ─── OTP inputs (auto-advance + auto-verify + digit pop) ─── */
         function setOtpInputsDisabled(disabled) {
             document.querySelectorAll('#otp-inputs input').forEach(i => { i.disabled = disabled; });
+        }
+
+        function playDigitPop(input) {
+            if (!input) return;
+            input.classList.remove('pop');
+            // force reflow so animation re-triggers
+            void input.offsetWidth;
+            input.classList.add('pop');
+            input.addEventListener('animationend', () => input.classList.remove('pop'), { once: true });
         }
 
         function setupOtpInputs() {
@@ -711,6 +780,7 @@
                             inputs[idx + i].value = val[i];
                             inputs[idx + i].classList.add('filled');
                             inputs[idx + i].classList.remove('error');
+                            playDigitPop(inputs[idx + i]);
                         }
                         const lastFilled = Math.min(idx + val.length, inputs.length) - 1;
                         inputs[lastFilled].focus();
@@ -721,6 +791,7 @@
                     e.target.value = val;
                     e.target.classList.toggle('filled', !!val);
                     e.target.classList.remove('error');
+                    if (val) playDigitPop(e.target);
 
                     if (val && idx < inputs.length - 1) {
                         inputs[idx + 1].focus();
@@ -751,6 +822,7 @@
                             inputs[i].value = ch;
                             inputs[i].classList.add('filled');
                             inputs[i].classList.remove('error');
+                            playDigitPop(inputs[i]);
                         }
                     });
                     const last = Math.min(text.length, inputs.length) - 1;
@@ -768,7 +840,7 @@
         function clearOtpInputs({ focus = true } = {}) {
             document.querySelectorAll('#otp-inputs input').forEach(i => {
                 i.value = '';
-                i.classList.remove('filled', 'error');
+                i.classList.remove('filled', 'error', 'pop');
                 i.disabled = false;
             });
             if (focus) document.querySelector('#otp-inputs input')?.focus();
@@ -837,7 +909,7 @@
         }
         window.backToAuth = backToAuth;
 
-        /* ─── Verify OTP (auto-triggered, no button) ─── */
+        /* ─── Verify OTP (auto-triggered, no manual button) ─── */
         async function handleVerifyOtp() {
             if (isVerifyingOtp || isOtpVerified) return;
 
@@ -850,7 +922,7 @@
             }
             if (code.length !== OTP_LENGTH) return;
 
-            // Lock UI
+            // Lock UI — prevents duplicate requests
             isVerifyingOtp = true;
             setOtpInputsDisabled(true);
             showOtpStatusVerifying();
@@ -886,7 +958,7 @@
 
                 showOtpStatusVerified();
 
-                setTimeout(() => { window.location.href = 'owner/dashboard.html'; }, 1300);
+                setTimeout(() => { window.location.href = 'owner/dashboard.html'; }, 1400);
             } catch (err) {
                 console.error('[OTP verify]', err);
                 isVerifyingOtp = false;
