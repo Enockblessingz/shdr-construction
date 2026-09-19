@@ -114,7 +114,6 @@
         .spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.3); border-top: 2px solid #fff; border-radius: 50%; animation: spin 0.6s linear infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        /* ── OTP View ── */
         .otp-view { text-align: center; }
         .otp-icon {
             width: 76px; height: 76px; background: #ecfdf5; color: var(--green);
@@ -127,6 +126,7 @@
             display: inline-block; font-weight: 600; color: var(--text);
             background: #f1f5f9; padding: 4px 12px; border-radius: 100px;
             font-size: 0.9rem; margin-top: 4px; word-break: break-all;
+            letter-spacing: 0.02em;
         }
 
         .otp-inputs { display: flex; gap: 10px; justify-content: center; margin: 28px 0 4px; }
@@ -477,10 +477,34 @@
         let isOtpVerified  = false;
 
         /* ─────────────────────────────────────────────
-           OTP-verified-this-session tracker
-           (Required so we don't loop OTP after verifying,
-            but ensures OTP is shown on every sign-in.)
+           Email masking — UI only (backend email untouched)
+           enockirafashaz@icloud.com → en***********z@icloud.com
+           johnsmith@gmail.com       → jo******h@gmail.com
            ───────────────────────────────────────────── */
+        function maskEmail(email) {
+            if (!email || typeof email !== 'string') return email || '';
+            const atIdx = email.lastIndexOf('@');
+            if (atIdx <= 0) return email; // malformed, return as-is
+
+            const username = email.slice(0, atIdx);
+            const domain   = email.slice(atIdx); // includes "@"
+
+            // Very short usernames: keep first char + asterisks
+            if (username.length <= 3) {
+                const first = username.slice(0, 1);
+                const stars = '*'.repeat(Math.max(1, username.length - 1));
+                return first + stars + domain;
+            }
+
+            const firstTwo = username.slice(0, 2);
+            const lastChar = username.slice(-1);
+            const middleCount = username.length - 3; // between first 2 and last 1
+            const stars = '*'.repeat(middleCount);
+            return firstTwo + stars + lastChar + domain;
+        }
+        window.maskEmail = maskEmail;
+
+        /* ─── OTP-verified-this-session tracker ─── */
         function otpSessionKey(uid) { return 'shdr_otp_verified_' + uid; }
         function isOtpVerifiedThisSession(uid) {
             return uid && sessionStorage.getItem(otpSessionKey(uid)) === '1';
@@ -803,9 +827,13 @@
             isVerifyingOtp = false;
             isOtpVerified = false;
 
+            // Store the real email internally (used by EmailJS + backend).
             currentOtpEmail = user.email || '';
             currentOtpName = name || user.displayName || '';
-            document.getElementById('otp-email-display').textContent = currentOtpEmail;
+
+            // Only the DISPLAYED value is masked.
+            document.getElementById('otp-email-display').textContent = maskEmail(currentOtpEmail);
+
             document.getElementById('otp-purpose-msg').textContent =
                 purpose === 'signup'
                     ? "We've sent a 6-digit code to confirm your new account:"
@@ -839,7 +867,6 @@
             inOtpFlow = false;
             isVerifyingOtp = false;
             isOtpVerified = false;
-            // Clear session flag so next sign-in still requires OTP
             if (auth.currentUser) clearOtpVerifiedFlag(auth.currentUser.uid);
             currentOtpEmail = ''; currentOtpName = ''; currentOtpExpiry = 0;
             document.getElementById('otp-view').classList.add('hidden');
@@ -883,7 +910,6 @@
                         : 'Too many incorrect attempts. Please request a new code.');
                 }
 
-                // Success
                 await updateDoc(doc(db, 'profiles', user.uid), {
                     email_verified: true,
                     email_verified_at: new Date().toISOString()
@@ -895,8 +921,6 @@
                 isVerifyingOtp = false;
                 inOtpFlow = false;
 
-                // Mark OTP verified for this tab session, so the redirect
-                // doesn't send the user back into the OTP screen.
                 markOtpVerifiedThisSession(user.uid);
 
                 showOtpStatusVerified();
@@ -931,6 +955,7 @@
             btn.disabled = true;
 
             try {
+                // Resend uses the real (unmasked) email
                 currentOtpExpiry = await sendOtp(currentOtpEmail, currentOtpName);
                 clearOtpInputs();
                 startExpiryTimer();
@@ -944,7 +969,7 @@
         }
         window.handleResendOtp = handleResendOtp;
 
-        /* ─── Google sign-in (OTP required after) ─── */
+        /* ─── Google sign-in ─── */
         async function signInWithGoogle() {
             const allBtns = document.querySelectorAll('#google-login-btn, #signup-form .google-btn');
             allBtns.forEach(b => b.disabled = true);
@@ -982,7 +1007,7 @@
         }
         window.signInWithGoogle = signInWithGoogle;
 
-        /* ─── Apple sign-in (OTP required after) ─── */
+        /* ─── Apple sign-in ─── */
         async function signInWithApple() {
             const allBtns = document.querySelectorAll('#apple-login-btn, #signup-form .apple-btn');
             allBtns.forEach(b => b.disabled = true);
@@ -1044,7 +1069,7 @@
         }
         window.signInWithApple = signInWithApple;
 
-        /* ─── Session check (requires OTP every session) ─── */
+        /* ─── Session check (OTP every session) ─── */
         onAuthStateChanged(auth, async (user) => {
             if (!user) return;
             if (inOtpFlow) return;
@@ -1056,7 +1081,6 @@
                     return;
                 }
 
-                // If OTP was NOT completed in this tab session → force OTP again
                 if (!isOtpVerifiedThisSession(user.uid)) {
                     await showOtpView(user, snap.data().full_name, 'login', true);
                     return;
@@ -1097,7 +1121,6 @@
                 if (remember) localStorage.setItem('shdr_owner_remember', email);
                 else localStorage.removeItem('shdr_owner_remember');
 
-                // Always require OTP on every sign-in
                 setButtonLoading(btn, false);
                 await showOtpView(user, snap.data().full_name, 'login', true);
                 return;
