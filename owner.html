@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>  
-    <!-- ── Favicon (browser tab) ── -->
     <link rel="icon" type="image/png" href="shdr_logo Background Removed.png">
     <link rel="apple-touch-icon" href="shdr_logo Background Removed.png">
     <meta charset="UTF-8" />
@@ -35,7 +34,6 @@
             opacity: 0.12; z-index: 0;
         }
         .brand-content { position: relative; z-index: 2; max-width: 360px; }
-        
         .brand-logo {
             width: 120px; height: 120px; border-radius: 20px;
             background: transparent;
@@ -45,13 +43,9 @@
             overflow: visible;
         }
         .brand-logo img { 
-            width: 100%; 
-            height: 100%; 
-            object-fit: contain; 
-            background: transparent;
-            padding: 0;
+            width: 100%; height: 100%; object-fit: contain; 
+            background: transparent; padding: 0;
         }
-
         .brand-panel h2 { font-size: 2rem; font-weight: 700; margin-bottom: 16px; letter-spacing: -0.5px; }
         .brand-panel p { font-size: 1rem; line-height: 1.7; opacity: 0.9; }
         .brand-features { margin-top: 40px; display: flex; flex-direction: column; gap: 16px; text-align: left; width: 100%; max-width: 300px; }
@@ -79,28 +73,10 @@
         .social-btn svg { width: 20px; height: 20px; flex-shrink: 0; }
         .social-btn.google-btn svg { width: 18px; height: 18px; }
         .social-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
-
-        .social-btn.apple-btn {
-            background: #000;
-            color: #fff;
-            border-color: #000;
-        }
-        .social-btn.apple-btn:hover {
-            background: #1a1a1a;
-            border-color: #1a1a1a;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-        }
-        .social-btn.apple-btn svg {
-            width: 18px;
-            height: 18px;
-            fill: #fff;
-        }
-        .social-btn.apple-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none;
-        }
-
+        .social-btn.apple-btn { background: #000; color: #fff; border-color: #000; }
+        .social-btn.apple-btn:hover { background: #1a1a1a; border-color: #1a1a1a; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+        .social-btn.apple-btn svg { width: 18px; height: 18px; fill: #fff; }
+        .social-btn.apple-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
         .divider { display: flex; align-items: center; gap: 16px; color: var(--text-light); font-size: 0.8rem; margin: 16px 0 18px; }
         .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
         .form-group { margin-bottom: 18px; }
@@ -153,16 +129,12 @@
             font-size: 0.9rem; margin-top: 4px; word-break: break-all;
         }
 
-        /* ─────────────────────────────────────────────
-           OTP INPUTS — Entering Code state animation
-           ───────────────────────────────────────────── */
         .otp-inputs { display: flex; gap: 10px; justify-content: center; margin: 28px 0 4px; }
         .otp-inputs input {
             width: 52px; height: 62px; text-align: center; font-size: 1.5rem;
             font-weight: 700; border: 1.5px solid var(--border); border-radius: 12px;
             background: #f9fafb; font-family: inherit;
             color: var(--text); caret-color: var(--green);
-            /* smooth focus transition between boxes */
             transition: border-color 0.18s ease, background 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
             will-change: transform, opacity;
         }
@@ -172,16 +144,12 @@
             background: #fff;
         }
         .otp-inputs input.filled { border-color: var(--green); background: #fff; }
-        /* subtle digit pop animation */
-        .otp-inputs input.pop {
-            animation: digitPop 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-        }
+        .otp-inputs input.pop { animation: digitPop 0.2s cubic-bezier(0.4, 0, 0.2, 1); }
         @keyframes digitPop {
             0%   { transform: scale(0.88); opacity: 0.55; }
             60%  { transform: scale(1.04); opacity: 1; }
             100% { transform: scale(1); opacity: 1; }
         }
-        /* error state (unchanged — no new animation) */
         .otp-inputs input.error { border-color: #ef4444; background: #fef2f2; animation: shake 0.4s ease; }
         .otp-inputs input:disabled { opacity: 0.6; cursor: not-allowed; }
         @keyframes shake { 0%,100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
@@ -190,10 +158,6 @@
         .otp-timer strong { color: var(--green); font-variant-numeric: tabular-nums; }
         .otp-timer.expired strong { color: #dc2626; }
 
-        /* ─────────────────────────────────────────────
-           OTP STATUS — Verifying → ✓ Verified transitions
-           (Only these two states are animated)
-           ───────────────────────────────────────────── */
         .otp-status {
             min-height: 100px;
             display: flex;
@@ -203,27 +167,15 @@
             padding: 8px 0;
             position: relative;
         }
-        .otp-status .status-text {
-            font-size: 0.9rem;
-            font-weight: 500;
-            margin-top: 12px;
-            text-align: center;
-            line-height: 1.5;
-        }
+        .otp-status .status-text { font-size: 0.9rem; font-weight: 500; margin-top: 12px; text-align: center; line-height: 1.5; }
         .otp-status.verifying .status-text { color: var(--text-light); }
         .otp-status.verified .status-text { color: #059669; font-weight: 600; font-size: 0.95rem; }
         .otp-status.error .status-text { color: #dc2626; font-weight: 500; }
 
-        /* ── Verifying state (200–300ms transition) ── */
-        .otp-status.verifying {
-            animation: stateSwapIn 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .otp-status.verifying .status-text {
-            animation: stateTextIn 0.25s ease-out;
-        }
+        .otp-status.verifying { animation: stateSwapIn 0.25s cubic-bezier(0.4, 0, 0.2, 1); }
+        .otp-status.verifying .status-text { animation: stateTextIn 0.25s ease-out; }
         .otp-spinner-large {
-            width: 44px;
-            height: 44px;
+            width: 44px; height: 44px;
             border: 3px solid #e2e8f0;
             border-top: 3px solid #059669;
             border-radius: 50%;
@@ -238,43 +190,29 @@
             100% { opacity: 1; transform: translateY(0); }
         }
 
-        /* ── ✓ Verified state ── */
-        .otp-status.verified {
-            animation: successPulse 0.55s cubic-bezier(0.4, 0, 0.2, 1);
-        }
+        .otp-status.verified { animation: successPulse 0.55s cubic-bezier(0.4, 0, 0.2, 1); }
         @keyframes successPulse {
             0%   { transform: scale(1); }
             45%  { transform: scale(1.05); }
             100% { transform: scale(1); }
         }
-        .otp-status.verified .status-text {
-            animation: stateTextIn 0.4s ease-out 0.55s backwards;
-        }
+        .otp-status.verified .status-text { animation: stateTextIn 0.4s ease-out 0.55s backwards; }
 
-        /* Animated SVG checkmark — scale + fade-in + stroke-draw */
         .otp-checkmark {
-            width: 68px;
-            height: 68px;
+            width: 68px; height: 68px;
             animation: checkmarkPop 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             filter: drop-shadow(0 4px 10px rgba(5, 150, 105, 0.18));
         }
         .otp-checkmark circle {
-            stroke: #059669;
-            stroke-width: 2.5;
-            fill: none;
-            stroke-dasharray: 166;
-            stroke-dashoffset: 166;
+            stroke: #059669; stroke-width: 2.5; fill: none;
+            stroke-dasharray: 166; stroke-dashoffset: 166;
             animation: checkmarkStroke 0.55s cubic-bezier(0.65, 0, 0.45, 1) forwards;
             transform-origin: center;
         }
         .otp-checkmark path {
-            stroke: #059669;
-            stroke-width: 3;
-            fill: none;
-            stroke-linecap: round;
-            stroke-linejoin: round;
-            stroke-dasharray: 48;
-            stroke-dashoffset: 48;
+            stroke: #059669; stroke-width: 3; fill: none;
+            stroke-linecap: round; stroke-linejoin: round;
+            stroke-dasharray: 48; stroke-dashoffset: 48;
             animation: checkmarkStroke 0.32s cubic-bezier(0.65, 0, 0.45, 1) 0.5s forwards;
         }
         @keyframes checkmarkStroke { 100% { stroke-dashoffset: 0; } }
@@ -314,7 +252,6 @@
 <body>
 
     <div class="split-container">
-        <!-- ─── LEFT: BRANDING ─── -->
         <div class="brand-panel">
             <div class="brand-content">
                 <div class="brand-logo">
@@ -330,19 +267,16 @@
             </div>
         </div>
 
-        <!-- ─── RIGHT: FORMS ─── -->
         <div class="form-panel">
             <div class="form-wrapper">
                 <div id="message" class="message"></div>
 
-                <!-- VIEW 1: AUTH -->
                 <div id="auth-view">
                     <div class="form-header">
                         <h1 id="form-title">Sign In</h1>
                         <p id="form-desc">Access your owner dashboard</p>
                     </div>
 
-                    <!-- LOGIN -->
                     <form id="login-form" onsubmit="handleLogin(event)">
                         <div class="social-section">
                             <button type="button" class="social-btn google-btn" id="google-login-btn" onclick="signInWithGoogle()">
@@ -384,7 +318,6 @@
                         </div>
                     </form>
 
-                    <!-- SIGNUP -->
                     <form id="signup-form" class="hidden" onsubmit="handleSignUp(event)">
                         <div class="social-section">
                             <button type="button" class="social-btn google-btn" onclick="signInWithGoogle()">
@@ -434,7 +367,6 @@
                     </form>
                 </div>
 
-                <!-- VIEW 2: OTP -->
                 <div id="otp-view" class="otp-view hidden">
                     <div class="otp-icon">✉️</div>
                     <h1>Verify Your Email</h1>
@@ -455,7 +387,6 @@
                         Code expires in <strong id="otp-expiry">10:00</strong>
                     </div>
 
-                    <!-- Auto-verify status area (Verifying → ✓ Verified) -->
                     <div id="otp-status" class="otp-status" aria-live="polite"></div>
 
                     <div class="otp-resend">
@@ -481,10 +412,8 @@
         </div>
     </div>
 
-    <!-- EmailJS SDK -->
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 
-    <!-- Firebase + app logic -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
         import {
@@ -544,9 +473,24 @@
         let resendIntervalId = null;
         let resendLockUntil = 0;
 
-        // ── Auto-verify flags (prevent duplicate requests & re-submission) ──
         let isVerifyingOtp = false;
         let isOtpVerified  = false;
+
+        /* ─────────────────────────────────────────────
+           OTP-verified-this-session tracker
+           (Required so we don't loop OTP after verifying,
+            but ensures OTP is shown on every sign-in.)
+           ───────────────────────────────────────────── */
+        function otpSessionKey(uid) { return 'shdr_otp_verified_' + uid; }
+        function isOtpVerifiedThisSession(uid) {
+            return uid && sessionStorage.getItem(otpSessionKey(uid)) === '1';
+        }
+        function markOtpVerifiedThisSession(uid) {
+            if (uid) sessionStorage.setItem(otpSessionKey(uid), '1');
+        }
+        function clearOtpVerifiedFlag(uid) {
+            if (uid) sessionStorage.removeItem(otpSessionKey(uid));
+        }
 
         /* ─── UI helpers ─── */
         function switchTo(form) {
@@ -721,7 +665,6 @@
         function showOtpStatusVerifying() {
             const el = document.getElementById('otp-status');
             if (!el) return;
-            // reset class first so animation re-triggers reliably
             el.className = 'otp-status';
             void el.offsetWidth;
             el.className = 'otp-status verifying';
@@ -759,7 +702,6 @@
         function playDigitPop(input) {
             if (!input) return;
             input.classList.remove('pop');
-            // force reflow so animation re-triggers
             void input.offsetWidth;
             input.classList.add('pop');
             input.addEventListener('animationend', () => input.classList.remove('pop'), { once: true });
@@ -773,7 +715,6 @@
 
                     let val = e.target.value.replace(/\D/g, '');
 
-                    // Autofill / paste into a single box — distribute across boxes
                     if (val.length > 1) {
                         e.target.value = '';
                         for (let i = 0; i < val.length && (idx + i) < inputs.length; i++) {
@@ -796,7 +737,6 @@
                     if (val && idx < inputs.length - 1) {
                         inputs[idx + 1].focus();
                     } else if (val && idx === inputs.length - 1) {
-                        // 6th digit entered → auto-verify
                         triggerAutoVerify();
                     }
                 });
@@ -850,7 +790,6 @@
             setTimeout(() => document.querySelectorAll('#otp-inputs input').forEach(i => i.classList.remove('error')), 700);
         }
 
-        /* ─── Auto-verify trigger ─── */
         function triggerAutoVerify() {
             if (isVerifyingOtp || isOtpVerified) return;
             const code = getEnteredOtp();
@@ -900,6 +839,8 @@
             inOtpFlow = false;
             isVerifyingOtp = false;
             isOtpVerified = false;
+            // Clear session flag so next sign-in still requires OTP
+            if (auth.currentUser) clearOtpVerifiedFlag(auth.currentUser.uid);
             currentOtpEmail = ''; currentOtpName = ''; currentOtpExpiry = 0;
             document.getElementById('otp-view').classList.add('hidden');
             document.getElementById('auth-view').classList.remove('hidden');
@@ -909,7 +850,7 @@
         }
         window.backToAuth = backToAuth;
 
-        /* ─── Verify OTP (auto-triggered, no manual button) ─── */
+        /* ─── Verify OTP ─── */
         async function handleVerifyOtp() {
             if (isVerifyingOtp || isOtpVerified) return;
 
@@ -922,13 +863,11 @@
             }
             if (code.length !== OTP_LENGTH) return;
 
-            // Lock UI — prevents duplicate requests
             isVerifyingOtp = true;
             setOtpInputsDisabled(true);
             showOtpStatusVerifying();
 
             try {
-                // ── Backend verification (Firestore) ──
                 const snap = await getDoc(doc(db, 'email_verifications', user.uid));
                 if (!snap.exists()) throw new Error('No active verification code. Please request a new one.');
                 const data = snap.data();
@@ -944,7 +883,7 @@
                         : 'Too many incorrect attempts. Please request a new code.');
                 }
 
-                // ── Success ──
+                // Success
                 await updateDoc(doc(db, 'profiles', user.uid), {
                     email_verified: true,
                     email_verified_at: new Date().toISOString()
@@ -955,6 +894,10 @@
                 isOtpVerified = true;
                 isVerifyingOtp = false;
                 inOtpFlow = false;
+
+                // Mark OTP verified for this tab session, so the redirect
+                // doesn't send the user back into the OTP screen.
+                markOtpVerifiedThisSession(user.uid);
 
                 showOtpStatusVerified();
 
@@ -967,7 +910,6 @@
                 showOtpStatusError(err.message || 'Verification failed. Please try again.');
                 markOtpInputsError();
 
-                // Clear inputs so the user can re-enter, then focus the first box
                 setTimeout(() => {
                     clearOtpInputs();
                     showOtpStatusIdle();
@@ -981,7 +923,6 @@
             if (!user) { showOtpStatusError('Session expired. Please sign in again.'); return; }
             if (Date.now() < resendLockUntil) return;
 
-            // Reset verification state on resend
             isVerifyingOtp = false;
             isOtpVerified = false;
 
@@ -1003,20 +944,23 @@
         }
         window.handleResendOtp = handleResendOtp;
 
-        /* ─── Google sign-in ─── */
+        /* ─── Google sign-in (OTP required after) ─── */
         async function signInWithGoogle() {
             const allBtns = document.querySelectorAll('#google-login-btn, #signup-form .google-btn');
             allBtns.forEach(b => b.disabled = true);
             hideMessage();
+            inOtpFlow = true;
             try {
                 const result = await signInWithPopup(auth, googleProvider);
                 const user = result.user;
-                await ensureOwnerProfile(user, user.displayName, true);
+                await ensureOwnerProfile(user, user.displayName, false);
                 if (document.getElementById('login-remember')?.checked && user.email) {
                     localStorage.setItem('shdr_owner_remember', user.email);
                 }
-                window.location.href = 'owner/dashboard.html';
+                allBtns.forEach(b => b.disabled = false);
+                await showOtpView(user, user.displayName || 'Owner', 'login', true);
             } catch (error) {
+                inOtpFlow = false;
                 if (error.code === 'auth/account-exists-with-different-credential') {
                     try {
                         const email = error.customData?.email;
@@ -1038,11 +982,12 @@
         }
         window.signInWithGoogle = signInWithGoogle;
 
-        /* ─── Apple sign-in ─── */
+        /* ─── Apple sign-in (OTP required after) ─── */
         async function signInWithApple() {
             const allBtns = document.querySelectorAll('#apple-login-btn, #signup-form .apple-btn');
             allBtns.forEach(b => b.disabled = true);
             hideMessage();
+            inOtpFlow = true;
             try {
                 const result = await signInWithPopup(auth, appleProvider);
                 const user = result.user;
@@ -1053,14 +998,16 @@
                 }
                 displayName = displayName || (user.email ? user.email.split('@')[0] : 'Owner');
 
-                await ensureOwnerProfile(user, displayName, true);
+                await ensureOwnerProfile(user, displayName, false);
 
                 if (document.getElementById('login-remember')?.checked && user.email) {
                     localStorage.setItem('shdr_owner_remember', user.email);
                 }
 
-                window.location.href = 'owner/dashboard.html';
+                allBtns.forEach(b => b.disabled = false);
+                await showOtpView(user, displayName, 'login', true);
             } catch (error) {
+                inOtpFlow = false;
                 if (error.code === 'auth/account-exists-with-different-credential') {
                     try {
                         const email = error.customData?.email;
@@ -1097,7 +1044,7 @@
         }
         window.signInWithApple = signInWithApple;
 
-        /* ─── Session check ─── */
+        /* ─── Session check (requires OTP every session) ─── */
         onAuthStateChanged(auth, async (user) => {
             if (!user) return;
             if (inOtpFlow) return;
@@ -1108,11 +1055,13 @@
                     showMessage('Access denied. This portal is for owners only.', 'error');
                     return;
                 }
-                const data = snap.data();
-                if (data.email_verified !== true) {
-                    await showOtpView(user, data.full_name, 'login', true);
+
+                // If OTP was NOT completed in this tab session → force OTP again
+                if (!isOtpVerifiedThisSession(user.uid)) {
+                    await showOtpView(user, snap.data().full_name, 'login', true);
                     return;
                 }
+
                 window.location.href = 'owner/dashboard.html';
             } catch (err) { console.error('[session check]', err); }
         });
@@ -1126,7 +1075,7 @@
             if (rememberCheck) rememberCheck.checked = true;
         }
 
-        /* ─── Login ─── */
+        /* ─── Login (email/password) — always requires OTP ─── */
         window.handleLogin = async function (e) {
             e.preventDefault();
             const email = document.getElementById('login-email').value.trim();
@@ -1147,13 +1096,11 @@
                 }
                 if (remember) localStorage.setItem('shdr_owner_remember', email);
                 else localStorage.removeItem('shdr_owner_remember');
-                const data = snap.data();
-                if (data.email_verified !== true) {
-                    setButtonLoading(btn, false);
-                    await showOtpView(user, data.full_name, 'login', true);
-                    return;
-                }
-                window.location.href = 'owner/dashboard.html';
+
+                // Always require OTP on every sign-in
+                setButtonLoading(btn, false);
+                await showOtpView(user, snap.data().full_name, 'login', true);
+                return;
             } catch (error) {
                 inOtpFlow = false;
                 showMessage(getFriendlyErrorMessage(error), 'error');
@@ -1162,7 +1109,7 @@
             }
         };
 
-        /* ─── Signup ─── */
+        /* ─── Signup — always requires OTP ─── */
         window.handleSignUp = async function (e) {
             e.preventDefault();
             const name = document.getElementById('signup-name').value.trim();
