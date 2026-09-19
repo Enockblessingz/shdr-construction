@@ -5,12 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#059669">
     <title>SHDR Manager — Sign In</title>
+
+    <!-- ── Favicon (browser tab) – only the real logo ── -->
+    <link rel="icon" type="image/png" href="shdr_logo%20Background%20Removed.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="shdr_logo%20Background%20Removed.png">
+
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com/3.4.17"></script>
     <!-- Google Font -->
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <!-- Iconify -->
     <script src="https://cdn.jsdelivr.net/npm/iconify-icon@2.3.0/dist/iconify-icon.min.js"></script>
+
     <style>
         * { font-family: 'Plus Jakarta Sans', sans-serif; }
         body { background: #f8fafc; }
@@ -43,8 +49,9 @@
             display: flex; align-items: center; justify-content: center;
             margin: 0 auto 24px; font-size: 2rem; font-weight: 700;
             color: #fff; border: 1px solid rgba(255,255,255,0.2);
+            overflow: hidden;
         }
-        .brand-logo img { width: 100%; height: 100%; border-radius: 20px; object-fit: cover; }
+        .brand-logo img { width: 100%; height: 100%; border-radius: 20px; object-fit: contain; padding: 8px; }
         .form-panel {
             flex: 1;
             display: flex;
@@ -83,8 +90,8 @@
     <div class="brand-panel">
         <div class="brand-content">
             <div class="brand-logo">
-                <img src="shdr.jpg" alt="SHDR"
-                     onerror="this.style.display='none'; this.parentElement.textContent='SH';">
+                <img src="shdr_logo%20Background%20Removed.png" alt="SHDR Ltd."
+                     onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 80 80%22%3E%3Ctext x=%2250%25%22 y=%2254%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22white%22 font-family=%22Arial%22 font-weight=%22bold%22 font-size=%2232%22%3ESH%3C/text%3E%3C/svg%3E';">
             </div>
             <h2 class="text-2xl font-bold mb-4">Manager Access</h2>
             <p class="opacity-90">Your assigned construction site is waiting. Sign in to get started.</p>
@@ -105,15 +112,15 @@
     import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
 
     // Firebase config (same as owner)
-   const firebaseConfig = {
-    apiKey: "AIzaSyBVTLxC6nWpWL6a4BLI3xghdgUoR_cgGzw",
-    authDomain: "shdr-construction.firebaseapp.com",
-    databaseURL: "https://shdr-construction-default-rtdb.firebaseio.com",
-    projectId: "shdr-construction",
-    storageBucket: "shdr-construction.firebasestorage.app",
-    messagingSenderId: "418309267761",
-    appId: "1:418309267761:web:328922587ea18021e21010",
-    measurementId: "G-Y4KMGWDBH3"
+    const firebaseConfig = {
+        apiKey: "AIzaSyBVTLxC6nWpWL6a4BLI3xghdgUoR_cgGzw",
+        authDomain: "shdr-construction.firebaseapp.com",
+        databaseURL: "https://shdr-construction-default-rtdb.firebaseio.com",
+        projectId: "shdr-construction",
+        storageBucket: "shdr-construction.firebasestorage.app",
+        messagingSenderId: "418309267761",
+        appId: "1:418309267761:web:328922587ea18021e21010",
+        measurementId: "G-Y4KMGWDBH3"
     };
 
     const app = initializeApp(firebaseConfig);
@@ -183,13 +190,15 @@
             </form>
             <p class="text-xs text-slate-500 text-center mt-6">
                 <span>
-    Designed & Powered by
-    <a href="https://wa.me/250790020086"
-       target="_blank"
-       rel="noopener noreferrer"
-       class="designer-name"
-       style="color:#059669; text-decoration:none;">
-        <strong>___Enock's___blessingz___</strong>
+                    Designed &amp; Powered by
+                    <a href="https://wa.me/250790020086"
+                       target="_blank"
+                       rel="noopener noreferrer"
+                       style="color:#059669; text-decoration:none;">
+                        <strong>___Enock's___blessingz___</strong>
+                    </a>
+                </span>
+            </p>
         `;
         document.getElementById('login-form').addEventListener('submit', handleLogin);
     }
@@ -341,7 +350,7 @@
                     <input type="file" id="image" accept="image/*" required
                            class="w-full border border-slate-200 rounded-lg p-3 focus:ring-2 focus:ring-emerald-500 outline-none">
                 </div>
-                <button type="submit" class="btn-primary">Save & Continue</button>
+                <button type="submit" class="btn-primary">Save &amp; Continue</button>
             </form>
         `;
 
