@@ -6,11 +6,14 @@
     <meta name="theme-color" content="#059669">
     <meta name="description" content="SHDR — Construction Site Management">
 
-    <!-- ── Favicon (browser tab) – only the real logo ── -->
+    <!-- Favicon -->
     <link rel="icon" type="image/png" href="shdr_logo%20Background%20Removed.png">
     <link rel="apple-touch-icon" sizes="180x180" href="shdr_logo%20Background%20Removed.png">
 
     <title>SHDR — Construction Site Management</title>
+
+    <!-- ── Iconify (real vector icons) ── -->
+    <script src="https://cdn.jsdelivr.net/npm/iconify-icon@2.3.0/dist/iconify-icon.min.js"></script>
 
     <style>
         :root {
@@ -26,11 +29,7 @@
             --max-width: 1200px;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', sans-serif;
@@ -43,9 +42,7 @@
         /* Navigation */
         nav {
             position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
+            top: 0; left: 0; right: 0;
             background: rgba(255,255,255,0.95);
             backdrop-filter: blur(12px);
             border-bottom: 1px solid var(--border);
@@ -90,9 +87,7 @@
             display: block;
         }
 
-        .logo span {
-            color: var(--green);
-        }
+        .logo span { color: var(--green); }
 
         .nav-links {
             display: flex;
@@ -110,9 +105,7 @@
             cursor: pointer;
         }
 
-        .nav-links a:hover {
-            color: var(--text);
-        }
+        .nav-links a:hover { color: var(--text); }
 
         .btn {
             padding: 8px 20px;
@@ -125,8 +118,10 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
+            gap: 8px;
             transition: all 0.2s;
             white-space: nowrap;
+            font-family: inherit;
         }
 
         .btn-outline {
@@ -134,19 +129,13 @@
             border: 1.5px solid var(--border);
             color: var(--text);
         }
-
-        .btn-outline:hover {
-            border-color: #9ca3af;
-        }
+        .btn-outline:hover { border-color: #9ca3af; }
 
         .btn-primary {
             background: var(--green);
             color: #fff;
         }
-
-        .btn-primary:hover {
-            background: var(--green-hover);
-        }
+        .btn-primary:hover { background: var(--green-hover); }
 
         .mobile-toggle {
             display: none;
@@ -165,7 +154,7 @@
             transition: 0.2s;
         }
 
-        /* Hero - Full background image */
+        /* Hero */
         .hero {
             position: relative;
             min-height: 100vh;
@@ -213,9 +202,7 @@
             text-shadow: 0 2px 10px rgba(0,0,0,0.4);
         }
 
-        .hero-content h1 span {
-            color: #34d399;
-        }
+        .hero-content h1 span { color: #34d399; }
 
         .hero-content p {
             color: rgba(255,255,255,0.85);
@@ -239,10 +226,7 @@
             font-size: 0.95rem;
             border-radius: 8px;
         }
-
-        .hero .btn-primary:hover {
-            background: var(--green-hover);
-        }
+        .hero .btn-primary:hover { background: var(--green-hover); }
 
         .hero .btn-outline {
             background: rgba(255,255,255,0.1);
@@ -253,21 +237,14 @@
             border-radius: 8px;
             backdrop-filter: blur(4px);
         }
-
         .hero .btn-outline:hover {
             background: rgba(255,255,255,0.2);
             border-color: rgba(255,255,255,0.6);
         }
 
-        /* Accounts */
-        .section {
-            padding: 80px 24px;
-        }
-
-        .section-alt {
-            background: var(--bg-secondary);
-        }
-
+        /* Sections */
+        .section { padding: 80px 24px; }
+        .section-alt { background: var(--bg-secondary); }
         .section-inner {
             max-width: var(--max-width);
             margin: 0 auto;
@@ -296,6 +273,7 @@
             line-height: 1.7;
         }
 
+        /* Accounts */
         .accounts-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -309,10 +287,7 @@
             padding: 32px;
             transition: box-shadow 0.3s;
         }
-
-        .account-card:hover {
-            box-shadow: 0 8px 30px rgba(0,0,0,0.06);
-        }
+        .account-card:hover { box-shadow: 0 8px 30px rgba(0,0,0,0.06); }
 
         .account-card h3 {
             font-size: 1.3rem;
@@ -329,15 +304,8 @@
             margin-bottom: 16px;
         }
 
-        .badge-owner {
-            background: #ecfdf5;
-            color: #059669;
-        }
-
-        .badge-manager {
-            background: #f0fdf4;
-            color: #16a34a;
-        }
+        .badge-owner { background: #ecfdf5; color: #059669; }
+        .badge-manager { background: #f0fdf4; color: #16a34a; }
 
         .account-card ul {
             list-style: none;
@@ -350,7 +318,7 @@
             color: var(--text-light);
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
         }
 
         .account-card ul li::before {
@@ -374,7 +342,6 @@
             gap: 8px;
         }
 
-        /* Image section */
         .image-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -395,7 +362,7 @@
             margin-top: 8px;
         }
 
-        /* ─────────── FEATURES (UPDATED) ─────────── */
+        /* ─────────── FEATURES (with real icons) ─────────── */
         .features-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -406,26 +373,40 @@
             padding: 24px;
             border: 1px solid var(--border);
             border-radius: 10px;
-            transition: box-shadow 0.2s, transform 0.2s;
+            transition: box-shadow 0.2s, transform 0.2s, border-color 0.2s;
             background: var(--bg);
             position: relative;
         }
 
         .feature-item:hover {
-            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+            box-shadow: 0 6px 24px rgba(5,150,105,0.08);
             transform: translateY(-2px);
+            border-color: #a7f3d0;
         }
 
+        /* Icon container – matches SHDR dashboard style */
         .feature-item .icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 8px;
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
             background: #ecfdf5;
+            color: #059669;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.1rem;
-            margin-bottom: 14px;
+            margin-bottom: 16px;
+            transition: background 0.2s, transform 0.2s;
+        }
+
+        .feature-item:hover .icon {
+            background: #d1fae5;
+            transform: scale(1.05);
+        }
+
+        .feature-item .icon iconify-icon {
+            font-size: 1.65rem;
+            line-height: 1;
+            display: block;
         }
 
         .feature-item h4 {
@@ -465,6 +446,11 @@
 
         .feature-item.coming-soon .icon {
             background: #fef3c7;
+            color: #b45309;
+        }
+
+        .feature-item.coming-soon:hover .icon {
+            background: #fde68a;
         }
 
         /* CTA */
@@ -510,38 +496,21 @@
             font-weight: 500;
         }
 
-        .footer-inner a:hover {
-            text-decoration: underline;
-        }
+        .footer-inner a:hover { text-decoration: underline; }
 
         /* Responsive */
         @media (max-width: 900px) {
-            .hero-content h1 {
-                font-size: 2.2rem;
-            }
-
-            .accounts-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .features-grid {
-                grid-template-columns: 1fr 1fr;
-            }
-
-            .image-row {
-                grid-template-columns: 1fr;
-            }
-
-            .section-title {
-                font-size: 1.6rem;
-            }
+            .hero-content h1 { font-size: 2.2rem; }
+            .accounts-grid { grid-template-columns: 1fr; }
+            .features-grid { grid-template-columns: 1fr 1fr; }
+            .image-row { grid-template-columns: 1fr; }
+            .section-title { font-size: 1.6rem; }
         }
 
         @media (max-width: 640px) {
             .nav-links {
                 position: fixed;
-                top: 0;
-                right: -100%;
+                top: 0; right: -100%;
                 width: 80%;
                 max-width: 300px;
                 height: 100vh;
@@ -552,32 +521,12 @@
                 transition: right 0.3s;
                 box-shadow: -10px 0 30px rgba(0,0,0,0.1);
             }
-
-            .nav-links.active {
-                right: 0;
-            }
-
-            .mobile-toggle {
-                display: block;
-                z-index: 101;
-            }
-
-            .features-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .hero-buttons {
-                flex-direction: column;
-                width: 100%;
-            }
-
-            .hero-buttons .btn {
-                width: 100%;
-            }
-
-            .hero-content h1 {
-                font-size: 1.8rem;
-            }
+            .nav-links.active { right: 0; }
+            .mobile-toggle { display: block; z-index: 101; }
+            .features-grid { grid-template-columns: 1fr; }
+            .hero-buttons { flex-direction: column; width: 100%; }
+            .hero-buttons .btn { width: 100%; }
+            .hero-content h1 { font-size: 1.8rem; }
         }
     </style>
 </head>
@@ -605,7 +554,7 @@
         </div>
     </nav>
 
-    <!-- Hero - Full background image -->
+    <!-- Hero -->
     <section class="hero" id="home">
         <div class="hero-bg">
             <img src="https://cdn.pixabay.com/photo/2018/12/12/23/02/site-3871804_1280.jpg" alt="Construction site">
@@ -614,13 +563,19 @@
             <h1>Construction site <span>Management</span> Made It Easier &amp; Smarter!</h1>
             <p>Connect owners and site managers. Track materials, workers, and progress with full transparency.</p>
             <div class="hero-buttons">
-                <button class="btn btn-primary" onclick="redirectOwner()">Owner Dashboard</button>
-                <button class="btn btn-outline" onclick="redirectManager()">Manager Sign In</button>
+                <button class="btn btn-primary" onclick="redirectOwner()">
+                    <iconify-icon icon="material-symbols:dashboard"></iconify-icon>
+                    Owner Dashboard
+                </button>
+                <button class="btn btn-outline" onclick="redirectManager()">
+                    <iconify-icon icon="material-symbols:login"></iconify-icon>
+                    Manager Sign In
+                </button>
             </div>
         </div>
     </section>
 
-    <!-- Accounts Section -->
+    <!-- Accounts -->
     <section class="section section-alt" id="accounts">
         <div class="section-inner">
             <div class="section-label">Account Types</div>
@@ -639,7 +594,10 @@
                         <li>Receive complete reports for approval</li>
                         <li>Grant and revoke access anytime</li>
                     </ul>
-                    <button class="btn btn-primary btn-full" onclick="redirectOwner()">Go to Owner Dashboard →</button>
+                    <button class="btn btn-primary" style="width:100%;" onclick="redirectOwner()">
+                        Go to Owner Dashboard
+                        <iconify-icon icon="material-symbols:arrow-forward"></iconify-icon>
+                    </button>
                 </div>
                 <!-- Manager -->
                 <div class="account-card">
@@ -653,9 +611,13 @@
                         <li>Sign in only — no account creation</li>
                     </ul>
                     <div class="note">
-                        ⚠️ Managers sign in only. Your credentials are provided by the project owner.
+                        <iconify-icon icon="material-symbols:warning" style="font-size:1.1rem;flex-shrink:0;margin-top:2px;"></iconify-icon>
+                        <span>Managers sign in only. Your credentials are provided by the project owner.</span>
                     </div>
-                    <button class="btn btn-outline btn-full" style="margin-top:14px; border-color:var(--green); color:var(--green);" onclick="redirectManager()">Sign In as Manager →</button>
+                    <button class="btn btn-outline" style="margin-top:14px; width:100%; border-color:var(--green); color:var(--green);" onclick="redirectManager()">
+                        Sign In as Manager
+                        <iconify-icon icon="material-symbols:arrow-forward"></iconify-icon>
+                    </button>
                 </div>
             </div>
 
@@ -673,94 +635,119 @@
         </div>
     </section>
 
-    <!-- ─────────── FEATURES (UPDATED) ─────────── -->
+    <!-- ─────────── FEATURES (with real icons) ─────────── -->
     <section class="section" id="features">
         <div class="section-inner">
             <div class="section-label">Features</div>
             <div class="section-title">Everything is tracked</div>
             <p class="section-desc">All site data recorded by managers, visible to owners in real time.</p>
+
             <div class="features-grid">
 
                 <!-- 1. Materials -->
                 <div class="feature-item">
-                    <div class="icon">📦</div>
+                    <div class="icon">
+                        <iconify-icon icon="material-symbols:package-2-outline"></iconify-icon>
+                    </div>
                     <h4>Materials</h4>
                     <p>Track cement, steel, wood, electrical, plumbing — with quantities and alerts.</p>
                 </div>
 
                 <!-- 2. Stock Control -->
                 <div class="feature-item">
-                    <div class="icon">📊</div>
+                    <div class="icon">
+                        <iconify-icon icon="material-symbols:inventory-2-outline"></iconify-icon>
+                    </div>
                     <h4>Stock Control</h4>
                     <p>Receive stock, low-stock alerts, and complete transaction history per site.</p>
                 </div>
 
                 <!-- 3. Workers -->
                 <div class="feature-item">
-                    <div class="icon">👷</div>
+                    <div class="icon">
+                        <iconify-icon icon="material-symbols:engineering-outline"></iconify-icon>
+                    </div>
                     <h4>Workers</h4>
                     <p>Attendance, daily rates, and payroll calculated automatically.</p>
                 </div>
 
                 <!-- 4. Progress -->
                 <div class="feature-item">
-                    <div class="icon">📈</div>
+                    <div class="icon">
+                        <iconify-icon icon="material-symbols:trending-up"></iconify-icon>
+                    </div>
                     <h4>Progress</h4>
                     <p>Milestone timeline with percentage tracking and photo updates.</p>
                 </div>
 
                 <!-- 5. Finances -->
                 <div class="feature-item">
-                    <div class="icon">💰</div>
+                    <div class="icon">
+                        <iconify-icon icon="material-symbols:account-balance-wallet-outline"></iconify-icon>
+                    </div>
                     <h4>Finances</h4>
                     <p>Live budget tracking, cost breakdown, and overrun alerts for every site.</p>
                 </div>
 
                 <!-- 6. Reports -->
                 <div class="feature-item">
-                    <div class="icon">📋</div>
+                    <div class="icon">
+                        <iconify-icon icon="material-symbols:description-outline"></iconify-icon>
+                    </div>
                     <h4>Reports</h4>
                     <p>Auto-generated reports with full breakdown for owner approval.</p>
                 </div>
 
                 <!-- 7. Multi-Site -->
                 <div class="feature-item">
-                    <div class="icon">🏗️</div>
+                    <div class="icon">
+                        <iconify-icon icon="material-symbols:apartment"></iconify-icon>
+                    </div>
                     <h4>Multi-Site</h4>
                     <p>Manage unlimited construction sites from one dashboard — switch instantly.</p>
                 </div>
 
                 <!-- 8. Site Gallery -->
                 <div class="feature-item">
-                    <div class="icon">📸</div>
+                    <div class="icon">
+                        <iconify-icon icon="material-symbols:photo-library-outline"></iconify-icon>
+                    </div>
                     <h4>Site Gallery</h4>
                     <p>Upload site photos with descriptions — full-screen viewer for progress updates.</p>
                 </div>
 
                 <!-- 9. Manager Team -->
                 <div class="feature-item">
-                    <div class="icon">👥</div>
+                    <div class="icon">
+                        <iconify-icon icon="material-symbols:group-outline"></iconify-icon>
+                    </div>
                     <h4>Manager Team</h4>
                     <p>Invite managers, assign them to specific sites, and monitor activity securely.</p>
                 </div>
 
                 <!-- 10. Alerts -->
                 <div class="feature-item">
-                    <div class="icon">🔔</div>
+                    <div class="icon">
+                        <iconify-icon icon="material-symbols:notifications-active-outline"></iconify-icon>
+                    </div>
                     <h4>Alerts</h4>
                     <p>Low stock, milestone completions, report submissions — stay tuned!</p>
                 </div>
 
                 <!-- 11. Settings & Security -->
                 <div class="feature-item">
-                    <div class="icon">⚙️</div>
+                    <div class="icon">
+                        <iconify-icon icon="material-symbols:settings-outline"></iconify-icon>
+                    </div>
                     <h4>Settings &amp; Security</h4>
                     <p>Update profile, change password, and customize your account preferences.</p>
                 </div>
 
                 <!-- 12. Office Hub (Coming Soon) -->
                 <div class="feature-item coming-soon">
-                    <div class="icon">🏢</div>
+                    <div class="icon">
+                        <iconify-icon icon="material-symbols:business-center-outline"></iconify-icon>
+                    </div>
                     <h4>Office Hub <span class="badge-soon">Soon</span></h4>
                     <p>Document workflow, permits, certifications, and approval center — launching soon.</p>
                 </div>
@@ -774,7 +761,10 @@
         <div class="section-inner">
             <h2>Ready to bring clarity to your project?</h2>
             <p>Start managing your construction site with transparency.</p>
-            <button class="btn btn-primary" onclick="redirectOwner()">Create Owner's Account</button>
+            <button class="btn btn-primary" onclick="redirectOwner()">
+                <iconify-icon icon="material-symbols:person-add"></iconify-icon>
+                Create Owner's Account
+            </button>
         </div>
     </section>
 
