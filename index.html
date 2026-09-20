@@ -1094,44 +1094,54 @@
     <script>
         document.getElementById('year').textContent = new Date().getFullYear();
 
+        
         /* ─── Countdown ─── */
-        const DURATION_MS = 2 * 60 * 60 * 1000;
-        const START = Date.now();
-        const END = START + DURATION_MS;
+const DURATION_MS = 2 * 60 * 1000; // 2 minutes
+const START = Date.now();
+const END = START + DURATION_MS;
 
-        const hoursEl   = document.getElementById('cd-hours');
-        const minutesEl = document.getElementById('cd-minutes');
-        const secondsEl = document.getElementById('cd-seconds');
-        const pctEl     = document.getElementById('progressPct');
-        const fillEl    = document.getElementById('progressFill');
+const hoursEl   = document.getElementById('cd-hours');
+const minutesEl = document.getElementById('cd-minutes');
+const secondsEl = document.getElementById('cd-seconds');
+const pctEl     = document.getElementById('progressPct');
+const fillEl    = document.getElementById('progressFill');
 
-        const pad = n => String(n).padStart(2, '0');
+const pad = n => String(n).padStart(2, '0');
 
-        function tick() {
-            const now = Date.now();
-            const remaining = Math.max(0, END - now);
-            const elapsed = Math.min(DURATION_MS, now - START);
+function tick() {
+    const now = Date.now();
+    const remaining = Math.max(0, END - now);
+    const elapsed = Math.min(DURATION_MS, now - START);
 
-            const totalSec = Math.floor(remaining / 1000);
-            const h = Math.floor(totalSec / 3600);
-            const m = Math.floor((totalSec % 3600) / 60);
-            const s = totalSec % 60;
+    const totalSec = Math.floor(remaining / 1000);
+    const h = Math.floor(totalSec / 3600);
+    const m = Math.floor((totalSec % 3600) / 60);
+    const s = totalSec % 60;
 
-            hoursEl.textContent   = pad(h);
-            minutesEl.textContent = pad(m);
-            secondsEl.textContent = pad(s);
+    hoursEl.textContent   = pad(h);
+    minutesEl.textContent = pad(m);
+    secondsEl.textContent = pad(s);
 
-            const basePct = 62;
-            const dynamicPct = Math.min(99, basePct + (elapsed / DURATION_MS) * 37);
-            const rounded = Math.floor(dynamicPct);
-            pctEl.textContent = rounded + '%';
-            fillEl.style.width = rounded + '%';
+    const basePct = 62;
+    const dynamicPct = Math.min(
+        99,
+        basePct + (elapsed / DURATION_MS) * 37
+    );
 
-            if (remaining <= 0) clearInterval(timer);
-        }
+    const rounded = Math.floor(dynamicPct);
 
-        tick();
-        const timer = setInterval(tick, 1000);
+    pctEl.textContent = rounded + '%';
+    fillEl.style.width = rounded + '%';
+
+    if (remaining <= 0) {
+        clearInterval(timer);
+    }
+}
+
+tick();
+const timer = setInterval(tick, 1000);
+
+        
 
         /* ─── Notify ─── */
         function handleNotify(e) {
