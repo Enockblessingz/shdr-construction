@@ -7,7 +7,7 @@
     <!-- ── Favicon (browser tab) – only the real logo ── -->
     <link rel="icon" type="image/jpeg" href="shdr_logo Background Removed.png">
     <link rel="apple-touch-icon" href="shdr_logo Background Removed.png">
-
+    
     <link rel="manifest" href="manifest.json">
     <title>SHDR_Ltd Construction Sites Management</title>
 
@@ -19,7 +19,7 @@
     <script src="https://cdn.jsdelivr.net/npm/iconify-icon@2.3.0/dist/iconify-icon.min.js"></script>
 
     <style>
-        /* ── Language Switcher Styles ── */
+        /* ── Language Switcher Styles (Added) ── */
         .language-switcher {
             display: flex;
             align-items: center;
@@ -41,8 +41,13 @@
             transition: all 0.3s ease;
             outline: none;
         }
-        .lang-btn:hover { background: rgba(30, 86, 160, 0.1); }
-        .lang-btn:focus-visible { outline: 2px solid #1e56a0; outline-offset: 2px; }
+        .lang-btn:hover {
+            background: rgba(30, 86, 160, 0.1);
+        }
+        .lang-btn:focus-visible {
+            outline: 2px solid #1e56a0;
+            outline-offset: 2px;
+        }
         .lang-btn.active {
             background: #ffffff;
             color: #1e56a0;
@@ -53,7 +58,7 @@
             .lang-btn { font-size: 12px; padding: 4px 10px; }
         }
 
-        /* ── Nav ── */
+        /* ── Existing Styles (kept unchanged) ── */
         .nav-disabled {
             opacity: 0.5;
             cursor: not-allowed;
@@ -67,9 +72,9 @@
             color: #9ca3af;
             font-weight: 400;
         }
-        .nav-disabled .nav-label { opacity: 0.6; }
-
-        /* ── Office ── */
+        .nav-disabled .nav-label {
+            opacity: 0.6;
+        }
         .office-header {
             background: linear-gradient(135deg, #059669 0%, #047857 50%, #065f46 100%);
             border-radius: 16px;
@@ -78,8 +83,14 @@
             color: white;
             box-shadow: 0 8px 30px rgba(5, 150, 105, 0.25);
         }
-        .office-header h2 { font-weight: 700; letter-spacing: -0.5px; }
-        .office-header p { color: rgba(255,255,255,0.85); font-weight: 400; }
+        .office-header h2 {
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+        .office-header p {
+            color: rgba(255,255,255,0.85);
+            font-weight: 400;
+        }
         .office-tab {
             transition: all 0.25s ease;
             border-radius: 9999px;
@@ -89,13 +100,20 @@
             color: #64748b;
             border: 1px solid transparent;
         }
-        .office-tab:hover { background: rgba(255,255,255,0.6); color: #1e293b; }
+        .office-tab:hover {
+            background: rgba(255,255,255,0.6);
+            color: #1e293b;
+        }
         .office-tab.active {
-            background: #059669; color: white;
+            background: #059669;
+            color: white;
             box-shadow: 0 4px 14px rgba(5, 150, 105, 0.35);
             border-color: #059669;
         }
-        .office-tab.active:hover { background: #047857; transform: scale(1.02); }
+        .office-tab.active:hover {
+            background: #047857;
+            transform: scale(1.02);
+        }
         .glass-stat {
             background: rgba(255, 255, 255, 0.7);
             backdrop-filter: blur(12px);
@@ -106,15 +124,27 @@
             transition: all 0.3s ease;
             box-shadow: 0 4px 12px rgba(0,0,0,0.04);
         }
-        .glass-stat:hover { transform: translateY(-4px); box-shadow: 0 12px 30px rgba(0,0,0,0.08); }
-        .glass-stat .stat-number { font-size: 2rem; font-weight: 700; line-height: 1.2; }
+        .glass-stat:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+        }
+        .glass-stat .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            line-height: 1.2;
+        }
         .glass-stat .stat-label {
-            font-size: 0.75rem; text-transform: uppercase;
-            letter-spacing: 0.05em; font-weight: 600; color: #64748b;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-weight: 600;
+            color: #64748b;
         }
         .office-card {
-            background: white; border-radius: 14px;
-            padding: 16px 20px; border: 1px solid #e9edf2;
+            background: white;
+            border-radius: 14px;
+            padding: 16px 20px;
+            border: 1px solid #e9edf2;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             box-shadow: 0 2px 8px rgba(0,0,0,0.03);
         }
@@ -127,56 +157,98 @@
         .priority-medium { border-left: 5px solid #f59e0b; }
         .priority-low { border-left: 5px solid #22c55e; }
         .status-badge {
-            font-size: 0.65rem; font-weight: 600;
-            text-transform: uppercase; letter-spacing: 0.04em;
-            padding: 2px 10px; border-radius: 20px;
+            font-size: 0.65rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            padding: 2px 10px;
+            border-radius: 20px;
         }
+        .status-pending { background: #fef3c7; color: #92400e; }
+        .status-in-progress { background: #dbeafe; color: #1e40af; }
+        .status-approved { background: #d1fae5; color: #065f46; }
+        .status-rejected { background: #fee2e2; color: #991b1b; }
+        .status-revision { background: #ffedd5; color: #9a3412; }
+        .status-history { background: #f1f5f9; color: #475569; }
         .kanban-column {
-            background: #f8fafc; border-radius: 14px;
-            padding: 14px; min-height: 200px;
-            border: 1px solid #e9edf2; transition: all 0.2s;
+            background: #f8fafc;
+            border-radius: 14px;
+            padding: 14px;
+            min-height: 200px;
+            border: 1px solid #e9edf2;
+            transition: all 0.2s;
         }
         .kanban-column:hover { border-color: #cbd5e1; }
         .kanban-column h4 {
-            font-size: 0.7rem; font-weight: 700;
-            text-transform: uppercase; letter-spacing: 0.06em;
-            color: #64748b; border-bottom: 2px solid #e2e8f0;
-            padding-bottom: 10px; margin-bottom: 12px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: #64748b;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 10px;
+            margin-bottom: 12px;
         }
         .activity-item {
-            display: flex; align-items: center; gap: 14px;
-            padding: 10px 0; border-bottom: 1px solid #f1f5f9;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 10px 0;
+            border-bottom: 1px solid #f1f5f9;
             transition: background 0.2s;
         }
-        .activity-item:hover { background: #f8fafc; border-radius: 8px; padding-left: 8px; }
-        .activity-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+        .activity-item:hover {
+            background: #f8fafc;
+            border-radius: 8px;
+            padding-left: 8px;
+        }
+        .activity-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
         .activity-dot.create { background: #22c55e; }
         .activity-dot.update { background: #3b82f6; }
         .activity-dot.status { background: #f59e0b; }
         .subtab-btn {
-            padding: 6px 16px; border-radius: 9999px;
-            font-size: 0.8rem; font-weight: 500;
-            transition: all 0.2s; background: transparent;
-            color: #64748b; border: 1px solid transparent;
+            padding: 6px 16px;
+            border-radius: 9999px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            transition: all 0.2s;
+            background: transparent;
+            color: #64748b;
+            border: 1px solid transparent;
         }
-        .subtab-btn:hover { background: #f1f5f9; color: #1e293b; }
+        .subtab-btn:hover {
+            background: #f1f5f9;
+            color: #1e293b;
+        }
         .subtab-btn.active {
-            background: #ecfdf5; color: #059669;
+            background: #ecfdf5;
+            color: #059669;
             border-color: #a7f3d0;
         }
         .office-filter {
-            border: 1px solid #e2e8f0; border-radius: 8px;
-            padding: 4px 10px; font-size: 0.8rem;
-            background: white; transition: border-color 0.2s;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 4px 10px;
+            font-size: 0.8rem;
+            background: white;
+            transition: border-color 0.2s;
         }
         .office-filter:focus {
-            outline: none; border-color: #059669;
+            outline: none;
+            border-color: #059669;
             box-shadow: 0 0 0 3px rgba(5,150,105,0.15);
         }
         .btn-new {
             background: linear-gradient(135deg, #059669, #047857);
-            color: white; padding: 10px 24px;
-            border-radius: 9999px; font-weight: 600;
+            color: white;
+            padding: 10px 24px;
+            border-radius: 9999px;
+            font-weight: 600;
             transition: all 0.3s ease;
             box-shadow: 0 4px 14px rgba(5,150,105,0.3);
             border: none;
@@ -202,33 +274,53 @@
             border: 3px solid #e2e8f0;
             border-top: 3px solid #059669;
             border-radius: 50%;
-            width: 24px; height: 24px;
+            width: 24px;
+            height: 24px;
             animation: spin 0.8s linear infinite;
         }
         .btn-spinner {
-            display: inline-block; width: 18px; height: 18px;
+            display: inline-block;
+            width: 18px;
+            height: 18px;
             border: 2px solid rgba(255,255,255,0.3);
             border-top: 2px solid #fff;
-            border-radius: 50%; animation: spin 0.6s linear infinite;
-            vertical-align: middle; margin-right: 6px;
+            border-radius: 50%;
+            animation: spin 0.6s linear infinite;
+            vertical-align: middle;
+            margin-right: 6px;
         }
         @keyframes spin { to { transform: rotate(360deg); } }
         .site-selector::-webkit-scrollbar { height: 4px; }
         .site-selector::-webkit-scrollbar-thumb { background: #059669; border-radius: 2px; }
         .scroll-box { max-height: 140px; overflow-y: auto; }
         .bottom-nav {
-            display: none; position: fixed; bottom: 0; left: 0; right: 0;
-            background: white; border-top: 1px solid #e2e8f0;
-            z-index: 40; justify-content: space-around;
-            padding: 8px 0; box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            border-top: 1px solid #e2e8f0;
+            z-index: 40;
+            justify-content: space-around;
+            padding: 8px 0;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
         }
         .bottom-nav a {
-            display: flex; flex-direction: column; align-items: center;
-            font-size: 0.6rem; color: #6b7280;
-            text-decoration: none; padding: 4px 8px;
-            border-radius: 8px; transition: 0.2s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 0.6rem;
+            color: #6b7280;
+            text-decoration: none;
+            padding: 4px 8px;
+            border-radius: 8px;
+            transition: 0.2s;
         }
-        .bottom-nav a.active { color: #059669; background: #ecfdf5; }
+        .bottom-nav a.active {
+            color: #059669;
+            background: #ecfdf5;
+        }
         .bottom-nav a iconify-icon { font-size: 1.3rem; }
         @media (max-width: 1023px) {
             .bottom-nav { display: flex; }
@@ -253,7 +345,8 @@
         .stock-status-out { background: #fee2e2; color: #991b1b; }
         .settings-tab-btn { transition: all 0.2s; }
         .settings-tab-btn.active {
-            background: #059669; color: white;
+            background: #059669;
+            color: white;
             box-shadow: 0 4px 10px rgba(5, 150, 105, 0.2);
         }
         .settings-tab-btn:not(.active):hover { background: #f1f5f9; }
@@ -261,74 +354,122 @@
         .settings-section.active { display: block; }
         .profile-avatar-wrapper { position: relative; width: 120px; height: 120px; margin: 0 auto; }
         .profile-avatar-wrapper img {
-            width: 100%; height: 100%; border-radius: 50%;
-            object-fit: cover; border: 4px solid white;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid white;
             box-shadow: 0 8px 20px rgba(0,0,0,0.15);
         }
         .profile-avatar-wrapper .change-photo-btn {
-            position: absolute; bottom: 4px; right: 4px;
-            background: #059669; color: white; border-radius: 50%;
-            width: 36px; height: 36px;
-            display: flex; align-items: center; justify-content: center;
-            cursor: pointer; border: 2px solid white;
-            transition: 0.2s; box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            position: absolute;
+            bottom: 4px;
+            right: 4px;
+            background: #059669;
+            color: white;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border: 2px solid white;
+            transition: 0.2s;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
         }
         .profile-avatar-wrapper .change-photo-btn:hover {
-            background: #047857; transform: scale(1.05);
+            background: #047857;
+            transform: scale(1.05);
         }
         .settings-card {
-            background: white; border-radius: 16px;
-            border: 1px solid #e5e7eb; padding: 1.5rem;
+            background: white;
+            border-radius: 16px;
+            border: 1px solid #e5e7eb;
+            padding: 1.5rem;
             box-shadow: 0 1px 3px rgba(0,0,0,0.05);
         }
         .settings-card h3 {
-            font-weight: 600; font-size: 1.1rem; color: #1e293b;
-            margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: #1e293b;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
         .settings-card .field-group { margin-bottom: 1.25rem; }
         .settings-card label {
-            display: block; font-size: 0.85rem; font-weight: 500;
-            color: #475569; margin-bottom: 0.3rem;
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #475569;
+            margin-bottom: 0.3rem;
         }
         .settings-card input,
         .settings-card select {
-            width: 100%; padding: 0.6rem 0.75rem;
-            border: 1px solid #d1d5db; border-radius: 8px;
-            font-size: 0.95rem; transition: border 0.2s; background: white;
+            width: 100%;
+            padding: 0.6rem 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            transition: border 0.2s;
+            background: white;
         }
         .settings-card input:focus,
         .settings-card select:focus {
-            outline: none; border-color: #059669;
+            outline: none;
+            border-color: #059669;
             box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.2);
         }
         .settings-card .readonly-field {
-            background: #f1f5f9; color: #475569;
-            padding: 0.6rem 0.75rem; border-radius: 8px; font-size: 0.95rem;
+            background: #f1f5f9;
+            color: #475569;
+            padding: 0.6rem 0.75rem;
+            border-radius: 8px;
+            font-size: 0.95rem;
         }
         .settings-card .save-btn {
-            background: #059669; color: white;
-            padding: 0.6rem 1.5rem; border-radius: 8px;
-            font-weight: 600; border: none; cursor: pointer; transition: 0.2s;
+            background: #059669;
+            color: white;
+            padding: 0.6rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: 0.2s;
         }
         .settings-card .save-btn:hover { background: #047857; }
         .settings-card .save-btn:disabled { opacity: 0.6; cursor: not-allowed; }
         .settings-card .remove-photo-btn {
-            color: #ef4444; font-size: 0.85rem;
-            cursor: pointer; background: none;
-            border: none; padding: 0.2rem 0.5rem;
+            color: #ef4444;
+            font-size: 0.85rem;
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 0.2rem 0.5rem;
         }
         .settings-card .remove-photo-btn:hover { color: #dc2626; text-decoration: underline; }
         @media (max-width: 640px) { .settings-card { padding: 1rem; } }
         .toast {
-            position: fixed; bottom: 24px; right: 24px;
-            background: #1e293b; color: #fff;
-            padding: 14px 24px; border-radius: 12px;
-            font-size: 14px; font-weight: 500;
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: #1e293b;
+            color: #fff;
+            padding: 14px 24px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 500;
             box-shadow: 0 8px 24px rgba(0,0,0,0.20);
-            transform: translateY(80px); opacity: 0;
+            transform: translateY(80px);
+            opacity: 0;
             transition: all 0.4s ease;
-            z-index: 999; max-width: 400px;
-            display: flex; align-items: center; gap: 10px;
+            z-index: 999;
+            max-width: 400px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
         .toast.show { transform: translateY(0); opacity: 1; }
         .toast.success { border-left: 4px solid #059669; }
@@ -346,8 +487,9 @@
     <div class="p-6 border-b border-slate-100">
         <div class="flex items-center gap-3">
             <div class="w-10 h-10 rounded-lg bg-emerald-100 flex items-center justify-center overflow-hidden">
-                <img id="sidebar-logo-img" src="shdr.jpg" alt="SHDR" class="w-10 h-10 object-cover">
-                <span id="logo-fallback" class="font-bold text-emerald-700 text-lg" style="display:none;">SH</span>
+                <img src="shdr.jpg" alt="SHDR" class="w-10 h-10 object-cover"
+                     onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                <span id="logo-fallback" class="hidden font-bold text-emerald-700 text-lg">SH</span>
             </div>
             <div>
                 <h1 class="font-bold text-slate-900">SHDR Ltd</h1>
@@ -391,6 +533,7 @@
             <span class="nav-label" data-i18n="navigation.officeHub">Office Hub</span>
             <span class="text-[10px] text-amber-500 ml-auto font-medium" data-i18n="common.comingSoon">Coming Soon</span>
         </a>
+        <!-- Settings -->
         <a href="#" onclick="showSection('settings')" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg text-slate-600 hover:bg-slate-50 transition-colors" data-section="settings">
             <iconify-icon icon="material-symbols:settings-outline" width="20" height="20"></iconify-icon> <span data-i18n="navigation.settings">Settings</span>
         </a>
@@ -426,9 +569,11 @@
         </div>
     </header>
 
+    <!-- Loading & Error -->
     <div id="global-loading" class="hidden p-6 flex justify-center"><div class="spinner"></div></div>
     <div id="global-error" class="hidden p-6"><div class="bg-red-50 border border-red-200 rounded-2xl p-4 text-red-700"></div></div>
 
+    <!-- Content Area -->
     <div id="content-area" class="flex-1 p-4 sm:p-6"></div>
 
     <footer class="bg-white border border-green-200 rounded-2xl shadow-md mx-4 mb-4">
@@ -444,6 +589,7 @@
         </div>
     </footer>
 
+    <!-- Bottom Navigation (mobile) -->
     <div class="bottom-nav" id="bottom-nav">
         <a href="#" onclick="showSection('dashboard')" class="active" data-section="dashboard">
             <iconify-icon icon="material-symbols:dashboard-outline"></iconify-icon> <span data-i18n="navigation.dashboard">Home</span>
@@ -465,6 +611,7 @@
         </a>
     </div>
 
+    <!-- Modals -->
     <div id="modal-overlay" class="modal fixed inset-0 bg-black/40 backdrop-blur-sm z-50 items-center justify-center p-4" onclick="closeModal()">
         <div class="bg-white rounded-2xl p-6 w-full max-w-md shadow-xl max-h-[90vh] overflow-y-auto" onclick="event.stopPropagation()">
             <div class="flex justify-between items-center mb-4">
@@ -475,29 +622,12 @@
         </div>
     </div>
 
+    <!-- Toast Container -->
     <div id="toast" class="toast"></div>
 
     <script type="module">
         // =================================================================
-        // 0. ROBUST LOGO FALLBACK (fixes "falcon" / broken logo)
-        // =================================================================
-        (function () {
-            const img = document.getElementById('sidebar-logo-img');
-            const fb = document.getElementById('logo-fallback');
-            if (!img || !fb) return;
-            const showFallback = () => {
-                img.style.display = 'none';
-                fb.style.display = 'flex';
-            };
-            img.addEventListener('error', showFallback);
-            // If image already failed before we attached the listener
-            if (img.complete && img.naturalWidth === 0) {
-                showFallback();
-            }
-        })();
-
-        // =================================================================
-        // 1. I18N SYSTEM
+        // 1. CENTRAL I18N SYSTEM (Added)
         // =================================================================
         const translations = {
             en: {
@@ -505,14 +635,14 @@
                 navigation: { dashboard: "Dashboard", sites: "Sites", materials: "Materials", stock: "Stock", workers: "Workers", progress: "Progress", reports: "Reports", finances: "Finances", managers: "Managers", gallery: "Gallery", officeHub: "Office Hub", settings: "Settings", notifications: "Notifications", logout: "Sign Out", ownerPanel: "Owner's Panel" },
                 dashboard: { title: "Dashboard", totalSites: "Total Sites", activeSites: "Active Sites", completedSites: "Completed Sites", totalWorkers: "Total Workers", totalMaterials: "Total Materials", stockValue: "Stock Value", totalExpenses: "Total Expenses", recentActivity: "Recent Activity", quickActions: "Quick Actions", viewDetails: "View Details", welcome: "Welcome back, {name}", overview: "Here's your construction site overview", noSites: "No sites", noWorkers: "No workers assigned", noData: "No data", spentOnMaterials: "Spent on Materials", recentProgress: "Recent Progress", selectSite: "Select a site", completedTasks: "Completed Tasks", endDate: "End" },
                 sites: { title: "Your Sites", addSite: "Add Site", editSite: "Edit Site", siteName: "Site Name", location: "Location", client: "Client", startDate: "Start Date", endDate: "End Date", budget: "Budget", status: "Status", active: "Active", completed: "Completed", upcoming: "Upcoming", markFinished: "Mark Finished", noSites: "No sites yet", district: "District", sector: "Sector", saveSite: "Save Site", deleteSite: "Delete Site", edit: "Edit", delete: "Delete" },
-                materials: { title: "Materials", materialUsage: "Material Usage", inventory: "Inventory", stock: "Stock", addMaterial: "Add Material", editMaterial: "Edit Material", materialName: "Material Name", unit: "Unit", quantity: "Quantity", unitCost: "Unit Cost", totalAmount: "Total Amount", availableStock: "Available Stock", stockDeduction: "Stock Deduction", notes: "Notes", usageDate: "Usage Date", enterQuantity: "Enter Quantity", name: "Name", cost: "Cost", noMaterials: "No materials recorded for this site.", quantityUsed: "Quantity Used", edit: "Edit", delete: "Delete", update: "Update", requisitions: "Requisitions", newRequisition: "+ New Requisition", reqNumber: "Requisition Number", requestedBy: "Requested By", requestDate: "Request Date", requiredDate: "Required Date", priority: "Priority", status: "Status", pending: "Pending", urgent: "Urgent", approved: "Approved", rejected: "Rejected", partiallySupplied: "Partially Supplied", suppliedStatus: "Supplied", normal: "Normal", actions: "Actions", view: "View", approve: "Approve", reject: "Reject", supply: "Supply", downloadPDF: "Download PDF", noRequisitions: "No requisitions found.", requested: "Requested", supplied: "Supplied", remaining: "Remaining", available: "Available", material: "Material", requestedQty: "Requested Qty", rejectionReason: "Rejection Reason", site: "Site" },
+                materials: { title: "Materials", materialUsage: "Material Usage", inventory: "Inventory", stock: "Stock", addMaterial: "Add Material", editMaterial: "Edit Material", materialName: "Material Name", unit: "Unit", quantity: "Quantity", unitCost: "Unit Cost", totalAmount: "Total Amount", availableStock: "Available Stock", stockDeduction: "Stock Deduction", notes: "Notes", usageDate: "Usage Date", enterQuantity: "Enter Quantity", name: "Name", cost: "Cost", noMaterials: "No materials recorded for this site.", quantityUsed: "Quantity Used", edit: "Edit", delete: "Delete", update: "Update", requisitions: "Requisitions", newRequisition: "+ New Requisition", reqNumber: "Requisition Number", requestedBy: "Requested By", requestDate: "Request Date", requiredDate: "Required Date", priority: "Priority", status: "Status", pending: "Pending", urgent: "Urgent", approved: "Approved", rejected: "Rejected", partiallySupplied: "Partially Supplied", suppliedStatus: "Supplied", normal: "Normal", actions: "Actions", view: "View", approve: "Approve", reject: "Reject", supply: "Supply", downloadPDF: "Download PDF", noRequisitions: "No requisitions found.", requested: "Requested", supplied: "Supplied", remaining: "Remaining", available: "Available", material: "Material", requestedQty: "Requested Qty", rejectionReason: "Rejection Reason" },
                 stock: { title: "Stock Overview", noStock: "No stock records found.", info: "Managers will add stock when they receive materials at sites.", material: "Material", quantity: "Quantity", unitCost: "Unit Cost", value: "Value", status: "Status", updated: "Updated", min: "Min", normal: "Normal", low: "Low Stock", out: "Out of Stock", recentTransactions: "Recent Stock Transactions", date: "Date", site: "Site", type: "Type", qty: "Qty", notes: "Notes" },
                 workers: { title: "Workers", addWorker: "Add Position", role: "Role", site: "Site", salaryType: "Salary Type", estCost: "Est. Cost", actions: "Actions", noPositions: "No positions defined.", actualWorkers: "Actual Workers Assigned by Managers", search: "Search by name...", noAssigned: "No workers assigned by managers for this site.", edit: "Edit", delete: "Delete", fullName: "Full Name", phone: "Phone Number", salary: "Salary", update: "Update Worker", viewDetails: "Worker Details", assignedSite: "Site:", position: "Role", addPosition: "Add Worker Position", roleName: "Role name", allSites: "All Sites", daily: "Daily", monthly: "Monthly", estimatedCost: "Estimated salary/cost", savePosition: "Save Position", updatePosition: "Update Position" },
                 progress: { title: "Progress Tasks", addTask: "Add Task", task: "Task", start: "Start", end: "End", status: "Status", pending: "Pending", completed: "Completed", noTasks: "No tasks yet.", addTaskModal: "Add Progress Task", taskName: "Task name", selectSite: "Select site", periodNumber: "Period number", days: "Days", weeks: "Weeks", saveTask: "Save Task", editTask: "Edit Progress Task", edit: "Edit", delete: "Delete" },
                 reports: { title: "Generate Reports", general: "General", payroll: "Worker Payroll", stockReport: "Stock", selectSite: "Select Site", allSites: "All Sites", department: "Department", allDepartments: "All Departments", startDate: "Start Date", endDate: "End Date", exportCSV: "Export CSV", printPDF: "Print / PDF", noAttendance: "No attendance records found.", info: "Please ensure managers have recorded attendance for the workers.", searchWorker: "Search worker...", position: "Position", allPositions: "All Positions", paymentStatus: "Payment Status", paid: "Paid", unpaid: "Unpaid", totalWorkers: "Total Workers", workerDays: "Worker-Days", totalPayroll: "Total Payroll", avgDaily: "Avg. Daily Labor Cost", worker: "Worker", daysWorked: "Days Worked", dailyRate: "Daily Rate", totalPayable: "Total Payable", total: "Total", generated: "Generated on", reportTitles: { general: "Management Report", payroll: "Workers' Attendance & Payroll Report", stock: "Stock Report" }, labels: { siteName: "Site Name", period: "Period", department: "Department" } },
                 finances: { title: "Finances", info: "Site Info", overview: "Financial Overview", budget: "Budget", totalSpent: "Total Spent", materialsCost: "Materials Cost", workersCost: "Workers Cost", remaining: "Remaining", dailyAvg: "Daily average", monthlyAvg: "Monthly average", addBudget: "Add Budget", newBudget: "New Budget Amount", updateBudget: "Update Budget", exceeded: "Budget exceeded!", costControl: "Cost control needed." },
                 managers: { title: "Site Managers", info: "Managers assigned to your sites. The list updates automatically.", inviteManager: "Invite Manager", assignSite: "Assign to Site", email: "Email", password: "Password", invite: "Invite Manager", noManagers: "No managers invited yet.", remove: "Remove", assignedSite: "Assigned site" },
-                gallery: { title: "Site Gallery", selectSite: "Select Site", allSites: "All Sites", viewImage: "View Image", noImages: "No gallery images", close: "Close", description: "Description" },
+                gallery: { title: "Site Gallery", selectSite: "Select Site", allSites: "All Sites", viewImage: "View Image", noImages: "No gallery images", close: "Close" },
                 settings: { title: "Settings", profile: "Profile", account: "Account", security: "Security", preferences: "Preferences", profileInfo: "Profile Information", fullName: "Full Name", phone: "Phone Number", email: "Email Address", saveChanges: "Save Changes", accountInfo: "Account Information", accountName: "Account Name", role: "Role", accountStatus: "Account Status", active: "Active", memberSince: "Member Since", changePasscode: "Change Passcode", currentPasscode: "Current Passcode", newPasscode: "New Passcode", confirmPasscode: "Confirm New Passcode", changePass: "Change Passcode", prefs: "Preferences", language: "Language", currency: "Currency", dateFormat: "Date Format", notifications: "Enable Notifications", savePrefs: "Save Preferences", changePhoto: "Change Photo", removePhoto: "Erase Photo" },
                 alerts: { savedSuccessfully: "Saved successfully", updatedSuccessfully: "Updated successfully", deletedSuccessfully: "Deleted successfully", somethingWentWrong: "Something went wrong", areYouSure: "Are you sure?", cannotUndo: "This action cannot be undone", requiredField: "Required field", invalidValue: "Invalid value", noDataAvailable: "No data available", accessDenied: "Access denied", subscriptionRequired: "Subscription required", sessionExpired: "Session expired" },
                 status: { active: "Active", completed: "Completed", pending: "Pending", cancelled: "Cancelled", notStarted: "Not Started", inProgress: "In Progress", finished: "Finished" }
@@ -522,14 +652,14 @@
                 navigation: { dashboard: "Imbonerahamwe", sites: "Ibibanza", materials: "Ibikoresho", stock: "Imbuganyuro", workers: "Abakozi", progress: "Ibitekerezo", reports: "Raporo", finances: "Imari", managers: "Abayobozi", gallery: "Amafoto", officeHub: "Office Hub", settings: "Igenamiterere", notifications: "Imenyesha", logout: "Sohoka", ownerPanel: "Ipaneli ya nyir'ubwite" },
                 dashboard: { title: "Imbonerahamwe", totalSites: "Imibare y'ibibanza", activeSites: "Ibibanza bikora", completedSites: "Ibibanza byarangiye", totalWorkers: "Imibare y'abakozi", totalMaterials: "Imibare y'ibikoresho", stockValue: "Agaciro k'ibikoresho", totalExpenses: "Amafaranga yakoreshejwe", recentActivity: "Ibikorwa bishya", quickActions: "Ibikorwa byihutirwa", viewDetails: "Reba ibisobanuro", welcome: "Murakaza neza, {name}", overview: "Dore ikibazo cy'umurimo wawe", noSites: "Nta bibanza", noWorkers: "Nta bakozi bagenwe", noData: "Nta makuru", spentOnMaterials: "Amafaranga yakoreshejwe ku bikoresho", recentProgress: "Ibitekerezo bishya", selectSite: "Hitamo igibanza", completedTasks: "Imirimo yarangiye", endDate: "Iherezo" },
                 sites: { title: "Ibibanza byawe", addSite: "Ongeraho igibanza", editSite: "Hindura igibanza", siteName: "Izina ry'igibanza", location: "Aho biherereye", client: "Umukiriya", startDate: "Itariki yo gutangira", endDate: "Itariki yo kurangira", budget: "Ingengo y'imari", status: "Imiterere", active: "Bikora", completed: "Byarangiye", upcoming: "Bikaza", markFinished: "Menya ko byarangiye", noSites: "Nta bibanza birahari", district: "Akarere", sector: "Umurenge", saveSite: "Bika igibanza", deleteSite: "Siba igibanza", edit: "Hindura", delete: "Siba" },
-                materials: { title: "Ibikoresho", materialUsage: "Gukoresha ibikoresho", inventory: "Ibitundumirwa", stock: "Imbuganyuro", addMaterial: "Ongeraho ibikoresho", editMaterial: "Hindura ibikoresho", materialName: "Izina ry'ibikoresho", unit: "Igice", quantity: "Umubare", unitCost: "Igiciro cy'igice", totalAmount: "Amafaranga yose", availableStock: "Ibikoresho bishoboka", stockDeduction: "Ibikoresho bikoreshwa", notes: "Ibisobanuro", usageDate: "Itariki yo gukoresha", enterQuantity: "Andika umubare", name: "Izina", cost: "Igiciro", noMaterials: "Nta bikoresho byanditswe kuri iki gibanze.", quantityUsed: "Umubare wakoreshejwe", edit: "Hindura", delete: "Siba", update: "Vugurura", requisitions: "Ubusabe bw'Ibikoresho", newRequisition: "+ Ubusabe Bushya", reqNumber: "Nomero y'Ubusabe", requestedBy: "Wasabye", requestDate: "Itariki yo Gusaba", requiredDate: "Itariki Ikenewe", priority: "Ubwihutirwa", status: "Imiterere", pending: "Bitegereje", urgent: "Byihutirwa", approved: "Byemewe", rejected: "Byanze", partiallySupplied: "Byatanzwe Igice", suppliedStatus: "Byatanzwe", normal: "Bisanzwe", actions: "Ibikorwa", view: "Reba", approve: "Emeza", reject: "Anza", supply: "Tanga", downloadPDF: "Sohora PDF", noRequisitions: "Nta busabe buboneka.", requested: "Basabwe", supplied: "Byatanzwe", remaining: "Bisigaye", available: "Biboneka", material: "Ibikoresho", requestedQty: "Umubare Wasabwe", rejectionReason: "Impamvu yo Kwanza", site: "Igibanza" },
+                materials: { title: "Ibikoresho", materialUsage: "Gukoresha ibikoresho", inventory: "Ibitundumirwa", stock: "Imbuganyuro", addMaterial: "Ongeraho ibikoresho", editMaterial: "Hindura ibikoresho", materialName: "Izina ry'ibikoresho", unit: "Igice", quantity: "Umubare", unitCost: "Igiciro cy'igice", totalAmount: "Amafaranga yose", availableStock: "Ibikoresho bishoboka", stockDeduction: "Ibikoresho bikoreshwa", notes: "Ibisobanuro", usageDate: "Itariki yo gukoresha", enterQuantity: "Andika umubare", name: "Izina", cost: "Igiciro", noMaterials: "Nta bikoresho byanditswe kuri iki gibanze.", quantityUsed: "Umubare wakoreshejwe", edit: "Hindura", delete: "Siba", update: "Vugurura", requisitions: "Ubusabe bw'Ibikoresho", newRequisition: "+ Ubusabe Bushya", reqNumber: "Nomero y'Ubusabe", requestedBy: "Wasabye", requestDate: "Itariki yo Gusaba", requiredDate: "Itariki Ikenewe", priority: "Ubwihutirwa", status: "Imiterere", pending: "Bitegereje", urgent: "Byihutirwa", approved: "Byemewe", rejected: "Byanze", partiallySupplied: "Byatanzwe Igice", suppliedStatus: "Byatanzwe", normal: "Bisanzwe", actions: "Ibikorwa", view: "Reba", approve: "Emeza", reject: "Anza", supply: "Tanga", downloadPDF: "Sohora PDF", noRequisitions: "Nta busabe buboneka.", requested: "Basabwe", supplied: "Byatanzwe", remaining: "Bisigaye", available: "Biboneka", material: "Ibikoresho", requestedQty: "Umubare Wasabwe", rejectionReason: "Impamvu yo Kwanza" },
                 stock: { title: "Imbuganyuro", noStock: "Nta mbuganyuro iboneka.", info: "Abayobozi bazongeraho ibikoresho iyo bibonye.", material: "Ibikoresho", quantity: "Umubare", unitCost: "Igiciro cy'igice", value: "Agaciro", status: "Imiterere", updated: "Byavuguruwe", min: "Ubugabanyiro", normal: "Bisanzwe", low: "Bike", out: "Byashaje", recentTransactions: "Ibikorwa bishya by'imbuganyuro", date: "Itariki", site: "Igibanza", type: "Ubwoko", qty: "Umubare", notes: "Ibisobanuro" },
                 workers: { title: "Abakozi", addWorker: "Ongeraho umwanya", role: "Umwanya", site: "Igibanza", salaryType: "Ubwoko bw'umushahara", estCost: "Igiciro gike", actions: "Ibikorwa", noPositions: "Nta mwanya wasobanuwe.", actualWorkers: "Abakozi bagenzwe n'abayobozi", search: "Shakisha izina...", noAssigned: "Nta bakozi bagenzwe kuri iki gibanze.", edit: "Hindura", delete: "Siba", fullName: "Amazina yombi", phone: "Nomero ya telefoni", salary: "Umushahara", update: "Vugurura umukozi", viewDetails: "Ibisobanuro by'umukozi", assignedSite: "Igibanza:", position: "Umwanya", addPosition: "Ongeraho umwanya", roleName: "Izina ry'umwanya", allSites: "Ibibanza byose", daily: "Buri munsi", monthly: "Buri kwezi", estimatedCost: "Umushahara uganijwe", savePosition: "Bika umwanya", updatePosition: "Vugurura umwanya" },
                 progress: { title: "Imirimo", addTask: "Ongeraho umurimo", task: "Umurimo", start: "Tangira", end: "Rangira", status: "Imiterere", pending: "Bitegereje", completed: "Byarangiye", noTasks: "Nta mirimo ihari.", addTaskModal: "Ongeraho umurimo", taskName: "Izina ry'umurimo", selectSite: "Hitamo igibanza", periodNumber: "Umubare w'igihe", days: "Iminsi", weeks: "Ibyumweru", saveTask: "Bika umurimo", editTask: "Hindura umurimo", edit: "Hindura", delete: "Siba" },
                 reports: { title: "Kora Raporo", general: "Rusange", payroll: "Umushahara w'Abakozi", stockReport: "Imbuganyuro", selectSite: "Hitamo Igibanza", allSites: "Ibibanza Byose", department: "Ishami", allDepartments: "Amashami Yose", startDate: "Itariki yo gutangira", endDate: "Itariki yo kurangira", exportCSV: "Sohora CSV", printPDF: "Capa / PDF", noAttendance: "Nta makuru yo kwitaba aboneka.", info: "Nyamuneka menya neza ko abayobozi banditse kwitaba kw'abakozi.", searchWorker: "Shakisha umukozi...", position: "Umwanya", allPositions: "Imiryango Yose", paymentStatus: "Imiterere y'ubwishyu", paid: "Byishyuwe", unpaid: "Bitishyuwe", totalWorkers: "Abakozi Bose", workerDays: "Iminsi y'Abakozi", totalPayroll: "Umushahara Wose", avgDaily: "Igiciro cy'umunsi", worker: "Umukozi", daysWorked: "Iminsi Yakozwe", dailyRate: "Umushahara w'umunsi", totalPayable: "Amafaranga Yose", total: "Igiteranyo", generated: "Byakozwe", reportTitles: { general: "Raporo y'Ubutegetsi", payroll: "Raporo y'Abakozi n'Umushahara", stock: "Raporo y'Imbuganyuro" }, labels: { siteName: "Izina ry'Igibanza", period: "Igihe", department: "Ishami" } },
                 finances: { title: "Imari", info: "Amakuru y'Igibanza", overview: "Imbonerahamwe y'Imari", budget: "Ingengo y'imari", totalSpent: "Amafaranga Yakoreshejwe", materialsCost: "Ibikoresho", workersCost: "Abakozi", remaining: "Isigazwa", dailyAvg: "Umubare wa buri munsi", monthlyAvg: "Umubare wa buri kwezi", addBudget: "Ongeraho Ingengo", newBudget: "Ingengo nshya", updateBudget: "Vugurura Ingengo", exceeded: "Ingengo yarengwe!", costControl: "Birakenewe kugenzura ibikoreshwa." },
                 managers: { title: "Abayobozi b'Ibibanza", info: "Abayobozi bagenzwe kuri ibibanza byawe. Urutonde ruvuguruka ako kanya.", inviteManager: "Tumira Umuyobozi", assignSite: "Mwize igibanza", email: "Email", password: "Ijambobanga", invite: "Tumira Umuyobozi", noManagers: "Nta bayobozi batumiriwe.", remove: "Kuraho", assignedSite: "Igibanza" },
-                gallery: { title: "Amafoto y'Ibibanza", selectSite: "Hitamo Igibanza", allSites: "Ibibanza Byose", viewImage: "Reba Ifoto", noImages: "Nta mafoto", close: "Funga", description: "Ibisobanuro" },
+                gallery: { title: "Amafoto y'Ibibanza", selectSite: "Hitamo Igibanza", allSites: "Ibibanza Byose", viewImage: "Reba Ifoto", noImages: "Nta mafoto", close: "Funga" },
                 settings: { title: "Igenamiterere", profile: "Umwirondoro", account: "Kontu", security: "Umutekano", preferences: "Amahitamo", profileInfo: "Amakuru bwite", fullName: "Amazina yombi", phone: "Nomero ya telefoni", email: "Email", saveChanges: "Bika impinduka", accountInfo: "Amakuru ya kontu", accountName: "Izina rya kontu", role: "Umwanya", accountStatus: "Imiterere ya kontu", active: "Bikora", memberSince: "Umuryango kuva", changePasscode: "Hindura passcode", currentPasscode: "Passcode y'ubu", newPasscode: "Passcode nshya", confirmPasscode: "Emeza passcode nshya", changePass: "Hindura passcode", prefs: "Amahitamo", language: "Ururimi", currency: "Ifaranga", dateFormat: "Imiterere y'itariki", notifications: "Koresha imenyesha", savePrefs: "Bika amahitamo", changePhoto: "Hindura ifoto", removePhoto: "Kuraho ifoto" },
                 alerts: { savedSuccessfully: "Byabitswe neza", updatedSuccessfully: "Byavuguruwe neza", deletedSuccessfully: "Byasibwe neza", somethingWentWrong: "Hari ikitagenze neza", areYouSure: "Urabyemeza?", cannotUndo: "Ibi ntibishobora guhindurwa", requiredField: "Ibi birakenewe", invalidValue: "Agaciro katariyo", noDataAvailable: "Nta makuru aboneka", accessDenied: "Ntabwo ureherewe", subscriptionRequired: "Kwiyandikisha birakenewe", sessionExpired: "Igihe cyashaje" },
                 status: { active: "Bikora", completed: "Byarangiye", pending: "Bitegereje", cancelled: "Byahagaritswe", notStarted: "Ntibitangira", inProgress: "Bikorwa", finished: "Byarangiye" }
@@ -539,14 +669,14 @@
                 navigation: { dashboard: "Tableau de bord", sites: "Sites", materials: "Matériaux", stock: "Stock", workers: "Ouvriers", progress: "Progrès", reports: "Rapports", finances: "Finances", managers: "Gestionnaires", gallery: "Galerie", officeHub: "Bureau", settings: "Paramètres", notifications: "Notifications", logout: "Déconnexion", ownerPanel: "Panneau du propriétaire" },
                 dashboard: { title: "Tableau de bord", totalSites: "Total des sites", activeSites: "Sites actifs", completedSites: "Sites terminés", totalWorkers: "Total des ouvriers", totalMaterials: "Total des matériaux", stockValue: "Valeur du stock", totalExpenses: "Dépenses totales", recentActivity: "Activité récente", quickActions: "Actions rapides", viewDetails: "Voir les détails", welcome: "Bienvenue, {name}", overview: "Voici votre aperçu du chantier", noSites: "Aucun site", noWorkers: "Aucun ouvrier assigné", noData: "Aucune donnée", spentOnMaterials: "Dépensé en matériaux", recentProgress: "Progrès récents", selectSite: "Sélectionner un site", completedTasks: "Tâches terminées", endDate: "Fin" },
                 sites: { title: "Vos sites", addSite: "Ajouter un site", editSite: "Modifier le site", siteName: "Nom du site", location: "Emplacement", client: "Client", startDate: "Date de début", endDate: "Date de fin", budget: "Budget", status: "Statut", active: "Actif", completed: "Terminé", upcoming: "À venir", markFinished: "Marquer terminé", noSites: "Aucun site pour le moment", district: "District", sector: "Secteur", saveSite: "Enregistrer le site", deleteSite: "Supprimer le site", edit: "Modifier", delete: "Supprimer" },
-                materials: { title: "Matériaux", materialUsage: "Utilisation des matériaux", inventory: "Inventaire", stock: "Stock", addMaterial: "Ajouter un matériau", editMaterial: "Modifier le matériau", materialName: "Nom du matériau", unit: "Unité", quantity: "Quantité", unitCost: "Coût unitaire", totalAmount: "Montant total", availableStock: "Stock disponible", stockDeduction: "Déduction de stock", notes: "Notes", usageDate: "Date d'utilisation", enterQuantity: "Entrer la quantité", name: "Nom", cost: "Coût", noMaterials: "Aucun matériau enregistré pour ce site.", quantityUsed: "Quantité utilisée", edit: "Modifier", delete: "Supprimer", update: "Mettre à jour", requisitions: "Réquisitions", newRequisition: "+ Nouvelle Réquisition", reqNumber: "Numéro de Réquisition", requestedBy: "Demandé par", requestDate: "Date de Demande", requiredDate: "Date Requise", priority: "Priorité", status: "Statut", pending: "En attente", urgent: "Urgent", approved: "Approuvé", rejected: "Rejeté", partiallySupplied: "Partiellement Fourni", suppliedStatus: "Fourni", normal: "Normal", actions: "Actions", view: "Voir", approve: "Approuver", reject: "Rejeter", supply: "Fournir", downloadPDF: "Télécharger PDF", noRequisitions: "Aucune réquisition trouvée.", requested: "Demandé", supplied: "Fourni", remaining: "Restant", available: "Disponible", material: "Matériau", requestedQty: "Qté Demandée", rejectionReason: "Motif du Rejet", site: "Site" },
+                materials: { title: "Matériaux", materialUsage: "Utilisation des matériaux", inventory: "Inventaire", stock: "Stock", addMaterial: "Ajouter un matériau", editMaterial: "Modifier le matériau", materialName: "Nom du matériau", unit: "Unité", quantity: "Quantité", unitCost: "Coût unitaire", totalAmount: "Montant total", availableStock: "Stock disponible", stockDeduction: "Déduction de stock", notes: "Notes", usageDate: "Date d'utilisation", enterQuantity: "Entrer la quantité", name: "Nom", cost: "Coût", noMaterials: "Aucun matériau enregistré pour ce site.", quantityUsed: "Quantité utilisée", edit: "Modifier", delete: "Supprimer", update: "Mettre à jour", requisitions: "Réquisitions", newRequisition: "+ Nouvelle Réquisition", reqNumber: "Numéro de Réquisition", requestedBy: "Demandé par", requestDate: "Date de Demande", requiredDate: "Date Requise", priority: "Priorité", status: "Statut", pending: "En attente", urgent: "Urgent", approved: "Approuvé", rejected: "Rejeté", partiallySupplied: "Partiellement Fourni", suppliedStatus: "Fourni", normal: "Normal", actions: "Actions", view: "Voir", approve: "Approuver", reject: "Rejeter", supply: "Fournir", downloadPDF: "Télécharger PDF", noRequisitions: "Aucune réquisition trouvée.", requested: "Demandé", supplied: "Fourni", remaining: "Restant", available: "Disponible", material: "Matériau", requestedQty: "Qté Demandée", rejectionReason: "Motif du Rejet" },
                 stock: { title: "Aperçu du stock", noStock: "Aucun enregistrement de stock trouvé.", info: "Les gestionnaires ajouteront du stock lorsqu'ils recevront des matériaux.", material: "Matériau", quantity: "Quantité", unitCost: "Coût unitaire", value: "Valeur", status: "Statut", updated: "Mis à jour", min: "Min", normal: "Normal", low: "Stock faible", out: "Épuisé", recentTransactions: "Transactions récentes", date: "Date", site: "Site", type: "Type", qty: "Qté", notes: "Notes" },
                 workers: { title: "Ouvriers", addWorker: "Ajouter un poste", role: "Rôle", site: "Site", salaryType: "Type de salaire", estCost: "Coût estimé", actions: "Actions", noPositions: "Aucun poste défini.", actualWorkers: "Ouvriers actuellement assignés", search: "Rechercher par nom...", noAssigned: "Aucun ouvrier assigné par les gestionnaires pour ce site.", edit: "Modifier", delete: "Supprimer", fullName: "Nom complet", phone: "Téléphone", salary: "Salaire", update: "Mettre à jour", viewDetails: "Détails de l'ouvrier", assignedSite: "Site :", position: "Rôle", addPosition: "Ajouter un poste", roleName: "Nom du rôle", allSites: "Tous les sites", daily: "Journalier", monthly: "Mensuel", estimatedCost: "Salaire estimé", savePosition: "Enregistrer le poste", updatePosition: "Mettre à jour le poste" },
                 progress: { title: "Tâches de progression", addTask: "Ajouter une tâche", task: "Tâche", start: "Début", end: "Fin", status: "Statut", pending: "En attente", completed: "Terminé", noTasks: "Aucune tâche.", addTaskModal: "Ajouter une tâche", taskName: "Nom de la tâche", selectSite: "Sélectionner le site", periodNumber: "Numéro de période", days: "Jours", weeks: "Semaines", saveTask: "Enregistrer", editTask: "Modifier la tâche", edit: "Modifier", delete: "Supprimer" },
                 reports: { title: "Générer des rapports", general: "Général", payroll: "Paie des ouvriers", stockReport: "Stock", selectSite: "Sélectionner le site", allSites: "Tous les sites", department: "Département", allDepartments: "Tous les départements", startDate: "Date de début", endDate: "Date de fin", exportCSV: "Exporter CSV", printPDF: "Imprimer / PDF", noAttendance: "Aucun enregistrement de présence trouvé.", info: "Veuillez vous assurer que les gestionnaires ont enregistré la présence des ouvriers.", searchWorker: "Rechercher un ouvrier...", position: "Poste", allPositions: "Tous les postes", paymentStatus: "Statut du paiement", paid: "Payé", unpaid: "Non payé", totalWorkers: "Total des ouvriers", workerDays: "Jours ouvriers", totalPayroll: "Paie totale", avgDaily: "Coût journalier moyen", worker: "Ouvrier", daysWorked: "Jours travaillés", dailyRate: "Taux journalier", totalPayable: "Total à payer", total: "Total", generated: "Généré le", reportTitles: { general: "Rapport de gestion", payroll: "Rapport de présence et paie", stock: "Rapport de stock" }, labels: { siteName: "Nom du site", period: "Période", department: "Département" } },
                 finances: { title: "Finances", info: "Informations sur le site", overview: "Aperçu financier", budget: "Budget", totalSpent: "Dépenses totales", materialsCost: "Coût des matériaux", workersCost: "Coût des ouvriers", remaining: "Restant", dailyAvg: "Moyenne journalière", monthlyAvg: "Moyenne mensuelle", addBudget: "Ajouter un budget", newBudget: "Nouveau budget", updateBudget: "Mettre à jour le budget", exceeded: "Budget dépassé !", costControl: "Contrôle des coûts nécessaire." },
                 managers: { title: "Gestionnaires de site", info: "Gestionnaires assignés à vos sites. La liste se met à jour automatiquement.", inviteManager: "Inviter un gestionnaire", assignSite: "Assigner au site", email: "E-mail", password: "Mot de passe", invite: "Inviter", noManagers: "Aucun gestionnaire invité.", remove: "Retirer", assignedSite: "Site assigné" },
-                gallery: { title: "Galerie du site", selectSite: "Sélectionner le site", allSites: "Tous les sites", viewImage: "Voir l'image", noImages: "Aucune image", close: "Fermer", description: "Description" },
+                gallery: { title: "Galerie du site", selectSite: "Sélectionner le site", allSites: "Tous les sites", viewImage: "Voir l'image", noImages: "Aucune image", close: "Fermer" },
                 settings: { title: "Paramètres", profile: "Profil", account: "Compte", security: "Sécurité", preferences: "Préférences", profileInfo: "Informations du profil", fullName: "Nom complet", phone: "Téléphone", email: "E-mail", saveChanges: "Enregistrer", accountInfo: "Informations du compte", accountName: "Nom du compte", role: "Rôle", accountStatus: "Statut du compte", active: "Actif", memberSince: "Membre depuis", changePasscode: "Changer le code", currentPasscode: "Code actuel", newPasscode: "Nouveau code", confirmPasscode: "Confirmer le code", changePass: "Changer le code", prefs: "Préférences", language: "Langue", currency: "Devise", dateFormat: "Format de date", notifications: "Activer les notifications", savePrefs: "Enregistrer les préférences", changePhoto: "Changer la photo", removePhoto: "Supprimer la photo" },
                 alerts: { savedSuccessfully: "Enregistré avec succès", updatedSuccessfully: "Mis à jour avec succès", deletedSuccessfully: "Supprimé avec succès", somethingWentWrong: "Une erreur s'est produite", areYouSure: "Êtes-vous sûr ?", cannotUndo: "Cette action est irréversible", requiredField: "Champ requis", invalidValue: "Valeur invalide", noDataAvailable: "Aucune donnée disponible", accessDenied: "Accès refusé", subscriptionRequired: "Abonnement requis", sessionExpired: "Session expirée" },
                 status: { active: "Actif", completed: "Terminé", pending: "En attente", cancelled: "Annulé", notStarted: "Non commencé", inProgress: "En cours", finished: "Terminé" }
@@ -584,7 +714,7 @@
         document.querySelectorAll('.lang-btn').forEach(btn => { btn.addEventListener('click', () => setLanguage(btn.dataset.language)); });
 
         // =================================================================
-        // 2. FIREBASE
+        // 2. YOUR ORIGINAL FIREBASE CODE AND REST OF THE APP (Updated to use t() for strings)
         // =================================================================
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
         import {
@@ -637,14 +767,13 @@
         let sitesData = [], materialsData = [], workersData = [], progressTasks = [], expensesData = [], managersData = [], assignedWorkersData = [], galleryData = [], attendanceData = [];
         let stockData = [], stockTransactions = [];
         let ownerRequisitionsData = [], ownerRequisitionItemsData = [], ownerRequisitionHistoryData = [];
-        let materialsTab = 'materials';
+        let materialsTab = 'materials'; // controls which tab is visible in materials section
         let unsubscribeSnapshots = [];
         let searchTimeout = null;
         let currentSection = 'dashboard';
         let reportType = 'general';
-        let authResolved = false; // ← prevents premature logout on refresh
 
-        // Settings state
+        // ── Settings state ──
         let settingsTab = 'profile';
         let hasUnsavedChanges = false;
         let _profilePhotoFile = null;
@@ -656,8 +785,6 @@
         function getFriendlyError(err) { return err.message || t('alerts.somethingWentWrong'); }
         function truncate(str, max) { return str.length > max ? str.slice(0, max) + '...' : str; }
         function calculateTotal(qty, unitCost) { return (qty || 0) * (unitCost || 0); }
-        function toNumber(v) { return typeof v === 'number' ? v : (parseFloat(v) || 0); }
-        function showAlert(key) { alert(t(key)); }
 
         function setButtonLoading(btn, loading) {
             if (!btn) return;
@@ -675,6 +802,7 @@
             return form.querySelector('button[type="submit"]');
         }
 
+        // ── Toast ──
         function showToast(message, type = 'info') {
             const toast = document.getElementById('toast');
             const iconMap = { success: '✅', error: '❌', info: 'ℹ️' };
@@ -687,14 +815,7 @@
             }, 5000);
         }
 
-        function formatDate(dateValue) {
-            if (!dateValue) return '-';
-            const date = typeof dateValue === 'string' ? new Date(dateValue) : dateValue;
-            if (isNaN(date.getTime())) return '-';
-            return date.toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
-        }
-
-        // ── Auth & Init (FIXED: guarded against premature logout) ──
+        // ── Auth & Init ──
         window.addEventListener('load', () => {
             document.querySelectorAll('.lang-btn').forEach(btn => {
                 const isActive = btn.dataset.language === currentLanguage;
@@ -705,25 +826,10 @@
             applyTranslations();
 
             onAuthStateChanged(auth, async (user) => {
-                // Guard: first resolution restores session from IndexedDB
-                if (!authResolved) {
-                    authResolved = true;
-                    if (!user) {
-                        // Genuinely not signed in — redirect to owner login
-                        window.location.href = 'owner.html';
-                        return;
-                    }
-                }
-
-                // Signed out AFTER being signed in
                 if (!user) {
-                    window.location.href = 'owner.html';
+                    window.location.href = 'https://shdr-construction.vercel.app/owner.html';
                     return;
                 }
-
-                // Already initialized for this user — skip
-                if (currentUser && currentUser.uid === user.uid) return;
-
                 currentUser = user;
                 try {
                     const profileRef = doc(db, 'profiles', user.uid);
@@ -741,21 +847,20 @@
                     ownerProfile = profile;
                     updateProfileUI(profile);
 
-                    // Real-time profile listener (with error handler so a hiccup doesn't kill the UI)
-                    onSnapshot(profileRef, (s) => {
-                        if (!s.exists()) return;
-                        ownerProfile = s.data();
-                        updateProfileUI(ownerProfile);
-                        if (currentSection === 'settings') populateSettingsForms();
-                    }, (err) => {
-                        console.warn('[profile listener]', err.message);
+                    // Real-time profile listener
+                    onSnapshot(profileRef, (snap) => {
+                        if (snap.exists()) {
+                            ownerProfile = snap.data();
+                            updateProfileUI(ownerProfile);
+                            if (currentSection === 'settings') {
+                                populateSettingsForms();
+                            }
+                        }
                     });
 
                     attachListeners();
                     showSection('dashboard');
-                } catch (err) {
-                    showError('Failed to load profile: ' + (err.message || ''));
-                }
+                } catch (err) { showError(t('alerts.somethingWentWrong')); }
             });
         });
 
@@ -765,6 +870,7 @@
             const email = profile.email || '';
             const photo = profile.profile_picture || '';
 
+            const avatarContainer = document.getElementById('user-avatar');
             const avatarImg = document.getElementById('sidebar-user-avatar-img');
             const avatarText = document.getElementById('user-avatar-text');
             if (photo) {
@@ -879,12 +985,6 @@
         };
 
         window.showSection = (section) => {
-            // Block Office Hub
-            if (section === 'office') {
-                showToast('🏗️ Office Hub is coming soon. Stay tuned!', 'info');
-                return;
-            }
-
             if (currentSection === 'settings' && hasUnsavedChanges) {
                 if (!confirm(t('alerts.areYouSure'))) {
                     return;
@@ -912,14 +1012,10 @@
                 case 'finances': renderFinances(container); break;
                 case 'managers': renderManagers(container); break;
                 case 'gallery': renderGallery(container); break;
+                case 'office': renderOfficeHub(container); break;
                 case 'settings': renderSettings(container); break;
                 default: renderDashboard(container);
             }
-
-            if (section === 'reports' && reportType === 'payroll') {
-                setTimeout(updatePayrollReport, 100);
-            }
-
             if (window.innerWidth < 1024) {
                 document.getElementById('sidebar').classList.add('-translate-x-full');
                 document.getElementById('sidebar-overlay').classList.add('hidden');
@@ -933,6 +1029,7 @@
             document.getElementById('modal-overlay').classList.add('active');
         };
 
+        // ── IMGBB Upload Helper ──
         async function uploadImageToImgbb(file) {
             const formData = new FormData();
             formData.append('image', file);
@@ -1072,8 +1169,8 @@
                                 ${site.sector ? `<p class="text-xs text-slate-500">${t('sites.sector')}: ${site.sector}</p>` : ''}
                                 ${site.client_name ? `<p class="text-xs text-slate-500">${t('sites.client')}: ${site.client_name}</p>` : ''}
                                 <p class="text-xs text-slate-500">${t('sites.budget')}: ${(site.budget || 0).toLocaleString()} RWF</p>
-                                ${site.start_date ? `<p class="text-xs text-slate-500">${t('sites.startDate')}: ${formatDate(site.start_date)}</p>` : ''}
-                                ${site.end_date ? `<p class="text-xs text-slate-500">${t('sites.endDate')}: ${formatDate(site.end_date)}</p>` : ''}
+                                ${site.start_date ? `<p class="text-xs text-slate-500">${t('sites.startDate')}: ${new Date(site.start_date).toLocaleDateString()}</p>` : ''}
+                                ${site.end_date ? `<p class="text-xs text-slate-500">${t('sites.endDate')}: ${new Date(site.end_date).toLocaleDateString()}</p>` : ''}
                                 <p class="text-xs font-medium ${status === t('status.completed') ? 'text-green-600' : status === t('status.notStarted') ? 'text-amber-600' : 'text-blue-600'}">${t('sites.status')}: ${status}</p>
                                 <div class="mt-2 flex gap-2 flex-wrap">
                                     <button onclick="markSiteFinished('${site.id}')" class="text-xs bg-green-100 text-green-700 px-3 py-1 rounded-full">${t('sites.markFinished')}</button>
@@ -1243,8 +1340,14 @@
                 }
                 await addDoc(collection(db, 'sites'), {
                     owner_id: currentUser.uid,
-                    name, location, district, sector, client_name, budget,
-                    start_date, end_date,
+                    name,
+                    location,
+                    district,
+                    sector,
+                    client_name,
+                    budget,
+                    start_date,
+                    end_date,
                     images: imageUrls,
                     status: 'active',
                     manager_name: ''
@@ -1255,7 +1358,7 @@
             finally { setButtonLoading(btn, false); }
         };
 
-        // =============== MATERIALS ===============
+       // =============== MATERIALS WITH REQUISITIONS ===============
         let selectedMatSite = null;
 
         function renderMaterials(container) {
@@ -1269,7 +1372,9 @@
                         <iconify-icon icon="material-symbols:assignment-outline" class="inline mr-1"></iconify-icon> ${t('materials.requisitions')}
                     </button>
                 </div>
-                <div id="materials-container"></div>
+                <div id="materials-container">
+                    ${materialsTab === 'materials' ? '' : ''}
+                </div>
             `;
 
             if (materialsTab === 'materials') {
@@ -1367,6 +1472,7 @@
             container.innerHTML = html;
         }
 
+        // ── Edit Material (with stock restoration) ──
         window.editMaterial = (id) => {
             const mat = materialsData.find(m => m.id === id);
             if (!mat) return;
@@ -1423,15 +1529,17 @@
 
                 const batch = writeBatch(db);
 
-                batch.update(doc(db, 'materials', id), {
-                    name,
+                const matRef = doc(db, 'materials', id);
+                batch.update(matRef, {
+                    name: name,
                     quantity_used: newUsed,
                     unit_cost: newUnitCost,
                     image: imageFile ? await uploadImageToImgbb(imageFile) : oldMat.image,
                     updated_at: new Date().toISOString()
                 });
 
-                batch.update(doc(db, 'stock', stockItem.id), { quantity: newStockQty, updated_at: new Date().toISOString() });
+                const stockRef = doc(db, 'stock', stockItem.id);
+                batch.update(stockRef, { quantity: newStockQty, updated_at: new Date().toISOString() });
 
                 const transRef = doc(collection(db, 'stock_transactions'));
                 batch.set(transRef, {
@@ -1501,7 +1609,8 @@
             })();
         };
 
-        // ---------- REQUISITIONS ----------
+        // ---------- REQUISITIONS (Owner Panel) ----------
+
         function getRequisitionStatusBadge(status) {
             const statusTranslations = {
                 'Pending': t('materials.pending'),
@@ -1547,6 +1656,7 @@
                 <tbody>`;
 
             allReqs.forEach(req => {
+                const items = ownerRequisitionItemsData.filter(i => i.requisition_id === req.id);
                 const site = sitesData.find(s => s.id === req.site_id);
                 const siteName = site ? site.name : 'Unknown';
                 const priorityLabel = req.priority === 'Urgent' ? t('materials.urgent') : t('materials.normal');
@@ -1697,7 +1807,10 @@
                 for (const item of items) {
                     const supplyInput = document.getElementById(`supply-${item.id}`);
                     const supplyQty = parseFloat(supplyInput.value) || 0;
-                    if (supplyQty <= 0) { allSupplied = false; continue; }
+                    if (supplyQty <= 0) {
+                        allSupplied = false;
+                        continue;
+                    }
                     anySupplied = true;
 
                     const stock = stockData.find(s => s.site_id === req.site_id && s.material_name === item.material_name);
@@ -1706,10 +1819,13 @@
 
                     const newStockQty = stock.quantity - supplyQty;
                     const newSupplied = toNumber(item.quantity_supplied) + supplyQty;
+                    const remaining = toNumber(item.quantity_requested) - newSupplied;
 
+                    // Update stock
                     batch.update(doc(db, 'stock', stock.id), { quantity: newStockQty, updated_at: new Date().toISOString() });
+                    // Update requisition item
                     batch.update(doc(db, 'requisition_items', item.id), { quantity_supplied: newSupplied, updated_at: new Date().toISOString() });
-
+                    // Add stock transaction
                     const transRef = doc(collection(db, 'stock_transactions'));
                     batch.set(transRef, {
                         site_id: req.site_id,
@@ -1726,11 +1842,20 @@
                     });
                 }
 
-                if (!anySupplied) throw new Error('No supply quantities entered');
+                if (!anySupplied) {
+                    throw new Error('No supply quantities entered');
+                }
 
-                const newStatus = allSupplied ? 'Supplied' : 'Partially Supplied';
+                // Determine overall status
+                let newStatus = 'Partially Supplied';
+                if (allSupplied) {
+                    newStatus = 'Supplied';
+                }
+
+                // Update requisition
                 batch.update(doc(db, 'requisitions', reqId), { status: newStatus, supplied_by: currentUser.uid, supplied_at: new Date().toISOString(), updated_at: new Date().toISOString() });
 
+                // Add history
                 const histRef = doc(collection(db, 'requisition_history'));
                 batch.set(histRef, {
                     requisition_id: reqId,
@@ -1775,7 +1900,7 @@
             setTimeout(() => win.print(), 500);
         };
 
-        // =============== STOCK ===============
+        // =============== STOCK (Owner View) ===============
         function renderStock(container) {
             if (!stockData.length) {
                 container.innerHTML = `
@@ -1870,7 +1995,6 @@
 
         // =============== WORKERS ===============
         let selectedWorkerViewSite = null;
-
         function renderWorkers(container) {
             container.innerHTML = `
                 <div class="flex justify-between items-center mb-4">
@@ -1915,7 +2039,6 @@
                 </div>
             `;
         }
-
         window.selectWorkerViewSite = (siteId) => {
             selectedWorkerViewSite = siteId;
             const container = document.getElementById('assigned-workers-container');
@@ -1935,7 +2058,6 @@
                 </div>
             `;
         };
-
         function renderAssignedWorkerCards(workers) {
             return workers.map(w => `
                 <div class="bg-slate-50 rounded-xl p-3 hover:shadow-md flex items-center justify-between">
@@ -1953,7 +2075,6 @@
                 </div>
             `).join('');
         }
-
         window.searchAssignedWorkers = (event, siteId) => {
             clearTimeout(searchTimeout);
             searchTimeout = setTimeout(() => {
@@ -2060,7 +2181,6 @@
                 </form>
             `);
         };
-
         window.handleAddWorkerPosition = async (e) => {
             e.preventDefault();
             const form = e.target;
@@ -2077,7 +2197,6 @@
             } catch (err) { showToast(t('alerts.somethingWentWrong'), 'error'); }
             finally { setButtonLoading(btn, false); }
         };
-
         window.editWorkerPosition = (id) => {
             const w = workersData.find(item => item.id === id);
             if (!w) return;
@@ -2098,7 +2217,6 @@
                 </form>
             `);
         };
-
         window.handleEditWorkerPosition = async (e, id) => {
             e.preventDefault();
             const form = e.target;
@@ -2115,7 +2233,6 @@
             } catch (err) { showToast(t('alerts.somethingWentWrong'), 'error'); }
             finally { setButtonLoading(btn, false); }
         };
-
         window.deleteWorkerPosition = async (id) => {
             if (!confirm(t('alerts.areYouSure'))) return;
             try {
@@ -2178,7 +2295,6 @@
                 </form>
             `);
         };
-
         window.handleAddTask = async (e) => {
             e.preventDefault();
             const form = e.target;
@@ -2196,7 +2312,8 @@
                 if (periodUnit === 'days') end.setDate(end.getDate() + periodNum);
                 else end.setDate(end.getDate() + periodNum * 7);
                 await addDoc(collection(db, 'progress_tasks'), {
-                    site_id, name,
+                    site_id,
+                    name,
                     start_date: start.toISOString(),
                     end_date: end.toISOString(),
                     status: 'pending'
@@ -2226,7 +2343,6 @@
                 </form>
             `);
         };
-
         window.handleEditTask = async (e, id) => {
             e.preventDefault();
             const form = e.target;
@@ -2249,7 +2365,6 @@
             } catch (err) { alert(t('alerts.somethingWentWrong')); }
             finally { setButtonLoading(btn, false); }
         };
-
         window.deleteTask = (id) => {
             if (confirm(t('alerts.areYouSure'))) {
                 deleteDoc(doc(db, 'progress_tasks', id)).catch(err => alert(t('alerts.somethingWentWrong')));
@@ -2257,6 +2372,16 @@
         };
 
         // =============== REPORTS ===============
+
+        // ── Date formatter (unified) ──
+        function formatDate(dateValue) {
+            if (!dateValue) return '-';
+            const date = typeof dateValue === 'string' ? new Date(dateValue) : dateValue;
+            if (isNaN(date.getTime())) return '-';
+            return date.toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+        }
+
+        // ── Shared company details ──
         function getCompanyDetails() {
             return {
                 name: 'SHDR Ltd',
@@ -2269,6 +2394,7 @@
             };
         }
 
+        // ── Shared HTML template for Print/PDF reports ──
         function generateReportHTML(title, bodyHTML, meta, extraStyles = '') {
             const company = getCompanyDetails();
             const currentYear = new Date().getFullYear();
@@ -2331,6 +2457,7 @@
             `;
         }
 
+        // ── Main render ──
         function renderReports(container) {
             const siteOpts = sitesData.map(s => `<option value="${s.id}">${s.name}</option>`).join('');
 
@@ -2409,6 +2536,7 @@
             `;
         }
 
+        // ── Update Payroll (live preview) ──
         window.updatePayrollReport = () => {
             const siteId = document.getElementById('payroll-site')?.value || 'all';
             const startDate = document.getElementById('payroll-start')?.value || '';
@@ -2467,6 +2595,7 @@
             }
         };
 
+        // ── Export: Payroll ──
         window.exportPayrollReport = (format) => {
             const siteId = document.getElementById('payroll-site')?.value || 'all';
             const startDate = document.getElementById('payroll-start')?.value || '';
@@ -2556,6 +2685,7 @@
             setTimeout(() => win.print(), 500);
         };
 
+        // ── Export: Stock (now respects selected site and uses formatDate) ──
         window.exportStockReport = (format) => {
             const siteId = document.getElementById('stock-report-site')?.value || 'all';
             let filteredStock = siteId === 'all' ? stockData : stockData.filter(s => s.site_id === siteId);
@@ -2615,6 +2745,7 @@
             setTimeout(() => win.print(), 500);
         };
 
+        // ── Export: General ──
         window.exportGeneralReport = (format) => {
             const siteId = document.getElementById('report-site').value;
             const dept = document.getElementById('report-dept').value;
@@ -2707,7 +2838,6 @@
 
         // =============== FINANCES ===============
         let selectedFinanceSite = null;
-
         function renderFinances(container) {
             container.innerHTML = `
                 <h2 class="text-xl sm:text-2xl font-bold mb-3">${t('finances.title')}</h2>
@@ -2718,7 +2848,6 @@
             `;
             if (selectedFinanceSite) renderFinanceContent();
         }
-
         window.selectFinanceSite = (id) => {
             selectedFinanceSite = id;
             renderFinances(document.getElementById('content-area'));
@@ -2792,7 +2921,6 @@
                 </form>
             `);
         };
-
         window.handleAddBudget = async (e, siteId) => {
             e.preventDefault();
             const form = e.target;
@@ -2873,145 +3001,150 @@
         };
 
         // =============== GALLERY ===============
-        let selectedGallerySite = null;
+let selectedGallerySite = null;
 
-        function renderGallery(container) {
-            const siteOpts = sitesData.map(s => `<option value="${s.id}">${s.name}</option>`).join('');
-            container.innerHTML = `
-                <h2 class="text-xl sm:text-2xl font-bold mb-3">${t('gallery.title')}</h2>
-                <div class="mb-4"><label class="block text-sm font-medium mb-1">${t('gallery.selectSite')}</label><select id="gallery-site-select" class="w-full border p-2 rounded-lg text-sm" onchange="filterGallery()"><option value="">${t('gallery.allSites')}</option>${siteOpts}</select></div>
-                <div id="gallery-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"><p class="text-slate-400 col-span-full text-sm">${t('gallery.selectSite')}</p></div>
-            `;
-            if (selectedGallerySite) document.getElementById('gallery-site-select').value = selectedGallerySite;
-            filterGallery();
-        }
+function renderGallery(container) {
+    const siteOpts = sitesData.map(s => `<option value="${s.id}">${s.name}</option>`).join('');
+    container.innerHTML = `
+        <h2 class="text-xl sm:text-2xl font-bold mb-3">${t('gallery.title')}</h2>
+        <div class="mb-4"><label class="block text-sm font-medium mb-1">${t('gallery.selectSite')}</label><select id="gallery-site-select" class="w-full border p-2 rounded-lg text-sm" onchange="filterGallery()"><option value="">${t('gallery.allSites')}</option>${siteOpts}</select></div>
+        <div id="gallery-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"><p class="text-slate-400 col-span-full text-sm">${t('gallery.selectSite')}</p></div>
+    `;
+    if (selectedGallerySite) document.getElementById('gallery-site-select').value = selectedGallerySite;
+    filterGallery();
+}
 
-        window.filterGallery = () => {
-            const select = document.getElementById('gallery-site-select');
-            if (!select) return;
-            const siteId = select.value;
-            selectedGallerySite = siteId;
-            const container = document.getElementById('gallery-container');
-            if (!container) return;
-            let filtered = siteId ? galleryData.filter(item => item.site_id === siteId) : galleryData;
-            if (!filtered.length) {
-                container.innerHTML = `<p class="text-slate-400 col-span-full text-sm">${t('gallery.noImages')}</p>`;
-                return;
-            }
-            container.innerHTML = filtered.map(item => {
-                const imageUrl = item.image || PLACEHOLDER_IMG;
-                const siteName = sitesData.find(s => s.id === item.site_id)?.name || 'Unknown';
-                return `<div class="bg-white rounded-2xl border overflow-hidden shadow-sm flex flex-col">
-                    <div class="relative cursor-pointer group flex-1" onclick="openGalleryImage('${imageUrl.replace(/'/g, "\\'")}')">
-                        <img src="${imageUrl}" class="w-full h-40 object-cover transition duration-300 group-hover:scale-105" alt="${item.description || 'No description'}" loading="lazy" onerror="this.src='${PLACEHOLDER_IMG}'">
-                        <div class="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition duration-300 flex items-center justify-center">
-                            <span class="opacity-0 group-hover:opacity-100 transition text-white bg-black/50 rounded-full px-4 py-2 text-sm">${t('gallery.viewImage')}</span>
-                        </div>
-                    </div>
-                    <div class="p-3">
-                        <p class="text-sm text-slate-700">${item.description || 'No description'}</p>
-                        <p class="text-xs text-slate-500 mt-2">${t('workers.site')}: ${siteName}</p>
-                        <p class="text-xs text-slate-400 mt-1">${t('stock.updated')}: ${item.uploaded_at ? new Date(item.uploaded_at).toLocaleDateString() : ''}</p>
-                        <div class="mt-2 flex justify-end gap-2">
-                            <button onclick="editGalleryItem('${item.id}')" class="text-xs text-emerald-600 hover:text-emerald-800 font-medium px-2 py-1 bg-emerald-50 rounded-lg">${t('common.edit')}</button>
-                            <button onclick="deleteGalleryItem('${item.id}')" class="text-xs text-red-500 hover:text-red-700 font-medium px-2 py-1 bg-red-50 rounded-lg">${t('common.delete')}</button>
-                        </div>
-                    </div>
-                </div>`;
-            }).join('');
-        };
-
-        window.openGalleryImage = (imageUrl) => {
-            const existing = document.getElementById('gallery-lightbox');
-            if (existing) existing.remove();
-            const viewer = document.createElement('div');
-            viewer.id = 'gallery-lightbox';
-            viewer.className = 'fixed inset-0 z-[9999] bg-black/80 backdrop-blur-sm flex items-center justify-center p-4';
-            viewer.innerHTML = `
-                <div class="relative max-w-6xl max-h-[90vh] flex flex-col items-center justify-center">
-                    <img src="${imageUrl}" class="max-w-full max-h-[80vh] object-contain rounded-xl shadow-2xl" alt="SHDR Site Gallery Preview" onerror="this.src='${PLACEHOLDER_IMG}'">
-                    <div class="mt-4 flex gap-3">
-                        <button onclick="closeGalleryImage()" class="px-6 py-2 bg-white text-slate-800 rounded-lg font-medium hover:bg-slate-200 transition">${t('gallery.close')}</button>
-                        <button onclick="closeGalleryImage()" class="absolute top-0 right-0 text-white text-4xl font-light hover:text-emerald-400 transition">&times;</button>
-                    </div>
+window.filterGallery = () => {
+    const select = document.getElementById('gallery-site-select');
+    if (!select) return;
+    const siteId = select.value;
+    selectedGallerySite = siteId;
+    const container = document.getElementById('gallery-container');
+    if (!container) return;
+    let filtered = siteId ? galleryData.filter(item => item.site_id === siteId) : galleryData;
+    if (!filtered.length) {
+        container.innerHTML = `<p class="text-slate-400 col-span-full text-sm">${t('gallery.noImages')}</p>`;
+        return;
+    }
+    container.innerHTML = filtered.map(item => {
+        const imageUrl = item.image || PLACEHOLDER_IMG;
+        const siteName = sitesData.find(s => s.id === item.site_id)?.name || 'Unknown';
+        return `<div class="bg-white rounded-2xl border overflow-hidden shadow-sm flex flex-col">
+            <div class="relative cursor-pointer group flex-1" onclick="openGalleryImage('${imageUrl.replace(/'/g, "\\'")}')">
+                <img src="${imageUrl}" class="w-full h-40 object-cover transition duration-300 group-hover:scale-105" alt="${item.description || 'No description'}" loading="lazy" onerror="this.src='${PLACEHOLDER_IMG}'">
+                <div class="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition duration-300 flex items-center justify-center">
+                    <span class="opacity-0 group-hover:opacity-100 transition text-white bg-black/50 rounded-full px-4 py-2 text-sm">${t('gallery.viewImage')}</span>
                 </div>
-            `;
-            viewer.addEventListener('click', (event) => { if (event.target === viewer) closeGalleryImage(); });
-            document.body.appendChild(viewer);
-            document.body.style.overflow = 'hidden';
-            document.addEventListener('keydown', galleryLightboxEscHandler);
-        };
+            </div>
+            <div class="p-3">
+                <p class="text-sm text-slate-700">${item.description || 'No description'}</p>
+                <p class="text-xs text-slate-500 mt-2">${t('workers.site')}: ${siteName}</p>
+                <p class="text-xs text-slate-400 mt-1">${t('stock.updated')}: ${item.uploaded_at ? new Date(item.uploaded_at).toLocaleDateString() : ''}</p>
+                <div class="mt-2 flex justify-end gap-2">
+                    <button onclick="editGalleryItem('${item.id}')" class="text-xs text-emerald-600 hover:text-emerald-800 font-medium px-2 py-1 bg-emerald-50 rounded-lg">${t('common.edit')}</button>
+                    <button onclick="deleteGalleryItem('${item.id}')" class="text-xs text-red-500 hover:text-red-700 font-medium px-2 py-1 bg-red-50 rounded-lg">${t('common.delete')}</button>
+                </div>
+            </div>
+        </div>`;
+    }).join('');
+};
 
-        window.closeGalleryImage = () => {
-            document.getElementById('gallery-lightbox')?.remove();
-            document.body.style.overflow = '';
-            document.removeEventListener('keydown', galleryLightboxEscHandler);
-        };
+// Open the lightbox with a labeled Close button
+window.openGalleryImage = (imageUrl) => {
+    const existing = document.getElementById('gallery-lightbox');
+    if (existing) existing.remove();
+    const viewer = document.createElement('div');
+    viewer.id = 'gallery-lightbox';
+    viewer.className = 'fixed inset-0 z-[9999] bg-black/80 backdrop-blur-sm flex items-center justify-center p-4';
+    viewer.innerHTML = `
+        <div class="relative max-w-6xl max-h-[90vh] flex flex-col items-center justify-center">
+            <img src="${imageUrl}" class="max-w-full max-h-[80vh] object-contain rounded-xl shadow-2xl" alt="SHDR Site Gallery Preview" onerror="this.src='${PLACEHOLDER_IMG}'">
+            <div class="mt-4 flex gap-3">
+                <button onclick="closeGalleryImage()" class="px-6 py-2 bg-white text-slate-800 rounded-lg font-medium hover:bg-slate-200 transition">${t('gallery.close')}</button>
+                <button onclick="closeGalleryImage()" class="absolute top-0 right-0 text-white text-4xl font-light hover:text-emerald-400 transition">&times;</button>
+            </div>
+        </div>
+    `;
+    viewer.addEventListener('click', (event) => { if (event.target === viewer) closeGalleryImage(); });
+    document.body.appendChild(viewer);
+    document.body.style.overflow = 'hidden';
+    document.addEventListener('keydown', galleryLightboxEscHandler);
+};
 
-        function galleryLightboxEscHandler(event) { if (event.key === 'Escape') closeGalleryImage(); }
+window.closeGalleryImage = () => {
+    document.getElementById('gallery-lightbox')?.remove();
+    document.body.style.overflow = '';
+    document.removeEventListener('keydown', galleryLightboxEscHandler);
+};
 
-        window.editGalleryItem = (id) => {
-            const item = galleryData.find(g => g.id === id);
-            if (!item) return;
-            openModal(t('common.edit'), `
-                <form onsubmit="handleEditGalleryItem(event, '${id}')" class="space-y-4">
-                    <div>
-                        <label class="block text-sm font-medium mb-1">${t('gallery.selectSite')}</label>
-                        <select id="edit-gallery-site" class="w-full border rounded-lg p-3 text-sm">
-                            ${sitesData.map(s => `<option value="${s.id}" ${s.id === item.site_id ? 'selected' : ''}>${s.name}</option>`).join('')}
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium mb-1">${t('gallery.description')}</label>
-                        <input type="text" id="edit-gallery-desc" value="${item.description || ''}" class="w-full border rounded-lg p-3 text-sm">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium mb-1">Change Image (optional)</label>
-                        <input type="file" id="edit-gallery-image" accept="image/*" class="w-full border rounded-lg p-2 text-sm">
-                    </div>
-                    <button type="submit" class="w-full bg-emerald-600 text-white py-3 rounded-xl">${t('common.save')}</button>
-                </form>
-            `);
-        };
+function galleryLightboxEscHandler(event) { if (event.key === 'Escape') closeGalleryImage(); }
 
-        window.handleEditGalleryItem = async (e, id) => {
-            e.preventDefault();
-            const btn = getFormSubmitBtn(e.target);
-            setButtonLoading(btn, true);
-            try {
-                const site_id = document.getElementById('edit-gallery-site').value;
-                const description = document.getElementById('edit-gallery-desc').value.trim();
-                const imageFile = document.getElementById('edit-gallery-image').files[0];
-                const updateData = { site_id, description, updated_at: new Date().toISOString() };
+// New Edit function for gallery items
+window.editGalleryItem = (id) => {
+    const item = galleryData.find(g => g.id === id);
+    if (!item) return;
+    openModal(t('common.edit'), `
+        <form onsubmit="handleEditGalleryItem(event, '${id}')" class="space-y-4">
+            <div>
+                <label class="block text-sm font-medium mb-1">${t('gallery.selectSite')}</label>
+                <select id="edit-gallery-site" class="w-full border rounded-lg p-3 text-sm">
+                    ${sitesData.map(s => `<option value="${s.id}" ${s.id === item.site_id ? 'selected' : ''}>${s.name}</option>`).join('')}
+                </select>
+            </div>
+            <div>
+                <label class="block text-sm font-medium mb-1">${t('gallery.description')}</label>
+                <input type="text" id="edit-gallery-desc" value="${item.description || ''}" class="w-full border rounded-lg p-3 text-sm">
+            </div>
+            <div>
+                <label class="block text-sm font-medium mb-1">Change Image (optional)</label>
+                <input type="file" id="edit-gallery-image" accept="image/*" class="w-full border rounded-lg p-2 text-sm">
+            </div>
+            <button type="submit" class="w-full bg-emerald-600 text-white py-3 rounded-xl">${t('common.save')}</button>
+        </form>
+    `);
+};
 
-                if (imageFile) {
-                    const imageUrl = await uploadImageToImgbb(imageFile);
-                    updateData.image = imageUrl;
-                }
+window.handleEditGalleryItem = async (e, id) => {
+    e.preventDefault();
+    const btn = getFormSubmitBtn(e.target);
+    setButtonLoading(btn, true);
+    try {
+        const site_id = document.getElementById('edit-gallery-site').value;
+        const description = document.getElementById('edit-gallery-desc').value.trim();
+        const imageFile = document.getElementById('edit-gallery-image').files[0];
+        const updateData = { site_id, description, updated_at: new Date().toISOString() };
+        
+        if (imageFile) {
+            const imageUrl = await uploadImageToImgbb(imageFile);
+            updateData.image = imageUrl;
+        }
+        
+        await updateDoc(doc(db, 'gallery', id), updateData);
+        closeModal();
+        showToast(t('alerts.updatedSuccessfully'), 'success');
+    } catch (err) {
+        showToast(t('alerts.somethingWentWrong'), 'error');
+    } finally {
+        setButtonLoading(btn, false);
+    }
+};
 
-                await updateDoc(doc(db, 'gallery', id), updateData);
-                closeModal();
-                showToast(t('alerts.updatedSuccessfully'), 'success');
-            } catch (err) {
-                showToast(t('alerts.somethingWentWrong'), 'error');
-            } finally {
-                setButtonLoading(btn, false);
-            }
-        };
+// Delete function (updated to use t() for confirmation)
+window.deleteGalleryItem = async (id) => {
+    if (!confirm(t('alerts.areYouSure'))) return;
+    try {
+        await deleteDoc(doc(db, 'gallery', id));
+        showToast(t('alerts.deletedSuccessfully'), 'success');
+    } catch (err) {
+        showToast(t('alerts.somethingWentWrong'), 'error');
+    }
+};
 
-        window.deleteGalleryItem = async (id) => {
-            if (!confirm(t('alerts.areYouSure'))) return;
-            try {
-                await deleteDoc(doc(db, 'gallery', id));
-                showToast(t('alerts.deletedSuccessfully'), 'success');
-            } catch (err) {
-                showToast(t('alerts.somethingWentWrong'), 'error');
-            }
-        };
+        // =============== OFFICE MANAGEMENT HUB ===============
+        // ── Toggle: true = fully functional, false = coming soon ──
+        const OFFICE_HUB_ENABLED = false;  // Change to true to enable the full hub
 
-        // =============== OFFICE HUB ===============
-        const OFFICE_HUB_ENABLED = false;
-
+        // ── State ──
         let officeTab = 'dashboard';
         let officeSubtab = 'documents';
         let officeItems = [];
@@ -3019,10 +3152,15 @@
         let officeSearch = '';
         let officeUnsubscribe = null;
 
+        // ── Helpers ──
         function getDefaultSubtab(tab) {
             const map = {
-                design: 'documents', financial: 'estimation', workflow: 'certification',
-                approval: 'pending', permit: 'management', submission: 'new'
+                design: 'documents',
+                financial: 'estimation',
+                workflow: 'certification',
+                approval: 'pending',
+                permit: 'management',
+                submission: 'new'
             };
             return map[tab] || 'documents';
         }
@@ -3079,14 +3217,51 @@
                     { value: 'queue', label: 'Submission Queue' },
                     { value: 'review', label: 'Review & Verification' }
                 ],
-                approval: [{ value: 'approval', label: 'Approval Item' }],
-                permit: [{ value: 'permit', label: 'Permit' }],
-                submission: [{ value: 'submission', label: 'Submission' }]
+                approval: [
+                    { value: 'approval', label: 'Approval Item' }
+                ],
+                permit: [
+                    { value: 'permit', label: 'Permit' }
+                ],
+                submission: [
+                    { value: 'submission', label: 'Submission' }
+                ]
             };
             return map[tab] || map.design;
         }
 
+        function getStatusBadge(status) {
+            const map = {
+                'pending': 'bg-amber-100 text-amber-700',
+                'in-progress': 'bg-blue-100 text-blue-700',
+                'approved': 'bg-emerald-100 text-emerald-700',
+                'rejected': 'bg-red-100 text-red-700',
+                'revision': 'bg-orange-100 text-orange-700',
+                'history': 'bg-slate-100 text-slate-500'
+            };
+            return map[status] || 'bg-slate-100 text-slate-500';
+        }
+
+        function getPriorityLabel(priority) {
+            const map = {
+                'high': { label: 'High', icon: '🔴', class: 'priority-high' },
+                'medium': { label: 'Medium', icon: '🟡', class: 'priority-medium' },
+                'low': { label: 'Low', icon: '🟢', class: 'priority-low' }
+            };
+            return map[priority] || { label: 'None', icon: '⚪', class: '' };
+        }
+
+        // ── Main render ──
         function renderOfficeHub(container) {
+            if (OFFICE_HUB_ENABLED) {
+                renderFullOfficeHub(container);
+            } else {
+                renderComingSoon(container);
+            }
+        }
+
+        // ── Coming Soon Page ──
+        function renderComingSoon(container) {
             container.innerHTML = `
                 <div class="max-w-3xl mx-auto py-12 px-4">
                     <div class="bg-white rounded-3xl border border-slate-200 shadow-xl overflow-hidden">
@@ -3113,9 +3288,566 @@
             `;
         }
 
+        // ── Full Office Hub (Fully Functional) ──
+        function renderFullOfficeHub(container) {
+            container.innerHTML = `
+                <div class="max-w-7xl mx-auto">
+                    <!-- Gradient Header -->
+                    <div class="office-header">
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                            <div>
+                                <h2 class="text-2xl sm:text-3xl font-bold flex items-center gap-3">
+                                    <iconify-icon icon="material-symbols:business-center" width="32" class="text-white/90"></iconify-icon>
+                                    Office Management Hub
+                                </h2>
+                                <p class="text-white/80 text-sm mt-1">Centralized control for design, finance, workflow, approvals, permits, and submissions</p>
+                            </div>
+                            <button onclick="openOfficeAddModal()" class="btn-new flex items-center gap-2 text-sm">
+                                <iconify-icon icon="material-symbols:add" width="18"></iconify-icon>
+                                New Item
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Main Tabs -->
+                    <div class="flex flex-wrap gap-1 p-1 bg-white/60 backdrop-blur-sm rounded-full shadow-sm border border-slate-200/60 mb-6">
+                        ${[
+                            { id: 'dashboard', label: 'Dashboard', icon: 'dashboard' },
+                            { id: 'design', label: 'Design & Technical', icon: 'design-services' },
+                            { id: 'financial', label: 'Financial & Cost', icon: 'finance' },
+                            { id: 'workflow', label: 'Document Workflow', icon: 'assignment' },
+                            { id: 'approval', label: 'Approval Center', icon: 'check-circle' },
+                            { id: 'permit', label: 'Permit & Compliance', icon: 'gavel' },
+                            { id: 'submission', label: 'Submission Control', icon: 'send' }
+                        ].map(tab => `
+                            <button onclick="switchOfficeTab('${tab.id}')" 
+                                class="office-tab flex-1 min-w-[70px] px-3 py-2 text-sm font-semibold transition flex items-center justify-center gap-1.5
+                                ${officeTab === tab.id ? 'active' : ''}">
+                                <iconify-icon icon="material-symbols:${tab.icon}" width="18" height="18"></iconify-icon>
+                                <span class="hidden sm:inline">${tab.label}</span>
+                            </button>
+                        `).join('')}
+                    </div>
+
+                    <!-- Content -->
+                    <div id="office-content" class="animate-fade-in">
+                        ${officeTab === 'dashboard' ? renderOfficeDashboard() : renderOfficeContent()}
+                    </div>
+                </div>
+            `;
+            loadOfficeItems();
+        }
+
+        // ── Dashboard ──
+        function renderOfficeDashboard() {
+            return `
+                <div class="space-y-6">
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div class="glass-stat">
+                            <p class="stat-label">Total Items</p>
+                            <p class="stat-number text-slate-800" id="dash-total">0</p>
+                        </div>
+                        <div class="glass-stat border-amber-200/50">
+                            <p class="stat-label">Pending</p>
+                            <p class="stat-number text-amber-600" id="dash-pending">0</p>
+                        </div>
+                        <div class="glass-stat border-emerald-200/50">
+                            <p class="stat-label">Approved</p>
+                            <p class="stat-number text-emerald-600" id="dash-approved">0</p>
+                        </div>
+                        <div class="glass-stat border-red-200/50">
+                            <p class="stat-label">Rejected / Revision</p>
+                            <p class="stat-number text-red-600" id="dash-rejected">0</p>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-2xl border border-slate-200/60 shadow-sm p-5">
+                        <h3 class="font-semibold text-slate-700 flex items-center gap-2 mb-3">
+                            <iconify-icon icon="material-symbols:history" width="20" class="text-emerald-600"></iconify-icon>
+                            Recent Activity
+                        </h3>
+                        <div id="dash-activity" class="max-h-60 overflow-y-auto">
+                            <div class="text-slate-400 text-sm">Loading activity...</div>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                        ${['design','financial','workflow','approval','permit','submission'].map(cat => {
+                            const map = {
+                                design: ['architectural','structural','mep'],
+                                financial: ['estimation','budget'],
+                                workflow: ['certification','queue','review'],
+                                approval: ['approval'],
+                                permit: ['permit'],
+                                submission: ['submission']
+                            };
+                            const count = officeItems.filter(i => map[cat].includes(i.category)).length;
+                            const label = cat.charAt(0).toUpperCase() + cat.slice(1);
+                            const icons = {
+                                design: 'design-services',
+                                financial: 'finance',
+                                workflow: 'assignment',
+                                approval: 'check-circle',
+                                permit: 'gavel',
+                                submission: 'send'
+                            };
+                            return `
+                                <div class="bg-white/70 backdrop-blur-sm rounded-xl p-4 border border-slate-200/60 text-center hover:shadow-md transition hover:-translate-y-0.5">
+                                    <iconify-icon icon="material-symbols:${icons[cat]}" width="28" class="text-emerald-500 mx-auto mb-1"></iconify-icon>
+                                    <p class="text-xs text-slate-500">${label}</p>
+                                    <p class="text-2xl font-bold text-slate-800">${count}</p>
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function updateDashboardStats() {
+            const total = officeItems.length;
+            const pending = officeItems.filter(i => i.status === 'pending').length;
+            const approved = officeItems.filter(i => i.status === 'approved').length;
+            const rejected = officeItems.filter(i => ['rejected','revision'].includes(i.status)).length;
+
+            document.getElementById('dash-total').textContent = total;
+            document.getElementById('dash-pending').textContent = pending;
+            document.getElementById('dash-approved').textContent = approved;
+            document.getElementById('dash-rejected').textContent = rejected;
+
+            const container = document.getElementById('dash-activity');
+            if (!container) return;
+            const items = officeItems.slice().sort((a,b) => new Date(b.updated_at) - new Date(a.updated_at));
+            if (!items.length) {
+                container.innerHTML = '<div class="text-slate-400 text-sm">No activity yet.</div>';
+                return;
+            }
+            const recent = items.slice(0, 10);
+            container.innerHTML = recent.map(item => `
+                <div class="activity-item">
+                    <span class="activity-dot ${item.status === 'approved' ? 'create' : item.status === 'rejected' ? 'status' : 'update'}"></span>
+                    <span class="font-medium text-slate-700">${item.title}</span>
+                    <span class="text-slate-400 text-xs">${formatDate(item.updated_at)}</span>
+                    <span class="text-xs ${getStatusBadge(item.status)} px-2 py-0.5 rounded-full">${item.status}</span>
+                    <span class="text-xs text-slate-400 ml-auto">${item.submitted_by || '—'}</span>
+                </div>
+            `).join('');
+        }
+
+        // ── Switch Tab ──
+        window.switchOfficeTab = (tab) => {
+            officeTab = tab;
+            officeSubtab = getDefaultSubtab(tab);
+            officeFilter = 'all';
+            officeSearch = '';
+            document.getElementById('office-content').innerHTML = tab === 'dashboard' ? renderOfficeDashboard() : renderOfficeContent();
+            loadOfficeItems();
+        };
+
+        // ── Switch Sub-tab ──
+        window.switchOfficeSubtab = (subtab) => {
+            officeSubtab = subtab;
+            renderOfficeItems();
+        };
+
+        // ── Render Content ──
+        function renderOfficeContent() {
+            const subtabs = getSubtabs(officeTab);
+            return `
+                <div class="bg-white rounded-2xl border border-slate-200/60 shadow-sm overflow-hidden">
+                    <div class="flex flex-wrap items-center gap-1 p-3 border-b border-slate-200/60 bg-slate-50/50">
+                        ${subtabs.map(st => `
+                            <button onclick="switchOfficeSubtab('${st.id}')" 
+                                class="subtab-btn ${officeSubtab === st.id ? 'active' : ''}">
+                                <iconify-icon icon="material-symbols:${st.icon}" width="16" height="16" class="inline mr-1"></iconify-icon>
+                                ${st.label}
+                            </button>
+                        `).join('')}
+                        <div class="flex-1"></div>
+                        <div class="flex items-center gap-2">
+                            <select id="office-filter-select" onchange="officeFilter = this.value; renderOfficeItems()" class="office-filter">
+                                <option value="all">All Status</option>
+                                <option value="pending">Pending</option>
+                                <option value="in-progress">In Progress</option>
+                                <option value="approved">Approved</option>
+                                <option value="rejected">Rejected</option>
+                                <option value="revision">Revision</option>
+                            </select>
+                            <input type="text" id="office-search-input" placeholder="Search..." oninput="officeSearch = this.value; renderOfficeItems()" class="office-filter w-40">
+                        </div>
+                    </div>
+                    <div id="office-items-container" class="p-4">
+                        <div class="flex justify-center py-8"><div class="spinner"></div></div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // ── Load Office Items ──
+        function loadOfficeItems() {
+            if (officeUnsubscribe) {
+                officeUnsubscribe();
+                officeUnsubscribe = null;
+            }
+            if (!sitesData.length) {
+                const container = document.getElementById('office-items-container');
+                if (container) container.innerHTML = '<p class="text-slate-400 text-sm">No sites available.</p>';
+                return;
+            }
+
+            const siteIds = sitesData.map(s => s.id);
+            const q = query(collection(db, 'office_items'), where('site_id', 'in', siteIds));
+            officeUnsubscribe = onSnapshot(q, (snap) => {
+                officeItems = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+                if (officeTab === 'dashboard') updateDashboardStats();
+                else renderOfficeItems();
+            }, err => showError(t('alerts.somethingWentWrong')));
+        }
+
+        // ── Render Items ──
+        function renderOfficeItems() {
+            const container = document.getElementById('office-items-container');
+            if (!container) return;
+
+            const search = officeSearch.toLowerCase();
+            const filter = officeFilter;
+
+            let items = officeItems.filter(item => {
+                const categoryMap = {
+                    design: ['architectural','structural','mep'],
+                    financial: ['estimation','budget'],
+                    workflow: ['certification','queue','review'],
+                    approval: ['approval'],
+                    permit: ['permit'],
+                    submission: ['submission']
+                };
+                const categories = categoryMap[officeTab] || [];
+                if (!categories.includes(item.category)) return false;
+
+                if (officeSubtab === 'documents' && item.category !== 'architectural') return false;
+                if (officeSubtab === 'structural' && item.category !== 'structural') return false;
+                if (officeSubtab === 'mep' && item.category !== 'mep') return false;
+                if (officeSubtab === 'estimation' && item.category !== 'estimation') return false;
+                if (officeSubtab === 'budget' && item.category !== 'budget') return false;
+                if (officeSubtab === 'certification' && item.category !== 'certification') return false;
+                if (officeSubtab === 'queue' && item.category !== 'queue') return false;
+                if (officeSubtab === 'review' && item.category !== 'review') return false;
+                if (officeSubtab === 'pending' && item.status !== 'pending') return false;
+                if (officeSubtab === 'in-progress' && item.status !== 'in-progress') return false;
+                if (officeSubtab === 'approved' && item.status !== 'approved') return false;
+                if (officeSubtab === 'rejected' && !['rejected','revision'].includes(item.status)) return false;
+                if (officeSubtab === 'management' && item.category !== 'permit') return false;
+                if (officeSubtab === 'approved-permits' && (item.category !== 'permit' || item.status !== 'approved')) return false;
+                if (officeSubtab === 'rejected-permits' && (item.category !== 'permit' || !['rejected','revision'].includes(item.status))) return false;
+                if (officeSubtab === 'new' && (item.category !== 'submission' || item.status !== 'pending')) return false;
+                if (officeSubtab === 'tracking' && (item.category !== 'submission' || !['in-progress','approved','rejected','revision'].includes(item.status))) return false;
+                if (officeSubtab === 'history' && (item.category !== 'submission' || item.status !== 'history')) return false;
+
+                if (filter !== 'all' && item.status !== filter) return false;
+                if (search) {
+                    const match = item.title?.toLowerCase().includes(search) ||
+                                  item.description?.toLowerCase().includes(search) ||
+                                  item.assignee?.toLowerCase().includes(search) ||
+                                  item.category?.toLowerCase().includes(search);
+                    if (!match) return false;
+                }
+                return true;
+            });
+
+            items.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+
+            if (!items.length) {
+                container.innerHTML = `<div class="text-center py-12 text-slate-400"><iconify-icon icon="material-symbols:inbox" width="56" height="56" class="mx-auto mb-3 opacity-40"></iconify-icon><p class="text-sm font-medium">No items found</p><p class="text-xs">Click "New Item" to add one.</p></div>`;
+                return;
+            }
+
+            // Kanban
+            if (officeTab === 'approval') {
+                const columns = {
+                    'pending': { label: 'Pending', items: [] },
+                    'in-progress': { label: 'In Progress', items: [] },
+                    'approved': { label: 'Approved', items: [] },
+                    'rejected': { label: 'Rejected / Revision', items: [] }
+                };
+                items.forEach(item => {
+                    const status = item.status || 'pending';
+                    if (columns[status]) columns[status].items.push(item);
+                    else columns['pending'].items.push(item);
+                });
+
+                container.innerHTML = `
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                        ${Object.entries(columns).map(([key, col]) => `
+                            <div class="kanban-column">
+                                <h4>${col.label} (${col.items.length})</h4>
+                                ${col.items.map(item => `
+                                    <div class="office-card mb-2 ${getPriorityLabel(item.priority).class}">
+                                        <div class="flex justify-between items-start">
+                                            <p class="text-sm font-semibold text-slate-800">${item.title}</p>
+                                            <span class="text-xs ${getStatusBadge(item.status)} px-2 py-0.5 rounded-full">${item.status}</span>
+                                        </div>
+                                        <p class="text-xs text-slate-500 mt-1 truncate">${item.description || '—'}</p>
+                                        <div class="flex flex-wrap gap-1 mt-2 text-xs text-slate-400">
+                                            ${item.priority ? `<span>${getPriorityLabel(item.priority).icon} ${getPriorityLabel(item.priority).label}</span>` : ''}
+                                            ${item.assignee ? `<span>👤 ${item.assignee}</span>` : ''}
+                                            ${item.due_date ? `<span>📅 ${formatDate(item.due_date)}</span>` : ''}
+                                        </div>
+                                        <div class="flex items-center gap-2 mt-3 pt-2 border-t border-slate-100">
+                                            <button onclick="editOfficeItem('${item.id}')" class="text-xs text-emerald-600 hover:text-emerald-800 font-medium">Edit</button>
+                                            <button onclick="deleteOfficeItem('${item.id}')" class="text-xs text-red-500 hover:text-red-700 font-medium">Delete</button>
+                                            <select onchange="updateOfficeStatus('${item.id}', this.value)" class="text-xs border rounded-lg px-1 py-0.5 bg-white">
+                                                <option value="pending" ${item.status === 'pending' ? 'selected' : ''}>Pending</option>
+                                                <option value="in-progress" ${item.status === 'in-progress' ? 'selected' : ''}>In Progress</option>
+                                                <option value="approved" ${item.status === 'approved' ? 'selected' : ''}>Approved</option>
+                                                <option value="rejected" ${item.status === 'rejected' ? 'selected' : ''}>Rejected</option>
+                                                <option value="revision" ${item.status === 'revision' ? 'selected' : ''}>Revision</option>
+                                                <option value="history" ${item.status === 'history' ? 'selected' : ''}>Archive</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                `).join('') || `<p class="text-xs text-slate-400">Empty</p>`}
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+                return;
+            }
+
+            // List View
+            container.innerHTML = items.map(item => {
+                const siteName = sitesData.find(s => s.id === item.site_id)?.name || 'Unknown Site';
+                return `
+                    <div class="office-card mb-3 ${getPriorityLabel(item.priority).class}">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                            <div class="flex-1 min-w-0">
+                                <div class="flex items-center gap-2 flex-wrap">
+                                    <span class="text-sm font-semibold text-slate-800">${item.title}</span>
+                                    <span class="text-xs ${getStatusBadge(item.status)} px-2 py-0.5 rounded-full">${item.status}</span>
+                                    ${item.priority ? `<span class="text-xs bg-slate-100 px-1.5 py-0.5 rounded">${getPriorityLabel(item.priority).icon} ${getPriorityLabel(item.priority).label}</span>` : ''}
+                                    <span class="text-xs text-slate-400">${formatDate(item.created_at)}</span>
+                                </div>
+                                <p class="text-sm text-slate-500 truncate mt-0.5">${item.description || 'No description'}</p>
+                                <div class="flex flex-wrap items-center gap-3 mt-1 text-xs text-slate-400">
+                                    <span>🏷️ ${item.category}</span>
+                                    <span>📍 ${siteName}</span>
+                                    ${item.assignee ? `<span>👤 ${item.assignee}</span>` : ''}
+                                    ${item.due_date ? `<span>📅 Due: ${formatDate(item.due_date)}</span>` : ''}
+                                    ${item.file_url ? `<a href="${item.file_url}" target="_blank" class="text-emerald-600 hover:underline flex items-center gap-1"><iconify-icon icon="material-symbols:attach-file" width="14"></iconify-icon> Attachment</a>` : ''}
+                                    ${item.submitted_by ? `<span>By: ${item.submitted_by}</span>` : ''}
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-2 flex-shrink-0">
+                                <button onclick="editOfficeItem('${item.id}')" class="text-xs text-emerald-600 hover:text-emerald-800 font-medium px-2 py-1 bg-emerald-50 rounded-lg transition">Edit</button>
+                                <button onclick="deleteOfficeItem('${item.id}')" class="text-xs text-red-500 hover:text-red-700 font-medium px-2 py-1 bg-red-50 rounded-lg transition">Delete</button>
+                                <select onchange="updateOfficeStatus('${item.id}', this.value)" class="text-xs border rounded-lg px-2 py-1 bg-white">
+                                    <option value="pending" ${item.status === 'pending' ? 'selected' : ''}>Pending</option>
+                                    <option value="in-progress" ${item.status === 'in-progress' ? 'selected' : ''}>In Progress</option>
+                                    <option value="approved" ${item.status === 'approved' ? 'selected' : ''}>Approved</option>
+                                    <option value="rejected" ${item.status === 'rejected' ? 'selected' : ''}>Rejected</option>
+                                    <option value="revision" ${item.status === 'revision' ? 'selected' : ''}>Revision</option>
+                                    <option value="history" ${item.status === 'history' ? 'selected' : ''}>Archive</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // ── Status Update ──
+        window.updateOfficeStatus = async (id, status) => {
+            try {
+                await updateDoc(doc(db, 'office_items', id), {
+                    status: status,
+                    updated_at: new Date().toISOString()
+                });
+                showToast('Status updated', 'success');
+            } catch (err) {
+                showToast('Error: ' + err.message, 'error');
+            }
+        };
+
+        // ── Delete ──
+        window.deleteOfficeItem = async (id) => {
+            if (!confirm('Delete this item permanently?')) return;
+            try {
+                await deleteDoc(doc(db, 'office_items', id));
+                showToast('Item deleted', 'success');
+            } catch (err) {
+                showToast('Error: ' + err.message, 'error');
+            }
+        };
+
+        // ── Open Add/Edit Modal ──
+        window.openOfficeAddModal = (editData = null) => {
+            const isEdit = !!editData;
+            const categories = getCategoriesForTab(officeTab === 'dashboard' ? 'design' : officeTab);
+
+            const modalContent = `
+                <form onsubmit="handleOfficeSave(event, '${editData?.id || ''}')" class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Title *</label>
+                        <input type="text" id="office-title" value="${editData?.title || ''}" required class="w-full border rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-transparent">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Description</label>
+                        <textarea id="office-description" rows="3" class="w-full border rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-transparent">${editData?.description || ''}</textarea>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Site *</label>
+                        <select id="office-site" required class="w-full border rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-transparent">
+                            ${sitesData.map(s => `<option value="${s.id}" ${editData?.site_id === s.id ? 'selected' : ''}>${s.name}</option>`).join('')}
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Category *</label>
+                        <select id="office-category" required class="w-full border rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-transparent">
+                            <option value="">Select category</option>
+                            ${categories.map(c => `<option value="${c.value}" ${editData?.category === c.value ? 'selected' : ''}>${c.label}</option>`).join('')}
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Status</label>
+                        <select id="office-status" class="w-full border rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-transparent">
+                            <option value="pending" ${editData?.status === 'pending' ? 'selected' : ''}>Pending</option>
+                            <option value="in-progress" ${editData?.status === 'in-progress' ? 'selected' : ''}>In Progress</option>
+                            <option value="approved" ${editData?.status === 'approved' ? 'selected' : ''}>Approved</option>
+                            <option value="rejected" ${editData?.status === 'rejected' ? 'selected' : ''}>Rejected</option>
+                            <option value="revision" ${editData?.status === 'revision' ? 'selected' : ''}>Revision Required</option>
+                            <option value="history" ${editData?.status === 'history' ? 'selected' : ''}>Archive</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Priority</label>
+                        <select id="office-priority" class="w-full border rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-transparent">
+                            <option value="">None</option>
+                            <option value="high" ${editData?.priority === 'high' ? 'selected' : ''}>🔴 High</option>
+                            <option value="medium" ${editData?.priority === 'medium' ? 'selected' : ''}>🟡 Medium</option>
+                            <option value="low" ${editData?.priority === 'low' ? 'selected' : ''}>🟢 Low</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Due Date</label>
+                        <input type="date" id="office-due-date" value="${editData?.due_date ? new Date(editData.due_date).toISOString().split('T')[0] : ''}" class="w-full border rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-transparent">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Assignee</label>
+                        <input type="text" id="office-assignee" value="${editData?.assignee || ''}" placeholder="e.g. John Doe" class="w-full border rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-emerald-500 focus:border-transparent">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">File Attachment (optional)</label>
+                        <input type="file" id="office-file" accept=".pdf,.doc,.docx,.xls,.xlsx,.png,.jpg,.jpeg" class="w-full text-sm">
+                        ${editData?.file_url ? `<p class="text-xs text-emerald-600 mt-1">Current: <a href="${editData.file_url}" target="_blank" class="underline">View File</a></p>` : ''}
+                    </div>
+                    <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-3 rounded-xl transition shadow-md hover:shadow-lg">${isEdit ? 'Update' : 'Create'} Item</button>
+                </form>
+            `;
+            openModal(isEdit ? 'Edit Office Item' : 'New Office Item', modalContent);
+        };
+
+        // ── Save ──
+        window.handleOfficeSave = async (e, id) => {
+            e.preventDefault();
+            const btn = e.target.querySelector('button[type="submit"]');
+            setButtonLoading(btn, true);
+
+            try {
+                const title = document.getElementById('office-title').value.trim();
+                const description = document.getElementById('office-description').value.trim();
+                const site_id = document.getElementById('office-site').value;
+                const category = document.getElementById('office-category').value;
+                const status = document.getElementById('office-status').value;
+                const priority = document.getElementById('office-priority').value;
+                const due_date = document.getElementById('office-due-date').value;
+                const assignee = document.getElementById('office-assignee').value.trim();
+                const fileInput = document.getElementById('office-file');
+                const isEdit = !!id;
+
+                if (!title || !category || !site_id) {
+                    alert('Title, Site, and Category are required.');
+                    setButtonLoading(btn, false);
+                    return;
+                }
+
+                let file_url = '';
+                if (fileInput.files.length > 0) {
+                    file_url = await uploadImageToImgbb(fileInput.files[0]);
+                } else if (isEdit) {
+                    const existing = officeItems.find(i => i.id === id);
+                    file_url = existing?.file_url || '';
+                }
+
+                const data = {
+                    site_id,
+                    title,
+                    description,
+                    category,
+                    status,
+                    priority,
+                    due_date: due_date || null,
+                    assignee: assignee || null,
+                    file_url,
+                    updated_at: new Date().toISOString()
+                };
+
+                if (isEdit) {
+                    await updateDoc(doc(db, 'office_items', id), data);
+                } else {
+                    data.created_at = new Date().toISOString();
+                    data.submitted_by = currentUser.displayName || currentUser.email || 'Owner';
+                    await addDoc(collection(db, 'office_items'), data);
+                }
+
+                closeModal();
+                showToast(isEdit ? 'Item updated' : 'Item created', 'success');
+            } catch (err) {
+                showToast('Error: ' + err.message, 'error');
+            } finally {
+                setButtonLoading(btn, false);
+            }
+        };
+
+        // ── Edit ──
+        window.editOfficeItem = (id) => {
+            const item = officeItems.find(i => i.id === id);
+            if (!item) return;
+            const tabMap = {
+                'architectural': 'design',
+                'structural': 'design',
+                'mep': 'design',
+                'estimation': 'financial',
+                'budget': 'financial',
+                'certification': 'workflow',
+                'queue': 'workflow',
+                'review': 'workflow',
+                'approval': 'approval',
+                'permit': 'permit',
+                'submission': 'submission'
+            };
+            const targetTab = tabMap[item.category] || 'design';
+            if (officeTab !== targetTab && officeTab !== 'dashboard') {
+                officeTab = targetTab;
+                officeSubtab = getDefaultSubtab(targetTab);
+                document.getElementById('office-content').innerHTML = renderOfficeContent();
+                loadOfficeItems();
+                setTimeout(() => openOfficeAddModal(item), 100);
+            } else {
+                openOfficeAddModal(item);
+            }
+        };
+
+        // ── Block Office Hub navigation ──
+        const originalShowSection = window.showSection;
+        window.showSection = function(section) {
+            if (section === 'office') {
+                showToast('🏗️ Office Hub is coming soon. Stay tuned!', 'info');
+                return;
+            }
+            originalShowSection(section);
+        };
+
         // ============================================================
-        // ─── SETTINGS MODULE ───
+        // ─── SETTINGS MODULE ─────────────────────────────────────────
         // ============================================================
+
         function renderSettings(container) {
             container.innerHTML = `
                 <h2 class="text-xl sm:text-2xl font-bold mb-6">${t('settings.title')}</h2>
@@ -3134,10 +3866,18 @@
                     </button>
                 </div>
                 <div class="settings-sections">
-                    <div id="settings-profile" class="settings-section ${settingsTab === 'profile' ? 'active' : ''}">${renderProfileSection()}</div>
-                    <div id="settings-account" class="settings-section ${settingsTab === 'account' ? 'active' : ''}">${renderAccountSection()}</div>
-                    <div id="settings-security" class="settings-section ${settingsTab === 'security' ? 'active' : ''}">${renderSecuritySection()}</div>
-                    <div id="settings-preferences" class="settings-section ${settingsTab === 'preferences' ? 'active' : ''}">${renderPreferencesSection()}</div>
+                    <div id="settings-profile" class="settings-section ${settingsTab === 'profile' ? 'active' : ''}">
+                        ${renderProfileSection()}
+                    </div>
+                    <div id="settings-account" class="settings-section ${settingsTab === 'account' ? 'active' : ''}">
+                        ${renderAccountSection()}
+                    </div>
+                    <div id="settings-security" class="settings-section ${settingsTab === 'security' ? 'active' : ''}">
+                        ${renderSecuritySection()}
+                    </div>
+                    <div id="settings-preferences" class="settings-section ${settingsTab === 'preferences' ? 'active' : ''}">
+                        ${renderPreferencesSection()}
+                    </div>
                 </div>
             `;
             populateSettingsForms();
@@ -3184,12 +3924,30 @@
             return `
                 <div class="settings-card">
                     <h3><iconify-icon icon="material-symbols:account-box-outline" class="text-emerald-600"></iconify-icon> ${t('settings.accountInfo')}</h3>
-                    <div class="field-group"><label>${t('settings.accountName')}</label><div class="readonly-field">${profile.full_name || 'N/A'}</div></div>
-                    <div class="field-group"><label>${t('settings.role')}</label><div class="readonly-field" id="settings-role">${profile.role || 'Owner'}</div></div>
-                    <div class="field-group"><label>${t('settings.email')}</label><div class="readonly-field">${profile.email || 'N/A'}</div></div>
-                    <div class="field-group"><label>${t('settings.phone')}</label><div class="readonly-field">${profile.phone || 'N/A'}</div></div>
-                    <div class="field-group"><label>${t('settings.accountStatus')}</label><div class="readonly-field" id="settings-status">${profile.status || t('settings.active')}</div></div>
-                    <div class="field-group"><label>${t('settings.memberSince')}</label><div class="readonly-field" id="settings-since">${profile.created_at ? new Date(profile.created_at).toLocaleDateString() : 'N/A'}</div></div>
+                    <div class="field-group">
+                        <label>${t('settings.accountName')}</label>
+                        <div class="readonly-field">${profile.full_name || 'N/A'}</div>
+                    </div>
+                    <div class="field-group">
+                        <label>${t('settings.role')}</label>
+                        <div class="readonly-field" id="settings-role">${profile.role || 'Owner'}</div>
+                    </div>
+                    <div class="field-group">
+                        <label>${t('settings.email')}</label>
+                        <div class="readonly-field">${profile.email || 'N/A'}</div>
+                    </div>
+                    <div class="field-group">
+                        <label>${t('settings.phone')}</label>
+                        <div class="readonly-field">${profile.phone || 'N/A'}</div>
+                    </div>
+                    <div class="field-group">
+                        <label>${t('settings.accountStatus')}</label>
+                        <div class="readonly-field" id="settings-status">${profile.status || t('settings.active')}</div>
+                    </div>
+                    <div class="field-group">
+                        <label>${t('settings.memberSince')}</label>
+                        <div class="readonly-field" id="settings-since">${profile.created_at ? new Date(profile.created_at).toLocaleDateString() : 'N/A'}</div>
+                    </div>
                 </div>
             `;
         }
@@ -3199,9 +3957,18 @@
                 <div class="settings-card">
                     <h3><iconify-icon icon="material-symbols:lock-outline" class="text-emerald-600"></iconify-icon> ${t('settings.changePasscode')}</h3>
                     <form id="security-form" onsubmit="handlePasswordChange(event)">
-                        <div class="field-group"><label for="current-password">${t('settings.currentPasscode')}</label><input type="password" id="current-password" placeholder="${t('settings.currentPasscode')}" required></div>
-                        <div class="field-group"><label for="new-password">${t('settings.newPasscode')}</label><input type="password" id="new-password" placeholder="${t('settings.newPasscode')}" required minlength="6"></div>
-                        <div class="field-group"><label for="confirm-password">${t('settings.confirmPasscode')}</label><input type="password" id="confirm-password" placeholder="${t('settings.confirmPasscode')}" required></div>
+                        <div class="field-group">
+                            <label for="current-password">${t('settings.currentPasscode')}</label>
+                            <input type="password" id="current-password" placeholder="${t('settings.currentPasscode')}" required>
+                        </div>
+                        <div class="field-group">
+                            <label for="new-password">${t('settings.newPasscode')}</label>
+                            <input type="password" id="new-password" placeholder="${t('settings.newPasscode')}" required minlength="6">
+                        </div>
+                        <div class="field-group">
+                            <label for="confirm-password">${t('settings.confirmPasscode')}</label>
+                            <input type="password" id="confirm-password" placeholder="${t('settings.confirmPasscode')}" required>
+                        </div>
                         <button type="submit" class="save-btn">${t('settings.changePass')}</button>
                     </form>
                 </div>
@@ -3327,7 +4094,6 @@
             hasUnsavedChanges = true;
         };
 
-        // ── Save profile — FIXED: warns user before email change signs them out ──
         window.handleProfileSave = async (e) => {
             e.preventDefault();
             const form = e.target;
@@ -3339,9 +4105,21 @@
                 const phone = document.getElementById('settings-phone').value.trim();
                 const email = document.getElementById('settings-email').value.trim();
 
-                if (!name) { showAlert('alerts.requiredField'); setButtonLoading(btn, false); return; }
-                if (phone && !/^\+?[0-9\s-]{7,15}$/.test(phone)) { showAlert('alerts.invalidValue'); setButtonLoading(btn, false); return; }
-                if (email && !/^\S+@\S+\.\S+$/.test(email)) { showAlert('alerts.invalidValue'); setButtonLoading(btn, false); return; }
+                if (!name) {
+                    showAlert('alerts.requiredField');
+                    setButtonLoading(btn, false);
+                    return;
+                }
+                if (phone && !/^\+?[0-9\s-]{7,15}$/.test(phone)) {
+                    showAlert('alerts.invalidValue');
+                    setButtonLoading(btn, false);
+                    return;
+                }
+                if (email && !/^\S+@\S+\.\S+$/.test(email)) {
+                    showAlert('alerts.invalidValue');
+                    setButtonLoading(btn, false);
+                    return;
+                }
 
                 if (email && email !== ownerProfile.email) {
                     const usersQuery = query(collection(db, 'profiles'), where('email', '==', email));
@@ -3380,27 +4158,17 @@
                 const profileRef = doc(db, 'profiles', currentUser.uid);
                 await updateDoc(profileRef, updateData);
 
-                // ── Email change requires re-auth + will sign user out ──
                 if (email && email !== currentUser.email) {
-                    const password = prompt('Changing your email will sign you out. Enter your current passcode to continue:');
+                    const password = prompt(t('settings.currentPasscode'));
                     if (!password) {
-                        setButtonLoading(btn, false);
-                        return;
-                    }
-                    try {
-                        const credential = EmailAuthProvider.credential(currentUser.email, password);
-                        await reauthenticateWithCredential(currentUser, credential);
-                        await updateEmail(currentUser, email);
-                        await sendEmailVerification(currentUser);
-                        alert('Email updated. You will now be signed out — please sign in again with your new email.');
-                        await signOut(auth);
-                        window.location.href = 'owner.html';
-                        return;
-                    } catch (err) {
                         showAlert('alerts.somethingWentWrong');
                         setButtonLoading(btn, false);
                         return;
                     }
+                    const credential = EmailAuthProvider.credential(currentUser.email, password);
+                    await reauthenticateWithCredential(currentUser, credential);
+                    await updateEmail(currentUser, email);
+                    await sendEmailVerification(currentUser);
                 }
 
                 ownerProfile = { ...ownerProfile, ...updateData };
@@ -3425,8 +4193,16 @@
             const newPass = document.getElementById('new-password').value;
             const confirm = document.getElementById('confirm-password').value;
 
-            if (newPass !== confirm) { showAlert('alerts.invalidValue'); setButtonLoading(btn, false); return; }
-            if (newPass.length < 6) { showAlert('alerts.invalidValue'); setButtonLoading(btn, false); return; }
+            if (newPass !== confirm) {
+                showAlert('alerts.invalidValue');
+                setButtonLoading(btn, false);
+                return;
+            }
+            if (newPass.length < 6) {
+                showAlert('alerts.invalidValue');
+                setButtonLoading(btn, false);
+                return;
+            }
 
             try {
                 const credential = EmailAuthProvider.credential(currentUser.email, current);
@@ -3469,11 +4245,31 @@
             }
         };
 
-        // =============== LOGOUT — FIXED: relative URL ===============
+        // =============== LOGOUT ===============
         window.handleLogout = async () => {
             await signOut(auth);
-            window.location.href = 'index.html';
+            window.location.href = 'https://shdr-construction.vercel.app/index.html';
         };
+
+        // The original showSection was already overridden above for office blocking.
+        // Keep the existing override for reports.
+        // We'll add the reports tab update separately.
+        const originalShowSection2 = window.showSection;
+        window.showSection = function(section) {
+            // If it's office, block it (already handled above, but this ensures it stays)
+            if (section === 'office') {
+                showToast('🏗️ Office Hub is coming soon. Stay tuned!', 'info');
+                return;
+            }
+            // Otherwise call the original (which might be the one we defined earlier)
+            originalShowSection2(section);
+            if (section === 'reports' && reportType === 'payroll') {
+                setTimeout(updatePayrollReport, 100);
+            }
+        };
+
+        // Add a simple helper for the showAlert function used in the code
+        function showAlert(key) { alert(t(key)); }
     </script>
 </body>
 </html>
