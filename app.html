@@ -1,75 +1,378 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" class="h-full">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#16a34a">
+    <meta name="color-scheme" content="light">
+
+    <meta name="description" content="SHDR Ltd — Construction Sites Management System. Track sites, materials, workers, progress, finances, and reports in real time.">
+    <meta name="author" content="SHDR Ltd">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="SHDR Ltd — Construction Sites Management">
+    <meta property="og:description" content="Track sites, materials, workers, progress, finances, and reports in real time.">
+    <meta property="og:image" content="shdr.jpg">
+    <meta property="og:site_name" content="SHDR Ltd">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="SHDR Ltd — Construction Sites Management">
+    <meta name="twitter:description" content="Track sites, materials, workers, progress, finances, and reports in real time.">
+    <meta name="twitter:image" content="shdr.jpg">
+
     <title>SHDR Construction Manager</title>
-    <script src="https://cdn.tailwindcss.com/3.4.17"></script>
-    <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="auth.js" defer></script>
-    <script src="app.js" defer></script>
+
+    <!-- Favicon / PWA -->
+    <link rel="icon" type="image/jpeg" href="shdr.jpg">
+    <link rel="apple-touch-icon" href="shdr.jpg">
+    <link rel="manifest" href="manifest.json">
+
+    <!-- Preconnect for speed -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="dns-prefetch" href="https://cdn.tailwindcss.com">
+    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+    <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
+    <link rel="dns-prefetch" href="https://fonts.gstatic.com">
+
+    <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Tailwind (blocking — generates styles immediately) -->
+    <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+    <script>
+        // Register Plus Jakarta Sans as a Tailwind font family
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        jakarta: ['"Plus Jakarta Sans"', 'system-ui', '-apple-system', 'sans-serif'],
+                    },
+                },
+            },
+        };
+    </script>
+
+    <!-- Libraries (deferred — don't block initial paint) -->
+    <script defer src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <!-- App logic -->
+    <script defer src="auth.js"></script>
+    <script defer src="app.js"></script>
+
     <style>
-        * { font-family: 'Plus Jakarta Sans', sans-serif; }
+        /* ─── Base ─── */
+        * { font-family: 'Plus Jakarta Sans', system-ui, sans-serif; }
+        html, body { height: 100%; }
+        body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+
+        /* ─── Navigation ─── */
         .nav-item.active { background: #16a34a; color: white; }
-        .toast { animation: slideIn 0.3s ease, fadeOut 0.3s ease 2.7s; }
-        @keyframes slideIn { from { transform: translateY(-20px); opacity:0; } to { transform: translateY(0); opacity:1; } }
-        @keyframes fadeOut { from { opacity:1; } to { opacity:0; } }
+
+        /* ─── Toasts ─── */
+        .toast {
+            animation: slideIn 0.3s ease, fadeOut 0.3s ease 2.7s;
+            pointer-events: auto;
+        }
+        @keyframes slideIn { from { transform: translateY(-20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        @keyframes fadeOut { from { opacity: 1; } to { opacity: 0; } }
+
+        /* ─── Cards ─── */
         .card-hover { transition: all 0.2s; }
-        .card-hover:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0,0.1); }
+        .card-hover:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1); }
+
+        /* ─── Fade-in ─── */
         .fade-in { animation: fadeIn 0.3s ease; }
-        @keyframes fadeIn { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* ─── Inputs (prevent iOS zoom) ─── */
         input, select, textarea { font-size: 16px !important; }
+
+        /* ─── Modals ─── */
         .modal-overlay { display: none; }
         .modal-overlay.active { display: flex; }
+
+        /* ─── Preloader bar ─── */
+        .loading-bar-track {
+            width: 180px;
+            height: 4px;
+            background: #e2e8f0;
+            border-radius: 9999px;
+            overflow: hidden;
+        }
+        .loading-bar-fill {
+            height: 100%;
+            width: 40%;
+            background: linear-gradient(90deg, #16a34a, #22c55e);
+            border-radius: 9999px;
+            animation: loadingBar 1.2s ease-in-out infinite;
+        }
+        @keyframes loadingBar {
+            0%   { transform: translateX(-100%); }
+            100% { transform: translateX(350%); }
+        }
+
+        /* ─── Offline banner ─── */
+        #offline-banner { transition: transform 0.3s ease; }
+
+        /* ─── Skip link (a11y) ─── */
+        .skip-link {
+            position: absolute;
+            top: -100px;
+            left: 8px;
+            background: #16a34a;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            z-index: 100;
+            transition: top 0.2s;
+        }
+        .skip-link:focus { top: 8px; outline: none; }
+
+        /* ─── Focus rings ─── */
+        button:focus-visible,
+        a:focus-visible,
+        input:focus-visible,
+        select:focus-visible,
+        textarea:focus-visible {
+            outline: 2px solid #16a34a;
+            outline-offset: 2px;
+            border-radius: 6px;
+        }
+
+        /* ─── Reduced motion ─── */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
     </style>
 </head>
-<body class="h-full bg-slate-50 font-jakarta">
-    <div id="toast-container" class="fixed top-4 right-4 z-50 space-y-2"></div>
 
+<body class="h-full bg-slate-50 font-jakarta text-slate-900">
+
+    <!-- ─── Accessibility: skip to main content ─── -->
+    <a href="#content" class="skip-link">Skip to main content</a>
+
+    <!-- ─── Offline banner (hidden by default) ─── -->
+    <div id="offline-banner"
+         class="hidden fixed top-0 left-0 right-0 z-[70] bg-amber-500 text-white text-sm font-medium text-center py-2 shadow-md"
+         role="status" aria-live="polite">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+             style="display:inline-block;vertical-align:-2px;margin-right:6px;">
+            <line x1="1" y1="1" x2="23" y2="23"></line>
+            <path d="M16.72 11.06A10.94 10.94 0 0 1 19 12.55"></path>
+            <path d="M5 12.55a10.94 10.94 0 0 1 5.17-2.39"></path>
+            <path d="M10.71 5.05A16 16 0 0 1 22.58 9"></path>
+            <path d="M1.42 9a15.91 15.91 0 0 1 4.7-2.88"></path>
+            <path d="M8.53 16.11a6 6 0 0 1 6.95 0"></path>
+            <line x1="12" y1="20" x2="12.01" y2="20"></line>
+        </svg>
+        You're offline — changes won't be saved until your connection returns.
+    </div>
+
+    <!-- ─── Toast container (responsive) ─── -->
+    <div id="toast-container"
+         class="fixed top-4 right-4 left-4 sm:left-auto sm:w-auto sm:max-w-sm z-[60] space-y-2 pointer-events-none"
+         aria-live="polite" aria-atomic="true"></div>
+
+    <!-- ─── Preloader (failsafe hidden by script below) ─── -->
+    <div id="app-loader"
+         class="fixed inset-0 z-[55] flex flex-col items-center justify-center bg-slate-50 gap-4"
+         aria-hidden="true">
+        <div class="w-14 h-14 bg-green-600 rounded-2xl flex items-center justify-center shadow-lg shadow-green-600/30">
+            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24"
+                 fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect width="16" height="20" x="4" y="2" rx="2" ry="2"></rect>
+                <path d="M9 22v-4h6v4"></path>
+                <path d="M8 6h.01"></path><path d="M16 6h.01"></path>
+                <path d="M12 6h.01"></path><path d="M12 10h.01"></path>
+                <path d="M12 14h.01"></path><path d="M16 10h.01"></path>
+                <path d="M16 14h.01"></path><path d="M8 10h.01"></path>
+                <path d="M8 14h.01"></path>
+            </svg>
+        </div>
+        <div class="loading-bar-track">
+            <div class="loading-bar-fill"></div>
+        </div>
+        <p class="text-xs text-slate-500 font-medium tracking-wide">Loading SHDR…</p>
+    </div>
+
+    <!-- ─── Main app ─── -->
     <div id="main-app" class="hidden h-full flex flex-col">
-        <header class="bg-white border-b border-slate-200 px-4 py-3 flex items-center justify-between shrink-0">
+
+        <!-- Header -->
+        <header class="bg-white border-b border-slate-200 px-4 py-3 flex items-center justify-between shrink-0 sticky top-0 z-30 shadow-sm">
             <div class="flex items-center gap-3">
-                <button id="menu-toggle" class="lg:hidden p-2 rounded-lg hover:bg-slate-100">
+                <button id="menu-toggle"
+                        type="button"
+                        class="lg:hidden p-2 rounded-lg hover:bg-slate-100 active:bg-slate-200 transition"
+                        aria-label="Open navigation menu">
                     <i data-lucide="menu" class="w-5 h-5"></i>
                 </button>
-                <div class="w-8 h-8 bg-green-600 rounded-lg flex items-center justify-center">
+                <div class="w-8 h-8 bg-green-600 rounded-lg flex items-center justify-center shadow-sm">
                     <i data-lucide="building-2" class="w-4 h-4 text-white"></i>
                 </div>
                 <span id="header-title" class="font-bold text-slate-900 text-sm">SHDR Ltd</span>
             </div>
             <div class="flex items-center gap-2">
-                <span id="notification-badge" class="bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center hidden">0</span>
+                <span id="notification-badge"
+                      class="bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center hidden"
+                      aria-label="Unread notifications">0</span>
                 <span id="user-display" class="text-xs text-slate-500 hidden sm:block"></span>
-                <button id="logout-btn" class="p-2 rounded-lg hover:bg-slate-100 text-slate-500">
+                <button id="logout-btn"
+                        type="button"
+                        class="p-2 rounded-lg hover:bg-slate-100 active:bg-slate-200 transition text-slate-500"
+                        aria-label="Sign out">
                     <i data-lucide="log-out" class="w-4 h-4"></i>
                 </button>
             </div>
         </header>
 
+        <!-- Body -->
         <div class="flex flex-1 overflow-hidden">
-            <nav id="sidebar" class="hidden lg:flex flex-col w-56 bg-white border-r border-slate-200 p-3 shrink-0 overflow-y-auto">
+
+            <!-- Desktop sidebar -->
+            <nav id="sidebar"
+                 class="hidden lg:flex flex-col w-56 bg-white border-r border-slate-200 p-3 shrink-0 overflow-y-auto"
+                 aria-label="Main navigation">
                 <div id="nav-items" class="space-y-1"></div>
             </nav>
 
-            <div id="sidebar-overlay" class="hidden fixed inset-0 z-40 bg-black/50 lg:hidden" onclick="closeMobileNav()"></div>
-            <nav id="mobile-sidebar" class="hidden fixed left-0 top-0 bottom-0 z-50 w-64 bg-white p-4 shadow-xl lg:hidden overflow-y-auto">
+            <!-- Mobile overlay -->
+            <div id="sidebar-overlay"
+                 class="hidden fixed inset-0 z-40 bg-black/50 backdrop-blur-sm lg:hidden"
+                 onclick="closeMobileNav()"
+                 aria-hidden="true"></div>
+
+            <!-- Mobile sidebar -->
+            <nav id="mobile-sidebar"
+                 class="hidden fixed left-0 top-0 bottom-0 z-50 w-64 bg-white p-4 shadow-2xl lg:hidden overflow-y-auto"
+                 aria-label="Mobile navigation">
                 <div class="flex justify-between items-center mb-4">
                     <span class="font-bold text-slate-900">Menu</span>
-                    <button onclick="closeMobileNav()" class="p-1 rounded hover:bg-slate-100">
+                    <button type="button"
+                            onclick="closeMobileNav()"
+                            class="p-1 rounded hover:bg-slate-100 transition"
+                            aria-label="Close menu">
                         <i data-lucide="x" class="w-5 h-5"></i>
                     </button>
                 </div>
                 <div id="mobile-nav-items" class="space-y-1"></div>
             </nav>
 
-            <main id="content" class="flex-1 overflow-y-auto p-4 md:p-6"></main>
-            <div id="modal-overlay" class="modal-overlay fixed inset-0 z-50 bg-black/50 justify-center items-center"></div>
+            <!-- Page content (filled by app.js) -->
+            <main id="content"
+                  class="flex-1 overflow-y-auto p-4 md:p-6 pb-20 lg:pb-6"
+                  tabindex="-1"></main>
+
+            <!-- Modal host -->
+            <div id="modal-overlay"
+                 class="modal-overlay fixed inset-0 z-50 bg-black/50 backdrop-blur-sm justify-center items-center p-4"
+                 role="dialog"
+                 aria-modal="true"></div>
         </div>
 
-        <nav id="bottom-nav" class="lg:hidden bg-white border-t border-slate-200 flex shrink-0 fixed bottom-0 left-0 right-0"></nav>
+        <!-- Mobile bottom nav -->
+        <nav id="bottom-nav"
+             class="lg:hidden bg-white border-t border-slate-200 flex shrink-0 fixed bottom-0 left-0 right-0 z-30 pb-[env(safe-area-inset-bottom)]"
+             aria-label="Bottom navigation"></nav>
     </div>
+
+    <!-- ─── No-JS fallback ─── -->
+    <noscript>
+        <div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:#f1f5f9;padding:24px;font-family:'Plus Jakarta Sans',system-ui,sans-serif;">
+            <div style="max-width:400px;background:white;border-radius:16px;padding:32px;text-align:center;box-shadow:0 10px 40px rgba(0,0,0,0.08);border:1px solid #e5e7eb;">
+                <div style="width:56px;height:56px;border-radius:14px;background:#16a34a;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;">
+                    <span style="color:white;font-weight:800;font-size:20px;">SH</span>
+                </div>
+                <h1 style="font-size:18px;font-weight:700;color:#0f172a;margin:0 0 8px;">JavaScript Required</h1>
+                <p style="color:#64748b;font-size:14px;line-height:1.6;margin:0;">
+                    SHDR Ltd requires JavaScript to run. Please enable it in your browser settings, then reload this page.
+                </p>
+            </div>
+        </div>
+    </noscript>
+
+    <!-- ─── Bootstrap script: preloader, SW, offline detection ─── -->
+    <script>
+        (function () {
+            'use strict';
+
+            /* ── 1. Hide preloader when main-app is shown ── */
+            const loader = document.getElementById('app-loader');
+            const mainApp = document.getElementById('main-app');
+
+            const hideLoader = () => {
+                if (!loader || loader.dataset.hidden) return;
+                loader.dataset.hidden = '1';
+                loader.style.transition = 'opacity 0.25s ease';
+                loader.style.opacity = '0';
+                setTimeout(() => loader.remove(), 300);
+            };
+
+            if (mainApp) {
+                // Watch for the `hidden` class being removed from #main-app
+                const observer = new MutationObserver(() => {
+                    if (!mainApp.classList.contains('hidden')) {
+                        hideLoader();
+                        observer.disconnect();
+                    }
+                });
+                observer.observe(mainApp, { attributes: true, attributeFilter: ['class'] });
+
+                // If main-app is already visible when this script runs
+                if (!mainApp.classList.contains('hidden')) {
+                    hideLoader();
+                }
+            }
+
+            // Failsafe — always hide the loader after 5 seconds
+            setTimeout(hideLoader, 5000);
+
+            /* ── 2. Register service worker (PWA) ── */
+            if ('serviceWorker' in navigator) {
+                window.addEventListener('load', () => {
+                    navigator.serviceWorker.register('/sw.js').catch((err) => {
+                        // Silent fail — SW is optional
+                        console.warn('[SW] Registration failed:', err);
+                    });
+                });
+            }
+
+            /* ── 3. Offline / online banner ── */
+            const offlineBanner = document.getElementById('offline-banner');
+            const updateConnectionStatus = () => {
+                if (!offlineBanner) return;
+                if (navigator.onLine) {
+                    offlineBanner.classList.add('hidden');
+                } else {
+                    offlineBanner.classList.remove('hidden');
+                }
+            };
+            window.addEventListener('online', updateConnectionStatus);
+            window.addEventListener('offline', updateConnectionStatus);
+            // Initial check (after DOM is ready)
+            document.addEventListener('DOMContentLoaded', updateConnectionStatus);
+
+            /* ── 4. Auto-close mobile sidebar on resize to desktop ── */
+            window.addEventListener('resize', () => {
+                if (window.innerWidth >= 1024) {
+                    if (typeof window.closeMobileNav === 'function') {
+                        window.closeMobileNav();
+                    }
+                }
+            });
+        })();
+    </script>
 </body>
 </html>
