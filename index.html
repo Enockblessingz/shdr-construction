@@ -74,7 +74,6 @@
             letter-spacing: -0.3px;
         }
 
-        /* ── Logo icon: no green box, just the transparent PNG ── */
         .logo-icon {
             width: 40px;
             height: 40px;
@@ -396,7 +395,7 @@
             margin-top: 8px;
         }
 
-        /* Features */
+        /* ─────────── FEATURES (UPDATED) ─────────── */
         .features-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -407,11 +406,14 @@
             padding: 24px;
             border: 1px solid var(--border);
             border-radius: 10px;
-            transition: box-shadow 0.2s;
+            transition: box-shadow 0.2s, transform 0.2s;
+            background: var(--bg);
+            position: relative;
         }
 
         .feature-item:hover {
-            box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+            transform: translateY(-2px);
         }
 
         .feature-item .icon {
@@ -430,12 +432,39 @@
             font-weight: 600;
             margin-bottom: 6px;
             font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
         }
 
         .feature-item p {
             font-size: 0.85rem;
             color: var(--text-light);
             line-height: 1.6;
+        }
+
+        /* Coming soon badge */
+        .badge-soon {
+            display: inline-block;
+            background: #fef3c7;
+            color: #92400e;
+            font-size: 0.65rem;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            line-height: 1.5;
+        }
+
+        .feature-item.coming-soon {
+            background: linear-gradient(135deg, #fffbeb 0%, #ffffff 100%);
+            border-color: #fde68a;
+        }
+
+        .feature-item.coming-soon .icon {
+            background: #fef3c7;
         }
 
         /* CTA */
@@ -644,38 +673,98 @@
         </div>
     </section>
 
-    <!-- Features -->
+    <!-- ─────────── FEATURES (UPDATED) ─────────── -->
     <section class="section" id="features">
         <div class="section-inner">
             <div class="section-label">Features</div>
             <div class="section-title">Everything is tracked</div>
             <p class="section-desc">All site data recorded by managers, visible to owners in real time.</p>
             <div class="features-grid">
+
+                <!-- 1. Materials -->
                 <div class="feature-item">
                     <div class="icon">📦</div>
                     <h4>Materials</h4>
                     <p>Track cement, steel, wood, electrical, plumbing — with quantities and alerts.</p>
                 </div>
+
+                <!-- 2. Stock Control -->
+                <div class="feature-item">
+                    <div class="icon">📊</div>
+                    <h4>Stock Control</h4>
+                    <p>Receive stock, low-stock alerts, and complete transaction history per site.</p>
+                </div>
+
+                <!-- 3. Workers -->
                 <div class="feature-item">
                     <div class="icon">👷</div>
                     <h4>Workers</h4>
                     <p>Attendance, daily rates, and payroll calculated automatically.</p>
                 </div>
+
+                <!-- 4. Progress -->
                 <div class="feature-item">
-                    <div class="icon">📊</div>
+                    <div class="icon">📈</div>
                     <h4>Progress</h4>
                     <p>Milestone timeline with percentage tracking and photo updates.</p>
                 </div>
+
+                <!-- 5. Finances -->
+                <div class="feature-item">
+                    <div class="icon">💰</div>
+                    <h4>Finances</h4>
+                    <p>Live budget tracking, cost breakdown, and overrun alerts for every site.</p>
+                </div>
+
+                <!-- 6. Reports -->
                 <div class="feature-item">
                     <div class="icon">📋</div>
                     <h4>Reports</h4>
                     <p>Auto-generated reports with full breakdown for owner approval.</p>
                 </div>
+
+                <!-- 7. Multi-Site -->
+                <div class="feature-item">
+                    <div class="icon">🏗️</div>
+                    <h4>Multi-Site</h4>
+                    <p>Manage unlimited construction sites from one dashboard — switch instantly.</p>
+                </div>
+
+                <!-- 8. Site Gallery -->
+                <div class="feature-item">
+                    <div class="icon">📸</div>
+                    <h4>Site Gallery</h4>
+                    <p>Upload site photos with descriptions — full-screen viewer for progress updates.</p>
+                </div>
+
+                <!-- 9. Manager Team -->
+                <div class="feature-item">
+                    <div class="icon">👥</div>
+                    <h4>Manager Team</h4>
+                    <p>Invite managers, assign them to specific sites, and monitor activity securely.</p>
+                </div>
+
+                <!-- 10. Alerts -->
                 <div class="feature-item">
                     <div class="icon">🔔</div>
                     <h4>Alerts</h4>
                     <p>Low stock, milestone completions, report submissions — stay tuned!</p>
                 </div>
+
+                <!-- 11. Settings & Security -->
+                <div class="feature-item">
+                    <div class="icon">⚙️</div>
+                    <h4>Settings &amp; Security</h4>
+                    <p>Update profile, change password, and customize your account preferences.</p>
+                </div>
+
+                <!-- 12. Office Hub (Coming Soon) -->
+                <div class="feature-item coming-soon">
+                    <div class="icon">🏢</div>
+                    <h4>Office Hub <span class="badge-soon">Soon</span></h4>
+                    <p>Document workflow, permits, certifications, and approval center — launching soon.</p>
+                </div>
+
             </div>
         </div>
     </section>
@@ -693,7 +782,7 @@
     <footer>
         <div class="footer-inner">
             Designed &amp; Powered by
-            <a href="https://wa.me/250790020086"
+            <a href="https://wa.me/250790020086?text=Enock%20what%27s%20up%3F%20I%27m%20using%20the%20SHDR%20Construction%20Sites%20Management%20System%20and%20I%20need%20some%20help."
                target="_blank"
                rel="noopener noreferrer">
                 <strong>___Enock's___blessingz___</strong>
