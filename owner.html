@@ -522,7 +522,8 @@
             document.getElementById('signup-form').classList.toggle('hidden', form !== 'signup');
             document.getElementById('form-title').textContent = form === 'login' ? 'Sign In' : 'SIGN UP TO GET STARTED';
             document.getElementById('form-desc').textContent = form === 'login'
-                ? 'Access your owner dashboard';
+                ? 'Access your owner dashboard'
+                : 'Create your owner account to get started';
             hideMessage();
         }
         window.switchTo = switchTo;
