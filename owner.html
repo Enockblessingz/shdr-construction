@@ -384,7 +384,7 @@
                     </div>
 
                     <div class="otp-timer" id="otp-timer">
-                        Code expires in <strong id="otp-expiry">10:00</strong>
+                        Code expires in <strong id="otp-expiry">01:00</strong>
                     </div>
 
                     <div id="otp-status" class="otp-status" aria-live="polite"></div>
@@ -520,9 +520,9 @@
         function switchTo(form) {
             document.getElementById('login-form').classList.toggle('hidden', form !== 'login');
             document.getElementById('signup-form').classList.toggle('hidden', form !== 'signup');
-            document.getElementById('form-title').textContent = form === 'login' ? 'Sign In' : 'Register';
+            document.getElementById('form-title').textContent = form === 'login' ? 'Sign In' : 'SIGN UP TO GET STARTED';
             document.getElementById('form-desc').textContent = form === 'login'
-                ? 'Access your owner dashboard' : 'Create your owner account';
+                ? 'Access your owner dashboard';
             hideMessage();
         }
         window.switchTo = switchTo;
@@ -560,23 +560,49 @@
             }
         }
         function getFriendlyErrorMessage(error) {
-            const code = error?.code || '';
-            if (code === 'auth/invalid-email') return 'Invalid email address format.';
-            if (code === 'auth/user-disabled') return 'This account has been disabled.';
-            if (code === 'auth/user-not-found') return 'No account found with this email.';
-            if (code === 'auth/wrong-password') return 'Incorrect password. Please try again.';
-            if (code === 'auth/invalid-credential') return 'Incorrect email or password.';
-            if (code === 'auth/email-already-in-use') return 'An account with this email already exists.';
-            if (code === 'auth/weak-password') return 'Password must be at least 6 characters.';
-            if (code === 'auth/too-many-requests') return 'Too many attempts. Please wait a moment.';
-            if (code === 'auth/network-request-failed') return 'Network error. Check your connection.';
-            if (code === 'auth/popup-closed-by-user') return 'Sign-in popup was closed. Please try again.';
-            if (code === 'auth/popup-blocked') return 'Sign-in popup was blocked. Please allow popups for this site.';
-            if (code === 'auth/operation-not-allowed') return 'This sign-in method is not enabled yet. Please contact support.';
-            if (code === 'auth/account-exists-with-different-credential')
-                return 'An account already exists with the same email but different sign-in method. Please sign in using your original method.';
-            return error?.message || 'An unexpected error occurred.';
-        }
+    const code = error?.code || '';
+
+    if (code === 'auth/invalid-email')
+        return 'Invalid email address format.';
+
+    if (code === 'auth/user-disabled')
+        return 'This account has been disabled.';
+
+    if (code === 'auth/user-not-found')
+        return 'No account found with this email.';
+
+    if (code === 'auth/wrong-password')
+        return 'Incorrect passcode. Please try again.';
+
+    if (code === 'auth/invalid-credential')
+        return 'Incorrect email or passcode.';
+
+    if (code === 'auth/email-already-in-use')
+        return 'An account with this email already exists.';
+
+    if (code === 'auth/weak-password')
+        return 'Passcode must be at least 8 characters and include numbers and symbols.';
+
+    if (code === 'auth/too-many-requests')
+        return 'Too many attempts. Please wait a moment.';
+
+    if (code === 'auth/network-request-failed')
+        return 'Network error. Check your connection.';
+
+    if (code === 'auth/popup-closed-by-user')
+        return 'Sign-in popup was closed. Please try again.';
+
+    if (code === 'auth/popup-blocked')
+        return 'Sign-in popup was blocked. Please allow popups for this site.';
+
+    if (code === 'auth/operation-not-allowed')
+        return "This sign-in method is currently unavailable. Please contact SHDR's Admin for assistance.";
+
+    if (code === 'auth/account-exists-with-different-credential')
+        return 'An account already exists with the same email but different sign-in method. Please sign in using your original method.';
+
+    return error?.message || 'An unexpected error occurred.';
+}
 
         /* ─── Profile helpers ─── */
         async function ensureOwnerProfile(user, displayName = null, emailVerified = false) {
@@ -619,7 +645,7 @@
                 email, code, expires_at: expiresAt, attempts: 0, created_at: Date.now()
             });
 
-            if (!window.emailjs) throw new Error('Email service failed to load. Please refresh.');
+            if (!window.emailjs) throw new Error('Email service failed to load. Please re-load.');
 
             await window.emailjs.send(
                 EMAILJS_SERVICE_ID,
@@ -708,7 +734,7 @@
                     <circle cx="26" cy="26" r="25" fill="none"/>
                     <path fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
                 </svg>
-                <p class="status-text">✓ Email verified successfully</p>
+                <p class="status-text">Email verified successfully!</p>
             `;
         }
         function showOtpStatusError(message) {
@@ -1059,7 +1085,7 @@
                 } else if (error.code === 'auth/popup-closed-by-user') {
                     showMessage('Apple sign-in was cancelled. Please try again.', 'error');
                 } else if (error.code === 'auth/operation-not-allowed') {
-                    showMessage('Apple sign-in is not enabled yet. Please contact support.', 'error');
+                    showMessage("Apple sign-in is not enabled yet. Please contact SHDR's Admin for support.", 'error');
                 } else {
                     showMessage(getFriendlyErrorMessage(error), 'error');
                 }
@@ -1142,10 +1168,10 @@
             const btn = document.getElementById('signup-btn');
             hideMessage();
             if (!name || !email || !password || !confirm) { showMessage('Please fill in all fields.', 'error'); return; }
-            if (password !== confirm) { showMessage('Passwords do not match.', 'error'); return; }
-            if (password.length < 8) { showMessage('Password must be at least 8 characters.', 'error'); return; }
+            if (password !== confirm) { showMessage('Passcodes do not match.', 'error'); return; }
+            if (password.length < 8) { showMessage('Passcode must be at least 8 characters and include numbers and symbols..', 'error'); return; }
             inOtpFlow = true;
-            setButtonLoading(btn, true, 'Creating account...');
+            setButtonLoading(btn, true, 'Creating your account. Please wait…');
             try {
                 const cred = await createUserWithEmailAndPassword(auth, email, password);
                 const user = cred.user;
