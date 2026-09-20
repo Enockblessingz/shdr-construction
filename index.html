@@ -362,7 +362,7 @@
             margin-top: 8px;
         }
 
-        /* ─────────── FEATURES (with real icons) ─────────── */
+        /* ─────────── FEATURES (NO icon backgrounds) ─────────── */
         .features-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -384,27 +384,24 @@
             border-color: #a7f3d0;
         }
 
-        /* Icon container – matches SHDR dashboard style */
+        /* Icon container – NO background, just the icon */
         .feature-item .icon {
             width: 48px;
             height: 48px;
-            border-radius: 12px;
-            background: #ecfdf5;
-            color: #059669;
             display: flex;
             align-items: center;
             justify-content: center;
             margin-bottom: 16px;
-            transition: background 0.2s, transform 0.2s;
+            color: #059669;
+            transition: transform 0.2s;
         }
 
         .feature-item:hover .icon {
-            background: #d1fae5;
-            transform: scale(1.05);
+            transform: scale(1.08);
         }
 
         .feature-item .icon iconify-icon {
-            font-size: 1.65rem;
+            font-size: 1.75rem;
             line-height: 1;
             display: block;
         }
@@ -439,18 +436,15 @@
             line-height: 1.5;
         }
 
+        /* Coming soon card – subtle amber tint on the CARD, not the icon */
         .feature-item.coming-soon {
             background: linear-gradient(135deg, #fffbeb 0%, #ffffff 100%);
             border-color: #fde68a;
         }
 
         .feature-item.coming-soon .icon {
-            background: #fef3c7;
             color: #b45309;
-        }
-
-        .feature-item.coming-soon:hover .icon {
-            background: #fde68a;
+            /* No background */
         }
 
         /* CTA */
@@ -635,7 +629,7 @@
         </div>
     </section>
 
-    <!-- ─────────── FEATURES (with real icons) ─────────── -->
+    <!-- ─────────── FEATURES ─────────── -->
     <section class="section" id="features">
         <div class="section-inner">
             <div class="section-label">Features</div>
@@ -644,7 +638,6 @@
 
             <div class="features-grid">
 
-                <!-- 1. Materials -->
                 <div class="feature-item">
                     <div class="icon">
                         <iconify-icon icon="material-symbols:package-2-outline"></iconify-icon>
@@ -653,7 +646,6 @@
                     <p>Track cement, steel, wood, electrical, plumbing — with quantities and alerts.</p>
                 </div>
 
-                <!-- 2. Stock Control -->
                 <div class="feature-item">
                     <div class="icon">
                         <iconify-icon icon="material-symbols:inventory-2-outline"></iconify-icon>
@@ -662,7 +654,6 @@
                     <p>Receive stock, low-stock alerts, and complete transaction history per site.</p>
                 </div>
 
-                <!-- 3. Workers -->
                 <div class="feature-item">
                     <div class="icon">
                         <iconify-icon icon="material-symbols:engineering-outline"></iconify-icon>
@@ -671,7 +662,6 @@
                     <p>Attendance, daily rates, and payroll calculated automatically.</p>
                 </div>
 
-                <!-- 4. Progress -->
                 <div class="feature-item">
                     <div class="icon">
                         <iconify-icon icon="material-symbols:trending-up"></iconify-icon>
@@ -680,7 +670,6 @@
                     <p>Milestone timeline with percentage tracking and photo updates.</p>
                 </div>
 
-                <!-- 5. Finances -->
                 <div class="feature-item">
                     <div class="icon">
                         <iconify-icon icon="material-symbols:account-balance-wallet-outline"></iconify-icon>
@@ -689,7 +678,6 @@
                     <p>Live budget tracking, cost breakdown, and overrun alerts for every site.</p>
                 </div>
 
-                <!-- 6. Reports -->
                 <div class="feature-item">
                     <div class="icon">
                         <iconify-icon icon="material-symbols:description-outline"></iconify-icon>
@@ -698,7 +686,6 @@
                     <p>Auto-generated reports with full breakdown for owner approval.</p>
                 </div>
 
-                <!-- 7. Multi-Site -->
                 <div class="feature-item">
                     <div class="icon">
                         <iconify-icon icon="material-symbols:apartment"></iconify-icon>
@@ -707,7 +694,6 @@
                     <p>Manage unlimited construction sites from one dashboard — switch instantly.</p>
                 </div>
 
-                <!-- 8. Site Gallery -->
                 <div class="feature-item">
                     <div class="icon">
                         <iconify-icon icon="material-symbols:photo-library-outline"></iconify-icon>
@@ -716,7 +702,6 @@
                     <p>Upload site photos with descriptions — full-screen viewer for progress updates.</p>
                 </div>
 
-                <!-- 9. Manager Team -->
                 <div class="feature-item">
                     <div class="icon">
                         <iconify-icon icon="material-symbols:group-outline"></iconify-icon>
@@ -725,7 +710,6 @@
                     <p>Invite managers, assign them to specific sites, and monitor activity securely.</p>
                 </div>
 
-                <!-- 10. Alerts -->
                 <div class="feature-item">
                     <div class="icon">
                         <iconify-icon icon="material-symbols:notifications-active-outline"></iconify-icon>
@@ -734,7 +718,6 @@
                     <p>Low stock, milestone completions, report submissions — stay tuned!</p>
                 </div>
 
-                <!-- 11. Settings & Security -->
                 <div class="feature-item">
                     <div class="icon">
                         <iconify-icon icon="material-symbols:settings-outline"></iconify-icon>
@@ -743,7 +726,6 @@
                     <p>Update profile, change password, and customize your account preferences.</p>
                 </div>
 
-                <!-- 12. Office Hub (Coming Soon) -->
                 <div class="feature-item coming-soon">
                     <div class="icon">
                         <iconify-icon icon="material-symbols:business-center-outline"></iconify-icon>
