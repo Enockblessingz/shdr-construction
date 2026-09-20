@@ -74,7 +74,6 @@
                 linear-gradient(180deg, #060914 0%, #0a0f1c 50%, #060914 100%);
         }
 
-        /* Fine dot matrix — replaces the grid for a more refined texture */
         .bg-layer::after {
             content: '';
             position: absolute;
@@ -117,7 +116,6 @@
             66%      { transform: translate(-35px, 30px) scale(0.94); }
         }
 
-        /* Top edge accent beam */
         .bg-layer .beam {
             position: absolute;
             top: 0;
@@ -161,7 +159,7 @@
             to   { opacity: 1; transform: translateX(0); }
         }
 
-        /* ─── Brand ─── */
+        /* ─── Brand (no glow behind logo) ─── */
         .brand {
             display: flex;
             align-items: center;
@@ -178,26 +176,11 @@
             flex-shrink: 0;
         }
 
-        .brand-logo::after {
-            content: '';
-            position: absolute;
-            inset: -10px;
-            border-radius: 50%;
-            background: radial-gradient(circle, rgba(16, 185, 129, 0.22) 0%, transparent 70%);
-            z-index: -1;
-            animation: logoGlow 6s ease-in-out infinite alternate;
-        }
-
-        @keyframes logoGlow {
-            0%   { opacity: 0.4; transform: scale(0.94); }
-            100% { opacity: 1;   transform: scale(1.1); }
-        }
-
         .brand-logo img {
             width: 100%;
             height: 100%;
             object-fit: contain;
-            filter: drop-shadow(0 4px 18px rgba(16, 185, 129, 0.45));
+            filter: drop-shadow(0 2px 8px rgba(16, 185, 129, 0.25));
         }
 
         .brand-logo .fallback {
@@ -541,7 +524,7 @@
             50%      { opacity: 0.5; transform: scale(0.85); }
         }
 
-        /* ═══ COUNTDOWN CARD — HERO ═══ */
+        /* ═══ COUNTDOWN CARD ═══ */
         .countdown-card {
             padding: 22px 26px 26px;
         }
@@ -1094,54 +1077,44 @@
     <script>
         document.getElementById('year').textContent = new Date().getFullYear();
 
-        
         /* ─── Countdown ─── */
-const DURATION_MS = 2 * 60 * 1000; // 2 minutes
-const START = Date.now();
-const END = START + DURATION_MS;
+        const DURATION_MS = 2 * 60 * 60 * 1000;
+        const START = Date.now();
+        const END = START + DURATION_MS;
 
-const hoursEl   = document.getElementById('cd-hours');
-const minutesEl = document.getElementById('cd-minutes');
-const secondsEl = document.getElementById('cd-seconds');
-const pctEl     = document.getElementById('progressPct');
-const fillEl    = document.getElementById('progressFill');
+        const hoursEl   = document.getElementById('cd-hours');
+        const minutesEl = document.getElementById('cd-minutes');
+        const secondsEl = document.getElementById('cd-seconds');
+        const pctEl     = document.getElementById('progressPct');
+        const fillEl    = document.getElementById('progressFill');
 
-const pad = n => String(n).padStart(2, '0');
+        const pad = n => String(n).padStart(2, '0');
 
-function tick() {
-    const now = Date.now();
-    const remaining = Math.max(0, END - now);
-    const elapsed = Math.min(DURATION_MS, now - START);
+        function tick() {
+            const now = Date.now();
+            const remaining = Math.max(0, END - now);
+            const elapsed = Math.min(DURATION_MS, now - START);
 
-    const totalSec = Math.floor(remaining / 1000);
-    const h = Math.floor(totalSec / 3600);
-    const m = Math.floor((totalSec % 3600) / 60);
-    const s = totalSec % 60;
+            const totalSec = Math.floor(remaining / 1000);
+            const h = Math.floor(totalSec / 3600);
+            const m = Math.floor((totalSec % 3600) / 60);
+            const s = totalSec % 60;
 
-    hoursEl.textContent   = pad(h);
-    minutesEl.textContent = pad(m);
-    secondsEl.textContent = pad(s);
+            hoursEl.textContent   = pad(h);
+            minutesEl.textContent = pad(m);
+            secondsEl.textContent = pad(s);
 
-    const basePct = 62;
-    const dynamicPct = Math.min(
-        99,
-        basePct + (elapsed / DURATION_MS) * 37
-    );
+            const basePct = 62;
+            const dynamicPct = Math.min(99, basePct + (elapsed / DURATION_MS) * 37);
+            const rounded = Math.floor(dynamicPct);
+            pctEl.textContent = rounded + '%';
+            fillEl.style.width = rounded + '%';
 
-    const rounded = Math.floor(dynamicPct);
+            if (remaining <= 0) clearInterval(timer);
+        }
 
-    pctEl.textContent = rounded + '%';
-    fillEl.style.width = rounded + '%';
-
-    if (remaining <= 0) {
-        clearInterval(timer);
-    }
-}
-
-tick();
-const timer = setInterval(tick, 1000);
-
-        
+        tick();
+        const timer = setInterval(tick, 1000);
 
         /* ─── Notify ─── */
         function handleNotify(e) {
