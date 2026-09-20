@@ -226,6 +226,10 @@
         .otp-resend button { background: none; border: none; color: var(--green); font-weight: 600; cursor: pointer; font-size: 0.85rem; padding: 0 4px; font-family: inherit; }
         .otp-resend button:hover:not(:disabled) { text-decoration: underline; }
         .otp-resend button:disabled { color: #9ca3af; cursor: not-allowed; }
+        .otp-resend button.cooldown {
+            opacity: 0.55;
+            cursor: not-allowed;
+        }
         .otp-back { margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--border); }
         .otp-back button { background: none; border: none; color: var(--text-light); font-size: 0.85rem; cursor: pointer; font-weight: 500; font-family: inherit; }
         .otp-back button:hover { color: var(--text); }
@@ -693,14 +697,22 @@
             resendLockUntil = Date.now() + OTP_RESEND_COOLDOWN_S * 1000;
             const btn = document.getElementById('otp-resend-btn');
             const timer = document.getElementById('otp-resend-timer');
+            if (!btn || !timer) return;
+
+            // Clear any old interval first
+            if (resendIntervalId) { clearInterval(resendIntervalId); resendIntervalId = null; }
+
             const tick = () => {
                 const remaining = Math.ceil((resendLockUntil - Date.now()) / 1000);
                 if (remaining <= 0) {
-                    btn.disabled = false; timer.textContent = '';
-                    clearInterval(resendIntervalId); resendIntervalId = null;
+                    timer.textContent = '';
+                    btn.classList.remove('cooldown');
+                    clearInterval(resendIntervalId);
+                    resendIntervalId = null;
                     return;
                 }
-                btn.disabled = true; timer.textContent = ` (${remaining}s)`;
+                btn.classList.add('cooldown');
+                timer.textContent = ` · available in ${remaining}s`;
             };
             tick();
             resendIntervalId = setInterval(tick, 1000);
@@ -743,6 +755,20 @@
             if (!el) return;
             el.className = 'otp-status error';
             el.innerHTML = `<p class="status-text">${message}</p>`;
+        }
+        function showOtpStatusSent() {
+            const el = document.getElementById('otp-status');
+            if (!el) return;
+            el.className = 'otp-status';
+            void el.offsetWidth;
+            el.className = 'otp-status verified';
+            el.innerHTML = `
+                <svg class="otp-checkmark" viewBox="0 0 52 52" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <circle cx="26" cy="26" r="25" fill="none"/>
+                    <path fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+                </svg>
+                <p class="status-text">A new code has been sent to your email.</p>
+            `;
         }
 
         /* ─── OTP inputs (auto-advance + auto-verify + digit pop) ─── */
@@ -971,27 +997,62 @@
         async function handleResendOtp() {
             const btn = document.getElementById('otp-resend-btn');
             const user = auth.currentUser;
-            if (!user) { showOtpStatusError('Session expired. Please sign in again.'); return; }
-            if (Date.now() < resendLockUntil) return;
 
+            // 1. Session check
+            if (!user) {
+                showOtpStatusError('Session expired. Please sign in again.');
+                return;
+            }
+
+            // 2. Cooldown check — show a friendly message instead of silent return
+            const now = Date.now();
+            if (now < resendLockUntil) {
+                const secs = Math.ceil((resendLockUntil - now) / 1000);
+                showOtpStatusError(`Please wait ${secs} second${secs === 1 ? '' : 's'} before requesting a new code.`);
+                return;
+            }
+
+            // 3. Reset state
             isVerifyingOtp = false;
             isOtpVerified = false;
-
             hideMessage();
             showOtpStatusIdle();
+
+            // 4. Immediate visual feedback
+            const originalText = btn.textContent;
             btn.disabled = true;
+            btn.textContent = 'Sending…';
 
             try {
-                // Resend uses the real (unmasked) email
+                console.log('[OTP resend] Requesting new code for', currentOtpEmail);
                 currentOtpExpiry = await sendOtp(currentOtpEmail, currentOtpName);
+                console.log('[OTP resend] New code sent ✓');
+
                 clearOtpInputs();
                 startExpiryTimer();
                 startResendCooldown();
+
+                // 5. Success feedback — green checkmark + "code sent"
+                showOtpStatusSent();
+                btn.textContent = 'Sent ✓';
+
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.disabled = false;
+                    if (!isVerifyingOtp && !isOtpVerified) showOtpStatusIdle();
+                }, 2200);
+
             } catch (err) {
                 console.error('[OTP resend failed]', err);
-                showOtpStatusError('Could not resend the code. ' + (err?.text || err?.message || 'Please try again.'));
+                const msg = err?.text || err?.message || 'Please try again.';
+                showOtpStatusError('Could not resend the code. ' + msg);
+
+                // Short lock-out so the user can't hammer the API
                 resendLockUntil = Date.now() + 10_000;
                 startResendCooldown();
+
+                btn.textContent = originalText;
+                btn.disabled = false;
             }
         }
         window.handleResendOtp = handleResendOtp;
