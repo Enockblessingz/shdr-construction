@@ -4,7 +4,7 @@ const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
   '/manifest.json',
-  '/shdr_logo.jpg'
+  '/shdr_logo Background Removed.png'
 ];
 
 // Install event — cache all essential assets
@@ -104,8 +104,8 @@ self.addEventListener('fetch', (event) => {
 self.addEventListener('push', (event) => {
   const options = {
     body: event.data ? event.data.text() : 'New update from SHDR',
-    icon: '/shdr_logo.jpg',
-    badge: '/shdr_logo.jpg',
+    icon: '/shdr_logo Background Removed.png',
+    badge: '/shdr_logo Background Removed.png',
     vibrate: [200, 100, 200],
     data: { url: '/' }
   };
