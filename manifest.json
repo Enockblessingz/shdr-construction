@@ -9,13 +9,13 @@
   "orientation": "any",
   "icons": [
     {
-      "src": "shdr_logo.jpg",
+      "src": "shdr_logo Background Removed.png",
       "sizes": "192x192",
       "type": "image/jpeg",
       "purpose": "any maskable"
     },
     {
-      "src": "shdr_logo.jpg",
+      "src": "shdr_logo Background Removed.png",
       "sizes": "512x512",
       "type": "image/jpeg",
       "purpose": "any maskable"
