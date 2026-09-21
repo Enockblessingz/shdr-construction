@@ -11,13 +11,13 @@
     {
       "src": "shdr_logo Background Removed.png",
       "sizes": "192x192",
-      "type": "image/jpeg",
+      "type": "image/png",
       "purpose": "any maskable"
     },
     {
       "src": "shdr_logo Background Removed.png",
       "sizes": "512x512",
-      "type": "image/jpeg",
+      "type": "image/png",
       "purpose": "any maskable"
     }
   ],
