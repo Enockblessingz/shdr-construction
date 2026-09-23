@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>  
+<head>
     <link rel="icon" type="image/png" href="shdr_logo Background Removed.png">
     <link rel="apple-touch-icon" href="shdr_logo Background Removed.png">
     <meta charset="UTF-8" />
@@ -8,6 +8,9 @@
     <meta name="theme-color" content="#ffffff" />
     <meta name="description" content="SHDR Owner Portal — Login or register with email verification" />
     <title>SHDR Owner — Sign In / Sign Up</title>
+
+    <!-- Iconify (real vector icons) -->
+    <script src="https://cdn.jsdelivr.net/npm/iconify-icon@2.3.0/dist/iconify-icon.min.js"></script>
 
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -50,7 +53,15 @@
         .brand-panel p { font-size: 1rem; line-height: 1.7; opacity: 0.9; }
         .brand-features { margin-top: 40px; display: flex; flex-direction: column; gap: 16px; text-align: left; width: 100%; max-width: 300px; }
         .brand-feature { display: flex; align-items: center; gap: 12px; font-size: 0.9rem; opacity: 0.85; }
-        .brand-feature .icon { width: 28px; height: 28px; background: rgba(255,255,255,0.15); border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        /* ✅ white background REMOVED */
+        .brand-feature .icon { 
+            display: inline-flex; 
+            align-items: center; 
+            justify-content: center; 
+            flex-shrink: 0; 
+            color: #fff;
+        }
+
         .form-panel { flex: 1; display: flex; align-items: center; justify-content: center; padding: 32px; background: #fff; }
         .form-wrapper { width: 100%; max-width: 420px; }
         .form-header { margin-bottom: 28px; text-align: center; }
@@ -89,7 +100,27 @@
         .form-group input:focus { outline: none; border-color: var(--green); box-shadow: 0 0 0 3px rgba(5,150,105,0.08); background: #fff; }
         .password-wrap { position: relative; }
         .password-wrap input { padding-right: 48px; }
-        .toggle-pw { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; font-size: 1.1rem; color: #9ca3af; padding: 4px; }
+
+        .toggle-pw {
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #9ca3af;
+            padding: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: color 0.2s;
+            line-height: 1;
+        }
+        .toggle-pw:hover { color: var(--green); }
+        .toggle-pw:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; border-radius: 4px; }
+        .toggle-pw iconify-icon { display: block; }
+
         .row-options { display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; margin-bottom: 20px; }
         .row-options label { display: flex; align-items: center; gap: 6px; cursor: pointer; color: var(--text-light); }
         .row-options a { color: var(--green); text-decoration: none; font-weight: 500; }
@@ -115,10 +146,11 @@
         @keyframes spin { to { transform: rotate(360deg); } }
 
         .otp-view { text-align: center; }
+        /* ✅ otp-icon background REMOVED — icon floats freely */
         .otp-icon {
-            width: 76px; height: 76px; background: #ecfdf5; color: var(--green);
-            border-radius: 22px; display: flex; align-items: center; justify-content: center;
-            font-size: 2.2rem; margin: 0 auto 20px; border: 1px solid #a7f3d0;
+            width: 76px; height: 76px;
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 20px; color: var(--green);
         }
         .otp-view h1 { font-size: 1.7rem; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 8px; }
         .otp-view .otp-sub { color: var(--text-light); font-size: 0.95rem; line-height: 1.6; margin-bottom: 6px; }
@@ -234,6 +266,17 @@
         .otp-back button { background: none; border: none; color: var(--text-light); font-size: 0.85rem; cursor: pointer; font-weight: 500; font-family: inherit; }
         .otp-back button:hover { color: var(--text); }
 
+        .warning-note {
+            text-align: center;
+            margin-top: 12px;
+            font-size: 0.8rem;
+            color: #b45309;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
         @media (max-width: 768px) {
             .split-container { flex-direction: column; }
             .brand-panel { flex: 0 0 auto; padding: 40px 24px; min-height: auto; text-align: center; }
@@ -264,9 +307,18 @@
                 <h2>SHDR Owner's Portal</h2>
                 <p>Manage your construction projects with complete visibility and control.</p>
                 <div class="brand-features">
-                    <div class="brand-feature"><span class="icon">🏗️</span> Multiple sites, one dashboard</div>
-                    <div class="brand-feature"><span class="icon">👥</span> Assign &amp; manage site managers</div>
-                    <div class="brand-feature"><span class="icon">📊</span> Real-time reports &amp; approvals</div>
+                    <div class="brand-feature">
+                        <span class="icon"><iconify-icon icon="material-symbols:construction" width="20"></iconify-icon></span>
+                        Multiple sites, one dashboard
+                    </div>
+                    <div class="brand-feature">
+                        <span class="icon"><iconify-icon icon="material-symbols:group" width="20"></iconify-icon></span>
+                        Assign &amp; manage site managers
+                    </div>
+                    <div class="brand-feature">
+                        <span class="icon"><iconify-icon icon="material-symbols:monitoring" width="20"></iconify-icon></span>
+                        Real-time reports &amp; approvals
+                    </div>
                 </div>
             </div>
         </div>
@@ -308,7 +360,9 @@
                             <label for="login-password">Passcode</label>
                             <div class="password-wrap">
                                 <input type="password" id="login-password" placeholder="••••••••" required autocomplete="current-password" />
-                                <button type="button" class="toggle-pw" onclick="togglePassword('login-password','login-eye')"><span id="login-eye">👁️</span></button>
+                                <button type="button" class="toggle-pw" onclick="togglePassword('login-password','login-eye')" aria-label="Toggle password visibility">
+                                    <iconify-icon id="login-eye" icon="material-symbols:visibility" width="20"></iconify-icon>
+                                </button>
                             </div>
                         </div>
                         <div class="row-options">
@@ -353,7 +407,9 @@
                             <label for="signup-password">Passcode</label>
                             <div class="password-wrap">
                                 <input type="password" id="signup-password" placeholder="Minimum 8 characters" minlength="8" required />
-                                <button type="button" class="toggle-pw" onclick="togglePassword('signup-password','signup-eye')"><span id="signup-eye">👁️</span></button>
+                                <button type="button" class="toggle-pw" onclick="togglePassword('signup-password','signup-eye')" aria-label="Toggle password visibility">
+                                    <iconify-icon id="signup-eye" icon="material-symbols:visibility" width="20"></iconify-icon>
+                                </button>
                             </div>
                         </div>
                         <div class="form-group">
@@ -365,14 +421,17 @@
                             Already have an account?
                             <button type="button" onclick="switchTo('login')">Sign In</button>
                         </div>
-                        <p class="switch-text" style="font-size:0.8rem;color:#b45309;margin-top:12px;">
-                            ⚠️ This portal is for owners only. Managers cannot register here.
-                        </p>
+                        <div class="warning-note">
+                            <iconify-icon icon="material-symbols:warning" width="16"></iconify-icon>
+                            This portal is for owners only. Managers cannot register here.
+                        </div>
                     </form>
                 </div>
 
                 <div id="otp-view" class="otp-view hidden">
-                    <div class="otp-icon">✉️</div>
+                    <div class="otp-icon">
+                        <iconify-icon icon="material-symbols:mark-email-unread" width="52"></iconify-icon>
+                    </div>
                     <h1>Verify Your Email</h1>
                     <p class="otp-sub">A one-time code will confirm your identity next.</p>
                     <p class="otp-sub" id="otp-purpose-msg">We've sent a 6-digit code to:</p>
@@ -453,9 +512,6 @@
         appleProvider.addScope('email');
         appleProvider.addScope('name');
 
-        /* ═══════════════════════════════════════════════════════
-           EMAILJS CONFIG
-           ═══════════════════════════════════════════════════════ */
         const EMAILJS_SERVICE_ID  = "service_7pgk38v";
         const EMAILJS_TEMPLATE_ID = "template_4w9lqy2";
         const EMAILJS_PUBLIC_KEY  = "NvKLVM4K4r6Z_LqhK";
@@ -465,9 +521,9 @@
         }
 
         const OTP_LENGTH = 6;
-        const OTP_TTL_MS = 45 * 1000;        // ← 45 SECONDS
+        const OTP_TTL_MS = 45 * 1000;
         const OTP_MAX_ATTEMPTS = 5;
-        const OTP_RESEND_COOLDOWN_S = 30;    // ← lowered from 60 to 30 (see note below)
+        const OTP_RESEND_COOLDOWN_S = 30;
 
         let inOtpFlow = false;
         let currentOtpEmail = '';
@@ -480,13 +536,9 @@
         let isVerifyingOtp = false;
         let isOtpVerified  = false;
 
-        /* ── Resend tracking ── */
         let previousOtpCode = '';
         let otpSendCount = 0;
 
-        /* ─────────────────────────────────────────────
-           Email masking — UI only
-           ───────────────────────────────────────────── */
         function maskEmail(email) {
             if (!email || typeof email !== 'string') return email || '';
             const atIdx = email.lastIndexOf('@');
@@ -509,7 +561,6 @@
         }
         window.maskEmail = maskEmail;
 
-        /* ─── OTP-verified-this-session tracker ─── */
         function otpSessionKey(uid) { return 'shdr_otp_verified_' + uid; }
         function isOtpVerifiedThisSession(uid) {
             return uid && sessionStorage.getItem(otpSessionKey(uid)) === '1';
@@ -521,7 +572,6 @@
             if (uid) sessionStorage.removeItem(otpSessionKey(uid));
         }
 
-        /* ─── UI helpers ─── */
         function switchTo(form) {
             document.getElementById('login-form').classList.toggle('hidden', form !== 'login');
             document.getElementById('signup-form').classList.toggle('hidden', form !== 'signup');
@@ -533,12 +583,16 @@
         }
         window.switchTo = switchTo;
 
+        /* ── REAL ICON toggle — swaps Iconify icon, no emoji ── */
         function togglePassword(inputId, eyeId) {
             const input = document.getElementById(inputId);
             const eye = document.getElementById(eyeId);
-            if (!input) return;
-            input.type = input.type === 'password' ? 'text' : 'password';
-            eye.textContent = input.type === 'password' ? '👁️' : '🙈';
+            if (!input || !eye) return;
+            const isHidden = input.type === 'password';
+            input.type = isHidden ? 'text' : 'password';
+            eye.setAttribute('icon', isHidden
+                ? 'material-symbols:visibility'
+                : 'material-symbols:visibility-off');
         }
         window.togglePassword = togglePassword;
 
@@ -566,51 +620,23 @@
             }
         }
         function getFriendlyErrorMessage(error) {
-    const code = error?.code || '';
+            const code = error?.code || '';
+            if (code === 'auth/invalid-email') return 'Invalid email address format.';
+            if (code === 'auth/user-disabled') return 'This account has been disabled.';
+            if (code === 'auth/user-not-found') return 'No account found with this email.';
+            if (code === 'auth/wrong-password') return 'Incorrect passcode. Please try again.';
+            if (code === 'auth/invalid-credential') return 'Incorrect email or passcode.';
+            if (code === 'auth/email-already-in-use') return 'An account with this email already exists.';
+            if (code === 'auth/weak-password') return 'Passcode must be at least 8 characters and include numbers and symbols.';
+            if (code === 'auth/too-many-requests') return 'Too many attempts. Please wait a moment.';
+            if (code === 'auth/network-request-failed') return 'Network error. Check your connection.';
+            if (code === 'auth/popup-closed-by-user') return 'Sign-in popup was closed. Please try again.';
+            if (code === 'auth/popup-blocked') return 'Sign-in popup was blocked. Please allow popups for this site.';
+            if (code === 'auth/operation-not-allowed') return "This sign-in method is currently unavailable. Please contact SHDR's Admin for assistance.";
+            if (code === 'auth/account-exists-with-different-credential') return 'An account already exists with the same email but different sign-in method. Please sign in using your original method.';
+            return error?.message || 'An unexpected error occurred.';
+        }
 
-    if (code === 'auth/invalid-email')
-        return 'Invalid email address format.';
-
-    if (code === 'auth/user-disabled')
-        return 'This account has been disabled.';
-
-    if (code === 'auth/user-not-found')
-        return 'No account found with this email.';
-
-    if (code === 'auth/wrong-password')
-        return 'Incorrect passcode. Please try again.';
-
-    if (code === 'auth/invalid-credential')
-        return 'Incorrect email or passcode.';
-
-    if (code === 'auth/email-already-in-use')
-        return 'An account with this email already exists.';
-
-    if (code === 'auth/weak-password')
-        return 'Passcode must be at least 8 characters and include numbers and symbols.';
-
-    if (code === 'auth/too-many-requests')
-        return 'Too many attempts. Please wait a moment.';
-
-    if (code === 'auth/network-request-failed')
-        return 'Network error. Check your connection.';
-
-    if (code === 'auth/popup-closed-by-user')
-        return 'Sign-in popup was closed. Please try again.';
-
-    if (code === 'auth/popup-blocked')
-        return 'Sign-in popup was blocked. Please allow popups for this site.';
-
-    if (code === 'auth/operation-not-allowed')
-        return "This sign-in method is currently unavailable. Please contact SHDR's Admin for assistance.";
-
-    if (code === 'auth/account-exists-with-different-credential')
-        return 'An account already exists with the same email but different sign-in method. Please sign in using your original method.';
-
-    return error?.message || 'An unexpected error occurred.';
-}
-
-        /* ─── Profile helpers ─── */
         async function ensureOwnerProfile(user, displayName = null, emailVerified = false) {
             const profileRef = doc(db, 'profiles', user.uid);
             const snap = await getDoc(profileRef);
@@ -633,7 +659,6 @@
             if (Object.keys(updates).length) await setDoc(profileRef, updates, { merge: true });
         }
 
-        /* ─── OTP generation + send ─── */
         function generateOtp(excludeCode = '') {
             let code;
             do {
@@ -673,8 +698,8 @@
                     to_email: email,
                     to_name: name || 'there',
                     verification_code: code,
-                    expiry_seconds: Math.round(OTP_TTL_MS / 1000),   // 45
-                    expiry_minutes: Math.round(OTP_TTL_MS / 60000),  // 1 (fallback)
+                    expiry_seconds: Math.round(OTP_TTL_MS / 1000),
+                    expiry_minutes: Math.round(OTP_TTL_MS / 60000),
                     company_name: 'SHDR Owner Portal',
                     subject: `Your SHDR code #${otpSendCount}: ${code}`,
                     code_number: otpSendCount,
@@ -691,7 +716,6 @@
             return { expiresAt, code, sentAt, codeNumber: otpSendCount };
         }
 
-        /* ─── Timers ─── */
         function clearOtpTimers() {
             if (expiryIntervalId) { clearInterval(expiryIntervalId); expiryIntervalId = null; }
             if (resendIntervalId) { clearInterval(resendIntervalId); resendIntervalId = null; }
@@ -739,7 +763,6 @@
             resendIntervalId = setInterval(tick, 1000);
         }
 
-        /* ─── OTP status indicators ─── */
         function showOtpStatusIdle() {
             const el = document.getElementById('otp-status');
             if (!el) return;
@@ -793,7 +816,6 @@
             `;
         }
 
-        /* ─── OTP inputs ─── */
         function setOtpInputsDisabled(disabled) {
             document.querySelectorAll('#otp-inputs input').forEach(i => { i.disabled = disabled; });
         }
@@ -896,7 +918,6 @@
             handleVerifyOtp();
         }
 
-        /* ─── Show OTP view ─── */
         async function showOtpView(user, name, purpose, sendCode = true) {
             inOtpFlow = true;
             isVerifyingOtp = false;
@@ -956,7 +977,6 @@
         }
         window.backToAuth = backToAuth;
 
-        /* ─── Verify OTP ─── */
         async function handleVerifyOtp() {
             if (isVerifyingOtp || isOtpVerified) return;
 
@@ -1082,7 +1102,6 @@
         }
         window.handleResendOtp = handleResendOtp;
 
-        /* ─── Google sign-in ─── */
         async function signInWithGoogle() {
             const allBtns = document.querySelectorAll('#google-login-btn, #signup-form .google-btn');
             allBtns.forEach(b => b.disabled = true);
@@ -1120,7 +1139,6 @@
         }
         window.signInWithGoogle = signInWithGoogle;
 
-        /* ─── Apple sign-in ─── */
         async function signInWithApple() {
             const allBtns = document.querySelectorAll('#apple-login-btn, #signup-form .apple-btn');
             allBtns.forEach(b => b.disabled = true);
@@ -1182,7 +1200,6 @@
         }
         window.signInWithApple = signInWithApple;
 
-        /* ─── Session check (OTP every session) ─── */
         onAuthStateChanged(auth, async (user) => {
             if (!user) return;
             if (inOtpFlow) return;
@@ -1203,7 +1220,6 @@
             } catch (err) { console.error('[session check]', err); }
         });
 
-        /* ─── Remember me prefill ─── */
         const remembered = localStorage.getItem('shdr_owner_remember');
         if (remembered) {
             const emailInput = document.getElementById('login-email');
@@ -1212,7 +1228,6 @@
             if (rememberCheck) rememberCheck.checked = true;
         }
 
-        /* ─── Login (email/password) ─── */
         window.handleLogin = async function (e) {
             e.preventDefault();
             const email = document.getElementById('login-email').value.trim();
@@ -1245,7 +1260,6 @@
             }
         };
 
-        /* ─── Signup ─── */
         window.handleSignUp = async function (e) {
             e.preventDefault();
             const name = document.getElementById('signup-name').value.trim();
