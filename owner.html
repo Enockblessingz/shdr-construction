@@ -423,7 +423,7 @@
                         </div>
                         <div class="warning-note">
                             <iconify-icon icon="material-symbols:warning" width="16"></iconify-icon>
-                            This portal is for owners only. Managers cannot register here.
+                            This portal is for owners only. Managers can't sign up here.
                         </div>
                     </form>
                 </div>
@@ -575,10 +575,10 @@
         function switchTo(form) {
             document.getElementById('login-form').classList.toggle('hidden', form !== 'login');
             document.getElementById('signup-form').classList.toggle('hidden', form !== 'signup');
-            document.getElementById('form-title').textContent = form === 'login' ? 'Sign In' : 'SIGN UP TO GET STARTED';
+            document.getElementById('form-title').textContent = form === 'login' ? 'Sign In' : 'Sign up to get started';
             document.getElementById('form-desc').textContent = form === 'login'
                 ? 'Access your owner dashboard'
-                : 'Create your owner account to get started';
+                : 'Create your owner account to manage your sites.';
             hideMessage();
         }
         window.switchTo = switchTo;
@@ -984,7 +984,7 @@
             const user = auth.currentUser;
 
             if (!user) {
-                showOtpStatusError('Session expired. Please sign in again.');
+                showOtpStatusError('OTP expired. Please sign in again.');
                 return;
             }
             if (code.length !== OTP_LENGTH) return;
@@ -1045,7 +1045,7 @@
             const user = auth.currentUser;
 
             if (!user) {
-                showOtpStatusError('Session expired. Please sign in again.');
+                showOtpStatusError('OTP expired. Please sign in again.');
                 return;
             }
 
@@ -1091,7 +1091,7 @@
             } catch (err) {
                 console.error('[OTP resend failed]', err);
                 const msg = err?.text || err?.message || 'Please try again.';
-                showOtpStatusError('Could not resend the code. ' + msg);
+                showOtpStatusError("Couldn't resend the code. " + msg);
 
                 resendLockUntil = Date.now() + 10_000;
                 startResendCooldown();
