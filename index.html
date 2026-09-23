@@ -6,13 +6,11 @@
     <meta name="theme-color" content="#059669">
     <meta name="description" content="SHDR — Construction Site Management">
 
-    <!-- Favicon -->
     <link rel="icon" type="image/png" href="shdr_logo%20Background%20Removed.png">
     <link rel="apple-touch-icon" sizes="180x180" href="shdr_logo%20Background%20Removed.png">
 
     <title>SHDR — Construction Site Management</title>
 
-    <!-- ── Iconify (real vector icons) ── -->
     <script src="https://cdn.jsdelivr.net/npm/iconify-icon@2.3.0/dist/iconify-icon.min.js"></script>
 
     <style>
@@ -39,17 +37,27 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        /* Navigation */
+        a { text-decoration: none; color: inherit; }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
+        }
+
+        /* ─── Navigation ─── */
         nav {
             position: fixed;
             top: 0; left: 0; right: 0;
             background: rgba(255,255,255,0.95);
             backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             border-bottom: 1px solid var(--border);
             z-index: 100;
             height: 64px;
         }
-
         .nav-inner {
             max-width: var(--max-width);
             margin: 0 auto;
@@ -59,53 +67,30 @@
             align-items: center;
             justify-content: space-between;
         }
-
         .logo {
             display: flex;
             align-items: center;
             gap: 10px;
-            text-decoration: none;
             font-weight: 700;
             font-size: 1.25rem;
             color: var(--text);
             letter-spacing: -0.3px;
+            cursor: pointer;
+            user-select: none;
         }
-
-        .logo-icon {
-            width: 40px;
-            height: 40px;
-            flex-shrink: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .logo-icon img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            display: block;
-        }
-
+        .logo-icon { width: 40px; height: 40px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+        .logo-icon img { width: 100%; height: 100%; object-fit: contain; display: block; }
         .logo span { color: var(--green); }
-
-        .nav-links {
-            display: flex;
-            align-items: center;
-            gap: 28px;
-            list-style: none;
-        }
-
+        .nav-links { display: flex; align-items: center; gap: 28px; list-style: none; }
         .nav-links a {
-            text-decoration: none;
             color: var(--text-light);
             font-size: 0.9rem;
             font-weight: 500;
             transition: color 0.2s;
             cursor: pointer;
         }
-
         .nav-links a:hover { color: var(--text); }
+        .nav-links a.active { color: var(--green); font-weight: 600; }
 
         .btn {
             padding: 8px 20px;
@@ -123,38 +108,27 @@
             white-space: nowrap;
             font-family: inherit;
         }
-
-        .btn-outline {
-            background: transparent;
-            border: 1.5px solid var(--border);
-            color: var(--text);
-        }
+        .btn-outline { background: transparent; border: 1.5px solid var(--border); color: var(--text); }
         .btn-outline:hover { border-color: #9ca3af; }
-
-        .btn-primary {
-            background: var(--green);
-            color: #fff;
-        }
+        .btn-primary { background: var(--green); color: #fff; }
         .btn-primary:hover { background: var(--green-hover); }
 
-        .mobile-toggle {
-            display: none;
-            background: none;
-            border: none;
-            cursor: pointer;
-            padding: 4px;
-        }
+        .mobile-toggle { display: none; background: none; border: none; cursor: pointer; padding: 4px; }
+        .mobile-toggle span { display: block; width: 22px; height: 2px; background: var(--text); margin: 4px 0; transition: 0.2s; }
 
-        .mobile-toggle span {
-            display: block;
-            width: 22px;
-            height: 2px;
-            background: var(--text);
-            margin: 4px 0;
-            transition: 0.2s;
-        }
+        /* ═══════════════════════════════════════════════════════
+           VIEW SWITCHING
+           ═══════════════════════════════════════════════════════ */
+        .view { display: none; }
+        .view.active { display: block; }
 
-        /* Hero */
+        /* ─── Landing View ─── */
+        #landing-view.active { display: block; }
+
+        /* ─── Legal View ─── */
+        #legal-view.active { display: block; }
+
+        /* ─── Hero ─── */
         .hero {
             position: relative;
             min-height: 100vh;
@@ -163,35 +137,15 @@
             justify-content: center;
             overflow: hidden;
         }
-
-        .hero-bg {
-            position: absolute;
-            inset: 0;
-            z-index: 0;
-        }
-
-        .hero-bg img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            filter: brightness(0.55);
-        }
-
+        .hero-bg { position: absolute; inset: 0; z-index: 0; }
+        .hero-bg img { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.55); }
         .hero-bg::after {
             content: '';
             position: absolute;
             inset: 0;
             background: linear-gradient(180deg, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.7) 100%);
         }
-
-        .hero-content {
-            position: relative;
-            z-index: 1;
-            text-align: center;
-            max-width: 700px;
-            padding: 0 24px;
-        }
-
+        .hero-content { position: relative; z-index: 1; text-align: center; max-width: 700px; padding: 0 24px; }
         .hero-content h1 {
             font-size: 3.2rem;
             font-weight: 700;
@@ -201,9 +155,7 @@
             margin-bottom: 20px;
             text-shadow: 0 2px 10px rgba(0,0,0,0.4);
         }
-
         .hero-content h1 span { color: #34d399; }
-
         .hero-content p {
             color: rgba(255,255,255,0.85);
             font-size: 1.1rem;
@@ -212,22 +164,9 @@
             line-height: 1.7;
             text-shadow: 0 1px 6px rgba(0,0,0,0.3);
         }
-
-        .hero-buttons {
-            display: flex;
-            gap: 14px;
-            justify-content: center;
-        }
-
-        .hero .btn-primary {
-            background: var(--green);
-            color: #fff;
-            padding: 12px 28px;
-            font-size: 0.95rem;
-            border-radius: 8px;
-        }
+        .hero-buttons { display: flex; gap: 14px; justify-content: center; }
+        .hero .btn-primary { background: var(--green); color: #fff; padding: 12px 28px; font-size: 0.95rem; border-radius: 8px; }
         .hero .btn-primary:hover { background: var(--green-hover); }
-
         .hero .btn-outline {
             background: rgba(255,255,255,0.1);
             border: 1.5px solid rgba(255,255,255,0.4);
@@ -237,19 +176,12 @@
             border-radius: 8px;
             backdrop-filter: blur(4px);
         }
-        .hero .btn-outline:hover {
-            background: rgba(255,255,255,0.2);
-            border-color: rgba(255,255,255,0.6);
-        }
+        .hero .btn-outline:hover { background: rgba(255,255,255,0.2); border-color: rgba(255,255,255,0.6); }
 
-        /* Sections */
+        /* ─── Sections ─── */
         .section { padding: 80px 24px; }
         .section-alt { background: var(--bg-secondary); }
-        .section-inner {
-            max-width: var(--max-width);
-            margin: 0 auto;
-        }
-
+        .section-inner { max-width: var(--max-width); margin: 0 auto; }
         .section-label {
             font-size: 0.8rem;
             font-weight: 600;
@@ -258,28 +190,16 @@
             color: var(--green);
             margin-bottom: 12px;
         }
-
         .section-title {
             font-size: 2rem;
             font-weight: 700;
             letter-spacing: -0.5px;
             margin-bottom: 16px;
         }
+        .section-desc { color: var(--text-light); max-width: 520px; margin-bottom: 48px; line-height: 1.7; }
 
-        .section-desc {
-            color: var(--text-light);
-            max-width: 520px;
-            margin-bottom: 48px;
-            line-height: 1.7;
-        }
-
-        /* Accounts */
-        .accounts-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 24px;
-        }
-
+        /* ─── Accounts ─── */
+        .accounts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
         .account-card {
             background: var(--bg);
             border: 1px solid var(--border);
@@ -288,13 +208,7 @@
             transition: box-shadow 0.3s;
         }
         .account-card:hover { box-shadow: 0 8px 30px rgba(0,0,0,0.06); }
-
-        .account-card h3 {
-            font-size: 1.3rem;
-            font-weight: 600;
-            margin-bottom: 8px;
-        }
-
+        .account-card h3 { font-size: 1.3rem; font-weight: 600; margin-bottom: 8px; }
         .account-card .role-badge {
             display: inline-block;
             padding: 4px 12px;
@@ -303,15 +217,9 @@
             font-weight: 500;
             margin-bottom: 16px;
         }
-
         .badge-owner { background: #ecfdf5; color: #059669; }
         .badge-manager { background: #f0fdf4; color: #16a34a; }
-
-        .account-card ul {
-            list-style: none;
-            margin-bottom: 24px;
-        }
-
+        .account-card ul { list-style: none; margin-bottom: 24px; }
         .account-card ul li {
             padding: 6px 0;
             font-size: 0.9rem;
@@ -320,7 +228,6 @@
             align-items: center;
             gap: 10px;
         }
-
         .account-card ul li::before {
             content: '';
             width: 6px;
@@ -329,7 +236,6 @@
             background: var(--green);
             flex-shrink: 0;
         }
-
         .note {
             background: #fffbeb;
             border: 1px solid #fde68a;
@@ -341,34 +247,12 @@
             align-items: flex-start;
             gap: 8px;
         }
+        .image-row { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 48px; }
+        .image-row img { width: 100%; border-radius: 10px; object-fit: cover; aspect-ratio: 16/10; }
+        .image-caption { font-size: 0.85rem; color: var(--text-light); margin-top: 8px; }
 
-        .image-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 24px;
-            margin-top: 48px;
-        }
-
-        .image-row img {
-            width: 100%;
-            border-radius: 10px;
-            object-fit: cover;
-            aspect-ratio: 16/10;
-        }
-
-        .image-caption {
-            font-size: 0.85rem;
-            color: var(--text-light);
-            margin-top: 8px;
-        }
-
-        /* ─────────── FEATURES (NO icon backgrounds) ─────────── */
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
-        }
-
+        /* ─── Features ─── */
+        .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
         .feature-item {
             padding: 24px;
             border: 1px solid var(--border);
@@ -377,14 +261,11 @@
             background: var(--bg);
             position: relative;
         }
-
         .feature-item:hover {
             box-shadow: 0 6px 24px rgba(5,150,105,0.08);
             transform: translateY(-2px);
             border-color: #a7f3d0;
         }
-
-        /* Icon container – NO background, just the icon */
         .feature-item .icon {
             width: 48px;
             height: 48px;
@@ -395,17 +276,8 @@
             color: #059669;
             transition: transform 0.2s;
         }
-
-        .feature-item:hover .icon {
-            transform: scale(1.08);
-        }
-
-        .feature-item .icon iconify-icon {
-            font-size: 1.75rem;
-            line-height: 1;
-            display: block;
-        }
-
+        .feature-item:hover .icon { transform: scale(1.08); }
+        .feature-item .icon iconify-icon { font-size: 1.75rem; line-height: 1; display: block; }
         .feature-item h4 {
             font-weight: 600;
             margin-bottom: 6px;
@@ -415,14 +287,7 @@
             gap: 8px;
             flex-wrap: wrap;
         }
-
-        .feature-item p {
-            font-size: 0.85rem;
-            color: var(--text-light);
-            line-height: 1.6;
-        }
-
-        /* Coming soon badge */
+        .feature-item p { font-size: 0.85rem; color: var(--text-light); line-height: 1.6; }
         .badge-soon {
             display: inline-block;
             background: #fef3c7;
@@ -435,70 +300,311 @@
             letter-spacing: 0.5px;
             line-height: 1.5;
         }
-
-        /* Coming soon card – subtle amber tint on the CARD, not the icon */
         .feature-item.coming-soon {
             background: linear-gradient(135deg, #fffbeb 0%, #ffffff 100%);
             border-color: #fde68a;
         }
+        .feature-item.coming-soon .icon { color: #b45309; }
 
-        .feature-item.coming-soon .icon {
-            color: #b45309;
-            /* No background */
+        /* ─── CTA ─── */
+        .cta { text-align: center; padding: 80px 24px; }
+        .cta h2 { font-size: 2rem; font-weight: 700; margin-bottom: 12px; letter-spacing: -0.5px; }
+        .cta p { color: var(--text-light); margin-bottom: 28px; }
+
+        /* ═══════════════════════════════════════════════════════
+           LEGAL VIEW (matching screenshot)
+           ═══════════════════════════════════════════════════════ */
+        .legal-page-header {
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border);
+            padding: 120px 24px 48px;
         }
-
-        /* CTA */
-        .cta {
-            text-align: center;
-            padding: 80px 24px;
-        }
-
-        .cta h2 {
-            font-size: 2rem;
+        .legal-page-header-inner { max-width: var(--max-width); margin: 0 auto; }
+        .legal-page-header h1 {
+            font-size: 2.5rem;
             font-weight: 700;
-            margin-bottom: 12px;
-            letter-spacing: -0.5px;
+            letter-spacing: -0.8px;
+            margin-bottom: 8px;
         }
-
-        .cta p {
+        .legal-page-header p { color: var(--text-light); max-width: 600px; font-size: 0.95rem; }
+        .legal-page-header .meta {
+            margin-top: 16px;
+            font-size: 0.8rem;
             color: var(--text-light);
-            margin-bottom: 28px;
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
         }
+        .legal-page-header .meta span { display: inline-flex; align-items: center; gap: 6px; }
 
-        /* Footer */
-        footer {
-            border-top: 1px solid var(--border);
-            padding: 28px 24px;
-            text-align: center;
-        }
-
-        .footer-inner {
+        .legal-layout {
             max-width: var(--max-width);
             margin: 0 auto;
+            padding: 48px 24px 80px;
+            display: grid;
+            grid-template-columns: 240px 1fr;
+            gap: 48px;
+            align-items: start;
+        }
+
+        .legal-sidebar {
+            position: sticky;
+            top: 88px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            background: var(--bg);
+        }
+        .legal-sidebar h3 {
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-light);
+            margin-bottom: 14px;
+        }
+        .legal-sidebar ul { list-style: none; display: flex; flex-direction: column; gap: 2px; }
+        .legal-sidebar li a {
             display: flex;
-            justify-content: center;
             align-items: center;
-            gap: 8px;
-            flex-wrap: wrap;
+            gap: 10px;
+            padding: 9px 12px;
+            border-radius: 6px;
             font-size: 0.85rem;
             color: var(--text-light);
+            font-weight: 500;
+            transition: all 0.15s;
+            cursor: pointer;
+        }
+        .legal-sidebar li a:hover { background: var(--bg-secondary); color: var(--text); }
+        .legal-sidebar li a.active {
+            background: var(--green-light);
+            color: var(--green);
+            font-weight: 600;
+        }
+        .legal-sidebar li a iconify-icon { font-size: 1rem; flex-shrink: 0; }
+
+        .legal-content-area { min-width: 0; }
+        .legal-section { display: none; animation: fadeIn 0.2s ease; }
+        .legal-section.active { display: block; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(4px); }
+            to   { opacity: 1; transform: translateY(0); }
         }
 
-        .footer-inner a {
+        .legal-section > h2 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            margin-bottom: 6px;
+        }
+        .legal-section > .section-sub {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            margin-bottom: 32px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid var(--border);
+        }
+        .legal-section h3 {
+            font-size: 1.05rem;
+            font-weight: 700;
+            margin-top: 32px;
+            margin-bottom: 10px;
+            color: var(--text);
+        }
+        .legal-section h3:first-of-type { margin-top: 0; }
+        .legal-section p {
+            color: #374151;
+            font-size: 0.95rem;
+            margin-bottom: 14px;
+            line-height: 1.75;
+        }
+        .legal-section ul {
+            padding-left: 22px;
+            margin-bottom: 16px;
+            color: #374151;
+            font-size: 0.95rem;
+            line-height: 1.75;
+        }
+        .legal-section ul li { margin-bottom: 8px; }
+        .legal-section ul li strong { color: var(--text); }
+        .legal-section code {
+            background: var(--bg-secondary);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            color: var(--green-hover);
+            font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+        }
+
+        .callout {
+            border-radius: 10px;
+            padding: 16px 20px;
+            margin: 20px 0;
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+            font-size: 0.9rem;
+            line-height: 1.65;
+        }
+        .callout iconify-icon { flex-shrink: 0; font-size: 1.25rem; margin-top: 2px; }
+        .callout-info { background: #eff6ff; border: 1px solid #bfdbfe; color: #1e3a8a; }
+        .callout-info iconify-icon { color: #2563eb; }
+        .callout-warn { background: #fffbeb; border: 1px solid #fde68a; color: #78350f; }
+        .callout-warn iconify-icon { color: #d97706; }
+        .callout-success { background: var(--green-light); border: 1px solid #a7f3d0; color: #065f46; }
+        .callout-success iconify-icon { color: var(--green); }
+        .callout a { color: var(--green); font-weight: 600; }
+
+        .contact-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+            margin: 20px 0;
+        }
+        .contact-card .row {
+            display: flex;
+            gap: 14px;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border);
+        }
+        .contact-card .row:last-child { border-bottom: none; }
+        .contact-card .row .ico {
+            width: 40px; height: 40px;
+            background: var(--green-light);
             color: var(--green);
-            text-decoration: none;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .contact-card .row .lbl {
+            font-size: 0.75rem;
+            color: var(--text-light);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-weight: 600;
+        }
+        .contact-card .row .val {
+            font-size: 0.95rem;
+            color: var(--text);
             font-weight: 500;
         }
+        .contact-card .row .val a { color: var(--green); }
+        .contact-card .row .val a:hover { text-decoration: underline; }
 
-        .footer-inner a:hover { text-decoration: underline; }
+        .section-actions {
+            margin-top: 40px;
+            padding-top: 24px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
 
-        /* Responsive */
+        /* ─── Footer ─── */
+        footer {
+            border-top: 1px solid var(--border);
+            background: var(--bg);
+            padding: 56px 24px 24px;
+        }
+        .footer-columns {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1.5fr 1fr 1fr 1fr;
+            gap: 48px;
+            padding-bottom: 40px;
+            border-bottom: 1px solid var(--border);
+        }
+        .footer-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 14px;
+        }
+        .footer-brand-name {
+            font-weight: 700;
+            font-size: 1.15rem;
+            letter-spacing: -0.3px;
+            color: var(--text);
+        }
+        .footer-desc {
+            font-size: 0.875rem;
+            color: var(--text-light);
+            line-height: 1.65;
+            max-width: 320px;
+        }
+        .footer-col h4 {
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--text);
+            margin-bottom: 16px;
+        }
+        .footer-col ul {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .footer-col ul a {
+            font-size: 0.875rem;
+            color: var(--text-light);
+            transition: color 0.2s;
+            cursor: pointer;
+        }
+        .footer-col ul a:hover { color: var(--green); }
+        .footer-bottom {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            padding-top: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+            font-size: 0.8rem;
+            color: var(--text-light);
+        }
+        .footer-bottom a { color: var(--green); font-weight: 500; }
+        .footer-bottom a:hover { text-decoration: underline; }
+
+        /* ─── Responsive ─── */
         @media (max-width: 900px) {
             .hero-content h1 { font-size: 2.2rem; }
             .accounts-grid { grid-template-columns: 1fr; }
             .features-grid { grid-template-columns: 1fr 1fr; }
             .image-row { grid-template-columns: 1fr; }
             .section-title { font-size: 1.6rem; }
+            .footer-columns { grid-template-columns: 1fr 1fr; gap: 32px; }
+
+            .legal-layout {
+                grid-template-columns: 1fr;
+                gap: 24px;
+            }
+            .legal-sidebar {
+                position: static;
+                padding: 14px;
+            }
+            .legal-sidebar ul {
+                flex-direction: row;
+                overflow-x: auto;
+                gap: 4px;
+                padding-bottom: 4px;
+            }
+            .legal-sidebar li a {
+                white-space: nowrap;
+                font-size: 0.8rem;
+                padding: 8px 12px;
+            }
+            .legal-sidebar h3 { display: none; }
+            .legal-page-header { padding-top: 100px; }
+            .legal-page-header h1 { font-size: 1.85rem; }
         }
 
         @media (max-width: 640px) {
@@ -521,24 +627,30 @@
             .hero-buttons { flex-direction: column; width: 100%; }
             .hero-buttons .btn { width: 100%; }
             .hero-content h1 { font-size: 1.8rem; }
+            .footer-columns { grid-template-columns: 1fr; gap: 28px; }
+            .footer-bottom { flex-direction: column; text-align: center; }
+
+            .legal-page-header h1 { font-size: 1.5rem; }
+            .legal-section > h2 { font-size: 1.35rem; }
+            .legal-section h3 { font-size: 1rem; }
         }
     </style>
 </head>
 <body>
 
-    <!-- Navigation -->
+    <!-- ═══════════════ Navigation ═══════════════ -->
     <nav>
         <div class="nav-inner">
-            <a href="#" class="logo">
+            <a class="logo" onclick="showView('landing')" aria-label="SHDR Home">
                 <span class="logo-icon">
                     <img src="shdr_logo%20Background%20Removed.png" alt="SHDR Logo">
                 </span>
                 SH<span>DR</span>
             </a>
             <ul class="nav-links" id="navLinks">
-                <li><a href="#home">Home</a></li>
-                <li><a href="#accounts">Accounts</a></li>
-                <li><a href="#features">Features</a></li>
+                <li><a onclick="showView('landing', 'home')" id="nav-home">Home</a></li>
+                <li><a onclick="showView('landing', 'accounts')" id="nav-accounts">Accounts</a></li>
+                <li><a onclick="showView('landing', 'features')" id="nav-features">Features</a></li>
                 <li><a onclick="redirectOwner()">Owner Dashboard</a></li>
                 <li><a onclick="redirectManager()">Manager Sign In</a></li>
             </ul>
@@ -548,253 +660,665 @@
         </div>
     </nav>
 
-    <!-- Hero -->
-    <section class="hero" id="home">
-        <div class="hero-bg">
-            <img src="https://cdn.pixabay.com/photo/2018/12/12/23/02/site-3871804_1280.jpg" alt="Construction site">
-        </div>
-        <div class="hero-content">
-            <h1>Construction site <span>Management</span> Made It Easier &amp; Smarter!</h1>
-            <p>Connect owners and site managers. Track materials, workers, and progress with full transparency.</p>
-            <div class="hero-buttons">
+    <!-- ═══════════════════════════════════════════════════════
+         LANDING VIEW
+         ═══════════════════════════════════════════════════════ -->
+    <main id="landing-view" class="view active">
+
+        <!-- Hero -->
+        <section class="hero" id="home">
+            <div class="hero-bg">
+                <img src="https://cdn.pixabay.com/photo/2018/12/12/23/02/site-3871804_1280.jpg" alt="Construction site">
+            </div>
+            <div class="hero-content">
+                <h1>Construction site <span>Management</span> Made It Easier &amp; Smarter!</h1>
+                <p>Connect owners and site managers. Track materials, workers, and progress with full transparency.</p>
+                <div class="hero-buttons">
+                    <button class="btn btn-primary" onclick="redirectOwner()">
+                        <iconify-icon icon="material-symbols:dashboard"></iconify-icon>
+                        Owner Dashboard
+                    </button>
+                    <button class="btn btn-outline" onclick="redirectManager()">
+                        <iconify-icon icon="material-symbols:login"></iconify-icon>
+                        Manager Sign In
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Accounts -->
+        <section class="section section-alt" id="accounts">
+            <div class="section-inner">
+                <div class="section-label">Account Types</div>
+                <div class="section-title">Two roles, one system</div>
+                <p class="section-desc">SHDR is built for two distinct users. Understand how each works before you begin.</p>
+
+                <div class="accounts-grid">
+                    <div class="account-card">
+                        <span class="role-badge badge-owner">Owner / Admin</span>
+                        <h3>Full project control</h3>
+                        <ul>
+                            <li>Sign Up for your own account directly</li>
+                            <li>Create and manage multiple sites</li>
+                            <li>Assign managers to specific projects</li>
+                            <li>Receive complete reports for approval</li>
+                            <li>Grant and revoke access anytime</li>
+                        </ul>
+                        <button class="btn btn-primary" style="width:100%;" onclick="redirectOwner()">
+                            Go to Owner Dashboard
+                            <iconify-icon icon="material-symbols:arrow-forward"></iconify-icon>
+                        </button>
+                    </div>
+                    <div class="account-card">
+                        <span class="role-badge badge-manager">Site Manager</span>
+                        <h3>On-site recording</h3>
+                        <ul>
+                            <li>Access granted by owner only</li>
+                            <li>Cannot self-register — invitation required</li>
+                            <li>Record materials, workers, progress</li>
+                            <li>Submit daily updates and reports</li>
+                            <li>Sign in only — no account creation</li>
+                        </ul>
+                        <div class="note">
+                            <iconify-icon icon="material-symbols:warning" style="font-size:1.1rem;flex-shrink:0;margin-top:2px;"></iconify-icon>
+                            <span>Managers sign in only. Your credentials are provided by the project owner.</span>
+                        </div>
+                        <button class="btn btn-outline" style="margin-top:14px; width:100%; border-color:var(--green); color:var(--green);" onclick="redirectManager()">
+                            Sign In as Manager
+                            <iconify-icon icon="material-symbols:arrow-forward"></iconify-icon>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="image-row">
+                    <div>
+                        <img src="https://media.istockphoto.com/id/2187596750/photo/construction-worker-shaking-hands-with-foreman.jpg?s=2048x2048&w=is&k=20&c=Dgy4yOzJOwL21_oHIKW6woC242dMSY4KpDfz6YOfM0Y=" alt="Owner and manager collaboration" loading="lazy">
+                        <p class="image-caption">Seamless collaboration between owners and site managers</p>
+                    </div>
+                    <div>
+                        <img src="https://cdn.pixabay.com/photo/2016/02/01/21/15/excavator-1174428_1280.jpg" alt="Construction machinery" loading="lazy">
+                        <p class="image-caption">Full visibility over equipment and site operations</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features -->
+        <section class="section" id="features">
+            <div class="section-inner">
+                <div class="section-label">Features</div>
+                <div class="section-title">Everything is tracked</div>
+                <p class="section-desc">All site data recorded by managers, visible to owners in real time.</p>
+
+                <div class="features-grid">
+                    <div class="feature-item"><div class="icon"><iconify-icon icon="material-symbols:package-2-outline"></iconify-icon></div><h4>Materials</h4><p>Track cement, steel, wood, electrical, plumbing — with quantities and alerts.</p></div>
+                    <div class="feature-item"><div class="icon"><iconify-icon icon="material-symbols:inventory-2-outline"></iconify-icon></div><h4>Stock Control</h4><p>Receive stock, low-stock alerts, and complete transaction history per site.</p></div>
+                    <div class="feature-item"><div class="icon"><iconify-icon icon="material-symbols:engineering-outline"></iconify-icon></div><h4>Workers</h4><p>Attendance, daily rates, and payroll calculated automatically.</p></div>
+                    <div class="feature-item"><div class="icon"><iconify-icon icon="material-symbols:trending-up"></iconify-icon></div><h4>Progress</h4><p>Milestone timeline with percentage tracking and photo updates.</p></div>
+                    <div class="feature-item"><div class="icon"><iconify-icon icon="material-symbols:account-balance-wallet-outline"></iconify-icon></div><h4>Finances</h4><p>Live budget tracking, cost breakdown, and overrun alerts for every site.</p></div>
+                    <div class="feature-item"><div class="icon"><iconify-icon icon="material-symbols:description-outline"></iconify-icon></div><h4>Reports</h4><p>Auto-generated reports with full breakdown for owner approval.</p></div>
+                    <div class="feature-item"><div class="icon"><iconify-icon icon="material-symbols:apartment"></iconify-icon></div><h4>Multi-Site</h4><p>Manage unlimited construction sites from one dashboard — switch instantly.</p></div>
+                    <div class="feature-item"><div class="icon"><iconify-icon icon="material-symbols:photo-library-outline"></iconify-icon></div><h4>Site Gallery</h4><p>Upload site photos with descriptions — full-screen viewer for progress updates.</p></div>
+                    <div class="feature-item"><div class="icon"><iconify-icon icon="material-symbols:group-outline"></iconify-icon></div><h4>Manager Team</h4><p>Invite managers, assign them to specific sites, and monitor activity securely.</p></div>
+                    <div class="feature-item"><div class="icon"><iconify-icon icon="material-symbols:notifications-active-outline"></iconify-icon></div><h4>Alerts</h4><p>Low stock, milestone completions, report submissions — stay tuned!</p></div>
+                    <div class="feature-item"><div class="icon"><iconify-icon icon="material-symbols:settings-outline"></iconify-icon></div><h4>Settings &amp; Security</h4><p>Update profile, change passcode, and customize your account preferences.</p></div>
+                    <div class="feature-item coming-soon"><div class="icon"><iconify-icon icon="material-symbols:business-center-outline"></iconify-icon></div><h4>Office Hub <span class="badge-soon">Coming Soon!</span></h4><p>Document workflow, permits, certifications, and approval center — launching soon.</p></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA -->
+        <section class="cta section-alt">
+            <div class="section-inner">
+                <h2>Ready to bring clarity to your project?</h2>
+                <p>Start managing your construction site with transparency.</p>
                 <button class="btn btn-primary" onclick="redirectOwner()">
-                    <iconify-icon icon="material-symbols:dashboard"></iconify-icon>
-                    Owner Dashboard
-                </button>
-                <button class="btn btn-outline" onclick="redirectManager()">
-                    <iconify-icon icon="material-symbols:login"></iconify-icon>
-                    Manager Sign In
+                    <iconify-icon icon="material-symbols:person-add"></iconify-icon>
+                    Create Owner's Account
                 </button>
             </div>
-        </div>
-    </section>
+        </section>
+    </main>
 
-    <!-- Accounts -->
-    <section class="section section-alt" id="accounts">
-        <div class="section-inner">
-            <div class="section-label">Account Types</div>
-            <div class="section-title">Two roles, one system</div>
-            <p class="section-desc">SHDR is built for two distinct users. Understand how each works before you begin.</p>
+    <!-- ═══════════════════════════════════════════════════════
+         LEGAL VIEW (matches the screenshot)
+         ═══════════════════════════════════════════════════════ -->
+    <main id="legal-view" class="view">
 
-            <div class="accounts-grid">
-                <!-- Owner -->
-                <div class="account-card">
-                    <span class="role-badge badge-owner">Owner / Admin</span>
-                    <h3>Full project control</h3>
+        <!-- Page header -->
+        <header class="legal-page-header">
+            <div class="legal-page-header-inner">
+                <h1>Legal &amp; Policies</h1>
+                <p>Everything you need to know about using SHDR — our terms, how we handle your data, and how to reach us.</p>
+                <div class="meta">
+                    <span><iconify-icon icon="material-symbols:calendar-today"></iconify-icon> Last updated: 23 September 2026</span>
+                    <span><iconify-icon icon="material-symbols:shield"></iconify-icon> Applies to shdr.com and all SHDR services</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Layout: sidebar + content -->
+        <div class="legal-layout">
+            <aside class="legal-sidebar">
+                <h3>Jump to policy</h3>
+                <ul id="legalNav">
+                    <li><a onclick="showLegalSection('terms', this)" class="active">
+                        <iconify-icon icon="material-symbols:description-outline"></iconify-icon> Terms &amp; Conditions
+                    </a></li>
+                    <li><a onclick="showLegalSection('privacy', this)">
+                        <iconify-icon icon="material-symbols:shield-outline"></iconify-icon> Privacy Policy
+                    </a></li>
+                    <li><a onclick="showLegalSection('cookies', this)">
+                        <iconify-icon icon="material-symbols:cookie-outline"></iconify-icon> Cookie Policy
+                    </a></li>
+                    <li><a onclick="showLegalSection('acceptable-use', this)">
+                        <iconify-icon icon="material-symbols:block"></iconify-icon> Acceptable Use
+                    </a></li>
+                    <li><a onclick="showLegalSection('refund', this)">
+                        <iconify-icon icon="material-symbols:payments-outline"></iconify-icon> Refund &amp; Cancellation
+                    </a></li>
+                    <li><a onclick="showLegalSection('contact', this)">
+                        <iconify-icon icon="material-symbols:contact-mail-outline"></iconify-icon> Legal Notice
+                    </a></li>
+                </ul>
+            </aside>
+
+            <div class="legal-content-area">
+
+                <!-- TERMS -->
+                <section class="legal-section active" id="terms">
+                    <h2>Terms &amp; Conditions</h2>
+                    <p class="section-sub">By accessing or using SHDR, you agree to be bound by these terms.</p>
+
+                    <h3>1. Acceptance of Terms</h3>
+                    <p>These Terms &amp; Conditions ("Terms") form a legally binding agreement between you ("User", "you") and SHDR Ltd ("SHDR", "we", "us", "our") governing your access to and use of the SHDR construction site management platform, website, and related services (collectively, the "Service").</p>
+                    <p>By registering an account, accessing, or using the Service, you confirm that you have read, understood, and agreed to these Terms. If you do not agree, you must not use the Service.</p>
+
+                    <h3>2. User Responsibilities</h3>
                     <ul>
-                        <li>Sign Up for your own account directly</li>
-                        <li>Create and manage multiple sites</li>
-                        <li>Assign managers to specific projects</li>
-                        <li>Receive complete reports for approval</li>
-                        <li>Grant and revoke access anytime</li>
+                        <li>Providing accurate, current, and complete information during registration.</li>
+                        <li>Maintaining the confidentiality of your account credentials (email and passcode).</li>
+                        <li>All activities that occur under your account, whether authorized by you or not.</li>
+                        <li>Promptly notifying us of any unauthorized use of your account.</li>
+                        <li>Ensuring that any data you upload is lawful and does not infringe third-party rights.</li>
                     </ul>
-                    <button class="btn btn-primary" style="width:100%;" onclick="redirectOwner()">
-                        Go to Owner Dashboard
-                        <iconify-icon icon="material-symbols:arrow-forward"></iconify-icon>
-                    </button>
-                </div>
-                <!-- Manager -->
-                <div class="account-card">
-                    <span class="role-badge badge-manager">Site Manager</span>
-                    <h3>On-site recording</h3>
+
+                    <h3>3. Acceptable Use</h3>
+                    <p>You agree NOT to use the Service for any illegal, fraudulent, or unauthorized purpose, attempt unauthorized access, upload malware or viruses, reverse-engineer any part of the Service, use automated tools (bots, scrapers), or impersonate another person.</p>
+
+                    <h3>4. Account Rules</h3>
                     <ul>
-                        <li>Access granted by owner only</li>
-                        <li>Cannot self-register — invitation required</li>
-                        <li>Record materials, workers, progress</li>
-                        <li>Submit daily updates and reports</li>
-                        <li>Sign in only — no account creation</li>
+                        <li><strong>Owner accounts:</strong> Created directly by signing up. Owners manage sites, invite managers, and control their data.</li>
+                        <li><strong>Manager accounts:</strong> Created by invitation from an Owner. Managers record site activity but cannot self-register.</li>
                     </ul>
-                    <div class="note">
-                        <iconify-icon icon="material-symbols:warning" style="font-size:1.1rem;flex-shrink:0;margin-top:2px;"></iconify-icon>
-                        <span>Managers sign in only. Your credentials are provided by the project owner.</span>
-                    </div>
-                    <button class="btn btn-outline" style="margin-top:14px; width:100%; border-color:var(--green); color:var(--green);" onclick="redirectManager()">
-                        Sign In as Manager
-                        <iconify-icon icon="material-symbols:arrow-forward"></iconify-icon>
-                    </button>
-                </div>
-            </div>
+                    <p>Each account is personal and non-transferable.</p>
 
-            <!-- Images -->
-            <div class="image-row">
-                <div>
-                    <img src="https://media.istockphoto.com/id/2187596750/photo/construction-worker-shaking-hands-with-foreman.jpg?s=2048x2048&w=is&k=20&c=Dgy4yOzJOwL21_oHIKW6woC242dMSY4KpDfz6YOfM0Y=" alt="Owner and manager collaboration" loading="lazy">
-                    <p class="image-caption">Seamless collaboration between owners and site managers</p>
-                </div>
-                <div>
-                    <img src="https://cdn.pixabay.com/photo/2016/02/01/21/15/excavator-1174428_1280.jpg" alt="Construction machinery" loading="lazy">
-                    <p class="image-caption">Full visibility over equipment and site operations</p>
-                </div>
+                    <h3>5. Payments &amp; Subscriptions</h3>
+                    <p>SHDR may offer free and paid plans. If you subscribe to a paid plan, fees are billed in advance on a recurring basis and prices may change with 30 days' notice.</p>
+                    <div class="callout callout-info">
+                        <iconify-icon icon="material-symbols:info"></iconify-icon>
+                        <div>The Service is currently offered free of charge during its launch period. Paid plans will be introduced in a future release with advance notice.</div>
+                    </div>
+
+                    <h3>6. Intellectual Property</h3>
+                    <p>All content, code, design, trademarks, logos, and documentation comprising the Service are owned by SHDR Ltd or its licensors and are protected by copyright and trademark laws. You retain full ownership of any data you upload.</p>
+
+                    <h3>7. Service Availability</h3>
+                    <p>We aim to keep the Service available 24/7, but do not guarantee uninterrupted or error-free operation. The Service may be temporarily unavailable for scheduled maintenance, emergency security patches, third-party outages, or events beyond our reasonable control.</p>
+
+                    <h3>8. Suspension &amp; Termination</h3>
+                    <p>We may suspend or terminate your account if you breach these Terms, engage in fraudulent/abusive/illegal activity, pose a security risk, or as required by law. You may terminate your account at any time from your dashboard settings. Upon termination, your data will be retained for 30 days before permanent deletion.</p>
+
+                    <h3>9. Limitation of Liability</h3>
+                    <p>To the maximum extent permitted by law, SHDR Ltd shall not be liable for any indirect, incidental, special, consequential, or punitive damages. Our total liability for any claim arising from the Service is limited to the amount you paid us in the 12 months preceding the claim.</p>
+
+                    <h3>10. Changes to the Terms</h3>
+                    <p>We may modify these Terms at any time. Material changes will be communicated via email or an in-app notice at least 14 days before they take effect.</p>
+
+                    <h3>11. Governing Law</h3>
+                    <p>These Terms are governed by the laws of the Republic of Rwanda. Any dispute arising from these Terms or the Service shall be subject to the exclusive jurisdiction of the courts of Kigali, Rwanda.</p>
+
+                    <div class="section-actions">
+                        <button class="btn btn-primary" onclick="window.print()">
+                            <iconify-icon icon="material-symbols:print"></iconify-icon> Print this page
+                        </button>
+                        <a href="mailto:legal@shdr.com" class="btn btn-outline">
+                            <iconify-icon icon="material-symbols:mail-outline"></iconify-icon> Email legal team
+                        </a>
+                    </div>
+                </section>
+
+                <!-- PRIVACY -->
+                <section class="legal-section" id="privacy">
+                    <h2>Privacy Policy</h2>
+                    <p class="section-sub">How SHDR collects, uses, stores, and protects your personal data.</p>
+
+                    <h3>1. What Personal Data We Collect</h3>
+                    <ul>
+                        <li><strong>Account data:</strong> Full name, email, hashed password, phone number, role, profile photo.</li>
+                        <li><strong>Project data:</strong> Site names, locations, materials, workers, progress records, gallery images.</li>
+                        <li><strong>Usage data:</strong> IP address, browser type, device information, pages visited, timestamps.</li>
+                        <li><strong>Communication data:</strong> Support tickets, inquiry forms, emails.</li>
+                        <li><strong>Authentication data:</strong> OTP codes, session tokens, login history.</li>
+                    </ul>
+
+                    <h3>2. Why We Collect It</h3>
+                    <ul>
+                        <li>To create and manage your account.</li>
+                        <li>To verify your identity (email verification, OTP).</li>
+                        <li>To provide the core Service.</li>
+                        <li>To improve the Service through analytics.</li>
+                        <li>To send important notices.</li>
+                        <li>To comply with legal obligations.</li>
+                    </ul>
+
+                    <h3>3. How We Store &amp; Protect It</h3>
+                    <ul>
+                        <li><strong>Encryption in transit:</strong> HTTPS/TLS.</li>
+                        <li><strong>Encryption at rest:</strong> Databases encrypted by our cloud provider.</li>
+                        <li><strong>Hashed passwords:</strong> Never stored in plain text.</li>
+                        <li><strong>Access controls:</strong> Only authorized personnel.</li>
+                        <li><strong>Backups:</strong> Regular encrypted backups.</li>
+                    </ul>
+
+                    <h3>4. Who Can Access It</h3>
+                    <ul>
+                        <li><strong>You:</strong> Full access to your own data.</li>
+                        <li><strong>Your Owner (if you're a manager):</strong> Can view records you create on their sites.</li>
+                        <li><strong>SHDR staff:</strong> Only with legitimate business need.</li>
+                        <li><strong>Third-party processors:</strong> Firebase, EmailJS, ImgBB.</li>
+                        <li><strong>Legal authorities:</strong> Only when compelled by valid legal process.</li>
+                    </ul>
+
+                    <h3>5. Cookies &amp; Analytics</h3>
+                    <p>We use cookies for essential functionality and analytics. See the Cookie Policy tab for details.</p>
+
+                    <h3>6. Your Rights</h3>
+                    <ul>
+                        <li><strong>Access:</strong> Request a copy of your personal data.</li>
+                        <li><strong>Correction:</strong> Update inaccurate data.</li>
+                        <li><strong>Deletion:</strong> Request account deletion.</li>
+                        <li><strong>Portability:</strong> Export your data.</li>
+                        <li><strong>Objection:</strong> Object to certain processing.</li>
+                        <li><strong>Withdraw consent:</strong> At any time.</li>
+                    </ul>
+
+                    <h3>7. Data Retention &amp; Deletion</h3>
+                    <p>Data is retained while your account is active. After deletion, personal identifiers are removed within 30 days. Aggregate/anonymized data may be retained indefinitely.</p>
+
+                    <div class="callout callout-success">
+                        <iconify-icon icon="material-symbols:verified-user"></iconify-icon>
+                        <div><strong>Request data deletion:</strong> Email <a href="mailto:privacy@shdr.com">privacy@shdr.com</a> with the subject "Data Deletion Request" from your registered email.</div>
+                    </div>
+                </section>
+
+                <!-- COOKIES -->
+                <section class="legal-section" id="cookies">
+                    <h2>Cookie Policy</h2>
+                    <p class="section-sub">How SHDR uses cookies and similar tracking technologies.</p>
+
+                    <h3>1. What Are Cookies</h3>
+                    <p>Small text files stored on your device when you visit a website. They help the site remember your preferences.</p>
+
+                    <h3>2. Cookies We Use</h3>
+                    <p><strong>Essential (always active)</strong> — required for login and core features.</p>
+                    <ul>
+                        <li><code>shdr_session</code> — maintains your login session.</li>
+                        <li><code>shdr_otp_verified_*</code> — tracks OTP verification.</li>
+                        <li><code>shdr_language</code> — remembers language (EN/RW/FR).</li>
+                        <li><code>shdr_owner_remember</code> — stores email for "Remember me".</li>
+                    </ul>
+
+                    <p><strong>Analytics (optional)</strong> — help us improve the Service.</p>
+                    <ul>
+                        <li><code>_ga</code>, <code>_gid</code> — Google Analytics.</li>
+                        <li><code>_shdr_analytics</code> — internal usage tracking.</li>
+                    </ul>
+
+                    <p><strong>Preference (optional)</strong> — remember your settings.</p>
+                    <ul>
+                        <li><code>shdr_theme</code> — dark/light mode.</li>
+                        <li><code>shdr_dashboard_layout</code> — dashboard customization.</li>
+                    </ul>
+
+                    <h3>3. How to Manage Cookies</h3>
+                    <ul>
+                        <li><strong>Chrome:</strong> Settings → Privacy → Cookies.</li>
+                        <li><strong>Firefox:</strong> Preferences → Privacy &amp; Security.</li>
+                        <li><strong>Safari:</strong> Preferences → Privacy.</li>
+                        <li><strong>Edge:</strong> Settings → Cookies and site permissions.</li>
+                    </ul>
+
+                    <div class="callout callout-warn">
+                        <iconify-icon icon="material-symbols:warning"></iconify-icon>
+                        <div><strong>Note:</strong> Blocking essential cookies will prevent you from logging in.</div>
+                    </div>
+
+                    <h3>4. Third-Party Cookies</h3>
+                    <ul>
+                        <li><strong>Firebase (Google):</strong> authentication and data storage.</li>
+                        <li><strong>Google Analytics:</strong> anonymous usage statistics.</li>
+                        <li><strong>ImgBB:</strong> image hosting (no tracking).</li>
+                    </ul>
+
+                    <div class="section-actions">
+                        <button class="btn btn-primary" onclick="window.print()">
+                            <iconify-icon icon="material-symbols:print"></iconify-icon> Print this page
+                        </button>
+                    </div>
+                </section>
+
+                <!-- ACCEPTABLE USE -->
+                <section class="legal-section" id="acceptable-use">
+                    <h2>Acceptable Use Policy</h2>
+                    <p class="section-sub">What you can and cannot do on the SHDR platform.</p>
+
+                    <h3>1. Prohibited Activities</h3>
+                    <p><strong>Illegal Activity</strong> — using the Service for illegal purposes, uploading unlawful content, violating any law.</p>
+                    <p><strong>Abuse &amp; Harassment</strong> — harassing users, sending spam, impersonating others.</p>
+                    <p><strong>Fraud</strong> — false info, manipulating records, creating multiple accounts to bypass restrictions.</p>
+                    <p><strong>Unauthorized Access</strong> — accessing other accounts, probing vulnerabilities, bypassing auth.</p>
+                    <p><strong>Malicious Activity</strong> — viruses, DoS attacks, scrapers without consent.</p>
+
+                    <h3>2. Data Integrity</h3>
+                    <ul>
+                        <li>Do not falsify site records or material quantities.</li>
+                        <li>Do not alter timestamps or manipulate audit logs.</li>
+                        <li>Do not upload fake project images.</li>
+                    </ul>
+
+                    <h3>3. Reporting Violations</h3>
+                    <p>Report to <a href="mailto:abuse@shdr.com" style="color:var(--green);font-weight:600;">abuse@shdr.com</a>.</p>
+
+                    <h3>4. Consequences</h3>
+                    <ul>
+                        <li>Warning notice</li>
+                        <li>Temporary suspension</li>
+                        <li>Permanent termination and data deletion</li>
+                        <li>Reporting to law enforcement</li>
+                        <li>Civil or criminal legal action</li>
+                    </ul>
+
+                    <div class="section-actions">
+                        <button class="btn btn-primary" onclick="window.print()">
+                            <iconify-icon icon="material-symbols:print"></iconify-icon> Print this page
+                        </button>
+                        <a href="mailto:abuse@shdr.com" class="btn btn-outline">
+                            <iconify-icon icon="material-symbols:report"></iconify-icon> Report abuse
+                        </a>
+                    </div>
+                </section>
+
+                <!-- REFUND -->
+                <section class="legal-section" id="refund">
+                    <h2>Refund &amp; Cancellation Policy</h2>
+                    <p class="section-sub">Understand our refund eligibility, cancellation process, and timelines.</p>
+
+                    <h3>1. Current Pricing Status</h3>
+                    <div class="callout callout-success">
+                        <iconify-icon icon="material-symbols:card-giftcard"></iconify-icon>
+                        <div><strong>SHDR is currently free to use.</strong> No charges for Owner or Manager accounts during the launch phase. No refunds apply because no payments are collected.</div>
+                    </div>
+
+                    <h3>2. Refund Eligibility (once paid plans are live)</h3>
+                    <ul>
+                        <li><strong>New subscriptions:</strong> Full refund within 14 days if the Service was not substantially used.</li>
+                        <li><strong>Renewals:</strong> Full refund within 7 days of the renewal charge.</li>
+                        <li><strong>Billing errors:</strong> Full refund for duplicate/unauthorized charges.</li>
+                        <li><strong>Extended outages:</strong> Pro-rated refund if unavailable for 72+ hours due to our fault.</li>
+                    </ul>
+                    <p><strong>No refunds for:</strong> partial months after cancellation, accounts terminated for breach, add-ons already delivered, requests made 30+ days after the charge.</p>
+
+                    <h3>3. How to Cancel</h3>
+                    <ul>
+                        <li><strong>Dashboard:</strong> Settings → Account → Cancel Subscription.</li>
+                        <li><strong>Email:</strong> <a href="mailto:billing@shdr.com" style="color:var(--green);font-weight:600;">billing@shdr.com</a> from your registered email.</li>
+                        <li><strong>Phone:</strong> Call our support line during business hours.</li>
+                    </ul>
+                    <p>Once canceled, your subscription will not renew. You'll retain access until the end of the current billing period.</p>
+
+                    <h3>4. Processing Times</h3>
+                    <ul>
+                        <li><strong>Refund approval:</strong> Within 2 business days.</li>
+                        <li><strong>Refund processing:</strong> 5–10 business days after approval.</li>
+                        <li><strong>Bank posting:</strong> 3–7 additional business days.</li>
+                    </ul>
+
+                    <h3>5. Chargebacks</h3>
+                    <p>If you initiate a chargeback instead of requesting a refund, we reserve the right to suspend your account until resolved. Please contact us first.</p>
+
+                    <div class="section-actions">
+                        <button class="btn btn-primary" onclick="window.print()">
+                            <iconify-icon icon="material-symbols:print"></iconify-icon> Print this page
+                        </button>
+                        <a href="mailto:billing@shdr.com" class="btn btn-outline">
+                            <iconify-icon icon="material-symbols:mail-outline"></iconify-icon> Contact billing
+                        </a>
+                    </div>
+                </section>
+
+                <!-- CONTACT -->
+                <section class="legal-section" id="contact">
+                    <h2>Contact &amp; Legal Notice</h2>
+                    <p class="section-sub">How to reach SHDR for legal, support, or business matters.</p>
+
+                    <h3>1. Company Information</h3>
+                    <div class="contact-card">
+                        <div class="row">
+                            <div class="ico"><iconify-icon icon="material-symbols:business-outline" width="20"></iconify-icon></div>
+                            <div><div class="lbl">Company Name</div><div class="val">SHDR Ltd</div></div>
+                        </div>
+                        <div class="row">
+                            <div class="ico"><iconify-icon icon="material-symbols:badge-outline" width="20"></iconify-icon></div>
+                            <div><div class="lbl">Legal Structure</div><div class="val">Registered Private Limited Company — Rwanda</div></div>
+                        </div>
+                        <div class="row">
+                            <div class="ico"><iconify-icon icon="material-symbols:location-on-outline" width="20"></iconify-icon></div>
+                            <div><div class="lbl">Registered Address</div><div class="val">KG 11 Avenue, Kimironko, Gasabo District<br>Yussa Plaza, 1st Floor<br>Kigali City, Rwanda</div></div>
+                        </div>
+                    </div>
+
+                    <h3>2. Contact Channels</h3>
+                    <div class="contact-card">
+                        <div class="row">
+                            <div class="ico"><iconify-icon icon="material-symbols:mail-outline" width="20"></iconify-icon></div>
+                            <div><div class="lbl">General Inquiries</div><div class="val"><a href="mailto:hello@shdr.com">hello@shdr.com</a></div></div>
+                        </div>
+                        <div class="row">
+                            <div class="ico"><iconify-icon icon="material-symbols:gavel" width="20"></iconify-icon></div>
+                            <div><div class="lbl">Legal</div><div class="val"><a href="mailto:legal@shdr.com">legal@shdr.com</a></div></div>
+                        </div>
+                        <div class="row">
+                            <div class="ico"><iconify-icon icon="material-symbols:shield-outline" width="20"></iconify-icon></div>
+                            <div><div class="lbl">Privacy &amp; Data Requests</div><div class="val"><a href="mailto:privacy@shdr.com">privacy@shdr.com</a></div></div>
+                        </div>
+                        <div class="row">
+                            <div class="ico"><iconify-icon icon="material-symbols:report" width="20"></iconify-icon></div>
+                            <div><div class="lbl">Abuse Reports</div><div class="val"><a href="mailto:abuse@shdr.com">abuse@shdr.com</a></div></div>
+                        </div>
+                        <div class="row">
+                            <div class="ico"><iconify-icon icon="material-symbols:payments-outline" width="20"></iconify-icon></div>
+                            <div><div class="lbl">Billing</div><div class="val"><a href="mailto:billing@shdr.com">billing@shdr.com</a></div></div>
+                        </div>
+                        <div class="row">
+                            <div class="ico"><iconify-icon icon="material-symbols:call" width="20"></iconify-icon></div>
+                            <div><div class="lbl">Phone</div><div class="val"><a href="tel:+250788474110">+250 788 474 110</a></div></div>
+                        </div>
+                        <div class="row">
+                            <div class="ico"><iconify-icon icon="fab fa-whatsapp" width="20"></iconify-icon></div>
+                            <div><div class="lbl">WhatsApp Support</div><div class="val"><a href="https://wa.me/250790020086" target="_blank" rel="noopener">Chat with us</a></div></div>
+                        </div>
+                    </div>
+
+                    <h3>3. Response Times</h3>
+                    <ul>
+                        <li>General inquiries: within 2 business days</li>
+                        <li>Legal matters: within 5 business days</li>
+                        <li>Privacy / data requests: within 30 days</li>
+                        <li>Abuse reports: within 24 hours</li>
+                        <li>Billing issues: within 2 business days</li>
+                    </ul>
+
+                    <h3>4. Business Hours</h3>
+                    <p>Monday–Friday: 8:00 AM – 6:00 PM (CAT)<br>
+                    Saturday: 9:00 AM – 1:00 PM<br>
+                    Sunday &amp; public holidays: Closed</p>
+
+                    <h3>5. Registered Agent</h3>
+                    <p><strong>SHDR Ltd — Registered Agent</strong><br>
+                    KG 11 Avenue, Kimironko<br>
+                    Yussa Plaza, 1st Floor<br>
+                    Kigali, Rwanda</p>
+
+                    <div class="section-actions">
+                        <button class="btn btn-primary" onclick="window.print()">
+                            <iconify-icon icon="material-symbols:print"></iconify-icon> Print this page
+                        </button>
+                    </div>
+                </section>
+
             </div>
         </div>
-    </section>
+    </main>
 
-    <!-- ─────────── FEATURES ─────────── -->
-    <section class="section" id="features">
-        <div class="section-inner">
-            <div class="section-label">Features</div>
-            <div class="section-title">Everything is tracked</div>
-            <p class="section-desc">All site data recorded by managers, visible to owners in real time.</p>
-
-            <div class="features-grid">
-
-                <div class="feature-item">
-                    <div class="icon">
-                        <iconify-icon icon="material-symbols:package-2-outline"></iconify-icon>
-                    </div>
-                    <h4>Materials</h4>
-                    <p>Track cement, steel, wood, electrical, plumbing — with quantities and alerts.</p>
-                </div>
-
-                <div class="feature-item">
-                    <div class="icon">
-                        <iconify-icon icon="material-symbols:inventory-2-outline"></iconify-icon>
-                    </div>
-                    <h4>Stock Control</h4>
-                    <p>Receive stock, low-stock alerts, and complete transaction history per site.</p>
-                </div>
-
-                <div class="feature-item">
-                    <div class="icon">
-                        <iconify-icon icon="material-symbols:engineering-outline"></iconify-icon>
-                    </div>
-                    <h4>Workers</h4>
-                    <p>Attendance, daily rates, and payroll calculated automatically.</p>
-                </div>
-
-                <div class="feature-item">
-                    <div class="icon">
-                        <iconify-icon icon="material-symbols:trending-up"></iconify-icon>
-                    </div>
-                    <h4>Progress</h4>
-                    <p>Milestone timeline with percentage tracking and photo updates.</p>
-                </div>
-
-                <div class="feature-item">
-                    <div class="icon">
-                        <iconify-icon icon="material-symbols:account-balance-wallet-outline"></iconify-icon>
-                    </div>
-                    <h4>Finances</h4>
-                    <p>Live budget tracking, cost breakdown, and overrun alerts for every site.</p>
-                </div>
-
-                <div class="feature-item">
-                    <div class="icon">
-                        <iconify-icon icon="material-symbols:description-outline"></iconify-icon>
-                    </div>
-                    <h4>Reports</h4>
-                    <p>Auto-generated reports with full breakdown for owner approval.</p>
-                </div>
-
-                <div class="feature-item">
-                    <div class="icon">
-                        <iconify-icon icon="material-symbols:apartment"></iconify-icon>
-                    </div>
-                    <h4>Multi-Site</h4>
-                    <p>Manage unlimited construction sites from one dashboard — switch instantly.</p>
-                </div>
-
-                <div class="feature-item">
-                    <div class="icon">
-                        <iconify-icon icon="material-symbols:photo-library-outline"></iconify-icon>
-                    </div>
-                    <h4>Site Gallery</h4>
-                    <p>Upload site photos with descriptions — full-screen viewer for progress updates.</p>
-                </div>
-
-                <div class="feature-item">
-                    <div class="icon">
-                        <iconify-icon icon="material-symbols:group-outline"></iconify-icon>
-                    </div>
-                    <h4>Manager Team</h4>
-                    <p>Invite managers, assign them to specific sites, and monitor activity securely.</p>
-                </div>
-
-                <div class="feature-item">
-                    <div class="icon">
-                        <iconify-icon icon="material-symbols:notifications-active-outline"></iconify-icon>
-                    </div>
-                    <h4>Alerts</h4>
-                    <p>Low stock, milestone completions, report submissions — stay tuned!</p>
-                </div>
-
-                <div class="feature-item">
-                    <div class="icon">
-                        <iconify-icon icon="material-symbols:settings-outline"></iconify-icon>
-                    </div>
-                    <h4>Settings &amp; Security</h4>
-                    <p>Update profile, change passcode, and customize your account preferences.</p>
-                </div>
-
-                <div class="feature-item coming-soon">
-                    <div class="icon">
-                        <iconify-icon icon="material-symbols:business-center-outline"></iconify-icon>
-                    </div>
-                    <h4>Office Hub <span class="badge-soon">Coming Soon!</span></h4>
-                    <p>Document workflow, permits, certifications, and approval center — launching soon.</p>
-                </div>
-
-            </div>
-        </div>
-    </section>
-
-    <!-- CTA -->
-    <section class="cta section-alt">
-        <div class="section-inner">
-            <h2>Ready to bring clarity to your project?</h2>
-            <p>Start managing your construction site with transparency.</p>
-            <button class="btn btn-primary" onclick="redirectOwner()">
-                <iconify-icon icon="material-symbols:person-add"></iconify-icon>
-                Create Owner's Account
-            </button>
-        </div>
-    </section>
-
-    <!-- Footer -->
+    <!-- ═══════════════════════════════════════════════════════
+         FOOTER (visible on both views)
+         ═══════════════════════════════════════════════════════ -->
     <footer>
-        <div class="footer-inner">
-            Designed &amp; Powered by
-            <a href="https://wa.me/250790020086?text=Enock%20what%27s%20up%3F%20I%27m%20using%20the%20SHDR%20Construction%20Sites%20Management%20System%20and%20I%20need%20some%20help."
-               target="_blank"
-               rel="noopener noreferrer">
-                <strong>___Enock's___blessingz___</strong>
-            </a>
+        <div class="footer-columns">
+            <div class="footer-col">
+                <div class="footer-brand">
+                    <span class="logo-icon">
+                        <img src="shdr_logo%20Background%20Removed.png" alt="SHDR Logo">
+                    </span>
+                    <span class="footer-brand-name">SH<span style="color:var(--green);">DR</span></span>
+                </div>
+                <p class="footer-desc">Construction site management made easier and smarter. Connect owners and site managers with full transparency.</p>
+            </div>
+
+            <div class="footer-col">
+                <h4>Company</h4>
+                <ul>
+                    <li><a onclick="showView('landing', 'accounts')">About Us</a></li>
+                    <li><a onclick="showView('landing', 'features')">Services</a></li>
+                    <li><a onclick="showView('landing', 'features')">Projects</a></li>
+                    <li><a href="https://wa.me/250790020086" target="_blank" rel="noopener">Contact</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-col">
+                <h4>Legal</h4>
+                <ul>
+                    <li><a onclick="showView('legal', 'terms')">Terms &amp; Conditions</a></li>
+                    <li><a onclick="showView('legal', 'privacy')">Privacy Policy</a></li>
+                    <li><a onclick="showView('legal', 'cookies')">Cookie Policy</a></li>
+                    <li><a onclick="showView('legal', 'acceptable-use')">Acceptable Use</a></li>
+                    <li><a onclick="showView('legal', 'refund')">Refund &amp; Cancellation</a></li>
+                    <li><a onclick="showView('legal', 'contact')">Legal Notice</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-col">
+                <h4>Support</h4>
+                <ul>
+                    <li><a onclick="showView('legal', 'contact')">Help Center</a></li>
+                    <li><a href="https://wa.me/250790020086" target="_blank" rel="noopener">Contact Support</a></li>
+                    <li><a href="mailto:abuse@shdr.com">Report an Issue</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <div>© 2026 SHDR Ltd — All rights reserved.</div>
+            <div>Designed &amp; Powered by <a href="https://wa.me/250790020086" target="_blank" rel="noopener">___Enock's___blessingz___</a></div>
         </div>
     </footer>
 
     <script>
-        // Mobile menu
+        // ═══════════════════════════════════════════════════════
+        // VIEW SWITCHING
+        // ═══════════════════════════════════════════════════════
+        function showView(viewName, anchorId) {
+            // Hide all views
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+
+            if (viewName === 'legal') {
+                document.getElementById('legal-view').classList.add('active');
+                // Show requested legal section
+                if (anchorId) {
+                    const navLink = document.querySelector(`#legalNav a[onclick*="${anchorId}"]`);
+                    showLegalSection(anchorId, navLink);
+                }
+                history.replaceState(null, '', '#' + (anchorId || 'terms'));
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } else {
+                document.getElementById('landing-view').classList.add('active');
+                history.replaceState(null, '', window.location.pathname);
+                // If anchor given, scroll to it; otherwise top
+                if (anchorId) {
+                    setTimeout(() => {
+                        const target = document.getElementById(anchorId);
+                        if (target) {
+                            const offset = 64;
+                            const top = target.getBoundingClientRect().top + window.scrollY - offset;
+                            window.scrollTo({ top, behavior: 'smooth' });
+                        }
+                    }, 50);
+                } else {
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+            }
+
+            // Close mobile menu
+            const toggle = document.getElementById('mobileToggle');
+            const navLinks = document.getElementById('navLinks');
+            toggle.classList.remove('active');
+            navLinks.classList.remove('active');
+        }
+        window.showView = showView;
+
+        // ═══════════════════════════════════════════════════════
+        // LEGAL SECTION SWITCHING
+        // ═══════════════════════════════════════════════════════
+        function showLegalSection(sectionId, navEl) {
+            document.querySelectorAll('.legal-section').forEach(s => s.classList.remove('active'));
+            const target = document.getElementById(sectionId);
+            if (target) target.classList.add('active');
+
+            document.querySelectorAll('#legalNav a').forEach(a => a.classList.remove('active'));
+            if (navEl) navEl.classList.add('active');
+
+            history.replaceState(null, '', '#' + sectionId);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        window.showLegalSection = showLegalSection;
+
+        // ═══════════════════════════════════════════════════════
+        // MOBILE MENU
+        // ═══════════════════════════════════════════════════════
         const toggle = document.getElementById('mobileToggle');
         const navLinks = document.getElementById('navLinks');
         toggle.addEventListener('click', () => {
             toggle.classList.toggle('active');
             navLinks.classList.toggle('active');
         });
-        navLinks.querySelectorAll('a').forEach(el => {
-            el.addEventListener('click', () => {
-                toggle.classList.remove('active');
-                navLinks.classList.remove('active');
-            });
-        });
 
-        // Smooth scroll
-        document.querySelectorAll('a[href^="#"]').forEach(a => {
-            a.addEventListener('click', function(e) {
-                const id = this.getAttribute('href');
-                if (id === '#') return;
-                e.preventDefault();
-                const target = document.querySelector(id);
-                if (target) target.scrollIntoView({ behavior: 'smooth' });
-            });
-        });
+        // ═══════════════════════════════════════════════════════
+        // REDIRECTS
+        // ═══════════════════════════════════════════════════════
+        function redirectOwner() { window.location.href = 'owner.html'; }
+        function redirectManager() { window.location.href = 'manager.html'; }
 
-        // Redirects
-        function redirectOwner() {
-            window.location.href = 'owner.html';
-        }
-        function redirectManager() {
-            window.location.href = 'manager.html';
-        }
+        // ═══════════════════════════════════════════════════════
+        // DEEP-LINK ON LOAD (#terms, #privacy, etc.)
+        // ═══════════════════════════════════════════════════════
+        window.addEventListener('load', () => {
+            const validSections = ['terms', 'privacy', 'cookies', 'acceptable-use', 'refund', 'contact'];
+            const hash = window.location.hash.replace('#', '');
+            if (validSections.includes(hash)) {
+                showView('legal', hash);
+            }
+        });
     </script>
 </body>
 </html>
