@@ -27,7 +27,7 @@
         }
         .split-container { display: flex; width: 100%; min-height: 100vh; }
 
-        /* ✅ Image is the base background */
+        /* ✅ Green overlay completely removed — image is the only background */
         .brand-panel {
             flex: 0 0 42%;
             background: url('https://cdn.pixabay.com/photo/2018/12/12/23/02/site-3871804_1280.jpg') center/cover no-repeat;
@@ -35,11 +35,9 @@
             align-items: center; justify-content: center; padding: 40px; color: #fff; text-align: center;
         }
 
-        /* ✅ Green gradient overlay at 85% opacity (was 100%) */
+        /* ✅ ::before no longer renders anything */
         .brand-panel::before {
-            content: ''; position: absolute; inset: 0;
-            background: linear-gradient(135deg, rgba(6, 78, 59, 0.85) 0%, rgba(4, 120, 87, 0.85) 100%);
-            z-index: 0;
+            content: none;
         }
 
         .brand-content { position: relative; z-index: 2; max-width: 360px; }
@@ -55,11 +53,10 @@
             width: 100%; height: 100%; object-fit: contain; 
             background: transparent; padding: 0;
         }
-        .brand-panel h2 { font-size: 2rem; font-weight: 700; margin-bottom: 16px; letter-spacing: -0.5px; }
-        .brand-panel p { font-size: 1rem; line-height: 1.7; opacity: 0.9; }
+        .brand-panel h2 { font-size: 2rem; font-weight: 700; margin-bottom: 16px; letter-spacing: -0.5px; text-shadow: 0 2px 12px rgba(0,0,0,0.55); }
+        .brand-panel p { font-size: 1rem; line-height: 1.7; opacity: 0.95; text-shadow: 0 1px 8px rgba(0,0,0,0.5); }
         .brand-features { margin-top: 40px; display: flex; flex-direction: column; gap: 16px; text-align: left; width: 100%; max-width: 300px; }
-        .brand-feature { display: flex; align-items: center; gap: 12px; font-size: 0.9rem; opacity: 0.85; }
-        /* ✅ white background REMOVED */
+        .brand-feature { display: flex; align-items: center; gap: 12px; font-size: 0.9rem; opacity: 0.95; text-shadow: 0 1px 6px rgba(0,0,0,0.5); }
         .brand-feature .icon { 
             display: inline-flex; 
             align-items: center; 
@@ -152,7 +149,6 @@
         @keyframes spin { to { transform: rotate(360deg); } }
 
         .otp-view { text-align: center; }
-        /* ✅ otp-icon background REMOVED — icon floats freely */
         .otp-icon {
             width: 76px; height: 76px;
             display: flex; align-items: center; justify-content: center;
@@ -589,7 +585,6 @@
         }
         window.switchTo = switchTo;
 
-        /* ── REAL ICON toggle — swaps Iconify icon, no emoji ── */
         function togglePassword(inputId, eyeId) {
             const input = document.getElementById(inputId);
             const eye = document.getElementById(eyeId);
