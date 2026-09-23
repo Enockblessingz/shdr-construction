@@ -1191,7 +1191,7 @@
                     <span class="logo-icon">
                         <img src="shdr_logo%20Background%20Removed.png" alt="SHDR Logo">
                     </span>
-                    <span class="footer-brand-name">SH<span style="color:var(--green);">DR</span></span>
+                    <span class="footer-brand-name">SHDR<span style="color:var(--green);">LTD</span></span>
                 </div>
                 <p class="footer-desc">Construction site management made easier and smarter. Connect owners and site managers with full transparency.</p>
             </div>
@@ -1229,12 +1229,13 @@
         </div>
 
         <div class="footer-bottom">
-            <div>© 2026 SHDR Ltd — All rights reserved.</div>
+            <div>© <span id="currentYear"></span> SHDR Ltd — All rights reserved.</div>
             <div>Designed &amp; Powered by <a href="https://wa.me/250790020086" target="_blank" rel="noopener">___Enock's___blessingz___</a></div>
         </div>
     </footer>
 
     <script>
+        document.getElementById("currentYear").textContent = new Date().getFullYear();
         // ═══════════════════════════════════════════════════════
         // VIEW SWITCHING
         // ═══════════════════════════════════════════════════════
