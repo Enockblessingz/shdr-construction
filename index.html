@@ -90,7 +90,6 @@
             cursor: pointer;
         }
         .nav-links a:hover { color: var(--text); }
-        .nav-links a.active { color: var(--green); font-weight: 600; }
 
         .btn {
             padding: 8px 20px;
@@ -116,194 +115,60 @@
         .mobile-toggle { display: none; background: none; border: none; cursor: pointer; padding: 4px; }
         .mobile-toggle span { display: block; width: 22px; height: 2px; background: var(--text); margin: 4px 0; transition: 0.2s; }
 
-        /* ═══════════════════════════════════════════════════════
-           VIEW SWITCHING
-           ═══════════════════════════════════════════════════════ */
+        /* ─── View switching ─── */
         .view { display: none; }
         .view.active { display: block; }
 
-        /* ─── Landing View ─── */
-        #landing-view.active { display: block; }
-
-        /* ─── Legal View ─── */
-        #legal-view.active { display: block; }
-
         /* ─── Hero ─── */
-        .hero {
-            position: relative;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-        }
+        .hero { position: relative; min-height: 100vh; display: flex; align-items: center; justify-content: center; overflow: hidden; }
         .hero-bg { position: absolute; inset: 0; z-index: 0; }
         .hero-bg img { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.55); }
-        .hero-bg::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(180deg, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.7) 100%);
-        }
+        .hero-bg::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.7) 100%); }
         .hero-content { position: relative; z-index: 1; text-align: center; max-width: 700px; padding: 0 24px; }
-        .hero-content h1 {
-            font-size: 3.2rem;
-            font-weight: 700;
-            line-height: 1.15;
-            letter-spacing: -0.8px;
-            color: #ffffff;
-            margin-bottom: 20px;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.4);
-        }
+        .hero-content h1 { font-size: 3.2rem; font-weight: 700; line-height: 1.15; letter-spacing: -0.8px; color: #ffffff; margin-bottom: 20px; text-shadow: 0 2px 10px rgba(0,0,0,0.4); }
         .hero-content h1 span { color: #34d399; }
-        .hero-content p {
-            color: rgba(255,255,255,0.85);
-            font-size: 1.1rem;
-            max-width: 500px;
-            margin: 0 auto 36px;
-            line-height: 1.7;
-            text-shadow: 0 1px 6px rgba(0,0,0,0.3);
-        }
+        .hero-content p { color: rgba(255,255,255,0.85); font-size: 1.1rem; max-width: 500px; margin: 0 auto 36px; line-height: 1.7; text-shadow: 0 1px 6px rgba(0,0,0,0.3); }
         .hero-buttons { display: flex; gap: 14px; justify-content: center; }
         .hero .btn-primary { background: var(--green); color: #fff; padding: 12px 28px; font-size: 0.95rem; border-radius: 8px; }
         .hero .btn-primary:hover { background: var(--green-hover); }
-        .hero .btn-outline {
-            background: rgba(255,255,255,0.1);
-            border: 1.5px solid rgba(255,255,255,0.4);
-            color: #fff;
-            padding: 12px 28px;
-            font-size: 0.95rem;
-            border-radius: 8px;
-            backdrop-filter: blur(4px);
-        }
+        .hero .btn-outline { background: rgba(255,255,255,0.1); border: 1.5px solid rgba(255,255,255,0.4); color: #fff; padding: 12px 28px; font-size: 0.95rem; border-radius: 8px; backdrop-filter: blur(4px); }
         .hero .btn-outline:hover { background: rgba(255,255,255,0.2); border-color: rgba(255,255,255,0.6); }
 
         /* ─── Sections ─── */
         .section { padding: 80px 24px; }
         .section-alt { background: var(--bg-secondary); }
         .section-inner { max-width: var(--max-width); margin: 0 auto; }
-        .section-label {
-            font-size: 0.8rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            color: var(--green);
-            margin-bottom: 12px;
-        }
-        .section-title {
-            font-size: 2rem;
-            font-weight: 700;
-            letter-spacing: -0.5px;
-            margin-bottom: 16px;
-        }
+        .section-label { font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--green); margin-bottom: 12px; }
+        .section-title { font-size: 2rem; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 16px; }
         .section-desc { color: var(--text-light); max-width: 520px; margin-bottom: 48px; line-height: 1.7; }
 
         /* ─── Accounts ─── */
         .accounts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
-        .account-card {
-            background: var(--bg);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 32px;
-            transition: box-shadow 0.3s;
-        }
+        .account-card { background: var(--bg); border: 1px solid var(--border); border-radius: 12px; padding: 32px; transition: box-shadow 0.3s; }
         .account-card:hover { box-shadow: 0 8px 30px rgba(0,0,0,0.06); }
         .account-card h3 { font-size: 1.3rem; font-weight: 600; margin-bottom: 8px; }
-        .account-card .role-badge {
-            display: inline-block;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 500;
-            margin-bottom: 16px;
-        }
+        .account-card .role-badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 500; margin-bottom: 16px; }
         .badge-owner { background: #ecfdf5; color: #059669; }
         .badge-manager { background: #f0fdf4; color: #16a34a; }
         .account-card ul { list-style: none; margin-bottom: 24px; }
-        .account-card ul li {
-            padding: 6px 0;
-            font-size: 0.9rem;
-            color: var(--text-light);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .account-card ul li::before {
-            content: '';
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            background: var(--green);
-            flex-shrink: 0;
-        }
-        .note {
-            background: #fffbeb;
-            border: 1px solid #fde68a;
-            border-radius: 8px;
-            padding: 14px 16px;
-            font-size: 0.85rem;
-            color: #92400e;
-            display: flex;
-            align-items: flex-start;
-            gap: 8px;
-        }
+        .account-card ul li { padding: 6px 0; font-size: 0.9rem; color: var(--text-light); display: flex; align-items: center; gap: 10px; }
+        .account-card ul li::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--green); flex-shrink: 0; }
+        .note { background: #fffbeb; border: 1px solid #fde68a; border-radius: 8px; padding: 14px 16px; font-size: 0.85rem; color: #92400e; display: flex; align-items: flex-start; gap: 8px; }
         .image-row { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 48px; }
         .image-row img { width: 100%; border-radius: 10px; object-fit: cover; aspect-ratio: 16/10; }
         .image-caption { font-size: 0.85rem; color: var(--text-light); margin-top: 8px; }
 
         /* ─── Features ─── */
         .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
-        .feature-item {
-            padding: 24px;
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            transition: box-shadow 0.2s, transform 0.2s, border-color 0.2s;
-            background: var(--bg);
-            position: relative;
-        }
-        .feature-item:hover {
-            box-shadow: 0 6px 24px rgba(5,150,105,0.08);
-            transform: translateY(-2px);
-            border-color: #a7f3d0;
-        }
-        .feature-item .icon {
-            width: 48px;
-            height: 48px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 16px;
-            color: #059669;
-            transition: transform 0.2s;
-        }
+        .feature-item { padding: 24px; border: 1px solid var(--border); border-radius: 10px; transition: box-shadow 0.2s, transform 0.2s, border-color 0.2s; background: var(--bg); position: relative; }
+        .feature-item:hover { box-shadow: 0 6px 24px rgba(5,150,105,0.08); transform: translateY(-2px); border-color: #a7f3d0; }
+        .feature-item .icon { width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; margin-bottom: 16px; color: #059669; transition: transform 0.2s; }
         .feature-item:hover .icon { transform: scale(1.08); }
         .feature-item .icon iconify-icon { font-size: 1.75rem; line-height: 1; display: block; }
-        .feature-item h4 {
-            font-weight: 600;
-            margin-bottom: 6px;
-            font-size: 0.95rem;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
+        .feature-item h4 { font-weight: 600; margin-bottom: 6px; font-size: 0.95rem; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
         .feature-item p { font-size: 0.85rem; color: var(--text-light); line-height: 1.6; }
-        .badge-soon {
-            display: inline-block;
-            background: #fef3c7;
-            color: #92400e;
-            font-size: 0.65rem;
-            font-weight: 700;
-            padding: 2px 8px;
-            border-radius: 20px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            line-height: 1.5;
-        }
-        .feature-item.coming-soon {
-            background: linear-gradient(135deg, #fffbeb 0%, #ffffff 100%);
-            border-color: #fde68a;
-        }
+        .badge-soon { display: inline-block; background: #fef3c7; color: #92400e; font-size: 0.65rem; font-weight: 700; padding: 2px 8px; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.5px; line-height: 1.5; }
+        .feature-item.coming-soon { background: linear-gradient(135deg, #fffbeb 0%, #ffffff 100%); border-color: #fde68a; }
         .feature-item.coming-soon .icon { color: #b45309; }
 
         /* ─── CTA ─── */
@@ -311,142 +176,39 @@
         .cta h2 { font-size: 2rem; font-weight: 700; margin-bottom: 12px; letter-spacing: -0.5px; }
         .cta p { color: var(--text-light); margin-bottom: 28px; }
 
-        /* ═══════════════════════════════════════════════════════
-           LEGAL VIEW (matching screenshot)
-           ═══════════════════════════════════════════════════════ */
-        .legal-page-header {
-            background: var(--bg-secondary);
-            border-bottom: 1px solid var(--border);
-            padding: 120px 24px 48px;
-        }
+        /* ─── Legal View ─── */
+        .legal-page-header { background: var(--bg-secondary); border-bottom: 1px solid var(--border); padding: 120px 24px 48px; }
         .legal-page-header-inner { max-width: var(--max-width); margin: 0 auto; }
-        .legal-page-header h1 {
-            font-size: 2.5rem;
-            font-weight: 700;
-            letter-spacing: -0.8px;
-            margin-bottom: 8px;
-        }
+        .legal-page-header h1 { font-size: 2.5rem; font-weight: 700; letter-spacing: -0.8px; margin-bottom: 8px; }
         .legal-page-header p { color: var(--text-light); max-width: 600px; font-size: 0.95rem; }
-        .legal-page-header .meta {
-            margin-top: 16px;
-            font-size: 0.8rem;
-            color: var(--text-light);
-            display: flex;
-            gap: 20px;
-            flex-wrap: wrap;
-        }
+        .legal-page-header .meta { margin-top: 16px; font-size: 0.8rem; color: var(--text-light); display: flex; gap: 20px; flex-wrap: wrap; }
         .legal-page-header .meta span { display: inline-flex; align-items: center; gap: 6px; }
 
-        .legal-layout {
-            max-width: var(--max-width);
-            margin: 0 auto;
-            padding: 48px 24px 80px;
-            display: grid;
-            grid-template-columns: 240px 1fr;
-            gap: 48px;
-            align-items: start;
-        }
+        .legal-layout { max-width: var(--max-width); margin: 0 auto; padding: 48px 24px 80px; display: grid; grid-template-columns: 240px 1fr; gap: 48px; align-items: start; }
 
-        .legal-sidebar {
-            position: sticky;
-            top: 88px;
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 20px;
-            background: var(--bg);
-        }
-        .legal-sidebar h3 {
-            font-size: 0.7rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            color: var(--text-light);
-            margin-bottom: 14px;
-        }
+        .legal-sidebar { position: sticky; top: 88px; border: 1px solid var(--border); border-radius: 12px; padding: 20px; background: var(--bg); }
+        .legal-sidebar h3 { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-light); margin-bottom: 14px; }
         .legal-sidebar ul { list-style: none; display: flex; flex-direction: column; gap: 2px; }
-        .legal-sidebar li a {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 9px 12px;
-            border-radius: 6px;
-            font-size: 0.85rem;
-            color: var(--text-light);
-            font-weight: 500;
-            transition: all 0.15s;
-            cursor: pointer;
-        }
+        .legal-sidebar li a { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-radius: 6px; font-size: 0.85rem; color: var(--text-light); font-weight: 500; transition: all 0.15s; cursor: pointer; }
         .legal-sidebar li a:hover { background: var(--bg-secondary); color: var(--text); }
-        .legal-sidebar li a.active {
-            background: var(--green-light);
-            color: var(--green);
-            font-weight: 600;
-        }
+        .legal-sidebar li a.active { background: var(--green-light); color: var(--green); font-weight: 600; }
         .legal-sidebar li a iconify-icon { font-size: 1rem; flex-shrink: 0; }
 
         .legal-content-area { min-width: 0; }
         .legal-section { display: none; animation: fadeIn 0.2s ease; }
         .legal-section.active { display: block; }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(4px); }
-            to   { opacity: 1; transform: translateY(0); }
-        }
-
-        .legal-section > h2 {
-            font-size: 1.75rem;
-            font-weight: 700;
-            letter-spacing: -0.5px;
-            margin-bottom: 6px;
-        }
-        .legal-section > .section-sub {
-            color: var(--text-light);
-            font-size: 0.9rem;
-            margin-bottom: 32px;
-            padding-bottom: 24px;
-            border-bottom: 1px solid var(--border);
-        }
-        .legal-section h3 {
-            font-size: 1.05rem;
-            font-weight: 700;
-            margin-top: 32px;
-            margin-bottom: 10px;
-            color: var(--text);
-        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+        .legal-section > h2 { font-size: 1.75rem; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 6px; }
+        .legal-section > .section-sub { color: var(--text-light); font-size: 0.9rem; margin-bottom: 32px; padding-bottom: 24px; border-bottom: 1px solid var(--border); }
+        .legal-section h3 { font-size: 1.05rem; font-weight: 700; margin-top: 32px; margin-bottom: 10px; color: var(--text); }
         .legal-section h3:first-of-type { margin-top: 0; }
-        .legal-section p {
-            color: #374151;
-            font-size: 0.95rem;
-            margin-bottom: 14px;
-            line-height: 1.75;
-        }
-        .legal-section ul {
-            padding-left: 22px;
-            margin-bottom: 16px;
-            color: #374151;
-            font-size: 0.95rem;
-            line-height: 1.75;
-        }
+        .legal-section p { color: #374151; font-size: 0.95rem; margin-bottom: 14px; line-height: 1.75; }
+        .legal-section ul { padding-left: 22px; margin-bottom: 16px; color: #374151; font-size: 0.95rem; line-height: 1.75; }
         .legal-section ul li { margin-bottom: 8px; }
         .legal-section ul li strong { color: var(--text); }
-        .legal-section code {
-            background: var(--bg-secondary);
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-size: 0.85rem;
-            color: var(--green-hover);
-            font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-        }
+        .legal-section code { background: var(--bg-secondary); padding: 2px 6px; border-radius: 4px; font-size: 0.85rem; color: var(--green-hover); font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
 
-        .callout {
-            border-radius: 10px;
-            padding: 16px 20px;
-            margin: 20px 0;
-            display: flex;
-            gap: 12px;
-            align-items: flex-start;
-            font-size: 0.9rem;
-            line-height: 1.65;
-        }
+        .callout { border-radius: 10px; padding: 16px 20px; margin: 20px 0; display: flex; gap: 12px; align-items: flex-start; font-size: 0.9rem; line-height: 1.65; }
         .callout iconify-icon { flex-shrink: 0; font-size: 1.25rem; margin-top: 2px; }
         .callout-info { background: #eff6ff; border: 1px solid #bfdbfe; color: #1e3a8a; }
         .callout-info iconify-icon { color: #2563eb; }
@@ -456,113 +218,148 @@
         .callout-success iconify-icon { color: var(--green); }
         .callout a { color: var(--green); font-weight: 600; }
 
-        .contact-card {
-            background: var(--bg-secondary);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 24px;
-            margin: 20px 0;
-        }
-        .contact-card .row {
-            display: flex;
-            gap: 14px;
-            align-items: center;
-            padding: 12px 0;
-            border-bottom: 1px solid var(--border);
-        }
+        .contact-card { background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 12px; padding: 24px; margin: 20px 0; }
+        .contact-card .row { display: flex; gap: 14px; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--border); }
         .contact-card .row:last-child { border-bottom: none; }
-        .contact-card .row .ico {
-            width: 40px; height: 40px;
-            background: var(--green-light);
-            color: var(--green);
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-        }
-        .contact-card .row .lbl {
-            font-size: 0.75rem;
-            color: var(--text-light);
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            font-weight: 600;
-        }
-        .contact-card .row .val {
-            font-size: 0.95rem;
-            color: var(--text);
-            font-weight: 500;
-        }
+        .contact-card .row .ico { width: 40px; height: 40px; background: var(--green-light); color: var(--green); border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .contact-card .row .lbl { font-size: 0.75rem; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; }
+        .contact-card .row .val { font-size: 0.95rem; color: var(--text); font-weight: 500; }
         .contact-card .row .val a { color: var(--green); }
         .contact-card .row .val a:hover { text-decoration: underline; }
 
-        .section-actions {
-            margin-top: 40px;
-            padding-top: 24px;
-            border-top: 1px solid var(--border);
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
+        .section-actions { margin-top: 40px; padding-top: 24px; border-top: 1px solid var(--border); display: flex; gap: 12px; flex-wrap: wrap; }
 
-        /* ─── Footer ─── */
+        /* ═══════════════════════════════════════════════════════
+           PREMIUM FOOTER
+           ═══════════════════════════════════════════════════════ */
         footer {
             border-top: 1px solid var(--border);
             background: var(--bg);
-            padding: 56px 24px 24px;
+            padding: 64px 24px 0;
         }
+
         .footer-columns {
             max-width: var(--max-width);
             margin: 0 auto;
             display: grid;
-            grid-template-columns: 1.5fr 1fr 1fr 1fr;
+            grid-template-columns: 1.6fr 1fr 1.2fr 1.1fr;
             gap: 48px;
-            padding-bottom: 40px;
-            border-bottom: 1px solid var(--border);
+            padding-bottom: 48px;
         }
+
+        /* Brand column */
         .footer-brand {
             display: flex;
             align-items: center;
-            gap: 10px;
-            margin-bottom: 14px;
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+        .footer-logo {
+            width: 48px;
+            height: 48px;
+            object-fit: contain;
+            display: block;
+            flex-shrink: 0;
+        }
+        .footer-brand-text {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            min-width: 0;
         }
         .footer-brand-name {
             font-weight: 700;
-            font-size: 1.15rem;
+            font-size: 1.05rem;
             letter-spacing: -0.3px;
             color: var(--text);
+            line-height: 1.2;
+            white-space: nowrap;
+        }
+        .footer-brand-sub {
+            font-size: 0.72rem;
+            color: var(--text-light);
+            letter-spacing: 0.02em;
+            line-height: 1.2;
+            white-space: nowrap;
         }
         .footer-desc {
             font-size: 0.875rem;
             color: var(--text-light);
-            line-height: 1.65;
-            max-width: 320px;
+            line-height: 1.7;
+            max-width: 340px;
         }
+
+        /* Link columns */
         .footer-col h4 {
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 0.08em;
+            letter-spacing: 0.1em;
             color: var(--text);
-            margin-bottom: 16px;
+            margin-bottom: 18px;
         }
-        .footer-col ul {
+        .footer-links {
             list-style: none;
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 12px;
         }
-        .footer-col ul a {
+        .footer-links li a {
             font-size: 0.875rem;
             color: var(--text-light);
             transition: color 0.2s;
             cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 9px;
+            text-decoration: none;
+            line-height: 1.4;
         }
-        .footer-col ul a:hover { color: var(--green); }
+        .footer-links li a iconify-icon {
+            font-size: 1.05rem;
+            flex-shrink: 0;
+            color: var(--green);
+            transition: transform 0.2s;
+        }
+        .footer-links li a:hover { color: var(--green); }
+        .footer-links li a:hover iconify-icon { transform: translateY(-1px); }
+
+        /* Contact strip */
+        .footer-contact-strip {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            padding: 24px 0;
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 40px;
+            flex-wrap: wrap;
+        }
+        .footer-contact-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 9px;
+            font-size: 0.875rem;
+            color: var(--text-light);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        .footer-contact-item iconify-icon {
+            color: var(--green);
+            font-size: 1.15rem;
+            flex-shrink: 0;
+            transition: transform 0.2s;
+        }
+        a.footer-contact-item:hover { color: var(--green); }
+        a.footer-contact-item:hover iconify-icon { transform: scale(1.1); }
+
+        /* Footer bottom */
         .footer-bottom {
             max-width: var(--max-width);
             margin: 0 auto;
-            padding-top: 24px;
+            padding: 22px 0 28px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -581,30 +378,15 @@
             .features-grid { grid-template-columns: 1fr 1fr; }
             .image-row { grid-template-columns: 1fr; }
             .section-title { font-size: 1.6rem; }
-            .footer-columns { grid-template-columns: 1fr 1fr; gap: 32px; }
-
-            .legal-layout {
-                grid-template-columns: 1fr;
-                gap: 24px;
-            }
-            .legal-sidebar {
-                position: static;
-                padding: 14px;
-            }
-            .legal-sidebar ul {
-                flex-direction: row;
-                overflow-x: auto;
-                gap: 4px;
-                padding-bottom: 4px;
-            }
-            .legal-sidebar li a {
-                white-space: nowrap;
-                font-size: 0.8rem;
-                padding: 8px 12px;
-            }
+            .footer-columns { grid-template-columns: 1fr 1fr; gap: 40px; }
+            .legal-layout { grid-template-columns: 1fr; gap: 24px; }
+            .legal-sidebar { position: static; padding: 14px; }
+            .legal-sidebar ul { flex-direction: row; overflow-x: auto; gap: 4px; padding-bottom: 4px; }
+            .legal-sidebar li a { white-space: nowrap; font-size: 0.8rem; padding: 8px 12px; }
             .legal-sidebar h3 { display: none; }
             .legal-page-header { padding-top: 100px; }
             .legal-page-header h1 { font-size: 1.85rem; }
+            .footer-contact-strip { gap: 24px; }
         }
 
         @media (max-width: 640px) {
@@ -627,9 +409,11 @@
             .hero-buttons { flex-direction: column; width: 100%; }
             .hero-buttons .btn { width: 100%; }
             .hero-content h1 { font-size: 1.8rem; }
-            .footer-columns { grid-template-columns: 1fr; gap: 28px; }
-            .footer-bottom { flex-direction: column; text-align: center; }
-
+            .footer-columns { grid-template-columns: 1fr; gap: 32px; padding-bottom: 32px; }
+            .footer-bottom { flex-direction: column; text-align: center; padding-bottom: 24px; }
+            .footer-contact-strip { gap: 18px; padding: 20px 0; }
+            .footer-brand-sub { white-space: normal; }
+            .footer-logo { width: 42px; height: 42px; }
             .legal-page-header h1 { font-size: 1.5rem; }
             .legal-section > h2 { font-size: 1.35rem; }
             .legal-section h3 { font-size: 1rem; }
@@ -660,12 +444,8 @@
         </div>
     </nav>
 
-    <!-- ═══════════════════════════════════════════════════════
-         LANDING VIEW
-         ═══════════════════════════════════════════════════════ -->
+    <!-- ═══════════════ LANDING VIEW ═══════════════ -->
     <main id="landing-view" class="view active">
-
-        <!-- Hero -->
         <section class="hero" id="home">
             <div class="hero-bg">
                 <img src="https://cdn.pixabay.com/photo/2018/12/12/23/02/site-3871804_1280.jpg" alt="Construction site">
@@ -686,7 +466,6 @@
             </div>
         </section>
 
-        <!-- Accounts -->
         <section class="section section-alt" id="accounts">
             <div class="section-inner">
                 <div class="section-label">Account Types</div>
@@ -743,7 +522,6 @@
             </div>
         </section>
 
-        <!-- Features -->
         <section class="section" id="features">
             <div class="section-inner">
                 <div class="section-label">Features</div>
@@ -767,7 +545,6 @@
             </div>
         </section>
 
-        <!-- CTA -->
         <section class="cta section-alt">
             <div class="section-inner">
                 <h2>Ready to bring clarity to your project?</h2>
@@ -780,12 +557,8 @@
         </section>
     </main>
 
-    <!-- ═══════════════════════════════════════════════════════
-         LEGAL VIEW (matches the screenshot)
-         ═══════════════════════════════════════════════════════ -->
+    <!-- ═══════════════ LEGAL VIEW ═══════════════ -->
     <main id="legal-view" class="view">
-
-        <!-- Page header -->
         <header class="legal-page-header">
             <div class="legal-page-header-inner">
                 <h1>Legal &amp; Policies</h1>
@@ -797,35 +570,20 @@
             </div>
         </header>
 
-        <!-- Layout: sidebar + content -->
         <div class="legal-layout">
             <aside class="legal-sidebar">
                 <h3>Jump to policy</h3>
                 <ul id="legalNav">
-                    <li><a onclick="showLegalSection('terms', this)" class="active">
-                        <iconify-icon icon="material-symbols:description-outline"></iconify-icon> Terms &amp; Conditions
-                    </a></li>
-                    <li><a onclick="showLegalSection('privacy', this)">
-                        <iconify-icon icon="material-symbols:shield-outline"></iconify-icon> Privacy Policy
-                    </a></li>
-                    <li><a onclick="showLegalSection('cookies', this)">
-                        <iconify-icon icon="material-symbols:cookie-outline"></iconify-icon> Cookie Policy
-                    </a></li>
-                    <li><a onclick="showLegalSection('acceptable-use', this)">
-                        <iconify-icon icon="material-symbols:block"></iconify-icon> Acceptable Use
-                    </a></li>
-                    <li><a onclick="showLegalSection('refund', this)">
-                        <iconify-icon icon="material-symbols:payments-outline"></iconify-icon> Refund &amp; Cancellation
-                    </a></li>
-                    <li><a onclick="showLegalSection('contact', this)">
-                        <iconify-icon icon="material-symbols:contact-mail-outline"></iconify-icon> Legal Notice
-                    </a></li>
+                    <li><a onclick="showLegalSection('terms', this)" class="active"><iconify-icon icon="material-symbols:description-outline"></iconify-icon> Terms &amp; Conditions</a></li>
+                    <li><a onclick="showLegalSection('privacy', this)"><iconify-icon icon="material-symbols:shield-outline"></iconify-icon> Privacy Policy</a></li>
+                    <li><a onclick="showLegalSection('cookies', this)"><iconify-icon icon="material-symbols:cookie-outline"></iconify-icon> Cookie Policy</a></li>
+                    <li><a onclick="showLegalSection('acceptable-use', this)"><iconify-icon icon="material-symbols:block"></iconify-icon> Acceptable Use</a></li>
+                    <li><a onclick="showLegalSection('refund', this)"><iconify-icon icon="material-symbols:payments-outline"></iconify-icon> Refund &amp; Cancellation</a></li>
+                    <li><a onclick="showLegalSection('contact', this)"><iconify-icon icon="material-symbols:contact-mail-outline"></iconify-icon> Legal Notice</a></li>
                 </ul>
             </aside>
 
             <div class="legal-content-area">
-
-                <!-- TERMS -->
                 <section class="legal-section active" id="terms">
                     <h2>Terms &amp; Conditions</h2>
                     <p class="section-sub">By accessing or using SHDR, you agree to be bound by these terms.</p>
@@ -888,7 +646,6 @@
                     </div>
                 </section>
 
-                <!-- PRIVACY -->
                 <section class="legal-section" id="privacy">
                     <h2>Privacy Policy</h2>
                     <p class="section-sub">How SHDR collects, uses, stores, and protects your personal data.</p>
@@ -952,7 +709,6 @@
                     </div>
                 </section>
 
-                <!-- COOKIES -->
                 <section class="legal-section" id="cookies">
                     <h2>Cookie Policy</h2>
                     <p class="section-sub">How SHDR uses cookies and similar tracking technologies.</p>
@@ -1008,7 +764,6 @@
                     </div>
                 </section>
 
-                <!-- ACCEPTABLE USE -->
                 <section class="legal-section" id="acceptable-use">
                     <h2>Acceptable Use Policy</h2>
                     <p class="section-sub">What you can and cannot do on the SHDR platform.</p>
@@ -1049,7 +804,6 @@
                     </div>
                 </section>
 
-                <!-- REFUND -->
                 <section class="legal-section" id="refund">
                     <h2>Refund &amp; Cancellation Policy</h2>
                     <p class="section-sub">Understand our refund eligibility, cancellation process, and timelines.</p>
@@ -1097,7 +851,6 @@
                     </div>
                 </section>
 
-                <!-- CONTACT -->
                 <section class="legal-section" id="contact">
                     <h2>Contact &amp; Legal Notice</h2>
                     <p class="section-sub">How to reach SHDR for legal, support, or business matters.</p>
@@ -1145,7 +898,7 @@
                             <div><div class="lbl">Phone</div><div class="val"><a href="tel:+250788474110">+250 788 474 110</a></div></div>
                         </div>
                         <div class="row">
-                            <div class="ico"><iconify-icon icon="fab fa-whatsapp" width="20"></iconify-icon></div>
+                            <div class="ico"><iconify-icon icon="simple-icons:whatsapp" width="20"></iconify-icon></div>
                             <div><div class="lbl">WhatsApp Support</div><div class="val"><a href="https://wa.me/250790020086" target="_blank" rel="noopener">Chat with us</a></div></div>
                         </div>
                     </div>
@@ -1176,39 +929,45 @@
                         </button>
                     </div>
                 </section>
-
             </div>
         </div>
     </main>
 
-    <!-- ═══════════════════════════════════════════════════════
-         FOOTER (visible on both views)
-         ═══════════════════════════════════════════════════════ -->
+    <!-- ═══════════════ PREMIUM FOOTER ═══════════════ -->
     <footer>
         <div class="footer-columns">
+            <!-- Brand column -->
             <div class="footer-col">
                 <div class="footer-brand">
-                    <span class="logo-icon">
-                        <img src="shdr_logo%20Background%20Removed.png" alt="SHDR Logo">
-                    </span>
-                    <span class="footer-brand-name">SHDR<span style="color:var(--green); margin-left: 4px;">LTD</span></span>
+                    <img src="shdr_logo%20Background%20Removed.png" alt="SHDR Ltd logo" class="footer-logo">
+                    <div class="footer-brand-text">
+                        <span class="footer-brand-name">SHDR <span style="color:var(--green);">LTD</span></span>
+                        <span class="footer-brand-sub">Sustainable Homes Design Rwanda</span>
+                    </div>
                 </div>
                 <p class="footer-desc">Construction site management made easier and smarter. Connect owners and site managers with full transparency.</p>
             </div>
 
+            <!-- Company column -->
             <div class="footer-col">
                 <h4>Company</h4>
-                <ul>
+                <ul class="footer-links">
                     <li><a onclick="showView('landing', 'accounts')">About Us</a></li>
                     <li><a onclick="showView('landing', 'features')">Services</a></li>
                     <li><a onclick="showView('landing', 'features')">Projects</a></li>
-                    <li><a href="https://wa.me/250790020086" target="_blank" rel="noopener">Contact</a></li>
+                    <li>
+                        <a href="https://wa.me/250790020086" target="_blank" rel="noopener" aria-label="Contact us on WhatsApp">
+                            <iconify-icon icon="simple-icons:whatsapp"></iconify-icon>
+                            Contact
+                        </a>
+                    </li>
                 </ul>
             </div>
 
+            <!-- Legal column -->
             <div class="footer-col">
                 <h4>Legal</h4>
-                <ul>
+                <ul class="footer-links">
                     <li><a onclick="showView('legal', 'terms')">Terms &amp; Conditions</a></li>
                     <li><a onclick="showView('legal', 'privacy')">Privacy Policy</a></li>
                     <li><a onclick="showView('legal', 'cookies')">Cookie Policy</a></li>
@@ -1218,16 +977,53 @@
                 </ul>
             </div>
 
+            <!-- Support column -->
             <div class="footer-col">
                 <h4>Support</h4>
-                <ul>
-                    <li><a onclick="showView('legal', 'contact')">Help Center</a></li>
-                    <li><a href="https://wa.me/250790020086" target="_blank" rel="noopener">Contact Support</a></li>
-                    <li><a href="mailto:abuse@shdr.com">Report an Issue</a></li>
+                <ul class="footer-links">
+                    <li>
+                        <a onclick="showView('legal', 'contact')">
+                            <iconify-icon icon="material-symbols:help-outline"></iconify-icon>
+                            Help Center
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://wa.me/250790020086" target="_blank" rel="noopener" aria-label="Contact support on WhatsApp">
+                            <iconify-icon icon="simple-icons:whatsapp"></iconify-icon>
+                            Contact Support
+                        </a>
+                    </li>
+                    <li>
+                        <a href="mailto:abuse@shdr.com" aria-label="Report an issue by email">
+                            <iconify-icon icon="material-symbols:report"></iconify-icon>
+                            Report an Issue
+                        </a>
+                    </li>
                 </ul>
             </div>
         </div>
 
+        <!-- Contact info strip -->
+        <div class="footer-contact-strip">
+            <a href="tel:+250788474110" class="footer-contact-item" aria-label="Call us">
+                <iconify-icon icon="material-symbols:call"></iconify-icon>
+                <span>+250 788 474 110</span>
+            </a>
+            <a href="https://wa.me/250790020086" target="_blank" rel="noopener" class="footer-contact-item" aria-label="Chat with us on WhatsApp">
+                <iconify-icon icon="simple-icons:whatsapp"></iconify-icon>
+                <span>WhatsApp</span>
+            </a>
+            <a href="mailto:hello@shdr.com" class="footer-contact-item" aria-label="Send us an email">
+                <iconify-icon icon="material-symbols:mail-outline"></iconify-icon>
+                <span>hello@shdr.com</span>
+            </a>
+            <span class="footer-contact-item" aria-label="Our location">
+                <iconify-icon icon="material-symbols:location-on-outline"></iconify-icon>
+                <span>Kigali, Rwanda</span>
+            </span>
+        </div>
+
+        <!-- Footer bottom -->
         <div class="footer-bottom">
             <div>© <span id="currentYear"></span> SHDR Ltd — All rights reserved.</div>
             <div>Designed &amp; Powered by <a href="https://wa.me/250790020086" target="_blank" rel="noopener">___Enock's___blessingz___</a></div>
@@ -1235,17 +1031,15 @@
     </footer>
 
     <script>
+        // Dynamic copyright year
         document.getElementById("currentYear").textContent = new Date().getFullYear();
-        // ═══════════════════════════════════════════════════════
-        // VIEW SWITCHING
-        // ═══════════════════════════════════════════════════════
+
+        // ─── View switching ───
         function showView(viewName, anchorId) {
-            // Hide all views
             document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
 
             if (viewName === 'legal') {
                 document.getElementById('legal-view').classList.add('active');
-                // Show requested legal section
                 if (anchorId) {
                     const navLink = document.querySelector(`#legalNav a[onclick*="${anchorId}"]`);
                     showLegalSection(anchorId, navLink);
@@ -1255,7 +1049,6 @@
             } else {
                 document.getElementById('landing-view').classList.add('active');
                 history.replaceState(null, '', window.location.pathname);
-                // If anchor given, scroll to it; otherwise top
                 if (anchorId) {
                     setTimeout(() => {
                         const target = document.getElementById(anchorId);
@@ -1270,7 +1063,6 @@
                 }
             }
 
-            // Close mobile menu
             const toggle = document.getElementById('mobileToggle');
             const navLinks = document.getElementById('navLinks');
             toggle.classList.remove('active');
@@ -1278,9 +1070,7 @@
         }
         window.showView = showView;
 
-        // ═══════════════════════════════════════════════════════
-        // LEGAL SECTION SWITCHING
-        // ═══════════════════════════════════════════════════════
+        // ─── Legal section switching ───
         function showLegalSection(sectionId, navEl) {
             document.querySelectorAll('.legal-section').forEach(s => s.classList.remove('active'));
             const target = document.getElementById(sectionId);
@@ -1294,9 +1084,7 @@
         }
         window.showLegalSection = showLegalSection;
 
-        // ═══════════════════════════════════════════════════════
-        // MOBILE MENU
-        // ═══════════════════════════════════════════════════════
+        // ─── Mobile menu ───
         const toggle = document.getElementById('mobileToggle');
         const navLinks = document.getElementById('navLinks');
         toggle.addEventListener('click', () => {
@@ -1304,15 +1092,11 @@
             navLinks.classList.toggle('active');
         });
 
-        // ═══════════════════════════════════════════════════════
-        // REDIRECTS
-        // ═══════════════════════════════════════════════════════
+        // ─── Redirects ───
         function redirectOwner() { window.location.href = 'owner.html'; }
         function redirectManager() { window.location.href = 'manager.html'; }
 
-        // ═══════════════════════════════════════════════════════
-        // DEEP-LINK ON LOAD (#terms, #privacy, etc.)
-        // ═══════════════════════════════════════════════════════
+        // ─── Deep link on load ───
         window.addEventListener('load', () => {
             const validSections = ['terms', 'privacy', 'cookies', 'acceptable-use', 'refund', 'contact'];
             const hash = window.location.hash.replace('#', '');
