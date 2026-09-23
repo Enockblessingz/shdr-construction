@@ -218,42 +218,13 @@
         .callout-success iconify-icon { color: var(--green); }
         .callout a { color: var(--green); font-weight: 600; }
 
-        /* ── Contact card — green background REMOVED ── */
         .contact-card { background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 12px; padding: 24px; margin: 20px 0; }
-        .contact-card .row {
-            display: flex;
-            gap: 16px;
-            align-items: center;
-            padding: 14px 0;
-            border-bottom: 1px solid var(--border);
-        }
+        .contact-card .row { display: flex; gap: 16px; align-items: center; padding: 14px 0; border-bottom: 1px solid var(--border); }
         .contact-card .row:last-child { border-bottom: none; }
-        .contact-card .row .ico {
-            width: 40px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            color: var(--green);
-            /* No background */
-        }
+        .contact-card .row .ico { width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; color: var(--green); }
         .contact-card .row .ico iconify-icon { font-size: 1.35rem; }
-        .contact-card .row .ico-logo {
-            width: 40px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            overflow: hidden;
-        }
-        .contact-card .row .ico-logo img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            display: block;
-        }
+        .contact-card .row .ico-logo { width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; overflow: hidden; }
+        .contact-card .row .ico-logo img { width: 100%; height: 100%; object-fit: contain; display: block; }
         .contact-card .row .lbl { font-size: 0.75rem; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; }
         .contact-card .row .val { font-size: 0.95rem; color: var(--text); font-weight: 500; }
         .contact-card .row .val a { color: var(--green); }
@@ -261,10 +232,21 @@
 
         .section-actions { margin-top: 40px; padding-top: 24px; border-top: 1px solid var(--border); display: flex; gap: 12px; flex-wrap: wrap; }
 
-        /* ─── Premium Footer ─── */
+        /* ═══════════════════════════════════════════════════════
+           FOOTER
+           ═══════════════════════════════════════════════════════ */
         footer { border-top: 1px solid var(--border); background: var(--bg); padding: 64px 24px 0; }
-        .footer-columns { max-width: var(--max-width); margin: 0 auto; display: grid; grid-template-columns: 1.6fr 1fr 1.2fr 1.1fr; gap: 48px; padding-bottom: 48px; }
 
+        .footer-columns {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1.6fr 1.3fr 1.1fr 1.1fr;
+            gap: 48px;
+            padding-bottom: 48px;
+        }
+
+        /* Brand column */
         .footer-brand { display: flex; align-items: center; gap: 12px; margin-bottom: 18px; }
         .footer-logo { width: 48px; height: 48px; object-fit: contain; display: block; flex-shrink: 0; }
         .footer-brand-text { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
@@ -272,6 +254,7 @@
         .footer-brand-sub { font-size: 0.72rem; color: var(--text-light); letter-spacing: 0.02em; line-height: 1.2; white-space: nowrap; }
         .footer-desc { font-size: 0.875rem; color: var(--text-light); line-height: 1.7; max-width: 340px; }
 
+        /* Link columns */
         .footer-col h4 { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text); margin-bottom: 18px; }
         .footer-links { list-style: none; display: flex; flex-direction: column; gap: 12px; }
         .footer-links li a { font-size: 0.875rem; color: var(--text-light); transition: color 0.2s; cursor: pointer; display: inline-flex; align-items: center; gap: 9px; text-decoration: none; line-height: 1.4; }
@@ -279,7 +262,60 @@
         .footer-links li a:hover { color: var(--green); }
         .footer-links li a:hover iconify-icon { transform: translateY(-1px); }
 
-        .footer-bottom { max-width: var(--max-width); margin: 0 auto; padding: 22px 0 28px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; font-size: 0.8rem; color: var(--text-light); }
+        /* ── Follow Us — 5 social icons ── */
+        .footer-socials {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .footer-social-link {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            border: 1.5px solid var(--border);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-light);
+            text-decoration: none;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            background: var(--bg);
+        }
+        .footer-social-link iconify-icon {
+            font-size: 1.15rem;
+            transition: transform 0.2s ease, color 0.2s ease;
+            display: block;
+        }
+        .footer-social-link:hover {
+            border-color: var(--green);
+            color: var(--green);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(5, 150, 105, 0.18);
+            background: var(--green-light);
+        }
+        .footer-social-link:hover iconify-icon {
+            transform: scale(1.12);
+        }
+        .footer-social-link:focus-visible {
+            outline: 2px solid var(--green);
+            outline-offset: 2px;
+        }
+
+        /* Footer bottom */
+        .footer-bottom {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            padding: 22px 0 28px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+            font-size: 0.8rem;
+            color: var(--text-light);
+        }
         .footer-bottom a { color: var(--green); font-weight: 500; }
         .footer-bottom a:hover { text-decoration: underline; }
 
@@ -761,7 +797,6 @@
                     </div>
                 </section>
 
-                <!-- CONTACT — Company Name now uses the real SHDR logo, no green background -->
                 <section class="legal-section" id="contact">
                     <h2>Contact &amp; Legal Notice</h2>
                     <p class="section-sub">How to reach SHDR for legal, support, or business matters.</p>
@@ -829,8 +864,8 @@
                     </ul>
 
                     <h3>4. Business Hours</h3>
-                    <p>Monday–Friday: 8:00 AM – 22:00 PM<br>
-                    Saturday: 9:00 AM – 17:00 PM<br>
+                    <p>Monday–Friday: 8:00 AM – 6:00 PM (CAT)<br>
+                    Saturday: 9:00 AM – 1:00 PM<br>
                     Sunday &amp; public holidays: Closed</p>
 
                     <h3>5. Registered Agent</h3>
@@ -852,6 +887,7 @@
     <!-- ═══════════════ Premium Footer ═══════════════ -->
     <footer>
         <div class="footer-columns">
+            <!-- Brand column -->
             <div class="footer-col">
                 <div class="footer-brand">
                     <img src="shdr_logo%20Background%20Removed.png" alt="SHDR Ltd logo" class="footer-logo">
@@ -863,17 +899,7 @@
                 <p class="footer-desc">Construction site management made easier and smarter. Connect owners and site managers with full transparency.</p>
             </div>
 
-            <div class="footer-col">
-                <h4>Company</h4>
-                <ul class="footer-links">
-                    <li><a onclick="showView('landing', 'accounts')">About Us</a></li>
-                    <li><a onclick="showView('landing', 'features')">Services</a></li>
-                    <li><a onclick="showView('landing', 'features')">Projects</a></li>
-                    <li>
-                    </li>
-                </ul>
-            </div>
-
+            <!-- Legal column -->
             <div class="footer-col">
                 <h4>Legal</h4>
                 <ul class="footer-links">
@@ -886,6 +912,7 @@
                 </ul>
             </div>
 
+            <!-- Support column -->
             <div class="footer-col">
                 <h4>Support</h4>
                 <ul class="footer-links">
@@ -908,6 +935,25 @@
                         </a>
                     </li>
                 </ul>
+            </div>
+
+            <!-- Follow Us — exactly 5 platforms -->
+            <div class="footer-col">
+                <h4>Follow Us</h4>
+                <div class="footer-socials">
+                    <a href="https://www.instagram.com/shdr_ltd1/" target="_blank" rel="noopener noreferrer" class="footer-social-link" aria-label="Follow SHDR Ltd on Instagram" title="Instagram">
+                        <iconify-icon icon="simple-icons:instagram"></iconify-icon>
+                    </a>
+                    <a href="https://www.linkedin.com/company/shdr-ltd" target="_blank" rel="noopener noreferrer" class="footer-social-link" aria-label="Follow SHDR Ltd on LinkedIn" title="LinkedIn">
+                        <iconify-icon icon="simple-icons:linkedin"></iconify-icon>
+                    </a>
+                    <a href="https://x.com/SHDRltd1" target="_blank" rel="noopener noreferrer" class="footer-social-link" aria-label="Follow SHDR Ltd on X" title="X">
+                        <iconify-icon icon="simple-icons:x"></iconify-icon>
+                    </a>
+                    <a href="https://www.tiktok.com/@shdr.ltd?lang=en-GB" target="_blank" rel="noopener noreferrer" class="footer-social-link" aria-label="Follow SHDR Ltd on TikTok" title="TikTok">
+                        <iconify-icon icon="simple-icons:tiktok"></iconify-icon>
+                    </a>
+                </div>
             </div>
         </div>
 
