@@ -20,60 +20,118 @@
             --border: #e5e7eb; --radius: 12px;
             --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
         }
+
+        /* Full-screen background with dark overlay */
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: #f8fafc; color: var(--text);
-            min-height: 100vh; display: flex; -webkit-font-smoothing: antialiased;
-        }
-        .split-container { display: flex; width: 100%; min-height: 100vh; }
-
-        /* ✅ Green overlay completely removed — image is the only background */
-        .brand-panel {
-            flex: 0 0 42%;
-            background: url('https://cdn.pixabay.com/photo/2018/12/12/23/02/site-3871804_1280.jpg') center/cover no-repeat;
-            position: relative; overflow: hidden; display: flex; flex-direction: column;
-            align-items: center; justify-content: center; padding: 40px; color: #fff; text-align: center;
+            background: url('https://cdn.pixabay.com/photo/2018/12/12/23/02/site-3871804_1280.jpg') center/cover no-repeat fixed;
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            -webkit-font-smoothing: antialiased;
+            position: relative;
         }
 
-        /* ✅ ::before no longer renders anything */
-        .brand-panel::before {
-            content: none;
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.55); /* Darkens the image so the white card pops */
+            z-index: 0;
+            pointer-events: none;
         }
 
-        .brand-content { position: relative; z-index: 2; max-width: 360px; }
-        .brand-logo {
-            width: 120px; height: 120px; border-radius: 20px;
-            background: transparent;
+        /* Layout wrapper to push footer down */
+        .main-content {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Floating White Card */
+        .auth-card {
+            background: #ffffff;
+            border-radius: 20px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            padding: 40px;
+            width: 100%;
+            max-width: 440px;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* ═══════════════════════════════════════════════════════
+           CARD HEADER & BRANDING (Updated)
+           ═══════════════════════════════════════════════════════ */
+        .card-header { text-align: center; margin-bottom: 28px; }
+        
+        .card-brand {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 14px;
+        }
+        
+        .card-logo {
+            width: 48px; 
+            height: 48px; 
+            margin: 0;
             display: flex; align-items: center; justify-content: center;
-            margin: 0 auto 24px; font-size: 2rem; font-weight: 700; color: #fff;
-            border: none;
-            overflow: visible;
+            flex-shrink: 0;
         }
-        .brand-logo img { 
-            width: 100%; height: 100%; object-fit: contain; 
-            background: transparent; padding: 0;
+        
+        .card-logo img { width: 100%; height: 100%; object-fit: contain; }
+        
+        .card-brand-text {
+            display: flex;
+            flex-direction: column;
+            text-align: left;
+            gap: 2px;
         }
-        .brand-panel h2 { font-size: 2rem; font-weight: 700; margin-bottom: 16px; letter-spacing: -0.5px; text-shadow: 0 2px 12px rgba(0,0,0,0.55); }
-        .brand-panel p { font-size: 1rem; line-height: 1.7; opacity: 0.95; text-shadow: 0 1px 8px rgba(0,0,0,0.5); }
-        .brand-features { margin-top: 40px; display: flex; flex-direction: column; gap: 16px; text-align: left; width: 100%; max-width: 300px; }
-        .brand-feature { display: flex; align-items: center; gap: 12px; font-size: 0.9rem; opacity: 0.95; text-shadow: 0 1px 6px rgba(0,0,0,0.5); }
-        .brand-feature .icon { 
-            display: inline-flex; 
-            align-items: center; 
-            justify-content: center; 
-            flex-shrink: 0; 
-            color: #fff;
+        
+        .card-brand-name {
+            font-weight: 700;
+            font-size: 1.1rem;
+            letter-spacing: -0.3px;
+            color: var(--text);
+            line-height: 1.2;
+            white-space: nowrap;
+        }
+        
+        .card-brand-sub {
+            font-size: 0.65rem;
+            color: var(--text-light);
+            letter-spacing: 0.02em;
+            line-height: 1.2;
+            white-space: nowrap;
+        }
+        
+        .card-brand-desc {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            line-height: 1.6;
+            text-align: center;
+            margin-bottom: 24px;
+            max-width: 320px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
-        .form-panel { flex: 1; display: flex; align-items: center; justify-content: center; padding: 32px; background: #fff; }
-        .form-wrapper { width: 100%; max-width: 420px; }
-        .form-header { margin-bottom: 28px; text-align: center; }
-        .form-header h1 { font-size: 1.8rem; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 6px; }
-        .form-header p { color: var(--text-light); font-size: 0.95rem; }
+        .card-header h1 { font-size: 1.6rem; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 6px; color: var(--text); }
+        .card-header p { color: var(--text-light); font-size: 0.9rem; }
+
+        /* Form Elements */
         .message { padding: 12px 16px; border-radius: 10px; font-size: 0.85rem; margin-bottom: 20px; display: none; line-height: 1.5; }
         .message.error { background: #fef2f2; color: #991b1b; border: 1px solid #fecaca; }
         .message.success { background: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; }
         .message.info { background: #eff6ff; color: #1e40af; border: 1px solid #bfdbfe; }
+
         .social-section { margin-bottom: 20px; }
         .social-btn {
             width: 100%; padding: 12px 16px; border-radius: var(--radius);
@@ -91,8 +149,10 @@
         .social-btn.apple-btn:hover { background: #1a1a1a; border-color: #1a1a1a; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
         .social-btn.apple-btn svg { width: 18px; height: 18px; fill: #fff; }
         .social-btn.apple-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
         .divider { display: flex; align-items: center; gap: 16px; color: var(--text-light); font-size: 0.8rem; margin: 16px 0 18px; }
         .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
         .form-group { margin-bottom: 18px; }
         .form-group label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 6px; color: var(--text); }
         .form-group input {
@@ -101,24 +161,14 @@
             background: #f9fafb; font-family: inherit;
         }
         .form-group input:focus { outline: none; border-color: var(--green); box-shadow: 0 0 0 3px rgba(5,150,105,0.08); background: #fff; }
+
         .password-wrap { position: relative; }
         .password-wrap input { padding-right: 48px; }
-
         .toggle-pw {
-            position: absolute;
-            right: 14px;
-            top: 50%;
-            transform: translateY(-50%);
-            background: none;
-            border: none;
-            cursor: pointer;
-            color: #9ca3af;
-            padding: 4px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: color 0.2s;
-            line-height: 1;
+            position: absolute; right: 14px; top: 50%; transform: translateY(-50%);
+            background: none; border: none; cursor: pointer; color: #9ca3af;
+            padding: 4px; display: flex; align-items: center; justify-content: center;
+            transition: color 0.2s; line-height: 1;
         }
         .toggle-pw:hover { color: var(--green); }
         .toggle-pw:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; border-radius: 4px; }
@@ -128,6 +178,7 @@
         .row-options label { display: flex; align-items: center; gap: 6px; cursor: pointer; color: var(--text-light); }
         .row-options a { color: var(--green); text-decoration: none; font-weight: 500; }
         .row-options a:hover { text-decoration: underline; }
+
         .btn {
             width: 100%; padding: 13px; border-radius: var(--radius); border: none;
             font-weight: 600; font-size: 0.95rem; cursor: pointer; transition: 0.2s;
@@ -138,34 +189,33 @@
         .btn:disabled { opacity: 0.7; cursor: not-allowed; }
         .btn-secondary { background: #fff; color: var(--text); border: 1.5px solid var(--border); }
         .btn-secondary:hover { background: #f9fafb; border-color: #d1d5db; }
+
         .switch-text { text-align: center; margin-top: 20px; font-size: 0.9rem; color: var(--text-light); }
         .switch-text button { background: none; border: none; color: var(--green); font-weight: 600; cursor: pointer; font-size: 0.9rem; padding: 0 4px; }
         .switch-text button:hover { text-decoration: underline; }
         .hidden { display: none !important; }
-        .footer-text { text-align: center; margin-top: 24px; font-size: 0.75rem; color: var(--text-light); display: flex; justify-content: center; align-items: center; gap: 6px; flex-wrap: wrap; }
-        .footer-text a { color: var(--green); text-decoration: none; font-weight: 500; }
-        .footer-text a:hover { text-decoration: underline; }
+
         .spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.3); border-top: 2px solid #fff; border-radius: 50%; animation: spin 0.6s linear infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
 
+        /* OTP View */
         .otp-view { text-align: center; }
         .otp-icon {
             width: 76px; height: 76px;
             display: flex; align-items: center; justify-content: center;
             margin: 0 auto 20px; color: var(--green);
         }
-        .otp-view h1 { font-size: 1.7rem; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 8px; }
-        .otp-view .otp-sub { color: var(--text-light); font-size: 0.95rem; line-height: 1.6; margin-bottom: 6px; }
+        .otp-view h1 { font-size: 1.5rem; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 8px; }
+        .otp-view .otp-sub { color: var(--text-light); font-size: 0.9rem; line-height: 1.6; margin-bottom: 6px; }
         .otp-view .otp-email {
             display: inline-block; font-weight: 600; color: var(--text);
             background: #f1f5f9; padding: 4px 12px; border-radius: 100px;
-            font-size: 0.9rem; margin-top: 4px; word-break: break-all;
+            font-size: 0.85rem; margin-top: 4px; word-break: break-all;
             letter-spacing: 0.02em;
         }
-
-        .otp-inputs { display: flex; gap: 10px; justify-content: center; margin: 28px 0 4px; }
+        .otp-inputs { display: flex; gap: 8px; justify-content: center; margin: 24px 0 4px; }
         .otp-inputs input {
-            width: 52px; height: 62px; text-align: center; font-size: 1.5rem;
+            width: 46px; height: 56px; text-align: center; font-size: 1.4rem;
             font-weight: 700; border: 1.5px solid var(--border); border-radius: 12px;
             background: #f9fafb; font-family: inherit;
             color: var(--text); caret-color: var(--green);
@@ -193,47 +243,32 @@
         .otp-timer.expired strong { color: #dc2626; }
 
         .otp-status {
-            min-height: 100px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 8px 0;
-            position: relative;
+            min-height: 80px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            padding: 8px 0; position: relative;
         }
-        .otp-status .status-text { font-size: 0.9rem; font-weight: 500; margin-top: 12px; text-align: center; line-height: 1.5; }
+        .otp-status .status-text { font-size: 0.85rem; font-weight: 500; margin-top: 12px; text-align: center; line-height: 1.5; }
         .otp-status.verifying .status-text { color: var(--text-light); }
-        .otp-status.verified .status-text { color: #059669; font-weight: 600; font-size: 0.95rem; }
+        .otp-status.verified .status-text { color: #059669; font-weight: 600; font-size: 0.9rem; }
         .otp-status.error .status-text { color: #dc2626; font-weight: 500; }
 
         .otp-status.verifying { animation: stateSwapIn 0.25s cubic-bezier(0.4, 0, 0.2, 1); }
         .otp-status.verifying .status-text { animation: stateTextIn 0.25s ease-out; }
         .otp-spinner-large {
-            width: 44px; height: 44px;
-            border: 3px solid #e2e8f0;
-            border-top: 3px solid #059669;
+            width: 40px; height: 40px;
+            border: 3px solid #e2e8f0; border-top: 3px solid #059669;
             border-radius: 50%;
             animation: spin 0.8s linear infinite, stateSwapIn 0.25s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        @keyframes stateSwapIn {
-            0%   { opacity: 0; transform: scale(0.96); }
-            100% { opacity: 1; transform: scale(1); }
-        }
-        @keyframes stateTextIn {
-            0%   { opacity: 0; transform: translateY(4px); }
-            100% { opacity: 1; transform: translateY(0); }
-        }
+        @keyframes stateSwapIn { 0% { opacity: 0; transform: scale(0.96); } 100% { opacity: 1; transform: scale(1); } }
+        @keyframes stateTextIn { 0% { opacity: 0; transform: translateY(4px); } 100% { opacity: 1; transform: translateY(0); } }
 
         .otp-status.verified { animation: successPulse 0.55s cubic-bezier(0.4, 0, 0.2, 1); }
-        @keyframes successPulse {
-            0%   { transform: scale(1); }
-            45%  { transform: scale(1.05); }
-            100% { transform: scale(1); }
-        }
+        @keyframes successPulse { 0% { transform: scale(1); } 45% { transform: scale(1.05); } 100% { transform: scale(1); } }
         .otp-status.verified .status-text { animation: stateTextIn 0.4s ease-out 0.55s backwards; }
 
         .otp-checkmark {
-            width: 68px; height: 68px;
+            width: 60px; height: 60px;
             animation: checkmarkPop 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             filter: drop-shadow(0 4px 10px rgba(5, 150, 105, 0.18));
         }
@@ -250,232 +285,337 @@
             animation: checkmarkStroke 0.32s cubic-bezier(0.65, 0, 0.45, 1) 0.5s forwards;
         }
         @keyframes checkmarkStroke { 100% { stroke-dashoffset: 0; } }
-        @keyframes checkmarkPop {
-            0%   { transform: scale(0.6); opacity: 0; }
-            60%  { transform: scale(1.05); opacity: 1; }
-            100% { transform: scale(1); opacity: 1; }
-        }
+        @keyframes checkmarkPop { 0% { transform: scale(0.6); opacity: 0; } 60% { transform: scale(1.05); opacity: 1; } 100% { transform: scale(1); opacity: 1; } }
 
         .otp-resend { margin-top: 8px; font-size: 0.85rem; color: var(--text-light); }
         .otp-resend button { background: none; border: none; color: var(--green); font-weight: 600; cursor: pointer; font-size: 0.85rem; padding: 0 4px; font-family: inherit; }
         .otp-resend button:hover:not(:disabled) { text-decoration: underline; }
         .otp-resend button:disabled { color: #9ca3af; cursor: not-allowed; }
-        .otp-resend button.cooldown {
-            opacity: 0.55;
-            cursor: not-allowed;
-        }
+        .otp-resend button.cooldown { opacity: 0.55; cursor: not-allowed; }
         .otp-back { margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--border); }
         .otp-back button { background: none; border: none; color: var(--text-light); font-size: 0.85rem; cursor: pointer; font-weight: 500; font-family: inherit; }
         .otp-back button:hover { color: var(--text); }
 
         .warning-note {
-            text-align: center;
-            margin-top: 12px;
-            font-size: 0.8rem;
-            color: #b45309;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
+            text-align: center; margin-top: 12px; font-size: 0.8rem; color: #b45309;
+            display: flex; align-items: center; justify-content: center; gap: 6px;
         }
 
-        @media (max-width: 768px) {
-            .split-container { flex-direction: column; }
-            .brand-panel { flex: 0 0 auto; padding: 40px 24px; min-height: auto; text-align: center; }
-            .brand-panel h2 { font-size: 1.6rem; }
-            .brand-features { display: none; }
-            .brand-content { max-width: 100%; }
-            .form-panel { padding: 24px; flex: 1; align-items: flex-start; }
+        /* ═══════════════════════════════════════════════════════
+           PREMIUM FOOTER (Solid white so text is perfectly visible)
+           ═══════════════════════════════════════════════════════ */
+        footer {
+            width: 100%;
+            flex-shrink: 0;
+            border-top: 1px solid var(--border);
+            background: #ffffff;
+            padding: 56px 24px 0;
+            position: relative;
+            z-index: 1;
         }
-        @media (max-width: 480px) {
-            .social-btn { font-size: 0.85rem; padding: 11px 14px; }
-            .social-btn svg { width: 18px; height: 18px; }
-            .form-wrapper { padding: 0 4px; }
-            .otp-inputs { gap: 7px; }
-            .otp-inputs input { width: 44px; height: 54px; font-size: 1.25rem; border-radius: 10px; }
-            .otp-checkmark { width: 56px; height: 56px; }
-            .otp-spinner-large { width: 36px; height: 36px; }
+
+        .footer-columns {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1.6fr 1.3fr 1.1fr 1.1fr;
+            gap: 48px;
+            padding-bottom: 44px;
+        }
+
+        .footer-brand { display: flex; align-items: center; gap: 12px; margin-bottom: 18px; }
+        .footer-logo { width: 48px; height: 48px; object-fit: contain; display: block; flex-shrink: 0; }
+        .footer-brand-text { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+        .footer-brand-name { font-weight: 700; font-size: 1.05rem; letter-spacing: -0.3px; color: var(--text); line-height: 1.2; white-space: nowrap; }
+        .footer-brand-sub { font-size: 0.72rem; color: var(--text-light); letter-spacing: 0.02em; line-height: 1.2; white-space: nowrap; }
+        .footer-desc { font-size: 0.875rem; color: var(--text-light); line-height: 1.7; max-width: 340px; }
+
+        .footer-col h4 { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text); margin-bottom: 18px; }
+        .footer-links { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+        .footer-links li a { font-size: 0.875rem; color: var(--text-light); transition: color 0.2s; cursor: pointer; display: inline-flex; align-items: center; gap: 9px; text-decoration: none; line-height: 1.4; }
+        .footer-links li a iconify-icon { font-size: 1.05rem; flex-shrink: 0; color: var(--green); transition: transform 0.2s; }
+        .footer-links li a:hover { color: var(--green); }
+        .footer-links li a:hover iconify-icon { transform: translateY(-1px); }
+
+        .footer-socials { display: flex; flex-wrap: wrap; gap: 10px; }
+        .footer-social-link {
+            width: 42px; height: 42px; border-radius: 50%;
+            border: 1.5px solid var(--border); display: inline-flex;
+            align-items: center; justify-content: center; color: var(--text-light);
+            text-decoration: none; transition: all 0.2s ease; cursor: pointer; background: #fff;
+        }
+        .footer-social-link iconify-icon { font-size: 1.15rem; transition: transform 0.2s ease, color 0.2s ease; display: block; }
+        .footer-social-link:hover { border-color: var(--green); color: var(--green); transform: translateY(-2px); box-shadow: 0 6px 16px rgba(5, 150, 105, 0.18); background: #ecfdf5; }
+        .footer-social-link:hover iconify-icon { transform: scale(1.12); }
+        .footer-social-link:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; }
+
+        .footer-bottom {
+            max-width: 1200px; margin: 0 auto; padding: 20px 0 26px;
+            border-top: 1px solid var(--border); display: flex;
+            justify-content: space-between; align-items: center;
+            gap: 16px; flex-wrap: wrap; font-size: 0.8rem; color: var(--text-light);
+        }
+        .footer-bottom a { color: var(--green); font-weight: 500; text-decoration: none; }
+        .footer-bottom a:hover { text-decoration: underline; }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .footer-columns { grid-template-columns: 1fr 1fr; gap: 36px; }
+        }
+        @media (max-width: 640px) {
+            .auth-card { padding: 30px 20px; border-radius: 16px; }
+            .card-logo { width: 42px; height: 42px; }
+            .card-header h1 { font-size: 1.4rem; }
+            .otp-inputs { gap: 6px; }
+            .otp-inputs input { width: 40px; height: 50px; font-size: 1.2rem; border-radius: 8px; }
+            footer { padding: 40px 20px 0; }
+            .footer-columns { grid-template-columns: 1fr; gap: 32px; padding-bottom: 32px; }
+            .footer-bottom { flex-direction: column; text-align: center; padding-bottom: 24px; }
+            .footer-brand-sub { white-space: normal; }
+            .footer-logo { width: 42px; height: 42px; }
         }
     </style>
 </head>
 <body>
 
-    <div class="split-container">
-        <div class="brand-panel">
-            <div class="brand-content">
-                <div class="brand-logo">
-                    <img src="shdr_logo Background Removed.png" alt="SHDR" onerror="this.style.display='none'; this.parentElement.textContent='SH';" />
+    <div class="main-content">
+        <div class="auth-card">
+            <div id="message" class="message"></div>
+
+            <!-- Auth View -->
+            <div id="auth-view">
+                <!-- ✅ UPDATED CARD HEADER WITH FULL BRANDING -->
+                <div class="card-header">
+                    <div class="card-brand">
+                        <div class="card-logo">
+                            <img src="shdr_logo Background Removed.png" alt="SHDR" />
+                        </div>
+                        <div class="card-brand-text">
+                            <span class="card-brand-name">SHDR <span style="color:var(--green);">LTD</span></span>
+                            <span class="card-brand-sub">Sustainable Homes Design Rwanda Ltd</span>
+                        </div>
+                    </div>
+                    <p class="card-brand-desc">Construction site management made easier and smarter. Connect owners and site managers with full transparency.</p>
+                    
+                    <h1 id="form-title">Sign In</h1>
+                    <p id="form-desc">Access your owner dashboard</p>
                 </div>
-                <h2>SHDR Owner's Portal</h2>
-                <p>Manage your construction projects with complete visibility and control.</p>
-                <div class="brand-features">
-                    <div class="brand-feature">
-                        <span class="icon"><iconify-icon icon="material-symbols:construction" width="20"></iconify-icon></span>
-                        Multiple sites, one dashboard
+
+                <form id="login-form" onsubmit="handleLogin(event)">
+                    <div class="social-section">
+                        <button type="button" class="social-btn google-btn" id="google-login-btn" onclick="signInWithGoogle()">
+                            <svg viewBox="0 0 48 48">
+                                <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+                                <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+                                <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+                                <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+                            </svg>
+                            Continue with Google
+                        </button>
+                        <button type="button" class="social-btn apple-btn" id="apple-login-btn" onclick="signInWithApple()">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09l.01-.01zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/>
+                            </svg>
+                            Continue with Apple
+                        </button>
+                        <div class="divider">Or</div>
                     </div>
-                    <div class="brand-feature">
-                        <span class="icon"><iconify-icon icon="material-symbols:group" width="20"></iconify-icon></span>
-                        Assign &amp; manage site managers
+                    <div class="form-group">
+                        <label for="login-email">Email Address</label>
+                        <input type="email" id="login-email" placeholder="owner@example.com" required autocomplete="email" />
                     </div>
-                    <div class="brand-feature">
-                        <span class="icon"><iconify-icon icon="material-symbols:monitoring" width="20"></iconify-icon></span>
-                        Real-time reports &amp; approvals
+                    <div class="form-group">
+                        <label for="login-password">Passcode</label>
+                        <div class="password-wrap">
+                            <input type="password" id="login-password" placeholder="••••••••" required autocomplete="current-password" />
+                            <button type="button" class="toggle-pw" onclick="togglePassword('login-password','login-eye')" aria-label="Toggle password visibility">
+                                <iconify-icon id="login-eye" icon="material-symbols:visibility" width="20"></iconify-icon>
+                            </button>
+                        </div>
                     </div>
-                </div>
+                    <div class="row-options">
+                        <label><input type="checkbox" id="login-remember" /> Remember me</label>
+                        <a href="forgot-password.html">Forgot passcode?</a>
+                    </div>
+                    <button type="submit" id="login-btn" class="btn">Sign In</button>
+                    <div class="switch-text">
+                        Don't have an account?
+                        <button type="button" onclick="switchTo('signup')">Sign Up</button>
+                    </div>
+                </form>
+
+                <form id="signup-form" class="hidden" onsubmit="handleSignUp(event)">
+                    <div class="social-section">
+                        <button type="button" class="social-btn google-btn" onclick="signInWithGoogle()">
+                            <svg viewBox="0 0 48 48">
+                                <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+                                <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+                                <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+                                <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+                            </svg>
+                            Continue with Google
+                        </button>
+                        <button type="button" class="social-btn apple-btn" onclick="signInWithApple()">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09l.01-.01zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/>
+                            </svg>
+                            Continue with Apple
+                        </button>
+                        <div class="divider">Or</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="signup-name">Full Name</label>
+                        <input type="text" id="signup-name" placeholder="Your full name" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="signup-email">Email Address</label>
+                        <input type="email" id="signup-email" placeholder="owner@example.com" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="signup-password">Passcode</label>
+                        <div class="password-wrap">
+                            <input type="password" id="signup-password" placeholder="Minimum 8 characters" minlength="8" required />
+                            <button type="button" class="toggle-pw" onclick="togglePassword('signup-password','signup-eye')" aria-label="Toggle password visibility">
+                                <iconify-icon id="signup-eye" icon="material-symbols:visibility" width="20"></iconify-icon>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="signup-confirm">Confirm Passcode</label>
+                        <input type="password" id="signup-confirm" placeholder="Confirm passcode" minlength="8" required />
+                    </div>
+
+                    <div class="form-group" style="display: flex; align-items: flex-start; gap: 8px; margin-bottom: 20px;">
+                        <input type="checkbox" id="agree-terms" style="width: auto; margin-top: 4px; cursor: pointer;" required />
+                        <label for="agree-terms" style="font-weight: 400; font-size: 0.85rem; color: var(--text-light); cursor: pointer; line-height: 1.5;">
+                            I agree to the <a href="index.html#terms" target="_blank" style="color: var(--green); text-decoration: none; font-weight: 500;">Terms &amp; Conditions</a> and <a href="index.html#privacy" target="_blank" style="color: var(--green); text-decoration: none; font-weight: 500;">Privacy Policy</a>.
+                        </label>
+                    </div>
+
+                    <button type="submit" id="signup-btn" class="btn">Create Owner's Account</button>
+                    <div class="switch-text">
+                        Already have an account?
+                        <button type="button" onclick="switchTo('login')">Sign In</button>
+                    </div>
+                    <div class="warning-note">
+                        <iconify-icon icon="material-symbols:warning" width="16"></iconify-icon>
+                        This portal is for owners only. Managers can't sign up here.
+                    </div>
+                </form>
             </div>
-        </div>
 
-        <div class="form-panel">
-            <div class="form-wrapper">
-                <div id="message" class="message"></div>
+            <!-- OTP View -->
+            <div id="otp-view" class="otp-view hidden">
+                <div class="otp-icon">
+                    <iconify-icon icon="material-symbols:mark-email-unread" width="52"></iconify-icon>
+                </div>
+                <h1>Verify Your Email</h1>
+                <p class="otp-sub">A one-time code will confirm your identity next.</p>
+                <p class="otp-sub" id="otp-purpose-msg">We've sent a 6-digit code to:</p>
+                <span class="otp-email" id="otp-email-display">owner@example.com</span>
 
-                <div id="auth-view">
-                    <div class="form-header">
-                        <h1 id="form-title">Sign In</h1>
-                        <p id="form-desc">Access your owner dashboard</p>
-                    </div>
-
-                    <form id="login-form" onsubmit="handleLogin(event)">
-                        <div class="social-section">
-                            <button type="button" class="social-btn google-btn" id="google-login-btn" onclick="signInWithGoogle()">
-                                <svg viewBox="0 0 48 48">
-                                    <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
-                                    <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
-                                    <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
-                                    <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
-                                </svg>
-                                Continue with Google
-                            </button>
-                            <button type="button" class="social-btn apple-btn" id="apple-login-btn" onclick="signInWithApple()">
-                                <svg viewBox="0 0 24 24">
-                                    <path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09l.01-.01zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/>
-                                </svg>
-                                Continue with Apple
-                            </button>
-                            <div class="divider">Or</div>
-                        </div>
-                        <div class="form-group">
-                            <label for="login-email">Email Address</label>
-                            <input type="email" id="login-email" placeholder="owner@example.com" required autocomplete="email" />
-                        </div>
-                        <div class="form-group">
-                            <label for="login-password">Passcode</label>
-                            <div class="password-wrap">
-                                <input type="password" id="login-password" placeholder="••••••••" required autocomplete="current-password" />
-                                <button type="button" class="toggle-pw" onclick="togglePassword('login-password','login-eye')" aria-label="Toggle password visibility">
-                                    <iconify-icon id="login-eye" icon="material-symbols:visibility" width="20"></iconify-icon>
-                                </button>
-                            </div>
-                        </div>
-                        <div class="row-options">
-                            <label><input type="checkbox" id="login-remember" /> Remember me</label>
-                            <a href="forgot-password.html">Forgot passcode?</a>
-                        </div>
-                        <button type="submit" id="login-btn" class="btn">Sign In</button>
-                        <div class="switch-text">
-                            Don't have an account?
-                            <button type="button" onclick="switchTo('signup')">Sign Up</button>
-                        </div>
-                    </form>
-
-                    <form id="signup-form" class="hidden" onsubmit="handleSignUp(event)">
-                        <div class="social-section">
-                            <button type="button" class="social-btn google-btn" onclick="signInWithGoogle()">
-                                <svg viewBox="0 0 48 48">
-                                    <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
-                                    <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
-                                    <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
-                                    <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
-                                </svg>
-                                Continue with Google
-                            </button>
-                            <button type="button" class="social-btn apple-btn" onclick="signInWithApple()">
-                                <svg viewBox="0 0 24 24">
-                                    <path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09l.01-.01zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/>
-                                </svg>
-                                Continue with Apple
-                            </button>
-                            <div class="divider">Or</div>
-                        </div>
-                        <div class="form-group">
-                            <label for="signup-name">Full Name</label>
-                            <input type="text" id="signup-name" placeholder="Your full name" required />
-                        </div>
-                        <div class="form-group">
-                            <label for="signup-email">Email Address</label>
-                            <input type="email" id="signup-email" placeholder="owner@example.com" required />
-                        </div>
-                        <div class="form-group">
-                            <label for="signup-password">Passcode</label>
-                            <div class="password-wrap">
-                                <input type="password" id="signup-password" placeholder="Minimum 8 characters" minlength="8" required />
-                                <button type="button" class="toggle-pw" onclick="togglePassword('signup-password','signup-eye')" aria-label="Toggle password visibility">
-                                    <iconify-icon id="signup-eye" icon="material-symbols:visibility" width="20"></iconify-icon>
-                                </button>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="signup-confirm">Confirm Passcode</label>
-                            <input type="password" id="signup-confirm" placeholder="Confirm passcode" minlength="8" required />
-                        </div>
-                        <button type="submit" id="signup-btn" class="btn">Create Owner's Account</button>
-                        <div class="switch-text">
-                            Already have an account?
-                            <button type="button" onclick="switchTo('login')">Sign In</button>
-                        </div>
-                        <div class="warning-note">
-                            <iconify-icon icon="material-symbols:warning" width="16"></iconify-icon>
-                            This portal is for owners only. Managers can't sign up here.
-                        </div>
-                    </form>
+                <div class="otp-inputs" id="otp-inputs">
+                    <input type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="1" aria-label="Digit 1" />
+                    <input type="text" inputmode="numeric" maxlength="1" aria-label="Digit 2" />
+                    <input type="text" inputmode="numeric" maxlength="1" aria-label="Digit 3" />
+                    <input type="text" inputmode="numeric" maxlength="1" aria-label="Digit 4" />
+                    <input type="text" inputmode="numeric" maxlength="1" aria-label="Digit 5" />
+                    <input type="text" inputmode="numeric" maxlength="1" aria-label="Digit 6" />
                 </div>
 
-                <div id="otp-view" class="otp-view hidden">
-                    <div class="otp-icon">
-                        <iconify-icon icon="material-symbols:mark-email-unread" width="52"></iconify-icon>
-                    </div>
-                    <h1>Verify Your Email</h1>
-                    <p class="otp-sub">A one-time code will confirm your identity next.</p>
-                    <p class="otp-sub" id="otp-purpose-msg">We've sent a 6-digit code to:</p>
-                    <span class="otp-email" id="otp-email-display">owner@example.com</span>
-
-                    <div class="otp-inputs" id="otp-inputs">
-                        <input type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="1" aria-label="Digit 1" />
-                        <input type="text" inputmode="numeric" maxlength="1" aria-label="Digit 2" />
-                        <input type="text" inputmode="numeric" maxlength="1" aria-label="Digit 3" />
-                        <input type="text" inputmode="numeric" maxlength="1" aria-label="Digit 4" />
-                        <input type="text" inputmode="numeric" maxlength="1" aria-label="Digit 5" />
-                        <input type="text" inputmode="numeric" maxlength="1" aria-label="Digit 6" />
-                    </div>
-
-                    <div class="otp-timer" id="otp-timer">
-                        Code expires in <strong id="otp-expiry">00:45</strong>
-                    </div>
-
-                    <div id="otp-status" class="otp-status" aria-live="polite"></div>
-
-                    <div class="otp-resend">
-                        Didn't get the code?
-                        <button type="button" id="otp-resend-btn" onclick="handleResendOtp()">Resend</button>
-                        <span id="otp-resend-timer"></span>
-                    </div>
-
-                    <div class="otp-back">
-                        <button type="button" onclick="backToAuth()">← Back to sign in</button>
-                    </div>
+                <div class="otp-timer" id="otp-timer">
+                    Code expires in <strong id="otp-expiry">00:45</strong>
                 </div>
 
-                <div class="footer-text">
-                    <span>
-                        Designed &amp; Powered by
-                        <a href="https://wa.me/250790020086" target="_blank" rel="noopener noreferrer">
-                            <strong>___Enock's___blessingz___</strong>
-                        </a>
-                    </span>
+                <div id="otp-status" class="otp-status" aria-live="polite"></div>
+
+                <div class="otp-resend">
+                    Didn't get the code?
+                    <button type="button" id="otp-resend-btn" onclick="handleResendOtp()">Resend</button>
+                    <span id="otp-resend-timer"></span>
+                </div>
+
+                <div class="otp-back">
+                    <button type="button" onclick="backToAuth()">← Back to sign in</button>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- Premium Footer -->
+    <footer>
+        <div class="footer-columns">
+            <div class="footer-col">
+                <div class="footer-brand">
+                    <img src="shdr_logo Background Removed.png" alt="SHDR Ltd logo" class="footer-logo">
+                    <div class="footer-brand-text">
+                        <span class="footer-brand-name">SHDR <span style="color:var(--green);">LTD</span></span>
+                        <span class="footer-brand-sub">Sustainable Homes Design Rwanda Ltd</span>
+                    </div>
+                </div>
+                <p class="footer-desc">Construction site management made easier and smarter. Connect owners and site managers with full transparency.</p>
+            </div>
+
+            <div class="footer-col">
+                <h4>Legal</h4>
+                <ul class="footer-links">
+                    <li><a href="index.html#terms">Terms &amp; Conditions</a></li>
+                    <li><a href="index.html#privacy">Privacy Policy</a></li>
+                    <li><a href="index.html#cookies">Cookie Policy</a></li>
+                    <li><a href="index.html#acceptable-use">Acceptable Use</a></li>
+                    <li><a href="index.html#refund">Refund &amp; Cancellation</a></li>
+                    <li><a href="index.html#contact">Legal Notice</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-col">
+                <h4>Support</h4>
+                <ul class="footer-links">
+                    <li>
+                        <a href="index.html#contact">
+                            <iconify-icon icon="material-symbols:help-outline"></iconify-icon>
+                            Help Center
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://wa.me/250790020086" target="_blank" rel="noopener" aria-label="Contact support on WhatsApp">
+                            <iconify-icon icon="simple-icons:whatsapp"></iconify-icon>
+                            Contact Support
+                        </a>
+                    </li>
+                    <li>
+                        <a href="mailto:abuse@shdr.com" aria-label="Report an issue by email">
+                            <iconify-icon icon="material-symbols:report"></iconify-icon>
+                            Report an Issue
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="footer-col">
+                <h4>Follow Us</h4>
+                <div class="footer-socials">
+                    <a href="https://www.instagram.com/shdr_ltd1/" target="_blank" rel="noopener noreferrer" class="footer-social-link" aria-label="Follow SHDR Ltd on Instagram" title="Instagram">
+                        <iconify-icon icon="simple-icons:instagram"></iconify-icon>
+                    </a>
+                    <a href="https://www.linkedin.com/company/shdr-ltd" target="_blank" rel="noopener noreferrer" class="footer-social-link" aria-label="Follow SHDR Ltd on LinkedIn" title="LinkedIn">
+                        <iconify-icon icon="simple-icons:linkedin"></iconify-icon>
+                    </a>
+                    <a href="https://x.com/SHDRltd1" target="_blank" rel="noopener noreferrer" class="footer-social-link" aria-label="Follow SHDR Ltd on X" title="X">
+                        <iconify-icon icon="simple-icons:x"></iconify-icon>
+                    </a>
+                    <a href="https://www.tiktok.com/@shdr.ltd?lang=en-GB" target="_blank" rel="noopener noreferrer" class="footer-social-link" aria-label="Follow SHDR Ltd on TikTok" title="TikTok">
+                        <iconify-icon icon="simple-icons:tiktok"></iconify-icon>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <div>© <span id="currentYear"></span> SHDR Ltd — All rights reserved.</div>
+            <div>Designed &amp; Powered by <a href="https://wa.me/250790020086" target="_blank" rel="noopener">___Enock's___blessingz___</a></div>
+        </div>
+    </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 
@@ -1236,7 +1376,7 @@
             const remember = document.getElementById('login-remember').checked;
             const btn = document.getElementById('login-btn');
             hideMessage();
-            if (!email || !password) { showMessage('Please fill in all fields.', 'error'); return; }
+            
             inOtpFlow = true;
             setButtonLoading(btn, true, 'Signing in...');
             try {
@@ -1268,10 +1408,19 @@
             const password = document.getElementById('signup-password').value;
             const confirm = document.getElementById('signup-confirm').value;
             const btn = document.getElementById('signup-btn');
+            
             hideMessage();
-            if (!name || !email || !password || !confirm) { showMessage('Please fill in all fields.', 'error'); return; }
-            if (password !== confirm) { showMessage('Passcodes do not match.', 'error'); return; }
-            if (password.length < 8) { showMessage('Passcode must be at least 8 characters and include numbers and symbols..', 'error'); return; }
+            
+            if (password !== confirm) { 
+                showMessage('Passcodes do not match.', 'error'); 
+                return; 
+            }
+            
+            if (password.length < 8) { 
+                showMessage('Passcode must be at least 8 characters and include numbers and symbols.', 'error'); 
+                return; 
+            }
+
             inOtpFlow = true;
             setButtonLoading(btn, true, 'Creating your account. Please wait…');
             try {
@@ -1293,6 +1442,10 @@
         };
 
         setupOtpInputs();
+    </script>
+
+    <script>
+        document.getElementById("currentYear").textContent = new Date().getFullYear();
     </script>
 </body>
 </html>
