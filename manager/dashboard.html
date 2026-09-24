@@ -285,7 +285,7 @@ function safeFilename(s){return String(s||'').replace(/[^\w\-]+/g,'_').replace(/
 // ============================================================
 function getCompanyDetails(){
   return{
-    name:'SHDR Ltd',
+    name:'Sustainable Homes Design Rwanda Ltd',
     address:'KG 11 Avenue, Kimironko, Gasabo District',
     location:'Yussa Plaza, 1st Floor',
     city:'Kigali City, Rwanda',
@@ -326,7 +326,7 @@ function generateReportHTML(title, bodyHTML, meta){
         <img src="${company.logo}" alt="${company.name} Logo" class="company-logo" onerror="this.style.display='none'">
         <div>
           <div class="company-name">${company.name}</div>
-          <div class="company-subtitle">Construction Management System</div>
+          <div class="company-subtitle">Construction Sites Management System</div>
           <div class="company-details">
             ${company.address}<br>${company.location}<br>${company.city}<br>
             <strong>Tel:</strong> ${company.phone}<br><strong>Email:</strong> ${company.email}
@@ -1269,7 +1269,7 @@ window.submitUsageBatch=async function(e){
 // ============================================================
 window.openAddWorkerModal=function(){
   _workerPhotoFile=null;
-  openModal('👷 '+t('workers.addWorker'),`
+  openModal(''+t('workers.addWorker'),`
     <form onsubmit="handleAddWorker(event)" class="space-y-4">
       <div><label class="block text-sm font-medium mb-1">${t('workers.fullName')} *</label><input class="w-full border rounded-lg p-3" id="worker-name" required></div>
       <div><label class="block text-sm font-medium mb-1">${t('workers.role')} *</label><input class="w-full border rounded-lg p-3" id="worker-role" required></div>
@@ -1335,7 +1335,7 @@ window.editWorker=function(id){
   const w=siteWorkersData.find(x=>x.id===id);if(!w)return;
   _workerEditPhotoFile=null;
   const cur=w.image||'';
-  openModal('✏️ '+t('common.edit'),`
+  openModal(''+t('common.edit'),`
     <form onsubmit="handleEditWorker(event,'${id}')" class="space-y-4">
       <input class="w-full border rounded-lg p-3" id="ew-name" value="${w.name}" required>
       <input class="w-full border rounded-lg p-3" id="ew-role" value="${w.role||''}" required>
