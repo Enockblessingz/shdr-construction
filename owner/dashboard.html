@@ -565,7 +565,7 @@ tbody tr:hover{background:#f1f5f9}
           if (currentSection === 'reports') {
             savedFilters = {
               site: document.getElementById('report-site')?.value || 'all',
-              dept: document.getElementById('report-dept')?.value || 'summary',
+              dept: document.getElementById('report-dept')?.value || 'all',
               start: document.getElementById('report-start')?.value || '',
               end: document.getElementById('report-end')?.value || '',
               search: document.getElementById('payroll-worker-search')?.value || '',
@@ -1761,7 +1761,7 @@ tbody tr:hover{background:#f1f5f9}
     return {
       type: reportType,
       site: document.getElementById('report-site')?.value || 'all',
-      department: document.getElementById('report-dept')?.value || 'summary',
+      department: document.getElementById('report-dept')?.value || 'all',
       startDate: document.getElementById('report-start')?.value || '',
       endDate: document.getElementById('report-end')?.value || '',
       paymentStatus: document.getElementById('payroll-status')?.value || 'all',
@@ -1782,10 +1782,10 @@ tbody tr:hover{background:#f1f5f9}
     return false;
   }
 
-  // -------- General Report: "summary" default = Overview only --------
+  // -------- General Report: no Overview section, no Summary mode --------
   function buildGeneralReportModel(filters) {
     const siteLabel = filters.site === 'all' ? t('reports.allSites') : (sitesData.find(s => s.id === filters.site)?.name || '—');
-    const dept = filters.department || 'summary';
+    const dept = filters.department || 'all';
 
     let mats = materialsData.slice();
     if (filters.site !== 'all') mats = mats.filter(m => m.site_id === filters.site);
@@ -1795,7 +1795,6 @@ tbody tr:hover{background:#f1f5f9}
     let stocks = stockData.slice();
     if (filters.site !== 'all') stocks = stocks.filter(s => s.site_id === filters.site);
     const stockValue = stocks.reduce((s,x)=>s+toNumber(x.quantity)*toNumber(x.unit_cost),0);
-    const lowStockCount = stocks.filter(s=>toNumber(s.quantity)<=toNumber(s.minimum_quantity)).length;
 
     let workers = assignedWorkersData.slice();
     if (filters.site !== 'all') workers = workers.filter(w => w.site_id === filters.site);
@@ -1812,37 +1811,6 @@ tbody tr:hover{background:#f1f5f9}
     reqs = reqs.filter(r => inDateRange(r.request_date, filters.startDate, filters.endDate));
 
     const sections = [];
-    sections.push({
-      title: 'Overview',
-      columns: [{key:'metric',label:'Metric'},{key:'value',label:'Value'}],
-      rows: [
-        {metric:'Manager', value: ownerProfile?.full_name || '—'},
-        {metric:'Scope', value: siteLabel},
-        {metric:'Reporting Period', value: (filters.startDate||filters.endDate) ? `${filters.startDate||'Start'} → ${filters.endDate||'Now'}` : 'All time'},
-        {metric:'Total Sites', value: filters.site === 'all' ? sitesData.length : 1},
-        {metric:'Total Workers', value: workers.length},
-        {metric:'Materials Used', value: mats.length},
-        {metric:'Material Cost', value: formatRWF(matTotalValue)},
-        {metric:'Stock Items', value: stocks.length},
-        {metric:'Stock Value', value: formatRWF(stockValue)},
-        {metric:'Low-Stock Items', value: lowStockCount},
-        {metric:'Payroll (Payable)', value: formatRWF(payrollTotal)},
-        {metric:'Total Paid', value: formatRWF(payrollPaid)},
-        {metric:'Unpaid Balance', value: formatRWF(payrollUnpaid)},
-        {metric:'Requisitions', value: reqs.length}
-      ]
-    });
-
-    // If "summary" is selected → return just the Overview table
-    if (dept === 'summary') {
-      return {
-        type: 'general',
-        title: 'SHDR LTD — GENERAL MANAGEMENT REPORT',
-        sections,
-        startDate: filters.startDate,
-        endDate: filters.endDate
-      };
-    }
 
     if (dept === 'all' || dept === 'materials') {
       sections.push({
@@ -2221,7 +2189,7 @@ tbody tr:hover{background:#f1f5f9}
       else if (model.type === 'payroll') sheetName = 'Payroll';
       else if (model.type === 'stock') sheetName = 'Stock';
       XLSX.utils.book_append_sheet(wb, ws, sheetName);
-      XLSX.writeFile(wb, getReportFilename(model.type, 'excel'.replace('excel','xlsx')));
+      XLSX.writeFile(wb, getReportFilename(model.type, 'xlsx'));
       showToast(getReportSuccessMessage(model.type, 'excel'), 'success');
     } catch (err) {
       console.error('Excel generation failed:', err);
@@ -2280,7 +2248,7 @@ tbody tr:hover{background:#f1f5f9}
     }
   };
 
-  // -------- Reports page: Department default = Summary Only --------
+  // -------- Reports page: Department default = All Departments (no Summary option) --------
   function renderReports(container) {
     const siteOpts = sitesData.map(s => `<option value="${s.id}">${s.name}</option>`).join('');
     const positionOpts = [...new Set(attendanceData.map(a=>a.role).filter(Boolean))]
@@ -2305,8 +2273,7 @@ tbody tr:hover{background:#f1f5f9}
         <div id="dept-filter-wrap" class="${reportType === 'general' ? '' : 'hidden'}">
           <label class="block text-xs font-medium text-slate-500 mb-1 flex items-center gap-1"><iconify-icon icon="material-symbols:category" class="text-emerald-600" width="14"></iconify-icon>${t('reports.department')}</label>
           <select id="report-dept" class="w-full border rounded-lg p-2 text-sm" onchange="onReportFilterChange()">
-            <option value="summary" selected>${t('reports.summaryOnly')}</option>
-            <option value="all">${t('reports.allDepartments')}</option>
+            <option value="all" selected>${t('reports.allDepartments')}</option>
             <option value="materials">${t('navigation.materials')}</option>
             <option value="workers">${t('navigation.workers')}</option>
           </select>
