@@ -21,7 +21,7 @@
 .lang-btn:focus-visible{outline:2px solid #1e56a0;outline-offset:2px}
 .lang-btn.active{background:#fff;color:#1e56a0;border-color:#1e56a0;box-shadow:0 2px 6px rgba(30,86,160,.2)}
 @media (max-width:640px){.lang-btn{font-size:12px;padding:4px 10px}}
-.nav-disabled{opacity:.5;cursor:not-allowed;pointer-events:none;user-select:none;position:relative}
+.nav-disabled{opacity:.5;cursor:not-allowed;user-select:none;position:relative}
 .nav-disabled::after{content:' 🔒';font-size:.65rem;color:#9ca3af;font-weight:400}
 .nav-disabled .nav-label{opacity:.6}
 .office-header{background:linear-gradient(135deg,#059669 0%,#047857 50%,#065f46 100%);border-radius:16px;padding:24px 28px;margin-bottom:28px;color:#fff;box-shadow:0 8px 30px rgba(5,150,105,.25)}
@@ -166,7 +166,7 @@ tbody tr:hover{background:#f1f5f9}
     <a href="#" onclick="showSection('gallery')" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg text-slate-600 hover:bg-slate-50 transition-colors" data-section="gallery">
       <iconify-icon icon="material-symbols:photo-library-outline" width="20" height="20"></iconify-icon> <span data-i18n="navigation.gallery">Gallery</span>
     </a>
-    <a href="#" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg text-slate-600 transition-colors nav-disabled" data-section="office">
+    <a href="#" onclick="showSection('office')" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg text-slate-600 hover:bg-slate-50 transition-colors" data-section="office">
       <iconify-icon icon="material-symbols:business-center-outline" width="20" height="20"></iconify-icon>
       <span class="nav-label" data-i18n="navigation.officeHub">Office Hub</span>
       <span class="text-[10px] text-amber-500 ml-auto font-medium" data-i18n="common.comingSoon">Coming Soon</span>
@@ -380,7 +380,7 @@ tbody tr:hover{background:#f1f5f9}
   function calculateTotal(qty, unitCost) { return (qty || 0) * (unitCost || 0); }
   function safeFilename(s){ return String(s||'').replace(/[^\w\-]+/g,'_').replace(/_+/g,'_').slice(0,120); }
 
-  // ── New date format: "September 24, 2026, 18:33 PM" for timestamps; "September 24, 2026" for date-only ──
+  // ── FIX C2: correct AM/PM detection (was always appending PM) ──
   function formatDate(v){
     if(!v) return '—';
     let d, dateOnly=false;
@@ -397,7 +397,8 @@ tbody tr:hover{background:#f1f5f9}
     if(dateOnly) return datePart;
     const hh=String(d.getHours()).padStart(2,'0');
     const mm=String(d.getMinutes()).padStart(2,'0');
-    return `${datePart}, ${hh}:${mm} PM`;
+    const ampm = d.getHours() >= 12 ? 'PM' : 'AM';
+    return `${datePart}, ${hh}:${mm} ${ampm}`;
   }
   function formatDateShort(v){ if(!v) return '—'; const d=typeof v==='string'?new Date(v):v; if(isNaN(d.getTime())) return '—'; return d.toISOString().split('T')[0]; }
   function formatRWF(v){ return toNumber(v).toLocaleString('en-RW',{minimumFractionDigits:0,maximumFractionDigits:0})+' RWF'; }
@@ -427,6 +428,16 @@ tbody tr:hover{background:#f1f5f9}
     toast._hideTimer = setTimeout(() => { toast.classList.remove('show'); }, 5000);
   }
 
+  // FIX H4: global Escape closes modal + gallery lightbox
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      const overlay = document.getElementById('modal-overlay');
+      if (overlay && overlay.classList.contains('active')) closeModal();
+      const lb = document.getElementById('gallery-lightbox');
+      if (lb) closeGalleryImage();
+    }
+  });
+
   window.addEventListener('load', () => {
     document.querySelectorAll('.lang-btn').forEach(btn => {
       const isActive = btn.dataset.language === currentLanguage;
@@ -454,10 +465,10 @@ tbody tr:hover{background:#f1f5f9}
             updateProfileUI(ownerProfile);
             if (currentSection === 'settings') populateSettingsForms();
           }
-        });
+        }, err => console.warn('profile snapshot error:', err));
         attachListeners();
         showSection('dashboard');
-      } catch (err) { showError(t('alerts.somethingWentWrong')); }
+      } catch (err) { console.error(err); showError(t('alerts.somethingWentWrong')); }
     });
   });
 
@@ -481,17 +492,28 @@ tbody tr:hover{background:#f1f5f9}
     document.getElementById('user-email').textContent = email;
   }
 
+  // FIX C5: single helper with error handler for every snapshot
+  function attachSnapshot(q, handler, label) {
+    unsubscribeSnapshots.push(onSnapshot(
+      q,
+      handler,
+      err => {
+        console.error(`[${label}] snapshot error:`, err);
+        showToast(`Unable to load ${label}. Please refresh.`, 'error');
+      }
+    ));
+  }
+
   function attachListeners() {
     unsubscribeSnapshots.forEach(fn => { try { fn(); } catch(_){} });
     unsubscribeSnapshots = [];
     if (!currentUser) return;
     const sitesQ = query(collection(db, 'sites'), where('owner_id', '==', currentUser.uid));
-    const unsubSites = onSnapshot(sitesQ, (snap) => {
+    attachSnapshot(sitesQ, (snap) => {
       sitesData = snap.docs.map(d => ({ id: d.id, ...d.data() }));
       reloadRelated();
       refreshCurrentSection();
-    }, err => showError(t('alerts.somethingWentWrong')));
-    unsubscribeSnapshots.push(unsubSites);
+    }, 'sites');
   }
 
   function reloadRelated() {
@@ -508,64 +530,68 @@ tbody tr:hover{background:#f1f5f9}
       materialsData = []; workersData = []; progressTasks = []; expensesData = []; managersData = []; assignedWorkersData = []; galleryData = []; attendanceData = []; stockData = []; stockTransactions = []; ownerRequisitionsData = []; ownerRequisitionItemsData = []; ownerRequisitionHistoryData = [];
       return;
     }
-    const matQ = query(collection(db, 'materials'), where('site_id', 'in', siteIds));
-    unsubscribeSnapshots.push(onSnapshot(matQ, snap => { materialsData = snap.docs.map(d => ({ id: d.id, ...d.data() })); refreshCurrentSection(); }));
-    const workQ = query(collection(db, 'worker_positions'), where('site_id', 'in', siteIds));
-    unsubscribeSnapshots.push(onSnapshot(workQ, snap => { workersData = snap.docs.map(d => ({ id: d.id, ...d.data() })); refreshCurrentSection(); }));
-    const progQ = query(collection(db, 'progress_tasks'), where('site_id', 'in', siteIds));
-    unsubscribeSnapshots.push(onSnapshot(progQ, snap => { progressTasks = snap.docs.map(d => ({ id: d.id, ...d.data() })); refreshCurrentSection(); }));
-    const expQ = query(collection(db, 'expenses'), where('site_id', 'in', siteIds));
-    unsubscribeSnapshots.push(onSnapshot(expQ, snap => { expensesData = snap.docs.map(d => ({ id: d.id, ...d.data() })); refreshCurrentSection(); }));
-    const mgrQ = query(collection(db, 'profiles'), where('role', '==', 'manager'));
-    unsubscribeSnapshots.push(onSnapshot(mgrQ, snap => { managersData = snap.docs.map(d => ({ id: d.id, ...d.data() })); refreshCurrentSection(); }));
-    const assignedQ = query(collection(db, 'site_workers'), where('site_id', 'in', siteIds));
-    unsubscribeSnapshots.push(onSnapshot(assignedQ, snap => { assignedWorkersData = snap.docs.map(d => ({ id: d.id, ...d.data() })); refreshCurrentSection(); }));
-    const galleryQ = query(collection(db, 'gallery'), where('site_id', 'in', siteIds));
-    unsubscribeSnapshots.push(onSnapshot(galleryQ, snap => { galleryData = snap.docs.map(d => ({ id: d.id, ...d.data() })); refreshCurrentSection(); }));
-    const attQ = query(collection(db, 'worker_attendance'), where('site_id', 'in', siteIds));
-    unsubscribeSnapshots.push(onSnapshot(attQ, snap => { attendanceData = snap.docs.map(d => ({ id: d.id, ...d.data() })); refreshCurrentSection(); }));
-    const stockQ = query(collection(db, 'stock'), where('site_id', 'in', siteIds));
-    unsubscribeSnapshots.push(onSnapshot(stockQ, snap => { stockData = snap.docs.map(d => ({ id: d.id, ...d.data() })); refreshCurrentSection(); }));
-    const transQ = query(collection(db, 'stock_transactions'), where('site_id', 'in', siteIds), orderBy('created_at', 'desc'));
-    unsubscribeSnapshots.push(onSnapshot(transQ, snap => { stockTransactions = snap.docs.map(d => ({ id: d.id, ...d.data() })); refreshCurrentSection(); }));
-    const reqQ = query(collection(db, 'requisitions'), where('site_id', 'in', siteIds));
-    unsubscribeSnapshots.push(onSnapshot(reqQ, snap => { ownerRequisitionsData = snap.docs.map(d => ({ id: d.id, ...d.data() })); refreshCurrentSection(); }));
-    const reqItemsQ = query(collection(db, 'requisition_items'), where('site_id', 'in', siteIds));
-    unsubscribeSnapshots.push(onSnapshot(reqItemsQ, snap => { ownerRequisitionItemsData = snap.docs.map(d => ({ id: d.id, ...d.data() })); refreshCurrentSection(); }));
-    const reqHistQ = query(collection(db, 'requisition_history'), where('site_id', 'in', siteIds), orderBy('timestamp', 'desc'));
-    unsubscribeSnapshots.push(onSnapshot(reqHistQ, snap => { ownerRequisitionHistoryData = snap.docs.map(d => ({ id: d.id, ...d.data() })); refreshCurrentSection(); }));
+    attachSnapshot(query(collection(db, 'materials'), where('site_id', 'in', siteIds)),
+      snap => { materialsData = snap.docs.map(d => ({ id: d.id, ...d.data() })); refreshCurrentSection(); }, 'materials');
+    attachSnapshot(query(collection(db, 'worker_positions'), where('site_id', 'in', siteIds)),
+      snap => { workersData = snap.docs.map(d => ({ id: d.id, ...d.data() })); refreshCurrentSection(); }, 'worker positions');
+    attachSnapshot(query(collection(db, 'progress_tasks'), where('site_id', 'in', siteIds)),
+      snap => { progressTasks = snap.docs.map(d => ({ id: d.id, ...d.data() })); refreshCurrentSection(); }, 'progress tasks');
+    attachSnapshot(query(collection(db, 'expenses'), where('site_id', 'in', siteIds)),
+      snap => { expensesData = snap.docs.map(d => ({ id: d.id, ...d.data() })); refreshCurrentSection(); }, 'expenses');
+    attachSnapshot(query(collection(db, 'profiles'), where('role', '==', 'manager')),
+      snap => { managersData = snap.docs.map(d => ({ id: d.id, ...d.data() })); refreshCurrentSection(); }, 'managers');
+    attachSnapshot(query(collection(db, 'site_workers'), where('site_id', 'in', siteIds)),
+      snap => { assignedWorkersData = snap.docs.map(d => ({ id: d.id, ...d.data() })); refreshCurrentSection(); }, 'assigned workers');
+    attachSnapshot(query(collection(db, 'gallery'), where('site_id', 'in', siteIds)),
+      snap => { galleryData = snap.docs.map(d => ({ id: d.id, ...d.data() })); refreshCurrentSection(); }, 'gallery');
+    attachSnapshot(query(collection(db, 'worker_attendance'), where('site_id', 'in', siteIds)),
+      snap => { attendanceData = snap.docs.map(d => ({ id: d.id, ...d.data() })); refreshCurrentSection(); }, 'attendance');
+    attachSnapshot(query(collection(db, 'stock'), where('site_id', 'in', siteIds)),
+      snap => { stockData = snap.docs.map(d => ({ id: d.id, ...d.data() })); refreshCurrentSection(); }, 'stock');
+    attachSnapshot(query(collection(db, 'stock_transactions'), where('site_id', 'in', siteIds), orderBy('created_at', 'desc')),
+      snap => { stockTransactions = snap.docs.map(d => ({ id: d.id, ...d.data() })); refreshCurrentSection(); }, 'stock transactions');
+    attachSnapshot(query(collection(db, 'requisitions'), where('site_id', 'in', siteIds)),
+      snap => { ownerRequisitionsData = snap.docs.map(d => ({ id: d.id, ...d.data() })); refreshCurrentSection(); }, 'requisitions');
+    attachSnapshot(query(collection(db, 'requisition_items'), where('site_id', 'in', siteIds)),
+      snap => { ownerRequisitionItemsData = snap.docs.map(d => ({ id: d.id, ...d.data() })); refreshCurrentSection(); }, 'requisition items');
+    attachSnapshot(query(collection(db, 'requisition_history'), where('site_id', 'in', siteIds), orderBy('timestamp', 'desc')),
+      snap => { ownerRequisitionHistoryData = snap.docs.map(d => ({ id: d.id, ...d.data() })); refreshCurrentSection(); }, 'requisition history');
   }
 
+  // FIX C4 + H3: cleaner filter restore and try/finally around _refreshing
   function refreshCurrentSection() {
     if (currentSection && ['dashboard','sites','materials','workers','progress','reports','finances','managers','gallery','stock','settings'].includes(currentSection)) {
       if (window._refreshing) return;
       window._refreshing = true;
       requestAnimationFrame(() => {
-        // Preserve report filters
-        let savedFilters = null;
-        if (currentSection === 'reports') {
-          savedFilters = {
-            site: document.getElementById('report-site')?.value || document.getElementById('payroll-site')?.value || document.getElementById('stock-report-site')?.value || 'all',
-            dept: document.getElementById('report-dept')?.value || 'all',
-            start: document.getElementById('report-start')?.value || document.getElementById('payroll-start')?.value || '',
-            end: document.getElementById('report-end')?.value || document.getElementById('payroll-end')?.value || '',
-            search: document.getElementById('payroll-worker-search')?.value || '',
-            pos: document.getElementById('payroll-position')?.value || 'all',
-            status: document.getElementById('payroll-status')?.value || 'all'
-          };
+        try {
+          let savedFilters = null;
+          if (currentSection === 'reports') {
+            savedFilters = {
+              site: document.getElementById('report-site')?.value || 'all',
+              dept: document.getElementById('report-dept')?.value || 'all',
+              start: document.getElementById('report-start')?.value || '',
+              end: document.getElementById('report-end')?.value || '',
+              search: document.getElementById('payroll-worker-search')?.value || '',
+              pos: document.getElementById('payroll-position')?.value || 'all',
+              status: document.getElementById('payroll-status')?.value || 'all'
+            };
+          }
+          showSection(currentSection);
+          if (currentSection === 'reports' && savedFilters) {
+            const setIf = (id, val) => { const el = document.getElementById(id); if (el && val != null) el.value = val; };
+            setIf('report-site', savedFilters.site);
+            setIf('report-dept', savedFilters.dept);
+            setIf('report-start', savedFilters.start);
+            setIf('report-end', savedFilters.end);
+            setIf('payroll-worker-search', savedFilters.search);
+            setIf('payroll-position', savedFilters.pos);
+            setIf('payroll-status', savedFilters.status);
+            updateReportPreview();
+          }
+        } finally {
+          window._refreshing = false;
         }
-        showSection(currentSection);
-        if (currentSection === 'reports' && savedFilters) {
-          ['report-site','payroll-site','stock-report-site'].forEach(id => { const el = document.getElementById(id); if (el && savedFilters.site) el.value = savedFilters.site; });
-          const dpt = document.getElementById('report-dept'); if (dpt) dpt.value = savedFilters.dept;
-          ['report-start','payroll-start'].forEach(id => { const el = document.getElementById(id); if (el) el.value = savedFilters.start; });
-          ['report-end','payroll-end'].forEach(id => { const el = document.getElementById(id); if (el) el.value = savedFilters.end; });
-          const srch = document.getElementById('payroll-worker-search'); if (srch) srch.value = savedFilters.search;
-          const pos = document.getElementById('payroll-position'); if (pos) pos.value = savedFilters.pos;
-          const st = document.getElementById('payroll-status'); if (st) st.value = savedFilters.status;
-          updateReportPreview();
-        }
-        window._refreshing = false;
       });
     }
   }
@@ -770,7 +796,7 @@ tbody tr:hover{background:#f1f5f9}
       mgrSnap.docs.forEach(d => batch.update(d.ref, { assigned_site: '' }));
       await batch.commit();
       showToast(t('alerts.updatedSuccessfully'), 'success');
-    } catch (err) { showToast(t('alerts.somethingWentWrong'), 'error'); }
+    } catch (err) { console.error(err); showToast(t('alerts.somethingWentWrong'), 'error'); }
   };
 
   window.deleteSite = async (id) => {
@@ -794,7 +820,7 @@ tbody tr:hover{background:#f1f5f9}
       }
       await deleteDoc(doc(db, 'sites', id));
       showToast(t('alerts.deletedSuccessfully'), 'success');
-    } catch (err) { showToast(t('alerts.somethingWentWrong'), 'error'); }
+    } catch (err) { console.error(err); showToast(t('alerts.somethingWentWrong'), 'error'); }
   };
 
   window.editSite = (id) => {
@@ -830,7 +856,7 @@ tbody tr:hover{background:#f1f5f9}
       await updateDoc(doc(db, 'sites', id), { name, location, district, sector, client_name, budget, start_date, end_date });
       closeModal();
       showToast(t('alerts.updatedSuccessfully'), 'success');
-    } catch (err) { showToast(t('alerts.somethingWentWrong'), 'error'); }
+    } catch (err) { console.error(err); showToast(t('alerts.somethingWentWrong'), 'error'); }
     finally { setButtonLoading(btn, false); }
   };
 
@@ -885,7 +911,7 @@ tbody tr:hover{background:#f1f5f9}
       await addDoc(collection(db, 'sites'), { owner_id: currentUser.uid, name, location, district, sector, client_name, budget, start_date, end_date, images: imageUrls, status: 'active', manager_name: '' });
       closeModal();
       showToast(t('alerts.savedSuccessfully'), 'success');
-    } catch (err) { showToast(t('alerts.somethingWentWrong'), 'error'); }
+    } catch (err) { console.error(err); showToast(t('alerts.somethingWentWrong'), 'error'); }
     finally { setButtonLoading(btn, false); }
   };
 
@@ -987,7 +1013,11 @@ tbody tr:hover{background:#f1f5f9}
         stockItem = { id: ref.id, quantity: 0, material_name: oldMat.name };
       }
       const restoredQuantity = stockItem.quantity + oldUsed;
-      if (newUsed > restoredQuantity) { alert(`${t('alerts.invalidValue')}: ${restoredQuantity} ${t('materials.availableStock')}`); return; }
+      // FIX H5: styled toast instead of blocking alert
+      if (newUsed > restoredQuantity) {
+        showToast(`${t('alerts.invalidValue')}: ${restoredQuantity} ${t('materials.availableStock')}`, 'error');
+        return;
+      }
       const newStockQty = restoredQuantity - newUsed;
       const batch = writeBatch(db);
       const updateData = { name, quantity_used: newUsed, unit_cost: newUnitCost, updated_at: new Date().toISOString() };
@@ -1004,7 +1034,7 @@ tbody tr:hover{background:#f1f5f9}
       await batch.commit();
       closeModal();
       showToast(t('alerts.updatedSuccessfully'), 'success');
-    } catch (err) { showToast(t('alerts.somethingWentWrong'), 'error'); }
+    } catch (err) { console.error(err); showToast(t('alerts.somethingWentWrong'), 'error'); }
     finally { setButtonLoading(btn, false); }
   };
 
@@ -1030,7 +1060,7 @@ tbody tr:hover{background:#f1f5f9}
         });
         await batch.commit();
         showToast(t('alerts.deletedSuccessfully'), 'success');
-      } catch (err) { showToast(t('alerts.somethingWentWrong'), 'error'); }
+      } catch (err) { console.error(err); showToast(t('alerts.somethingWentWrong'), 'error'); }
     })();
   };
 
@@ -1043,7 +1073,7 @@ tbody tr:hover{background:#f1f5f9}
   function renderRequisitionsList() {
     const container = document.getElementById('materials-container');
     if (!container) return;
-    const allReqs = ownerRequisitionsData.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+    const allReqs = ownerRequisitionsData.slice().sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
     if (!allReqs.length) { container.innerHTML = `<div class="bg-white rounded-2xl border p-6 text-center"><p class="text-slate-500">${t('materials.noRequisitions')}</p></div>`; return; }
     let html = `<div class="bg-white rounded-2xl border shadow-sm overflow-hidden"><div class="overflow-x-auto"><table class="w-full text-left text-sm">
       <thead class="bg-slate-50 text-slate-500 uppercase text-xs"><tr>
@@ -1110,7 +1140,7 @@ tbody tr:hover{background:#f1f5f9}
       await updateDoc(doc(db, 'requisitions', reqId), { status: 'Approved', approved_by: currentUser.uid, approved_at: now, updated_at: now });
       await addDoc(collection(db, 'requisition_history'), { requisition_id: reqId, action: 'Approved', actor: currentUser.uid, actor_name: ownerProfile.full_name || 'Owner', timestamp: now, details: 'Requisition approved' });
       showToast(t('alerts.updatedSuccessfully'), 'success');
-    } catch (err) { showToast(t('alerts.somethingWentWrong'), 'error'); }
+    } catch (err) { console.error(err); showToast(t('alerts.somethingWentWrong'), 'error'); }
   };
 
   window.rejectRequisition = async (reqId) => {
@@ -1122,7 +1152,7 @@ tbody tr:hover{background:#f1f5f9}
       await updateDoc(doc(db, 'requisitions', reqId), { status: 'Rejected', rejection_reason: reason, approved_by: currentUser.uid, approved_at: now, updated_at: now });
       await addDoc(collection(db, 'requisition_history'), { requisition_id: reqId, action: 'Rejected', actor: currentUser.uid, actor_name: ownerProfile.full_name || 'Owner', timestamp: now, details: 'Requisition rejected: ' + reason });
       showToast(t('alerts.updatedSuccessfully'), 'success');
-    } catch (err) { showToast(t('alerts.somethingWentWrong'), 'error'); }
+    } catch (err) { console.error(err); showToast(t('alerts.somethingWentWrong'), 'error'); }
   };
 
   window.openSupplyModal = (reqId) => {
@@ -1187,7 +1217,7 @@ tbody tr:hover{background:#f1f5f9}
       await batch.commit();
       closeModal();
       showToast(t('alerts.savedSuccessfully'), 'success');
-    } catch (err) { alert(err.message || t('alerts.somethingWentWrong')); }
+    } catch (err) { console.error(err); showToast(err.message || t('alerts.somethingWentWrong'), 'error'); }
     finally { setButtonLoading(btn, false); }
   };
 
@@ -1206,7 +1236,7 @@ tbody tr:hover{background:#f1f5f9}
     let historyHtml = history.map(h => `<div style="font-size:12px; color:#555; border-bottom:1px solid #eee; padding:5px 0;"><strong>${h.action}</strong> by ${h.actor_name} — ${formatDate(h.timestamp)}</div>`).join('');
     const printHTML = `<!DOCTYPE html><html><head><title>${req.requisition_number}</title><style>body{font-family:Arial,sans-serif;padding:30px;color:#333}.print-header{border-bottom:3px solid #059669;padding-bottom:10px;margin-bottom:20px;display:flex;justify-content:space-between;align-items:center}.print-header h1{color:#059669;font-size:24px;margin:0}.print-header p{margin:0;font-size:14px}.print-table{width:100%;border-collapse:collapse;margin-top:20px;font-size:14px}.print-table th{background:#059669;color:white;padding:8px;text-align:left}.print-table td{border:1px solid #ccc;padding:8px}.print-summary{margin-top:20px;padding:10px;background:#f8f9fa;border:1px solid #eee;border-radius:5px}.print-footer{margin-top:30px;border-top:1px solid #ccc;padding-top:10px;font-size:12px;color:#666;text-align:center}</style></head><body><div class="print-header"><div><h1>SHDR Ltd</h1><p>Sustainable Homes Designs Rwanda Ltd</p></div><div style="text-align:right;"><h2>Material Requisition</h2><p>${req.requisition_number}</p></div></div><div class="print-summary"><p><strong>Site:</strong> ${siteName}</p><p><strong>Requested By:</strong> ${req.requested_by_name}</p><p><strong>Request Date:</strong> ${formatDate(req.request_date)}</p><p><strong>Required Date:</strong> ${formatDate(req.required_date)}</p><p><strong>Priority:</strong> ${req.priority === 'Urgent' ? t('materials.urgent') : t('materials.normal')}</p><p><strong>Status:</strong> ${statusLabel}</p><p><strong>Notes:</strong> ${req.notes || '—'}</p>${req.rejection_reason ? `<p><strong>Rejection Reason:</strong> ${req.rejection_reason}</p>` : ''}</div><table class="print-table"><thead><tr><th>Material</th><th>Requested</th><th>Supplied</th><th>Remaining</th><th>Unit</th></tr></thead><tbody>${tableRows}</tbody></table><h3 style="margin-top:30px; border-bottom:1px solid #ccc; padding-bottom:5px;">Requisition History</h3><div>${historyHtml}</div><div class="print-footer">Generated by SHDR Management System on ${formatDate(new Date())}</div></body></html>`;
     const win = window.open('', '_blank', 'width=1000,height=700');
-    if (!win) { alert(t('common.accessDenied')); return; }
+    if (!win) { showToast(t('common.accessDenied'), 'error'); return; }
     win.document.write(printHTML);
     win.document.close();
     setTimeout(() => win.print(), 500);
@@ -1378,7 +1408,7 @@ tbody tr:hover{background:#f1f5f9}
       closeModal();
       if (selectedWorkerViewSite) selectWorkerViewSite(selectedWorkerViewSite);
       showToast(t('alerts.updatedSuccessfully'), 'success');
-    } catch (err) { showToast(t('alerts.somethingWentWrong'), 'error'); }
+    } catch (err) { console.error(err); showToast(t('alerts.somethingWentWrong'), 'error'); }
     finally { setButtonLoading(btn, false); }
   };
 
@@ -1388,7 +1418,7 @@ tbody tr:hover{background:#f1f5f9}
       await deleteDoc(doc(db, 'site_workers', id));
       if (selectedWorkerViewSite) selectWorkerViewSite(selectedWorkerViewSite);
       showToast(t('alerts.deletedSuccessfully'), 'success');
-    } catch (err) { showToast(t('alerts.somethingWentWrong'), 'error'); }
+    } catch (err) { console.error(err); showToast(t('alerts.somethingWentWrong'), 'error'); }
   };
 
   window.openAddWorkerModal = () => {
@@ -1422,7 +1452,7 @@ tbody tr:hover{background:#f1f5f9}
       await addDoc(collection(db, 'worker_positions'), { role, site_id, salary_type, estimated_cost, owner_id: currentUser.uid, created_at: new Date().toISOString() });
       closeModal();
       showToast(t('alerts.savedSuccessfully'), 'success');
-    } catch (err) { showToast(t('alerts.somethingWentWrong'), 'error'); }
+    } catch (err) { console.error(err); showToast(t('alerts.somethingWentWrong'), 'error'); }
     finally { setButtonLoading(btn, false); }
   };
 
@@ -1458,14 +1488,14 @@ tbody tr:hover{background:#f1f5f9}
       await updateDoc(doc(db, 'worker_positions', id), { role, site_id, salary_type, estimated_cost, updated_at: new Date().toISOString() });
       closeModal();
       showToast(t('alerts.updatedSuccessfully'), 'success');
-    } catch (err) { showToast(t('alerts.somethingWentWrong'), 'error'); }
+    } catch (err) { console.error(err); showToast(t('alerts.somethingWentWrong'), 'error'); }
     finally { setButtonLoading(btn, false); }
   };
 
   window.deleteWorkerPosition = async (id) => {
     if (!confirm(t('alerts.areYouSure'))) return;
     try { await deleteDoc(doc(db, 'worker_positions', id)); showToast(t('alerts.deletedSuccessfully'), 'success'); }
-    catch (err) { showToast(t('alerts.somethingWentWrong'), 'error'); }
+    catch (err) { console.error(err); showToast(t('alerts.somethingWentWrong'), 'error'); }
   };
 
   // =============== PROGRESS ===============
@@ -1522,14 +1552,14 @@ tbody tr:hover{background:#f1f5f9}
       const start_date = document.getElementById('task-start').value;
       const periodNum = parseInt(document.getElementById('task-period-num').value);
       const periodUnit = document.getElementById('task-period-unit').value;
-      if (!name || !site_id || !start_date) { alert(t('alerts.requiredField')); return; }
+      if (!name || !site_id || !start_date) { showAlert('alerts.requiredField'); return; }
       const start = new Date(start_date);
       const end = new Date(start);
       if (periodUnit === 'days') end.setDate(end.getDate() + periodNum); else end.setDate(end.getDate() + periodNum * 7);
       await addDoc(collection(db, 'progress_tasks'), { site_id, name, start_date: start.toISOString(), end_date: end.toISOString(), status: 'pending' });
       closeModal();
       showToast(t('alerts.savedSuccessfully'), 'success');
-    } catch (err) { alert(t('alerts.somethingWentWrong')); }
+    } catch (err) { console.error(err); showToast(t('alerts.somethingWentWrong'), 'error'); }
     finally { setButtonLoading(btn, false); }
   };
 
@@ -1561,17 +1591,19 @@ tbody tr:hover{background:#f1f5f9}
       const start_date = document.getElementById('edit-task-start').value;
       const end_date = document.getElementById('edit-task-end').value;
       const status = document.getElementById('edit-task-status').value;
-      if (!name || !site_id || !start_date || !end_date) { alert(t('alerts.requiredField')); return; }
+      if (!name || !site_id || !start_date || !end_date) { showAlert('alerts.requiredField'); return; }
       await updateDoc(doc(db, 'progress_tasks', id), { name, site_id, start_date: new Date(start_date).toISOString(), end_date: new Date(end_date).toISOString(), status });
       closeModal();
       showToast(t('alerts.updatedSuccessfully'), 'success');
-    } catch (err) { alert(t('alerts.somethingWentWrong')); }
+    } catch (err) { console.error(err); showToast(t('alerts.somethingWentWrong'), 'error'); }
     finally { setButtonLoading(btn, false); }
   };
 
   window.deleteTask = (id) => {
     if (!confirm(t('alerts.areYouSure'))) return;
-    deleteDoc(doc(db, 'progress_tasks', id)).then(() => showToast(t('alerts.deletedSuccessfully'), 'success')).catch(() => alert(t('alerts.somethingWentWrong')));
+    deleteDoc(doc(db, 'progress_tasks', id))
+      .then(() => showToast(t('alerts.deletedSuccessfully'), 'success'))
+      .catch((err) => { console.error(err); showToast(t('alerts.somethingWentWrong'), 'error'); });
   };
 
   // =========================================================================
@@ -1585,7 +1617,8 @@ tbody tr:hover{background:#f1f5f9}
       city: 'Kigali City, Rwanda',
       phone: '+250 788 474 110',
       email: 'sustainablehomedesign@gmail.com',
-      logo: 'shdr_logo Background Removed.png'
+      // FIX C1: prefer embedded data URL so print window always renders
+      logo: (typeof SHDR_LOGO_BASE64 !== 'undefined' && SHDR_LOGO_BASE64) ? SHDR_LOGO_BASE64 : 'shdr_logo Background Removed.png'
     };
   }
 
@@ -1600,9 +1633,11 @@ tbody tr:hover{background:#f1f5f9}
     '</svg>';
   const SHDR_LOGO_BASE64 = 'data:image/svg+xml;base64,' + btoa(SHDR_LOGO_SVG);
   let _shdrLogoPngCache = null;
+  let _shdrLogoPromise = null;
   function loadShdrLogoPng() {
     if (_shdrLogoPngCache) return Promise.resolve(_shdrLogoPngCache);
-    return new Promise((resolve) => {
+    if (_shdrLogoPromise) return _shdrLogoPromise;
+    _shdrLogoPromise = new Promise((resolve) => {
       try {
         const img = new Image();
         const svgBlob = new Blob([SHDR_LOGO_SVG], { type: 'image/svg+xml;charset=utf-8' });
@@ -1622,6 +1657,7 @@ tbody tr:hover{background:#f1f5f9}
         img.src = url;
       } catch (e) { resolve(null); }
     });
+    return _shdrLogoPromise;
   }
 
   // -------- Report HTML for Print (with company-name size fix A) --------
@@ -1647,10 +1683,12 @@ tbody tr:hover{background:#f1f5f9}
       td{padding:8px;border:1px solid #d1d5db}
       tr:nth-child(even){background:#f9fafb}
       tfoot td{background:#ecfdf5;font-weight:800;color:#065f46}
+      .section{margin-bottom:22px}
+      .section h3{margin:0 0 8px;font-size:13px;color:#065f46;text-transform:uppercase;letter-spacing:.5px}
       .report-footer{margin-top:30px;padding-top:12px;border-top:1px solid #d1d5db;text-align:center;font-size:11px;color:#6b7280;line-height:1.6}
       .footer-system{font-weight:600;color:#374151}
       .footer-copy{font-size:10px;color:#9ca3af}
-      @media print{body{padding:15px}.company-header{break-inside:avoid}table{page-break-inside:auto}tr{page-break-inside:avoid}thead{display:table-header-group}.report-footer{page-break-inside:avoid}}
+      @media print{body{padding:15px}.company-header{break-inside:avoid}table{page-break-inside:auto}tr{page-break-inside:avoid}thead{display:table-header-group}.report-footer{page-break-inside:avoid}.section{page-break-inside:auto}}
     </style></head><body>
       <div class="company-header">
         <div class="company-left">
@@ -1731,10 +1769,10 @@ tbody tr:hover{background:#f1f5f9}
   function readReportFilters() {
     return {
       type: reportType,
-      site: document.getElementById('report-site')?.value || document.getElementById('payroll-site')?.value || document.getElementById('stock-report-site')?.value || 'all',
+      site: document.getElementById('report-site')?.value || 'all',
       department: document.getElementById('report-dept')?.value || 'all',
-      startDate: document.getElementById('report-start')?.value || document.getElementById('payroll-start')?.value || '',
-      endDate: document.getElementById('report-end')?.value || document.getElementById('payroll-end')?.value || '',
+      startDate: document.getElementById('report-start')?.value || '',
+      endDate: document.getElementById('report-end')?.value || '',
       paymentStatus: document.getElementById('payroll-status')?.value || 'all',
       workerSearch: (document.getElementById('payroll-worker-search')?.value || '').trim(),
       position: document.getElementById('payroll-position')?.value || 'all'
@@ -2190,6 +2228,7 @@ tbody tr:hover{background:#f1f5f9}
   };
 
   // =============== PRINT ===============
+  // FIX C6: replaced w.onload with setTimeout for document.write windows
   window.printReport = function() {
     try {
       const model = buildReportModel();
@@ -2231,9 +2270,10 @@ tbody tr:hover{background:#f1f5f9}
       const w = window.open('', '_blank');
       if (!w) { showToast('Please allow popups to print.', 'error'); return; }
       w.document.open(); w.document.write(html); w.document.close();
-      w.onload = () => {
-        setTimeout(() => { w.focus(); w.print(); showToast(getReportSuccessMessage(model.type, 'print'), 'success'); }, 400);
-      };
+      setTimeout(() => {
+        try { w.focus(); w.print(); showToast(getReportSuccessMessage(model.type, 'print'), 'success'); }
+        catch (e) { console.error('Print focus failed:', e); }
+      }, 500);
     } catch (err) {
       console.error('Print failed:', err);
       showToast('Unable to open the print dialog. Please try again.', 'error');
@@ -2241,8 +2281,11 @@ tbody tr:hover{background:#f1f5f9}
   };
 
   // =============== Reports page with icons ===============
+  // FIX C3: added payroll-position filter; FIX H2: worker search only for payroll
   function renderReports(container) {
     const siteOpts = sitesData.map(s => `<option value="${s.id}">${s.name}</option>`).join('');
+    const positionOpts = [...new Set(attendanceData.map(a=>a.role).filter(Boolean))]
+      .map(r => `<option value="${r}">${r}</option>`).join('');
     const tabs = [
       { key: 'general', label: t('reports.general'), icon: 'material-symbols:description' },
       { key: 'payroll', label: t('reports.payroll'), icon: 'material-symbols:payments' },
@@ -2284,9 +2327,15 @@ tbody tr:hover{background:#f1f5f9}
             <option value="unpaid">${t('reports.unpaid')}</option>
           </select>
         </div>
+        <div id="position-filter-wrap" class="${reportType === 'payroll' ? '' : 'hidden'}">
+          <label class="block text-xs font-medium text-slate-500 mb-1 flex items-center gap-1"><iconify-icon icon="material-symbols:badge" class="text-emerald-600" width="14"></iconify-icon>${t('reports.position')}</label>
+          <select id="payroll-position" class="w-full border rounded-lg p-2 text-sm" onchange="onReportFilterChange()">
+            <option value="all">${t('reports.allPositions')}</option>${positionOpts}
+          </select>
+        </div>
       </div>
       <div class="bg-white rounded-2xl border p-4 mb-4 flex flex-wrap items-center gap-3">
-        <div class="relative flex-1 min-w-[180px]">
+        <div id="worker-search-wrap" class="${reportType === 'payroll' ? 'relative flex-1 min-w-[180px]' : 'hidden'}">
           <iconify-icon icon="material-symbols:search" class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" width="18"></iconify-icon>
           <input type="text" id="payroll-worker-search" class="w-full border rounded-lg p-2 pl-10 text-sm" placeholder="${t('reports.searchWorker')}" oninput="onReportFilterChange()">
         </div>
@@ -2307,12 +2356,14 @@ tbody tr:hover{background:#f1f5f9}
     reportType = type;
     showSection('reports');
     requestAnimationFrame(() => {
-      const st = document.getElementById('report-site'); if (st && saved.site) st.value = saved.site;
-      const dpt = document.getElementById('report-dept'); if (dpt) dpt.value = saved.department;
-      const sd = document.getElementById('report-start'); if (sd) sd.value = saved.startDate;
-      const ed = document.getElementById('report-end'); if (ed) ed.value = saved.endDate;
-      const ps = document.getElementById('payroll-status'); if (ps) ps.value = saved.paymentStatus;
-      const ws = document.getElementById('payroll-worker-search'); if (ws) ws.value = saved.workerSearch;
+      const setIf = (id, val) => { const el = document.getElementById(id); if (el && val != null) el.value = val; };
+      setIf('report-site', saved.site);
+      setIf('report-dept', saved.department);
+      setIf('report-start', saved.startDate);
+      setIf('report-end', saved.endDate);
+      setIf('payroll-status', saved.paymentStatus);
+      setIf('payroll-position', saved.position);
+      setIf('payroll-worker-search', saved.workerSearch);
       updateReportPreview();
     });
   };
@@ -2394,6 +2445,7 @@ tbody tr:hover{background:#f1f5f9}
 
   window.selectFinanceSite = (id) => { selectedFinanceSite = id; renderFinances(document.getElementById('content-area')); };
 
+  // FIX H1: renamed arrow param from `t` to `task` to stop shadowing i18n `t`
   function renderFinanceContent() {
     const site = sitesData.find(s => s.id === selectedFinanceSite);
     if (!site) return;
@@ -2413,6 +2465,8 @@ tbody tr:hover{background:#f1f5f9}
     }
     const dailyAvg = totalSpent / daysActive;
     const monthlyAvg = totalSpent / (daysActive / 30);
+    const completedCount = progressTasks.filter(task => task.site_id === selectedFinanceSite && task.status === 'completed').length;
+    const pendingCount = progressTasks.filter(task => task.site_id === selectedFinanceSite && task.status === 'pending').length;
     document.getElementById('finance-content').innerHTML = `
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
         <div class="bg-white rounded-2xl border p-4">
@@ -2438,8 +2492,8 @@ tbody tr:hover{background:#f1f5f9}
       <div class="bg-white rounded-2xl border p-4">
         <h3 class="font-semibold text-sm mb-3 flex items-center gap-2"><iconify-icon icon="material-symbols:lightbulb" class="text-amber-600" width="18"></iconify-icon>Daily AI Resume</h3>
         <div class="text-sm space-y-1">
-          <p>✅ <strong>Good:</strong> ${t('sites.status')}: ${site.status === 'finished' ? t('status.completed') : t('status.active')}. ${t('progress.completed')}: ${progressTasks.filter(t => t.site_id === selectedFinanceSite && t.status === 'completed').length}.</p>
-          <p>❌ <strong>Negative:</strong> ${loss ? t('finances.exceeded') : t('common.noDataAvailable')} ${site.status !== 'finished' && progressTasks.filter(t => t.site_id === selectedFinanceSite && t.status === 'pending').length ? `${t('progress.pending')}.` : ''}</p>
+          <p>✅ <strong>Good:</strong> ${t('sites.status')}: ${site.status === 'finished' ? t('status.completed') : t('status.active')}. ${t('progress.completed')}: ${completedCount}.</p>
+          <p>❌ <strong>Negative:</strong> ${loss ? t('finances.exceeded') : t('common.noDataAvailable')} ${site.status !== 'finished' && pendingCount ? `${t('progress.pending')}.` : ''}</p>
           <p>⚠️ <strong>Issues:</strong> ${loss ? t('finances.costControl') : t('common.noDataAvailable')}</p>
         </div>
       </div>`;
@@ -2461,7 +2515,7 @@ tbody tr:hover{background:#f1f5f9}
       await updateDoc(doc(db, 'sites', siteId), { budget: newBudget });
       closeModal();
       showToast(t('alerts.updatedSuccessfully'), 'success');
-    } catch (err) { showToast(t('alerts.somethingWentWrong'), 'error'); }
+    } catch (err) { console.error(err); showToast(t('alerts.somethingWentWrong'), 'error'); }
     finally { setButtonLoading(btn, false); }
   };
 
@@ -2508,14 +2562,14 @@ tbody tr:hover{background:#f1f5f9}
       await setDoc(doc(db, 'profiles', data.localId), { email, full_name: email.split('@')[0], role: 'manager', assigned_site: siteId, phone: '' });
       showToast(t('alerts.savedSuccessfully'), 'success');
       closeModal();
-    } catch (err) { showToast(err.message || t('alerts.somethingWentWrong'), 'error'); }
+    } catch (err) { console.error(err); showToast(err.message || t('alerts.somethingWentWrong'), 'error'); }
     finally { setButtonLoading(btn, false); }
   };
 
   window.removeManager = async (uid) => {
     if (!confirm(t('alerts.areYouSure'))) return;
     try { await deleteDoc(doc(db, 'profiles', uid)); showToast(t('alerts.deletedSuccessfully'), 'success'); }
-    catch (err) { showToast(t('alerts.somethingWentWrong'), 'error'); }
+    catch (err) { console.error(err); showToast(t('alerts.somethingWentWrong'), 'error'); }
   };
 
   // =============== GALLERY ===============
@@ -2577,15 +2631,12 @@ tbody tr:hover{background:#f1f5f9}
     viewer.addEventListener('click', (event) => { if (event.target === viewer) closeGalleryImage(); });
     document.body.appendChild(viewer);
     document.body.style.overflow = 'hidden';
-    document.addEventListener('keydown', galleryLightboxEscHandler);
   };
 
   window.closeGalleryImage = () => {
     document.getElementById('gallery-lightbox')?.remove();
     document.body.style.overflow = '';
-    document.removeEventListener('keydown', galleryLightboxEscHandler);
   };
-  function galleryLightboxEscHandler(event) { if (event.key === 'Escape') closeGalleryImage(); }
 
   window.editGalleryItem = (id) => {
     const item = galleryData.find(g => g.id === id);
@@ -2612,14 +2663,14 @@ tbody tr:hover{background:#f1f5f9}
       await updateDoc(doc(db, 'gallery', id), updateData);
       closeModal();
       showToast(t('alerts.updatedSuccessfully'), 'success');
-    } catch (err) { showToast(t('alerts.somethingWentWrong'), 'error'); }
+    } catch (err) { console.error(err); showToast(t('alerts.somethingWentWrong'), 'error'); }
     finally { setButtonLoading(btn, false); }
   };
 
   window.deleteGalleryItem = async (id) => {
     if (!confirm(t('alerts.areYouSure'))) return;
     try { await deleteDoc(doc(db, 'gallery', id)); showToast(t('alerts.deletedSuccessfully'), 'success'); }
-    catch (err) { showToast(t('alerts.somethingWentWrong'), 'error'); }
+    catch (err) { console.error(err); showToast(t('alerts.somethingWentWrong'), 'error'); }
   };
 
   // ============================================================
@@ -2796,7 +2847,7 @@ tbody tr:hover{background:#f1f5f9}
       hasUnsavedChanges = false;
       showToast(t('alerts.updatedSuccessfully'), 'success');
       populateSettingsForms();
-    } catch (err) { showToast(t('alerts.somethingWentWrong'), 'error'); }
+    } catch (err) { console.error(err); showToast(t('alerts.somethingWentWrong'), 'error'); }
     finally { setButtonLoading(btn, false); }
   };
 
@@ -2816,7 +2867,7 @@ tbody tr:hover{background:#f1f5f9}
       showToast(t('alerts.updatedSuccessfully'), 'success');
       e.target.reset();
       hasUnsavedChanges = false;
-    } catch (err) { showToast(t('alerts.somethingWentWrong'), 'error'); }
+    } catch (err) { console.error(err); showToast(t('alerts.somethingWentWrong'), 'error'); }
     finally { setButtonLoading(btn, false); }
   };
 
@@ -2835,7 +2886,7 @@ tbody tr:hover{background:#f1f5f9}
       hasUnsavedChanges = false;
       setLanguage(language);
       showToast(t('alerts.savedSuccessfully'), 'success');
-    } catch (err) { showToast(t('alerts.somethingWentWrong'), 'error'); }
+    } catch (err) { console.error(err); showToast(t('alerts.somethingWentWrong'), 'error'); }
     finally { setButtonLoading(btn, false); }
   };
 
