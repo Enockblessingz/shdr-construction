@@ -183,7 +183,7 @@ body{background:#f8fafc}
 
 <script type="module">
 // ============================================================
-// I18N
+// I18N (unchanged)
 // ============================================================
 const translations={
 en:{navigation:{managerPanel:"Manager's Panel",dashboard:"Dashboard",materials:"Materials",stock:"Stock",workers:"Workers",progress:"Progress",reports:"Reports",gallery:"Gallery",settings:"Settings",logout:"Sign Out"},
@@ -283,7 +283,7 @@ function getCompany(){return{name:'SHDR Ltd',address:'KG 11 Avenue, Kimironko, G
 function safeFilename(s){return String(s||'').replace(/[^\w\-]+/g,'_').replace(/_+/g,'_').slice(0,120)}
 
 // ============================================================
-// SHDR BASE64 LOGO
+// SHDR BASE64 LOGO — embedded SVG converted to PNG for PDF
 // ============================================================
 const SHDR_LOGO_SVG = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" width="240" height="240">'+
   '<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#10b981"/><stop offset="1" stop-color="#047857"/></linearGradient></defs>'+
@@ -320,8 +320,10 @@ function loadShdrLogoPng() {
 }
 
 // ============================================================
-// UNIFIED REPORT SYSTEM
+// PDF / EXCEL / PRINT — UNIFIED REPORT SYSTEM
 // ============================================================
+
+// ---- Payment status logic ----
 function isRecordPaid(rec) {
   if (!rec) return false;
   if (rec.payment_status === 'paid' || rec.paid === true || rec.is_paid === true) return true;
@@ -329,6 +331,7 @@ function isRecordPaid(rec) {
   return false;
 }
 
+// ---- Read the current report filters from the UI ----
 function readReportFilters() {
   return {
     type: reportType,
@@ -340,6 +343,7 @@ function readReportFilters() {
   };
 }
 
+// ---- Date filter helpers ----
 function inDateRange(dateStr, start, end) {
   if (!dateStr) return !start && !end;
   const d = String(dateStr).slice(0,10);
@@ -348,33 +352,42 @@ function inDateRange(dateStr, start, end) {
   return true;
 }
 
+// ---- GENERAL report builder ----
 function buildGeneralReportModel(filters) {
   const site = assignedSites.find(s=>s.id===currentSiteId);
   const siteName = site ? site.name : '—';
   const dept = filters.department;
 
+  // Materials summary
   let mats = materialsData.filter(m=>m.site_id===currentSiteId);
   mats = mats.filter(m => inDateRange(m.date_used||m.created_at, filters.startDate, filters.endDate));
   const matTotalValue = mats.reduce((s,m)=>s+calculateTotal(m.quantity_used||0,m.unit_cost||0),0);
 
+  // Stock summary
   const stocks = stockData.filter(s=>s.site_id===currentSiteId);
   const stockValue = stocks.reduce((s,x)=>s+toNumber(x.quantity)*toNumber(x.unit_cost),0);
   const lowStockCount = stocks.filter(s=>toNumber(s.quantity)<=toNumber(s.minimum_quantity)).length;
 
+  // Workers summary
   const workers = siteWorkersData.slice();
   const workerCount = workers.length;
 
+  // Payroll summary (from attendance)
   let att = attendanceData.filter(a=>a.site_id===currentSiteId);
   att = att.filter(a => inDateRange(a.date, filters.startDate, filters.endDate));
   const payrollTotal = att.reduce((s,a)=>s+toNumber(a.daily_rate),0);
   const payrollPaid = att.filter(isRecordPaid).reduce((s,a)=>s+toNumber(a.daily_rate),0);
   const payrollUnpaid = payrollTotal - payrollPaid;
 
+  // Requisition summary
   let reqs = requisitionsData.filter(r=>r.site_id===currentSiteId);
   reqs = reqs.filter(r => inDateRange(r.request_date, filters.startDate, filters.endDate));
+  const reqByStatus = {};
+  reqs.forEach(r=>{const st=r.status||'Pending';reqByStatus[st]=(reqByStatus[st]||0)+1});
 
   const sections = [];
 
+  // Overview section
   sections.push({
     title: 'Overview',
     columns: [{key:'metric',label:'Metric'},{key:'value',label:'Value'}],
@@ -522,6 +535,7 @@ function buildGeneralReportModel(filters) {
   };
 }
 
+// ---- WORKER PAYROLL report builder ----
 function buildWorkerPayrollReportModel(filters) {
   let records = attendanceData.filter(a=>a.site_id===currentSiteId);
   records = records.filter(a => inDateRange(a.date, filters.startDate, filters.endDate));
@@ -604,11 +618,13 @@ function buildWorkerPayrollReportModel(filters) {
   };
 }
 
+// ---- MATERIALS report builder ----
 function buildMaterialsReportModel(filters) {
   const stocks = stockData.filter(s=>s.site_id===currentSiteId);
   const mats = materialsData.filter(m=>m.site_id===currentSiteId)
     .filter(m => inDateRange(m.date_used||m.created_at, filters.startDate, filters.endDate));
 
+  // Aggregate per material name
   const byName = {};
   stocks.forEach(s=>{
     const name = cleanName(s.material_name||'Unknown');
@@ -622,6 +638,7 @@ function buildMaterialsReportModel(filters) {
     byName[name].used += toNumber(m.quantity_used);
     if (!byName[name].unitCost && m.unit_cost) byName[name].unitCost = toNumber(m.unit_cost);
   });
+  // Added quantity from stock transactions of type STOCK_ADDED within range
   stockTransactions.filter(tx=>tx.site_id===currentSiteId && tx.transaction_type==='STOCK_ADDED')
     .filter(tx => inDateRange(tx.created_at, filters.startDate, filters.endDate))
     .forEach(tx=>{
@@ -665,6 +682,7 @@ function buildMaterialsReportModel(filters) {
   };
 }
 
+// ---- WORKERS report builder ----
 function buildWorkersReportModel(filters) {
   let workers = siteWorkersData.slice();
   if (filters.workerSearch) {
@@ -706,6 +724,7 @@ function buildWorkersReportModel(filters) {
   };
 }
 
+// ---- Master dispatcher ----
 function buildReportModel() {
   const filters = readReportFilters();
   let model;
@@ -723,6 +742,7 @@ function buildReportModel() {
   return model;
 }
 
+// ---- Filenames ----
 function getReportFilename(type, ext) {
   const d = new Date().toISOString().slice(0,10);
   const map = {
@@ -749,11 +769,24 @@ function getReportSuccessMessage(type, format) {
   return `${n} exported.`;
 }
 
+function getReportTitleForHeader(type) {
+  const map = {
+    'general': 'GENERAL MANAGER REPORT',
+    'worker-payroll': 'WORKER PAYROLL REPORT',
+    'materials': 'MATERIALS REPORT',
+    'workers': 'WORKERS REPORT'
+  };
+  return 'SHDR LTD — ' + (map[type] || 'REPORT');
+}
+
+// ---- PDF helpers ----
 function drawPdfHeader(doc, company, model, logoData) {
   const W = doc.internal.pageSize.getWidth();
+  // Top brand bar
   doc.setFillColor(5,150,105); doc.rect(0,0,W,4,'F');
 
   let headerTop = 10;
+  // Logo
   if (logoData) {
     try { doc.addImage(logoData, 'PNG', 14, headerTop, 20, 20); } catch(e){ console.warn('PDF logo addImage failed:', e); }
   }
@@ -768,6 +801,7 @@ function drawPdfHeader(doc, company, model, logoData) {
   doc.text(`${company.city} | Tel: ${company.phone}`, textX, headerTop+20);
   doc.text(`Email: ${company.email}`, textX, headerTop+23.5);
 
+  // Right side report title
   doc.setFont('helvetica','bold'); doc.setFontSize(12); doc.setTextColor(20,20,20);
   doc.text(model.title, W-14, headerTop+7, {align:'right'});
   doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(100,100,100);
@@ -776,6 +810,7 @@ function drawPdfHeader(doc, company, model, logoData) {
   doc.setDrawColor(5,150,105); doc.setLineWidth(0.5);
   doc.line(14, headerTop+27, W-14, headerTop+27);
 
+  // Meta block
   let y = headerTop + 33;
   const meta = [
     {label:'Manager', value: model.manager},
@@ -806,6 +841,7 @@ function addPdfFooter(doc, company) {
   }
 }
 
+// ---- PDF EXPORT ----
 window.exportReportPDF = async function() {
   try {
     const model = buildReportModel();
@@ -863,7 +899,8 @@ window.exportReportPDF = async function() {
         footStyles: { fillColor: [236,253,245], textColor: [6,95,70], fontStyle: 'bold' },
         alternateRowStyles: { fillColor: [249,250,251] },
         columnStyles,
-        margin: { left: 14, right: 14 }
+        margin: { left: 14, right: 14 },
+        didDrawPage: (data)=>{ /* autoTable handles pagination */ }
       });
       y = (doc.lastAutoTable ? doc.lastAutoTable.finalY : y) + 8;
     }
@@ -877,6 +914,7 @@ window.exportReportPDF = async function() {
   }
 };
 
+// ---- EXCEL EXPORT ----
 window.exportReportExcel = function() {
   try {
     const model = buildReportModel();
@@ -885,6 +923,8 @@ window.exportReportExcel = function() {
 
     const company = getCompany();
     const wb = XLSX.utils.book_new();
+
+    // Build a single flat worksheet with sections (so all report data is together)
     const aoa = [];
     aoa.push([company.name]);
     aoa.push([company.address + ' | ' + company.location]);
@@ -925,6 +965,7 @@ window.exportReportExcel = function() {
     }
 
     const ws = XLSX.utils.aoa_to_sheet(aoa);
+    // Auto width
     const colWidths = [];
     aoa.forEach(row => {
       if (!Array.isArray(row)) return;
@@ -950,6 +991,7 @@ window.exportReportExcel = function() {
   }
 };
 
+// ---- PRINT ----
 window.printReport = function() {
   try {
     const model = buildReportModel();
@@ -1048,7 +1090,7 @@ tr:nth-child(even) td{background:#f9fafb}
   <b>Assigned Site:</b> ${model.site} &nbsp;|&nbsp;
   <b>Reporting Period:</b> ${period} &nbsp;|&nbsp;
   <b>Generated:</b> ${new Date().toLocaleString()}
-  ${filtersExtra.length ? '<br>' + filtersExtra.join(' &nbsp;|&nbsp; ') : ''}
+  ${filtersExtra.length ? '<br>' + filtersExtra.map(f=>`<b>${f.split(':')[0]}:</b>${f.split(':')[1]}`).join(' &nbsp;|&nbsp; ') : ''}
 </div>
 ${sectionsHtml}
 <div class="footer">Generated by ${company.name} Management System on ${new Date().toLocaleString()}</div>
@@ -1075,6 +1117,8 @@ ${sectionsHtml}
 // ============================================================
 // LEGACY: Material Requisition / Material Usage reports (kept separate)
 // ============================================================
+
+// ---- MATERIAL REQUISITION REPORT ----
 function buildRequisitionReportData(){
   const filters=_reqFilters;
   const rows=[];
@@ -1119,12 +1163,20 @@ window.exportRequisitionsPDF=function(){
     const {jsPDF}=window.jspdf;
     const doc=new jsPDF({orientation:'landscape',unit:'mm',format:'a4'});
     const company=getCompany();
+    const meta=[
+      {label:'Report',value:'Material Requisition Report'},
+      {label:'Site',value:assignedSites.find(s=>s.id===currentSiteId)?.name||'All Sites'},
+      {label:'Manager',value:managerProfile?.full_name||'—'},
+      {label:'Generated',value:new Date().toLocaleString()},
+      {label:'Total Rows',value:data.length}
+    ];
     const startY=drawPdfHeader(doc,company,{title:'Material Requisition Report',manager:managerProfile?.full_name||'—',site:assignedSites.find(s=>s.id===currentSiteId)?.name||'—',startDate:'',endDate:'',filters:{}}, null);
     const head=[['Req. ID','Req. Date','Required','Material','Unit','Qty','Priority','Status','Site','Requested By','Notes']];
     const body=data.map(r=>[r.reqId,r.reqDate,r.needDate,r.material,String(r.unit),String(r.qty),r.priority,r.status,r.site,r.reqBy,r.notes]);
     doc.autoTable({head,body,startY,styles:{fontSize:8,cellPadding:2},headStyles:{fillColor:[5,150,105],textColor:255,fontStyle:'bold'},alternateRowStyles:{fillColor:[249,250,251]},columnStyles:{5:{halign:'right'}}});
     addPdfFooter(doc,company);
-    doc.save(`SHDR_Material_Requisition_Report_${safeFilename(formatDateShort(new Date().toISOString()))}.pdf`);
+    const fname=`SHDR_Material_Requisition_Report_${safeFilename(formatDateShort(new Date().toISOString()))}.pdf`;
+    doc.save(fname);
     showToast('PDF report downloaded successfully.','success');
   }catch(err){console.error(err);showToast('Unable to generate the PDF. Please try again.','error')}
 };
@@ -1144,7 +1196,8 @@ window.exportRequisitionsExcel=function(){
     ws['!cols']=[{wch:18},{wch:12},{wch:12},{wch:22},{wch:8},{wch:8},{wch:10},{wch:14},{wch:20},{wch:18},{wch:24}];
     const wb=XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb,ws,'Requisitions');
-    XLSX.writeFile(wb,`SHDR_Material_Requisition_Report_${safeFilename(formatDateShort(new Date().toISOString()))}.xlsx`);
+    const fname=`SHDR_Material_Requisition_Report_${safeFilename(formatDateShort(new Date().toISOString()))}.xlsx`;
+    XLSX.writeFile(wb,fname);
     showToast('Excel report downloaded successfully.','success');
   }catch(err){console.error(err);showToast('Unable to generate the Excel file. Please try again.','error')}
 };
@@ -1164,6 +1217,7 @@ window.printRequisitions=function(){
   }catch(err){console.error(err);showToast('Unable to open print dialog. Please try again.','error')}
 };
 
+// ---- MATERIAL USAGE REPORT ----
 function buildMaterialUsageReportData(){
   return materialsData.filter(m=>m.site_id===currentSiteId).slice().sort((a,b)=>new Date(b.date_used||b.created_at||0)-new Date(a.date_used||a.created_at||0));
 }
@@ -1264,28 +1318,20 @@ function renderReports(container){
     <div id="report-preview-container" class="bg-white rounded-2xl border overflow-hidden shadow-sm">
       <div class="p-4 text-slate-500 text-sm">${t('common.loading')}</div>
     </div>`;
+  // Sync filter controls with current report type
   const psWrap = document.getElementById('report-payment-status-wrap');
   if (psWrap) psWrap.classList.toggle('hidden', reportType !== 'worker-payroll');
   requestAnimationFrame(() => updateReportPreview());
 }
 
-// ── FIX: setReportType now preserves filters across tab switches ──
 window.setReportType = function(type) {
-  const saved = readReportFilters();
   reportType = type;
   _reportPreviewCache = null;
   showSection('reports');
-  requestAnimationFrame(() => {
-    const dept = document.getElementById('report-dept'); if (dept) dept.value = saved.department;
-    const sd = document.getElementById('report-start'); if (sd) sd.value = saved.startDate;
-    const ed = document.getElementById('report-end'); if (ed) ed.value = saved.endDate;
-    const ps = document.getElementById('report-payment-status'); if (ps) ps.value = saved.paymentStatus;
-    const ws = document.getElementById('report-worker-search'); if (ws) ws.value = saved.workerSearch;
-    updateReportPreview();
-  });
 };
 
 window.onReportFilterChange = function() {
+  // Toggle payment status visibility
   const psWrap = document.getElementById('report-payment-status-wrap');
   if (psWrap) psWrap.classList.toggle('hidden', reportType !== 'worker-payroll');
   updateReportPreview();
@@ -1751,101 +1797,73 @@ window.editMaterial=function(id){
       <button type="submit" class="w-full bg-emerald-600 text-white py-3 rounded-xl font-semibold">${t('common.save')}</button>
     </form>`);
 };
-
-// ── FIX: handleEditMaterial now adjusts stock + logs transaction ──
 window.handleEditMaterial=async function(e,id){
   e.preventDefault();
   const btn=getFormSubmitBtn(e.target);setButtonLoading(btn,true);
   try{
-    const newQ=parseFloat(document.getElementById('em-qty').value)||0;
-    const newC=parseFloat(document.getElementById('em-cost').value)||0;
-    const notes=document.getElementById('em-notes').value.trim();
     const m=getMaterialById(id);
-    if(!m)throw new Error('Material record not found');
-    const oldQ=toNumber(m.quantity_used);
-    const delta=newQ-oldQ; // positive => more used => stock decreases
-    const siteId=m.site_id;
-    const stockItem = m.stock_id
-      ? stockData.find(s=>s.id===m.stock_id)
-      : getStockByName(siteId, m.name);
+    if(!m){showToast(t('common.somethingWentWrong'),'error');setButtonLoading(btn,false);return}
+    const newQty=parseFloat(document.getElementById('em-qty').value)||0;
+    const newCost=parseFloat(document.getElementById('em-cost').value)||0;
+    const notes=document.getElementById('em-notes').value.trim();
+    if(newQty<=0){showToast(t('materials.quantityMustBePositive'),'error');setButtonLoading(btn,false);return}
+    if(newCost<0){showToast(t('materials.unitCostCannotBeNegative'),'error');setButtonLoading(btn,false);return}
+    const oldQty=toNumber(m.quantity_used);
+    const delta=newQty-oldQty;
+    const stockId=m.stock_id;
     const now=new Date().toISOString();
-    if(stockItem && delta!==0){
-      await runTransaction(db, async(tx)=>{
-        const sRef=doc(db,'stock',stockItem.id);
-        const sSnap=await tx.get(sRef);
-        if(sSnap.exists()){
-          const cur=toNumber(sSnap.data().quantity);
-          const newStock=cur-delta;
-          if(newStock<0)throw new Error(t('materials.insufficientStock'));
-          const updatePayload={quantity:newStock,updated_at:now};
-          if(newC>0)updatePayload.unit_cost=newC;
-          tx.update(sRef,updatePayload);
-          const tRef=doc(collection(db,'stock_transactions'));
-          tx.set(tRef,{
-            site_id:siteId,
-            stock_id:stockItem.id,
-            material_name:m.name,
-            transaction_type:'MATERIAL_USAGE_EDITED',
-            quantity:Math.abs(delta),
-            quantity_change:-delta,
-            previous_quantity:cur,
-            new_quantity:newStock,
-            unit:m.unit||getStockUnit(stockItem),
-            unit_cost:newC,
-            notes:`Usage edited from ${oldQ} to ${newQ}`,
-            recorded_by:currentUser.uid,
-            created_at:now
-          });
-        }
-        tx.update(doc(db,'materials',id),{quantity_used:newQ,unit_cost:newC,notes,updated_at:now});
+    if(stockId&&delta!==0){
+      await runTransaction(db,async(tx)=>{
+        const stockRef=doc(db,'stock',stockId);
+        const stockSnap=await tx.get(stockRef);
+        if(!stockSnap.exists())throw new Error(t('materials.stockNotFound'));
+        const cur=toNumber(stockSnap.data().quantity);
+        // Restoring oldQty then deducting newQty is equivalent to adjusting by -delta
+        const availableForIncrease=cur+oldQty; // max that can be set if increasing usage
+        if(newQty>availableForIncrease)throw new Error(t('materials.insufficientStock'));
+        const newStockQty=cur-delta;
+        if(newStockQty<0)throw new Error(t('materials.insufficientStock'));
+        tx.update(stockRef,{quantity:newStockQty,unit_cost:newCost,updated_at:now});
+        tx.update(doc(db,'materials',id),{quantity_used:newQty,unit_cost:newCost,total_amount:newQty*newCost,notes,updated_at:now});
+        const tRef=doc(collection(db,'stock_transactions'));
+        tx.set(tRef,{
+          site_id:currentSiteId,stock_id:stockId,material_name:m.name||'',
+          transaction_type:'MATERIAL_USAGE_EDITED',quantity:Math.abs(delta),
+          quantity_change:-delta,previous_quantity:cur,new_quantity:newStockQty,
+          unit:m.unit||'units',unit_cost:newCost,total_value:newQty*newCost,
+          batch_number:m.batch_number||'',notes:`Usage edited from ${oldQty} to ${newQty}`,recorded_by:currentUser.uid,created_at:now
+        });
       });
     }else{
-      await updateDoc(doc(db,'materials',id),{quantity_used:newQ,unit_cost:newC,notes,updated_at:now});
+      await updateDoc(doc(db,'materials',id),{quantity_used:newQty,unit_cost:newCost,total_amount:newQty*newCost,notes,updated_at:now});
     }
-    closeModal();
-    showToast(t('common.updatedSuccessfully'),'success');
-  }catch(err){
-    console.error('Material edit failed:', err);
-    showToast(err.message||t('common.somethingWentWrong'),'error');
-  }
+    closeModal();showToast(t('common.updatedSuccessfully'),'success');
+  }catch(err){console.error(err);showToast(err.message||t('common.somethingWentWrong'),'error')}
   finally{setButtonLoading(btn,false)}
 };
-
-// ── FIX: deleteMaterial now restores stock atomically ──
 window.deleteMaterial=async function(id){
   if(!confirm(t('common.areYouSure')+' '+t('common.cannotUndo')))return;
   try{
     const m=getMaterialById(id);
-    if(!m){ await deleteDoc(doc(db,'materials',id)); showToast(t('common.deletedSuccessfully'),'success'); return; }
-    const siteId=m.site_id;
+    if(!m){showToast(t('common.somethingWentWrong'),'error');return}
+    const stockId=m.stock_id;
     const qty=toNumber(m.quantity_used);
-    const stockItem = m.stock_id
-      ? stockData.find(s=>s.id===m.stock_id)
-      : getStockByName(siteId, m.name);
     const now=new Date().toISOString();
-    if(stockItem && qty>0){
-      await runTransaction(db, async(tx)=>{
-        const sRef=doc(db,'stock',stockItem.id);
-        const sSnap=await tx.get(sRef);
-        if(sSnap.exists()){
-          const cur=toNumber(sSnap.data().quantity);
-          const newStock=cur+qty;
-          tx.update(sRef,{quantity:newStock,updated_at:now});
+    if(stockId&&qty>0){
+      await runTransaction(db,async(tx)=>{
+        const stockRef=doc(db,'stock',stockId);
+        const stockSnap=await tx.get(stockRef);
+        if(stockSnap.exists()){
+          const cur=toNumber(stockSnap.data().quantity);
+          const restored=cur+qty;
+          tx.update(stockRef,{quantity:restored,updated_at:now});
           const tRef=doc(collection(db,'stock_transactions'));
           tx.set(tRef,{
-            site_id:siteId,
-            stock_id:stockItem.id,
-            material_name:m.name,
-            transaction_type:'MATERIAL_USAGE_DELETED',
-            quantity:qty,
-            quantity_change:qty,
-            previous_quantity:cur,
-            new_quantity:newStock,
-            unit:m.unit||getStockUnit(stockItem),
-            unit_cost:toNumber(m.unit_cost),
-            notes:`Material usage deleted — stock restored`,
-            recorded_by:currentUser.uid,
-            created_at:now
+            site_id:currentSiteId,stock_id:stockId,material_name:m.name||'',
+            transaction_type:'MATERIAL_USAGE_DELETED',quantity:qty,
+            quantity_change:qty,previous_quantity:cur,new_quantity:restored,
+            unit:m.unit||'units',unit_cost:toNumber(m.unit_cost),total_value:qty*toNumber(m.unit_cost),
+            batch_number:m.batch_number||'',notes:'Material usage deleted — stock restored',recorded_by:currentUser.uid,created_at:now
           });
         }
         tx.delete(doc(db,'materials',id));
@@ -1854,10 +1872,7 @@ window.deleteMaterial=async function(id){
       await deleteDoc(doc(db,'materials',id));
     }
     showToast(t('common.deletedSuccessfully'),'success');
-  }catch(err){
-    console.error('Material delete failed:', err);
-    showToast(err.message||t('common.somethingWentWrong'),'error');
-  }
+  }catch(err){console.error(err);showToast(err.message||t('common.somethingWentWrong'),'error')}
 };
 
 function renderRequisitionsList(){
@@ -2011,7 +2026,13 @@ window.viewRequisition=function(id){
 // ============================================================
 function renderDashboard(container){
   const site=assignedSites.find(s=>s.id===currentSiteId);
-  if(!site){container.innerHTML=`<div class="flex items-center justify-center py-20"><div class="spinner"></div></div>`;return}
+  if(!site){
+    container.innerHTML=`<div class="bg-yellow-50 border-l-4 border-yellow-400 p-6 rounded-xl text-yellow-800 max-w-xl mx-auto mt-10">
+      <p class="font-semibold">No site assigned</p>
+      <p class="text-sm mt-1">Your manager account has no construction sites assigned. Please contact the system administrator.</p>
+    </div>`;
+    return;
+  }
   const totalW=siteWorkersData.length;
   const done=progressTasks.filter(t=>t.status==='completed').length,total=progressTasks.length;
   const pct=total?Math.round((done/total)*100):0;
@@ -2412,8 +2433,11 @@ function refreshCurrentSection(){
   if(window._refreshing)return;window._refreshing=true;
   requestAnimationFrame(()=>{
     if(currentUser&&currentSiteId){
+      // Preserve report filters when refreshing reports section
       let savedFilters=null;
-      if(currentSection==='reports'){savedFilters=readReportFilters();}
+      if(currentSection==='reports'){
+        savedFilters=readReportFilters();
+      }
       showSection(currentSection);
       if(currentSection==='reports' && savedFilters){
         const dept=document.getElementById('report-dept');if(dept)dept.value=savedFilters.department;
