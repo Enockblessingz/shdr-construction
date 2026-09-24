@@ -353,15 +353,15 @@ function generateReportHTML(title, bodyHTML, meta){
 function renderReports(container){
   const siteOpts = assignedSites.map(s => `<option value="${s.id}">${s.name}</option>`).join('');
   const tabs = [
-    {key:'general', label:t('reports.general')},
-    {key:'payroll', label:t('reports.workerPayroll')},
-    {key:'materials', label:t('reports.materials')},
-    {key:'workers', label:t('reports.workers')}
+    {key:'general', label:t('reports.general'), icon:'material-symbols:description'},
+    {key:'payroll', label:t('reports.workerPayroll'), icon:'material-symbols:payments'},
+    {key:'materials', label:t('reports.materials'), icon:'material-symbols:inventory-2'},
+    {key:'workers', label:t('reports.workers'), icon:'material-symbols:engineering'}
   ];
   container.innerHTML = `
-    <h2 class="text-xl sm:text-2xl font-bold mb-4">${t('reports.title')}</h2>
+    <h2 class="text-xl sm:text-2xl font-bold mb-4 flex items-center gap-2"><iconify-icon icon="material-symbols:description" class="text-emerald-600"></iconify-icon>${t('reports.title')}</h2>
     <div class="flex gap-2 p-1 bg-slate-200/60 rounded-xl mb-6 overflow-x-auto">
-      ${tabs.map(tb => `<button onclick="setReportType('${tb.key}')" class="flex-1 min-w-[120px] px-4 py-2 rounded-lg text-sm font-semibold transition ${reportType===tb.key?'report-tab-active':'report-tab-inactive'}">${tb.label}</button>`).join('')}
+      ${tabs.map(tb => `<button onclick="setReportType('${tb.key}')" class="flex-1 min-w-[140px] px-4 py-2.5 rounded-lg text-sm font-semibold transition ${reportType===tb.key?'report-tab-active':'report-tab-inactive'} flex items-center justify-center gap-2"><iconify-icon icon="${tb.icon}" width="18"></iconify-icon> ${tb.label}</button>`).join('')}
     </div>
     <div id="report-content">${
       reportType==='general' ? renderGeneralReport(siteOpts) :
@@ -382,13 +382,13 @@ function renderGeneralReport(siteOpts){
   return `<div class="space-y-6">
     <div class="bg-white rounded-2xl border p-4 grid grid-cols-1 md:grid-cols-4 gap-4">
       <div>
-        <label class="block text-sm font-medium mb-1">${t('reports.selectSite')}</label>
+        <label class="block text-sm font-medium mb-1 flex items-center gap-1"><iconify-icon icon="material-symbols:location-on" class="text-emerald-600" width="16"></iconify-icon>${t('reports.selectSite')}</label>
         <select id="report-site" class="w-full border rounded-lg p-2.5 text-sm" onchange="updateGeneralPreview()">
           <option value="all">${t('reports.allSites')}</option>${siteOpts}
         </select>
       </div>
       <div>
-        <label class="block text-sm font-medium mb-1">${t('reports.department')}</label>
+        <label class="block text-sm font-medium mb-1 flex items-center gap-1"><iconify-icon icon="material-symbols:category" class="text-emerald-600" width="16"></iconify-icon>${t('reports.department')}</label>
         <select id="report-dept" class="w-full border rounded-lg p-2.5 text-sm" onchange="updateGeneralPreview()">
           <option value="all">${t('reports.allDepartments')}</option>
           <option value="materials">${t('navigation.materials')}</option>
@@ -396,20 +396,20 @@ function renderGeneralReport(siteOpts){
         </select>
       </div>
       <div>
-        <label class="block text-sm font-medium mb-1">${t('reports.startDate')}</label>
+        <label class="block text-sm font-medium mb-1 flex items-center gap-1"><iconify-icon icon="material-symbols:calendar-today" class="text-emerald-600" width="16"></iconify-icon>${t('reports.startDate')}</label>
         <input type="date" id="report-start" class="w-full border rounded-lg p-2.5 text-sm" onchange="updateGeneralPreview()">
       </div>
       <div>
-        <label class="block text-sm font-medium mb-1">${t('reports.endDate')}</label>
+        <label class="block text-sm font-medium mb-1 flex items-center gap-1"><iconify-icon icon="material-symbols:event" class="text-emerald-600" width="16"></iconify-icon>${t('reports.endDate')}</label>
         <input type="date" id="report-end" class="w-full border rounded-lg p-2.5 text-sm" onchange="updateGeneralPreview()">
       </div>
     </div>
     <div class="flex gap-3 justify-end">
-      <button onclick="exportGeneralReport('csv')" class="px-6 py-2 bg-emerald-600 text-white rounded-xl hover:bg-emerald-700">${t('reports.exportCSV')}</button>
-      <button onclick="exportGeneralReport('print')" class="px-6 py-2 bg-slate-800 text-white rounded-xl hover:bg-slate-900">${t('reports.printPDF')}</button>
+      <button onclick="exportGeneralReport('csv')" class="px-6 py-2 bg-emerald-600 text-white rounded-xl hover:bg-emerald-700 flex items-center gap-2"><iconify-icon icon="material-symbols:table-view" width="18"></iconify-icon>${t('reports.exportCSV')}</button>
+      <button onclick="exportGeneralReport('print')" class="px-6 py-2 bg-slate-800 text-white rounded-xl hover:bg-slate-900 flex items-center gap-2"><iconify-icon icon="material-symbols:picture-as-pdf" width="18"></iconify-icon>${t('reports.printPDF')}</button>
     </div>
     <div id="general-preview-container" class="bg-white rounded-2xl border overflow-hidden shadow-sm">
-      <div class="p-4 text-slate-500 text-sm">${t('common.loading')}</div>
+      <div class="p-4 text-slate-500 text-sm flex items-center gap-2"><div class="spinner"></div>${t('common.loading')}</div>
     </div>
   </div>`;
 }
@@ -425,7 +425,6 @@ function updateGeneralPreview(){
   const deptLabel = dept === 'all' ? t('reports.allDepartments') : dept.charAt(0).toUpperCase()+dept.slice(1);
   const period = startDate && endDate ? `${startDate} — ${endDate}` : (startDate || endDate || 'All time');
 
-  // Build flat data rows
   const rows = [];
   const getSiteName = (id) => assignedSites.find(s=>s.id===id)?.name || 'Unknown';
 
@@ -448,7 +447,7 @@ function updateGeneralPreview(){
   }
 
   if (!rows.length){
-    container.innerHTML = `<div class="p-8 text-center text-slate-500 text-sm">${t('common.noDataAvailable')}</div>`;
+    container.innerHTML = `<div class="p-10 text-center text-slate-500 text-sm flex flex-col items-center gap-2"><iconify-icon icon="material-symbols:inbox-outline" class="text-5xl text-slate-300"></iconify-icon>${t('common.noDataAvailable')}</div>`;
     return;
   }
   const headers = Object.keys(rows[0]);
@@ -457,10 +456,10 @@ function updateGeneralPreview(){
   container.innerHTML = `
     <div class="px-4 py-3 border-b border-slate-100 bg-slate-50 flex flex-wrap items-center justify-between gap-2">
       <div>
-        <h3 class="font-bold text-slate-800 text-sm">${t('reports.reportTitles.general')}</h3>
-        <p class="text-xs text-slate-500">${siteLabel} • ${deptLabel} • ${period}</p>
+        <h3 class="font-bold text-slate-800 text-sm flex items-center gap-2"><iconify-icon icon="material-symbols:description" class="text-emerald-600" width="18"></iconify-icon>${t('reports.reportTitles.general')}</h3>
+        <p class="text-xs text-slate-500 mt-0.5">${siteLabel} • ${deptLabel} • ${period}</p>
       </div>
-      <span class="text-xs text-slate-400">${rows.length} ${t('reports.total')}</span>
+      <span class="text-xs text-slate-500 bg-white border border-slate-200 px-3 py-1 rounded-full flex items-center gap-1"><iconify-icon icon="material-symbols:summarize" width="14"></iconify-icon>${rows.length} ${t('reports.total')}</span>
     </div>
     <div class="overflow-x-auto">
       <table class="w-full">
@@ -537,32 +536,32 @@ function renderPayrollReport(siteOpts){
   return `<div class="space-y-6">
     <div class="bg-white rounded-2xl border p-4 grid grid-cols-1 md:grid-cols-3 gap-4">
       <div>
-        <label class="block text-sm font-medium mb-1">${t('reports.selectSite')}</label>
+        <label class="block text-sm font-medium mb-1 flex items-center gap-1"><iconify-icon icon="material-symbols:location-on" class="text-emerald-600" width="16"></iconify-icon>${t('reports.selectSite')}</label>
         <select id="payroll-site" class="w-full border rounded-lg p-2.5 text-sm" onchange="updatePayrollReport()">
           <option value="all">${t('reports.allSites')}</option>${siteOpts}
         </select>
       </div>
       <div>
-        <label class="block text-sm font-medium mb-1">${t('reports.startDate')}</label>
+        <label class="block text-sm font-medium mb-1 flex items-center gap-1"><iconify-icon icon="material-symbols:calendar-today" class="text-emerald-600" width="16"></iconify-icon>${t('reports.startDate')}</label>
         <input type="date" id="payroll-start" class="w-full border rounded-lg p-2.5 text-sm" onchange="updatePayrollReport()">
       </div>
       <div>
-        <label class="block text-sm font-medium mb-1">${t('reports.endDate')}</label>
+        <label class="block text-sm font-medium mb-1 flex items-center gap-1"><iconify-icon icon="material-symbols:event" class="text-emerald-600" width="16"></iconify-icon>${t('reports.endDate')}</label>
         <input type="date" id="payroll-end" class="w-full border rounded-lg p-2.5 text-sm" onchange="updatePayrollReport()">
       </div>
       <div>
-        <label class="block text-sm font-medium mb-1">${t('reports.searchWorker')}</label>
+        <label class="block text-sm font-medium mb-1 flex items-center gap-1"><iconify-icon icon="material-symbols:person-search" class="text-emerald-600" width="16"></iconify-icon>${t('reports.searchWorker')}</label>
         <input type="text" id="payroll-worker-search" class="w-full border rounded-lg p-2.5 text-sm" placeholder="${t('reports.searchWorker')}" oninput="updatePayrollReport()">
       </div>
       <div>
-        <label class="block text-sm font-medium mb-1">${t('reports.position')}</label>
+        <label class="block text-sm font-medium mb-1 flex items-center gap-1"><iconify-icon icon="material-symbols:badge" class="text-emerald-600" width="16"></iconify-icon>${t('reports.position')}</label>
         <select id="payroll-position" class="w-full border rounded-lg p-2.5 text-sm" onchange="updatePayrollReport()">
           <option value="all">${t('reports.allPositions')}</option>
           ${[...new Set(siteWorkersData.map(w=>w.role).filter(Boolean))].map(role=>`<option value="${role}">${role}</option>`).join('')}
         </select>
       </div>
       <div>
-        <label class="block text-sm font-medium mb-1">${t('reports.paymentStatus')}</label>
+        <label class="block text-sm font-medium mb-1 flex items-center gap-1"><iconify-icon icon="material-symbols:payments" class="text-emerald-600" width="16"></iconify-icon>${t('reports.paymentStatus')}</label>
         <select id="payroll-status" class="w-full border rounded-lg p-2.5 text-sm" onchange="updatePayrollReport()">
           <option value="all">All</option>
           <option value="paid">${t('reports.paid')}</option>
@@ -573,8 +572,8 @@ function renderPayrollReport(siteOpts){
     <div id="payroll-summary-cards" class="grid grid-cols-2 md:grid-cols-4 gap-4"></div>
     <div id="payroll-table-container" class="bg-white rounded-2xl border overflow-hidden shadow-sm"></div>
     <div class="flex gap-3 justify-end">
-      <button onclick="exportPayrollReport('csv')" class="px-6 py-2 bg-emerald-600 text-white rounded-xl hover:bg-emerald-700">${t('reports.exportCSV')}</button>
-      <button onclick="exportPayrollReport('print')" class="px-6 py-2 bg-slate-800 text-white rounded-xl hover:bg-slate-900">${t('reports.printPDF')}</button>
+      <button onclick="exportPayrollReport('csv')" class="px-6 py-2 bg-emerald-600 text-white rounded-xl hover:bg-emerald-700 flex items-center gap-2"><iconify-icon icon="material-symbols:table-view" width="18"></iconify-icon>${t('reports.exportCSV')}</button>
+      <button onclick="exportPayrollReport('print')" class="px-6 py-2 bg-slate-800 text-white rounded-xl hover:bg-slate-900 flex items-center gap-2"><iconify-icon icon="material-symbols:picture-as-pdf" width="18"></iconify-icon>${t('reports.printPDF')}</button>
     </div>
   </div>`;
 }
@@ -623,14 +622,14 @@ function updatePayrollReport(){
   const cardsContainer = document.getElementById('payroll-summary-cards');
   if (cardsContainer){
     cardsContainer.innerHTML = `
-      <div class="bg-white rounded-2xl border p-4 shadow-sm"><p class="text-xs text-slate-500">${t('reports.totalWorkers')}</p><p class="text-2xl font-bold text-slate-800">${d.totalWorkers}</p></div>
-      <div class="bg-white rounded-2xl border p-4 shadow-sm"><p class="text-xs text-slate-500">${t('reports.workerDays')}</p><p class="text-2xl font-bold text-slate-800">${d.totalDays}</p></div>
-      <div class="bg-white rounded-2xl border p-4 shadow-sm"><p class="text-xs text-slate-500">${t('reports.totalPayroll')}</p><p class="text-2xl font-bold text-emerald-600">${d.totalPayroll.toLocaleString()} RWF</p></div>
-      <div class="bg-white rounded-2xl border p-4 shadow-sm"><p class="text-xs text-slate-500">${t('reports.avgDaily')}</p><p class="text-2xl font-bold text-slate-800">${Math.round(d.avgDaily).toLocaleString()} RWF</p></div>`;
+      <div class="bg-white rounded-2xl border p-4 shadow-sm"><p class="text-xs text-slate-500 flex items-center gap-1"><iconify-icon icon="material-symbols:engineering" width="14" class="text-blue-600"></iconify-icon>${t('reports.totalWorkers')}</p><p class="text-2xl font-bold text-slate-800">${d.totalWorkers}</p></div>
+      <div class="bg-white rounded-2xl border p-4 shadow-sm"><p class="text-xs text-slate-500 flex items-center gap-1"><iconify-icon icon="material-symbols:event-available" width="14" class="text-amber-600"></iconify-icon>${t('reports.workerDays')}</p><p class="text-2xl font-bold text-slate-800">${d.totalDays}</p></div>
+      <div class="bg-white rounded-2xl border p-4 shadow-sm"><p class="text-xs text-slate-500 flex items-center gap-1"><iconify-icon icon="material-symbols:payments" width="14" class="text-emerald-600"></iconify-icon>${t('reports.totalPayroll')}</p><p class="text-2xl font-bold text-emerald-600">${d.totalPayroll.toLocaleString()} RWF</p></div>
+      <div class="bg-white rounded-2xl border p-4 shadow-sm"><p class="text-xs text-slate-500 flex items-center gap-1"><iconify-icon icon="material-symbols:trending-up" width="14" class="text-purple-600"></iconify-icon>${t('reports.avgDaily')}</p><p class="text-2xl font-bold text-slate-800">${Math.round(d.avgDaily).toLocaleString()} RWF</p></div>`;
   }
   const tableContainer = document.getElementById('payroll-table-container');
   if (tableContainer){
-    if (!d.workers.length){ tableContainer.innerHTML = `<div class="p-4 text-slate-500 text-sm">${t('common.noDataAvailable')}</div>`; return; }
+    if (!d.workers.length){ tableContainer.innerHTML = `<div class="p-10 text-center text-slate-500 text-sm flex flex-col items-center gap-2"><iconify-icon icon="material-symbols:inbox-outline" class="text-5xl text-slate-300"></iconify-icon>${t('common.noDataAvailable')}</div>`; return; }
     tableContainer.innerHTML = `<div class="overflow-x-auto"><table class="w-full text-sm">
       <thead class="bg-slate-50 uppercase text-xs"><tr>
         <th class="px-3 py-2 text-left">${t('reports.worker')}</th>
@@ -686,26 +685,26 @@ function renderMaterialsReport(siteOpts){
   return `<div class="space-y-6">
     <div class="bg-white rounded-2xl border p-4 grid grid-cols-1 md:grid-cols-3 gap-4">
       <div>
-        <label class="block text-sm font-medium mb-1">${t('reports.selectSite')}</label>
+        <label class="block text-sm font-medium mb-1 flex items-center gap-1"><iconify-icon icon="material-symbols:location-on" class="text-emerald-600" width="16"></iconify-icon>${t('reports.selectSite')}</label>
         <select id="mat-report-site" class="w-full border rounded-lg p-2.5 text-sm" onchange="updateMaterialsPreview()">
           <option value="all">${t('reports.allSites')}</option>${siteOpts}
         </select>
       </div>
       <div>
-        <label class="block text-sm font-medium mb-1">${t('reports.startDate')}</label>
+        <label class="block text-sm font-medium mb-1 flex items-center gap-1"><iconify-icon icon="material-symbols:calendar-today" class="text-emerald-600" width="16"></iconify-icon>${t('reports.startDate')}</label>
         <input type="date" id="mat-report-start" class="w-full border rounded-lg p-2.5 text-sm" onchange="updateMaterialsPreview()">
       </div>
       <div>
-        <label class="block text-sm font-medium mb-1">${t('reports.endDate')}</label>
+        <label class="block text-sm font-medium mb-1 flex items-center gap-1"><iconify-icon icon="material-symbols:event" class="text-emerald-600" width="16"></iconify-icon>${t('reports.endDate')}</label>
         <input type="date" id="mat-report-end" class="w-full border rounded-lg p-2.5 text-sm" onchange="updateMaterialsPreview()">
       </div>
     </div>
     <div id="materials-preview-container" class="bg-white rounded-2xl border overflow-hidden shadow-sm">
-      <div class="p-4 text-slate-500 text-sm">${t('common.loading')}</div>
+      <div class="p-4 text-slate-500 text-sm flex items-center gap-2"><div class="spinner"></div>${t('common.loading')}</div>
     </div>
     <div class="flex gap-3 justify-end">
-      <button onclick="exportMaterialsReport('csv')" class="px-6 py-2 bg-emerald-600 text-white rounded-xl hover:bg-emerald-700">${t('reports.exportCSV')}</button>
-      <button onclick="exportMaterialsReport('print')" class="px-6 py-2 bg-slate-800 text-white rounded-xl hover:bg-slate-900">${t('reports.printPDF')}</button>
+      <button onclick="exportMaterialsReport('csv')" class="px-6 py-2 bg-emerald-600 text-white rounded-xl hover:bg-emerald-700 flex items-center gap-2"><iconify-icon icon="material-symbols:table-view" width="18"></iconify-icon>${t('reports.exportCSV')}</button>
+      <button onclick="exportMaterialsReport('print')" class="px-6 py-2 bg-slate-800 text-white rounded-xl hover:bg-slate-900 flex items-center gap-2"><iconify-icon icon="material-symbols:picture-as-pdf" width="18"></iconify-icon>${t('reports.printPDF')}</button>
     </div>
   </div>`;
 }
@@ -740,7 +739,7 @@ function updateMaterialsPreview(){
   const siteLabel = d.siteId === 'all' ? t('reports.allSites') : (assignedSites.find(s=>s.id===d.siteId)?.name || 'Site');
   const period = d.startDate && d.endDate ? `${d.startDate} — ${d.endDate}` : (d.startDate || d.endDate || 'All time');
   if (!d.rows.length){
-    container.innerHTML = `<div class="p-8 text-center text-slate-500 text-sm">${t('common.noDataAvailable')}</div>`;
+    container.innerHTML = `<div class="p-10 text-center text-slate-500 text-sm flex flex-col items-center gap-2"><iconify-icon icon="material-symbols:inbox-outline" class="text-5xl text-slate-300"></iconify-icon>${t('common.noDataAvailable')}</div>`;
     return;
   }
   const headers = Object.keys(d.rows[0]);
@@ -749,10 +748,10 @@ function updateMaterialsPreview(){
   container.innerHTML = `
     <div class="px-4 py-3 border-b border-slate-100 bg-slate-50 flex flex-wrap items-center justify-between gap-2">
       <div>
-        <h3 class="font-bold text-slate-800 text-sm">${t('reports.reportTitles.materials')}</h3>
-        <p class="text-xs text-slate-500">${siteLabel} • ${period}</p>
+        <h3 class="font-bold text-slate-800 text-sm flex items-center gap-2"><iconify-icon icon="material-symbols:inventory-2" class="text-emerald-600" width="18"></iconify-icon>${t('reports.reportTitles.materials')}</h3>
+        <p class="text-xs text-slate-500 mt-0.5">${siteLabel} • ${period}</p>
       </div>
-      <span class="text-xs text-slate-500">Total: <b class="text-emerald-600">${d.totalValue.toLocaleString()} RWF</b></span>
+      <span class="text-xs text-slate-500 bg-white border border-slate-200 px-3 py-1 rounded-full flex items-center gap-1"><iconify-icon icon="material-symbols:summarize" width="14" class="text-emerald-600"></iconify-icon>${t('reports.total')}: <b class="text-emerald-600 ml-1">${d.totalValue.toLocaleString()} RWF</b></span>
     </div>
     <div class="overflow-x-auto">
       <table class="w-full">
@@ -805,22 +804,22 @@ function renderWorkersReport(siteOpts){
   return `<div class="space-y-6">
     <div class="bg-white rounded-2xl border p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
       <div>
-        <label class="block text-sm font-medium mb-1">${t('reports.selectSite')}</label>
+        <label class="block text-sm font-medium mb-1 flex items-center gap-1"><iconify-icon icon="material-symbols:location-on" class="text-emerald-600" width="16"></iconify-icon>${t('reports.selectSite')}</label>
         <select id="wk-report-site" class="w-full border rounded-lg p-2.5 text-sm" onchange="updateWorkersPreview()">
           <option value="all">${t('reports.allSites')}</option>${siteOpts}
         </select>
       </div>
       <div>
-        <label class="block text-sm font-medium mb-1">${t('reports.searchWorker')}</label>
+        <label class="block text-sm font-medium mb-1 flex items-center gap-1"><iconify-icon icon="material-symbols:person-search" class="text-emerald-600" width="16"></iconify-icon>${t('reports.searchWorker')}</label>
         <input type="text" id="wk-report-search" class="w-full border rounded-lg p-2.5 text-sm" placeholder="${t('reports.searchWorker')}" oninput="updateWorkersPreview()">
       </div>
     </div>
     <div id="workers-preview-container" class="bg-white rounded-2xl border overflow-hidden shadow-sm">
-      <div class="p-4 text-slate-500 text-sm">${t('common.loading')}</div>
+      <div class="p-4 text-slate-500 text-sm flex items-center gap-2"><div class="spinner"></div>${t('common.loading')}</div>
     </div>
     <div class="flex gap-3 justify-end">
-      <button onclick="exportWorkersReport('csv')" class="px-6 py-2 bg-emerald-600 text-white rounded-xl hover:bg-emerald-700">${t('reports.exportCSV')}</button>
-      <button onclick="exportWorkersReport('print')" class="px-6 py-2 bg-slate-800 text-white rounded-xl hover:bg-slate-900">${t('reports.printPDF')}</button>
+      <button onclick="exportWorkersReport('csv')" class="px-6 py-2 bg-emerald-600 text-white rounded-xl hover:bg-emerald-700 flex items-center gap-2"><iconify-icon icon="material-symbols:table-view" width="18"></iconify-icon>${t('reports.exportCSV')}</button>
+      <button onclick="exportWorkersReport('print')" class="px-6 py-2 bg-slate-800 text-white rounded-xl hover:bg-slate-900 flex items-center gap-2"><iconify-icon icon="material-symbols:picture-as-pdf" width="18"></iconify-icon>${t('reports.printPDF')}</button>
     </div>
   </div>`;
 }
@@ -850,7 +849,7 @@ function updateWorkersPreview(){
   const d = buildWorkersDataset();
   const siteLabel = d.siteId === 'all' ? t('reports.allSites') : (assignedSites.find(s=>s.id===d.siteId)?.name || 'Site');
   if (!d.rows.length){
-    container.innerHTML = `<div class="p-8 text-center text-slate-500 text-sm">${t('common.noDataAvailable')}</div>`;
+    container.innerHTML = `<div class="p-10 text-center text-slate-500 text-sm flex flex-col items-center gap-2"><iconify-icon icon="material-symbols:inbox-outline" class="text-5xl text-slate-300"></iconify-icon>${t('common.noDataAvailable')}</div>`;
     return;
   }
   const headers = Object.keys(d.rows[0]);
@@ -859,10 +858,10 @@ function updateWorkersPreview(){
   container.innerHTML = `
     <div class="px-4 py-3 border-b border-slate-100 bg-slate-50 flex flex-wrap items-center justify-between gap-2">
       <div>
-        <h3 class="font-bold text-slate-800 text-sm">${t('reports.reportTitles.workers')}</h3>
-        <p class="text-xs text-slate-500">${siteLabel}</p>
+        <h3 class="font-bold text-slate-800 text-sm flex items-center gap-2"><iconify-icon icon="material-symbols:engineering" class="text-emerald-600" width="18"></iconify-icon>${t('reports.reportTitles.workers')}</h3>
+        <p class="text-xs text-slate-500 mt-0.5">${siteLabel}</p>
       </div>
-      <span class="text-xs text-slate-400">${d.rows.length} ${t('workers.workers')}</span>
+      <span class="text-xs text-slate-500 bg-white border border-slate-200 px-3 py-1 rounded-full flex items-center gap-1"><iconify-icon icon="material-symbols:summarize" width="14"></iconify-icon>${d.rows.length} ${t('workers.workers')}</span>
     </div>
     <div class="overflow-x-auto">
       <table class="w-full">
@@ -1270,7 +1269,7 @@ window.submitUsageBatch=async function(e){
 // ============================================================
 window.openAddWorkerModal=function(){
   _workerPhotoFile=null;
-  openModal(''+t('workers.addWorker'),`
+  openModal('👷 '+t('workers.addWorker'),`
     <form onsubmit="handleAddWorker(event)" class="space-y-4">
       <div><label class="block text-sm font-medium mb-1">${t('workers.fullName')} *</label><input class="w-full border rounded-lg p-3" id="worker-name" required></div>
       <div><label class="block text-sm font-medium mb-1">${t('workers.role')} *</label><input class="w-full border rounded-lg p-3" id="worker-role" required></div>
@@ -1336,7 +1335,7 @@ window.editWorker=function(id){
   const w=siteWorkersData.find(x=>x.id===id);if(!w)return;
   _workerEditPhotoFile=null;
   const cur=w.image||'';
-  openModal(''+t('common.edit'),`
+  openModal('✏️ '+t('common.edit'),`
     <form onsubmit="handleEditWorker(event,'${id}')" class="space-y-4">
       <input class="w-full border rounded-lg p-3" id="ew-name" value="${w.name}" required>
       <input class="w-full border rounded-lg p-3" id="ew-role" value="${w.role||''}" required>
@@ -1394,7 +1393,7 @@ window.deleteWorker=async function(id){
 };
 window.viewWorkerDetail=function(id){
   const w=siteWorkersData.find(x=>x.id===id);if(!w)return;
-  openModal(''+t('workers.workerDetails'),`<div class="space-y-3"><div class="flex items-center gap-4"><img src="${w.image||PLACEHOLDER_IMG}" class="w-16 h-16 rounded-full object-cover" onerror="this.src='${PLACEHOLDER_IMG}'"><div><h3 class="font-bold text-lg">${w.name}</h3><p class="text-sm text-slate-500">${w.role||''}</p></div></div><div class="bg-slate-50 p-3 rounded-xl space-y-2 text-sm"><p><strong>${t('workers.salary')}:</strong> ${(Number(w.salary)||0).toLocaleString()} RWF</p><p><strong>${t('workers.paymentType')}:</strong> ${w.payment_method==='monthly'?t('workers.monthlySalary'):t('workers.dailyRate')}</p><p><strong>${t('workers.phone')}:</strong> ${w.phone||'—'}</p></div>${w.image?`<button onclick="openWorkerPhotoLightbox('${w.image}')" class="w-full bg-slate-100 py-2 rounded-xl text-sm font-medium">View Full Photo</button>`:''}<div class="flex gap-2 pt-2"><button onclick="closeModal();editWorker('${w.id}')" class="flex-1 bg-emerald-600 text-white py-2 rounded-xl text-sm">${t('common.edit')}</button><button onclick="closeModal();deleteWorker('${w.id}')" class="flex-1 bg-red-100 text-red-600 py-2 rounded-xl text-sm">${t('common.delete')}</button></div></div>`);
+  openModal('👤 '+t('workers.workerDetails'),`<div class="space-y-3"><div class="flex items-center gap-4"><img src="${w.image||PLACEHOLDER_IMG}" class="w-16 h-16 rounded-full object-cover" onerror="this.src='${PLACEHOLDER_IMG}'"><div><h3 class="font-bold text-lg">${w.name}</h3><p class="text-sm text-slate-500">${w.role||''}</p></div></div><div class="bg-slate-50 p-3 rounded-xl space-y-2 text-sm"><p><strong>${t('workers.salary')}:</strong> ${(Number(w.salary)||0).toLocaleString()} RWF</p><p><strong>${t('workers.paymentType')}:</strong> ${w.payment_method==='monthly'?t('workers.monthlySalary'):t('workers.dailyRate')}</p><p><strong>${t('workers.phone')}:</strong> ${w.phone||'—'}</p></div>${w.image?`<button onclick="openWorkerPhotoLightbox('${w.image}')" class="w-full bg-slate-100 py-2 rounded-xl text-sm font-medium">View Full Photo</button>`:''}<div class="flex gap-2 pt-2"><button onclick="closeModal();editWorker('${w.id}')" class="flex-1 bg-emerald-600 text-white py-2 rounded-xl text-sm">${t('common.edit')}</button><button onclick="closeModal();deleteWorker('${w.id}')" class="flex-1 bg-red-100 text-red-600 py-2 rounded-xl text-sm">${t('common.delete')}</button></div></div>`);
 };
 window.openWorkerPhotoLightbox=function(url){
   const v=document.createElement('div');v.className='fixed inset-0 z-[9999] bg-black/85 flex items-center justify-center p-4';v.onclick=()=>v.remove();
@@ -1461,8 +1460,8 @@ function renderMaterialsList(){
             <div class="flex justify-between text-sm"><span class="text-slate-500">${t('materials.totalAmount')}</span><span class="font-bold text-emerald-600">${formatRWF(tot)}</span></div>
           </div>
           <div class="mt-4 pt-3 border-t border-slate-100 flex justify-end gap-3">
-            <button type="button" onclick="editMaterial('${m.id}')" class="text-sm text-emerald-600 font-medium">${t('common.edit')}</button>
-            <button type="button" onclick="deleteMaterial('${m.id}')" class="text-sm text-red-500 font-medium">${t('common.delete')}</button>
+            <button type="button" onclick="editMaterial('${m.id}')" class="text-sm text-emerald-600 font-medium flex items-center gap-1"><iconify-icon icon="material-symbols:edit" width="16"></iconify-icon>${t('common.edit')}</button>
+            <button type="button" onclick="deleteMaterial('${m.id}')" class="text-sm text-red-500 font-medium flex items-center gap-1"><iconify-icon icon="material-symbols:delete" width="16"></iconify-icon>${t('common.delete')}</button>
           </div>
         </div>
       </div>`;
@@ -1479,7 +1478,7 @@ window.openUsagePhotoLightbox=function(url){
 };
 window.editMaterial=function(id){
   const m=getMaterialById(id);if(!m)return;
-  openModal(''+t('common.edit'),`
+  openModal('✏️ '+t('common.edit'),`
     <form onsubmit="handleEditMaterial(event,'${id}')" class="space-y-4">
       <div><label class="block text-sm font-medium mb-1">${t('materials.materialName')}</label><input class="w-full border rounded-lg p-3 bg-slate-50" value="${m.name||''}" disabled></div>
       <div><label class="block text-sm font-medium mb-1">${t('materials.quantityUsed')}</label><input type="number" step="0.01" min="0" class="w-full border rounded-lg p-3" id="em-qty" value="${toNumber(m.quantity_used)}"></div>
@@ -1611,7 +1610,7 @@ function renderRequisitionsList(){
       const badgeCls='req-status-'+status.replace(/\s+/g,'');
       const rowspan=Math.max(items.length,1);
       if(!items.length){
-        h+=`<tr><td>${req.requisition_number}</td><td>${formatDateShort(req.request_date)}</td><td>${formatDateShort(req.required_date)}</td><td colspan="3" class="text-center text-slate-400">No materials</td><td>${req.priority||'Normal'}</td><td><span class="req-status-badge ${badgeCls}">${status}</span></td><td>${siteName}</td><td>${req.requested_by_name||'—'}</td><td>${req.notes||'—'}</td><td><button onclick="viewRequisition('${req.id}')" class="text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded hover:bg-blue-100">${t('common.view')}</button></td></tr>`;
+        h+=`<tr><td>${req.requisition_number}</td><td>${formatDateShort(req.request_date)}</td><td>${formatDateShort(req.required_date)}</td><td colspan="3" class="text-center text-slate-400">No materials</td><td>${req.priority||'Normal'}</td><td><span class="req-status-badge ${badgeCls}">${status}</span></td><td>${siteName}</td><td>${req.requested_by_name||'—'}</td><td>${req.notes||'—'}</td><td><button onclick="viewRequisition('${req.id}')" class="text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded hover:bg-blue-100 flex items-center gap-1"><iconify-icon icon="material-symbols:visibility" width="14"></iconify-icon>${t('common.view')}</button></td></tr>`;
       }else{
         items.forEach((it,idx)=>{
           h+=`<tr>`;
@@ -1627,7 +1626,7 @@ function renderRequisitionsList(){
             h+=`<td rowspan="${rowspan}">${siteName}</td>`;
             h+=`<td rowspan="${rowspan}">${req.requested_by_name||'—'}</td>`;
             h+=`<td rowspan="${rowspan}" class="max-w-[180px] truncate">${req.notes||'—'}</td>`;
-            h+=`<td rowspan="${rowspan}"><button onclick="viewRequisition('${req.id}')" class="text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded hover:bg-blue-100">${t('common.view')}</button></td>`;
+            h+=`<td rowspan="${rowspan}"><button onclick="viewRequisition('${req.id}')" class="text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded hover:bg-blue-100 flex items-center gap-1"><iconify-icon icon="material-symbols:visibility" width="14"></iconify-icon>${t('common.view')}</button></td>`;
           }
           h+=`</tr>`;
         });
@@ -1648,7 +1647,7 @@ window.openNewRequisitionModal=function(){
   const items=stockData.filter(s=>s.site_id===currentSiteId);
   if(!items.length){showToast('No stock at this site.','error');return}
   const rows=items.map(s=>`<tr class="border-b"><td class="p-2 text-sm">${s.material_name}</td><td class="p-2 text-sm text-slate-500">${s.unit||'units'}</td><td class="p-2"><input type="number" class="req-qty w-24 border rounded p-1 text-sm" data-name="${s.material_name}" data-unit="${s.unit||'units'}" min="0" value="0"/></td></tr>`).join('');
-  openModal(''+t('materials.createRequisition'),`
+  openModal('📝 '+t('materials.createRequisition'),`
     <form onsubmit="handleCreateRequisition(event)" class="space-y-4">
       <div><label class="block text-sm font-medium mb-1">${t('materials.requiredDate')} *</label><input type="date" id="req-date" class="w-full border rounded-lg p-2.5" required></div>
       <div><label class="block text-sm font-medium mb-1">${t('materials.priority')}</label><select id="req-priority" class="w-full border rounded-lg p-2.5"><option value="Normal">${t('materials.normal')}</option><option value="Urgent">${t('materials.urgent')}</option></select></div>
@@ -1685,7 +1684,7 @@ window.viewRequisition=function(id){
   let ih=`<table class="w-full text-sm mt-3"><thead><tr class="bg-slate-50"><th class="text-left text-xs p-2">${t('materials.material')}</th><th class="text-right text-xs p-2">Requested</th><th class="text-right text-xs p-2">Supplied</th><th class="text-right text-xs p-2">Remaining</th><th class="text-right text-xs p-2">${t('materials.unit')}</th></tr></thead><tbody>`;
   items.forEach(i=>{const r=toNumber(i.quantity_requested)-toNumber(i.quantity_supplied);ih+=`<tr class="border-b"><td class="p-2">${i.material_name}</td><td class="text-right p-2">${i.quantity_requested}</td><td class="text-right p-2">${i.quantity_supplied||0}</td><td class="text-right p-2 text-red-600">${r}</td><td class="text-right p-2">${i.unit}</td></tr>`});
   ih+=`</tbody></table>`;
-  openModal(''+req.requisition_number,`<div class="space-y-2 text-sm"><div class="bg-slate-50 rounded-xl p-4 space-y-2"><p><strong>${t('materials.status')}:</strong> <span class="req-status-badge req-status-${(req.status||'Pending').replace(/\s+/g,'')}">${req.status||'Pending'}</span></p><p><strong>${t('materials.site')}:</strong> ${site?site.name:'—'}</p><p><strong>${t('materials.requestDate')}:</strong> ${formatDate(req.request_date)}</p><p><strong>${t('materials.requiredDate')}:</strong> ${formatDate(req.required_date)}</p><p><strong>${t('materials.priority')}:</strong> ${req.priority}</p><p><strong>${t('materials.requestedBy')}:</strong> ${req.requested_by_name||'—'}</p><p><strong>${t('materials.notes')}:</strong> ${req.notes||'—'}</p></div>${ih}</div>`);
+  openModal('📋 '+req.requisition_number,`<div class="space-y-2 text-sm"><div class="bg-slate-50 rounded-xl p-4 space-y-2"><p><strong>${t('materials.status')}:</strong> <span class="req-status-badge req-status-${(req.status||'Pending').replace(/\s+/g,'')}">${req.status||'Pending'}</span></p><p><strong>${t('materials.site')}:</strong> ${site?site.name:'—'}</p><p><strong>${t('materials.requestDate')}:</strong> ${formatDate(req.request_date)}</p><p><strong>${t('materials.requiredDate')}:</strong> ${formatDate(req.required_date)}</p><p><strong>${t('materials.priority')}:</strong> ${req.priority}</p><p><strong>${t('materials.requestedBy')}:</strong> ${req.requested_by_name||'—'}</p><p><strong>${t('materials.notes')}:</strong> ${req.notes||'—'}</p></div>${ih}</div>`);
 };
 
 // ============================================================
@@ -1711,8 +1710,8 @@ function renderDashboard(container){
       <div class="stat-card bg-white rounded-2xl p-4 border border-slate-200 shadow-sm"><div class="flex items-center gap-4"><div class="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center"><iconify-icon icon="material-symbols:warning" width="24" class="text-red-700"></iconify-icon></div><div><p class="text-sm text-slate-500">Low Stock</p><p class="text-2xl font-bold">${stockData.filter(s=>s.site_id===currentSiteId&&toNumber(s.quantity)<=toNumber(s.minimum_quantity)).length}</p></div></div></div>
     </div>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-      <div class="bg-white rounded-2xl border p-4 shadow-sm"><h3 class="font-semibold text-sm mb-3">${t('dashboard.recentMaterials')}</h3><div class="space-y-1 text-sm">${materialsData.slice(-4).reverse().map(m=>`<div class="flex justify-between"><span>${m.name}</span><span class="text-slate-400">${m.quantity_used||0} used</span></div>`).join('')||`<p class="text-slate-400">${t('common.noDataAvailable')}</p>`}</div></div>
-      <div class="bg-white rounded-2xl border p-4 shadow-sm"><h3 class="font-semibold text-sm mb-3">${t('dashboard.pendingTasks')}</h3><div class="space-y-1 text-sm">${progressTasks.filter(t=>t.status==='pending').slice(0,4).map(task=>`<div class="flex justify-between"><span>${task.name}</span><span class="text-slate-400">${t('progress.end')}: ${formatDate(task.end_date)}</span></div>`).join('')||`<p class="text-slate-400">${t('common.noDataAvailable')}</p>`}</div></div>
+      <div class="bg-white rounded-2xl border p-4 shadow-sm"><h3 class="font-semibold text-sm mb-3 flex items-center gap-2"><iconify-icon icon="material-symbols:package-2" class="text-emerald-600" width="18"></iconify-icon>${t('dashboard.recentMaterials')}</h3><div class="space-y-1 text-sm">${materialsData.slice(-4).reverse().map(m=>`<div class="flex justify-between"><span>${m.name}</span><span class="text-slate-400">${m.quantity_used||0} used</span></div>`).join('')||`<p class="text-slate-400">${t('common.noDataAvailable')}</p>`}</div></div>
+      <div class="bg-white rounded-2xl border p-4 shadow-sm"><h3 class="font-semibold text-sm mb-3 flex items-center gap-2"><iconify-icon icon="material-symbols:pending-actions" class="text-amber-600" width="18"></iconify-icon>${t('dashboard.pendingTasks')}</h3><div class="space-y-1 text-sm">${progressTasks.filter(t=>t.status==='pending').slice(0,4).map(task=>`<div class="flex justify-between"><span>${task.name}</span><span class="text-slate-400">${t('progress.end')}: ${formatDate(task.end_date)}</span></div>`).join('')||`<p class="text-slate-400">${t('common.noDataAvailable')}</p>`}</div></div>
     </div>`;
 }
 
@@ -1723,20 +1722,20 @@ function renderStock(container){
   const site=assignedSites.find(s=>s.id===currentSiteId);
   if(!site){container.innerHTML=`<p class="text-red-500">${t('common.noDataAvailable')}</p>`;return}
   const list=stockData.filter(s=>s.site_id===currentSiteId).slice().sort((a,b)=>String(a.material_name||'').localeCompare(String(b.material_name||'')));
-  let h=`<div class="flex justify-between items-center mb-4"><h2 class="text-xl sm:text-2xl font-bold">${t('stock.title')}</h2><button type="button" onclick="openAddStockModal()" class="px-3 py-2 bg-emerald-600 text-white rounded-xl hover:bg-emerald-700 flex items-center gap-2 text-sm"><iconify-icon icon="material-symbols:add"></iconify-icon> ${t('stock.receiveStock')}</button></div><div class="bg-white rounded-2xl border p-4 shadow-sm mb-5"><p class="text-sm text-slate-600"><strong>Site:</strong> ${site.name}</p></div>`;
+  let h=`<div class="flex justify-between items-center mb-4"><h2 class="text-xl sm:text-2xl font-bold flex items-center gap-2"><iconify-icon icon="material-symbols:inventory-2" class="text-emerald-600"></iconify-icon>${t('stock.title')}</h2><button type="button" onclick="openAddStockModal()" class="px-3 py-2 bg-emerald-600 text-white rounded-xl hover:bg-emerald-700 flex items-center gap-2 text-sm"><iconify-icon icon="material-symbols:add"></iconify-icon> ${t('stock.receiveStock')}</button></div><div class="bg-white rounded-2xl border p-4 shadow-sm mb-5"><p class="text-sm text-slate-600 flex items-center gap-2"><iconify-icon icon="material-symbols:location-on" class="text-emerald-600" width="16"></iconify-icon><strong>Site:</strong> ${site.name}</p></div>`;
   if(!list.length){h+=`<div class="bg-white rounded-2xl border p-6 text-center"><p class="text-slate-500 text-sm">${t('common.noDataAvailable')}</p></div>`}
   else{
     h+=`<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">`;
     list.forEach(item=>{
       const q=toNumber(item.quantity),m=toNumber(item.minimum_quantity),uc=getStockUnitCost(item),val=q*uc;
       const st=q<=0?{l:t('stock.outOfStock'),c:'stock-status-out'}:(m>0&&q<=m?{l:t('stock.lowStock'),c:'stock-status-low'}:{l:t('stock.normal'),c:'stock-status-normal'});
-      h+=`<div class="bg-white rounded-2xl border overflow-hidden shadow-sm hover:shadow-md transition"><div class="p-5"><div class="flex justify-between items-start gap-3"><h3 class="font-bold text-lg text-slate-800">${item.material_name||'Unknown'}</h3><span class="text-xs font-medium px-2 py-1 rounded-full ${st.c}">${st.l}</span></div><div class="mt-4 space-y-2 text-sm"><div class="flex justify-between border-b border-slate-100 pb-2"><span class="text-slate-500">${t('stock.quantity')}</span><span class="font-semibold">${q} ${item.unit||'units'}</span></div><div class="flex justify-between border-b border-slate-100 pb-2"><span class="text-slate-500">${t('stock.unitCost')}</span><span class="font-semibold">${formatRWF(uc)}</span></div><div class="flex justify-between border-b border-slate-100 pb-2"><span class="text-slate-500">${t('stock.minimumStock')}</span><span class="font-semibold">${m}</span></div><div class="flex justify-between"><span class="text-slate-500">${t('stock.stockValue')}</span><span class="font-bold text-emerald-700">${formatRWF(val)}</span></div><div class="pt-2 text-xs text-slate-400">${t('stock.lastUpdated')}: ${item.updated_at?formatDate(item.updated_at):'—'}</div></div><div class="mt-4 pt-3 border-t border-slate-100 flex gap-4"><button type="button" onclick="editStockItem('${item.id}')" class="text-xs text-emerald-600 font-medium hover:text-emerald-800">${t('common.edit')}</button><button type="button" onclick="viewStockHistory('${item.id}')" class="text-xs text-blue-600 font-medium hover:text-blue-800">${t('stock.stockHistory')}</button></div></div></div>`;
+      h+=`<div class="bg-white rounded-2xl border overflow-hidden shadow-sm hover:shadow-md transition"><div class="p-5"><div class="flex justify-between items-start gap-3"><h3 class="font-bold text-lg text-slate-800">${item.material_name||'Unknown'}</h3><span class="text-xs font-medium px-2 py-1 rounded-full ${st.c}">${st.l}</span></div><div class="mt-4 space-y-2 text-sm"><div class="flex justify-between border-b border-slate-100 pb-2"><span class="text-slate-500">${t('stock.quantity')}</span><span class="font-semibold">${q} ${item.unit||'units'}</span></div><div class="flex justify-between border-b border-slate-100 pb-2"><span class="text-slate-500">${t('stock.unitCost')}</span><span class="font-semibold">${formatRWF(uc)}</span></div><div class="flex justify-between border-b border-slate-100 pb-2"><span class="text-slate-500">${t('stock.minimumStock')}</span><span class="font-semibold">${m}</span></div><div class="flex justify-between"><span class="text-slate-500">${t('stock.stockValue')}</span><span class="font-bold text-emerald-700">${formatRWF(val)}</span></div><div class="pt-2 text-xs text-slate-400">${t('stock.lastUpdated')}: ${item.updated_at?formatDate(item.updated_at):'—'}</div></div><div class="mt-4 pt-3 border-t border-slate-100 flex gap-4"><button type="button" onclick="editStockItem('${item.id}')" class="text-xs text-emerald-600 font-medium hover:text-emerald-800 flex items-center gap-1"><iconify-icon icon="material-symbols:edit" width="14"></iconify-icon>${t('common.edit')}</button><button type="button" onclick="viewStockHistory('${item.id}')" class="text-xs text-blue-600 font-medium hover:text-blue-800 flex items-center gap-1"><iconify-icon icon="material-symbols:history" width="14"></iconify-icon>${t('stock.stockHistory')}</button></div></div></div>`;
     });
     h+=`</div>`;
   }
   const recent=stockTransactions.filter(tx=>tx.site_id===currentSiteId).slice(0,10);
   if(recent.length){
-    h+=`<div class="mt-6 bg-white rounded-2xl border p-4 shadow-sm"><h3 class="font-semibold text-sm mb-3">${t('stock.stockHistory')}</h3><div class="space-y-2">`;
+    h+=`<div class="mt-6 bg-white rounded-2xl border p-4 shadow-sm"><h3 class="font-semibold text-sm mb-3 flex items-center gap-2"><iconify-icon icon="material-symbols:history" class="text-blue-600" width="18"></iconify-icon>${t('stock.stockHistory')}</h3><div class="space-y-2">`;
     recent.forEach(tx=>{
       const ch=toNumber(tx.quantity_change);const cls=ch>0?'text-emerald-600':ch<0?'text-red-500':'text-slate-500';const sign=ch>0?'+':ch<0?'-':'';
       h+=`<div class="flex justify-between gap-3 text-sm border-b border-slate-100 pb-2"><div><div class="font-medium truncate">${tx.material_name||''}</div><div class="text-xs text-slate-500">${(tx.transaction_type||'').replace(/_/g,' ')}</div></div><div class="text-right whitespace-nowrap"><div class="font-semibold ${cls}">${sign}${Math.abs(ch)} ${tx.unit||''}</div><div class="text-xs text-slate-400">${tx.created_at?formatDate(tx.created_at):''}</div></div></div>`;
@@ -1782,7 +1781,7 @@ window.handleAddStock=async function(e){
 };
 window.editStockItem=function(id){
   const s=getStockById(id);if(!s)return;
-  openModal(''+t('stock.editStock'),`
+  openModal('✏️ '+t('stock.editStock'),`
     <form onsubmit="handleEditStock(event,'${id}')" class="space-y-4">
       <div><label class="block text-sm font-medium mb-1">${t('materials.materialName')}</label><input class="w-full border rounded-lg p-3 bg-slate-50" value="${s.material_name}" disabled></div>
       <div><label class="block text-sm font-medium mb-1">${t('stock.quantity')} *</label><input class="w-full border rounded-lg p-3" type="number" step="0.01" min="0" id="edit-stock-qty" value="${toNumber(s.quantity)}" required></div>
@@ -1815,14 +1814,14 @@ window.viewStockHistory=function(id){
     h+=`<div class="flex justify-between gap-3 text-sm border-b border-slate-100 pb-2"><div><div class="font-medium">${tx.transaction_type.replace(/_/g,' ')}</div><div class="text-xs text-slate-500">${tx.notes||''}</div></div><div class="text-right whitespace-nowrap"><div class="font-semibold ${cls}">${sign}${Math.abs(ch)} ${tx.unit||''}</div><div class="text-xs text-slate-400">${formatDate(tx.created_at)}</div></div></div>`;
   });
   h+=`</div>`;
-  openModal(''+t('stock.stockHistory')+' — '+s.material_name,h);
+  openModal('📜 '+t('stock.stockHistory')+' — '+s.material_name,h);
 };
 
 // ============================================================
 // WORKERS + ATTENDANCE
 // ============================================================
 function renderWorkers(container){
-  container.innerHTML=`<div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6"><div class="flex gap-2 p-1 bg-slate-200/60 rounded-xl"><button onclick="switchWorkersTab('view')" class="px-4 py-2 rounded-lg text-sm font-semibold transition ${workersTab==='view'?'tab-active shadow-sm':'tab-inactive'}"><iconify-icon icon="material-symbols:grid-view" class="inline mr-1"></iconify-icon> ${t('workers.view')}</button><button onclick="switchWorkersTab('record')" class="px-4 py-2 rounded-lg text-sm font-semibold transition ${workersTab==='record'?'tab-active shadow-sm':'tab-inactive'}"><iconify-icon icon="material-symbols:edit-calendar" class="inline mr-1"></iconify-icon> ${t('workers.recordAttendance')}</button></div>${workersTab==='view'?`<button onclick="openAddWorkerModal()" class="px-4 py-2 bg-emerald-600 text-white rounded-xl hover:bg-emerald-700 flex items-center gap-2 text-sm font-medium"><iconify-icon icon="material-symbols:person-add-outline"></iconify-icon> ${t('workers.addWorker')}</button>`:''}</div><div id="workers-content">${workersTab==='view'?renderWorkersView():renderWorkersRecord()}</div>`;
+  container.innerHTML=`<div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6"><div class="flex gap-2 p-1 bg-slate-200/60 rounded-xl"><button onclick="switchWorkersTab('view')" class="px-4 py-2 rounded-lg text-sm font-semibold transition ${workersTab==='view'?'tab-active shadow-sm':'tab-inactive'} flex items-center gap-2"><iconify-icon icon="material-symbols:grid-view" width="18"></iconify-icon> ${t('workers.view')}</button><button onclick="switchWorkersTab('record')" class="px-4 py-2 rounded-lg text-sm font-semibold transition ${workersTab==='record'?'tab-active shadow-sm':'tab-inactive'} flex items-center gap-2"><iconify-icon icon="material-symbols:edit-calendar" width="18"></iconify-icon> ${t('workers.recordAttendance')}</button></div>${workersTab==='view'?`<button onclick="openAddWorkerModal()" class="px-4 py-2 bg-emerald-600 text-white rounded-xl hover:bg-emerald-700 flex items-center gap-2 text-sm font-medium"><iconify-icon icon="material-symbols:person-add-outline"></iconify-icon> ${t('workers.addWorker')}</button>`:''}</div><div id="workers-content">${workersTab==='view'?renderWorkersView():renderWorkersRecord()}</div>`;
   if(workersTab==='record')setTimeout(()=>window.updateAttendanceSummary&&window.updateAttendanceSummary(),100);
 }
 window.switchWorkersTab=(tab)=>{workersTab=tab;showSection('workers')};
@@ -1841,7 +1840,7 @@ function renderWorkersView(){
         <p class="text-sm text-emerald-600">${w.role||''}</p>
         <div class="mt-3 flex justify-between text-sm"><span class="text-slate-500">${t('workers.salary')}</span><span class="font-semibold">${(Number(w.salary)||0).toLocaleString()} RWF</span></div>
         <div class="mt-2 flex justify-between text-sm"><span class="text-slate-500">${t('workers.phone')}</span><span>${w.phone||'—'}</span></div>
-        <div class="mt-3 flex gap-2"><button onclick="viewWorkerDetail('${w.id}')" class="flex-1 text-xs bg-slate-100 py-2 rounded-lg font-medium">${t('workers.viewDetails')}</button><button onclick="editWorker('${w.id}')" class="text-xs bg-emerald-50 text-emerald-700 px-3 py-2 rounded-lg font-medium">${t('common.edit')}</button></div>
+        <div class="mt-3 flex gap-2"><button onclick="viewWorkerDetail('${w.id}')" class="flex-1 text-xs bg-slate-100 py-2 rounded-lg font-medium flex items-center justify-center gap-1"><iconify-icon icon="material-symbols:visibility" width="14"></iconify-icon>${t('workers.viewDetails')}</button><button onclick="editWorker('${w.id}')" class="text-xs bg-emerald-50 text-emerald-700 px-3 py-2 rounded-lg font-medium flex items-center gap-1"><iconify-icon icon="material-symbols:edit" width="14"></iconify-icon>${t('common.edit')}</button></div>
       </div>
     </div>`;
   });
@@ -1852,17 +1851,17 @@ window.openWorkerImage=function(idx){showToast('No photo on this worker.','info'
 function renderWorkersRecord(){
   if(!siteWorkersData.length)return `<div class="bg-white rounded-2xl border p-8 text-center"><p class="text-slate-500">${t('workers.noWorkers')}</p></div>`;
   const today=getTodayISO();
-  let h=`<div class="space-y-6"><div class="bg-white rounded-2xl border p-4 shadow-sm"><div class="flex justify-between items-center flex-wrap gap-2"><h3 class="text-sm font-semibold">${t('workers.recordAttendance')}</h3><div class="flex items-center gap-2"><button onclick="changeAttendanceDate(-1)" class="p-2 rounded-lg border"><iconify-icon icon="material-symbols:chevron-left"></iconify-icon></button><input type="date" id="attendance-date" value="${today}" class="border rounded-lg px-3 py-2 text-sm w-40" onchange="updateAttendanceSummary()"><button onclick="changeAttendanceDate(0)" class="px-3 py-2 bg-emerald-50 text-emerald-700 rounded-lg text-sm">${t('common.today')}</button><button onclick="changeAttendanceDate(1)" class="p-2 rounded-lg border"><iconify-icon icon="material-symbols:chevron-right"></iconify-icon></button></div></div></div><div class="bg-white rounded-2xl border p-4 shadow-sm"><div class="flex justify-between items-center mb-4"><h4 class="text-sm font-medium">${t('workers.view')} (${siteWorkersData.length})</h4><button onclick="toggleSelectAllWorkers()" class="text-xs text-emerald-600">${t('common.selectAll')}</button></div><div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">`;
+  let h=`<div class="space-y-6"><div class="bg-white rounded-2xl border p-4 shadow-sm"><div class="flex justify-between items-center flex-wrap gap-2"><h3 class="text-sm font-semibold flex items-center gap-2"><iconify-icon icon="material-symbols:edit-calendar" class="text-emerald-600" width="18"></iconify-icon>${t('workers.recordAttendance')}</h3><div class="flex items-center gap-2"><button onclick="changeAttendanceDate(-1)" class="p-2 rounded-lg border"><iconify-icon icon="material-symbols:chevron-left"></iconify-icon></button><input type="date" id="attendance-date" value="${today}" class="border rounded-lg px-3 py-2 text-sm w-40" onchange="updateAttendanceSummary()"><button onclick="changeAttendanceDate(0)" class="px-3 py-2 bg-emerald-50 text-emerald-700 rounded-lg text-sm">${t('common.today')}</button><button onclick="changeAttendanceDate(1)" class="p-2 rounded-lg border"><iconify-icon icon="material-symbols:chevron-right"></iconify-icon></button></div></div></div><div class="bg-white rounded-2xl border p-4 shadow-sm"><div class="flex justify-between items-center mb-4"><h4 class="text-sm font-medium">${t('workers.view')} (${siteWorkersData.length})</h4><button onclick="toggleSelectAllWorkers()" class="text-xs text-emerald-600 flex items-center gap-1"><iconify-icon icon="material-symbols:check-box" width="14"></iconify-icon>${t('common.selectAll')}</button></div><div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">`;
   siteWorkersData.forEach(w=>{
     const initial=(w.name||'W').charAt(0).toUpperCase();
     const avatar=w.image?`<img src="${w.image}" class="w-full h-full object-cover">`:`<span class="font-bold text-emerald-700">${initial}</span>`;
     h+=`<div class="worker-card relative bg-slate-50 border-2 border-transparent rounded-xl p-3 cursor-pointer" data-worker-id="${w.id}" onclick="toggleWorkerSelection('${w.id}')"><input type="checkbox" id="worker-chk-${w.id}" value="${w.id}" class="hidden worker-checkbox-input"><div class="flex items-center gap-3"><div class="w-10 h-10 rounded-full overflow-hidden flex-shrink-0 bg-emerald-100 flex items-center justify-center">${avatar}</div><div><p class="text-sm font-medium">${w.name}</p><p class="text-xs text-slate-500">${w.role||''}</p></div></div></div>`;
   });
-  h+=`</div></div><div id="attendance-summary" class="bg-white rounded-2xl border p-4 shadow-sm hidden"><div class="flex justify-between items-center"><div class="flex gap-6"><div><p class="text-xs text-slate-500">${t('workers.view')}</p><p class="text-2xl font-bold"><span id="selected-count">0</span> / ${siteWorkersData.length}</p></div><div><p class="text-xs text-slate-500">${t('reports.totalPayroll')}</p><p class="text-2xl font-bold text-emerald-600"><span id="total-cost">0</span> RWF</p></div></div><button onclick="submitAttendance(this)" class="px-6 py-2 bg-emerald-600 text-white rounded-xl text-sm font-semibold"><iconify-icon icon="material-symbols:save"></iconify-icon> ${t('common.save')}</button></div></div>`;
+  h+=`</div></div><div id="attendance-summary" class="bg-white rounded-2xl border p-4 shadow-sm hidden"><div class="flex justify-between items-center"><div class="flex gap-6"><div><p class="text-xs text-slate-500">${t('workers.view')}</p><p class="text-2xl font-bold"><span id="selected-count">0</span> / ${siteWorkersData.length}</p></div><div><p class="text-xs text-slate-500">${t('reports.totalPayroll')}</p><p class="text-2xl font-bold text-emerald-600"><span id="total-cost">0</span> RWF</p></div></div><button onclick="submitAttendance(this)" class="px-6 py-2 bg-emerald-600 text-white rounded-xl text-sm font-semibold flex items-center gap-2"><iconify-icon icon="material-symbols:save"></iconify-icon> ${t('common.save')}</button></div></div>`;
   if(attendanceData.length){
     const groups={};attendanceData.forEach(a=>{const d=a.date||'Unknown';if(!groups[d])groups[d]=[];groups[d].push(a)});
     const sorted=Object.keys(groups).sort((a,b)=>new Date(b)-new Date(a));
-    let hist=`<div class="bg-white rounded-2xl border p-4 shadow-sm"><h4 class="text-sm font-medium mb-3">${t('workers.attendanceLogs')}</h4>`;
+    let hist=`<div class="bg-white rounded-2xl border p-4 shadow-sm"><h4 class="text-sm font-medium mb-3 flex items-center gap-2"><iconify-icon icon="material-symbols:history" class="text-blue-600" width="18"></iconify-icon>${t('workers.attendanceLogs')}</h4>`;
     sorted.forEach(d=>{const workers=groups[d];const tot=workers.reduce((s,a)=>s+(Number(a.daily_rate)||0),0);
       hist+=`<div class="mb-3 p-3 bg-slate-50 rounded-xl border border-slate-100"><div class="flex justify-between items-center mb-2"><span class="text-sm font-semibold">${d}</span><span class="text-xs text-slate-500">${workers.length} ${t('workers.workers')} • ${tot.toLocaleString()} RWF</span></div><div class="flex flex-wrap gap-1">${workers.map(a=>`<span class="inline-flex items-center gap-1 bg-white border px-2 py-0.5 rounded text-xs">${a.name} <span class="text-[10px] text-slate-400">(${a.role||''})</span></span>`).join('')}</div></div>`;
     });
@@ -1903,7 +1902,7 @@ window.submitAttendance=async function(btn){
 // PROGRESS
 // ============================================================
 function renderProgress(container){
-  let h=`<h2 class="text-xl sm:text-2xl font-bold mb-4">${t('progress.title')}</h2>`;
+  let h=`<h2 class="text-xl sm:text-2xl font-bold mb-4 flex items-center gap-2"><iconify-icon icon="material-symbols:trending-up" class="text-emerald-600"></iconify-icon>${t('progress.title')}</h2>`;
   if(!progressTasks.length){h+=`<div class="bg-white rounded-2xl border p-6 text-center"><p class="text-slate-500">${t('progress.noTasks')}</p></div>`;container.innerHTML=h;return}
   const rows=progressTasks.map(task=>{
     const c=task.status==='completed';
@@ -1925,7 +1924,7 @@ window.markTaskCompleted=async function(taskId){
 // GALLERY
 // ============================================================
 function renderGallery(container){
-  container.innerHTML=`<h2 class="text-xl sm:text-2xl font-bold mb-4">${t('gallery.title')}</h2><div class="bg-white rounded-2xl border p-4 mb-4"><h3 class="font-semibold text-sm mb-3">${t('gallery.uploadImage')}</h3><form onsubmit="handleGalleryUpload(event)" class="space-y-3"><input type="file" id="gallery-image" accept="image/*" required class="w-full border rounded-lg p-2 text-sm"><textarea id="gallery-description" placeholder="${t('gallery.description')}" rows="2" class="w-full border rounded-lg p-2 text-sm"></textarea><button type="submit" class="w-full bg-emerald-600 text-white py-2 rounded-xl text-sm font-medium">${t('gallery.upload')}</button></form></div><div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">${galleryData.length?galleryData.map((item,idx)=>`<div class="bg-white rounded-2xl border overflow-hidden shadow-sm flex flex-col"><div class="relative w-full h-40 overflow-hidden cursor-pointer bg-slate-100" onclick="openGalleryImage(${idx})"><img src="${item.image||PLACEHOLDER_IMG}" class="w-full h-full object-cover" onerror="this.src='${PLACEHOLDER_IMG}'"></div><div class="p-3 flex-1"><p class="text-sm text-slate-700">${item.description||'—'}</p><p class="text-xs text-slate-400 mt-1">${item.uploaded_at?formatDate(item.uploaded_at):''}</p><div class="mt-3 pt-2 border-t flex justify-end gap-2"><button onclick="editGalleryItem('${item.id}')" class="text-xs text-emerald-600">${t('common.edit')}</button><button onclick="deleteGalleryItem('${item.id}')" class="text-xs text-red-500">${t('common.delete')}</button></div></div></div>`).join(''):`<p class="text-slate-400 col-span-full text-sm">${t('gallery.noImages')}</p>`}</div>`;
+  container.innerHTML=`<h2 class="text-xl sm:text-2xl font-bold mb-4 flex items-center gap-2"><iconify-icon icon="material-symbols:photo-library" class="text-emerald-600"></iconify-icon>${t('gallery.title')}</h2><div class="bg-white rounded-2xl border p-4 mb-4"><h3 class="font-semibold text-sm mb-3 flex items-center gap-2"><iconify-icon icon="material-symbols:upload" class="text-emerald-600" width="18"></iconify-icon>${t('gallery.uploadImage')}</h3><form onsubmit="handleGalleryUpload(event)" class="space-y-3"><input type="file" id="gallery-image" accept="image/*" required class="w-full border rounded-lg p-2 text-sm"><textarea id="gallery-description" placeholder="${t('gallery.description')}" rows="2" class="w-full border rounded-lg p-2 text-sm"></textarea><button type="submit" class="w-full bg-emerald-600 text-white py-2 rounded-xl text-sm font-medium flex items-center justify-center gap-2"><iconify-icon icon="material-symbols:cloud-upload" width="18"></iconify-icon>${t('gallery.upload')}</button></form></div><div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">${galleryData.length?galleryData.map((item,idx)=>`<div class="bg-white rounded-2xl border overflow-hidden shadow-sm flex flex-col"><div class="relative w-full h-40 overflow-hidden cursor-pointer bg-slate-100" onclick="openGalleryImage(${idx})"><img src="${item.image||PLACEHOLDER_IMG}" class="w-full h-full object-cover" onerror="this.src='${PLACEHOLDER_IMG}'"></div><div class="p-3 flex-1"><p class="text-sm text-slate-700">${item.description||'—'}</p><p class="text-xs text-slate-400 mt-1">${item.uploaded_at?formatDate(item.uploaded_at):''}</p><div class="mt-3 pt-2 border-t flex justify-end gap-2"><button onclick="editGalleryItem('${item.id}')" class="text-xs text-emerald-600 flex items-center gap-1"><iconify-icon icon="material-symbols:edit" width="14"></iconify-icon>${t('common.edit')}</button><button onclick="deleteGalleryItem('${item.id}')" class="text-xs text-red-500 flex items-center gap-1"><iconify-icon icon="material-symbols:delete" width="14"></iconify-icon>${t('common.delete')}</button></div></div></div>`).join(''):`<p class="text-slate-400 col-span-full text-sm">${t('gallery.noImages')}</p>`}</div>`;
 }
 window.handleGalleryUpload=async function(e){
   e.preventDefault();
@@ -1948,7 +1947,7 @@ window.openGalleryImage=function(idx){
 };
 window.editGalleryItem=function(id){
   const item=galleryData.find(g=>g.id===id);if(!item)return;
-  openModal(''+t('common.edit'),`<form onsubmit="handleEditGallery(event,'${id}')" class="space-y-4"><input type="text" id="eg-desc" value="${item.description||''}" class="w-full border rounded-lg p-3" placeholder="${t('gallery.description')}"><button type="submit" class="w-full bg-emerald-600 text-white py-3 rounded-xl">${t('common.save')}</button></form>`);
+  openModal('✏️ '+t('common.edit'),`<form onsubmit="handleEditGallery(event,'${id}')" class="space-y-4"><input type="text" id="eg-desc" value="${item.description||''}" class="w-full border rounded-lg p-3" placeholder="${t('gallery.description')}"><button type="submit" class="w-full bg-emerald-600 text-white py-3 rounded-xl">${t('common.save')}</button></form>`);
 };
 window.handleEditGallery=async function(e,id){
   e.preventDefault();
@@ -1966,13 +1965,13 @@ window.deleteGalleryItem=async function(id){
 // SETTINGS
 // ============================================================
 function renderSettings(container){
-  container.innerHTML=`<h2 class="text-xl sm:text-2xl font-bold mb-6">${t('settings.title')}</h2><div class="flex flex-wrap gap-2 mb-6 p-1 bg-slate-200/60 rounded-xl"><button class="settings-tab-btn px-4 py-2 rounded-lg text-sm font-semibold transition ${settingsTab==='profile'?'active':''}" onclick="switchSettingsTab('profile')"><iconify-icon icon="material-symbols:person-outline" class="inline mr-1"></iconify-icon> ${t('settings.profile')}</button><button class="settings-tab-btn px-4 py-2 rounded-lg text-sm font-semibold transition ${settingsTab==='account'?'active':''}" onclick="switchSettingsTab('account')"><iconify-icon icon="material-symbols:account-box-outline" class="inline mr-1"></iconify-icon> ${t('settings.account')}</button><button class="settings-tab-btn px-4 py-2 rounded-lg text-sm font-semibold transition ${settingsTab==='security'?'active':''}" onclick="switchSettingsTab('security')"><iconify-icon icon="material-symbols:lock-outline" class="inline mr-1"></iconify-icon> ${t('settings.security')}</button><button class="settings-tab-btn px-4 py-2 rounded-lg text-sm font-semibold transition ${settingsTab==='preferences'?'active':''}" onclick="switchSettingsTab('preferences')"><iconify-icon icon="material-symbols:settings-outline" class="inline mr-1"></iconify-icon> ${t('settings.preferences')}</button></div><div class="settings-sections"><div id="settings-profile" class="settings-section ${settingsTab==='profile'?'active':''}">${renderProfileSection()}</div><div id="settings-account" class="settings-section ${settingsTab==='account'?'active':''}">${renderAccountSection()}</div><div id="settings-security" class="settings-section ${settingsTab==='security'?'active':''}">${renderSecuritySection()}</div><div id="settings-preferences" class="settings-section ${settingsTab==='preferences'?'active':''}">${renderPreferencesSection()}</div></div>`;
+  container.innerHTML=`<h2 class="text-xl sm:text-2xl font-bold mb-6 flex items-center gap-2"><iconify-icon icon="material-symbols:settings" class="text-emerald-600"></iconify-icon>${t('settings.title')}</h2><div class="flex flex-wrap gap-2 mb-6 p-1 bg-slate-200/60 rounded-xl"><button class="settings-tab-btn px-4 py-2 rounded-lg text-sm font-semibold transition ${settingsTab==='profile'?'active':''} flex items-center gap-2" onclick="switchSettingsTab('profile')"><iconify-icon icon="material-symbols:person-outline" width="18"></iconify-icon> ${t('settings.profile')}</button><button class="settings-tab-btn px-4 py-2 rounded-lg text-sm font-semibold transition ${settingsTab==='account'?'active':''} flex items-center gap-2" onclick="switchSettingsTab('account')"><iconify-icon icon="material-symbols:account-box-outline" width="18"></iconify-icon> ${t('settings.account')}</button><button class="settings-tab-btn px-4 py-2 rounded-lg text-sm font-semibold transition ${settingsTab==='security'?'active':''} flex items-center gap-2" onclick="switchSettingsTab('security')"><iconify-icon icon="material-symbols:lock-outline" width="18"></iconify-icon> ${t('settings.security')}</button><button class="settings-tab-btn px-4 py-2 rounded-lg text-sm font-semibold transition ${settingsTab==='preferences'?'active':''} flex items-center gap-2" onclick="switchSettingsTab('preferences')"><iconify-icon icon="material-symbols:tune" width="18"></iconify-icon> ${t('settings.preferences')}</button></div><div class="settings-sections"><div id="settings-profile" class="settings-section ${settingsTab==='profile'?'active':''}">${renderProfileSection()}</div><div id="settings-account" class="settings-section ${settingsTab==='account'?'active':''}">${renderAccountSection()}</div><div id="settings-security" class="settings-section ${settingsTab==='security'?'active':''}">${renderSecuritySection()}</div><div id="settings-preferences" class="settings-section ${settingsTab==='preferences'?'active':''}">${renderPreferencesSection()}</div></div>`;
   populateSettingsForms();attachSettingsChangeListeners();
 }
 function renderProfileSection(){const p=managerProfile||{};const photo=p.profile_picture||PLACEHOLDER_IMG;return `<div class="settings-card"><h3><iconify-icon icon="material-symbols:person-outline" class="text-emerald-600"></iconify-icon> ${t('settings.profileInfo')}</h3><form id="profile-form" onsubmit="handleProfileSave(event)"><div class="field-group text-center"><div class="profile-avatar-wrapper"><img id="settings-profile-photo-img" src="${photo}"><label class="change-photo-btn"><iconify-icon icon="material-symbols:photo-camera" width="20"></iconify-icon><input type="file" id="settings-profile-photo-input" accept="image/*" style="display:none;" onchange="previewProfilePhoto(event)"></label></div><button type="button" id="settings-remove-photo-btn" class="remove-photo-btn mt-2" onclick="removeProfilePhoto()">${t('settings.removePhoto')}</button></div><div class="field-group"><label>${t('settings.fullName')}</label><input type="text" id="settings-full-name" value="${p.full_name||''}"></div><div class="field-group"><label>${t('settings.phone')}</label><input type="tel" id="settings-phone" value="${p.phone||''}"></div><div class="field-group"><label>${t('settings.email')}</label><input type="email" id="settings-email" value="${p.email||''}"></div><button type="submit" class="save-btn">${t('settings.saveProfile')}</button></form></div>`}
 function renderAccountSection(){const p=managerProfile||{};return `<div class="settings-card"><h3><iconify-icon icon="material-symbols:account-box-outline" class="text-emerald-600"></iconify-icon> ${t('settings.accountInfo')}</h3><div class="field-group"><label>${t('settings.accountName')}</label><div class="readonly-field">${p.full_name||'N/A'}</div></div><div class="field-group"><label>${t('settings.role')}</label><div class="readonly-field">${p.role||'Manager'}</div></div><div class="field-group"><label>${t('settings.email')}</label><div class="readonly-field">${p.email||'N/A'}</div></div><div class="field-group"><label>${t('settings.phone')}</label><div class="readonly-field">${p.phone||'N/A'}</div></div><div class="field-group"><label>${t('settings.memberSince')}</label><div class="readonly-field">${formatDate(p.created_at)}</div></div></div>`}
 function renderSecuritySection(){return `<div class="settings-card"><h3><iconify-icon icon="material-symbols:lock-outline" class="text-emerald-600"></iconify-icon> ${t('settings.changePassword')}</h3><form id="security-form" onsubmit="handlePasswordChange(event)"><div class="field-group"><label>${t('settings.currentPassword')}</label><input type="password" id="current-password" required></div><div class="field-group"><label>${t('settings.newPassword')}</label><input type="password" id="new-password" required minlength="6"></div><div class="field-group"><label>${t('settings.confirmPassword')}</label><input type="password" id="confirm-password" required></div><button type="submit" class="save-btn">${t('settings.changePassBtn')}</button></form></div>`}
-function renderPreferencesSection(){const p=managerProfile||{},pr=p.preferences||{};return `<div class="settings-card"><h3><iconify-icon icon="material-symbols:settings-outline" class="text-emerald-600"></iconify-icon> ${t('settings.preferences')}</h3><form id="preferences-form" onsubmit="handlePreferencesSave(event)"><div class="field-group"><label>${t('settings.language')}</label><select id="settings-language"><option value="en" ${pr.language==='en'?'selected':''}>English</option><option value="fr" ${pr.language==='fr'?'selected':''}>French</option><option value="rw" ${pr.language==='rw'?'selected':''}>Kinyarwanda</option></select></div><div class="field-group"><label>${t('settings.currency')}</label><select id="settings-currency"><option value="RWF" ${pr.currency==='RWF'?'selected':''}>RWF</option><option value="USD" ${pr.currency==='USD'?'selected':''}>USD</option><option value="EUR" ${pr.currency==='EUR'?'selected':''}>EUR</option></select></div><div class="field-group flex items-center gap-3"><input type="checkbox" id="settings-notifications" class="w-5 h-5" ${pr.notifications!==false?'checked':''}><label class="mb-0">${t('settings.notifications')}</label></div><button type="submit" class="save-btn">${t('settings.savePrefs')}</button></form></div>`}
+function renderPreferencesSection(){const p=managerProfile||{},pr=p.preferences||{};return `<div class="settings-card"><h3><iconify-icon icon="material-symbols:tune" class="text-emerald-600"></iconify-icon> ${t('settings.preferences')}</h3><form id="preferences-form" onsubmit="handlePreferencesSave(event)"><div class="field-group"><label>${t('settings.language')}</label><select id="settings-language"><option value="en" ${pr.language==='en'?'selected':''}>English</option><option value="fr" ${pr.language==='fr'?'selected':''}>French</option><option value="rw" ${pr.language==='rw'?'selected':''}>Kinyarwanda</option></select></div><div class="field-group"><label>${t('settings.currency')}</label><select id="settings-currency"><option value="RWF" ${pr.currency==='RWF'?'selected':''}>RWF</option><option value="USD" ${pr.currency==='USD'?'selected':''}>USD</option><option value="EUR" ${pr.currency==='EUR'?'selected':''}>EUR</option></select></div><div class="field-group flex items-center gap-3"><input type="checkbox" id="settings-notifications" class="w-5 h-5" ${pr.notifications!==false?'checked':''}><label class="mb-0">${t('settings.notifications')}</label></div><button type="submit" class="save-btn">${t('settings.savePrefs')}</button></form></div>`}
 function populateSettingsForms(){const p=managerProfile||{};const n=document.getElementById('settings-full-name');if(n)n.value=p.full_name||'';const ph=document.getElementById('settings-phone');if(ph)ph.value=p.phone||'';const em=document.getElementById('settings-email');if(em)em.value=p.email||'';const img=document.getElementById('settings-profile-photo-img');if(img)img.src=p.profile_picture||PLACEHOLDER_IMG}
 function attachSettingsChangeListeners(){document.querySelectorAll('#settings-profile input, #settings-preferences input, #settings-preferences select, #settings-security input').forEach(el=>{el.addEventListener('input',()=>{if(!hasUnsavedChanges)hasUnsavedChanges=true});el.addEventListener('change',()=>{if(!hasUnsavedChanges)hasUnsavedChanges=true})})}
 window.switchSettingsTab=function(tab){
@@ -2094,7 +2093,6 @@ function refreshCurrentSection(){
   if(window._refreshing)return;window._refreshing=true;
   requestAnimationFrame(()=>{
     if(currentUser&&currentSiteId){
-      // Preserve report filters when refreshing reports section
       let savedFilters=null;
       if(currentSection==='reports'){
         savedFilters={
@@ -2117,7 +2115,6 @@ function refreshCurrentSection(){
         const wsrch=document.getElementById('wk-report-search');if(wsrch)wsrch.value=savedFilters.search;
         const pos=document.getElementById('payroll-position');if(pos)pos.value=savedFilters.pos;
         const st=document.getElementById('payroll-status');if(st)st.value=savedFilters.status;
-        // re-run previews
         if(reportType==='general')updateGeneralPreview();
         if(reportType==='payroll')updatePayrollReport();
         if(reportType==='materials')updateMaterialsPreview();
@@ -2166,7 +2163,7 @@ async function initApp(){
   });
 }
 if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',initApp)}else{initApp()}
-console.log('✅ SHDR Manager Dashboard — reports now use Owner Dashboard format');
+console.log('✅ SHDR Manager Dashboard — Owner-style reports with real Material Symbols icons');
 </script>
 </main>
 </body>
