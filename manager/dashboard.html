@@ -93,6 +93,38 @@ body{background:#f8fafc}
 .img-preview-wrap img{max-width:100%;max-height:220px;border-radius:12px;object-fit:cover;border:1px solid #e2e8f0}
 .img-preview-wrap .remove-img-btn{position:absolute;top:6px;right:6px;background:rgba(220,38,38,.9);color:#fff;border:none;border-radius:50%;width:30px;height:30px;display:flex;align-items:center;justify-content:center;cursor:pointer}
 @media (max-width:640px){.usage-material-grid{grid-template-columns:repeat(auto-fill,minmax(100px,1fr))}.usage-material-grid .mat-card{padding:8px 4px;min-height:70px}}
+
+/* ── Professional Report Document ── */
+.report-doc{background:#fff;padding:36px 40px;color:#111827;font-size:12px}
+.report-doc .doc-header{display:flex;justify-content:space-between;align-items:flex-start;gap:24px;padding-bottom:20px;border-bottom:3px solid #059669;margin-bottom:24px}
+.report-doc .doc-brand{display:flex;gap:16px;align-items:center}
+.report-doc .doc-brand img{width:58px;height:58px;object-fit:contain}
+.report-doc .doc-brand-name{font-size:22px;font-weight:800;color:#059669;letter-spacing:-.4px;line-height:1.1}
+.report-doc .doc-brand-sub{font-size:10px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:1.2px;margin-top:2px}
+.report-doc .doc-brand-detail{font-size:11px;color:#4b5563;line-height:1.55;margin-top:6px}
+.report-doc .doc-title-block{text-align:right;flex-shrink:0}
+.report-doc .doc-title{font-size:15px;font-weight:800;color:#111827;text-transform:uppercase;letter-spacing:.8px;line-height:1.2}
+.report-doc .doc-title-sub{font-size:9.5px;color:#9ca3af;text-transform:uppercase;letter-spacing:1.8px;margin-top:6px;font-weight:600}
+.report-doc .doc-meta{display:grid;grid-template-columns:1fr 1fr;gap:10px 40px;background:#f0fdf4;border-left:4px solid #059669;border-radius:0 8px 8px 0;padding:16px 22px;margin-bottom:28px}
+.report-doc .doc-meta-item{display:flex;font-size:11.5px;line-height:1.4}
+.report-doc .doc-meta-label{font-weight:700;color:#065f46;min-width:118px;flex-shrink:0}
+.report-doc .doc-meta-value{color:#1f2937;font-weight:500}
+.report-doc .report-section{margin-bottom:30px}
+.report-doc .report-section-title{font-size:11px;font-weight:800;color:#059669;text-transform:uppercase;letter-spacing:1.6px;padding-bottom:8px;border-bottom:2px solid #d1fae5;margin-bottom:0}
+.report-doc table.doc-table{width:100%;border-collapse:collapse;font-size:11.5px;table-layout:auto}
+.report-doc .doc-table thead th{background:#f8fafc;color:#374151;font-weight:700;font-size:10px;text-transform:uppercase;letter-spacing:.7px;padding:11px 14px;text-align:left;border-bottom:2px solid #e5e7eb;white-space:nowrap}
+.report-doc .doc-table tbody td{padding:10px 14px;border-bottom:1px solid #f1f5f9;color:#1f2937;vertical-align:top;line-height:1.5}
+.report-doc .doc-table tbody tr:nth-child(even) td{background:#fafbfc}
+.report-doc .doc-table tbody tr:last-child td{border-bottom:1px solid #e5e7eb}
+.report-doc .doc-table tfoot td{background:#ecfdf5;font-weight:800;color:#065f46;padding:11px 14px;border-top:2px solid #059669;font-size:11px;text-transform:uppercase;letter-spacing:.5px}
+.report-doc .doc-table .num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.report-doc .doc-table .center{text-align:center}
+.report-doc .overview-table{table-layout:fixed}
+.report-doc .overview-table thead th:first-child{width:32%}
+.report-doc .overview-table tbody td:first-child{font-weight:700;color:#4b5563}
+.report-doc .overview-table tbody td:last-child{color:#111827}
+.report-doc .doc-footer{margin-top:36px;padding-top:14px;border-top:1px solid #e5e7eb;font-size:9.5px;color:#9ca3af;text-align:center;letter-spacing:.4px}
+.report-doc .doc-footer b{color:#6b7280;font-weight:700}
 </style>
 </head>
 <body class="min-h-screen flex">
@@ -183,7 +215,7 @@ body{background:#f8fafc}
 
 <script type="module">
 // ============================================================
-// I18N (unchanged)
+// I18N
 // ============================================================
 const translations={
 en:{navigation:{managerPanel:"Manager's Panel",dashboard:"Dashboard",materials:"Materials",stock:"Stock",workers:"Workers",progress:"Progress",reports:"Reports",gallery:"Gallery",settings:"Settings",logout:"Sign Out"},
@@ -283,7 +315,7 @@ function getCompany(){return{name:'SHDR Ltd',address:'KG 11 Avenue, Kimironko, G
 function safeFilename(s){return String(s||'').replace(/[^\w\-]+/g,'_').replace(/_+/g,'_').slice(0,120)}
 
 // ============================================================
-// SHDR BASE64 LOGO — embedded SVG converted to PNG for PDF
+// SHDR BASE64 LOGO
 // ============================================================
 const SHDR_LOGO_SVG = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" width="240" height="240">'+
   '<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#10b981"/><stop offset="1" stop-color="#047857"/></linearGradient></defs>'+
@@ -320,10 +352,8 @@ function loadShdrLogoPng() {
 }
 
 // ============================================================
-// PDF / EXCEL / PRINT — UNIFIED REPORT SYSTEM
+// UNIFIED REPORT SYSTEM
 // ============================================================
-
-// ---- Payment status logic ----
 function isRecordPaid(rec) {
   if (!rec) return false;
   if (rec.payment_status === 'paid' || rec.paid === true || rec.is_paid === true) return true;
@@ -331,7 +361,6 @@ function isRecordPaid(rec) {
   return false;
 }
 
-// ---- Read the current report filters from the UI ----
 function readReportFilters() {
   return {
     type: reportType,
@@ -343,7 +372,6 @@ function readReportFilters() {
   };
 }
 
-// ---- Date filter helpers ----
 function inDateRange(dateStr, start, end) {
   if (!dateStr) return !start && !end;
   const d = String(dateStr).slice(0,10);
@@ -352,42 +380,33 @@ function inDateRange(dateStr, start, end) {
   return true;
 }
 
-// ---- GENERAL report builder ----
 function buildGeneralReportModel(filters) {
   const site = assignedSites.find(s=>s.id===currentSiteId);
   const siteName = site ? site.name : '—';
   const dept = filters.department;
 
-  // Materials summary
   let mats = materialsData.filter(m=>m.site_id===currentSiteId);
   mats = mats.filter(m => inDateRange(m.date_used||m.created_at, filters.startDate, filters.endDate));
   const matTotalValue = mats.reduce((s,m)=>s+calculateTotal(m.quantity_used||0,m.unit_cost||0),0);
 
-  // Stock summary
   const stocks = stockData.filter(s=>s.site_id===currentSiteId);
   const stockValue = stocks.reduce((s,x)=>s+toNumber(x.quantity)*toNumber(x.unit_cost),0);
   const lowStockCount = stocks.filter(s=>toNumber(s.quantity)<=toNumber(s.minimum_quantity)).length;
 
-  // Workers summary
   const workers = siteWorkersData.slice();
   const workerCount = workers.length;
 
-  // Payroll summary (from attendance)
   let att = attendanceData.filter(a=>a.site_id===currentSiteId);
   att = att.filter(a => inDateRange(a.date, filters.startDate, filters.endDate));
   const payrollTotal = att.reduce((s,a)=>s+toNumber(a.daily_rate),0);
   const payrollPaid = att.filter(isRecordPaid).reduce((s,a)=>s+toNumber(a.daily_rate),0);
   const payrollUnpaid = payrollTotal - payrollPaid;
 
-  // Requisition summary
   let reqs = requisitionsData.filter(r=>r.site_id===currentSiteId);
   reqs = reqs.filter(r => inDateRange(r.request_date, filters.startDate, filters.endDate));
-  const reqByStatus = {};
-  reqs.forEach(r=>{const st=r.status||'Pending';reqByStatus[st]=(reqByStatus[st]||0)+1});
 
   const sections = [];
 
-  // Overview section
   sections.push({
     title: 'Overview',
     columns: [{key:'metric',label:'Metric'},{key:'value',label:'Value'}],
@@ -535,7 +554,6 @@ function buildGeneralReportModel(filters) {
   };
 }
 
-// ---- WORKER PAYROLL report builder ----
 function buildWorkerPayrollReportModel(filters) {
   let records = attendanceData.filter(a=>a.site_id===currentSiteId);
   records = records.filter(a => inDateRange(a.date, filters.startDate, filters.endDate));
@@ -618,13 +636,11 @@ function buildWorkerPayrollReportModel(filters) {
   };
 }
 
-// ---- MATERIALS report builder ----
 function buildMaterialsReportModel(filters) {
   const stocks = stockData.filter(s=>s.site_id===currentSiteId);
   const mats = materialsData.filter(m=>m.site_id===currentSiteId)
     .filter(m => inDateRange(m.date_used||m.created_at, filters.startDate, filters.endDate));
 
-  // Aggregate per material name
   const byName = {};
   stocks.forEach(s=>{
     const name = cleanName(s.material_name||'Unknown');
@@ -638,7 +654,6 @@ function buildMaterialsReportModel(filters) {
     byName[name].used += toNumber(m.quantity_used);
     if (!byName[name].unitCost && m.unit_cost) byName[name].unitCost = toNumber(m.unit_cost);
   });
-  // Added quantity from stock transactions of type STOCK_ADDED within range
   stockTransactions.filter(tx=>tx.site_id===currentSiteId && tx.transaction_type==='STOCK_ADDED')
     .filter(tx => inDateRange(tx.created_at, filters.startDate, filters.endDate))
     .forEach(tx=>{
@@ -682,7 +697,6 @@ function buildMaterialsReportModel(filters) {
   };
 }
 
-// ---- WORKERS report builder ----
 function buildWorkersReportModel(filters) {
   let workers = siteWorkersData.slice();
   if (filters.workerSearch) {
@@ -724,7 +738,6 @@ function buildWorkersReportModel(filters) {
   };
 }
 
-// ---- Master dispatcher ----
 function buildReportModel() {
   const filters = readReportFilters();
   let model;
@@ -742,7 +755,6 @@ function buildReportModel() {
   return model;
 }
 
-// ---- Filenames ----
 function getReportFilename(type, ext) {
   const d = new Date().toISOString().slice(0,10);
   const map = {
@@ -769,24 +781,11 @@ function getReportSuccessMessage(type, format) {
   return `${n} exported.`;
 }
 
-function getReportTitleForHeader(type) {
-  const map = {
-    'general': 'GENERAL MANAGER REPORT',
-    'worker-payroll': 'WORKER PAYROLL REPORT',
-    'materials': 'MATERIALS REPORT',
-    'workers': 'WORKERS REPORT'
-  };
-  return 'SHDR LTD — ' + (map[type] || 'REPORT');
-}
-
-// ---- PDF helpers ----
 function drawPdfHeader(doc, company, model, logoData) {
   const W = doc.internal.pageSize.getWidth();
-  // Top brand bar
   doc.setFillColor(5,150,105); doc.rect(0,0,W,4,'F');
 
   let headerTop = 10;
-  // Logo
   if (logoData) {
     try { doc.addImage(logoData, 'PNG', 14, headerTop, 20, 20); } catch(e){ console.warn('PDF logo addImage failed:', e); }
   }
@@ -801,7 +800,6 @@ function drawPdfHeader(doc, company, model, logoData) {
   doc.text(`${company.city} | Tel: ${company.phone}`, textX, headerTop+20);
   doc.text(`Email: ${company.email}`, textX, headerTop+23.5);
 
-  // Right side report title
   doc.setFont('helvetica','bold'); doc.setFontSize(12); doc.setTextColor(20,20,20);
   doc.text(model.title, W-14, headerTop+7, {align:'right'});
   doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(100,100,100);
@@ -810,7 +808,6 @@ function drawPdfHeader(doc, company, model, logoData) {
   doc.setDrawColor(5,150,105); doc.setLineWidth(0.5);
   doc.line(14, headerTop+27, W-14, headerTop+27);
 
-  // Meta block
   let y = headerTop + 33;
   const meta = [
     {label:'Manager', value: model.manager},
@@ -841,7 +838,6 @@ function addPdfFooter(doc, company) {
   }
 }
 
-// ---- PDF EXPORT ----
 window.exportReportPDF = async function() {
   try {
     const model = buildReportModel();
@@ -899,8 +895,7 @@ window.exportReportPDF = async function() {
         footStyles: { fillColor: [236,253,245], textColor: [6,95,70], fontStyle: 'bold' },
         alternateRowStyles: { fillColor: [249,250,251] },
         columnStyles,
-        margin: { left: 14, right: 14 },
-        didDrawPage: (data)=>{ /* autoTable handles pagination */ }
+        margin: { left: 14, right: 14 }
       });
       y = (doc.lastAutoTable ? doc.lastAutoTable.finalY : y) + 8;
     }
@@ -914,7 +909,6 @@ window.exportReportPDF = async function() {
   }
 };
 
-// ---- EXCEL EXPORT ----
 window.exportReportExcel = function() {
   try {
     const model = buildReportModel();
@@ -923,8 +917,6 @@ window.exportReportExcel = function() {
 
     const company = getCompany();
     const wb = XLSX.utils.book_new();
-
-    // Build a single flat worksheet with sections (so all report data is together)
     const aoa = [];
     aoa.push([company.name]);
     aoa.push([company.address + ' | ' + company.location]);
@@ -965,7 +957,6 @@ window.exportReportExcel = function() {
     }
 
     const ws = XLSX.utils.aoa_to_sheet(aoa);
-    // Auto width
     const colWidths = [];
     aoa.forEach(row => {
       if (!Array.isArray(row)) return;
@@ -991,7 +982,6 @@ window.exportReportExcel = function() {
   }
 };
 
-// ---- PRINT ----
 window.printReport = function() {
   try {
     const model = buildReportModel();
@@ -999,101 +989,140 @@ window.printReport = function() {
     if (!hasData) { showToast('No data available for the selected report and filters.', 'error'); return; }
 
     const company = getCompany();
-    const logoHtml = `<img src="${SHDR_LOGO_BASE64}" alt="SHDR Ltd" style="width:64px;height:64px;object-fit:contain;">`;
+    const period = (model.startDate || model.endDate)
+      ? `${model.startDate || 'Start'} — ${model.endDate || 'Now'}`
+      : 'All time';
+
+    const metaItems = [
+      { label: 'Manager', value: model.manager },
+      { label: 'Assigned Site', value: model.site },
+      { label: 'Reporting Period', value: period },
+      { label: 'Generated', value: new Date().toLocaleString() }
+    ];
+    if (model.filters?.department && model.filters.department !== 'all')
+      metaItems.push({ label: 'Department', value: model.filters.department });
+    if (model.type === 'worker-payroll' && model.filters?.paymentStatus && model.filters.paymentStatus !== 'all')
+      metaItems.push({ label: 'Payment Status', value: model.filters.paymentStatus });
 
     let sectionsHtml = '';
     for (const section of model.sections) {
       if (!section.rows || !section.rows.length) continue;
-      const head = section.columns.map(c=>`<th style="${c.align==='right'?'text-align:right;':c.align==='center'?'text-align:center;':''}">${c.label}</th>`).join('');
+      const isOverview = section.columns.length === 2 && section.columns[0].key === 'metric';
+
+      const head = section.columns.map(c => {
+        const cls = c.align === 'right' ? 'num' : c.align === 'center' ? 'center' : '';
+        return `<th class="${cls}">${c.label}</th>`;
+      }).join('');
+
       const body = section.rows.map(row => {
-        const cells = section.columns.map(c=>{
+        const cells = section.columns.map(c => {
           const v = row[c.key];
-          let disp = (v === null || v === undefined || v === '') ? '—' : (c.format === 'rwf' ? formatRWF(v) : String(v));
-          const align = c.align === 'right' ? 'text-align:right;' : c.align === 'center' ? 'text-align:center;' : '';
-          return `<td style="${align}">${disp}</td>`;
+          const disp = (v === null || v === undefined || v === '') ? '—' : (c.format === 'rwf' ? formatRWF(v) : String(v));
+          const cls = c.align === 'right' ? 'num' : c.align === 'center' ? 'center' : '';
+          return `<td class="${cls}">${disp}</td>`;
         }).join('');
         return `<tr>${cells}</tr>`;
       }).join('');
+
       let footHtml = '';
       if (section.totals && Object.keys(section.totals).length) {
-        const cells = section.columns.map((c,i)=>{
-          if (i === 0) return `<td style="font-weight:bold">TOTAL</td>`;
+        const cells = section.columns.map((c, i) => {
+          if (i === 0) return `<td>TOTAL</td>`;
           const v = section.totals[c.key];
+          const cls = c.align === 'right' ? 'num' : c.align === 'center' ? 'center' : '';
           if (v !== undefined && v !== 0) {
             const disp = c.format === 'rwf' ? formatRWF(v) : String(v);
-            const align = c.align === 'right' ? 'text-align:right;' : c.align === 'center' ? 'text-align:center;' : '';
-            return `<td style="font-weight:bold;${align}">${disp}</td>`;
+            return `<td class="${cls}">${disp}</td>`;
           }
-          return `<td></td>`;
+          return `<td class="${cls}"></td>`;
         }).join('');
-        footHtml = `<tfoot><tr style="background:#ecfdf5">${cells}</tr></tfoot>`;
+        footHtml = `<tfoot><tr>${cells}</tr></tfoot>`;
       }
+
       sectionsHtml += `
-        <div class="section">
-          <h3>${section.title}</h3>
-          <table><thead><tr>${head}</tr></thead><tbody>${body}</tbody>${footHtml}</table>
+        <div class="report-section">
+          <div class="report-section-title">${section.title}</div>
+          <table class="doc-table ${isOverview ? 'overview-table' : ''}">
+            <thead><tr>${head}</tr></thead>
+            <tbody>${body}</tbody>
+            ${footHtml}
+          </table>
         </div>`;
     }
 
-    const period = (model.startDate||model.endDate) ? `${model.startDate||'Start'} — ${model.endDate||'Now'}` : 'All time';
-    const filtersExtra = [];
-    if (model.filters?.department && model.filters.department !== 'all') filtersExtra.push(`Department: ${model.filters.department}`);
-    if (model.type === 'worker-payroll' && model.filters?.paymentStatus && model.filters.paymentStatus !== 'all') filtersExtra.push(`Payment Status: ${model.filters.paymentStatus}`);
-
     const html = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>${model.title}</title>
 <style>
-*{box-sizing:border-box}
-body{font-family:Arial,Helvetica,sans-serif;padding:24px;color:#1f2937;background:#fff}
-.hdr{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:3px solid #059669;padding-bottom:14px;margin-bottom:16px}
-.hdr-left{display:flex;gap:14px;align-items:center}
-.hdr-left h1{color:#059669;font-size:20px;margin:0 0 2px}
-.hdr-left p{margin:1px 0;font-size:11px;color:#555}
-.hdr-right{text-align:right}
-.hdr-right h2{margin:0;font-size:15px;color:#111827}
-.hdr-right p{margin:4px 0 0;font-size:10px;color:#666}
-.meta{background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:10px 14px;font-size:11px;margin-bottom:16px;line-height:1.7}
-.meta b{color:#065f46}
-.section{margin-bottom:20px}
-.section h3{margin:0 0 6px;font-size:12px;color:#059669;text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid #d1fae5;padding-bottom:4px}
-table{width:100%;border-collapse:collapse;font-size:10.5px;margin-bottom:6px}
-th{background:#059669;color:#fff;padding:6px 8px;text-align:left;border:1px solid #047857;font-weight:600}
-td{padding:5px 8px;border:1px solid #e5e7eb;vertical-align:top}
-tr:nth-child(even) td{background:#f9fafb}
-.footer{margin-top:24px;padding-top:10px;border-top:1px solid #d1d5db;text-align:center;font-size:10px;color:#6b7280}
-@media print{
-  body{padding:12px}
-  .hdr{break-inside:avoid}
-  .section{break-inside:auto}
-  table{page-break-inside:auto}
-  tr{page-break-inside:avoid}
-  thead{display:table-header-group}
-}
+  @page { size: A4; margin: 14mm 12mm; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    color: #111827;
+    background: #fff;
+    font-size: 11.5px;
+    line-height: 1.45;
+    padding: 24px 28px;
+  }
+  .doc-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 24px; padding-bottom: 18px; border-bottom: 3px solid #059669; margin-bottom: 22px; }
+  .doc-brand { display: flex; gap: 14px; align-items: center; }
+  .doc-brand img { width: 54px; height: 54px; object-fit: contain; }
+  .doc-brand-name { font-size: 20px; font-weight: 800; color: #059669; letter-spacing: -.4px; line-height: 1.1; }
+  .doc-brand-sub { font-size: 9.5px; font-weight: 600; color: #6b7280; text-transform: uppercase; letter-spacing: 1.2px; margin-top: 2px; }
+  .doc-brand-detail { font-size: 10.5px; color: #4b5563; line-height: 1.55; margin-top: 6px; }
+  .doc-title-block { text-align: right; flex-shrink: 0; }
+  .doc-title { font-size: 14px; font-weight: 800; color: #111827; text-transform: uppercase; letter-spacing: .8px; line-height: 1.2; }
+  .doc-title-sub { font-size: 9px; color: #9ca3af; text-transform: uppercase; letter-spacing: 1.8px; margin-top: 5px; font-weight: 600; }
+  .doc-meta { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 32px; background: #f0fdf4; border-left: 4px solid #059669; padding: 14px 18px; margin-bottom: 24px; }
+  .doc-meta-item { display: flex; font-size: 11px; line-height: 1.4; }
+  .doc-meta-label { font-weight: 700; color: #065f46; min-width: 118px; flex-shrink: 0; }
+  .doc-meta-value { color: #1f2937; font-weight: 500; }
+  .report-section { margin-bottom: 26px; page-break-inside: auto; }
+  .report-section-title { font-size: 10.5px; font-weight: 800; color: #059669; text-transform: uppercase; letter-spacing: 1.6px; padding-bottom: 7px; border-bottom: 2px solid #d1fae5; margin-bottom: 0; page-break-after: avoid; }
+  table.doc-table { width: 100%; border-collapse: collapse; font-size: 10.5px; page-break-inside: auto; }
+  .doc-table thead { display: table-header-group; }
+  .doc-table thead th { background: #f8fafc; color: #374151; font-weight: 700; font-size: 9px; text-transform: uppercase; letter-spacing: .7px; padding: 9px 12px; text-align: left; border-bottom: 2px solid #e5e7eb; white-space: nowrap; }
+  .doc-table tbody td { padding: 8px 12px; border-bottom: 1px solid #f1f5f9; color: #1f2937; vertical-align: top; line-height: 1.45; }
+  .doc-table tbody tr { page-break-inside: avoid; }
+  .doc-table tbody tr:nth-child(even) td { background: #fafbfc; }
+  .doc-table tfoot td { background: #ecfdf5; font-weight: 800; color: #065f46; padding: 9px 12px; border-top: 2px solid #059669; font-size: 10px; text-transform: uppercase; letter-spacing: .5px; }
+  .doc-table .num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .doc-table .center { text-align: center; }
+  .overview-table { table-layout: fixed; }
+  .overview-table thead th:first-child { width: 32%; }
+  .overview-table tbody td:first-child { font-weight: 700; color: #4b5563; }
+  .doc-footer { margin-top: 30px; padding-top: 12px; border-top: 1px solid #e5e7eb; font-size: 9px; color: #9ca3af; text-align: center; letter-spacing: .4px; page-break-inside: avoid; }
+  .doc-footer b { color: #6b7280; font-weight: 700; }
+  @media print { body { padding: 0; } .doc-header { break-inside: avoid; } }
 </style></head><body>
-<div class="hdr">
-  <div class="hdr-left">
-    ${logoHtml}
-    <div>
-      <h1>${company.name}</h1>
-      <p>Construction Management System</p>
-      <p>${company.address} | ${company.location}</p>
-      <p>${company.city} | Tel: ${company.phone}</p>
-      <p>${company.email}</p>
+  <div class="doc-header">
+    <div class="doc-brand">
+      <img src="${SHDR_LOGO_BASE64}" alt="SHDR Ltd">
+      <div>
+        <div class="doc-brand-name">${company.name}</div>
+        <div class="doc-brand-sub">Construction Management System</div>
+        <div class="doc-brand-detail">
+          ${company.address}<br>
+          ${company.location} &nbsp;•&nbsp; ${company.city}<br>
+          Tel: ${company.phone} &nbsp;•&nbsp; ${company.email}
+        </div>
+      </div>
+    </div>
+    <div class="doc-title-block">
+      <div class="doc-title">${model.title.replace('SHDR LTD — ','')}</div>
+      <div class="doc-title-sub">Official Company Report</div>
     </div>
   </div>
-  <div class="hdr-right">
-    <h2>${model.title}</h2>
-    <p>Official Company Report</p>
+  <div class="doc-meta">
+    ${metaItems.map(m => `
+      <div class="doc-meta-item">
+        <span class="doc-meta-label">${m.label}</span>
+        <span class="doc-meta-value">${m.value || '—'}</span>
+      </div>`).join('')}
   </div>
-</div>
-<div class="meta">
-  <b>Manager:</b> ${model.manager} &nbsp;|&nbsp;
-  <b>Assigned Site:</b> ${model.site} &nbsp;|&nbsp;
-  <b>Reporting Period:</b> ${period} &nbsp;|&nbsp;
-  <b>Generated:</b> ${new Date().toLocaleString()}
-  ${filtersExtra.length ? '<br>' + filtersExtra.map(f=>`<b>${f.split(':')[0]}:</b>${f.split(':')[1]}`).join(' &nbsp;|&nbsp; ') : ''}
-</div>
-${sectionsHtml}
-<div class="footer">Generated by ${company.name} Management System on ${new Date().toLocaleString()}</div>
+  ${sectionsHtml}
+  <div class="doc-footer">
+    Generated automatically by <b>${company.name} Management System</b> on ${new Date().toLocaleString()} &nbsp;•&nbsp; © ${new Date().getFullYear()} ${company.name}
+  </div>
 </body></html>`;
 
     const w = window.open('', '_blank');
@@ -1117,8 +1146,6 @@ ${sectionsHtml}
 // ============================================================
 // LEGACY: Material Requisition / Material Usage reports (kept separate)
 // ============================================================
-
-// ---- MATERIAL REQUISITION REPORT ----
 function buildRequisitionReportData(){
   const filters=_reqFilters;
   const rows=[];
@@ -1163,20 +1190,12 @@ window.exportRequisitionsPDF=function(){
     const {jsPDF}=window.jspdf;
     const doc=new jsPDF({orientation:'landscape',unit:'mm',format:'a4'});
     const company=getCompany();
-    const meta=[
-      {label:'Report',value:'Material Requisition Report'},
-      {label:'Site',value:assignedSites.find(s=>s.id===currentSiteId)?.name||'All Sites'},
-      {label:'Manager',value:managerProfile?.full_name||'—'},
-      {label:'Generated',value:new Date().toLocaleString()},
-      {label:'Total Rows',value:data.length}
-    ];
     const startY=drawPdfHeader(doc,company,{title:'Material Requisition Report',manager:managerProfile?.full_name||'—',site:assignedSites.find(s=>s.id===currentSiteId)?.name||'—',startDate:'',endDate:'',filters:{}}, null);
     const head=[['Req. ID','Req. Date','Required','Material','Unit','Qty','Priority','Status','Site','Requested By','Notes']];
     const body=data.map(r=>[r.reqId,r.reqDate,r.needDate,r.material,String(r.unit),String(r.qty),r.priority,r.status,r.site,r.reqBy,r.notes]);
     doc.autoTable({head,body,startY,styles:{fontSize:8,cellPadding:2},headStyles:{fillColor:[5,150,105],textColor:255,fontStyle:'bold'},alternateRowStyles:{fillColor:[249,250,251]},columnStyles:{5:{halign:'right'}}});
     addPdfFooter(doc,company);
-    const fname=`SHDR_Material_Requisition_Report_${safeFilename(formatDateShort(new Date().toISOString()))}.pdf`;
-    doc.save(fname);
+    doc.save(`SHDR_Material_Requisition_Report_${safeFilename(formatDateShort(new Date().toISOString()))}.pdf`);
     showToast('PDF report downloaded successfully.','success');
   }catch(err){console.error(err);showToast('Unable to generate the PDF. Please try again.','error')}
 };
@@ -1196,8 +1215,7 @@ window.exportRequisitionsExcel=function(){
     ws['!cols']=[{wch:18},{wch:12},{wch:12},{wch:22},{wch:8},{wch:8},{wch:10},{wch:14},{wch:20},{wch:18},{wch:24}];
     const wb=XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb,ws,'Requisitions');
-    const fname=`SHDR_Material_Requisition_Report_${safeFilename(formatDateShort(new Date().toISOString()))}.xlsx`;
-    XLSX.writeFile(wb,fname);
+    XLSX.writeFile(wb,`SHDR_Material_Requisition_Report_${safeFilename(formatDateShort(new Date().toISOString()))}.xlsx`);
     showToast('Excel report downloaded successfully.','success');
   }catch(err){console.error(err);showToast('Unable to generate the Excel file. Please try again.','error')}
 };
@@ -1217,7 +1235,6 @@ window.printRequisitions=function(){
   }catch(err){console.error(err);showToast('Unable to open print dialog. Please try again.','error')}
 };
 
-// ---- MATERIAL USAGE REPORT ----
 function buildMaterialUsageReportData(){
   return materialsData.filter(m=>m.site_id===currentSiteId).slice().sort((a,b)=>new Date(b.date_used||b.created_at||0)-new Date(a.date_used||a.created_at||0));
 }
@@ -1318,20 +1335,27 @@ function renderReports(container){
     <div id="report-preview-container" class="bg-white rounded-2xl border overflow-hidden shadow-sm">
       <div class="p-4 text-slate-500 text-sm">${t('common.loading')}</div>
     </div>`;
-  // Sync filter controls with current report type
   const psWrap = document.getElementById('report-payment-status-wrap');
   if (psWrap) psWrap.classList.toggle('hidden', reportType !== 'worker-payroll');
   requestAnimationFrame(() => updateReportPreview());
 }
 
 window.setReportType = function(type) {
+  const saved = readReportFilters();
   reportType = type;
   _reportPreviewCache = null;
   showSection('reports');
+  requestAnimationFrame(() => {
+    const dept = document.getElementById('report-dept'); if (dept) dept.value = saved.department;
+    const sd = document.getElementById('report-start'); if (sd) sd.value = saved.startDate;
+    const ed = document.getElementById('report-end'); if (ed) ed.value = saved.endDate;
+    const ps = document.getElementById('report-payment-status'); if (ps) ps.value = saved.paymentStatus;
+    const ws = document.getElementById('report-worker-search'); if (ws) ws.value = saved.workerSearch;
+    updateReportPreview();
+  });
 };
 
 window.onReportFilterChange = function() {
-  // Toggle payment status visibility
   const psWrap = document.getElementById('report-payment-status-wrap');
   if (psWrap) psWrap.classList.toggle('hidden', reportType !== 'worker-payroll');
   updateReportPreview();
@@ -1345,58 +1369,111 @@ function updateReportPreview() {
     _reportPreviewCache = model;
     const hasData = model.sections.some(s => s.rows && s.rows.length);
     if (!hasData) {
-      container.innerHTML = `<div class="p-6 text-center text-slate-500 text-sm">${t('reports.noPreviewData')}</div>`;
+      container.innerHTML = `<div class="p-10 text-center text-slate-500 text-sm">${t('reports.noPreviewData')}</div>`;
       return;
     }
-    const period = (model.startDate||model.endDate) ? `${model.startDate||'Start'} — ${model.endDate||'Now'}` : 'All time';
+
+    const company = getCompany();
+    const period = (model.startDate || model.endDate)
+      ? `${model.startDate || 'Start'} — ${model.endDate || 'Now'}`
+      : 'All time';
+
+    const metaItems = [
+      { label: 'Manager', value: model.manager },
+      { label: 'Assigned Site', value: model.site },
+      { label: 'Reporting Period', value: period },
+      { label: 'Generated', value: new Date().toLocaleString() }
+    ];
+    if (model.filters?.department && model.filters.department !== 'all')
+      metaItems.push({ label: 'Department', value: model.filters.department });
+    if (model.type === 'worker-payroll' && model.filters?.paymentStatus && model.filters.paymentStatus !== 'all')
+      metaItems.push({ label: 'Payment Status', value: model.filters.paymentStatus });
+
     let html = `
-      <div class="px-4 py-3 border-b border-slate-100 bg-slate-50 flex flex-wrap items-center justify-between gap-2">
-        <div>
-          <h3 class="font-bold text-slate-800 text-sm">${model.title}</h3>
-          <p class="text-xs text-slate-500">${model.manager} • ${model.site} • ${period}</p>
+      <div class="report-doc">
+        <div class="doc-header">
+          <div class="doc-brand">
+            <img src="${SHDR_LOGO_BASE64}" alt="SHDR Ltd">
+            <div>
+              <div class="doc-brand-name">${company.name}</div>
+              <div class="doc-brand-sub">Construction Management System</div>
+              <div class="doc-brand-detail">
+                ${company.address}<br>
+                ${company.location} &nbsp;•&nbsp; ${company.city}<br>
+                Tel: ${company.phone} &nbsp;•&nbsp; ${company.email}
+              </div>
+            </div>
+          </div>
+          <div class="doc-title-block">
+            <div class="doc-title">${model.title.replace('SHDR LTD — ','')}</div>
+            <div class="doc-title-sub">Official Company Report</div>
+          </div>
         </div>
-        <span class="text-xs text-slate-400">${t('reports.preview')}</span>
-      </div>`;
+
+        <div class="doc-meta">
+          ${metaItems.map(m => `
+            <div class="doc-meta-item">
+              <span class="doc-meta-label">${m.label}</span>
+              <span class="doc-meta-value">${m.value || '—'}</span>
+            </div>`).join('')}
+        </div>`;
+
     for (const section of model.sections) {
       if (!section.rows || !section.rows.length) continue;
-      const head = section.columns.map(c=>`<th class="px-3 py-2 text-xs font-semibold text-slate-500 uppercase whitespace-nowrap" style="${c.align==='right'?'text-align:right;':c.align==='center'?'text-align:center;':''}">${c.label}</th>`).join('');
-      const body = section.rows.slice(0, 50).map(row => {
-        const cells = section.columns.map(c=>{
+      const isOverview = section.columns.length === 2 && section.columns[0].key === 'metric';
+
+      const head = section.columns.map(c => {
+        const cls = c.align === 'right' ? 'num' : c.align === 'center' ? 'center' : '';
+        return `<th class="${cls}">${c.label}</th>`;
+      }).join('');
+
+      const body = section.rows.slice(0, 100).map(row => {
+        const cells = section.columns.map(c => {
           const v = row[c.key];
           let disp = (v === null || v === undefined || v === '') ? '—' : (c.format === 'rwf' ? formatRWF(v) : String(v));
-          const align = c.align === 'right' ? 'text-align:right;' : c.align === 'center' ? 'text-align:center;' : '';
-          return `<td class="px-3 py-1.5 text-sm text-slate-700 whitespace-nowrap" style="${align}">${disp}</td>`;
+          const cls = c.align === 'right' ? 'num' : c.align === 'center' ? 'center' : '';
+          return `<td class="${cls}">${disp}</td>`;
         }).join('');
-        return `<tr class="border-b border-slate-100">${cells}</tr>`;
+        return `<tr>${cells}</tr>`;
       }).join('');
+
       let footHtml = '';
       if (section.totals && Object.keys(section.totals).length) {
-        const cells = section.columns.map((c,i)=>{
-          if (i === 0) return `<td class="px-3 py-2 text-sm font-bold text-slate-800">TOTAL</td>`;
+        const cells = section.columns.map((c, i) => {
+          if (i === 0) return `<td>TOTAL</td>`;
           const v = section.totals[c.key];
+          const cls = c.align === 'right' ? 'num' : c.align === 'center' ? 'center' : '';
           if (v !== undefined && v !== 0) {
             const disp = c.format === 'rwf' ? formatRWF(v) : String(v);
-            const align = c.align === 'right' ? 'text-align:right;' : c.align === 'center' ? 'text-align:center;' : '';
-            return `<td class="px-3 py-2 text-sm font-bold text-emerald-700" style="${align}">${disp}</td>`;
+            return `<td class="${cls}">${disp}</td>`;
           }
-          return `<td></td>`;
+          return `<td class="${cls}"></td>`;
         }).join('');
-        footHtml = `<tfoot><tr class="bg-emerald-50">${cells}</tr></tfoot>`;
+        footHtml = `<tfoot><tr>${cells}</tr></tfoot>`;
       }
-      html += `<div class="border-b border-slate-100">
-        <div class="px-4 py-2 bg-emerald-50/50"><h4 class="text-xs font-bold text-emerald-700 uppercase tracking-wide">${section.title}</h4></div>
-        <div class="overflow-x-auto"><table class="w-full">
-          <thead class="bg-slate-50"><tr>${head}</tr></thead>
-          <tbody>${body}</tbody>
-          ${footHtml}
-        </table></div>
-        ${section.rows.length > 50 ? `<div class="px-4 py-2 text-xs text-slate-400">Showing first 50 of ${section.rows.length} rows in preview. Full data will be included in PDF/Excel/Print.</div>` : ''}
-      </div>`;
+
+      html += `
+        <div class="report-section">
+          <div class="report-section-title">${section.title}</div>
+          <table class="doc-table ${isOverview ? 'overview-table' : ''}">
+            <thead><tr>${head}</tr></thead>
+            <tbody>${body}</tbody>
+            ${footHtml}
+          </table>
+          ${section.rows.length > 100 ? `<div style="padding:8px 14px;font-size:10px;color:#9ca3af;background:#f8fafc;border-top:1px solid #f1f5f9">Showing first 100 of ${section.rows.length} rows in preview — full data is included in PDF, Excel and Print.</div>` : ''}
+        </div>`;
     }
+
+    html += `
+        <div class="doc-footer">
+          Generated automatically by <b>${company.name} Management System</b> on ${new Date().toLocaleString()} &nbsp;•&nbsp; © ${new Date().getFullYear()} ${company.name}
+        </div>
+      </div>`;
+
     container.innerHTML = html;
   } catch (err) {
     console.error('Report preview failed:', err);
-    container.innerHTML = `<div class="p-6 text-center text-red-500 text-sm">Unable to load report preview: ${err.message}</div>`;
+    container.innerHTML = `<div class="p-10 text-center text-red-500 text-sm">Unable to load report preview: ${err.message}</div>`;
   }
 }
 
@@ -1801,69 +1878,77 @@ window.handleEditMaterial=async function(e,id){
   e.preventDefault();
   const btn=getFormSubmitBtn(e.target);setButtonLoading(btn,true);
   try{
-    const m=getMaterialById(id);
-    if(!m){showToast(t('common.somethingWentWrong'),'error');setButtonLoading(btn,false);return}
-    const newQty=parseFloat(document.getElementById('em-qty').value)||0;
-    const newCost=parseFloat(document.getElementById('em-cost').value)||0;
+    const newQ=parseFloat(document.getElementById('em-qty').value)||0;
+    const newC=parseFloat(document.getElementById('em-cost').value)||0;
     const notes=document.getElementById('em-notes').value.trim();
-    if(newQty<=0){showToast(t('materials.quantityMustBePositive'),'error');setButtonLoading(btn,false);return}
-    if(newCost<0){showToast(t('materials.unitCostCannotBeNegative'),'error');setButtonLoading(btn,false);return}
-    const oldQty=toNumber(m.quantity_used);
-    const delta=newQty-oldQty;
-    const stockId=m.stock_id;
+    const m=getMaterialById(id);
+    if(!m)throw new Error('Material record not found');
+    const oldQ=toNumber(m.quantity_used);
+    const delta=newQ-oldQ;
+    const siteId=m.site_id;
+    const stockItem = m.stock_id ? stockData.find(s=>s.id===m.stock_id) : getStockByName(siteId, m.name);
     const now=new Date().toISOString();
-    if(stockId&&delta!==0){
-      await runTransaction(db,async(tx)=>{
-        const stockRef=doc(db,'stock',stockId);
-        const stockSnap=await tx.get(stockRef);
-        if(!stockSnap.exists())throw new Error(t('materials.stockNotFound'));
-        const cur=toNumber(stockSnap.data().quantity);
-        // Restoring oldQty then deducting newQty is equivalent to adjusting by -delta
-        const availableForIncrease=cur+oldQty; // max that can be set if increasing usage
-        if(newQty>availableForIncrease)throw new Error(t('materials.insufficientStock'));
-        const newStockQty=cur-delta;
-        if(newStockQty<0)throw new Error(t('materials.insufficientStock'));
-        tx.update(stockRef,{quantity:newStockQty,unit_cost:newCost,updated_at:now});
-        tx.update(doc(db,'materials',id),{quantity_used:newQty,unit_cost:newCost,total_amount:newQty*newCost,notes,updated_at:now});
-        const tRef=doc(collection(db,'stock_transactions'));
-        tx.set(tRef,{
-          site_id:currentSiteId,stock_id:stockId,material_name:m.name||'',
-          transaction_type:'MATERIAL_USAGE_EDITED',quantity:Math.abs(delta),
-          quantity_change:-delta,previous_quantity:cur,new_quantity:newStockQty,
-          unit:m.unit||'units',unit_cost:newCost,total_value:newQty*newCost,
-          batch_number:m.batch_number||'',notes:`Usage edited from ${oldQty} to ${newQty}`,recorded_by:currentUser.uid,created_at:now
-        });
+    if(stockItem && delta!==0){
+      await runTransaction(db, async(tx)=>{
+        const sRef=doc(db,'stock',stockItem.id);
+        const sSnap=await tx.get(sRef);
+        if(sSnap.exists()){
+          const cur=toNumber(sSnap.data().quantity);
+          const newStock=cur-delta;
+          if(newStock<0)throw new Error(t('materials.insufficientStock'));
+          const updatePayload={quantity:newStock,updated_at:now};
+          if(newC>0)updatePayload.unit_cost=newC;
+          tx.update(sRef,updatePayload);
+          const tRef=doc(collection(db,'stock_transactions'));
+          tx.set(tRef,{
+            site_id:siteId, stock_id:stockItem.id, material_name:m.name,
+            transaction_type:'MATERIAL_USAGE_EDITED',
+            quantity:Math.abs(delta), quantity_change:-delta,
+            previous_quantity:cur, new_quantity:newStock,
+            unit:m.unit||getStockUnit(stockItem), unit_cost:newC,
+            notes:`Usage edited from ${oldQ} to ${newQ}`,
+            recorded_by:currentUser.uid, created_at:now
+          });
+        }
+        tx.update(doc(db,'materials',id),{quantity_used:newQ,unit_cost:newC,notes,updated_at:now});
       });
     }else{
-      await updateDoc(doc(db,'materials',id),{quantity_used:newQty,unit_cost:newCost,total_amount:newQty*newCost,notes,updated_at:now});
+      await updateDoc(doc(db,'materials',id),{quantity_used:newQ,unit_cost:newC,notes,updated_at:now});
     }
-    closeModal();showToast(t('common.updatedSuccessfully'),'success');
-  }catch(err){console.error(err);showToast(err.message||t('common.somethingWentWrong'),'error')}
+    closeModal();
+    showToast(t('common.updatedSuccessfully'),'success');
+  }catch(err){
+    console.error('Material edit failed:', err);
+    showToast(err.message||t('common.somethingWentWrong'),'error');
+  }
   finally{setButtonLoading(btn,false)}
 };
 window.deleteMaterial=async function(id){
   if(!confirm(t('common.areYouSure')+' '+t('common.cannotUndo')))return;
   try{
     const m=getMaterialById(id);
-    if(!m){showToast(t('common.somethingWentWrong'),'error');return}
-    const stockId=m.stock_id;
+    if(!m){ await deleteDoc(doc(db,'materials',id)); showToast(t('common.deletedSuccessfully'),'success'); return; }
+    const siteId=m.site_id;
     const qty=toNumber(m.quantity_used);
+    const stockItem = m.stock_id ? stockData.find(s=>s.id===m.stock_id) : getStockByName(siteId, m.name);
     const now=new Date().toISOString();
-    if(stockId&&qty>0){
-      await runTransaction(db,async(tx)=>{
-        const stockRef=doc(db,'stock',stockId);
-        const stockSnap=await tx.get(stockRef);
-        if(stockSnap.exists()){
-          const cur=toNumber(stockSnap.data().quantity);
-          const restored=cur+qty;
-          tx.update(stockRef,{quantity:restored,updated_at:now});
+    if(stockItem && qty>0){
+      await runTransaction(db, async(tx)=>{
+        const sRef=doc(db,'stock',stockItem.id);
+        const sSnap=await tx.get(sRef);
+        if(sSnap.exists()){
+          const cur=toNumber(sSnap.data().quantity);
+          const newStock=cur+qty;
+          tx.update(sRef,{quantity:newStock,updated_at:now});
           const tRef=doc(collection(db,'stock_transactions'));
           tx.set(tRef,{
-            site_id:currentSiteId,stock_id:stockId,material_name:m.name||'',
-            transaction_type:'MATERIAL_USAGE_DELETED',quantity:qty,
-            quantity_change:qty,previous_quantity:cur,new_quantity:restored,
-            unit:m.unit||'units',unit_cost:toNumber(m.unit_cost),total_value:qty*toNumber(m.unit_cost),
-            batch_number:m.batch_number||'',notes:'Material usage deleted — stock restored',recorded_by:currentUser.uid,created_at:now
+            site_id:siteId, stock_id:stockItem.id, material_name:m.name,
+            transaction_type:'MATERIAL_USAGE_DELETED',
+            quantity:qty, quantity_change:qty,
+            previous_quantity:cur, new_quantity:newStock,
+            unit:m.unit||getStockUnit(stockItem), unit_cost:toNumber(m.unit_cost),
+            notes:`Material usage deleted — stock restored`,
+            recorded_by:currentUser.uid, created_at:now
           });
         }
         tx.delete(doc(db,'materials',id));
@@ -1872,7 +1957,10 @@ window.deleteMaterial=async function(id){
       await deleteDoc(doc(db,'materials',id));
     }
     showToast(t('common.deletedSuccessfully'),'success');
-  }catch(err){console.error(err);showToast(err.message||t('common.somethingWentWrong'),'error')}
+  }catch(err){
+    console.error('Material delete failed:', err);
+    showToast(err.message||t('common.somethingWentWrong'),'error');
+  }
 };
 
 function renderRequisitionsList(){
@@ -2026,13 +2114,7 @@ window.viewRequisition=function(id){
 // ============================================================
 function renderDashboard(container){
   const site=assignedSites.find(s=>s.id===currentSiteId);
-  if(!site){
-    container.innerHTML=`<div class="bg-yellow-50 border-l-4 border-yellow-400 p-6 rounded-xl text-yellow-800 max-w-xl mx-auto mt-10">
-      <p class="font-semibold">No site assigned</p>
-      <p class="text-sm mt-1">Your manager account has no construction sites assigned. Please contact the system administrator.</p>
-    </div>`;
-    return;
-  }
+  if(!site){container.innerHTML=`<div class="flex items-center justify-center py-20"><div class="spinner"></div></div>`;return}
   const totalW=siteWorkersData.length;
   const done=progressTasks.filter(t=>t.status==='completed').length,total=progressTasks.length;
   const pct=total?Math.round((done/total)*100):0;
@@ -2433,11 +2515,8 @@ function refreshCurrentSection(){
   if(window._refreshing)return;window._refreshing=true;
   requestAnimationFrame(()=>{
     if(currentUser&&currentSiteId){
-      // Preserve report filters when refreshing reports section
       let savedFilters=null;
-      if(currentSection==='reports'){
-        savedFilters=readReportFilters();
-      }
+      if(currentSection==='reports'){savedFilters=readReportFilters();}
       showSection(currentSection);
       if(currentSection==='reports' && savedFilters){
         const dept=document.getElementById('report-dept');if(dept)dept.value=savedFilters.department;
@@ -2490,7 +2569,7 @@ async function initApp(){
   });
 }
 if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',initApp)}else{initApp()}
-console.log('✅ SHDR Manager Dashboard loaded with 4-type unified reporting system');
+console.log('✅ SHDR Manager Dashboard loaded — professional report format');
 </script>
 </main>
 </body>
