@@ -255,7 +255,24 @@ let _reqFilters={search:'',priority:'all',status:'all',dateFrom:'',dateTo:''};
 // ============================================================
 // HELPERS
 // ============================================================
-function formatDate(v){if(!v)return '—';const d=typeof v==='string'?new Date(v):v;if(isNaN(d.getTime()))return '—';const l={en:'en-US',rw:'rw-RW',fr:'fr-FR'};return new Intl.DateTimeFormat(l[currentLanguage],{year:'numeric',month:'long',day:'numeric'}).format(d)}
+function formatDate(v){
+  if(!v) return '—';
+  let d, dateOnly=false;
+  if(typeof v==='string' && /^\d{4}-\d{2}-\d{2}$/.test(v)){
+    const [y,m,dd]=v.split('-').map(Number);
+    d=new Date(y,m-1,dd);
+    dateOnly=true;
+  } else {
+    d=typeof v==='string'?new Date(v):v;
+  }
+  if(isNaN(d.getTime())) return '—';
+  const months=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  const datePart=`${months[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`;
+  if(dateOnly) return datePart;
+  const hh=String(d.getHours()).padStart(2,'0');
+  const mm=String(d.getMinutes()).padStart(2,'0');
+  return `${datePart}, ${hh}:${mm} PM`;
+}
 function formatDateShort(v){if(!v)return '—';const d=typeof v==='string'?new Date(v):v;if(isNaN(d.getTime()))return '—';return d.toISOString().split('T')[0]}
 function showLoading(s){document.getElementById('global-loading').classList.toggle('hidden',!s)}
 function showError(m){const el=document.getElementById('global-error');el.classList.remove('hidden');el.querySelector('div').textContent=m}
@@ -285,7 +302,7 @@ function safeFilename(s){return String(s||'').replace(/[^\w\-]+/g,'_').replace(/
 // ============================================================
 function getCompanyDetails(){
   return{
-    name:'Sustainable Homes Design Rwanda Ltd',
+    name:'SHDR Ltd',
     address:'KG 11 Avenue, Kimironko, Gasabo District',
     location:'Yussa Plaza, 1st Floor',
     city:'Kigali City, Rwanda',
@@ -326,7 +343,7 @@ function generateReportHTML(title, bodyHTML, meta){
         <img src="${company.logo}" alt="${company.name} Logo" class="company-logo" onerror="this.style.display='none'">
         <div>
           <div class="company-name">${company.name}</div>
-          <div class="company-subtitle">Construction Sites Management System</div>
+          <div class="company-subtitle">Construction Management System</div>
           <div class="company-details">
             ${company.address}<br>${company.location}<br>${company.city}<br>
             <strong>Tel:</strong> ${company.phone}<br><strong>Email:</strong> ${company.email}
@@ -348,7 +365,7 @@ function generateReportHTML(title, bodyHTML, meta){
 }
 
 // ============================================================
-// REPORTS PAGE — 4 report types (Owner-style format)
+// REPORTS PAGE — 4 report types
 // ============================================================
 function renderReports(container){
   const siteOpts = assignedSites.map(s => `<option value="${s.id}">${s.name}</option>`).join('');
@@ -501,7 +518,7 @@ window.exportGeneralReport = (format) => {
   if (!data.length){ alert(t('common.noDataAvailable')); return; }
   const siteLabel = siteId === 'all' ? t('reports.allSites') : (assignedSites.find(s=>s.id===siteId)?.name || 'Site');
   const deptLabel = dept === 'all' ? t('reports.allDepartments') : dept.charAt(0).toUpperCase()+dept.slice(1);
-  const generatedDate = new Date().toLocaleString();
+  const generatedDate = formatDate(new Date());
   const filename = `SHDR_${siteLabel.replace(/\s/g,'_')}_${deptLabel.replace(/\s/g,'_')}_${new Date().toISOString().slice(0,10)}`;
 
   if (format === 'csv'){
@@ -647,7 +664,7 @@ function updatePayrollReport(){
 window.exportPayrollReport = (format) => {
   const d = buildPayrollDataset();
   const company = getCompanyDetails();
-  const generatedDate = new Date().toLocaleString();
+  const generatedDate = formatDate(new Date());
   const siteName = d.siteId === 'all' ? t('reports.allSites') : (assignedSites.find(s=>s.id===d.siteId)?.name || 'Site');
   const period = d.startDate && d.endDate ? `${formatDate(d.startDate)} — ${formatDate(d.endDate)}` : (d.startDate || d.endDate || 'All Time');
 
@@ -764,7 +781,7 @@ function updateMaterialsPreview(){
 window.exportMaterialsReport = (format) => {
   const d = buildMaterialsDataset();
   const company = getCompanyDetails();
-  const generatedDate = new Date().toLocaleString();
+  const generatedDate = formatDate(new Date());
   const siteName = d.siteId === 'all' ? t('reports.allSites') : (assignedSites.find(s=>s.id===d.siteId)?.name || 'Site');
   const period = d.startDate && d.endDate ? `${formatDate(d.startDate)} — ${formatDate(d.endDate)}` : (d.startDate || d.endDate || 'All Time');
 
@@ -874,7 +891,7 @@ function updateWorkersPreview(){
 window.exportWorkersReport = (format) => {
   const d = buildWorkersDataset();
   const company = getCompanyDetails();
-  const generatedDate = new Date().toLocaleString();
+  const generatedDate = formatDate(new Date());
   const siteName = d.siteId === 'all' ? t('reports.allSites') : (assignedSites.find(s=>s.id===d.siteId)?.name || 'Site');
 
   if (format === 'csv'){
@@ -908,7 +925,7 @@ window.exportWorkersReport = (format) => {
 };
 
 // ============================================================
-// LEGACY: Requisition report & Material Usage report (kept in Materials section)
+// LEGACY: Requisition report & Material Usage report
 // ============================================================
 function drawPdfHeader(doc, company, model){
   const W = doc.internal.pageSize.getWidth();
@@ -932,7 +949,7 @@ function drawPdfHeader(doc, company, model){
   const meta = [
     {label:'Manager', value: model.manager},
     {label:'Site', value: model.site},
-    {label:'Generated', value: new Date().toLocaleString()}
+    {label:'Generated', value: formatDate(new Date())}
   ];
   doc.setFontSize(8.5); doc.setTextColor(40,40,40);
   meta.forEach(m=>{
@@ -947,7 +964,7 @@ function addPdfFooter(doc, company){
   const W = doc.internal.pageSize.getWidth(), H = doc.internal.pageSize.getHeight();
   for (let i=1; i<=pages; i++){
     doc.setPage(i); doc.setFontSize(7.5); doc.setTextColor(120,120,120);
-    doc.text(`Generated by ${company.name} Management System on ${new Date().toLocaleString()}`, W/2, H-8, {align:'center'});
+    doc.text(`Generated by ${company.name} Management System on ${formatDate(new Date())}`, W/2, H-8, {align:'center'});
     doc.text(`Page ${i} of ${pages}`, W-14, H-8, {align:'right'});
   }
 }
@@ -1012,7 +1029,7 @@ window.exportRequisitionsExcel=function(){
     if(!data.length){showToast('No requisitions match the current filters.','error');return}
     const company=getCompanyDetails();
     const header=[
-      [company.name],[company.address+' | '+company.location],[company.city],[`Generated: ${new Date().toLocaleString()}`],
+      [company.name],[company.address+' | '+company.location],[company.city],[`Generated: ${formatDate(new Date())}`],
       ['Report: Material Requisition Report'],[`Site: ${assignedSites.find(s=>s.id===currentSiteId)?.name||'All Sites'}`],[`Manager: ${managerProfile?.full_name||'—'}`],[]
     ];
     const cols=['Req. ID','Req. Date','Required Date','Material','Unit','Qty','Priority','Status','Site','Requested By','Notes'];
@@ -1033,7 +1050,7 @@ window.printRequisitions=function(){
     const company=getCompanyDetails();
     const siteName=assignedSites.find(s=>s.id===currentSiteId)?.name||'All Sites';
     const rows=data.map(r=>`<tr><td>${r.reqId}</td><td>${r.reqDate}</td><td>${r.needDate}</td><td>${r.material}</td><td>${r.unit}</td><td style="text-align:right">${r.qty}</td><td>${r.priority}</td><td>${r.status}</td><td>${r.site}</td><td>${r.reqBy}</td><td>${r.notes}</td></tr>`).join('');
-    const html=`<!DOCTYPE html><html><head><title>Material Requisition Report</title><style>*{box-sizing:border-box}body{font-family:Arial,sans-serif;padding:20px;color:#1f2937}.hdr{display:flex;justify-content:space-between;border-bottom:3px solid #059669;padding-bottom:12px;margin-bottom:16px}.brand h1{color:#059669;font-size:20px;margin:0}.brand p{font-size:11px;color:#555;margin:2px 0}.title{text-align:right}.title h2{margin:0;font-size:16px}.title p{margin:4px 0 0;font-size:10px;color:#666}.meta{background:#f0fdf4;border:1px solid #bbf7d0;border-radius:6px;padding:10px;font-size:11px;margin-bottom:14px}.meta b{color:#065f46}table{width:100%;border-collapse:collapse;font-size:10px}th{background:#059669;color:#fff;padding:6px;text-align:left}td{padding:5px;border:1px solid #e5e7eb}tr:nth-child(even) td{background:#f9fafb}.footer{margin-top:20px;padding-top:8px;border-top:1px solid #ccc;text-align:center;font-size:10px;color:#666}@media print{body{padding:10px}}</style></head><body><div class="hdr"><div class="brand"><h1>${company.name}</h1><p>${company.address}</p><p>${company.location} | ${company.city}</p><p>Tel: ${company.phone} | ${company.email}</p></div><div class="title"><h2>Material Requisition Report</h2><p>Official Company Report</p></div></div><div class="meta"><b>Site:</b> ${siteName} &nbsp;|&nbsp; <b>Manager:</b> ${managerProfile?.full_name||'—'} &nbsp;|&nbsp; <b>Generated:</b> ${new Date().toLocaleString()} &nbsp;|&nbsp; <b>Rows:</b> ${data.length}</div><table><thead><tr><th>Req. ID</th><th>Req. Date</th><th>Required</th><th>Material</th><th>Unit</th><th>Qty</th><th>Priority</th><th>Status</th><th>Site</th><th>Requested By</th><th>Notes</th></tr></thead><tbody>${rows}</tbody></table><div class="footer">Generated by ${company.name} Management System on ${new Date().toLocaleString()}</div></body></html>`;
+    const html=`<!DOCTYPE html><html><head><title>Material Requisition Report</title><style>*{box-sizing:border-box}body{font-family:Arial,sans-serif;padding:20px;color:#1f2937}.hdr{display:flex;justify-content:space-between;border-bottom:3px solid #059669;padding-bottom:12px;margin-bottom:16px}.brand h1{color:#059669;font-size:20px;margin:0}.brand p{font-size:11px;color:#555;margin:2px 0}.title{text-align:right}.title h2{margin:0;font-size:16px}.title p{margin:4px 0 0;font-size:10px;color:#666}.meta{background:#f0fdf4;border:1px solid #bbf7d0;border-radius:6px;padding:10px;font-size:11px;margin-bottom:14px}.meta b{color:#065f46}table{width:100%;border-collapse:collapse;font-size:10px}th{background:#059669;color:#fff;padding:6px;text-align:left}td{padding:5px;border:1px solid #e5e7eb}tr:nth-child(even) td{background:#f9fafb}.footer{margin-top:20px;padding-top:8px;border-top:1px solid #ccc;text-align:center;font-size:10px;color:#666}@media print{body{padding:10px}}</style></head><body><div class="hdr"><div class="brand"><h1>${company.name}</h1><p>${company.address}</p><p>${company.location} | ${company.city}</p><p>Tel: ${company.phone} | ${company.email}</p></div><div class="title"><h2>Material Requisition Report</h2><p>Official Company Report</p></div></div><div class="meta"><b>Site:</b> ${siteName} &nbsp;|&nbsp; <b>Manager:</b> ${managerProfile?.full_name||'—'} &nbsp;|&nbsp; <b>Generated:</b> ${formatDate(new Date())} &nbsp;|&nbsp; <b>Rows:</b> ${data.length}</div><table><thead><tr><th>Req. ID</th><th>Req. Date</th><th>Required</th><th>Material</th><th>Unit</th><th>Qty</th><th>Priority</th><th>Status</th><th>Site</th><th>Requested By</th><th>Notes</th></tr></thead><tbody>${rows}</tbody></table><div class="footer">Generated by ${company.name} Management System on ${formatDate(new Date())}</div></body></html>`;
     const w=window.open('','_blank');
     if(!w){showToast('Please allow popups to print.','error');return}
     w.document.write(html);w.document.close();
@@ -1067,7 +1084,7 @@ window.exportMaterialUsageExcel=function(){
     if(!data.length){showToast('No material usage records.','error');return}
     const company=getCompanyDetails();
     const total=data.reduce((s,m)=>s+calculateTotal(m.quantity_used||0,m.unit_cost||0),0);
-    const hdr=[[company.name],[company.address],[`Generated: ${new Date().toLocaleString()}`],['Material Usage Report'],[`Site: ${assignedSites.find(s=>s.id===currentSiteId)?.name||'—'}`],[`Manager: ${managerProfile?.full_name||'—'}`],[`Total Value: ${formatRWF(total)}`],[]];
+    const hdr=[[company.name],[company.address],[`Generated: ${formatDate(new Date())}`],['Material Usage Report'],[`Site: ${assignedSites.find(s=>s.id===currentSiteId)?.name||'—'}`],[`Manager: ${managerProfile?.full_name||'—'}`],[`Total Value: ${formatRWF(total)}`],[]];
     const cols=['Date','Material','Quantity','Unit','Unit Cost','Total','Batch','Notes'];
     const rows=data.map(m=>[formatDateShort(m.date_used||m.created_at),m.name||'',Number(m.quantity_used)||0,m.unit||'',Number(m.unit_cost)||0,calculateTotal(m.quantity_used||0,m.unit_cost||0),m.batch_number||'',m.notes||'']);
     const ws=XLSX.utils.aoa_to_sheet([...hdr,cols,...rows]);
@@ -1085,7 +1102,7 @@ window.printMaterialUsage=function(){
     const siteName=assignedSites.find(s=>s.id===currentSiteId)?.name||'—';
     const total=data.reduce((s,m)=>s+calculateTotal(m.quantity_used||0,m.unit_cost||0),0);
     const rows=data.map(m=>`<tr><td>${formatDateShort(m.date_used||m.created_at)}</td><td>${m.name||''}</td><td style="text-align:right">${toNumber(m.quantity_used)} ${m.unit||''}</td><td style="text-align:right">${formatRWF(m.unit_cost||0)}</td><td style="text-align:right">${formatRWF(calculateTotal(m.quantity_used||0,m.unit_cost||0))}</td><td>${m.batch_number||'—'}</td><td>${m.notes||''}</td></tr>`).join('');
-    const html=`<!DOCTYPE html><html><head><title>Material Usage Report</title><style>body{font-family:Arial;padding:20px}.hdr{display:flex;justify-content:space-between;border-bottom:3px solid #059669;padding-bottom:12px;margin-bottom:16px}.brand h1{color:#059669;font-size:20px;margin:0}.brand p{font-size:11px;color:#555;margin:2px 0}.title h2{margin:0;font-size:16px}.meta{background:#f0fdf4;border:1px solid #bbf7d0;border-radius:6px;padding:10px;font-size:11px;margin-bottom:14px}table{width:100%;border-collapse:collapse;font-size:11px}th{background:#059669;color:#fff;padding:6px}td{padding:5px;border:1px solid #e5e7eb}tfoot td{background:#ecfdf5;font-weight:bold}.footer{margin-top:20px;text-align:center;font-size:10px;color:#666}</style></head><body><div class="hdr"><div class="brand"><h1>${company.name}</h1><p>${company.address}</p><p>${company.location} | ${company.city}</p></div><div class="title"><h2>Material Usage Report</h2></div></div><div class="meta"><b>Site:</b> ${siteName} | <b>Manager:</b> ${managerProfile?.full_name||'—'} | <b>Generated:</b> ${new Date().toLocaleString()} | <b>Records:</b> ${data.length}</div><table><thead><tr><th>Date</th><th>Material</th><th>Qty</th><th>Unit Cost</th><th>Total</th><th>Batch</th><th>Notes</th></tr></thead><tbody>${rows}</tbody><tfoot><tr><td colspan="4">Total</td><td colspan="3">${formatRWF(total)}</td></tr></tfoot></table><div class="footer">Generated by ${company.name} Management System on ${new Date().toLocaleString()}</div></body></html>`;
+    const html=`<!DOCTYPE html><html><head><title>Material Usage Report</title><style>body{font-family:Arial;padding:20px}.hdr{display:flex;justify-content:space-between;border-bottom:3px solid #059669;padding-bottom:12px;margin-bottom:16px}.brand h1{color:#059669;font-size:20px;margin:0}.brand p{font-size:11px;color:#555;margin:2px 0}.title h2{margin:0;font-size:16px}.meta{background:#f0fdf4;border:1px solid #bbf7d0;border-radius:6px;padding:10px;font-size:11px;margin-bottom:14px}table{width:100%;border-collapse:collapse;font-size:11px}th{background:#059669;color:#fff;padding:6px}td{padding:5px;border:1px solid #e5e7eb}tfoot td{background:#ecfdf5;font-weight:bold}.footer{margin-top:20px;text-align:center;font-size:10px;color:#666}</style></head><body><div class="hdr"><div class="brand"><h1>${company.name}</h1><p>${company.address}</p><p>${company.location} | ${company.city}</p></div><div class="title"><h2>Material Usage Report</h2></div></div><div class="meta"><b>Site:</b> ${siteName} | <b>Manager:</b> ${managerProfile?.full_name||'—'} | <b>Generated:</b> ${formatDate(new Date())} | <b>Records:</b> ${data.length}</div><table><thead><tr><th>Date</th><th>Material</th><th>Qty</th><th>Unit Cost</th><th>Total</th><th>Batch</th><th>Notes</th></tr></thead><tbody>${rows}</tbody><tfoot><tr><td colspan="4">Total</td><td colspan="3">${formatRWF(total)}</td></tr></tfoot></table><div class="footer">Generated by ${company.name} Management System on ${formatDate(new Date())}</div></body></html>`;
     const w=window.open('','_blank');if(!w){showToast('Please allow popups to print.','error');return}
     w.document.write(html);w.document.close();w.onload=()=>setTimeout(()=>{w.focus();w.print();showToast('Print dialog opened.','success')},400);
   }catch(err){console.error(err);showToast('Unable to open print dialog.','error')}
@@ -1269,7 +1286,7 @@ window.submitUsageBatch=async function(e){
 // ============================================================
 window.openAddWorkerModal=function(){
   _workerPhotoFile=null;
-  openModal(''+t('workers.addWorker'),`
+  openModal('👷 '+t('workers.addWorker'),`
     <form onsubmit="handleAddWorker(event)" class="space-y-4">
       <div><label class="block text-sm font-medium mb-1">${t('workers.fullName')} *</label><input class="w-full border rounded-lg p-3" id="worker-name" required></div>
       <div><label class="block text-sm font-medium mb-1">${t('workers.role')} *</label><input class="w-full border rounded-lg p-3" id="worker-role" required></div>
@@ -1335,7 +1352,7 @@ window.editWorker=function(id){
   const w=siteWorkersData.find(x=>x.id===id);if(!w)return;
   _workerEditPhotoFile=null;
   const cur=w.image||'';
-  openModal(''+t('common.edit'),`
+  openModal('✏️ '+t('common.edit'),`
     <form onsubmit="handleEditWorker(event,'${id}')" class="space-y-4">
       <input class="w-full border rounded-lg p-3" id="ew-name" value="${w.name}" required>
       <input class="w-full border rounded-lg p-3" id="ew-role" value="${w.role||''}" required>
@@ -1440,7 +1457,7 @@ function renderMaterialsList(){
   let h='';
   sorted.forEach(d=>{
     const list=grouped[d];
-    const disp=d!=='unknown'?formatDate(d+'T00:00:00'):'Unknown Date';
+    const disp=d!=='unknown'?formatDate(d):'Unknown Date';
     h+=`<div class="mb-6"><h3 class="font-bold text-sm text-slate-700 mb-3 flex items-center gap-2"><iconify-icon icon="material-symbols:calendar-month" class="text-emerald-500"></iconify-icon>${disp}</h3><div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">`;
     list.forEach(m=>{
       const q=toNumber(m.quantity_used),uc=toNumber(m.unit_cost),tot=q*uc;
@@ -2163,7 +2180,7 @@ async function initApp(){
   });
 }
 if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',initApp)}else{initApp()}
-console.log('✅ SHDR Manager Dashboard — Owner-style reports with real Material Symbols icons');
+console.log('✅ SHDR Manager Dashboard — date format: September 24, 2026, 18:33 PM');
 </script>
 </main>
 </body>
