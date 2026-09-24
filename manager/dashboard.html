@@ -93,38 +93,6 @@ body{background:#f8fafc}
 .img-preview-wrap img{max-width:100%;max-height:220px;border-radius:12px;object-fit:cover;border:1px solid #e2e8f0}
 .img-preview-wrap .remove-img-btn{position:absolute;top:6px;right:6px;background:rgba(220,38,38,.9);color:#fff;border:none;border-radius:50%;width:30px;height:30px;display:flex;align-items:center;justify-content:center;cursor:pointer}
 @media (max-width:640px){.usage-material-grid{grid-template-columns:repeat(auto-fill,minmax(100px,1fr))}.usage-material-grid .mat-card{padding:8px 4px;min-height:70px}}
-
-/* ── Professional Report Document ── */
-.report-doc{background:#fff;padding:36px 40px;color:#111827;font-size:12px}
-.report-doc .doc-header{display:flex;justify-content:space-between;align-items:flex-start;gap:24px;padding-bottom:20px;border-bottom:3px solid #059669;margin-bottom:24px}
-.report-doc .doc-brand{display:flex;gap:16px;align-items:center}
-.report-doc .doc-brand img{width:58px;height:58px;object-fit:contain}
-.report-doc .doc-brand-name{font-size:22px;font-weight:800;color:#059669;letter-spacing:-.4px;line-height:1.1}
-.report-doc .doc-brand-sub{font-size:10px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:1.2px;margin-top:2px}
-.report-doc .doc-brand-detail{font-size:11px;color:#4b5563;line-height:1.55;margin-top:6px}
-.report-doc .doc-title-block{text-align:right;flex-shrink:0}
-.report-doc .doc-title{font-size:15px;font-weight:800;color:#111827;text-transform:uppercase;letter-spacing:.8px;line-height:1.2}
-.report-doc .doc-title-sub{font-size:9.5px;color:#9ca3af;text-transform:uppercase;letter-spacing:1.8px;margin-top:6px;font-weight:600}
-.report-doc .doc-meta{display:grid;grid-template-columns:1fr 1fr;gap:10px 40px;background:#f0fdf4;border-left:4px solid #059669;border-radius:0 8px 8px 0;padding:16px 22px;margin-bottom:28px}
-.report-doc .doc-meta-item{display:flex;font-size:11.5px;line-height:1.4}
-.report-doc .doc-meta-label{font-weight:700;color:#065f46;min-width:118px;flex-shrink:0}
-.report-doc .doc-meta-value{color:#1f2937;font-weight:500}
-.report-doc .report-section{margin-bottom:30px}
-.report-doc .report-section-title{font-size:11px;font-weight:800;color:#059669;text-transform:uppercase;letter-spacing:1.6px;padding-bottom:8px;border-bottom:2px solid #d1fae5;margin-bottom:0}
-.report-doc table.doc-table{width:100%;border-collapse:collapse;font-size:11.5px;table-layout:auto}
-.report-doc .doc-table thead th{background:#f8fafc;color:#374151;font-weight:700;font-size:10px;text-transform:uppercase;letter-spacing:.7px;padding:11px 14px;text-align:left;border-bottom:2px solid #e5e7eb;white-space:nowrap}
-.report-doc .doc-table tbody td{padding:10px 14px;border-bottom:1px solid #f1f5f9;color:#1f2937;vertical-align:top;line-height:1.5}
-.report-doc .doc-table tbody tr:nth-child(even) td{background:#fafbfc}
-.report-doc .doc-table tbody tr:last-child td{border-bottom:1px solid #e5e7eb}
-.report-doc .doc-table tfoot td{background:#ecfdf5;font-weight:800;color:#065f46;padding:11px 14px;border-top:2px solid #059669;font-size:11px;text-transform:uppercase;letter-spacing:.5px}
-.report-doc .doc-table .num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
-.report-doc .doc-table .center{text-align:center}
-.report-doc .overview-table{table-layout:fixed}
-.report-doc .overview-table thead th:first-child{width:32%}
-.report-doc .overview-table tbody td:first-child{font-weight:700;color:#4b5563}
-.report-doc .overview-table tbody td:last-child{color:#111827}
-.report-doc .doc-footer{margin-top:36px;padding-top:14px;border-top:1px solid #e5e7eb;font-size:9.5px;color:#9ca3af;text-align:center;letter-spacing:.4px}
-.report-doc .doc-footer b{color:#6b7280;font-weight:700}
 </style>
 </head>
 <body class="min-h-screen flex">
@@ -219,33 +187,33 @@ body{background:#f8fafc}
 // ============================================================
 const translations={
 en:{navigation:{managerPanel:"Manager's Panel",dashboard:"Dashboard",materials:"Materials",stock:"Stock",workers:"Workers",progress:"Progress",reports:"Reports",gallery:"Gallery",settings:"Settings",logout:"Sign Out"},
-common:{save:"Save",cancel:"Cancel",close:"Close",add:"Add",edit:"Edit",delete:"Delete",view:"View",upload:"Upload",search:"Search",loading:"Loading...",areYouSure:"Are you sure?",cannotUndo:"This action cannot be undone",savedSuccessfully:"Saved successfully",updatedSuccessfully:"Updated successfully",deletedSuccessfully:"Deleted successfully",somethingWentWrong:"Something went wrong",noDataAvailable:"No data available",requiredField:"Required field",invalidValue:"Invalid value",selectAll:"Select All",today:"Today",remove:"Remove",print:"Print",download:"Download",export:"Export",filter:"Filter",clear:"Clear"},
+common:{save:"Save",cancel:"Cancel",close:"Close",add:"Add",edit:"Edit",delete:"Delete",view:"View",upload:"Upload",search:"Search",loading:"Loading...",areYouSure:"Are you sure?",cannotUndo:"This action cannot be undone",savedSuccessfully:"Saved successfully",updatedSuccessfully:"Updated successfully",deletedSuccessfully:"Deleted successfully",somethingWentWrong:"Something went wrong",noDataAvailable:"No data available",requiredField:"Required field",invalidValue:"Invalid value",selectAll:"Select All",today:"Today",remove:"Remove",print:"Print",download:"Download",export:"Export",filter:"Filter",clear:"Clear",accessDenied:"Access denied"},
 dashboard:{siteStatus:"Status",siteManager:"Manager",workersOnSite:"Workers On Site",progress:"Progress",recentMaterials:"Recent Materials",pendingTasks:"Pending Tasks"},
-materials:{title:"Materials Used",recordUsage:"Record Usage",editMaterial:"Edit Material",materialName:"Material Name",quantityUsed:"Qty Used",unitCost:"Unit Cost",totalAmount:"Total Amount",noMaterials:"No materials recorded yet.",requisitions:"Requisitions",newRequisition:"+ New Requisition",requested:"Requested",supplied:"Supplied",remaining:"Remaining",reqNumber:"Req. ID",site:"Site",requestedBy:"Requested By",requestDate:"Date Requested",requiredDate:"Required Date",priority:"Priority",status:"Status",actions:"Actions",pending:"Pending",urgent:"Urgent",approved:"Approved",partiallySupplied:"Partially Supplied",suppliedStatus:"Supplied",normal:"Normal",createRequisition:"New Material Requisition",submitRequisition:"Submit Requisition",notes:"Notes",material:"Material",available:"Available",requestedQty:"Requested Qty",unit:"Unit",noRequisitions:"No requisitions found.",batchMaterialUsage:"Batch Material Usage",dateUsed:"Date *",selectMaterials:"Select Materials to Add",selectMaterialsHint:"Click to select / deselect materials",batchTotal:"Total Usage Amount",saveUsageBatch:"Save Usage Batch",selectAtLeastOneMaterial:"Please select at least one material with quantity > 0.",quantityMustBePositive:"Quantity must be > 0",unitCostCannotBeNegative:"Unit cost cannot be negative",insufficientStock:"Insufficient stock",stockNotFound:"Stock item not found",batchSaved:"Usage batch saved successfully!",currentStock:"Current Stock",originalUsage:"Original Usage",restoredStock:"Restored Stock",newTotal:"New Total",maxAvailable:"Maximum available",quantityExceedsAvailable:"Quantity exceeds available stock",materialItems:"Material Items",materials:"materials",usagePhoto:"Material Usage Photo (Optional)",usagePhotoHint:"Take or select a photo of the materials used at the site",noPhoto:"No photo attached",search:"Search requisitions...",allPriorities:"All Priorities",allStatuses:"All Statuses",clearFilters:"Clear Filters",printReport:"Print Report",downloadPDF:"Download PDF",exportExcel:"Export Excel",requisitionReport:"Material Requisition Report",showingRequisitions:"showing requisitions"},
-stock:{title:"Stock Management",receiveStock:"Receive Stock",editStock:"Edit Stock",stockHistory:"Stock History",quantity:"Quantity",minimumStock:"Minimum Stock",stockValue:"Stock Value",lastUpdated:"Last Updated",notes:"Notes",normal:"Normal",lowStock:"Low Stock",outOfStock:"Out of Stock",unit:"Unit",unitCost:"Unit Cost",transactionReceived:"Stock received",transactionUsed:"Material used",transactionEdited:"Material usage edited",transactionDeleted:"Material usage deleted",transactionAdjusted:"Stock adjusted",currentStock:"Current Stock"},
-workers:{title:"Workers",addWorker:"Add New Worker",view:"All Workers",recordAttendance:"Record Attendance",fullName:"Full Name",role:"Role",paymentType:"Payment Type",dailyRate:"Daily Rate",monthlySalary:"Monthly Salary",salary:"Salary",phone:"Phone",photo:"Worker Photo (Optional)",photoHint:"Take or select a photo of the worker",saveWorker:"Save Worker",workerDetails:"Worker Details",noWorkers:"No workers added yet.",workers:"Workers",viewDetails:"View Details",attendanceLogs:"Attendance Logs"},
+materials:{title:"Materials Used",recordUsage:"Record Usage",editMaterial:"Edit Material",materialName:"Material Name",quantityUsed:"Qty Used",unitCost:"Unit Cost",totalAmount:"Total Amount",noMaterials:"No materials recorded yet.",requisitions:"Requisitions",newRequisition:"+ New Requisition",requested:"Requested",supplied:"Supplied",remaining:"Remaining",reqNumber:"Req. ID",site:"Site",requestedBy:"Requested By",requestDate:"Date Requested",requiredDate:"Required Date",priority:"Priority",status:"Status",actions:"Actions",pending:"Pending",urgent:"Urgent",approved:"Approved",partiallySupplied:"Partially Supplied",suppliedStatus:"Supplied",normal:"Normal",createRequisition:"New Material Requisition",submitRequisition:"Submit Requisition",notes:"Notes",material:"Material",available:"Available",requestedQty:"Requested Qty",unit:"Unit",noRequisitions:"No requisitions found.",batchMaterialUsage:"Batch Material Usage",dateUsed:"Date *",selectMaterials:"Select Materials to Add",selectMaterialsHint:"Click to select / deselect materials",batchTotal:"Total Usage Amount",saveUsageBatch:"Save Usage Batch",selectAtLeastOneMaterial:"Please select at least one material with quantity > 0.",quantityMustBePositive:"Quantity must be > 0",unitCostCannotBeNegative:"Unit cost cannot be negative",insufficientStock:"Insufficient stock",stockNotFound:"Stock item not found",batchSaved:"Usage batch saved successfully!",currentStock:"Current Stock",materialItems:"Material Items",materials:"materials",usagePhoto:"Material Usage Photo (Optional)",usagePhotoHint:"Take or select a photo of the materials used at the site",search:"Search requisitions...",allPriorities:"All Priorities",allStatuses:"All Statuses",clearFilters:"Clear Filters"},
+stock:{title:"Stock Management",receiveStock:"Receive Stock",editStock:"Edit Stock",stockHistory:"Stock History",quantity:"Quantity",minimumStock:"Minimum Stock",stockValue:"Stock Value",lastUpdated:"Last Updated",notes:"Notes",normal:"Normal",lowStock:"Low Stock",outOfStock:"Out of Stock",unit:"Unit",unitCost:"Unit Cost",currentStock:"Current Stock"},
+workers:{title:"Workers",addWorker:"Add New Worker",view:"All Workers",recordAttendance:"Record Attendance",fullName:"Full Name",role:"Role",paymentType:"Payment Type",dailyRate:"Daily Rate",monthlySalary:"Monthly Salary",salary:"Salary",phone:"Phone",photo:"Worker Photo (Optional)",photoHint:"Take or select a photo of the worker",saveWorker:"Save Worker",workerDetails:"Worker Details",noWorkers:"No workers added yet.",workers:"Workers",viewDetails:"View Details",attendanceLogs:"Attendance Logs",position:"Position",active:"Active"},
 progress:{title:"Progress Tasks",task:"Task",start:"Start",end:"End",status:"Status",pending:"Pending",completed:"Completed",markCompleted:"Mark as completed",noTasks:"No tasks assigned."},
-reports:{title:"Generate Reports",general:"General",workerPayroll:"Worker Payroll",materials:"Materials",workers:"Workers",exportCSV:"Export CSV",printPDF:"Print / PDF",department:"Department",allDepartments:"All Departments",startDate:"Start Date",endDate:"End Date",searchWorker:"Search worker...",totalWorkers:"Total Workers",workerDays:"Worker-Days",totalPayroll:"Total Payroll",avgDaily:"Avg. Daily Labor Cost",materialUsageReport:"Material Usage Report",paymentStatus:"Payment Status",allPaymentStatus:"All Payment Statuses",paid:"Paid",unpaid:"Unpaid",partial:"Partial",generatePDF:"Generate PDF",generateExcel:"Generate Excel",printReport:"Print Report",preview:"Preview",noPreviewData:"No data available for the current filters.",reportDescription:"Select a report type and filters, then choose your output format.",managerReport:"General Manager Report",payrollReport:"Worker Payroll Report",materialsReport:"Materials Report",workersReport:"Workers Report"},
+reports:{title:"Generate Reports",general:"General",workerPayroll:"Worker Payroll",materials:"Materials",workers:"Workers",selectSite:"Select Site",allSites:"All Sites",department:"Department",allDepartments:"All Departments",startDate:"Start Date",endDate:"End Date",exportCSV:"Export CSV",printPDF:"Print / PDF",noAttendance:"No attendance records found.",info:"Please ensure attendance has been recorded for the workers.",searchWorker:"Search worker...",position:"Position",allPositions:"All Positions",paymentStatus:"Payment Status",paid:"Paid",unpaid:"Unpaid",totalWorkers:"Total Workers",workerDays:"Worker-Days",totalPayroll:"Total Payroll",avgDaily:"Avg. Daily Labor Cost",worker:"Worker",daysWorked:"Days Worked",dailyRate:"Daily Rate",totalPayable:"Total Payable",total:"Total",generated:"Generated on",reportTitles:{general:"Management Report",payroll:"Workers' Attendance & Payroll Report",materials:"Materials Report",workers:"Workers Report"},labels:{siteName:"Site Name",period:"Period",department:"Department"}},
 gallery:{title:"Site Gallery",uploadImage:"Upload New Image",description:"Description",upload:"Upload",noImages:"No images uploaded yet.",close:"Close"},
 settings:{title:"Settings",profile:"Profile",account:"Account",security:"Security",preferences:"Preferences",profileInfo:"Profile Information",fullName:"Full Name",phone:"Phone Number",email:"Email Address",changePhoto:"Change Photo",removePhoto:"Remove Photo",saveProfile:"Save Profile Changes",accountInfo:"Account Information",accountName:"Account Name",role:"Role",accountStatus:"Account Status",active:"Active",memberSince:"Member Since",changePassword:"Change Password",currentPassword:"Current Password",newPassword:"New Password",confirmPassword:"Confirm New Password",changePassBtn:"Change Password",prefs:"Preferences",language:"Language",currency:"Currency",dateFormat:"Date Format",notifications:"Enable Notifications",savePrefs:"Save Preferences"}},
 rw:{navigation:{managerPanel:"Ipaneli y'umuyobozi",dashboard:"Imbonerahamwe",materials:"Ibikoresho",stock:"Imbuganyuro",workers:"Abakozi",progress:"Ibitekerezo",reports:"Raporo",gallery:"Amafoto",settings:"Igenamiterere",logout:"Sohoka"},
-common:{save:"Bika",cancel:"Hagarika",close:"Funga",add:"Ongeraho",edit:"Hindura",delete:"Siba",view:"Reba",upload:"Ohereza",search:"Shakisha",loading:"Birimo...",areYouSure:"Urabyemeza?",cannotUndo:"Ntibishobora guhindurwa",savedSuccessfully:"Byabitswe",updatedSuccessfully:"Byavuguruwe",deletedSuccessfully:"Byasibwe",somethingWentWrong:"Hari ikitagenze neza",noDataAvailable:"Nta makuru",requiredField:"Birakenewe",invalidValue:"Agaciro katariyo",selectAll:"Hitamo Byose",today:"Uyu Munsi",remove:"Kuraho",print:"Capa",download:"Kuramo",export:"Sohora",filter:"Shungura",clear:"Siba"},
+common:{save:"Bika",cancel:"Hagarika",close:"Funga",add:"Ongeraho",edit:"Hindura",delete:"Siba",view:"Reba",upload:"Ohereza",search:"Shakisha",loading:"Birimo...",areYouSure:"Urabyemeza?",cannotUndo:"Ntibishobora guhindurwa",savedSuccessfully:"Byabitswe",updatedSuccessfully:"Byavuguruwe",deletedSuccessfully:"Byasibwe",somethingWentWrong:"Hari ikitagenze neza",noDataAvailable:"Nta makuru",requiredField:"Birakenewe",invalidValue:"Agaciro katariyo",selectAll:"Hitamo Byose",today:"Uyu Munsi",remove:"Kuraho",print:"Capa",download:"Kuramo",export:"Sohora",filter:"Shungura",clear:"Siba",accessDenied:"Ntabwo wemerewe"},
 dashboard:{siteStatus:"Imiterere",siteManager:"Umuyobozi",workersOnSite:"Abakozi",progress:"Ibitekerezo",recentMaterials:"Ibikoresho bishya",pendingTasks:"Imirimo itegereje"},
-materials:{title:"Ibikoresho Byakoreshejwe",recordUsage:"Andika Gukoresha",editMaterial:"Hindura",materialName:"Izina",quantityUsed:"Umubare",unitCost:"Igiciro",totalAmount:"Amafaranga",noMaterials:"Nta bikoresho.",requisitions:"Ubusabe",newRequisition:"+ Ubusabe Bushya",requested:"Basabwe",supplied:"Byatanzwe",remaining:"Bisigaye",reqNumber:"Nomero",site:"Ukibanza",requestedBy:"Wasabye",requestDate:"Itariki yo Gusaba",requiredDate:"Itariki Ikenewe",priority:"Ubwihutirwa",status:"Imiterere",actions:"Ibikorwa",pending:"Bitegereje",urgent:"Byihutirwa",approved:"Byemewe",partiallySupplied:"Igice",suppliedStatus:"Byatanzwe",normal:"Bisanzwe",createRequisition:"Ubusabe Bushya",submitRequisition:"Ohereza",notes:"Ibisobanuro",material:"Ibikoresho",available:"Biboneka",requestedQty:"Umubare",unit:"Igice",noRequisitions:"Nta busabe.",batchMaterialUsage:"Gukoresha Ibikoresho",dateUsed:"Itariki *",selectMaterials:"Hitamo Ibikoresho",selectMaterialsHint:"Kanda guhitamo",batchTotal:"Igiteranyo",saveUsageBatch:"Bika",selectAtLeastOneMaterial:"Hitamo byibura kimwe",quantityMustBePositive:"Umubare > 0",unitCostCannotBeNegative:"Igiciro ntigishobora kuba nini",insufficientStock:"Imbuganyuro ntihagije",stockNotFound:"Ntiboneka",batchSaved:"Byabitswe!",currentStock:"Ziriho",originalUsage:"Mbere",restoredStock:"Zisubijwe",newTotal:"Gishya",maxAvailable:"Igiteranyo",quantityExceedsAvailable:"Urenze ibiboneka",materialItems:"Ibikoresho",materials:"ibikoresho",usagePhoto:"Ifoto (Bidahatirwa)",usagePhotoHint:"Fata cyangwa hitamo ifoto",noPhoto:"Nta foto",search:"Shakisha...",allPriorities:"Ubwihutirwa bwose",allStatuses:"Imiterere yose",clearFilters:"Siba amashungura",printReport:"Capa",downloadPDF:"Kuramo PDF",exportExcel:"Sohora Excel",requisitionReport:"Raporo y'Ubusabe",showingRequisitions:"ubusabe"},
-stock:{title:"Imbuganyuro",receiveStock:"Akira",editStock:"Hindura",stockHistory:"Amateka",quantity:"Umubare",minimumStock:"Ntarengwa",stockValue:"Agaciro",lastUpdated:"Byavuguruwe",notes:"Ibisobanuro",normal:"Bisanzwe",lowStock:"Nke",outOfStock:"Yashaje",unit:"Igice",unitCost:"Igiciro",transactionReceived:"Byakiriwe",transactionUsed:"Byakoreshejwe",transactionEdited:"Byahinduwe",transactionDeleted:"Byasibwe",transactionAdjusted:"Byahinduwe",currentStock:"Ziriho"},
-workers:{title:"Abakozi",addWorker:"Ongeraho",view:"Bose",recordAttendance:"Andika",fullName:"Amazina",role:"Umwanya",paymentType:"Uburyo",dailyRate:"Umunsi",monthlySalary:"Ukwezi",salary:"Umushahara",phone:"Telefoni",photo:"Ifoto",photoHint:"Fata cyangwa hitamo ifoto",saveWorker:"Bika",workerDetails:"Ibisobanuro",noWorkers:"Nta bakozi.",workers:"abakozi",viewDetails:"Reba",attendanceLogs:"Amateka"},
+materials:{title:"Ibikoresho Byakoreshejwe",recordUsage:"Andika Gukoresha",editMaterial:"Hindura",materialName:"Izina",quantityUsed:"Umubare",unitCost:"Igiciro",totalAmount:"Amafaranga",noMaterials:"Nta bikoresho.",requisitions:"Ubusabe",newRequisition:"+ Ubusabe Bushya",requested:"Basabwe",supplied:"Byatanzwe",remaining:"Bisigaye",reqNumber:"Nomero",site:"Ukibanza",requestedBy:"Wasabye",requestDate:"Itariki yo Gusaba",requiredDate:"Itariki Ikenewe",priority:"Ubwihutirwa",status:"Imiterere",actions:"Ibikorwa",pending:"Bitegereje",urgent:"Byihutirwa",approved:"Byemewe",partiallySupplied:"Igice",suppliedStatus:"Byatanzwe",normal:"Bisanzwe",createRequisition:"Ubusabe Bushya",submitRequisition:"Ohereza",notes:"Ibisobanuro",material:"Ibikoresho",available:"Biboneka",requestedQty:"Umubare",unit:"Igice",noRequisitions:"Nta busabe.",batchMaterialUsage:"Gukoresha Ibikoresho",dateUsed:"Itariki *",selectMaterials:"Hitamo Ibikoresho",selectMaterialsHint:"Kanda guhitamo",batchTotal:"Igiteranyo",saveUsageBatch:"Bika",selectAtLeastOneMaterial:"Hitamo byibura kimwe",quantityMustBePositive:"Umubare > 0",unitCostCannotBeNegative:"Igiciro ntigishobora kuba nini",insufficientStock:"Imbuganyuro ntihagije",stockNotFound:"Ntiboneka",batchSaved:"Byabitswe!",currentStock:"Ziriho",materialItems:"Ibikoresho",materials:"ibikoresho",usagePhoto:"Ifoto (Bidahatirwa)",usagePhotoHint:"Fata cyangwa hitamo ifoto",search:"Shakisha...",allPriorities:"Ubwihutirwa bwose",allStatuses:"Imiterere yose",clearFilters:"Siba amashungura"},
+stock:{title:"Imbuganyuro",receiveStock:"Akira",editStock:"Hindura",stockHistory:"Amateka",quantity:"Umubare",minimumStock:"Ntarengwa",stockValue:"Agaciro",lastUpdated:"Byavuguruwe",notes:"Ibisobanuro",normal:"Bisanzwe",lowStock:"Nke",outOfStock:"Yashaje",unit:"Igice",unitCost:"Igiciro",currentStock:"Ziriho"},
+workers:{title:"Abakozi",addWorker:"Ongeraho",view:"Bose",recordAttendance:"Andika",fullName:"Amazina",role:"Umwanya",paymentType:"Uburyo",dailyRate:"Umunsi",monthlySalary:"Ukwezi",salary:"Umushahara",phone:"Telefoni",photo:"Ifoto",photoHint:"Fata cyangwa hitamo ifoto",saveWorker:"Bika",workerDetails:"Ibisobanuro",noWorkers:"Nta bakozi.",workers:"abakozi",viewDetails:"Reba",attendanceLogs:"Amateka",position:"Umwanya",active:"Bikora"},
 progress:{title:"Imirimo",task:"Umurimo",start:"Tangira",end:"Rangira",status:"Imiterere",pending:"Bitegereje",completed:"Byarangiye",markCompleted:"Rangiza",noTasks:"Nta mirimo."},
-reports:{title:"Raporo",general:"Rusange",workerPayroll:"Umushahara",materials:"Ibikoresho",workers:"Abakozi",exportCSV:"CSV",printPDF:"Capa/PDF",department:"Ishami",allDepartments:"Yose",startDate:"Gutangira",endDate:"Kurangira",searchWorker:"Shakisha...",totalWorkers:"Abakozi",workerDays:"Iminsi",totalPayroll:"Umushahara",avgDaily:"Umunsi",materialUsageReport:"Raporo y'Ibikoresho",paymentStatus:"Imiterere y'ubwishyu",allPaymentStatus:"Byose",paid:"Byishyuwe",unpaid:"Bitishyuwe",partial:"Igice",generatePDF:"Kora PDF",generateExcel:"Kora Excel",printReport:"Capa",preview:"Reba mbere",noPreviewData:"Nta makuru.",reportDescription:"Hitamo ubwoko bwa raporo n'amashungura.",managerReport:"Raporo Rusange",payrollReport:"Raporo y'Umushahara",materialsReport:"Raporo y'Ibikoresho",workersReport:"Raporo y'Abakozi"},
+reports:{title:"Raporo",general:"Rusange",workerPayroll:"Umushahara",materials:"Ibikoresho",workers:"Abakozi",selectSite:"Hitamo Igibanza",allSites:"Ibibanza Byose",department:"Ishami",allDepartments:"Amashami Yose",startDate:"Itariki yo gutangira",endDate:"Itariki yo kurangira",exportCSV:"Sohora CSV",printPDF:"Capa / PDF",noAttendance:"Nta makuru yo kwitaba.",info:"Nyamuneka menya neza ko abakozi banditswe.",searchWorker:"Shakisha umukozi...",position:"Umwanya",allPositions:"Imiryango Yose",paymentStatus:"Imiterere y'ubwishyu",paid:"Byishyuwe",unpaid:"Bitishyuwe",totalWorkers:"Abakozi Bose",workerDays:"Iminsi y'Abakozi",totalPayroll:"Umushahara Wose",avgDaily:"Igiciro cy'umunsi",worker:"Umukozi",daysWorked:"Iminsi Yakozwe",dailyRate:"Umushahara w'umunsi",totalPayable:"Amafaranga Yose",total:"Igiteranyo",generated:"Byakozwe",reportTitles:{general:"Raporo y'Ubutegetsi",payroll:"Raporo y'Abakozi n'Umushahara",materials:"Raporo y'Ibikoresho",workers:"Raporo y'Abakozi"},labels:{siteName:"Izina ry'Igibanza",period:"Igihe",department:"Ishami"}},
 gallery:{title:"Amafoto",uploadImage:"Ohereza Ifoto",description:"Ibisobanuro",upload:"Ohereza",noImages:"Nta mafoto.",close:"Funga"},
 settings:{title:"Igenamiterere",profile:"Umwirondoro",account:"Kontu",security:"Umutekano",preferences:"Amahitamo",profileInfo:"Amakuru bwite",fullName:"Amazina",phone:"Telefoni",email:"Email",changePhoto:"Hindura ifoto",removePhoto:"Kuraho",saveProfile:"Bika",accountInfo:"Kontu",accountName:"Izina",role:"Umwanya",accountStatus:"Imiterere",active:"Bikora",memberSince:"Kuva",changePassword:"Hindura Ijambobanga",currentPassword:"Risanzwe",newPassword:"Rishya",confirmPassword:"Emeza",changePassBtn:"Hindura",prefs:"Amahitamo",language:"Ururimi",currency:"Ifaranga",dateFormat:"Itariki",notifications:"Imenyesha",savePrefs:"Bika"}},
 fr:{navigation:{managerPanel:"Panneau du gestionnaire",dashboard:"Tableau de bord",materials:"Matériaux",stock:"Stock",workers:"Ouvriers",progress:"Progrès",reports:"Rapports",gallery:"Galerie",settings:"Paramètres",logout:"Déconnexion"},
-common:{save:"Enregistrer",cancel:"Annuler",close:"Fermer",add:"Ajouter",edit:"Modifier",delete:"Supprimer",view:"Voir",upload:"Télécharger",search:"Rechercher",loading:"Chargement...",areYouSure:"Êtes-vous sûr ?",cannotUndo:"Action irréversible",savedSuccessfully:"Enregistré",updatedSuccessfully:"Mis à jour",deletedSuccessfully:"Supprimé",somethingWentWrong:"Une erreur s'est produite",noDataAvailable:"Aucune donnée",requiredField:"Champ requis",invalidValue:"Valeur invalide",selectAll:"Tout Sélectionner",today:"Aujourd'hui",remove:"Retirer",print:"Imprimer",download:"Télécharger",export:"Exporter",filter:"Filtrer",clear:"Effacer"},
+common:{save:"Enregistrer",cancel:"Annuler",close:"Fermer",add:"Ajouter",edit:"Modifier",delete:"Supprimer",view:"Voir",upload:"Télécharger",search:"Rechercher",loading:"Chargement...",areYouSure:"Êtes-vous sûr ?",cannotUndo:"Action irréversible",savedSuccessfully:"Enregistré",updatedSuccessfully:"Mis à jour",deletedSuccessfully:"Supprimé",somethingWentWrong:"Une erreur s'est produite",noDataAvailable:"Aucune donnée",requiredField:"Champ requis",invalidValue:"Valeur invalide",selectAll:"Tout Sélectionner",today:"Aujourd'hui",remove:"Retirer",print:"Imprimer",download:"Télécharger",export:"Exporter",filter:"Filtrer",clear:"Effacer",accessDenied:"Accès refusé"},
 dashboard:{siteStatus:"Statut",siteManager:"Gestionnaire",workersOnSite:"Ouvriers",progress:"Progrès",recentMaterials:"Matériaux récents",pendingTasks:"Tâches en attente"},
-materials:{title:"Matériaux utilisés",recordUsage:"Enregistrer",editMaterial:"Modifier",materialName:"Nom",quantityUsed:"Qté",unitCost:"Coût",totalAmount:"Total",noMaterials:"Aucun matériau.",requisitions:"Réquisitions",newRequisition:"+ Nouvelle",requested:"Demandé",supplied:"Fourni",remaining:"Restant",reqNumber:"N°",site:"Chantier",requestedBy:"Demandé par",requestDate:"Date demande",requiredDate:"Date requise",priority:"Priorité",status:"Statut",actions:"Actions",pending:"En attente",urgent:"Urgent",approved:"Approuvé",partiallySupplied:"Partiel",suppliedStatus:"Fourni",normal:"Normal",createRequisition:"Nouvelle Réquisition",submitRequisition:"Soumettre",notes:"Notes",material:"Matériau",available:"Disponible",requestedQty:"Qté demandée",unit:"Unité",noRequisitions:"Aucune réquisition.",batchMaterialUsage:"Utilisation par lot",dateUsed:"Date *",selectMaterials:"Sélectionner",selectMaterialsHint:"Cliquez pour sélectionner",batchTotal:"Montant total",saveUsageBatch:"Enregistrer",selectAtLeastOneMaterial:"Sélectionnez au moins un matériau",quantityMustBePositive:"Quantité > 0",unitCostCannotBeNegative:"Coût non négatif",insufficientStock:"Stock insuffisant",stockNotFound:"Introuvable",batchSaved:"Lot enregistré!",currentStock:"Stock actuel",originalUsage:"Origine",restoredStock:"Restauré",newTotal:"Nouveau total",maxAvailable:"Maximum",quantityExceedsAvailable:"Dépasse le stock",materialItems:"Articles",materials:"matériaux",usagePhoto:"Photo (facultatif)",usagePhotoHint:"Prenez ou sélectionnez une photo",noPhoto:"Aucune photo",search:"Rechercher...",allPriorities:"Toutes priorités",allStatuses:"Tous statuts",clearFilters:"Effacer filtres",printReport:"Imprimer",downloadPDF:"Télécharger PDF",exportExcel:"Exporter Excel",requisitionReport:"Rapport de Réquisition",showingRequisitions:"réquisitions"},
-stock:{title:"Gestion du stock",receiveStock:"Recevoir",editStock:"Modifier",stockHistory:"Historique",quantity:"Quantité",minimumStock:"Stock min",stockValue:"Valeur",lastUpdated:"Mis à jour",notes:"Notes",normal:"Normal",lowStock:"Faible",outOfStock:"Épuisé",unit:"Unité",unitCost:"Coût unitaire",transactionReceived:"Reçu",transactionUsed:"Utilisé",transactionEdited:"Modifié",transactionDeleted:"Supprimé",transactionAdjusted:"Ajusté",currentStock:"Stock actuel"},
-workers:{title:"Ouvriers",addWorker:"Ajouter",view:"Tous",recordAttendance:"Présence",fullName:"Nom",role:"Rôle",paymentType:"Paiement",dailyRate:"Journalier",monthlySalary:"Mensuel",salary:"Salaire",phone:"Téléphone",photo:"Photo",photoHint:"Prenez ou sélectionnez une photo",saveWorker:"Enregistrer",workerDetails:"Détails",noWorkers:"Aucun ouvrier.",workers:"ouvriers",viewDetails:"Voir",attendanceLogs:"Journaux"},
+materials:{title:"Matériaux utilisés",recordUsage:"Enregistrer",editMaterial:"Modifier",materialName:"Nom",quantityUsed:"Qté",unitCost:"Coût",totalAmount:"Total",noMaterials:"Aucun matériau.",requisitions:"Réquisitions",newRequisition:"+ Nouvelle",requested:"Demandé",supplied:"Fourni",remaining:"Restant",reqNumber:"N°",site:"Chantier",requestedBy:"Demandé par",requestDate:"Date demande",requiredDate:"Date requise",priority:"Priorité",status:"Statut",actions:"Actions",pending:"En attente",urgent:"Urgent",approved:"Approuvé",partiallySupplied:"Partiel",suppliedStatus:"Fourni",normal:"Normal",createRequisition:"Nouvelle Réquisition",submitRequisition:"Soumettre",notes:"Notes",material:"Matériau",available:"Disponible",requestedQty:"Qté demandée",unit:"Unité",noRequisitions:"Aucune réquisition.",batchMaterialUsage:"Utilisation par lot",dateUsed:"Date *",selectMaterials:"Sélectionner",selectMaterialsHint:"Cliquez pour sélectionner",batchTotal:"Montant total",saveUsageBatch:"Enregistrer",selectAtLeastOneMaterial:"Sélectionnez au moins un matériau",quantityMustBePositive:"Quantité > 0",unitCostCannotBeNegative:"Coût non négatif",insufficientStock:"Stock insuffisant",stockNotFound:"Introuvable",batchSaved:"Lot enregistré!",currentStock:"Stock actuel",materialItems:"Articles",materials:"matériaux",usagePhoto:"Photo (facultatif)",usagePhotoHint:"Prenez ou sélectionnez une photo",search:"Rechercher...",allPriorities:"Toutes priorités",allStatuses:"Tous statuts",clearFilters:"Effacer filtres"},
+stock:{title:"Gestion du stock",receiveStock:"Recevoir",editStock:"Modifier",stockHistory:"Historique",quantity:"Quantité",minimumStock:"Stock min",stockValue:"Valeur",lastUpdated:"Mis à jour",notes:"Notes",normal:"Normal",lowStock:"Faible",outOfStock:"Épuisé",unit:"Unité",unitCost:"Coût unitaire",currentStock:"Stock actuel"},
+workers:{title:"Ouvriers",addWorker:"Ajouter",view:"Tous",recordAttendance:"Présence",fullName:"Nom",role:"Rôle",paymentType:"Paiement",dailyRate:"Journalier",monthlySalary:"Mensuel",salary:"Salaire",phone:"Téléphone",photo:"Photo",photoHint:"Prenez ou sélectionnez une photo",saveWorker:"Enregistrer",workerDetails:"Détails",noWorkers:"Aucun ouvrier.",workers:"ouvriers",viewDetails:"Voir",attendanceLogs:"Journaux",position:"Poste",active:"Actif"},
 progress:{title:"Tâches",task:"Tâche",start:"Début",end:"Fin",status:"Statut",pending:"En attente",completed:"Terminé",markCompleted:"Marquer",noTasks:"Aucune tâche."},
-reports:{title:"Rapports",general:"Général",workerPayroll:"Paie",materials:"Matériaux",workers:"Ouvriers",exportCSV:"CSV",printPDF:"Imprimer/PDF",department:"Département",allDepartments:"Tous",startDate:"Début",endDate:"Fin",searchWorker:"Rechercher...",totalWorkers:"Total ouvriers",workerDays:"Jours",totalPayroll:"Paie totale",avgDaily:"Moyenne",materialUsageReport:"Rapport matériaux",paymentStatus:"Statut du paiement",allPaymentStatus:"Tous",paid:"Payé",unpaid:"Non payé",partial:"Partiel",generatePDF:"Générer PDF",generateExcel:"Générer Excel",printReport:"Imprimer",preview:"Aperçu",noPreviewData:"Aucune donnée.",reportDescription:"Sélectionnez un type et des filtres.",managerReport:"Rapport Général",payrollReport:"Rapport de Paie",materialsReport:"Rapport Matériaux",workersReport:"Rapport Ouvriers"},
+reports:{title:"Rapports",general:"Général",workerPayroll:"Paie",materials:"Matériaux",workers:"Ouvriers",selectSite:"Sélectionner le site",allSites:"Tous les sites",department:"Département",allDepartments:"Tous",startDate:"Début",endDate:"Fin",exportCSV:"Exporter CSV",printPDF:"Imprimer / PDF",noAttendance:"Aucun enregistrement de présence.",info:"Veuillez vous assurer que la présence a été enregistrée.",searchWorker:"Rechercher...",position:"Poste",allPositions:"Tous les postes",paymentStatus:"Statut du paiement",paid:"Payé",unpaid:"Non payé",totalWorkers:"Total ouvriers",workerDays:"Jours",totalPayroll:"Paie totale",avgDaily:"Moyenne",worker:"Ouvrier",daysWorked:"Jours travaillés",dailyRate:"Taux journalier",totalPayable:"Total à payer",total:"Total",generated:"Généré le",reportTitles:{general:"Rapport de gestion",payroll:"Rapport de présence et paie",materials:"Rapport Matériaux",workers:"Rapport Ouvriers"},labels:{siteName:"Nom du site",period:"Période",department:"Département"}},
 gallery:{title:"Galerie",uploadImage:"Télécharger",description:"Description",upload:"Télécharger",noImages:"Aucune image.",close:"Fermer"},
 settings:{title:"Paramètres",profile:"Profil",account:"Compte",security:"Sécurité",preferences:"Préférences",profileInfo:"Profil",fullName:"Nom",phone:"Téléphone",email:"E-mail",changePhoto:"Changer photo",removePhoto:"Supprimer",saveProfile:"Enregistrer",accountInfo:"Compte",accountName:"Nom",role:"Rôle",accountStatus:"Statut",active:"Actif",memberSince:"Membre depuis",changePassword:"Changer mot de passe",currentPassword:"Actuel",newPassword:"Nouveau",confirmPassword:"Confirmer",changePassBtn:"Changer",prefs:"Préférences",language:"Langue",currency:"Devise",dateFormat:"Format",notifications:"Notifications",savePrefs:"Enregistrer"}}
 };
@@ -283,7 +251,6 @@ let _usagePhotoFile=null;
 let _workerPhotoFile=null;
 let _workerEditPhotoFile=null;
 let _reqFilters={search:'',priority:'all',status:'all',dateFrom:'',dateTo:''};
-let _reportPreviewCache=null;
 
 // ============================================================
 // HELPERS
@@ -311,513 +278,663 @@ function generateBatchNumber(){const y=new Date().getFullYear();const c=material
 function getMaterialIcon(name){const l=String(name).toLowerCase();if(l.includes('cement'))return'🧱';if(l.includes('sand'))return'⏳';if(l.includes('aggregate')||l.includes('gravel'))return'🪨';if(l.includes('brick')||l.includes('clay'))return'🧱';if(l.includes('steel')||l.includes('bar'))return'🔩';if(l.includes('roofing'))return'🏗️';if(l.includes('water'))return'💧';if(l.includes('paint'))return'🎨';if(l.includes('tile'))return'🟦';if(l.includes('timber')||l.includes('wood'))return'🪵';if(l.includes('pvc')||l.includes('pipe'))return'🔧';if(l.includes('nail'))return'📌';if(l.includes('concrete'))return'🧱';if(l.includes('block'))return'🧱';return'📦'}
 function showToast(msg,type='info'){const el=document.getElementById('toast');const i={success:'✅',error:'❌',info:'ℹ️'};el.innerHTML=`<span>${i[type]||'ℹ️'}</span> ${msg}`;el.className='toast '+(type||'info');el.classList.add('show');clearTimeout(el._h);el._h=setTimeout(()=>el.classList.remove('show'),5000)}
 async function uploadImageToImgbb(file){const fd=new FormData();fd.append('image',file);const res=await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`,{method:'POST',body:fd});const j=await res.json();if(!j.success)throw new Error('Image upload failed');return j.data.url}
-function getCompany(){return{name:'SHDR Ltd',address:'KG 11 Avenue, Kimironko, Gasabo District',location:'Yussa Plaza, 1st Floor',city:'Kigali City, Rwanda',phone:'+250 788 474 110',email:'sustainablehomedesign@gmail.com'}}
 function safeFilename(s){return String(s||'').replace(/[^\w\-]+/g,'_').replace(/_+/g,'_').slice(0,120)}
 
 // ============================================================
-// SHDR BASE64 LOGO
+// COMPANY + REPORT HTML (Owner-style)
 // ============================================================
-const SHDR_LOGO_SVG = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" width="240" height="240">'+
-  '<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#10b981"/><stop offset="1" stop-color="#047857"/></linearGradient></defs>'+
-  '<circle cx="120" cy="120" r="115" fill="url(#g)"/>'+
-  '<path d="M58 178 L58 104 L120 52 L182 104 L182 178 Z" fill="#ffffff" opacity="0.18"/>'+
-  '<path d="M58 178 L58 104 L120 52 L120 178 Z" fill="#ffffff" opacity="0.10"/>'+
-  '<text x="120" y="135" font-family="Arial Black, Arial, sans-serif" font-size="52" font-weight="900" fill="#ffffff" text-anchor="middle" letter-spacing="1">SHDR</text>'+
-  '<text x="120" y="172" font-family="Arial, sans-serif" font-size="20" font-weight="700" fill="#ffffff" text-anchor="middle" letter-spacing="4">LTD</text>'+
-  '</svg>';
-const SHDR_LOGO_BASE64 = 'data:image/svg+xml;base64,' + btoa(SHDR_LOGO_SVG);
-let _shdrLogoPngCache = null;
-function loadShdrLogoPng() {
-  if (_shdrLogoPngCache) return Promise.resolve(_shdrLogoPngCache);
-  return new Promise((resolve) => {
-    try {
-      const img = new Image();
-      const svgBlob = new Blob([SHDR_LOGO_SVG], {type:'image/svg+xml;charset=utf-8'});
-      const url = URL.createObjectURL(svgBlob);
-      img.onload = () => {
-        try {
-          const canvas = document.createElement('canvas');
-          canvas.width = 240; canvas.height = 240;
-          const ctx = canvas.getContext('2d');
-          ctx.drawImage(img, 0, 0, 240, 240);
-          URL.revokeObjectURL(url);
-          _shdrLogoPngCache = canvas.toDataURL('image/png');
-          resolve(_shdrLogoPngCache);
-        } catch(e){ console.warn('Logo canvas error:', e); resolve(null); }
-      };
-      img.onerror = () => { URL.revokeObjectURL(url); console.warn('Logo image load failed'); resolve(null); };
-      img.src = url;
-    } catch(e){ console.warn('Logo setup error:', e); resolve(null); }
-  });
+function getCompanyDetails(){
+  return{
+    name:'SHDR Ltd',
+    address:'KG 11 Avenue, Kimironko, Gasabo District',
+    location:'Yussa Plaza, 1st Floor',
+    city:'Kigali City, Rwanda',
+    phone:'+250 788 474 110',
+    email:'sustainablehomedesign@gmail.com',
+    logo:'shdr_logo Background Removed.png'
+  };
+}
+
+function generateReportHTML(title, bodyHTML, meta){
+  const company = getCompanyDetails();
+  const currentYear = new Date().getFullYear();
+  return `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>${title}</title><style>
+    *{box-sizing:border-box}
+    body{font-family:Arial,sans-serif;padding:30px;margin:0;color:#1f2937;background:white}
+    .company-header{display:flex;align-items:center;justify-content:space-between;border-bottom:3px solid #059669;padding-bottom:18px;margin-bottom:20px}
+    .company-left{display:flex;align-items:center;gap:15px}
+    .company-logo{width:75px;height:75px;object-fit:contain;border-radius:8px}
+    .company-name{font-size:25px;font-weight:700;color:#059669;margin-bottom:3px}
+    .company-subtitle{font-size:12px;color:#6b7280;margin-bottom:5px}
+    .company-details{font-size:12px;line-height:1.5;color:#374151}
+    .report-title{text-align:right}
+    .report-title h2{margin:0;font-size:21px;color:#111827}
+    .report-title p{margin:5px 0 0;font-size:11px;color:#6b7280}
+    .report-meta{background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:12px 15px;margin-bottom:20px;font-size:12px;line-height:1.6}
+    .report-meta strong{color:#111827}
+    table{border-collapse:collapse;width:100%;font-size:11px}
+    th{background:#059669;color:white;font-weight:600;padding:9px;border:1px solid #047857;text-align:left}
+    td{padding:8px;border:1px solid #d1d5db}
+    tr:nth-child(even){background:#f9fafb}
+    .report-footer{margin-top:30px;padding-top:12px;border-top:1px solid #d1d5db;text-align:center;font-size:11px;color:#6b7280;line-height:1.6}
+    .footer-system{font-weight:600;color:#374151}
+    .footer-copy{font-size:10px;color:#9ca3af}
+    @media print{body{padding:15px}.company-header{break-inside:avoid}table{page-break-inside:auto}tr{page-break-inside:avoid}thead{display:table-header-group}.report-footer{page-break-inside:avoid}}
+  </style></head><body>
+    <div class="company-header">
+      <div class="company-left">
+        <img src="${company.logo}" alt="${company.name} Logo" class="company-logo" onerror="this.style.display='none'">
+        <div>
+          <div class="company-name">${company.name}</div>
+          <div class="company-subtitle">Construction Management System</div>
+          <div class="company-details">
+            ${company.address}<br>${company.location}<br>${company.city}<br>
+            <strong>Tel:</strong> ${company.phone}<br><strong>Email:</strong> ${company.email}
+          </div>
+        </div>
+      </div>
+      <div class="report-title">
+        <h2>${title}</h2>
+        <p>Official Company Report</p>
+      </div>
+    </div>
+    <div class="report-meta">${meta}</div>
+    ${bodyHTML}
+    <div class="report-footer">
+      <div class="footer-system">This report is generated automatically by ${company.name} Management System.</div>
+      <div class="footer-copy">© ${currentYear} ${company.name} — All rights reserved.</div>
+    </div>
+  </body></html>`;
 }
 
 // ============================================================
-// UNIFIED REPORT SYSTEM
+// REPORTS PAGE — 4 report types (Owner-style format)
 // ============================================================
-function isRecordPaid(rec) {
+function renderReports(container){
+  const siteOpts = assignedSites.map(s => `<option value="${s.id}">${s.name}</option>`).join('');
+  const tabs = [
+    {key:'general', label:t('reports.general')},
+    {key:'payroll', label:t('reports.workerPayroll')},
+    {key:'materials', label:t('reports.materials')},
+    {key:'workers', label:t('reports.workers')}
+  ];
+  container.innerHTML = `
+    <h2 class="text-xl sm:text-2xl font-bold mb-4">${t('reports.title')}</h2>
+    <div class="flex gap-2 p-1 bg-slate-200/60 rounded-xl mb-6 overflow-x-auto">
+      ${tabs.map(tb => `<button onclick="setReportType('${tb.key}')" class="flex-1 min-w-[120px] px-4 py-2 rounded-lg text-sm font-semibold transition ${reportType===tb.key?'report-tab-active':'report-tab-inactive'}">${tb.label}</button>`).join('')}
+    </div>
+    <div id="report-content">${
+      reportType==='general' ? renderGeneralReport(siteOpts) :
+      reportType==='payroll' ? renderPayrollReport(siteOpts) :
+      reportType==='materials' ? renderMaterialsReport(siteOpts) :
+      renderWorkersReport(siteOpts)
+    }</div>`;
+  if (reportType === 'payroll') setTimeout(updatePayrollReport, 100);
+  if (reportType === 'general') setTimeout(updateGeneralPreview, 100);
+  if (reportType === 'materials') setTimeout(updateMaterialsPreview, 100);
+  if (reportType === 'workers') setTimeout(updateWorkersPreview, 100);
+}
+
+window.setReportType = (type) => { reportType = type; showSection('reports'); };
+
+// ---- GENERAL REPORT ----
+function renderGeneralReport(siteOpts){
+  return `<div class="space-y-6">
+    <div class="bg-white rounded-2xl border p-4 grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div>
+        <label class="block text-sm font-medium mb-1">${t('reports.selectSite')}</label>
+        <select id="report-site" class="w-full border rounded-lg p-2.5 text-sm" onchange="updateGeneralPreview()">
+          <option value="all">${t('reports.allSites')}</option>${siteOpts}
+        </select>
+      </div>
+      <div>
+        <label class="block text-sm font-medium mb-1">${t('reports.department')}</label>
+        <select id="report-dept" class="w-full border rounded-lg p-2.5 text-sm" onchange="updateGeneralPreview()">
+          <option value="all">${t('reports.allDepartments')}</option>
+          <option value="materials">${t('navigation.materials')}</option>
+          <option value="workers">${t('navigation.workers')}</option>
+        </select>
+      </div>
+      <div>
+        <label class="block text-sm font-medium mb-1">${t('reports.startDate')}</label>
+        <input type="date" id="report-start" class="w-full border rounded-lg p-2.5 text-sm" onchange="updateGeneralPreview()">
+      </div>
+      <div>
+        <label class="block text-sm font-medium mb-1">${t('reports.endDate')}</label>
+        <input type="date" id="report-end" class="w-full border rounded-lg p-2.5 text-sm" onchange="updateGeneralPreview()">
+      </div>
+    </div>
+    <div class="flex gap-3 justify-end">
+      <button onclick="exportGeneralReport('csv')" class="px-6 py-2 bg-emerald-600 text-white rounded-xl hover:bg-emerald-700">${t('reports.exportCSV')}</button>
+      <button onclick="exportGeneralReport('print')" class="px-6 py-2 bg-slate-800 text-white rounded-xl hover:bg-slate-900">${t('reports.printPDF')}</button>
+    </div>
+    <div id="general-preview-container" class="bg-white rounded-2xl border overflow-hidden shadow-sm">
+      <div class="p-4 text-slate-500 text-sm">${t('common.loading')}</div>
+    </div>
+  </div>`;
+}
+
+function updateGeneralPreview(){
+  const container = document.getElementById('general-preview-container');
+  if (!container) return;
+  const siteId = document.getElementById('report-site')?.value || 'all';
+  const dept = document.getElementById('report-dept')?.value || 'all';
+  const startDate = document.getElementById('report-start')?.value || '';
+  const endDate = document.getElementById('report-end')?.value || '';
+  const siteLabel = siteId === 'all' ? t('reports.allSites') : (assignedSites.find(s=>s.id===siteId)?.name || 'Site');
+  const deptLabel = dept === 'all' ? t('reports.allDepartments') : dept.charAt(0).toUpperCase()+dept.slice(1);
+  const period = startDate && endDate ? `${startDate} — ${endDate}` : (startDate || endDate || 'All time');
+
+  // Build flat data rows
+  const rows = [];
+  const getSiteName = (id) => assignedSites.find(s=>s.id===id)?.name || 'Unknown';
+
+  if (dept === 'all' || dept === 'materials'){
+    let mats = siteId !== 'all' ? materialsData.filter(m=>m.site_id===siteId) : materialsData;
+    if (startDate) mats = mats.filter(m => (m.date_used || m.created_at || '').slice(0,10) >= startDate);
+    if (endDate) mats = mats.filter(m => (m.date_used || m.created_at || '').slice(0,10) <= endDate);
+    mats.forEach(m => rows.push({
+      Department:'Materials', Site:getSiteName(m.site_id), Name:m.name,
+      Qty:m.quantity_used||0, 'Unit Cost':m.unit_cost||0, Total:calculateTotal(m.quantity_used||0,m.unit_cost||0),
+      Date: formatDate(m.date_used || m.created_at)
+    }));
+  }
+  if (dept === 'all' || dept === 'workers'){
+    let ws = siteId !== 'all' ? siteWorkersData.filter(w=>w.site_id===siteId) : siteWorkersData;
+    ws.forEach(w => rows.push({
+      Department:'Workers', Site:getSiteName(w.site_id), Name:w.name,
+      Role:w.role||'', Salary:w.salary||0, Phone:w.phone||''
+    }));
+  }
+
+  if (!rows.length){
+    container.innerHTML = `<div class="p-8 text-center text-slate-500 text-sm">${t('common.noDataAvailable')}</div>`;
+    return;
+  }
+  const headers = Object.keys(rows[0]);
+  const thead = headers.map(h=>`<th class="px-3 py-2 text-left text-xs font-semibold text-slate-500 uppercase whitespace-nowrap">${h}</th>`).join('');
+  const tbody = rows.slice(0,100).map(r=>`<tr class="border-b border-slate-100">${headers.map(h=>`<td class="px-3 py-2 text-sm text-slate-700 whitespace-nowrap">${r[h] ?? ''}</td>`).join('')}</tr>`).join('');
+  container.innerHTML = `
+    <div class="px-4 py-3 border-b border-slate-100 bg-slate-50 flex flex-wrap items-center justify-between gap-2">
+      <div>
+        <h3 class="font-bold text-slate-800 text-sm">${t('reports.reportTitles.general')}</h3>
+        <p class="text-xs text-slate-500">${siteLabel} • ${deptLabel} • ${period}</p>
+      </div>
+      <span class="text-xs text-slate-400">${rows.length} ${t('reports.total')}</span>
+    </div>
+    <div class="overflow-x-auto">
+      <table class="w-full">
+        <thead class="bg-slate-50"><tr>${thead}</tr></thead>
+        <tbody>${tbody}</tbody>
+      </table>
+    </div>
+    ${rows.length > 100 ? `<div class="px-4 py-2 text-xs text-slate-400">Showing first 100 of ${rows.length} rows.</div>` : ''}`;
+}
+
+window.exportGeneralReport = (format) => {
+  const siteId = document.getElementById('report-site').value;
+  const dept = document.getElementById('report-dept').value;
+  const startDate = document.getElementById('report-start').value;
+  const endDate = document.getElementById('report-end').value;
+  const company = getCompanyDetails();
+  const getSiteName = (id) => assignedSites.find(s=>s.id===id)?.name || 'Unknown';
+  const data = [];
+
+  if (dept === 'all' || dept === 'materials'){
+    let mats = siteId !== 'all' ? materialsData.filter(m=>m.site_id===siteId) : materialsData;
+    if (startDate) mats = mats.filter(m => (m.date_used || m.created_at || '').slice(0,10) >= startDate);
+    if (endDate) mats = mats.filter(m => (m.date_used || m.created_at || '').slice(0,10) <= endDate);
+    data.push(...mats.map(m => ({
+      Department:'Materials', Site:getSiteName(m.site_id), Name:m.name,
+      Quantity:m.quantity_used||0, 'Unit Cost':m.unit_cost||0,
+      Total:calculateTotal(m.quantity_used||0,m.unit_cost||0),
+      Date: formatDate(m.date_used || m.created_at)
+    })));
+  }
+  if (dept === 'all' || dept === 'workers'){
+    let ws = siteId !== 'all' ? siteWorkersData.filter(w=>w.site_id===siteId) : siteWorkersData;
+    data.push(...ws.map(w => ({
+      Department:'Workers', Site:getSiteName(w.site_id), Name:w.name,
+      Role:w.role||'', Salary:w.salary||0, Phone:w.phone||''
+    })));
+  }
+
+  if (!data.length){ alert(t('common.noDataAvailable')); return; }
+  const siteLabel = siteId === 'all' ? t('reports.allSites') : (assignedSites.find(s=>s.id===siteId)?.name || 'Site');
+  const deptLabel = dept === 'all' ? t('reports.allDepartments') : dept.charAt(0).toUpperCase()+dept.slice(1);
+  const generatedDate = new Date().toLocaleString();
+  const filename = `SHDR_${siteLabel.replace(/\s/g,'_')}_${deptLabel.replace(/\s/g,'_')}_${new Date().toISOString().slice(0,10)}`;
+
+  if (format === 'csv'){
+    const headers = Object.keys(data[0]);
+    const csvRows = [
+      `"${company.name}"`,`"${company.address}"`,`"${company.location}"`,`"${company.city}"`,
+      `"Tel: ${company.phone}"`,`"Email: ${company.email}"`,`"Generated: ${generatedDate}"`,
+      `"Report: ${siteLabel}"`,`"Department: ${deptLabel}"`,'',headers.join(',')
+    ];
+    for (const row of data) csvRows.push(headers.map(h=>`"${String(row[h] ?? '').replace(/"/g,'""')}"`).join(','));
+    const csv = csvRows.join('\n');
+    const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = `${filename}.csv`; a.click();
+    URL.revokeObjectURL(url);
+    return;
+  }
+  const headers = Object.keys(data[0]);
+  const tableRows = data.map(row=>`<tr>${headers.map(h=>`<td>${row[h] ?? ''}</td>`).join('')}</tr>`).join('');
+  const meta = `<strong>${t('reports.labels.siteName')}:</strong> ${siteLabel} &nbsp;|&nbsp; <strong>${t('reports.labels.department')}:</strong> ${deptLabel}<br><strong>${t('reports.generated')}:</strong> ${generatedDate}`;
+  const bodyHTML = `<table><thead><tr>${headers.map(h=>`<th>${h}</th>`).join('')}</tr></thead><tbody>${tableRows}</tbody></table>`;
+  const fullHTML = generateReportHTML(t('reports.reportTitles.general'), bodyHTML, meta);
+  const win = window.open('', '_blank', 'width=1000,height=700');
+  if (!win){ alert(t('common.accessDenied')); return; }
+  win.document.write(fullHTML); win.document.close();
+  setTimeout(()=>win.print(), 500);
+};
+
+// ---- PAYROLL REPORT ----
+function renderPayrollReport(siteOpts){
+  return `<div class="space-y-6">
+    <div class="bg-white rounded-2xl border p-4 grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div>
+        <label class="block text-sm font-medium mb-1">${t('reports.selectSite')}</label>
+        <select id="payroll-site" class="w-full border rounded-lg p-2.5 text-sm" onchange="updatePayrollReport()">
+          <option value="all">${t('reports.allSites')}</option>${siteOpts}
+        </select>
+      </div>
+      <div>
+        <label class="block text-sm font-medium mb-1">${t('reports.startDate')}</label>
+        <input type="date" id="payroll-start" class="w-full border rounded-lg p-2.5 text-sm" onchange="updatePayrollReport()">
+      </div>
+      <div>
+        <label class="block text-sm font-medium mb-1">${t('reports.endDate')}</label>
+        <input type="date" id="payroll-end" class="w-full border rounded-lg p-2.5 text-sm" onchange="updatePayrollReport()">
+      </div>
+      <div>
+        <label class="block text-sm font-medium mb-1">${t('reports.searchWorker')}</label>
+        <input type="text" id="payroll-worker-search" class="w-full border rounded-lg p-2.5 text-sm" placeholder="${t('reports.searchWorker')}" oninput="updatePayrollReport()">
+      </div>
+      <div>
+        <label class="block text-sm font-medium mb-1">${t('reports.position')}</label>
+        <select id="payroll-position" class="w-full border rounded-lg p-2.5 text-sm" onchange="updatePayrollReport()">
+          <option value="all">${t('reports.allPositions')}</option>
+          ${[...new Set(siteWorkersData.map(w=>w.role).filter(Boolean))].map(role=>`<option value="${role}">${role}</option>`).join('')}
+        </select>
+      </div>
+      <div>
+        <label class="block text-sm font-medium mb-1">${t('reports.paymentStatus')}</label>
+        <select id="payroll-status" class="w-full border rounded-lg p-2.5 text-sm" onchange="updatePayrollReport()">
+          <option value="all">All</option>
+          <option value="paid">${t('reports.paid')}</option>
+          <option value="unpaid">${t('reports.unpaid')}</option>
+        </select>
+      </div>
+    </div>
+    <div id="payroll-summary-cards" class="grid grid-cols-2 md:grid-cols-4 gap-4"></div>
+    <div id="payroll-table-container" class="bg-white rounded-2xl border overflow-hidden shadow-sm"></div>
+    <div class="flex gap-3 justify-end">
+      <button onclick="exportPayrollReport('csv')" class="px-6 py-2 bg-emerald-600 text-white rounded-xl hover:bg-emerald-700">${t('reports.exportCSV')}</button>
+      <button onclick="exportPayrollReport('print')" class="px-6 py-2 bg-slate-800 text-white rounded-xl hover:bg-slate-900">${t('reports.printPDF')}</button>
+    </div>
+  </div>`;
+}
+
+function isRecordPaid(rec){
   if (!rec) return false;
   if (rec.payment_status === 'paid' || rec.paid === true || rec.is_paid === true) return true;
-  if (rec.payment_status === 'unpaid' || rec.paid === false || rec.is_paid === false) return false;
   return false;
 }
 
-function readReportFilters() {
-  return {
-    type: reportType,
-    department: document.getElementById('report-dept')?.value || 'all',
-    startDate: document.getElementById('report-start')?.value || '',
-    endDate: document.getElementById('report-end')?.value || '',
-    paymentStatus: document.getElementById('report-payment-status')?.value || 'all',
-    workerSearch: (document.getElementById('report-worker-search')?.value || '').trim()
-  };
-}
+function buildPayrollDataset(){
+  const siteId = document.getElementById('payroll-site')?.value || 'all';
+  const startDate = document.getElementById('payroll-start')?.value || '';
+  const endDate = document.getElementById('payroll-end')?.value || '';
+  const search = (document.getElementById('payroll-worker-search')?.value || '').toLowerCase();
+  const position = document.getElementById('payroll-position')?.value || 'all';
+  const status = document.getElementById('payroll-status')?.value || 'all';
 
-function inDateRange(dateStr, start, end) {
-  if (!dateStr) return !start && !end;
-  const d = String(dateStr).slice(0,10);
-  if (start && d < start) return false;
-  if (end && d > end) return false;
-  return true;
-}
-
-function buildGeneralReportModel(filters) {
-  const site = assignedSites.find(s=>s.id===currentSiteId);
-  const siteName = site ? site.name : '—';
-  const dept = filters.department;
-
-  let mats = materialsData.filter(m=>m.site_id===currentSiteId);
-  mats = mats.filter(m => inDateRange(m.date_used||m.created_at, filters.startDate, filters.endDate));
-  const matTotalValue = mats.reduce((s,m)=>s+calculateTotal(m.quantity_used||0,m.unit_cost||0),0);
-
-  const stocks = stockData.filter(s=>s.site_id===currentSiteId);
-  const stockValue = stocks.reduce((s,x)=>s+toNumber(x.quantity)*toNumber(x.unit_cost),0);
-  const lowStockCount = stocks.filter(s=>toNumber(s.quantity)<=toNumber(s.minimum_quantity)).length;
-
-  const workers = siteWorkersData.slice();
-  const workerCount = workers.length;
-
-  let att = attendanceData.filter(a=>a.site_id===currentSiteId);
-  att = att.filter(a => inDateRange(a.date, filters.startDate, filters.endDate));
-  const payrollTotal = att.reduce((s,a)=>s+toNumber(a.daily_rate),0);
-  const payrollPaid = att.filter(isRecordPaid).reduce((s,a)=>s+toNumber(a.daily_rate),0);
-  const payrollUnpaid = payrollTotal - payrollPaid;
-
-  let reqs = requisitionsData.filter(r=>r.site_id===currentSiteId);
-  reqs = reqs.filter(r => inDateRange(r.request_date, filters.startDate, filters.endDate));
-
-  const sections = [];
-
-  sections.push({
-    title: 'Overview',
-    columns: [{key:'metric',label:'Metric'},{key:'value',label:'Value'}],
-    rows: [
-      {metric:'Manager', value: managerProfile?.full_name || '—'},
-      {metric:'Assigned Site', value: siteName},
-      {metric:'Reporting Period', value: (filters.startDate||filters.endDate) ? `${filters.startDate||'Start'} → ${filters.endDate||'Now'}` : 'All time'},
-      {metric:'Total Workers', value: workerCount},
-      {metric:'Total Materials Used', value: mats.length},
-      {metric:'Total Material Cost', value: formatRWF(matTotalValue)},
-      {metric:'Stock Items', value: stocks.length},
-      {metric:'Stock Value', value: formatRWF(stockValue)},
-      {metric:'Low-Stock Items', value: lowStockCount},
-      {metric:'Total Payroll (Payable)', value: formatRWF(payrollTotal)},
-      {metric:'Total Paid', value: formatRWF(payrollPaid)},
-      {metric:'Total Unpaid Balance', value: formatRWF(payrollUnpaid)},
-      {metric:'Requisitions', value: reqs.length}
-    ]
-  });
-
-  if (dept === 'all' || dept === 'materials') {
-    sections.push({
-      title: 'Materials Used',
-      columns: [
-        {key:'date',label:'Date'},
-        {key:'name',label:'Material'},
-        {key:'qty',label:'Qty Used',align:'right'},
-        {key:'unit',label:'Unit'},
-        {key:'unitCost',label:'Unit Cost',align:'right',format:'rwf'},
-        {key:'total',label:'Total',align:'right',format:'rwf'}
-      ],
-      rows: mats.slice(0,200).map(m=>({
-        date: formatDateShort(m.date_used||m.created_at),
-        name: m.name||'—',
-        qty: toNumber(m.quantity_used),
-        unit: m.unit||'',
-        unitCost: toNumber(m.unit_cost),
-        total: calculateTotal(m.quantity_used||0,m.unit_cost||0)
-      })),
-      totals: { qty: mats.reduce((s,m)=>s+toNumber(m.quantity_used),0), total: matTotalValue }
-    });
-    sections.push({
-      title: 'Stock Summary',
-      columns: [
-        {key:'material',label:'Material'},
-        {key:'unit',label:'Unit'},
-        {key:'qty',label:'Current Stock',align:'right'},
-        {key:'unitCost',label:'Unit Cost',align:'right',format:'rwf'},
-        {key:'value',label:'Stock Value',align:'right',format:'rwf'}
-      ],
-      rows: stocks.map(s=>({
-        material: s.material_name||'—',
-        unit: s.unit||'',
-        qty: toNumber(s.quantity),
-        unitCost: toNumber(s.unit_cost),
-        value: toNumber(s.quantity)*toNumber(s.unit_cost)
-      })),
-      totals: { value: stockValue }
-    });
-  }
-
-  if (dept === 'all' || dept === 'workers') {
-    sections.push({
-      title: 'Workers Summary',
-      columns: [
-        {key:'name',label:'Worker'},
-        {key:'role',label:'Role'},
-        {key:'phone',label:'Phone'},
-        {key:'payment',label:'Payment Type'},
-        {key:'salary',label:'Rate/Salary',align:'right',format:'rwf'}
-      ],
-      rows: workers.map(w=>({
-        name: w.name||'—',
-        role: w.role||'—',
-        phone: w.phone||'—',
-        payment: w.payment_method==='monthly'?'Monthly':'Daily',
-        salary: toNumber(w.salary)
-      })),
-      totals: {}
-    });
-    sections.push({
-      title: 'Payroll Summary',
-      columns: [
-        {key:'worker',label:'Worker'},
-        {key:'days',label:'Attendance',align:'center'},
-        {key:'payable',label:'Payable',align:'right',format:'rwf'},
-        {key:'paid',label:'Paid',align:'right',format:'rwf'},
-        {key:'balance',label:'Balance',align:'right',format:'rwf'}
-      ],
-      rows: (()=>{
-        const map = {};
-        att.forEach(a=>{
-          const key = a.worker_id || a.name;
-          if (!map[key]) map[key] = {worker:a.name, days:0, payable:0, paid:0};
-          map[key].days++;
-          const amt = toNumber(a.daily_rate);
-          map[key].payable += amt;
-          if (isRecordPaid(a)) map[key].paid += amt;
-        });
-        return Object.values(map).map(w=>({
-          worker: w.worker,
-          days: w.days,
-          payable: w.payable,
-          paid: w.paid,
-          balance: w.payable - w.paid
-        }));
-      })(),
-      totals: { days: att.length, payable: payrollTotal, paid: payrollPaid, balance: payrollUnpaid }
-    });
-  }
-
-  if (dept === 'all') {
-    sections.push({
-      title: 'Requisitions Summary',
-      columns: [
-        {key:'reqId',label:'Req. ID'},
-        {key:'reqDate',label:'Date'},
-        {key:'requiredDate',label:'Required'},
-        {key:'priority',label:'Priority'},
-        {key:'status',label:'Status'},
-        {key:'items',label:'Items',align:'center'}
-      ],
-      rows: reqs.map(r=>{
-        const items = requisitionItemsData.filter(i=>i.requisition_id===r.id);
-        return {
-          reqId: r.requisition_number||'—',
-          reqDate: formatDateShort(r.request_date),
-          requiredDate: formatDateShort(r.required_date),
-          priority: r.priority||'Normal',
-          status: r.status||'Pending',
-          items: items.length
-        };
-      }),
-      totals: {}
-    });
-  }
-
-  return {
-    type: 'general',
-    title: 'SHDR LTD — GENERAL MANAGER REPORT',
-    description: 'General site overview including materials, workers, payroll, and requisitions',
-    sections,
-    startDate: filters.startDate,
-    endDate: filters.endDate
-  };
-}
-
-function buildWorkerPayrollReportModel(filters) {
-  let records = attendanceData.filter(a=>a.site_id===currentSiteId);
-  records = records.filter(a => inDateRange(a.date, filters.startDate, filters.endDate));
-  if (filters.workerSearch) {
-    const q = filters.workerSearch.toLowerCase();
-    records = records.filter(a => (a.name||'').toLowerCase().includes(q));
-  }
-  if (filters.paymentStatus === 'paid') records = records.filter(isRecordPaid);
-  else if (filters.paymentStatus === 'unpaid') records = records.filter(r => !isRecordPaid(r));
+  let filtered = attendanceData.slice();
+  if (siteId !== 'all') filtered = filtered.filter(a=>a.site_id===siteId);
+  if (startDate) filtered = filtered.filter(a=>(a.date||'').slice(0,10) >= startDate);
+  if (endDate) filtered = filtered.filter(a=>(a.date||'').slice(0,10) <= endDate);
+  if (search) filtered = filtered.filter(a=>(a.name||'').toLowerCase().includes(search));
+  if (position !== 'all') filtered = filtered.filter(a=>a.role === position);
+  if (status === 'paid') filtered = filtered.filter(isRecordPaid);
+  else if (status === 'unpaid') filtered = filtered.filter(r => !isRecordPaid(r));
 
   const map = {};
-  records.forEach(r=>{
-    const key = r.worker_id || r.name;
-    if (!map[key]) map[key] = {
-      worker: r.name||'—',
-      role: r.role||'—',
-      paymentType: r.payment_method==='monthly'?'Monthly':'Daily',
-      rate: 0,
-      days: 0,
-      payable: 0,
-      paid: 0
-    };
-    map[key].days++;
-    const amt = toNumber(r.daily_rate);
-    map[key].payable += amt;
-    if (isRecordPaid(r)) map[key].paid += amt;
-    if (r.daily_rate) map[key].rate = toNumber(r.daily_rate);
+  filtered.forEach(rec=>{
+    const key = rec.worker_id || rec.name;
+    if (!map[key]) map[key] = { id:key, name:rec.name, role:rec.role||'', dailyRate:rec.daily_rate||0, days:[], totalPayable:0 };
+    map[key].days.push(rec.date);
+    map[key].totalPayable += (rec.daily_rate || 0);
+    if (rec.daily_rate) map[key].dailyRate = rec.daily_rate;
   });
-
-  const rows = Object.values(map).map(w=>{
-    const balance = w.payable - w.paid;
-    let status = 'Unpaid';
-    if (balance <= 0) status = 'Paid';
-    else if (w.paid > 0) status = 'Partial';
-    return {
-      worker: w.worker,
-      role: w.role,
-      paymentType: w.paymentType,
-      rate: w.rate,
-      attendance: w.days,
-      payable: w.payable,
-      paid: w.paid,
-      balance: balance,
-      status: status
-    };
-  });
-
-  const totals = {
-    attendance: rows.reduce((s,r)=>s+r.attendance,0),
-    payable: rows.reduce((s,r)=>s+r.payable,0),
-    paid: rows.reduce((s,r)=>s+r.paid,0),
-    balance: rows.reduce((s,r)=>s+r.balance,0)
-  };
-
-  const psLabel = filters.paymentStatus==='paid'?t('reports.paid'):filters.paymentStatus==='unpaid'?t('reports.unpaid'):t('reports.allPaymentStatus');
-
-  return {
-    type: 'worker-payroll',
-    title: 'SHDR LTD — WORKER PAYROLL REPORT',
-    description: `Payroll for ${psLabel} records`,
-    sections: [{
-      title: 'Payroll',
-      columns: [
-        {key:'worker',label:'Worker'},
-        {key:'role',label:'Role'},
-        {key:'paymentType',label:'Payment Type'},
-        {key:'rate',label:'Rate/Salary',align:'right',format:'rwf'},
-        {key:'attendance',label:'Attendance',align:'center'},
-        {key:'payable',label:'Payable',align:'right',format:'rwf'},
-        {key:'paid',label:'Paid',align:'right',format:'rwf'},
-        {key:'balance',label:'Balance',align:'right',format:'rwf'},
-        {key:'status',label:'Status'}
-      ],
-      rows,
-      totals
-    }],
-    startDate: filters.startDate,
-    endDate: filters.endDate,
-    paymentStatus: filters.paymentStatus
-  };
+  const workers = Object.values(map);
+  const totalWorkers = workers.length;
+  const totalDays = workers.reduce((s,w)=>s+w.days.length,0);
+  const totalPayroll = workers.reduce((s,w)=>s+w.totalPayable,0);
+  const avgDaily = totalDays > 0 ? totalPayroll / totalDays : 0;
+  return { workers, totalWorkers, totalDays, totalPayroll, avgDaily, siteId, startDate, endDate, position, status };
 }
 
-function buildMaterialsReportModel(filters) {
-  const stocks = stockData.filter(s=>s.site_id===currentSiteId);
-  const mats = materialsData.filter(m=>m.site_id===currentSiteId)
-    .filter(m => inDateRange(m.date_used||m.created_at, filters.startDate, filters.endDate));
-
-  const byName = {};
-  stocks.forEach(s=>{
-    const name = cleanName(s.material_name||'Unknown');
-    if (!byName[name]) byName[name] = {material:name, unit:s.unit||'units', added:0, used:0, current:0, unitCost:0, value:0};
-    byName[name].current += toNumber(s.quantity);
-    byName[name].unitCost = toNumber(s.unit_cost) || byName[name].unitCost;
-  });
-  mats.forEach(m=>{
-    const name = cleanName(m.name||'Unknown');
-    if (!byName[name]) byName[name] = {material:name, unit:m.unit||'units', added:0, used:0, current:0, unitCost:0, value:0};
-    byName[name].used += toNumber(m.quantity_used);
-    if (!byName[name].unitCost && m.unit_cost) byName[name].unitCost = toNumber(m.unit_cost);
-  });
-  stockTransactions.filter(tx=>tx.site_id===currentSiteId && tx.transaction_type==='STOCK_ADDED')
-    .filter(tx => inDateRange(tx.created_at, filters.startDate, filters.endDate))
-    .forEach(tx=>{
-      const name = cleanName(tx.material_name||'Unknown');
-      if (!byName[name]) byName[name] = {material:name, unit:tx.unit||'units', added:0, used:0, current:0, unitCost:0, value:0};
-      byName[name].added += toNumber(tx.quantity);
-    });
-
-  const rows = Object.values(byName).map(r=>{
-    r.value = r.current * r.unitCost;
-    return r;
-  });
-
-  const totals = {
-    added: rows.reduce((s,r)=>s+r.added,0),
-    used: rows.reduce((s,r)=>s+r.used,0),
-    current: rows.reduce((s,r)=>s+r.current,0),
-    value: rows.reduce((s,r)=>s+r.value,0)
-  };
-
-  return {
-    type: 'materials',
-    title: 'SHDR LTD — MATERIALS REPORT',
-    description: 'Materials and stock summary',
-    sections: [{
-      title: 'Materials',
-      columns: [
-        {key:'material',label:'Material'},
-        {key:'unit',label:'Unit'},
-        {key:'added',label:'Qty Added',align:'right'},
-        {key:'used',label:'Qty Used',align:'right'},
-        {key:'current',label:'Current Stock',align:'right'},
-        {key:'unitCost',label:'Unit Cost',align:'right',format:'rwf'},
-        {key:'value',label:'Stock Value',align:'right',format:'rwf'}
-      ],
-      rows,
-      totals
-    }],
-    startDate: filters.startDate,
-    endDate: filters.endDate
-  };
-}
-
-function buildWorkersReportModel(filters) {
-  let workers = siteWorkersData.slice();
-  if (filters.workerSearch) {
-    const q = filters.workerSearch.toLowerCase();
-    workers = workers.filter(w => (w.name||'').toLowerCase().includes(q) || (w.role||'').toLowerCase().includes(q));
+function updatePayrollReport(){
+  const d = buildPayrollDataset();
+  const cardsContainer = document.getElementById('payroll-summary-cards');
+  if (cardsContainer){
+    cardsContainer.innerHTML = `
+      <div class="bg-white rounded-2xl border p-4 shadow-sm"><p class="text-xs text-slate-500">${t('reports.totalWorkers')}</p><p class="text-2xl font-bold text-slate-800">${d.totalWorkers}</p></div>
+      <div class="bg-white rounded-2xl border p-4 shadow-sm"><p class="text-xs text-slate-500">${t('reports.workerDays')}</p><p class="text-2xl font-bold text-slate-800">${d.totalDays}</p></div>
+      <div class="bg-white rounded-2xl border p-4 shadow-sm"><p class="text-xs text-slate-500">${t('reports.totalPayroll')}</p><p class="text-2xl font-bold text-emerald-600">${d.totalPayroll.toLocaleString()} RWF</p></div>
+      <div class="bg-white rounded-2xl border p-4 shadow-sm"><p class="text-xs text-slate-500">${t('reports.avgDaily')}</p><p class="text-2xl font-bold text-slate-800">${Math.round(d.avgDaily).toLocaleString()} RWF</p></div>`;
   }
-  const rows = workers.map(w=>({
-    photo: w.image ? 'Yes' : '—',
-    name: w.name||'—',
-    role: w.role||'—',
-    phone: w.phone||'—',
-    payment: w.payment_method==='monthly'?'Monthly':'Daily',
-    rate: toNumber(w.salary),
-    site: assignedSites.find(s=>s.id===w.site_id)?.name || '—',
-    status: w.status || 'Active',
-    dateAdded: formatDateShort(w.created_at)
+  const tableContainer = document.getElementById('payroll-table-container');
+  if (tableContainer){
+    if (!d.workers.length){ tableContainer.innerHTML = `<div class="p-4 text-slate-500 text-sm">${t('common.noDataAvailable')}</div>`; return; }
+    tableContainer.innerHTML = `<div class="overflow-x-auto"><table class="w-full text-sm">
+      <thead class="bg-slate-50 uppercase text-xs"><tr>
+        <th class="px-3 py-2 text-left">${t('reports.worker')}</th>
+        <th class="px-3 py-2 text-left">${t('reports.position')}</th>
+        <th class="px-3 py-2 text-center">${t('reports.daysWorked')}</th>
+        <th class="px-3 py-2 text-right">${t('reports.dailyRate')}</th>
+        <th class="px-3 py-2 text-right">${t('reports.totalPayable')}</th>
+      </tr></thead>
+      <tbody>${d.workers.map(w=>`<tr class="border-b"><td class="px-3 py-2 font-medium">${w.name}</td><td class="px-3 py-2">${w.role||'—'}</td><td class="px-3 py-2 text-center">${w.days.length}</td><td class="px-3 py-2 text-right">${w.dailyRate.toLocaleString()} RWF</td><td class="px-3 py-2 text-right font-semibold text-emerald-600">${w.totalPayable.toLocaleString()} RWF</td></tr>`).join('')}</tbody>
+      <tfoot class="bg-slate-50 font-bold"><tr><td colspan="2" class="px-3 py-2 text-right">${t('reports.total')}</td><td class="px-3 py-2 text-center">${d.totalDays}</td><td class="px-3 py-2 text-right"></td><td class="px-3 py-2 text-right text-emerald-600">${d.totalPayroll.toLocaleString()} RWF</td></tr></tfoot>
+    </table></div>`;
+  }
+}
+
+window.exportPayrollReport = (format) => {
+  const d = buildPayrollDataset();
+  const company = getCompanyDetails();
+  const generatedDate = new Date().toLocaleString();
+  const siteName = d.siteId === 'all' ? t('reports.allSites') : (assignedSites.find(s=>s.id===d.siteId)?.name || 'Site');
+  const period = d.startDate && d.endDate ? `${formatDate(d.startDate)} — ${formatDate(d.endDate)}` : (d.startDate || d.endDate || 'All Time');
+
+  if (format === 'csv'){
+    const headers = [t('reports.worker'),t('reports.position'),t('reports.daysWorked'),t('reports.dailyRate'),t('reports.totalPayable')];
+    const csvRows = [
+      `"${company.name}"`,`"${company.address}"`,`"${company.location}"`,`"${company.city}"`,
+      `"Tel: ${company.phone}"`,`"Email: ${company.email}"`,
+      `"Generated: ${generatedDate}"`,`"Report: ${t('reports.reportTitles.payroll')}"`,
+      `"Site Name: ${siteName}"`,`"Period: ${period}"`, '', headers.join(',')
+    ];
+    for (const w of d.workers) csvRows.push([w.name, w.role||'—', w.days.length, w.dailyRate.toLocaleString(), w.totalPayable.toLocaleString()].map(v=>`"${v}"`).join(','));
+    csvRows.push(`"Total","",${d.totalDays},"",${d.totalPayroll.toLocaleString()}`);
+    const csv = csvRows.join('\n');
+    const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = `SHDR_Payroll_${siteName.replace(/\s/g,'_')}_${new Date().toISOString().slice(0,10)}.csv`; a.click();
+    URL.revokeObjectURL(url);
+    return;
+  }
+  const headers = [t('reports.worker'),t('reports.position'),t('reports.daysWorked'),t('reports.dailyRate'),t('reports.totalPayable')];
+  const tableRows = d.workers.map(w=>`<tr><td>${w.name}</td><td>${w.role||'—'}</td><td style="text-align:center">${w.days.length}</td><td style="text-align:right">${w.dailyRate.toLocaleString()} RWF</td><td style="text-align:right">${w.totalPayable.toLocaleString()} RWF</td></tr>`).join('');
+  const meta = `<strong>${t('reports.labels.siteName')}:</strong> ${siteName} &nbsp;|&nbsp; <strong>${t('reports.labels.period')}:</strong> ${period} &nbsp;|&nbsp; <strong>${t('reports.generated')}:</strong> ${generatedDate}`;
+  const bodyHTML = `<table><thead><tr>${headers.map(h=>`<th>${h}</th>`).join('')}</tr></thead><tbody>${tableRows}</tbody><tfoot><tr><td colspan="2" style="text-align:right"><strong>${t('reports.total')}</strong></td><td style="text-align:center"><strong>${d.totalDays}</strong></td><td></td><td style="text-align:right"><strong>${d.totalPayroll.toLocaleString()} RWF</strong></td></tr></tfoot></table>`;
+  const fullHTML = generateReportHTML(t('reports.reportTitles.payroll'), bodyHTML, meta);
+  const win = window.open('', '_blank', 'width=1000,height=700');
+  if (!win){ alert(t('common.accessDenied')); return; }
+  win.document.write(fullHTML); win.document.close();
+  setTimeout(()=>win.print(), 500);
+};
+
+// ---- MATERIALS REPORT ----
+function renderMaterialsReport(siteOpts){
+  return `<div class="space-y-6">
+    <div class="bg-white rounded-2xl border p-4 grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div>
+        <label class="block text-sm font-medium mb-1">${t('reports.selectSite')}</label>
+        <select id="mat-report-site" class="w-full border rounded-lg p-2.5 text-sm" onchange="updateMaterialsPreview()">
+          <option value="all">${t('reports.allSites')}</option>${siteOpts}
+        </select>
+      </div>
+      <div>
+        <label class="block text-sm font-medium mb-1">${t('reports.startDate')}</label>
+        <input type="date" id="mat-report-start" class="w-full border rounded-lg p-2.5 text-sm" onchange="updateMaterialsPreview()">
+      </div>
+      <div>
+        <label class="block text-sm font-medium mb-1">${t('reports.endDate')}</label>
+        <input type="date" id="mat-report-end" class="w-full border rounded-lg p-2.5 text-sm" onchange="updateMaterialsPreview()">
+      </div>
+    </div>
+    <div id="materials-preview-container" class="bg-white rounded-2xl border overflow-hidden shadow-sm">
+      <div class="p-4 text-slate-500 text-sm">${t('common.loading')}</div>
+    </div>
+    <div class="flex gap-3 justify-end">
+      <button onclick="exportMaterialsReport('csv')" class="px-6 py-2 bg-emerald-600 text-white rounded-xl hover:bg-emerald-700">${t('reports.exportCSV')}</button>
+      <button onclick="exportMaterialsReport('print')" class="px-6 py-2 bg-slate-800 text-white rounded-xl hover:bg-slate-900">${t('reports.printPDF')}</button>
+    </div>
+  </div>`;
+}
+
+function buildMaterialsDataset(){
+  const siteId = document.getElementById('mat-report-site')?.value || 'all';
+  const startDate = document.getElementById('mat-report-start')?.value || '';
+  const endDate = document.getElementById('mat-report-end')?.value || '';
+  let mats = materialsData.slice();
+  if (siteId !== 'all') mats = mats.filter(m=>m.site_id===siteId);
+  if (startDate) mats = mats.filter(m => (m.date_used || m.created_at || '').slice(0,10) >= startDate);
+  if (endDate) mats = mats.filter(m => (m.date_used || m.created_at || '').slice(0,10) <= endDate);
+  mats = mats.slice().sort((a,b)=> new Date(b.date_used||b.created_at||0) - new Date(a.date_used||a.created_at||0));
+  const getSiteName = (id) => assignedSites.find(s=>s.id===id)?.name || 'Unknown';
+  const rows = mats.map(m => ({
+    Site: getSiteName(m.site_id),
+    Date: formatDate(m.date_used||m.created_at),
+    Material: m.name,
+    Quantity: m.quantity_used || 0,
+    Unit: m.unit || 'units',
+    'Unit Cost': m.unit_cost || 0,
+    Total: calculateTotal(m.quantity_used||0, m.unit_cost||0)
   }));
-
-  return {
-    type: 'workers',
-    title: 'SHDR LTD — WORKERS REPORT',
-    description: 'All workers assigned to the site',
-    sections: [{
-      title: 'Workers',
-      columns: [
-        {key:'photo',label:'Photo',align:'center'},
-        {key:'name',label:'Worker'},
-        {key:'role',label:'Role'},
-        {key:'phone',label:'Phone'},
-        {key:'payment',label:'Payment Type'},
-        {key:'rate',label:'Rate/Salary',align:'right',format:'rwf'},
-        {key:'site',label:'Site'},
-        {key:'status',label:'Status'},
-        {key:'dateAdded',label:'Date Added'}
-      ],
-      rows,
-      totals: { rate: rows.reduce((s,r)=>s+r.rate,0) }
-    }]
-  };
+  const totalValue = rows.reduce((s,r)=>s+r.Total,0);
+  return { rows, totalValue, siteId, startDate, endDate };
 }
 
-function buildReportModel() {
-  const filters = readReportFilters();
-  let model;
-  switch(filters.type) {
-    case 'general': model = buildGeneralReportModel(filters); break;
-    case 'worker-payroll': model = buildWorkerPayrollReportModel(filters); break;
-    case 'materials': model = buildMaterialsReportModel(filters); break;
-    case 'workers': model = buildWorkersReportModel(filters); break;
-    default: throw new Error('Unsupported report type: ' + filters.type);
+function updateMaterialsPreview(){
+  const container = document.getElementById('materials-preview-container');
+  if (!container) return;
+  const d = buildMaterialsDataset();
+  const siteLabel = d.siteId === 'all' ? t('reports.allSites') : (assignedSites.find(s=>s.id===d.siteId)?.name || 'Site');
+  const period = d.startDate && d.endDate ? `${d.startDate} — ${d.endDate}` : (d.startDate || d.endDate || 'All time');
+  if (!d.rows.length){
+    container.innerHTML = `<div class="p-8 text-center text-slate-500 text-sm">${t('common.noDataAvailable')}</div>`;
+    return;
   }
-  model.filters = filters;
-  model.manager = managerProfile?.full_name || 'Manager';
-  model.site = assignedSites.find(s=>s.id===currentSiteId)?.name || '—';
-  model.generatedAt = new Date();
-  return model;
+  const headers = Object.keys(d.rows[0]);
+  const thead = headers.map(h=>`<th class="px-3 py-2 text-left text-xs font-semibold text-slate-500 uppercase whitespace-nowrap">${h}</th>`).join('');
+  const tbody = d.rows.slice(0,100).map(r=>`<tr class="border-b border-slate-100">${headers.map(h=>`<td class="px-3 py-2 text-sm text-slate-700 whitespace-nowrap">${r[h] ?? ''}</td>`).join('')}</tr>`).join('');
+  container.innerHTML = `
+    <div class="px-4 py-3 border-b border-slate-100 bg-slate-50 flex flex-wrap items-center justify-between gap-2">
+      <div>
+        <h3 class="font-bold text-slate-800 text-sm">${t('reports.reportTitles.materials')}</h3>
+        <p class="text-xs text-slate-500">${siteLabel} • ${period}</p>
+      </div>
+      <span class="text-xs text-slate-500">Total: <b class="text-emerald-600">${d.totalValue.toLocaleString()} RWF</b></span>
+    </div>
+    <div class="overflow-x-auto">
+      <table class="w-full">
+        <thead class="bg-slate-50"><tr>${thead}</tr></thead>
+        <tbody>${tbody}</tbody>
+      </table>
+    </div>`;
 }
 
-function getReportFilename(type, ext) {
-  const d = new Date().toISOString().slice(0,10);
-  const map = {
-    'general': 'SHDR_General_Manager_Report',
-    'worker-payroll': 'SHDR_Worker_Payroll_Report',
-    'materials': 'SHDR_Materials_Report',
-    'workers': 'SHDR_Workers_Report'
-  };
-  const base = map[type] || 'SHDR_Report';
-  return `${base}_${d}.${ext}`;
+window.exportMaterialsReport = (format) => {
+  const d = buildMaterialsDataset();
+  const company = getCompanyDetails();
+  const generatedDate = new Date().toLocaleString();
+  const siteName = d.siteId === 'all' ? t('reports.allSites') : (assignedSites.find(s=>s.id===d.siteId)?.name || 'Site');
+  const period = d.startDate && d.endDate ? `${formatDate(d.startDate)} — ${formatDate(d.endDate)}` : (d.startDate || d.endDate || 'All Time');
+
+  if (format === 'csv'){
+    if (!d.rows.length){ alert(t('common.noDataAvailable')); return; }
+    const headers = Object.keys(d.rows[0]);
+    const csvRows = [
+      `"${company.name}"`,`"${company.address}"`,`"${company.location}"`,`"${company.city}"`,
+      `"Tel: ${company.phone}"`,`"Email: ${company.email}"`,
+      `"Generated: ${generatedDate}"`,`"Report: ${t('reports.reportTitles.materials')}"`,
+      `"Site Name: ${siteName}"`,`"Period: ${period}"`,'',headers.join(',')
+    ];
+    for (const row of d.rows) csvRows.push(headers.map(h=>`"${String(row[h] ?? '').replace(/"/g,'""')}"`).join(','));
+    csvRows.push(`"Total","","","","","",${d.totalValue.toLocaleString()}`);
+    const csv = csvRows.join('\n');
+    const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = `SHDR_Materials_${siteName.replace(/\s/g,'_')}_${new Date().toISOString().slice(0,10)}.csv`; a.click();
+    URL.revokeObjectURL(url);
+    return;
+  }
+  if (!d.rows.length){ alert(t('common.noDataAvailable')); return; }
+  const headers = Object.keys(d.rows[0]);
+  const tableRows = d.rows.map(r=>`<tr>${headers.map(h=>`<td>${r[h] ?? ''}</td>`).join('')}</tr>`).join('');
+  const meta = `<strong>${t('reports.labels.siteName')}:</strong> ${siteName} &nbsp;|&nbsp; <strong>${t('reports.labels.period')}:</strong> ${period} &nbsp;|&nbsp; <strong>${t('reports.generated')}:</strong> ${generatedDate}`;
+  const bodyHTML = `<table><thead><tr>${headers.map(h=>`<th>${h}</th>`).join('')}</tr></thead><tbody>${tableRows}</tbody><tfoot><tr><td colspan="${headers.length-1}" style="text-align:right"><strong>${t('reports.total')}</strong></td><td style="text-align:right"><strong>${d.totalValue.toLocaleString()} RWF</strong></td></tr></tfoot></table>`;
+  const fullHTML = generateReportHTML(t('reports.reportTitles.materials'), bodyHTML, meta);
+  const win = window.open('', '_blank', 'width=1000,height=700');
+  if (!win){ alert(t('common.accessDenied')); return; }
+  win.document.write(fullHTML); win.document.close();
+  setTimeout(()=>win.print(), 500);
+};
+
+// ---- WORKERS REPORT ----
+function renderWorkersReport(siteOpts){
+  return `<div class="space-y-6">
+    <div class="bg-white rounded-2xl border p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div>
+        <label class="block text-sm font-medium mb-1">${t('reports.selectSite')}</label>
+        <select id="wk-report-site" class="w-full border rounded-lg p-2.5 text-sm" onchange="updateWorkersPreview()">
+          <option value="all">${t('reports.allSites')}</option>${siteOpts}
+        </select>
+      </div>
+      <div>
+        <label class="block text-sm font-medium mb-1">${t('reports.searchWorker')}</label>
+        <input type="text" id="wk-report-search" class="w-full border rounded-lg p-2.5 text-sm" placeholder="${t('reports.searchWorker')}" oninput="updateWorkersPreview()">
+      </div>
+    </div>
+    <div id="workers-preview-container" class="bg-white rounded-2xl border overflow-hidden shadow-sm">
+      <div class="p-4 text-slate-500 text-sm">${t('common.loading')}</div>
+    </div>
+    <div class="flex gap-3 justify-end">
+      <button onclick="exportWorkersReport('csv')" class="px-6 py-2 bg-emerald-600 text-white rounded-xl hover:bg-emerald-700">${t('reports.exportCSV')}</button>
+      <button onclick="exportWorkersReport('print')" class="px-6 py-2 bg-slate-800 text-white rounded-xl hover:bg-slate-900">${t('reports.printPDF')}</button>
+    </div>
+  </div>`;
 }
 
-function getReportSuccessMessage(type, format) {
-  const names = {
-    'general': 'General Manager Report',
-    'worker-payroll': 'Worker Payroll',
-    'materials': 'Materials',
-    'workers': 'Workers'
-  };
-  const n = names[type] || 'Report';
-  if (format === 'pdf') return `${n} PDF downloaded successfully.`;
-  if (format === 'excel') return `${n} Excel report downloaded successfully.`;
-  if (format === 'print') return 'Print dialog opened successfully.';
-  return `${n} exported.`;
+function buildWorkersDataset(){
+  const siteId = document.getElementById('wk-report-site')?.value || 'all';
+  const search = (document.getElementById('wk-report-search')?.value || '').toLowerCase();
+  let ws = siteWorkersData.slice();
+  if (siteId !== 'all') ws = ws.filter(w=>w.site_id===siteId);
+  if (search) ws = ws.filter(w => (w.name||'').toLowerCase().includes(search) || (w.role||'').toLowerCase().includes(search));
+  const getSiteName = (id) => assignedSites.find(s=>s.id===id)?.name || 'Unknown';
+  const rows = ws.map(w => ({
+    Site: getSiteName(w.site_id),
+    Worker: w.name || '—',
+    Role: w.role || '—',
+    Phone: w.phone || '—',
+    'Payment Type': w.payment_method === 'monthly' ? 'Monthly' : 'Daily',
+    'Rate/Salary': w.salary || 0,
+    Status: w.status || 'Active'
+  }));
+  return { rows, siteId, search };
 }
 
-function drawPdfHeader(doc, company, model, logoData) {
+function updateWorkersPreview(){
+  const container = document.getElementById('workers-preview-container');
+  if (!container) return;
+  const d = buildWorkersDataset();
+  const siteLabel = d.siteId === 'all' ? t('reports.allSites') : (assignedSites.find(s=>s.id===d.siteId)?.name || 'Site');
+  if (!d.rows.length){
+    container.innerHTML = `<div class="p-8 text-center text-slate-500 text-sm">${t('common.noDataAvailable')}</div>`;
+    return;
+  }
+  const headers = Object.keys(d.rows[0]);
+  const thead = headers.map(h=>`<th class="px-3 py-2 text-left text-xs font-semibold text-slate-500 uppercase whitespace-nowrap">${h}</th>`).join('');
+  const tbody = d.rows.slice(0,100).map(r=>`<tr class="border-b border-slate-100">${headers.map(h=>`<td class="px-3 py-2 text-sm text-slate-700 whitespace-nowrap">${r[h] ?? ''}</td>`).join('')}</tr>`).join('');
+  container.innerHTML = `
+    <div class="px-4 py-3 border-b border-slate-100 bg-slate-50 flex flex-wrap items-center justify-between gap-2">
+      <div>
+        <h3 class="font-bold text-slate-800 text-sm">${t('reports.reportTitles.workers')}</h3>
+        <p class="text-xs text-slate-500">${siteLabel}</p>
+      </div>
+      <span class="text-xs text-slate-400">${d.rows.length} ${t('workers.workers')}</span>
+    </div>
+    <div class="overflow-x-auto">
+      <table class="w-full">
+        <thead class="bg-slate-50"><tr>${thead}</tr></thead>
+        <tbody>${tbody}</tbody>
+      </table>
+    </div>`;
+}
+
+window.exportWorkersReport = (format) => {
+  const d = buildWorkersDataset();
+  const company = getCompanyDetails();
+  const generatedDate = new Date().toLocaleString();
+  const siteName = d.siteId === 'all' ? t('reports.allSites') : (assignedSites.find(s=>s.id===d.siteId)?.name || 'Site');
+
+  if (format === 'csv'){
+    if (!d.rows.length){ alert(t('common.noDataAvailable')); return; }
+    const headers = Object.keys(d.rows[0]);
+    const csvRows = [
+      `"${company.name}"`,`"${company.address}"`,`"${company.location}"`,`"${company.city}"`,
+      `"Tel: ${company.phone}"`,`"Email: ${company.email}"`,
+      `"Generated: ${generatedDate}"`,`"Report: ${t('reports.reportTitles.workers')}"`,
+      `"Site Name: ${siteName}"`,'',headers.join(',')
+    ];
+    for (const row of d.rows) csvRows.push(headers.map(h=>`"${String(row[h] ?? '').replace(/"/g,'""')}"`).join(','));
+    const csv = csvRows.join('\n');
+    const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = `SHDR_Workers_${siteName.replace(/\s/g,'_')}_${new Date().toISOString().slice(0,10)}.csv`; a.click();
+    URL.revokeObjectURL(url);
+    return;
+  }
+  if (!d.rows.length){ alert(t('common.noDataAvailable')); return; }
+  const headers = Object.keys(d.rows[0]);
+  const tableRows = d.rows.map(r=>`<tr>${headers.map(h=>`<td>${r[h] ?? ''}</td>`).join('')}</tr>`).join('');
+  const meta = `<strong>${t('reports.labels.siteName')}:</strong> ${siteName} &nbsp;|&nbsp; <strong>${t('reports.generated')}:</strong> ${generatedDate}`;
+  const bodyHTML = `<table><thead><tr>${headers.map(h=>`<th>${h}</th>`).join('')}</tr></thead><tbody>${tableRows}</tbody></table>`;
+  const fullHTML = generateReportHTML(t('reports.reportTitles.workers'), bodyHTML, meta);
+  const win = window.open('', '_blank', 'width=1000,height=700');
+  if (!win){ alert(t('common.accessDenied')); return; }
+  win.document.write(fullHTML); win.document.close();
+  setTimeout(()=>win.print(), 500);
+};
+
+// ============================================================
+// LEGACY: Requisition report & Material Usage report (kept in Materials section)
+// ============================================================
+function drawPdfHeader(doc, company, model){
   const W = doc.internal.pageSize.getWidth();
   doc.setFillColor(5,150,105); doc.rect(0,0,W,4,'F');
-
   let headerTop = 10;
-  if (logoData) {
-    try { doc.addImage(logoData, 'PNG', 14, headerTop, 20, 20); } catch(e){ console.warn('PDF logo addImage failed:', e); }
-  }
-  const textX = logoData ? 38 : 14;
-
   doc.setFont('helvetica','bold'); doc.setFontSize(16); doc.setTextColor(5,150,105);
-  doc.text(company.name, textX, headerTop+7);
+  doc.text(company.name, 14, headerTop+7);
   doc.setFont('helvetica','normal'); doc.setFontSize(8.5); doc.setTextColor(60,60,60);
-  doc.text('Construction Management System', textX, headerTop+12);
+  doc.text('Construction Management System', 14, headerTop+12);
   doc.setFontSize(7.5); doc.setTextColor(100,100,100);
-  doc.text(`${company.address} | ${company.location}`, textX, headerTop+16.5);
-  doc.text(`${company.city} | Tel: ${company.phone}`, textX, headerTop+20);
-  doc.text(`Email: ${company.email}`, textX, headerTop+23.5);
-
+  doc.text(`${company.address} | ${company.location}`, 14, headerTop+16.5);
+  doc.text(`${company.city} | Tel: ${company.phone}`, 14, headerTop+20);
+  doc.text(`Email: ${company.email}`, 14, headerTop+23.5);
   doc.setFont('helvetica','bold'); doc.setFontSize(12); doc.setTextColor(20,20,20);
   doc.text(model.title, W-14, headerTop+7, {align:'right'});
   doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(100,100,100);
   doc.text('Official Company Report', W-14, headerTop+12, {align:'right'});
-
   doc.setDrawColor(5,150,105); doc.setLineWidth(0.5);
   doc.line(14, headerTop+27, W-14, headerTop+27);
-
   let y = headerTop + 33;
   const meta = [
     {label:'Manager', value: model.manager},
-    {label:'Assigned Site', value: model.site},
-    {label:'Period', value: (model.startDate||model.endDate) ? `${model.startDate||'Start'} — ${model.endDate||'Now'}` : 'All time'},
+    {label:'Site', value: model.site},
     {label:'Generated', value: new Date().toLocaleString()}
   ];
-  if (model.filters?.department && model.filters.department !== 'all') meta.push({label:'Department', value: model.filters.department});
-  if (model.type === 'worker-payroll' && model.filters?.paymentStatus && model.filters.paymentStatus !== 'all') meta.push({label:'Payment Status', value: model.filters.paymentStatus});
-
   doc.setFontSize(8.5); doc.setTextColor(40,40,40);
   meta.forEach(m=>{
     doc.setFont('helvetica','bold'); doc.text(`${m.label}:`, 14, y);
@@ -826,326 +943,16 @@ function drawPdfHeader(doc, company, model, logoData) {
   });
   return y + 3;
 }
-
-function addPdfFooter(doc, company) {
+function addPdfFooter(doc, company){
   const pages = doc.internal.getNumberOfPages();
   const W = doc.internal.pageSize.getWidth(), H = doc.internal.pageSize.getHeight();
-  for (let i=1; i<=pages; i++) {
+  for (let i=1; i<=pages; i++){
     doc.setPage(i); doc.setFontSize(7.5); doc.setTextColor(120,120,120);
     doc.text(`Generated by ${company.name} Management System on ${new Date().toLocaleString()}`, W/2, H-8, {align:'center'});
     doc.text(`Page ${i} of ${pages}`, W-14, H-8, {align:'right'});
-    doc.setDrawColor(220,220,220); doc.setLineWidth(0.2); doc.line(14, H-12, W-14, H-12);
   }
 }
 
-window.exportReportPDF = async function() {
-  try {
-    const model = buildReportModel();
-    const hasData = model.sections.some(s => s.rows && s.rows.length);
-    if (!hasData) { showToast('No data available for the selected report and filters.', 'error'); return; }
-
-    const { jsPDF } = window.jspdf;
-    const anyWide = model.sections.some(s => s.columns.length > 6);
-    const doc = new jsPDF({ orientation: anyWide ? 'landscape' : 'portrait', unit: 'mm', format: 'a4' });
-    const company = getCompany();
-    const logoData = await loadShdrLogoPng();
-
-    let y = drawPdfHeader(doc, company, model, logoData);
-    const pageH = doc.internal.pageSize.getHeight();
-
-    for (const section of model.sections) {
-      if (!section.rows || !section.rows.length) continue;
-      if (y > pageH - 50) { doc.addPage(); y = 20; }
-      doc.setFontSize(10.5); doc.setFont('helvetica','bold'); doc.setTextColor(5,150,105);
-      doc.text(section.title, 14, y);
-      y += 2;
-
-      const head = [section.columns.map(c=>c.label)];
-      const body = section.rows.map(row => section.columns.map(c => {
-        const v = row[c.key];
-        if (v === null || v === undefined || v === '') return '—';
-        if (c.format === 'rwf') return formatRWF(v);
-        return String(v);
-      }));
-
-      const columnStyles = {};
-      section.columns.forEach((c,i)=>{
-        if (c.align === 'right') columnStyles[i] = { halign: 'right' };
-        else if (c.align === 'center') columnStyles[i] = { halign: 'center' };
-      });
-
-      let foot = null;
-      if (section.totals && Object.keys(section.totals).length) {
-        const totalRow = section.columns.map((c,i)=>{
-          if (i === 0) return 'TOTAL';
-          const key = c.key;
-          if (section.totals[key] !== undefined && section.totals[key] !== 0) {
-            return c.format === 'rwf' ? formatRWF(section.totals[key]) : String(section.totals[key]);
-          }
-          return '';
-        });
-        foot = [totalRow];
-      }
-
-      doc.autoTable({
-        head, body, foot,
-        startY: y + 2,
-        styles: { fontSize: 7.8, cellPadding: 1.6, overflow: 'linebreak' },
-        headStyles: { fillColor: [5,150,105], textColor: 255, fontStyle: 'bold' },
-        footStyles: { fillColor: [236,253,245], textColor: [6,95,70], fontStyle: 'bold' },
-        alternateRowStyles: { fillColor: [249,250,251] },
-        columnStyles,
-        margin: { left: 14, right: 14 }
-      });
-      y = (doc.lastAutoTable ? doc.lastAutoTable.finalY : y) + 8;
-    }
-
-    addPdfFooter(doc, company);
-    doc.save(getReportFilename(model.type, 'pdf'));
-    showToast(getReportSuccessMessage(model.type, 'pdf'), 'success');
-  } catch (err) {
-    console.error('PDF generation failed:', err);
-    showToast('Unable to generate the PDF report. Please try again.', 'error');
-  }
-};
-
-window.exportReportExcel = function() {
-  try {
-    const model = buildReportModel();
-    const hasData = model.sections.some(s => s.rows && s.rows.length);
-    if (!hasData) { showToast('No data available for the selected report and filters.', 'error'); return; }
-
-    const company = getCompany();
-    const wb = XLSX.utils.book_new();
-    const aoa = [];
-    aoa.push([company.name]);
-    aoa.push([company.address + ' | ' + company.location]);
-    aoa.push([company.city + ' | Tel: ' + company.phone]);
-    aoa.push(['Email: ' + company.email]);
-    aoa.push([model.title]);
-    aoa.push([`Manager: ${model.manager}`]);
-    aoa.push([`Assigned Site: ${model.site}`]);
-    aoa.push([`Period: ${(model.startDate||model.endDate) ? `${model.startDate||'Start'} — ${model.endDate||'Now'}` : 'All time'}`]);
-    if (model.type === 'worker-payroll' && model.filters?.paymentStatus && model.filters.paymentStatus !== 'all') {
-      aoa.push([`Payment Status: ${model.filters.paymentStatus}`]);
-    }
-    aoa.push([`Generated: ${new Date().toLocaleString()}`]);
-    aoa.push([]);
-
-    for (const section of model.sections) {
-      if (!section.rows || !section.rows.length) continue;
-      aoa.push([`— ${section.title} —`]);
-      aoa.push(section.columns.map(c=>c.label));
-      section.rows.forEach(row => {
-        aoa.push(section.columns.map(c => {
-          const v = row[c.key];
-          if (v === null || v === undefined || v === '') return '';
-          if (c.format === 'rwf') return toNumber(v);
-          return v;
-        }));
-      });
-      if (section.totals && Object.keys(section.totals).length) {
-        const totalRow = section.columns.map((c,i)=>{
-          if (i === 0) return 'TOTAL';
-          const key = c.key;
-          if (section.totals[key] !== undefined && section.totals[key] !== 0) return toNumber(section.totals[key]);
-          return '';
-        });
-        aoa.push(totalRow);
-      }
-      aoa.push([]);
-    }
-
-    const ws = XLSX.utils.aoa_to_sheet(aoa);
-    const colWidths = [];
-    aoa.forEach(row => {
-      if (!Array.isArray(row)) return;
-      row.forEach((cell, i) => {
-        const len = String(cell ?? '').length;
-        colWidths[i] = Math.max(colWidths[i] || 10, Math.min(45, len + 2));
-      });
-    });
-    ws['!cols'] = colWidths.map(w => ({wch: w || 12}));
-
-    let sheetName = 'Report';
-    if (model.type === 'general') sheetName = 'General';
-    else if (model.type === 'worker-payroll') sheetName = 'Payroll';
-    else if (model.type === 'materials') sheetName = 'Materials';
-    else if (model.type === 'workers') sheetName = 'Workers';
-
-    XLSX.utils.book_append_sheet(wb, ws, sheetName);
-    XLSX.writeFile(wb, getReportFilename(model.type, 'xlsx'));
-    showToast(getReportSuccessMessage(model.type, 'excel'), 'success');
-  } catch (err) {
-    console.error('Excel generation failed:', err);
-    showToast('Unable to generate the Excel report. Please try again.', 'error');
-  }
-};
-
-window.printReport = function() {
-  try {
-    const model = buildReportModel();
-    const hasData = model.sections.some(s => s.rows && s.rows.length);
-    if (!hasData) { showToast('No data available for the selected report and filters.', 'error'); return; }
-
-    const company = getCompany();
-    const period = (model.startDate || model.endDate)
-      ? `${model.startDate || 'Start'} — ${model.endDate || 'Now'}`
-      : 'All time';
-
-    const metaItems = [
-      { label: 'Manager', value: model.manager },
-      { label: 'Assigned Site', value: model.site },
-      { label: 'Reporting Period', value: period },
-      { label: 'Generated', value: new Date().toLocaleString() }
-    ];
-    if (model.filters?.department && model.filters.department !== 'all')
-      metaItems.push({ label: 'Department', value: model.filters.department });
-    if (model.type === 'worker-payroll' && model.filters?.paymentStatus && model.filters.paymentStatus !== 'all')
-      metaItems.push({ label: 'Payment Status', value: model.filters.paymentStatus });
-
-    let sectionsHtml = '';
-    for (const section of model.sections) {
-      if (!section.rows || !section.rows.length) continue;
-      const isOverview = section.columns.length === 2 && section.columns[0].key === 'metric';
-
-      const head = section.columns.map(c => {
-        const cls = c.align === 'right' ? 'num' : c.align === 'center' ? 'center' : '';
-        return `<th class="${cls}">${c.label}</th>`;
-      }).join('');
-
-      const body = section.rows.map(row => {
-        const cells = section.columns.map(c => {
-          const v = row[c.key];
-          const disp = (v === null || v === undefined || v === '') ? '—' : (c.format === 'rwf' ? formatRWF(v) : String(v));
-          const cls = c.align === 'right' ? 'num' : c.align === 'center' ? 'center' : '';
-          return `<td class="${cls}">${disp}</td>`;
-        }).join('');
-        return `<tr>${cells}</tr>`;
-      }).join('');
-
-      let footHtml = '';
-      if (section.totals && Object.keys(section.totals).length) {
-        const cells = section.columns.map((c, i) => {
-          if (i === 0) return `<td>TOTAL</td>`;
-          const v = section.totals[c.key];
-          const cls = c.align === 'right' ? 'num' : c.align === 'center' ? 'center' : '';
-          if (v !== undefined && v !== 0) {
-            const disp = c.format === 'rwf' ? formatRWF(v) : String(v);
-            return `<td class="${cls}">${disp}</td>`;
-          }
-          return `<td class="${cls}"></td>`;
-        }).join('');
-        footHtml = `<tfoot><tr>${cells}</tr></tfoot>`;
-      }
-
-      sectionsHtml += `
-        <div class="report-section">
-          <div class="report-section-title">${section.title}</div>
-          <table class="doc-table ${isOverview ? 'overview-table' : ''}">
-            <thead><tr>${head}</tr></thead>
-            <tbody>${body}</tbody>
-            ${footHtml}
-          </table>
-        </div>`;
-    }
-
-    const html = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>${model.title}</title>
-<style>
-  @page { size: A4; margin: 14mm 12mm; }
-  * { box-sizing: border-box; }
-  html, body { margin: 0; padding: 0; }
-  body {
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    color: #111827;
-    background: #fff;
-    font-size: 11.5px;
-    line-height: 1.45;
-    padding: 24px 28px;
-  }
-  .doc-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 24px; padding-bottom: 18px; border-bottom: 3px solid #059669; margin-bottom: 22px; }
-  .doc-brand { display: flex; gap: 14px; align-items: center; }
-  .doc-brand img { width: 54px; height: 54px; object-fit: contain; }
-  .doc-brand-name { font-size: 20px; font-weight: 800; color: #059669; letter-spacing: -.4px; line-height: 1.1; }
-  .doc-brand-sub { font-size: 9.5px; font-weight: 600; color: #6b7280; text-transform: uppercase; letter-spacing: 1.2px; margin-top: 2px; }
-  .doc-brand-detail { font-size: 10.5px; color: #4b5563; line-height: 1.55; margin-top: 6px; }
-  .doc-title-block { text-align: right; flex-shrink: 0; }
-  .doc-title { font-size: 14px; font-weight: 800; color: #111827; text-transform: uppercase; letter-spacing: .8px; line-height: 1.2; }
-  .doc-title-sub { font-size: 9px; color: #9ca3af; text-transform: uppercase; letter-spacing: 1.8px; margin-top: 5px; font-weight: 600; }
-  .doc-meta { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 32px; background: #f0fdf4; border-left: 4px solid #059669; padding: 14px 18px; margin-bottom: 24px; }
-  .doc-meta-item { display: flex; font-size: 11px; line-height: 1.4; }
-  .doc-meta-label { font-weight: 700; color: #065f46; min-width: 118px; flex-shrink: 0; }
-  .doc-meta-value { color: #1f2937; font-weight: 500; }
-  .report-section { margin-bottom: 26px; page-break-inside: auto; }
-  .report-section-title { font-size: 10.5px; font-weight: 800; color: #059669; text-transform: uppercase; letter-spacing: 1.6px; padding-bottom: 7px; border-bottom: 2px solid #d1fae5; margin-bottom: 0; page-break-after: avoid; }
-  table.doc-table { width: 100%; border-collapse: collapse; font-size: 10.5px; page-break-inside: auto; }
-  .doc-table thead { display: table-header-group; }
-  .doc-table thead th { background: #f8fafc; color: #374151; font-weight: 700; font-size: 9px; text-transform: uppercase; letter-spacing: .7px; padding: 9px 12px; text-align: left; border-bottom: 2px solid #e5e7eb; white-space: nowrap; }
-  .doc-table tbody td { padding: 8px 12px; border-bottom: 1px solid #f1f5f9; color: #1f2937; vertical-align: top; line-height: 1.45; }
-  .doc-table tbody tr { page-break-inside: avoid; }
-  .doc-table tbody tr:nth-child(even) td { background: #fafbfc; }
-  .doc-table tfoot td { background: #ecfdf5; font-weight: 800; color: #065f46; padding: 9px 12px; border-top: 2px solid #059669; font-size: 10px; text-transform: uppercase; letter-spacing: .5px; }
-  .doc-table .num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
-  .doc-table .center { text-align: center; }
-  .overview-table { table-layout: fixed; }
-  .overview-table thead th:first-child { width: 32%; }
-  .overview-table tbody td:first-child { font-weight: 700; color: #4b5563; }
-  .doc-footer { margin-top: 30px; padding-top: 12px; border-top: 1px solid #e5e7eb; font-size: 9px; color: #9ca3af; text-align: center; letter-spacing: .4px; page-break-inside: avoid; }
-  .doc-footer b { color: #6b7280; font-weight: 700; }
-  @media print { body { padding: 0; } .doc-header { break-inside: avoid; } }
-</style></head><body>
-  <div class="doc-header">
-    <div class="doc-brand">
-      <img src="${SHDR_LOGO_BASE64}" alt="SHDR Ltd">
-      <div>
-        <div class="doc-brand-name">${company.name}</div>
-        <div class="doc-brand-sub">Construction Management System</div>
-        <div class="doc-brand-detail">
-          ${company.address}<br>
-          ${company.location} &nbsp;•&nbsp; ${company.city}<br>
-          Tel: ${company.phone} &nbsp;•&nbsp; ${company.email}
-        </div>
-      </div>
-    </div>
-    <div class="doc-title-block">
-      <div class="doc-title">${model.title.replace('SHDR LTD — ','')}</div>
-      <div class="doc-title-sub">Official Company Report</div>
-    </div>
-  </div>
-  <div class="doc-meta">
-    ${metaItems.map(m => `
-      <div class="doc-meta-item">
-        <span class="doc-meta-label">${m.label}</span>
-        <span class="doc-meta-value">${m.value || '—'}</span>
-      </div>`).join('')}
-  </div>
-  ${sectionsHtml}
-  <div class="doc-footer">
-    Generated automatically by <b>${company.name} Management System</b> on ${new Date().toLocaleString()} &nbsp;•&nbsp; © ${new Date().getFullYear()} ${company.name}
-  </div>
-</body></html>`;
-
-    const w = window.open('', '_blank');
-    if (!w) { showToast('Please allow popups to print.', 'error'); return; }
-    w.document.open();
-    w.document.write(html);
-    w.document.close();
-    w.onload = () => {
-      setTimeout(() => {
-        w.focus();
-        w.print();
-        showToast(getReportSuccessMessage(model.type, 'print'), 'success');
-      }, 400);
-    };
-  } catch (err) {
-    console.error('Print failed:', err);
-    showToast('Unable to open the print dialog. Please try again.', 'error');
-  }
-};
-
-// ============================================================
-// LEGACY: Material Requisition / Material Usage reports (kept separate)
-// ============================================================
 function buildRequisitionReportData(){
   const filters=_reqFilters;
   const rows=[];
@@ -1189,13 +996,13 @@ window.exportRequisitionsPDF=function(){
     if(!data.length){showToast('No requisitions match the current filters.','error');return}
     const {jsPDF}=window.jspdf;
     const doc=new jsPDF({orientation:'landscape',unit:'mm',format:'a4'});
-    const company=getCompany();
-    const startY=drawPdfHeader(doc,company,{title:'Material Requisition Report',manager:managerProfile?.full_name||'—',site:assignedSites.find(s=>s.id===currentSiteId)?.name||'—',startDate:'',endDate:'',filters:{}}, null);
+    const company=getCompanyDetails();
+    const startY=drawPdfHeader(doc,company,{title:'Material Requisition Report',manager:managerProfile?.full_name||'—',site:assignedSites.find(s=>s.id===currentSiteId)?.name||'—'});
     const head=[['Req. ID','Req. Date','Required','Material','Unit','Qty','Priority','Status','Site','Requested By','Notes']];
     const body=data.map(r=>[r.reqId,r.reqDate,r.needDate,r.material,String(r.unit),String(r.qty),r.priority,r.status,r.site,r.reqBy,r.notes]);
     doc.autoTable({head,body,startY,styles:{fontSize:8,cellPadding:2},headStyles:{fillColor:[5,150,105],textColor:255,fontStyle:'bold'},alternateRowStyles:{fillColor:[249,250,251]},columnStyles:{5:{halign:'right'}}});
     addPdfFooter(doc,company);
-    doc.save(`SHDR_Material_Requisition_Report_${safeFilename(formatDateShort(new Date().toISOString()))}.pdf`);
+    doc.save(`SHDR_Material_Requisition_Report_${new Date().toISOString().slice(0,10)}.pdf`);
     showToast('PDF report downloaded successfully.','success');
   }catch(err){console.error(err);showToast('Unable to generate the PDF. Please try again.','error')}
 };
@@ -1204,7 +1011,7 @@ window.exportRequisitionsExcel=function(){
   try{
     const data=buildRequisitionReportData();
     if(!data.length){showToast('No requisitions match the current filters.','error');return}
-    const company=getCompany();
+    const company=getCompanyDetails();
     const header=[
       [company.name],[company.address+' | '+company.location],[company.city],[`Generated: ${new Date().toLocaleString()}`],
       ['Report: Material Requisition Report'],[`Site: ${assignedSites.find(s=>s.id===currentSiteId)?.name||'All Sites'}`],[`Manager: ${managerProfile?.full_name||'—'}`],[]
@@ -1215,7 +1022,7 @@ window.exportRequisitionsExcel=function(){
     ws['!cols']=[{wch:18},{wch:12},{wch:12},{wch:22},{wch:8},{wch:8},{wch:10},{wch:14},{wch:20},{wch:18},{wch:24}];
     const wb=XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb,ws,'Requisitions');
-    XLSX.writeFile(wb,`SHDR_Material_Requisition_Report_${safeFilename(formatDateShort(new Date().toISOString()))}.xlsx`);
+    XLSX.writeFile(wb,`SHDR_Material_Requisition_Report_${new Date().toISOString().slice(0,10)}.xlsx`);
     showToast('Excel report downloaded successfully.','success');
   }catch(err){console.error(err);showToast('Unable to generate the Excel file. Please try again.','error')}
 };
@@ -1224,7 +1031,7 @@ window.printRequisitions=function(){
   try{
     const data=buildRequisitionReportData();
     if(!data.length){showToast('No requisitions match the current filters.','error');return}
-    const company=getCompany();
+    const company=getCompanyDetails();
     const siteName=assignedSites.find(s=>s.id===currentSiteId)?.name||'All Sites';
     const rows=data.map(r=>`<tr><td>${r.reqId}</td><td>${r.reqDate}</td><td>${r.needDate}</td><td>${r.material}</td><td>${r.unit}</td><td style="text-align:right">${r.qty}</td><td>${r.priority}</td><td>${r.status}</td><td>${r.site}</td><td>${r.reqBy}</td><td>${r.notes}</td></tr>`).join('');
     const html=`<!DOCTYPE html><html><head><title>Material Requisition Report</title><style>*{box-sizing:border-box}body{font-family:Arial,sans-serif;padding:20px;color:#1f2937}.hdr{display:flex;justify-content:space-between;border-bottom:3px solid #059669;padding-bottom:12px;margin-bottom:16px}.brand h1{color:#059669;font-size:20px;margin:0}.brand p{font-size:11px;color:#555;margin:2px 0}.title{text-align:right}.title h2{margin:0;font-size:16px}.title p{margin:4px 0 0;font-size:10px;color:#666}.meta{background:#f0fdf4;border:1px solid #bbf7d0;border-radius:6px;padding:10px;font-size:11px;margin-bottom:14px}.meta b{color:#065f46}table{width:100%;border-collapse:collapse;font-size:10px}th{background:#059669;color:#fff;padding:6px;text-align:left}td{padding:5px;border:1px solid #e5e7eb}tr:nth-child(even) td{background:#f9fafb}.footer{margin-top:20px;padding-top:8px;border-top:1px solid #ccc;text-align:center;font-size:10px;color:#666}@media print{body{padding:10px}}</style></head><body><div class="hdr"><div class="brand"><h1>${company.name}</h1><p>${company.address}</p><p>${company.location} | ${company.city}</p><p>Tel: ${company.phone} | ${company.email}</p></div><div class="title"><h2>Material Requisition Report</h2><p>Official Company Report</p></div></div><div class="meta"><b>Site:</b> ${siteName} &nbsp;|&nbsp; <b>Manager:</b> ${managerProfile?.full_name||'—'} &nbsp;|&nbsp; <b>Generated:</b> ${new Date().toLocaleString()} &nbsp;|&nbsp; <b>Rows:</b> ${data.length}</div><table><thead><tr><th>Req. ID</th><th>Req. Date</th><th>Required</th><th>Material</th><th>Unit</th><th>Qty</th><th>Priority</th><th>Status</th><th>Site</th><th>Requested By</th><th>Notes</th></tr></thead><tbody>${rows}</tbody></table><div class="footer">Generated by ${company.name} Management System on ${new Date().toLocaleString()}</div></body></html>`;
@@ -1238,21 +1045,20 @@ window.printRequisitions=function(){
 function buildMaterialUsageReportData(){
   return materialsData.filter(m=>m.site_id===currentSiteId).slice().sort((a,b)=>new Date(b.date_used||b.created_at||0)-new Date(a.date_used||a.created_at||0));
 }
-window.exportMaterialUsagePDF=async function(){
+window.exportMaterialUsagePDF=function(){
   try{
     const data=buildMaterialUsageReportData();
     if(!data.length){showToast('No material usage records.','error');return}
     const {jsPDF}=window.jspdf;
     const doc=new jsPDF({orientation:'portrait',unit:'mm',format:'a4'});
-    const company=getCompany();
+    const company=getCompanyDetails();
     const total=data.reduce((s,m)=>s+calculateTotal(m.quantity_used||0,m.unit_cost||0),0);
-    const logoData=await loadShdrLogoPng();
-    const startY=drawPdfHeader(doc,company,{title:'Material Usage Report',manager:managerProfile?.full_name||'—',site:assignedSites.find(s=>s.id===currentSiteId)?.name||'—',startDate:'',endDate:'',filters:{}},logoData);
-    const head=[['Date','Material','Qty','Unit','Unit Cost','Total','Batch','Photo']];
-    const body=data.map(m=>[formatDateShort(m.date_used||m.created_at),m.name||'—',String(toNumber(m.quantity_used)),m.unit||'',formatRWF(m.unit_cost||0),formatRWF(calculateTotal(m.quantity_used||0,m.unit_cost||0)),m.batch_number||'—',m.image?'Yes':'—']);
-    doc.autoTable({head,body,startY,styles:{fontSize:8,cellPadding:2},headStyles:{fillColor:[5,150,105],textColor:255,fontStyle:'bold'},columnStyles:{2:{halign:'right'},4:{halign:'right'},5:{halign:'right'}},foot:[['','','','','','Total: '+formatRWF(total),'','']],footStyles:{fillColor:[236,253,245],textColor:[6,95,70],fontStyle:'bold'}});
+    const startY=drawPdfHeader(doc,company,{title:'Material Usage Report',manager:managerProfile?.full_name||'—',site:assignedSites.find(s=>s.id===currentSiteId)?.name||'—'});
+    const head=[['Date','Material','Qty','Unit','Unit Cost','Total','Batch']];
+    const body=data.map(m=>[formatDateShort(m.date_used||m.created_at),m.name||'—',String(toNumber(m.quantity_used)),m.unit||'',formatRWF(m.unit_cost||0),formatRWF(calculateTotal(m.quantity_used||0,m.unit_cost||0)),m.batch_number||'—']);
+    doc.autoTable({head,body,startY,styles:{fontSize:8,cellPadding:2},headStyles:{fillColor:[5,150,105],textColor:255,fontStyle:'bold'},columnStyles:{2:{halign:'right'},4:{halign:'right'},5:{halign:'right'}},foot:[['','','','','','Total: '+formatRWF(total),'']],footStyles:{fillColor:[236,253,245],textColor:[6,95,70],fontStyle:'bold'}});
     addPdfFooter(doc,company);
-    doc.save(`SHDR_Material_Usage_Report_${safeFilename(formatDateShort(new Date().toISOString()))}.pdf`);
+    doc.save(`SHDR_Material_Usage_Report_${new Date().toISOString().slice(0,10)}.pdf`);
     showToast('PDF report downloaded successfully.','success');
   }catch(err){console.error(err);showToast('Unable to generate the PDF. Please try again.','error')}
 };
@@ -1260,15 +1066,15 @@ window.exportMaterialUsageExcel=function(){
   try{
     const data=buildMaterialUsageReportData();
     if(!data.length){showToast('No material usage records.','error');return}
-    const company=getCompany();
+    const company=getCompanyDetails();
     const total=data.reduce((s,m)=>s+calculateTotal(m.quantity_used||0,m.unit_cost||0),0);
     const hdr=[[company.name],[company.address],[`Generated: ${new Date().toLocaleString()}`],['Material Usage Report'],[`Site: ${assignedSites.find(s=>s.id===currentSiteId)?.name||'—'}`],[`Manager: ${managerProfile?.full_name||'—'}`],[`Total Value: ${formatRWF(total)}`],[]];
-    const cols=['Date','Material','Quantity','Unit','Unit Cost','Total','Batch','Photo URL','Notes'];
-    const rows=data.map(m=>[formatDateShort(m.date_used||m.created_at),m.name||'',Number(m.quantity_used)||0,m.unit||'',Number(m.unit_cost)||0,calculateTotal(m.quantity_used||0,m.unit_cost||0),m.batch_number||'',m.image||'',m.notes||'']);
+    const cols=['Date','Material','Quantity','Unit','Unit Cost','Total','Batch','Notes'];
+    const rows=data.map(m=>[formatDateShort(m.date_used||m.created_at),m.name||'',Number(m.quantity_used)||0,m.unit||'',Number(m.unit_cost)||0,calculateTotal(m.quantity_used||0,m.unit_cost||0),m.batch_number||'',m.notes||'']);
     const ws=XLSX.utils.aoa_to_sheet([...hdr,cols,...rows]);
-    ws['!cols']=[{wch:12},{wch:22},{wch:10},{wch:8},{wch:12},{wch:14},{wch:18},{wch:30},{wch:20}];
+    ws['!cols']=[{wch:12},{wch:22},{wch:10},{wch:8},{wch:12},{wch:14},{wch:18},{wch:20}];
     const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'Material Usage');
-    XLSX.writeFile(wb,`SHDR_Material_Usage_Report_${safeFilename(formatDateShort(new Date().toISOString()))}.xlsx`);
+    XLSX.writeFile(wb,`SHDR_Material_Usage_Report_${new Date().toISOString().slice(0,10)}.xlsx`);
     showToast('Excel report downloaded successfully.','success');
   }catch(err){console.error(err);showToast('Unable to generate the Excel file. Please try again.','error')}
 };
@@ -1276,7 +1082,7 @@ window.printMaterialUsage=function(){
   try{
     const data=buildMaterialUsageReportData();
     if(!data.length){showToast('No material usage records.','error');return}
-    const company=getCompany();
+    const company=getCompanyDetails();
     const siteName=assignedSites.find(s=>s.id===currentSiteId)?.name||'—';
     const total=data.reduce((s,m)=>s+calculateTotal(m.quantity_used||0,m.unit_cost||0),0);
     const rows=data.map(m=>`<tr><td>${formatDateShort(m.date_used||m.created_at)}</td><td>${m.name||''}</td><td style="text-align:right">${toNumber(m.quantity_used)} ${m.unit||''}</td><td style="text-align:right">${formatRWF(m.unit_cost||0)}</td><td style="text-align:right">${formatRWF(calculateTotal(m.quantity_used||0,m.unit_cost||0))}</td><td>${m.batch_number||'—'}</td><td>${m.notes||''}</td></tr>`).join('');
@@ -1287,198 +1093,7 @@ window.printMaterialUsage=function(){
 };
 
 // ============================================================
-// REPORTS PAGE — 4 report types
-// ============================================================
-function renderReports(container){
-  container.innerHTML = `
-    <h2 class="text-xl sm:text-2xl font-bold mb-4">${t('reports.title')}</h2>
-    <div class="flex gap-2 p-1 bg-slate-200/60 rounded-xl mb-4 overflow-x-auto">
-      <button onclick="setReportType('general')" class="flex-1 min-w-[120px] px-4 py-2 rounded-lg text-sm font-semibold transition ${reportType==='general'?'report-tab-active':'report-tab-inactive'}">${t('reports.general')}</button>
-      <button onclick="setReportType('worker-payroll')" class="flex-1 min-w-[140px] px-4 py-2 rounded-lg text-sm font-semibold transition ${reportType==='worker-payroll'?'report-tab-active':'report-tab-inactive'}">${t('reports.workerPayroll')}</button>
-      <button onclick="setReportType('materials')" class="flex-1 min-w-[120px] px-4 py-2 rounded-lg text-sm font-semibold transition ${reportType==='materials'?'report-tab-active':'report-tab-inactive'}">${t('reports.materials')}</button>
-      <button onclick="setReportType('workers')" class="flex-1 min-w-[120px] px-4 py-2 rounded-lg text-sm font-semibold transition ${reportType==='workers'?'report-tab-active':'report-tab-inactive'}">${t('reports.workers')}</button>
-    </div>
-    <div class="bg-white rounded-2xl border p-4 mb-4 grid grid-cols-1 md:grid-cols-4 gap-4">
-      <div>
-        <label class="block text-xs font-medium text-slate-500 mb-1">${t('reports.department')}</label>
-        <select id="report-dept" class="w-full border rounded-lg p-2 text-sm" onchange="onReportFilterChange()">
-          <option value="all">${t('reports.allDepartments')}</option>
-          <option value="materials">${t('navigation.materials')}</option>
-          <option value="workers">${t('navigation.workers')}</option>
-        </select>
-      </div>
-      <div>
-        <label class="block text-xs font-medium text-slate-500 mb-1">${t('reports.startDate')}</label>
-        <input type="date" id="report-start" class="w-full border rounded-lg p-2 text-sm" onchange="onReportFilterChange()">
-      </div>
-      <div>
-        <label class="block text-xs font-medium text-slate-500 mb-1">${t('reports.endDate')}</label>
-        <input type="date" id="report-end" class="w-full border rounded-lg p-2 text-sm" onchange="onReportFilterChange()">
-      </div>
-      <div id="report-payment-status-wrap" class="${reportType==='worker-payroll'?'':'hidden'}">
-        <label class="block text-xs font-medium text-slate-500 mb-1">${t('reports.paymentStatus')}</label>
-        <select id="report-payment-status" class="w-full border rounded-lg p-2 text-sm" onchange="onReportFilterChange()">
-          <option value="all">${t('reports.allPaymentStatus')}</option>
-          <option value="paid">${t('reports.paid')}</option>
-          <option value="unpaid">${t('reports.unpaid')}</option>
-        </select>
-      </div>
-    </div>
-    <div class="bg-white rounded-2xl border p-4 mb-4 flex flex-wrap items-center gap-3">
-      <input type="text" id="report-worker-search" class="flex-1 min-w-[180px] border rounded-lg p-2 text-sm" placeholder="${t('reports.searchWorker')}" oninput="onReportFilterChange()">
-      <div class="flex flex-wrap gap-2">
-        <button onclick="exportReportPDF()" class="px-4 py-2 bg-slate-800 text-white rounded-xl hover:bg-slate-900 flex items-center gap-2 text-sm"><iconify-icon icon="material-symbols:picture-as-pdf"></iconify-icon> ${t('reports.generatePDF')}</button>
-        <button onclick="exportReportExcel()" class="px-4 py-2 bg-emerald-700 text-white rounded-xl hover:bg-emerald-800 flex items-center gap-2 text-sm"><iconify-icon icon="material-symbols:table"></iconify-icon> ${t('reports.generateExcel')}</button>
-        <button onclick="printReport()" class="px-4 py-2 bg-slate-600 text-white rounded-xl hover:bg-slate-700 flex items-center gap-2 text-sm"><iconify-icon icon="material-symbols:print"></iconify-icon> ${t('reports.printReport')}</button>
-      </div>
-    </div>
-    <div id="report-preview-container" class="bg-white rounded-2xl border overflow-hidden shadow-sm">
-      <div class="p-4 text-slate-500 text-sm">${t('common.loading')}</div>
-    </div>`;
-  const psWrap = document.getElementById('report-payment-status-wrap');
-  if (psWrap) psWrap.classList.toggle('hidden', reportType !== 'worker-payroll');
-  requestAnimationFrame(() => updateReportPreview());
-}
-
-window.setReportType = function(type) {
-  const saved = readReportFilters();
-  reportType = type;
-  _reportPreviewCache = null;
-  showSection('reports');
-  requestAnimationFrame(() => {
-    const dept = document.getElementById('report-dept'); if (dept) dept.value = saved.department;
-    const sd = document.getElementById('report-start'); if (sd) sd.value = saved.startDate;
-    const ed = document.getElementById('report-end'); if (ed) ed.value = saved.endDate;
-    const ps = document.getElementById('report-payment-status'); if (ps) ps.value = saved.paymentStatus;
-    const ws = document.getElementById('report-worker-search'); if (ws) ws.value = saved.workerSearch;
-    updateReportPreview();
-  });
-};
-
-window.onReportFilterChange = function() {
-  const psWrap = document.getElementById('report-payment-status-wrap');
-  if (psWrap) psWrap.classList.toggle('hidden', reportType !== 'worker-payroll');
-  updateReportPreview();
-};
-
-function updateReportPreview() {
-  const container = document.getElementById('report-preview-container');
-  if (!container) return;
-  try {
-    const model = buildReportModel();
-    _reportPreviewCache = model;
-    const hasData = model.sections.some(s => s.rows && s.rows.length);
-    if (!hasData) {
-      container.innerHTML = `<div class="p-10 text-center text-slate-500 text-sm">${t('reports.noPreviewData')}</div>`;
-      return;
-    }
-
-    const company = getCompany();
-    const period = (model.startDate || model.endDate)
-      ? `${model.startDate || 'Start'} — ${model.endDate || 'Now'}`
-      : 'All time';
-
-    const metaItems = [
-      { label: 'Manager', value: model.manager },
-      { label: 'Assigned Site', value: model.site },
-      { label: 'Reporting Period', value: period },
-      { label: 'Generated', value: new Date().toLocaleString() }
-    ];
-    if (model.filters?.department && model.filters.department !== 'all')
-      metaItems.push({ label: 'Department', value: model.filters.department });
-    if (model.type === 'worker-payroll' && model.filters?.paymentStatus && model.filters.paymentStatus !== 'all')
-      metaItems.push({ label: 'Payment Status', value: model.filters.paymentStatus });
-
-    let html = `
-      <div class="report-doc">
-        <div class="doc-header">
-          <div class="doc-brand">
-            <img src="${SHDR_LOGO_BASE64}" alt="SHDR Ltd">
-            <div>
-              <div class="doc-brand-name">${company.name}</div>
-              <div class="doc-brand-sub">Construction Management System</div>
-              <div class="doc-brand-detail">
-                ${company.address}<br>
-                ${company.location} &nbsp;•&nbsp; ${company.city}<br>
-                Tel: ${company.phone} &nbsp;•&nbsp; ${company.email}
-              </div>
-            </div>
-          </div>
-          <div class="doc-title-block">
-            <div class="doc-title">${model.title.replace('SHDR LTD — ','')}</div>
-            <div class="doc-title-sub">Official Company Report</div>
-          </div>
-        </div>
-
-        <div class="doc-meta">
-          ${metaItems.map(m => `
-            <div class="doc-meta-item">
-              <span class="doc-meta-label">${m.label}</span>
-              <span class="doc-meta-value">${m.value || '—'}</span>
-            </div>`).join('')}
-        </div>`;
-
-    for (const section of model.sections) {
-      if (!section.rows || !section.rows.length) continue;
-      const isOverview = section.columns.length === 2 && section.columns[0].key === 'metric';
-
-      const head = section.columns.map(c => {
-        const cls = c.align === 'right' ? 'num' : c.align === 'center' ? 'center' : '';
-        return `<th class="${cls}">${c.label}</th>`;
-      }).join('');
-
-      const body = section.rows.slice(0, 100).map(row => {
-        const cells = section.columns.map(c => {
-          const v = row[c.key];
-          let disp = (v === null || v === undefined || v === '') ? '—' : (c.format === 'rwf' ? formatRWF(v) : String(v));
-          const cls = c.align === 'right' ? 'num' : c.align === 'center' ? 'center' : '';
-          return `<td class="${cls}">${disp}</td>`;
-        }).join('');
-        return `<tr>${cells}</tr>`;
-      }).join('');
-
-      let footHtml = '';
-      if (section.totals && Object.keys(section.totals).length) {
-        const cells = section.columns.map((c, i) => {
-          if (i === 0) return `<td>TOTAL</td>`;
-          const v = section.totals[c.key];
-          const cls = c.align === 'right' ? 'num' : c.align === 'center' ? 'center' : '';
-          if (v !== undefined && v !== 0) {
-            const disp = c.format === 'rwf' ? formatRWF(v) : String(v);
-            return `<td class="${cls}">${disp}</td>`;
-          }
-          return `<td class="${cls}"></td>`;
-        }).join('');
-        footHtml = `<tfoot><tr>${cells}</tr></tfoot>`;
-      }
-
-      html += `
-        <div class="report-section">
-          <div class="report-section-title">${section.title}</div>
-          <table class="doc-table ${isOverview ? 'overview-table' : ''}">
-            <thead><tr>${head}</tr></thead>
-            <tbody>${body}</tbody>
-            ${footHtml}
-          </table>
-          ${section.rows.length > 100 ? `<div style="padding:8px 14px;font-size:10px;color:#9ca3af;background:#f8fafc;border-top:1px solid #f1f5f9">Showing first 100 of ${section.rows.length} rows in preview — full data is included in PDF, Excel and Print.</div>` : ''}
-        </div>`;
-    }
-
-    html += `
-        <div class="doc-footer">
-          Generated automatically by <b>${company.name} Management System</b> on ${new Date().toLocaleString()} &nbsp;•&nbsp; © ${new Date().getFullYear()} ${company.name}
-        </div>
-      </div>`;
-
-    container.innerHTML = html;
-  } catch (err) {
-    console.error('Report preview failed:', err);
-    container.innerHTML = `<div class="p-10 text-center text-red-500 text-sm">Unable to load report preview: ${err.message}</div>`;
-  }
-}
-
-// ============================================================
-// MATERIAL USAGE (Batch) with photo
+// MATERIAL USAGE BATCH MODAL
 // ============================================================
 window.openAddMaterialModal=function(){
   _usageSelectedMaterials=new Map();
@@ -1544,7 +1159,6 @@ window.removeUsagePhoto=function(){
   document.getElementById('usage-photo-preview-wrap').classList.add('hidden');
   document.getElementById('usage-photo-zone').classList.remove('hidden');
 };
-
 window.toggleUsageMaterialCard=function(sid){
   const card=document.querySelector(`.mat-card[data-stock-id="${sid}"]`);if(!card)return;
   const isSel=card.classList.contains('selected');card.classList.toggle('selected');
@@ -1652,7 +1266,7 @@ window.submitUsageBatch=async function(e){
 };
 
 // ============================================================
-// WORKERS — Add with photo
+// WORKERS — Add/Edit with photo
 // ============================================================
 window.openAddWorkerModal=function(){
   _workerPhotoFile=null;
@@ -1789,7 +1403,7 @@ window.openWorkerPhotoLightbox=function(url){
 };
 
 // ============================================================
-// RENDER — Materials (with requisition report)
+// RENDER — Materials
 // ============================================================
 function renderMaterials(container){
   const site=assignedSites.find(s=>s.id===currentSiteId);
@@ -1900,27 +1514,15 @@ window.handleEditMaterial=async function(e,id){
           if(newC>0)updatePayload.unit_cost=newC;
           tx.update(sRef,updatePayload);
           const tRef=doc(collection(db,'stock_transactions'));
-          tx.set(tRef,{
-            site_id:siteId, stock_id:stockItem.id, material_name:m.name,
-            transaction_type:'MATERIAL_USAGE_EDITED',
-            quantity:Math.abs(delta), quantity_change:-delta,
-            previous_quantity:cur, new_quantity:newStock,
-            unit:m.unit||getStockUnit(stockItem), unit_cost:newC,
-            notes:`Usage edited from ${oldQ} to ${newQ}`,
-            recorded_by:currentUser.uid, created_at:now
-          });
+          tx.set(tRef,{site_id:siteId,stock_id:stockItem.id,material_name:m.name,transaction_type:'MATERIAL_USAGE_EDITED',quantity:Math.abs(delta),quantity_change:-delta,previous_quantity:cur,new_quantity:newStock,unit:m.unit||getStockUnit(stockItem),unit_cost:newC,notes:`Usage edited from ${oldQ} to ${newQ}`,recorded_by:currentUser.uid,created_at:now});
         }
         tx.update(doc(db,'materials',id),{quantity_used:newQ,unit_cost:newC,notes,updated_at:now});
       });
     }else{
       await updateDoc(doc(db,'materials',id),{quantity_used:newQ,unit_cost:newC,notes,updated_at:now});
     }
-    closeModal();
-    showToast(t('common.updatedSuccessfully'),'success');
-  }catch(err){
-    console.error('Material edit failed:', err);
-    showToast(err.message||t('common.somethingWentWrong'),'error');
-  }
+    closeModal();showToast(t('common.updatedSuccessfully'),'success');
+  }catch(err){console.error('Material edit failed:',err);showToast(err.message||t('common.somethingWentWrong'),'error')}
   finally{setButtonLoading(btn,false)}
 };
 window.deleteMaterial=async function(id){
@@ -1941,15 +1543,7 @@ window.deleteMaterial=async function(id){
           const newStock=cur+qty;
           tx.update(sRef,{quantity:newStock,updated_at:now});
           const tRef=doc(collection(db,'stock_transactions'));
-          tx.set(tRef,{
-            site_id:siteId, stock_id:stockItem.id, material_name:m.name,
-            transaction_type:'MATERIAL_USAGE_DELETED',
-            quantity:qty, quantity_change:qty,
-            previous_quantity:cur, new_quantity:newStock,
-            unit:m.unit||getStockUnit(stockItem), unit_cost:toNumber(m.unit_cost),
-            notes:`Material usage deleted — stock restored`,
-            recorded_by:currentUser.uid, created_at:now
-          });
+          tx.set(tRef,{site_id:siteId,stock_id:stockItem.id,material_name:m.name,transaction_type:'MATERIAL_USAGE_DELETED',quantity:qty,quantity_change:qty,previous_quantity:cur,new_quantity:newStock,unit:m.unit||getStockUnit(stockItem),unit_cost:toNumber(m.unit_cost),notes:`Material usage deleted — stock restored`,recorded_by:currentUser.uid,created_at:now});
         }
         tx.delete(doc(db,'materials',id));
       });
@@ -1957,10 +1551,7 @@ window.deleteMaterial=async function(id){
       await deleteDoc(doc(db,'materials',id));
     }
     showToast(t('common.deletedSuccessfully'),'success');
-  }catch(err){
-    console.error('Material delete failed:', err);
-    showToast(err.message||t('common.somethingWentWrong'),'error');
-  }
+  }catch(err){console.error('Material delete failed:',err);showToast(err.message||t('common.somethingWentWrong'),'error')}
 };
 
 function renderRequisitionsList(){
@@ -2003,24 +1594,12 @@ function renderRequisitionsList(){
       <button onclick="clearReqFilters()" class="px-3 py-1.5 text-sm bg-slate-200 hover:bg-slate-300 rounded-lg">${t('materials.clearFilters')}</button>
     </div>
     <div class="bg-white rounded-2xl border shadow-sm overflow-hidden">
-      <div class="px-4 py-2 text-xs text-slate-500 border-b">${filtered.length} ${t('materials.showingRequisitions')}</div>
+      <div class="px-4 py-2 text-xs text-slate-500 border-b">${filtered.length} requisitions</div>
       <div class="overflow-x-auto">
         <table class="w-full req-table">
           <thead><tr>
-            <th>${t('materials.reqNumber')}</th>
-            <th>${t('materials.requestDate')}</th>
-            <th>${t('materials.requiredDate')}</th>
-            <th>${t('materials.material')}</th>
-            <th>${t('materials.unit')}</th>
-            <th style="text-align:right">${t('materials.requestedQty')}</th>
-            <th>${t('materials.priority')}</th>
-            <th>${t('materials.status')}</th>
-            <th>${t('materials.site')}</th>
-            <th>${t('materials.requestedBy')}</th>
-            <th>${t('materials.notes')}</th>
-            <th>${t('materials.actions')}</th>
-          </tr></thead>
-          <tbody>`;
+            <th>${t('materials.reqNumber')}</th><th>${t('materials.requestDate')}</th><th>${t('materials.requiredDate')}</th><th>${t('materials.material')}</th><th>${t('materials.unit')}</th><th style="text-align:right">${t('materials.requestedQty')}</th><th>${t('materials.priority')}</th><th>${t('materials.status')}</th><th>${t('materials.site')}</th><th>${t('materials.requestedBy')}</th><th>${t('materials.notes')}</th><th>${t('materials.actions')}</th>
+          </tr></thead><tbody>`;
   if(!filtered.length){
     h+=`<tr><td colspan="12" class="text-center py-8 text-slate-400">No requisitions match the filters.</td></tr>`;
   }else{
@@ -2103,7 +1682,7 @@ window.viewRequisition=function(id){
   const req=requisitionsData.find(r=>r.id===id);if(!req)return;
   const items=requisitionItemsData.filter(i=>i.requisition_id===id);
   const site=assignedSites.find(s=>s.id===req.site_id);
-  let ih=`<table class="w-full text-sm mt-3"><thead><tr class="bg-slate-50"><th class="text-left text-xs p-2">${t('materials.material')}</th><th class="text-right text-xs p-2">${t('materials.requested')}</th><th class="text-right text-xs p-2">${t('materials.supplied')}</th><th class="text-right text-xs p-2">${t('materials.remaining')}</th><th class="text-right text-xs p-2">${t('materials.unit')}</th></tr></thead><tbody>`;
+  let ih=`<table class="w-full text-sm mt-3"><thead><tr class="bg-slate-50"><th class="text-left text-xs p-2">${t('materials.material')}</th><th class="text-right text-xs p-2">Requested</th><th class="text-right text-xs p-2">Supplied</th><th class="text-right text-xs p-2">Remaining</th><th class="text-right text-xs p-2">${t('materials.unit')}</th></tr></thead><tbody>`;
   items.forEach(i=>{const r=toNumber(i.quantity_requested)-toNumber(i.quantity_supplied);ih+=`<tr class="border-b"><td class="p-2">${i.material_name}</td><td class="text-right p-2">${i.quantity_requested}</td><td class="text-right p-2">${i.quantity_supplied||0}</td><td class="text-right p-2 text-red-600">${r}</td><td class="text-right p-2">${i.unit}</td></tr>`});
   ih+=`</tbody></table>`;
   openModal('📋 '+req.requisition_number,`<div class="space-y-2 text-sm"><div class="bg-slate-50 rounded-xl p-4 space-y-2"><p><strong>${t('materials.status')}:</strong> <span class="req-status-badge req-status-${(req.status||'Pending').replace(/\s+/g,'')}">${req.status||'Pending'}</span></p><p><strong>${t('materials.site')}:</strong> ${site?site.name:'—'}</p><p><strong>${t('materials.requestDate')}:</strong> ${formatDate(req.request_date)}</p><p><strong>${t('materials.requiredDate')}:</strong> ${formatDate(req.required_date)}</p><p><strong>${t('materials.priority')}:</strong> ${req.priority}</p><p><strong>${t('materials.requestedBy')}:</strong> ${req.requested_by_name||'—'}</p><p><strong>${t('materials.notes')}:</strong> ${req.notes||'—'}</p></div>${ih}</div>`);
@@ -2515,16 +2094,34 @@ function refreshCurrentSection(){
   if(window._refreshing)return;window._refreshing=true;
   requestAnimationFrame(()=>{
     if(currentUser&&currentSiteId){
+      // Preserve report filters when refreshing reports section
       let savedFilters=null;
-      if(currentSection==='reports'){savedFilters=readReportFilters();}
+      if(currentSection==='reports'){
+        savedFilters={
+          site:document.getElementById('report-site')?.value||document.getElementById('payroll-site')?.value||document.getElementById('mat-report-site')?.value||document.getElementById('wk-report-site')?.value||'all',
+          dept:document.getElementById('report-dept')?.value||'all',
+          start:document.getElementById('report-start')?.value||document.getElementById('payroll-start')?.value||document.getElementById('mat-report-start')?.value||'',
+          end:document.getElementById('report-end')?.value||document.getElementById('payroll-end')?.value||document.getElementById('mat-report-end')?.value||'',
+          search:document.getElementById('payroll-worker-search')?.value||document.getElementById('wk-report-search')?.value||'',
+          pos:document.getElementById('payroll-position')?.value||'all',
+          status:document.getElementById('payroll-status')?.value||'all'
+        };
+      }
       showSection(currentSection);
       if(currentSection==='reports' && savedFilters){
-        const dept=document.getElementById('report-dept');if(dept)dept.value=savedFilters.department;
-        const sd=document.getElementById('report-start');if(sd)sd.value=savedFilters.startDate;
-        const ed=document.getElementById('report-end');if(ed)ed.value=savedFilters.endDate;
-        const ps=document.getElementById('report-payment-status');if(ps)ps.value=savedFilters.paymentStatus;
-        const ws=document.getElementById('report-worker-search');if(ws)ws.value=savedFilters.workerSearch;
-        updateReportPreview();
+        ['report-site','payroll-site','mat-report-site','wk-report-site'].forEach(id=>{const el=document.getElementById(id);if(el && savedFilters.site)el.value=savedFilters.site;});
+        const dpt=document.getElementById('report-dept');if(dpt)dpt.value=savedFilters.dept;
+        ['report-start','payroll-start','mat-report-start'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=savedFilters.start;});
+        ['report-end','payroll-end','mat-report-end'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=savedFilters.end;});
+        const srch=document.getElementById('payroll-worker-search');if(srch)srch.value=savedFilters.search;
+        const wsrch=document.getElementById('wk-report-search');if(wsrch)wsrch.value=savedFilters.search;
+        const pos=document.getElementById('payroll-position');if(pos)pos.value=savedFilters.pos;
+        const st=document.getElementById('payroll-status');if(st)st.value=savedFilters.status;
+        // re-run previews
+        if(reportType==='general')updateGeneralPreview();
+        if(reportType==='payroll')updatePayrollReport();
+        if(reportType==='materials')updateMaterialsPreview();
+        if(reportType==='workers')updateWorkersPreview();
       }
     }
     window._refreshing=false;
@@ -2569,7 +2166,7 @@ async function initApp(){
   });
 }
 if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',initApp)}else{initApp()}
-console.log('✅ SHDR Manager Dashboard loaded — professional report format');
+console.log('✅ SHDR Manager Dashboard — reports now use Owner Dashboard format');
 </script>
 </main>
 </body>
