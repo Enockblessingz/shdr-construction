@@ -1270,7 +1270,7 @@ window.submitUsageBatch=async function(e){
 // ============================================================
 window.openAddWorkerModal=function(){
   _workerPhotoFile=null;
-  openModal('👷 '+t('workers.addWorker'),`
+  openModal(''+t('workers.addWorker'),`
     <form onsubmit="handleAddWorker(event)" class="space-y-4">
       <div><label class="block text-sm font-medium mb-1">${t('workers.fullName')} *</label><input class="w-full border rounded-lg p-3" id="worker-name" required></div>
       <div><label class="block text-sm font-medium mb-1">${t('workers.role')} *</label><input class="w-full border rounded-lg p-3" id="worker-role" required></div>
@@ -1336,7 +1336,7 @@ window.editWorker=function(id){
   const w=siteWorkersData.find(x=>x.id===id);if(!w)return;
   _workerEditPhotoFile=null;
   const cur=w.image||'';
-  openModal('✏️ '+t('common.edit'),`
+  openModal(''+t('common.edit'),`
     <form onsubmit="handleEditWorker(event,'${id}')" class="space-y-4">
       <input class="w-full border rounded-lg p-3" id="ew-name" value="${w.name}" required>
       <input class="w-full border rounded-lg p-3" id="ew-role" value="${w.role||''}" required>
@@ -1394,7 +1394,7 @@ window.deleteWorker=async function(id){
 };
 window.viewWorkerDetail=function(id){
   const w=siteWorkersData.find(x=>x.id===id);if(!w)return;
-  openModal('👤 '+t('workers.workerDetails'),`<div class="space-y-3"><div class="flex items-center gap-4"><img src="${w.image||PLACEHOLDER_IMG}" class="w-16 h-16 rounded-full object-cover" onerror="this.src='${PLACEHOLDER_IMG}'"><div><h3 class="font-bold text-lg">${w.name}</h3><p class="text-sm text-slate-500">${w.role||''}</p></div></div><div class="bg-slate-50 p-3 rounded-xl space-y-2 text-sm"><p><strong>${t('workers.salary')}:</strong> ${(Number(w.salary)||0).toLocaleString()} RWF</p><p><strong>${t('workers.paymentType')}:</strong> ${w.payment_method==='monthly'?t('workers.monthlySalary'):t('workers.dailyRate')}</p><p><strong>${t('workers.phone')}:</strong> ${w.phone||'—'}</p></div>${w.image?`<button onclick="openWorkerPhotoLightbox('${w.image}')" class="w-full bg-slate-100 py-2 rounded-xl text-sm font-medium">View Full Photo</button>`:''}<div class="flex gap-2 pt-2"><button onclick="closeModal();editWorker('${w.id}')" class="flex-1 bg-emerald-600 text-white py-2 rounded-xl text-sm">${t('common.edit')}</button><button onclick="closeModal();deleteWorker('${w.id}')" class="flex-1 bg-red-100 text-red-600 py-2 rounded-xl text-sm">${t('common.delete')}</button></div></div>`);
+  openModal(''+t('workers.workerDetails'),`<div class="space-y-3"><div class="flex items-center gap-4"><img src="${w.image||PLACEHOLDER_IMG}" class="w-16 h-16 rounded-full object-cover" onerror="this.src='${PLACEHOLDER_IMG}'"><div><h3 class="font-bold text-lg">${w.name}</h3><p class="text-sm text-slate-500">${w.role||''}</p></div></div><div class="bg-slate-50 p-3 rounded-xl space-y-2 text-sm"><p><strong>${t('workers.salary')}:</strong> ${(Number(w.salary)||0).toLocaleString()} RWF</p><p><strong>${t('workers.paymentType')}:</strong> ${w.payment_method==='monthly'?t('workers.monthlySalary'):t('workers.dailyRate')}</p><p><strong>${t('workers.phone')}:</strong> ${w.phone||'—'}</p></div>${w.image?`<button onclick="openWorkerPhotoLightbox('${w.image}')" class="w-full bg-slate-100 py-2 rounded-xl text-sm font-medium">View Full Photo</button>`:''}<div class="flex gap-2 pt-2"><button onclick="closeModal();editWorker('${w.id}')" class="flex-1 bg-emerald-600 text-white py-2 rounded-xl text-sm">${t('common.edit')}</button><button onclick="closeModal();deleteWorker('${w.id}')" class="flex-1 bg-red-100 text-red-600 py-2 rounded-xl text-sm">${t('common.delete')}</button></div></div>`);
 };
 window.openWorkerPhotoLightbox=function(url){
   const v=document.createElement('div');v.className='fixed inset-0 z-[9999] bg-black/85 flex items-center justify-center p-4';v.onclick=()=>v.remove();
@@ -1479,7 +1479,7 @@ window.openUsagePhotoLightbox=function(url){
 };
 window.editMaterial=function(id){
   const m=getMaterialById(id);if(!m)return;
-  openModal('✏️ '+t('common.edit'),`
+  openModal(''+t('common.edit'),`
     <form onsubmit="handleEditMaterial(event,'${id}')" class="space-y-4">
       <div><label class="block text-sm font-medium mb-1">${t('materials.materialName')}</label><input class="w-full border rounded-lg p-3 bg-slate-50" value="${m.name||''}" disabled></div>
       <div><label class="block text-sm font-medium mb-1">${t('materials.quantityUsed')}</label><input type="number" step="0.01" min="0" class="w-full border rounded-lg p-3" id="em-qty" value="${toNumber(m.quantity_used)}"></div>
@@ -1648,7 +1648,7 @@ window.openNewRequisitionModal=function(){
   const items=stockData.filter(s=>s.site_id===currentSiteId);
   if(!items.length){showToast('No stock at this site.','error');return}
   const rows=items.map(s=>`<tr class="border-b"><td class="p-2 text-sm">${s.material_name}</td><td class="p-2 text-sm text-slate-500">${s.unit||'units'}</td><td class="p-2"><input type="number" class="req-qty w-24 border rounded p-1 text-sm" data-name="${s.material_name}" data-unit="${s.unit||'units'}" min="0" value="0"/></td></tr>`).join('');
-  openModal('📝 '+t('materials.createRequisition'),`
+  openModal(''+t('materials.createRequisition'),`
     <form onsubmit="handleCreateRequisition(event)" class="space-y-4">
       <div><label class="block text-sm font-medium mb-1">${t('materials.requiredDate')} *</label><input type="date" id="req-date" class="w-full border rounded-lg p-2.5" required></div>
       <div><label class="block text-sm font-medium mb-1">${t('materials.priority')}</label><select id="req-priority" class="w-full border rounded-lg p-2.5"><option value="Normal">${t('materials.normal')}</option><option value="Urgent">${t('materials.urgent')}</option></select></div>
@@ -1685,7 +1685,7 @@ window.viewRequisition=function(id){
   let ih=`<table class="w-full text-sm mt-3"><thead><tr class="bg-slate-50"><th class="text-left text-xs p-2">${t('materials.material')}</th><th class="text-right text-xs p-2">Requested</th><th class="text-right text-xs p-2">Supplied</th><th class="text-right text-xs p-2">Remaining</th><th class="text-right text-xs p-2">${t('materials.unit')}</th></tr></thead><tbody>`;
   items.forEach(i=>{const r=toNumber(i.quantity_requested)-toNumber(i.quantity_supplied);ih+=`<tr class="border-b"><td class="p-2">${i.material_name}</td><td class="text-right p-2">${i.quantity_requested}</td><td class="text-right p-2">${i.quantity_supplied||0}</td><td class="text-right p-2 text-red-600">${r}</td><td class="text-right p-2">${i.unit}</td></tr>`});
   ih+=`</tbody></table>`;
-  openModal('📋 '+req.requisition_number,`<div class="space-y-2 text-sm"><div class="bg-slate-50 rounded-xl p-4 space-y-2"><p><strong>${t('materials.status')}:</strong> <span class="req-status-badge req-status-${(req.status||'Pending').replace(/\s+/g,'')}">${req.status||'Pending'}</span></p><p><strong>${t('materials.site')}:</strong> ${site?site.name:'—'}</p><p><strong>${t('materials.requestDate')}:</strong> ${formatDate(req.request_date)}</p><p><strong>${t('materials.requiredDate')}:</strong> ${formatDate(req.required_date)}</p><p><strong>${t('materials.priority')}:</strong> ${req.priority}</p><p><strong>${t('materials.requestedBy')}:</strong> ${req.requested_by_name||'—'}</p><p><strong>${t('materials.notes')}:</strong> ${req.notes||'—'}</p></div>${ih}</div>`);
+  openModal(''+req.requisition_number,`<div class="space-y-2 text-sm"><div class="bg-slate-50 rounded-xl p-4 space-y-2"><p><strong>${t('materials.status')}:</strong> <span class="req-status-badge req-status-${(req.status||'Pending').replace(/\s+/g,'')}">${req.status||'Pending'}</span></p><p><strong>${t('materials.site')}:</strong> ${site?site.name:'—'}</p><p><strong>${t('materials.requestDate')}:</strong> ${formatDate(req.request_date)}</p><p><strong>${t('materials.requiredDate')}:</strong> ${formatDate(req.required_date)}</p><p><strong>${t('materials.priority')}:</strong> ${req.priority}</p><p><strong>${t('materials.requestedBy')}:</strong> ${req.requested_by_name||'—'}</p><p><strong>${t('materials.notes')}:</strong> ${req.notes||'—'}</p></div>${ih}</div>`);
 };
 
 // ============================================================
@@ -1782,7 +1782,7 @@ window.handleAddStock=async function(e){
 };
 window.editStockItem=function(id){
   const s=getStockById(id);if(!s)return;
-  openModal('✏️ '+t('stock.editStock'),`
+  openModal(''+t('stock.editStock'),`
     <form onsubmit="handleEditStock(event,'${id}')" class="space-y-4">
       <div><label class="block text-sm font-medium mb-1">${t('materials.materialName')}</label><input class="w-full border rounded-lg p-3 bg-slate-50" value="${s.material_name}" disabled></div>
       <div><label class="block text-sm font-medium mb-1">${t('stock.quantity')} *</label><input class="w-full border rounded-lg p-3" type="number" step="0.01" min="0" id="edit-stock-qty" value="${toNumber(s.quantity)}" required></div>
@@ -1815,7 +1815,7 @@ window.viewStockHistory=function(id){
     h+=`<div class="flex justify-between gap-3 text-sm border-b border-slate-100 pb-2"><div><div class="font-medium">${tx.transaction_type.replace(/_/g,' ')}</div><div class="text-xs text-slate-500">${tx.notes||''}</div></div><div class="text-right whitespace-nowrap"><div class="font-semibold ${cls}">${sign}${Math.abs(ch)} ${tx.unit||''}</div><div class="text-xs text-slate-400">${formatDate(tx.created_at)}</div></div></div>`;
   });
   h+=`</div>`;
-  openModal('📜 '+t('stock.stockHistory')+' — '+s.material_name,h);
+  openModal(''+t('stock.stockHistory')+' — '+s.material_name,h);
 };
 
 // ============================================================
@@ -1948,7 +1948,7 @@ window.openGalleryImage=function(idx){
 };
 window.editGalleryItem=function(id){
   const item=galleryData.find(g=>g.id===id);if(!item)return;
-  openModal('✏️ '+t('common.edit'),`<form onsubmit="handleEditGallery(event,'${id}')" class="space-y-4"><input type="text" id="eg-desc" value="${item.description||''}" class="w-full border rounded-lg p-3" placeholder="${t('gallery.description')}"><button type="submit" class="w-full bg-emerald-600 text-white py-3 rounded-xl">${t('common.save')}</button></form>`);
+  openModal(''+t('common.edit'),`<form onsubmit="handleEditGallery(event,'${id}')" class="space-y-4"><input type="text" id="eg-desc" value="${item.description||''}" class="w-full border rounded-lg p-3" placeholder="${t('gallery.description')}"><button type="submit" class="w-full bg-emerald-600 text-white py-3 rounded-xl">${t('common.save')}</button></form>`);
 };
 window.handleEditGallery=async function(e,id){
   e.preventDefault();
