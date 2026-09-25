@@ -7,7 +7,7 @@
 <link rel="icon" type="image/jpeg" href="shdr_logo Background Removed.png">
 <link rel="apple-touch-icon" href="shdr_logo Background Removed.png">
 <link rel="manifest" href="manifest.json">
-<title>SHDR_Ltd Construction Sites Management</title>
+<title>Sustainable Homes Design Rwanda Ltd — Construction Management System</title>
 <script src="https://cdn.tailwindcss.com/3.4.17"></script>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/iconify-icon@2.3.0/dist/iconify-icon.min.js"></script>
@@ -18,47 +18,10 @@
 .lang-btn:focus-visible{outline:2px solid #1e56a0;outline-offset:2px}
 .lang-btn.active{background:#fff;color:#1e56a0;border-color:#1e56a0;box-shadow:0 2px 6px rgba(30,86,160,.2)}
 @media (max-width:640px){.lang-btn{font-size:12px;padding:4px 10px}}
-.nav-disabled{opacity:.5;cursor:not-allowed;user-select:none;position:relative}
-.nav-disabled::after{content:' 🔒';font-size:.65rem;color:#9ca3af;font-weight:400}
-.nav-disabled .nav-label{opacity:.6}
 .office-header{background:linear-gradient(135deg,#059669 0%,#047857 50%,#065f46 100%);border-radius:16px;padding:24px 28px;margin-bottom:28px;color:#fff;box-shadow:0 8px 30px rgba(5,150,105,.25)}
-.office-header h2{font-weight:700;letter-spacing:-.5px}
-.office-header p{color:rgba(255,255,255,.85);font-weight:400}
-.office-tab{transition:all .25s ease;border-radius:9999px;font-weight:600;padding:8px 18px;background:transparent;color:#64748b;border:1px solid transparent}
-.office-tab:hover{background:rgba(255,255,255,.6);color:#1e293b}
-.office-tab.active{background:#059669;color:#fff;box-shadow:0 4px 14px rgba(5,150,105,.35);border-color:#059669}
-.office-tab.active:hover{background:#047857;transform:scale(1.02)}
-.glass-stat{background:rgba(255,255,255,.7);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.3);border-radius:16px;padding:16px 20px;transition:all .3s ease;box-shadow:0 4px 12px rgba(0,0,0,.04)}
-.glass-stat:hover{transform:translateY(-4px);box-shadow:0 12px 30px rgba(0,0,0,.08)}
-.glass-stat .stat-number{font-size:2rem;font-weight:700;line-height:1.2}
-.glass-stat .stat-label{font-size:.75rem;text-transform:uppercase;letter-spacing:.05em;font-weight:600;color:#64748b}
-.office-card{background:#fff;border-radius:14px;padding:16px 20px;border:1px solid #e9edf2;transition:all .3s cubic-bezier(.4,0,.2,1);box-shadow:0 2px 8px rgba(0,0,0,.03)}
-.office-card:hover{transform:translateY(-3px);box-shadow:0 12px 32px rgba(0,0,0,.08);border-color:#cbd5e1}
-.priority-high{border-left:5px solid #ef4444}
-.priority-medium{border-left:5px solid #f59e0b}
-.priority-low{border-left:5px solid #22c55e}
-.kanban-column{background:#f8fafc;border-radius:14px;padding:14px;min-height:200px;border:1px solid #e9edf2;transition:all .2s}
-.kanban-column:hover{border-color:#cbd5e1}
-.kanban-column h4{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#64748b;border-bottom:2px solid #e2e8f0;padding-bottom:10px;margin-bottom:12px}
-.activity-item{display:flex;align-items:center;gap:14px;padding:10px 0;border-bottom:1px solid #f1f5f9;transition:background .2s}
-.activity-item:hover{background:#f8fafc;border-radius:8px;padding-left:8px}
-.activity-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
-.activity-dot.create{background:#22c55e}
-.activity-dot.update{background:#3b82f6}
-.activity-dot.status{background:#f59e0b}
-.subtab-btn{padding:6px 16px;border-radius:9999px;font-size:.8rem;font-weight:500;transition:all .2s;background:transparent;color:#64748b;border:1px solid transparent}
-.subtab-btn:hover{background:#f1f5f9;color:#1e293b}
-.subtab-btn.active{background:#ecfdf5;color:#059669;border-color:#a7f3d0}
-.office-filter{border:1px solid #e2e8f0;border-radius:8px;padding:4px 10px;font-size:.8rem;background:#fff;transition:border-color .2s}
-.office-filter:focus{outline:none;border-color:#059669;box-shadow:0 0 0 3px rgba(5,150,105,.15)}
-.btn-new{background:linear-gradient(135deg,#059669,#047857);color:#fff;padding:10px 24px;border-radius:9999px;font-weight:600;transition:all .3s ease;box-shadow:0 4px 14px rgba(5,150,105,.3);border:none}
-.btn-new:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(5,150,105,.4);background:linear-gradient(135deg,#047857,#065f46)}
-@media (max-width:640px){.office-header{padding:16px 18px}.office-tab{font-size:.7rem;padding:6px 12px}.glass-stat .stat-number{font-size:1.4rem}}
 *{font-family:'Plus Jakarta Sans',sans-serif}
 body{background:#f8fafc}
 .sidebar-link.active{background:#ecfdf5;color:#059669;border-left:3px solid #059669}
-.stat-card{transition:all .2s ease}
-.stat-card:hover{transform:translateY(-2px);box-shadow:0 10px 25px rgba(0,0,0,.05)}
 .modal{display:none}
 .modal.active{display:flex}
 .spinner{border:3px solid #e2e8f0;border-top:3px solid #059669;border-radius:50%;width:24px;height:24px;animation:spin .8s linear infinite}
@@ -72,7 +35,7 @@ body{background:#f8fafc}
 .bottom-nav a.active{color:#059669;background:#ecfdf5}
 .bottom-nav a iconify-icon{font-size:1.3rem}
 @media (max-width:1023px){.bottom-nav{display:flex}main{padding-bottom:80px}}
-@media (max-width:640px){#content-area{padding:1rem}.card-title{font-size:1.1rem}.stat-card{padding:1rem}.table-cell{padding:.5rem}.sidebar-link{padding:.5rem;font-size:.85rem}}
+@media (max-width:640px){#content-area{padding:1rem}.sidebar-link{padding:.5rem;font-size:.85rem}}
 tbody tr:nth-child(even){background:#f9fafb}
 tbody tr:hover{background:#f1f5f9}
 .payroll-card{transition:all .2s}
@@ -104,7 +67,6 @@ tbody tr:hover{background:#f1f5f9}
 .settings-card .save-btn:disabled{opacity:.6;cursor:not-allowed}
 .settings-card .remove-photo-btn{color:#ef4444;font-size:.85rem;cursor:pointer;background:none;border:none;padding:.2rem .5rem}
 .settings-card .remove-photo-btn:hover{color:#dc2626;text-decoration:underline}
-@media (max-width:640px){.settings-card{padding:1rem}}
 .tab-active{background:#059669;color:#fff;box-shadow:0 2px 8px rgba(5,150,105,.3)}
 .tab-inactive{background:transparent;color:#64748b}
 .tab-inactive:hover{background:#f1f5f9;color:#1e293b}
@@ -124,7 +86,7 @@ tbody tr:hover{background:#f1f5f9}
     <div class="flex items-center gap-4">
       <div class="w-14 h-14 flex items-center justify-center overflow-hidden flex-shrink-0">
         <img src="shdr_logo Background Removed.png" alt="SHDR" class="w-full h-full object-contain" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-        <span id="logo-fallback" class="hidden font-bold text-emerald-700 text-xl">SH</span>
+        <span class="hidden font-bold text-emerald-700 text-xl">SH</span>
       </div>
       <div>
         <h1 class="font-bold text-slate-900 text-lg leading-tight">SHDR Ltd</h1>
@@ -355,7 +317,27 @@ tbody tr:hover{background:#f1f5f9}
   const IMGBB_API_KEY = '6b1b5028aba07a31bf702efd9c0ef4fe';
   const PLACEHOLDER_IMG = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="200"%3E%3Crect width="400" height="200" fill="%23e2e8f0"/%3E%3Ctext x="50%25" y="50%25" dominant-baseline="middle" text-anchor="middle" fill="%2394a3b8" font-size="20"%3ENo Image%3C/text%3E%3C/svg%3E';
 
-  // Embedded SHDR logo (used in print headers so they always render)
+  // =================================================================
+  // COMPANY PROFILE — SINGLE SOURCE OF TRUTH
+  // =================================================================
+  // All reports, exports, headers and footers MUST read from here.
+  // Do not duplicate these values elsewhere.
+  function getCompanyDetails() {
+    return {
+      name: 'Sustainable Homes Design Rwanda Ltd',
+      systemName: 'Construction Management System',
+      address: 'KG 11 Avenue, Kimironko, Gasabo District',
+      location: 'Yussa Plaza, 1st Floor',
+      city: 'Kigali City, Rwanda',
+      phone: '+250 788 474 110',
+      email: 'sustainablehomedesign@gmail.com',
+      logo: 'shdr_logo Background Removed.png'
+    };
+  }
+
+  // Base64 SVG representation of the SHDR logo.
+  // Required because print windows opened via window.open('', '_blank') use about:blank
+  // and cannot resolve the relative path 'shdr_logo Background Removed.png'.
   const SHDR_LOGO_SVG = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" width="240" height="240">'+
     '<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#10b981"/><stop offset="1" stop-color="#047857"/></linearGradient></defs>'+
     '<circle cx="120" cy="120" r="115" fill="url(#g)"/>'+
@@ -365,6 +347,63 @@ tbody tr:hover{background:#f1f5f9}
     '<text x="120" y="172" font-family="Arial, sans-serif" font-size="20" font-weight="700" fill="#ffffff" text-anchor="middle" letter-spacing="4">LTD</text>'+
     '</svg>';
   const SHDR_LOGO_BASE64 = 'data:image/svg+xml;base64,' + btoa(SHDR_LOGO_SVG);
+
+  // Print-safe logo — same official logo, embedded so it renders in popup windows
+  function getCompanyLogoForPrint() {
+    return SHDR_LOGO_BASE64;
+  }
+
+  // Build the shared company HTML header block used by all print reports.
+  // Consistent layout: logo + legal name + system name + full address + tel + email.
+  function buildCompanyHeaderHTML(company) {
+    return `
+      <div class="company-header">
+        <div class="company-left">
+          <img src="${getCompanyLogoForPrint()}" class="company-logo" alt="${company.name} Logo" onerror="this.style.display='none'">
+          <div>
+            <div class="company-name">${company.name}</div>
+            <div class="company-subtitle">${company.systemName}</div>
+            <div class="company-details">
+              ${company.address}<br>
+              ${company.location}<br>
+              ${company.city}<br>
+              <strong>Tel:</strong> ${company.phone}<br>
+              <strong>Email:</strong> ${company.email}
+            </div>
+          </div>
+        </div>
+        <div class="report-title">
+          <h2>__REPORT_TITLE__</h2>
+          <p>Official Company Report</p>
+        </div>
+      </div>`;
+  }
+
+  // Shared CSS for all print report windows
+  const REPORT_PRINT_CSS = `body{font-family:Arial,sans-serif;padding:30px;margin:0;color:#1f2937;background:#fff}.company-header{display:flex;align-items:flex-start;justify-content:space-between;border-bottom:3px solid #059669;padding-bottom:18px;margin-bottom:20px;gap:20px}.company-left{display:flex;align-items:flex-start;gap:15px}.company-logo{width:70px;height:70px;object-fit:contain;border-radius:8px}.company-name{font-size:20px;font-weight:700;color:#059669;margin-bottom:3px;line-height:1.2;letter-spacing:-.2px}.company-subtitle{font-size:12px;color:#4b5563;font-weight:600;margin-bottom:5px}.company-details{font-size:11px;line-height:1.5;color:#374151}.report-title{text-align:right;flex-shrink:0}.report-title h2{margin:0;font-size:21px;color:#111827}.report-title p{margin:5px 0 0;font-size:11px;color:#6b7280}.report-meta{background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:12px 15px;margin-bottom:20px;font-size:12px;line-height:1.6}table{border-collapse:collapse;width:100%;font-size:11px;margin-top:10px}th{background:#059669;color:#fff;font-weight:600;padding:9px;border:1px solid #047857;text-align:left}td{border:1px solid #d1d5db;padding:8px}tr:nth-child(even){background:#f9fafb}tfoot td{background:#ecfdf5;font-weight:800;color:#065f46}.report-footer{margin-top:30px;padding-top:12px;border-top:1px solid #d1d5db;text-align:center;font-size:11px;color:#6b7280;line-height:1.6}.footer-system{font-weight:600;color:#374151}.footer-copy{font-size:10px;color:#9ca3af}@media print{body{padding:15px}.company-header{break-inside:avoid}table{page-break-inside:auto}tr{page-break-inside:avoid}thead{display:table-header-group}.report-footer{page-break-inside:avoid}}`;
+
+  // Shared footer HTML (uses company + system name from the profile)
+  function buildReportFooterHTML(company) {
+    return `<div class="report-footer">
+      <div class="footer-system">This report is generated automatically by the ${company.systemName}.</div>
+      <div class="footer-copy">© ${new Date().getFullYear()} ${company.name} — All rights reserved.</div>
+    </div>`;
+  }
+
+  // Standard CSV metadata block (matches the report header order)
+  function buildCsvMetadata(company, reportLabel) {
+    return [
+      `"${company.name}"`,
+      `"${company.systemName}"`,
+      `"${company.address}"`,
+      `"${company.location}"`,
+      `"${company.city}"`,
+      `"Tel: ${company.phone}"`,
+      `"Email: ${company.email}"`,
+      `"Report: ${reportLabel}"`,
+      `"Generated: ${formatDate(new Date())}"`
+    ];
+  }
 
   let currentUser = null;
   let ownerProfile = null;
@@ -1227,6 +1266,7 @@ tbody tr:hover{background:#f1f5f9}
   window.downloadOwnerRequisitionPDF = (reqId) => {
     const req = ownerRequisitionsData.find(r => r.id === reqId);
     if (!req) return;
+    const company = getCompanyDetails();
     const items = ownerRequisitionItemsData.filter(i => i.requisition_id === reqId);
     const history = ownerRequisitionHistoryData.filter(h => h.requisition_id === reqId).sort((a,b) => new Date(b.timestamp) - new Date(a.timestamp));
     const site = sitesData.find(s => s.id === req.site_id);
@@ -1234,10 +1274,19 @@ tbody tr:hover{background:#f1f5f9}
     const statusLabel = { 'Pending': t('materials.pending'), 'Approved': t('materials.approved'), 'Rejected': t('materials.rejected'), 'Partially Supplied': t('materials.partiallySupplied'), 'Supplied': t('materials.suppliedStatus') }[req.status] || req.status;
     let tableRows = items.map(item => {
       const remaining = toNumber(item.quantity_requested) - toNumber(item.quantity_supplied);
-      return `<tr><td>${item.material_name}</td><td>${item.quantity_requested}</td><td>${item.quantity_supplied || 0}</td><td>${remaining}</td><td>${item.unit}</td></tr>`;
+      return `<tr><td>${item.material_name}</td><td style="text-align:right">${item.quantity_requested}</td><td style="text-align:right">${item.quantity_supplied || 0}</td><td style="text-align:right;color:#dc2626">${remaining}</td><td>${item.unit}</td></tr>`;
     }).join('');
     let historyHtml = history.map(h => `<div style="font-size:12px; color:#555; border-bottom:1px solid #eee; padding:5px 0;"><strong>${h.action}</strong> by ${h.actor_name} — ${formatDate(h.timestamp)}</div>`).join('');
-    const printHTML = `<!DOCTYPE html><html><head><title>${req.requisition_number}</title><style>body{font-family:Arial,sans-serif;padding:30px;color:#333}.print-header{border-bottom:3px solid #059669;padding-bottom:10px;margin-bottom:20px;display:flex;justify-content:space-between;align-items:center}.print-header h1{color:#059669;font-size:24px;margin:0}.print-header p{margin:0;font-size:14px}.print-table{width:100%;border-collapse:collapse;margin-top:20px;font-size:14px}.print-table th{background:#059669;color:white;padding:8px;text-align:left}.print-table td{border:1px solid #ccc;padding:8px}.print-summary{margin-top:20px;padding:10px;background:#f8f9fa;border:1px solid #eee;border-radius:5px}.print-footer{margin-top:30px;border-top:1px solid #ccc;padding-top:10px;font-size:12px;color:#666;text-align:center}</style></head><body><div class="print-header"><div><h1>SHDR Ltd</h1><p>Sustainable Homes Designs Rwanda Ltd</p></div><div style="text-align:right;"><h2>Material Requisition</h2><p>${req.requisition_number}</p></div></div><div class="print-summary"><p><strong>Site:</strong> ${siteName}</p><p><strong>Requested By:</strong> ${req.requested_by_name}</p><p><strong>Request Date:</strong> ${formatDate(req.request_date)}</p><p><strong>Required Date:</strong> ${formatDate(req.required_date)}</p><p><strong>Priority:</strong> ${req.priority === 'Urgent' ? t('materials.urgent') : t('materials.normal')}</p><p><strong>Status:</strong> ${statusLabel}</p><p><strong>Notes:</strong> ${req.notes || '—'}</p>${req.rejection_reason ? `<p><strong>Rejection Reason:</strong> ${req.rejection_reason}</p>` : ''}</div><table class="print-table"><thead><tr><th>Material</th><th>Requested</th><th>Supplied</th><th>Remaining</th><th>Unit</th></tr></thead><tbody>${tableRows}</tbody></table><h3 style="margin-top:30px; border-bottom:1px solid #ccc; padding-bottom:5px;">Requisition History</h3><div>${historyHtml}</div><div class="print-footer">Generated by SHDR Management System on ${formatDate(new Date())}</div></body></html>`;
+    const printHTML = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>${req.requisition_number}</title>
+      <style>${REPORT_PRINT_CSS}</style>
+      </head><body>
+      ${buildCompanyHeaderHTML(company).replace('__REPORT_TITLE__', 'Material Requisition')}
+      <div class="report-meta"><strong>Requisition No.:</strong> ${req.requisition_number} &nbsp;|&nbsp; <strong>Site:</strong> ${siteName}<br><strong>Requested By:</strong> ${req.requested_by_name} &nbsp;|&nbsp; <strong>Request Date:</strong> ${formatDate(req.request_date)}<br><strong>Required Date:</strong> ${formatDate(req.required_date)} &nbsp;|&nbsp; <strong>Priority:</strong> ${req.priority === 'Urgent' ? t('materials.urgent') : t('materials.normal')} &nbsp;|&nbsp; <strong>Status:</strong> ${statusLabel}${req.notes ? `<br><strong>Notes:</strong> ${req.notes}` : ''}${req.rejection_reason ? `<br><strong style="color:#dc2626">Rejection Reason:</strong> ${req.rejection_reason}` : ''}</div>
+      <table><thead><tr><th>Material</th><th style="text-align:right">Requested</th><th style="text-align:right">Supplied</th><th style="text-align:right">Remaining</th><th>Unit</th></tr></thead><tbody>${tableRows}</tbody></table>
+      <h3 style="margin-top:30px; border-bottom:1px solid #ccc; padding-bottom:5px; font-size:13px; color:#065f46; text-transform:uppercase; letter-spacing:.5px;">Requisition History</h3>
+      <div>${historyHtml || '<p style="font-size:12px; color:#888;">No history records.</p>'}</div>
+      ${buildReportFooterHTML(company)}
+      </body></html>`;
     const win = window.open('', '_blank', 'width=1000,height=700');
     if (!win) { showToast(t('common.accessDenied'), 'error'); return; }
     win.document.write(printHTML);
@@ -1865,14 +1914,11 @@ tbody tr:hover{background:#f1f5f9}
 
   // ── Export Payroll ──
   window.exportPayrollReport = (format) => {
+    const company = getCompanyDetails();
     const filters = readPayrollFilters();
     const { workers, totalDays, totalPayroll } = buildPayrollRows(filters);
     if (!workers.length) { showToast(t('reports.noAttendance'), 'error'); return; }
 
-    const companyName = 'SHDR Ltd';
-    const companyAddress = 'KG 11 Avenue, Gasabo District';
-    const companyCity = 'Kigali City, Rwanda';
-    const companyPhone = '+250 788 474 110';
     const generatedDate = formatDate(new Date());
     const siteName = filters.siteId === 'all' ? t('reports.allSites') : (sitesData.find(s => s.id === filters.siteId)?.name || 'Site');
     const period = filters.startDate && filters.endDate ? `${filters.startDate} → ${filters.endDate}` : (filters.startDate || filters.endDate || 'All Time');
@@ -1880,8 +1926,10 @@ tbody tr:hover{background:#f1f5f9}
     if (format === 'csv') {
       const headers = [t('reports.worker'), t('reports.position'), t('reports.daysWorked'), t('reports.dailyRate') + ' (RWF)', t('reports.totalPayable') + ' (RWF)'];
       const csvRows = [
-        `"${companyName}"`, `"${companyAddress}"`, `"${companyCity}"`, `"Tel: ${companyPhone}"`,
-        `"Generated: ${generatedDate}"`, `"Report: Worker Attendance & Payroll"`, `"Site: ${siteName}"`, `"Period: ${period}"`, '',
+        ...buildCsvMetadata(company, 'Worker Attendance & Payroll'),
+        `"Site: ${siteName}"`,
+        `"Period: ${period}"`,
+        '',
         headers.map(h => `"${h}"`).join(',')
       ];
       for (const w of workers) {
@@ -1910,22 +1958,12 @@ tbody tr:hover{background:#f1f5f9}
     win.document.write(`
       <!DOCTYPE html>
       <html><head><meta charset="UTF-8"><title>Worker Payroll Report</title>
-      <style>body{font-family:Arial,sans-serif;padding:30px;color:#1f2937;margin:0}.company-header{display:flex;align-items:center;justify-content:space-between;border-bottom:3px solid #059669;padding-bottom:18px;margin-bottom:20px;gap:20px}.company-left{display:flex;align-items:center;gap:15px}.company-logo{width:70px;height:70px;object-fit:contain;border-radius:8px}.company-name{font-size:22px;font-weight:700;color:#059669;margin-bottom:3px}.company-subtitle{font-size:11px;color:#6b7280;margin-bottom:4px}.company-details{font-size:11px;line-height:1.5;color:#374151}.report-title{text-align:right}.report-title h2{margin:0;font-size:21px;color:#111827}.report-title p{margin:5px 0 0;font-size:11px;color:#6b7280}.report-meta{background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:12px 15px;margin-bottom:20px;font-size:12px;line-height:1.6}table{border-collapse:collapse;width:100%;font-size:11px;margin-top:10px}th{background:#059669;color:#fff;padding:9px;border:1px solid #047857;text-align:left}td{border:1px solid #d1d5db;padding:8px}tr:nth-child(even){background:#f9fafb}tfoot td{background:#ecfdf5;font-weight:800;color:#065f46}.footer{margin-top:30px;text-align:center;font-size:11px;color:#6b7280;border-top:1px solid #e5e7eb;padding-top:15px}</style>
+      <style>${REPORT_PRINT_CSS}</style>
       </head><body>
-      <div class="company-header">
-        <div class="company-left">
-          <img src="${SHDR_LOGO_BASE64}" class="company-logo" alt="SHDR Logo" onerror="this.style.display='none'">
-          <div>
-            <div class="company-name">${companyName}</div>
-            <div class="company-subtitle">Construction Management System</div>
-            <div class="company-details">${companyAddress}<br>${companyCity}<br><strong>Tel:</strong> ${companyPhone}</div>
-          </div>
-        </div>
-        <div class="report-title"><h2>Worker Payroll Report</h2><p>Official Company Report</p></div>
-      </div>
+      ${buildCompanyHeaderHTML(company).replace('__REPORT_TITLE__', 'Worker Payroll Report')}
       <div class="report-meta"><strong>Site:</strong> ${siteName} &nbsp;|&nbsp; <strong>Period:</strong> ${period}<br><strong>Generated:</strong> ${generatedDate}</div>
       <table><thead><tr>${headers.map(h => `<th>${h}</th>`).join('')}</tr></thead><tbody>${tableRows}</tbody><tfoot><tr><td colspan="2" style="text-align:right">${t('reports.total')}</td><td style="text-align:center">${totalDays}</td><td></td><td style="text-align:right">${totalPayroll.toLocaleString()} RWF</td></tr></tfoot></table>
-      <div class="footer">This report is generated automatically by ${companyName} Management System.<br>© ${new Date().getFullYear()} ${companyName} — All rights reserved.</div>
+      ${buildReportFooterHTML(company)}
       </body></html>
     `);
     win.document.close();
@@ -1934,11 +1972,11 @@ tbody tr:hover{background:#f1f5f9}
 
   // ── Export Stock Report ──
   window.exportStockReport = (format) => {
+    const company = getCompanyDetails();
     const siteId = document.getElementById('stock-report-site')?.value || 'all';
     let filteredStock = siteId === 'all' ? stockData : stockData.filter(s => s.site_id === siteId);
     if (!filteredStock.length) { showToast('No stock data for the selected filters.', 'error'); return; }
 
-    const companyName = 'SHDR Ltd';
     const generatedDate = formatDate(new Date());
     const siteLabel = siteId === 'all' ? t('reports.allSites') : (sitesData.find(s => s.id === siteId)?.name || 'Site');
 
@@ -1958,7 +1996,9 @@ tbody tr:hover{background:#f1f5f9}
         return [r.siteName, r.item.material_name, r.item.quantity, r.item.unit || 'units', r.item.minimum_quantity || '', r.unitCost.toFixed(2), r.stockValue.toFixed(2), r.status, r.item.updated_at ? formatDateShort(r.item.updated_at) : ''];
       });
       const csvContent = [
-        `"${companyName}"`, `"Generated: ${generatedDate}"`, `"Scope: ${siteLabel}"`, '',
+        ...buildCsvMetadata(company, 'Stock Report'),
+        `"Scope: ${siteLabel}"`,
+        '',
         headers.map(h => `"${h}"`).join(','),
         ...rows.map(row => row.map(v => `"${String(v).replace(/"/g,'""')}"`).join(','))
       ].join('\n');
@@ -1983,22 +2023,12 @@ tbody tr:hover{background:#f1f5f9}
     win.document.write(`
       <!DOCTYPE html>
       <html><head><meta charset="UTF-8"><title>Stock Report</title>
-      <style>body{font-family:Arial,sans-serif;padding:30px;margin:0;color:#1f2937}.company-header{display:flex;align-items:center;justify-content:space-between;border-bottom:3px solid #059669;padding-bottom:18px;margin-bottom:20px}.company-left{display:flex;align-items:center;gap:15px}.company-logo{width:70px;height:70px;object-fit:contain;border-radius:8px}.company-name{font-size:22px;font-weight:700;color:#059669;margin-bottom:3px}.company-subtitle{font-size:11px;color:#6b7280;margin-bottom:4px}.company-details{font-size:11px;line-height:1.5;color:#374151}.report-title{text-align:right}.report-title h2{margin:0;font-size:21px;color:#111827}.report-title p{margin:5px 0 0;font-size:11px;color:#6b7280}.report-meta{background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:12px 15px;margin-bottom:20px;font-size:12px;line-height:1.6}table{border-collapse:collapse;width:100%;font-size:11px}th{background:#059669;color:#fff;padding:9px;border:1px solid #047857;text-align:left}td{border:1px solid #d1d5db;padding:8px}tr:nth-child(even){background:#f9fafb}.footer{margin-top:30px;text-align:center;font-size:11px;color:#6b7280;border-top:1px solid #e5e7eb;padding-top:15px}</style>
+      <style>${REPORT_PRINT_CSS}</style>
       </head><body>
-      <div class="company-header">
-        <div class="company-left">
-          <img src="${SHDR_LOGO_BASE64}" class="company-logo" alt="SHDR Logo" onerror="this.style.display='none'">
-          <div>
-            <div class="company-name">${companyName}</div>
-            <div class="company-subtitle">Construction Management System</div>
-            <div class="company-details">KG 11 Avenue, Gasabo District<br>Kigali City, Rwanda<br><strong>Tel:</strong> +250 788 474 110</div>
-          </div>
-        </div>
-        <div class="report-title"><h2>Stock Report</h2><p>Official Company Report</p></div>
-      </div>
-      <div class="report-meta"><strong>Scope:</strong> ${siteLabel}<br><strong>Generated:</strong> ${generatedDate}</div>
-      <table><thead><tr><th>Site</th><th>Material</th><th>Qty</th><th>Unit</th><th>Min</th><th>Unit Cost</th><th>Stock Value</th><th>Status</th><th>Updated</th></tr></thead><tbody>${rows}</tbody></table>
-      <div class="footer">This report is generated automatically by ${companyName} Management System.<br>© ${new Date().getFullYear()} ${companyName} — All rights reserved.</div>
+      ${buildCompanyHeaderHTML(company).replace('__REPORT_TITLE__', 'Stock Report')}
+      <div class="report-meta"><strong>Scope:</strong> ${siteLabel} &nbsp;|&nbsp; <strong>Generated:</strong> ${generatedDate}</div>
+      <table><thead><tr><th>Site</th><th>Material</th><th style="text-align:right">Qty</th><th>Unit</th><th style="text-align:right">Min</th><th style="text-align:right">Unit Cost</th><th style="text-align:right">Stock Value</th><th>Status</th><th>Updated</th></tr></thead><tbody>${rows}</tbody></table>
+      ${buildReportFooterHTML(company)}
       </body></html>
     `);
     win.document.close();
@@ -2007,15 +2037,11 @@ tbody tr:hover{background:#f1f5f9}
 
   // ── Export General Report ──
   window.exportGeneralReport = (format) => {
+    const company = getCompanyDetails();
     const siteId = document.getElementById('report-site')?.value || 'all';
     const dept = document.getElementById('report-dept')?.value || 'all';
     const startDate = document.getElementById('report-start')?.value || '';
     const endDate = document.getElementById('report-end')?.value || '';
-
-    const companyName = 'SHDR Ltd';
-    const companyAddress = 'KG 11 Avenue, Gasabo District';
-    const companyCity = 'Kigali City, Rwanda';
-    const companyPhone = '+250 788 474 110';
 
     const filterByDate = (items, dateField) => {
       if (!startDate && !endDate) return items;
@@ -2073,8 +2099,11 @@ tbody tr:hover{background:#f1f5f9}
     if (format === 'csv') {
       const headers = Object.keys(data[0]);
       const csvRows = [
-        `"${companyName}"`, `"${companyAddress}"`, `"${companyCity}"`, `"Tel: ${companyPhone}"`,
-        `"Generated: ${generatedDate}"`, `"Site: ${siteLabel}"`, `"Department: ${deptLabel}"`, `"Period: ${period}"`, '',
+        ...buildCsvMetadata(company, 'Management Report'),
+        `"Site: ${siteLabel}"`,
+        `"Department: ${deptLabel}"`,
+        `"Period: ${period}"`,
+        '',
         headers.map(h => `"${h}"`).join(',')
       ];
       for (const row of data) {
@@ -2101,22 +2130,12 @@ tbody tr:hover{background:#f1f5f9}
     win.document.write(`
       <!DOCTYPE html>
       <html><head><meta charset="UTF-8"><title>${filename}</title>
-      <style>body{font-family:Arial,sans-serif;padding:30px;margin:0;color:#1f2937;background:#fff}.company-header{display:flex;align-items:center;justify-content:space-between;border-bottom:3px solid #059669;padding-bottom:18px;margin-bottom:20px;gap:20px}.company-left{display:flex;align-items:center;gap:15px}.company-logo{width:75px;height:75px;object-fit:contain;border-radius:8px}.company-name{font-size:25px;font-weight:700;color:#059669;margin-bottom:3px}.company-subtitle{font-size:12px;color:#6b7280;margin-bottom:5px}.company-details{font-size:12px;line-height:1.5;color:#374151}.report-title{text-align:right}.report-title h2{margin:0;font-size:21px;color:#111827}.report-title p{margin:5px 0 0;font-size:11px;color:#6b7280}.report-meta{background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:12px 15px;margin-bottom:20px;font-size:12px;line-height:1.6}table{border-collapse:collapse;width:100%;font-size:11px}th{background:#059669;color:#fff;font-weight:600;padding:9px;border:1px solid #047857;text-align:left}td{padding:8px;border:1px solid #d1d5db}tr:nth-child(even){background:#f9fafb}.report-footer{margin-top:30px;padding-top:12px;border-top:1px solid #d1d5db;text-align:center;font-size:11px;color:#6b7280;line-height:1.6}.footer-system{font-weight:600;color:#374151}.footer-copy{font-size:10px;color:#9ca3af}</style>
+      <style>${REPORT_PRINT_CSS}</style>
       </head><body>
-      <div class="company-header">
-        <div class="company-left">
-          <img src="${SHDR_LOGO_BASE64}" alt="SHDR Ltd Logo" class="company-logo" onerror="this.style.display='none'">
-          <div>
-            <div class="company-name">${companyName}</div>
-            <div class="company-subtitle">Construction Management System</div>
-            <div class="company-details">${companyAddress}<br>${companyCity}<br><strong>Tel:</strong> ${companyPhone}</div>
-          </div>
-        </div>
-        <div class="report-title"><h2>Management Report</h2><p>Official Company Report</p></div>
-      </div>
+      ${buildCompanyHeaderHTML(company).replace('__REPORT_TITLE__', 'Management Report')}
       <div class="report-meta"><strong>Site:</strong> ${siteLabel} &nbsp;|&nbsp; <strong>Department:</strong> ${deptLabel}<br><strong>Period:</strong> ${period} &nbsp;|&nbsp; <strong>Generated:</strong> ${generatedDate}</div>
       <table><thead><tr>${headers.map(h => `<th>${h}</th>`).join('')}</tr></thead><tbody>${tableRows}</tbody></table>
-      <div class="report-footer"><div class="footer-system">This report is generated automatically by ${companyName} Management System.</div><div class="footer-copy">© ${new Date().getFullYear()} ${companyName} — All rights reserved.</div></div>
+      ${buildReportFooterHTML(company)}
       </body></html>
     `);
     win.document.close();
