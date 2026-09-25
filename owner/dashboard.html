@@ -36,8 +36,15 @@ tbody tr:hover{background:#f1f5f9}
 .settings-section{display:none}.settings-section.active{display:block}
 .settings-card{background:#fff;border-radius:16px;border:1px solid #e5e7eb;padding:1.5rem}
 .settings-card h3{font-weight:600;font-size:1.1rem;color:#1e293b;margin-bottom:1rem;display:flex;align-items:center;gap:.5rem}
+.settings-card .field-group{margin-bottom:1.25rem}
+.settings-card label{display:block;font-size:.85rem;font-weight:500;color:#475569;margin-bottom:.3rem}
 .settings-card input,.settings-card select,.settings-card textarea{width:100%;padding:.6rem .75rem;border:1px solid #d1d5db;border-radius:8px;font-size:.95rem;background:#fff}
+.settings-card .readonly-field{background:#f1f5f9;color:#475569;padding:.6rem .75rem;border-radius:8px;font-size:.95rem}
 .settings-card .save-btn{background:#059669;color:#fff;padding:.6rem 1.5rem;border-radius:8px;font-weight:600;border:none;cursor:pointer}
+.settings-card .save-btn:hover{background:#047857}
+.settings-card .save-btn:disabled{opacity:.6;cursor:not-allowed}
+.tab-active{background:#059669;color:#fff}
+.tab-inactive{background:transparent;color:#64748b}
 .toast{position:fixed;bottom:24px;right:24px;background:#1e293b;color:#fff;padding:14px 24px;border-radius:12px;font-size:14px;z-index:9999;transform:translateY(80px);opacity:0;transition:all .4s;max-width:400px;display:flex;align-items:center;gap:10px}
 .toast.show{transform:translateY(0);opacity:1}
 .toast.success{border-left:4px solid #059669}
@@ -47,11 +54,11 @@ tbody tr:hover{background:#f1f5f9}
 .usage-bar > div{height:100%;background:#059669;transition:width .4s ease}
 .usage-bar.warn > div{background:#f59e0b}
 .usage-bar.danger > div{background:#ef4444}
-.plan-card{border:2px solid #e5e7eb;border-radius:16px;padding:24px;background:#fff;transition:all .2s}
-.plan-card:hover{border-color:#059669;transform:translateY(-4px);box-shadow:0 12px 30px rgba(5,150,105,.15)}
+.plan-card{border:2px solid #e5e7eb;border-radius:16px;padding:24px;background:#fff;transition:all .2s;display:flex;flex-direction:column}
+.plan-card:hover{border-color:#059669;box-shadow:0 12px 30px rgba(5,150,105,.15)}
 .plan-card.featured{border-color:#059669;box-shadow:0 12px 30px rgba(5,150,105,.20)}
 .plan-card.current{background:#ecfdf5}
-.trial-banner{background:linear-gradient(90deg,#065f46,#047857);color:#fff;border-radius:12px;padding:14px 20px;display:flex;align-items:center;gap:12px;justify-content:space-between;flex-wrap:wrap}
+.trial-banner{border-radius:12px;padding:14px 20px;display:flex;align-items:center;gap:12px;justify-content:space-between;flex-wrap:wrap;color:#fff;background:linear-gradient(90deg,#065f46,#047857)}
 .trial-banner.warn{background:linear-gradient(90deg,#b45309,#d97706)}
 .trial-banner.danger{background:linear-gradient(90deg,#991b1b,#dc2626)}
 </style>
@@ -69,22 +76,22 @@ tbody tr:hover{background:#f1f5f9}
       </div>
       <div>
         <h1 class="font-bold text-slate-900 text-lg leading-tight">SHDR Ltd</h1>
-        <p class="text-sm text-slate-500 leading-tight">Owner's Panel</p>
+        <p class="text-sm text-slate-500 leading-tight" data-i18n="navigation.ownerPanel">Owner's Panel</p>
       </div>
     </div>
   </div>
   <nav class="flex-1 p-4 space-y-1 overflow-y-auto">
-    <a href="#" onclick="showSection('dashboard')" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg text-slate-600 hover:bg-slate-50" data-section="dashboard"><iconify-icon icon="material-symbols:dashboard-outline" width="20" height="20"></iconify-icon><span>Dashboard</span></a>
-    <a href="#" onclick="showSection('sites')" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg text-slate-600 hover:bg-slate-50" data-section="sites"><iconify-icon icon="material-symbols:construction-outline" width="20" height="20"></iconify-icon><span>Sites</span></a>
-    <a href="#" onclick="showSection('materials')" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg text-slate-600 hover:bg-slate-50" data-section="materials"><iconify-icon icon="material-symbols:package-2-outline" width="20" height="20"></iconify-icon><span>Materials</span></a>
-    <a href="#" onclick="showSection('stock')" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg text-slate-600 hover:bg-slate-50" data-section="stock"><iconify-icon icon="material-symbols:inventory-2-outline" width="20" height="20"></iconify-icon><span>Stock</span></a>
-    <a href="#" onclick="showSection('workers')" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg text-slate-600 hover:bg-slate-50" data-section="workers"><iconify-icon icon="material-symbols:engineering-outline" width="20" height="20"></iconify-icon><span>Workers</span></a>
-    <a href="#" onclick="showSection('progress')" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg text-slate-600 hover:bg-slate-50" data-section="progress"><iconify-icon icon="material-symbols:trending-up-outline" width="20" height="20"></iconify-icon><span>Progress</span></a>
-    <a href="#" onclick="showSection('reports')" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg text-slate-600 hover:bg-slate-50" data-section="reports"><iconify-icon icon="material-symbols:description-outline" width="20" height="20"></iconify-icon><span>Reports</span></a>
-    <a href="#" onclick="showSection('finances')" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg text-slate-600 hover:bg-slate-50" data-section="finances"><iconify-icon icon="material-symbols:finance-outline" width="20" height="20"></iconify-icon><span>Finances</span></a>
-    <a href="#" onclick="showSection('managers')" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg text-slate-600 hover:bg-slate-50" data-section="managers"><iconify-icon icon="material-symbols:group-outline" width="20" height="20"></iconify-icon><span>Managers</span></a>
-    <a href="#" onclick="showSection('gallery')" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg text-slate-600 hover:bg-slate-50" data-section="gallery"><iconify-icon icon="material-symbols:photo-library-outline" width="20" height="20"></iconify-icon><span>Gallery</span></a>
-    <a href="#" onclick="showSection('settings')" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg text-slate-600 hover:bg-slate-50" data-section="settings"><iconify-icon icon="material-symbols:settings-outline" width="20" height="20"></iconify-icon><span>Settings</span></a>
+    <a href="#" onclick="showSection('dashboard')" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg text-slate-600 hover:bg-slate-50" data-section="dashboard"><iconify-icon icon="material-symbols:dashboard-outline" width="20" height="20"></iconify-icon><span data-i18n="navigation.dashboard">Dashboard</span></a>
+    <a href="#" onclick="showSection('sites')" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg text-slate-600 hover:bg-slate-50" data-section="sites"><iconify-icon icon="material-symbols:construction-outline" width="20" height="20"></iconify-icon><span data-i18n="navigation.sites">Sites</span></a>
+    <a href="#" onclick="showSection('materials')" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg text-slate-600 hover:bg-slate-50" data-section="materials"><iconify-icon icon="material-symbols:package-2-outline" width="20" height="20"></iconify-icon><span data-i18n="navigation.materials">Materials</span></a>
+    <a href="#" onclick="showSection('stock')" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg text-slate-600 hover:bg-slate-50" data-section="stock"><iconify-icon icon="material-symbols:inventory-2-outline" width="20" height="20"></iconify-icon><span data-i18n="navigation.stock">Stock</span></a>
+    <a href="#" onclick="showSection('workers')" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg text-slate-600 hover:bg-slate-50" data-section="workers"><iconify-icon icon="material-symbols:engineering-outline" width="20" height="20"></iconify-icon><span data-i18n="navigation.workers">Workers</span></a>
+    <a href="#" onclick="showSection('progress')" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg text-slate-600 hover:bg-slate-50" data-section="progress"><iconify-icon icon="material-symbols:trending-up-outline" width="20" height="20"></iconify-icon><span data-i18n="navigation.progress">Progress</span></a>
+    <a href="#" onclick="showSection('reports')" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg text-slate-600 hover:bg-slate-50" data-section="reports"><iconify-icon icon="material-symbols:description-outline" width="20" height="20"></iconify-icon><span data-i18n="navigation.reports">Reports</span></a>
+    <a href="#" onclick="showSection('finances')" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg text-slate-600 hover:bg-slate-50" data-section="finances"><iconify-icon icon="material-symbols:finance-outline" width="20" height="20"></iconify-icon><span data-i18n="navigation.finances">Finances</span></a>
+    <a href="#" onclick="showSection('managers')" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg text-slate-600 hover:bg-slate-50" data-section="managers"><iconify-icon icon="material-symbols:group-outline" width="20" height="20"></iconify-icon><span data-i18n="navigation.managers">Managers</span></a>
+    <a href="#" onclick="showSection('gallery')" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg text-slate-600 hover:bg-slate-50" data-section="gallery"><iconify-icon icon="material-symbols:photo-library-outline" width="20" height="20"></iconify-icon><span data-i18n="navigation.gallery">Gallery</span></a>
+    <a href="#" onclick="showSection('settings')" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg text-slate-600 hover:bg-slate-50" data-section="settings"><iconify-icon icon="material-symbols:settings-outline" width="20" height="20"></iconify-icon><span data-i18n="navigation.settings">Settings</span></a>
   </nav>
   <div class="p-4 border-t border-slate-100">
     <div class="flex items-center gap-3 px-4 py-3 rounded-lg bg-slate-50">
@@ -98,18 +105,18 @@ tbody tr:hover{background:#f1f5f9}
         <p id="user-plan-badge" class="text-[10px] mt-0.5 font-semibold"></p>
       </div>
     </div>
-    <button onclick="handleLogout()" class="mt-3 w-full py-2 px-4 text-sm text-red-600 hover:bg-red-50 rounded-lg flex items-center gap-2 justify-center"><iconify-icon icon="material-symbols:logout" width="18" height="18"></iconify-icon><span>Sign Out</span></button>
+    <button onclick="handleLogout()" class="mt-3 w-full py-2 px-4 text-sm text-red-600 hover:bg-red-50 rounded-lg flex items-center gap-2 justify-center"><iconify-icon icon="material-symbols:logout" width="18" height="18"></iconify-icon><span data-i18n="navigation.logout">Sign Out</span></button>
   </div>
 </aside>
 
 <main class="flex-1 lg:ml-64 min-h-screen flex flex-col">
   <header class="bg-white border-b border-slate-200 px-4 py-3 flex items-center justify-between sticky top-0 z-30">
     <button class="lg:hidden text-slate-600 p-2 rounded-lg hover:bg-slate-100" onclick="toggleSidebar()"><iconify-icon icon="material-symbols:menu" width="24" height="24"></iconify-icon></button>
-    <h2 class="text-lg font-bold text-slate-900" id="page-title">Dashboard</h2>
-    <div class="language-switcher" role="group">
-      <button class="lang-btn" data-language="en">EN</button>
-      <button class="lang-btn" data-language="rw">RW</button>
-      <button class="lang-btn" data-language="fr">FR</button>
+    <h2 class="text-lg font-bold text-slate-900" id="page-title" data-i18n="navigation.dashboard">Dashboard</h2>
+    <div class="language-switcher" role="group" aria-label="Language Selection">
+      <button class="lang-btn" data-language="en" aria-label="English" aria-pressed="true">EN</button>
+      <button class="lang-btn" data-language="rw" aria-label="Kinyarwanda" aria-pressed="false">RW</button>
+      <button class="lang-btn" data-language="fr" aria-label="French" aria-pressed="false">FR</button>
     </div>
   </header>
 
@@ -125,6 +132,14 @@ tbody tr:hover{background:#f1f5f9}
       <div class="hidden sm:block w-16"></div>
     </div>
   </footer>
+
+  <div class="bottom-nav" id="bottom-nav">
+    <a href="#" onclick="showSection('dashboard')" class="active" data-section="dashboard"><iconify-icon icon="material-symbols:dashboard-outline"></iconify-icon><span data-i18n="navigation.dashboard">Home</span></a>
+    <a href="#" onclick="showSection('sites')" data-section="sites"><iconify-icon icon="material-symbols:construction-outline"></iconify-icon><span data-i18n="navigation.sites">Sites</span></a>
+    <a href="#" onclick="showSection('workers')" data-section="workers"><iconify-icon icon="material-symbols:engineering-outline"></iconify-icon><span data-i18n="navigation.workers">Workers</span></a>
+    <a href="#" onclick="showSection('reports')" data-section="reports"><iconify-icon icon="material-symbols:description-outline"></iconify-icon><span data-i18n="navigation.reports">Reports</span></a>
+    <a href="#" onclick="showSection('settings')" data-section="settings"><iconify-icon icon="material-symbols:settings-outline"></iconify-icon><span data-i18n="navigation.settings">Settings</span></a>
+  </div>
 </main>
 
 <div id="modal-overlay" class="modal fixed inset-0 bg-black/40 backdrop-blur-sm z-50 items-center justify-center p-4" onclick="closeModal()">
@@ -137,20 +152,18 @@ tbody tr:hover{background:#f1f5f9}
   </div>
 </div>
 
-<!-- Subscription expired full-screen lock -->
 <div id="subscription-lock" class="fixed inset-0 z-[9998] bg-slate-900/95 backdrop-blur-md hidden items-center justify-center p-4 overflow-y-auto">
-  <div class="bg-white rounded-2xl max-w-4xl w-full shadow-2xl p-6 sm:p-8 my-8">
+  <div class="bg-white rounded-2xl max-w-5xl w-full shadow-2xl p-6 sm:p-8 my-8">
     <div class="text-center mb-6">
       <img src="shdr_logo Background Removed.png" alt="SHDR" class="h-16 mx-auto mb-3" onerror="this.style.display='none'">
       <div class="w-16 h-16 rounded-full bg-red-100 flex items-center justify-center mx-auto mb-3"><iconify-icon icon="material-symbols:timer-off" class="text-red-600" width="32"></iconify-icon></div>
       <h2 class="text-2xl font-bold text-slate-900 mb-2">Your 14-Day Free Trial Has Ended</h2>
       <p id="lock-expired-date" class="text-slate-600 text-sm mb-2"></p>
-      <p class="text-slate-600 text-sm">Your company data is safe and has not been deleted. Upgrade your subscription to continue using <strong>Sustainable Homes Design Rwanda Ltd — Construction Sites Management System</strong>.</p>
+      <p class="text-slate-600 text-sm max-w-2xl mx-auto">Your company data is safe and has not been deleted. Upgrade your subscription to continue using <strong>Sustainable Homes Design Rwanda Ltd — Construction Sites Management System</strong>.</p>
     </div>
     <div id="lock-plan-cards" class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6"></div>
     <div class="text-center">
-      <button onclick="showPricingModal()" class="px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-semibold mb-3">View Subscription Plans</button>
-      <br>
+      <p class="text-xs text-slate-500 mb-3">Need help? Contact <a href="mailto:sustainablehomedesign@gmail.com" class="text-emerald-600 font-medium">sustainablehomedesign@gmail.com</a> · <a href="tel:+250788474110" class="text-emerald-600 font-medium">+250 788 474 110</a></p>
       <button onclick="handleLogout()" class="text-xs text-slate-500 hover:text-slate-700 underline">Sign out</button>
     </div>
   </div>
@@ -160,11 +173,12 @@ tbody tr:hover{background:#f1f5f9}
 
 <script type="module">
 // =================================================================
-// i18n (kept compact — full dictionary preserved)
+// 1. I18N SYSTEM
 // =================================================================
 const translations = {
-  en:{common:{save:"Save",cancel:"Cancel",delete:"Delete",edit:"Edit",close:"Close",areYouSure:"Are you sure?",updatedSuccessfully:"Updated successfully",deletedSuccessfully:"Deleted successfully",savedSuccessfully:"Saved successfully",somethingWentWrong:"Something went wrong",requiredField:"Required field",invalidValue:"Invalid value",noDataAvailable:"No data available",loading:"Loading...",view:"View"},
-    navigation:{dashboard:"Dashboard",sites:"Sites",materials:"Materials",stock:"Stock",workers:"Workers",progress:"Progress",reports:"Reports",finances:"Finances",managers:"Managers",gallery:"Gallery",settings:"Settings",logout:"Sign Out"},
+  en:{
+    common:{comingSoon:"Coming Soon",save:"Save",cancel:"Cancel",add:"Add",delete:"Delete",edit:"Edit",close:"Close",export:"Export",loading:"Loading...",error:"Error",search:"Search",view:"View",areYouSure:"Are you sure?",cannotUndo:"This action cannot be undone",savedSuccessfully:"Saved successfully",updatedSuccessfully:"Updated successfully",deletedSuccessfully:"Deleted successfully",somethingWentWrong:"Something went wrong",requiredField:"Required field",invalidValue:"Invalid value",noDataAvailable:"No data available",accessDenied:"Access denied",subscriptionRequired:"Subscription required",sessionExpired:"Session expired"},
+    navigation:{dashboard:"Dashboard",sites:"Sites",materials:"Materials",stock:"Stock",workers:"Workers",progress:"Progress",reports:"Reports",finances:"Finances",managers:"Managers",gallery:"Gallery",officeHub:"Office Hub",settings:"Settings",logout:"Sign Out",ownerPanel:"Owner's Panel"},
     dashboard:{welcome:"Welcome back, {name}",overview:"Here's your construction site overview",totalSites:"Total Sites",totalWorkers:"Total Workers",spentOnMaterials:"Spent on Materials",recentProgress:"Recent Progress",selectSite:"Select a site",noData:"No data",noSites:"No sites",noWorkers:"No workers assigned",endDate:"End"},
     sites:{title:"Your Sites",addSite:"Add Site",editSite:"Edit Site",siteName:"Site Name",location:"Location",client:"Client",startDate:"Start Date",endDate:"End Date",budget:"Budget",status:"Status",markFinished:"Mark Finished",noSites:"No sites yet",district:"District",sector:"Sector",saveSite:"Save Site",edit:"Edit",delete:"Delete"},
     materials:{title:"Materials",requisitions:"Requisitions",noMaterials:"No materials recorded for this site.",quantityUsed:"Quantity Used",unitCost:"Unit Cost",totalAmount:"Total Amount",edit:"Edit",delete:"Delete",noRequisitions:"No requisitions found.",reqNumber:"Requisition Number",site:"Site",requestedBy:"Requested By",requestDate:"Request Date",requiredDate:"Required Date",priority:"Priority",status:"Status",actions:"Actions",approve:"Approve",reject:"Reject",supply:"Supply",urgent:"Urgent",normal:"Normal",pending:"Pending",approved:"Approved",rejected:"Rejected",partiallySupplied:"Partially Supplied",suppliedStatus:"Supplied",material:"Material",requested:"Requested",supplied:"Supplied",remaining:"Remaining",available:"Available",unit:"Unit",notes:"Notes",rejectionReason:"Rejection Reason"},
@@ -173,23 +187,77 @@ const translations = {
     progress:{title:"Progress Tasks",addTask:"Add Task",task:"Task",start:"Start",end:"End",status:"Status",pending:"Pending",completed:"Completed",noTasks:"No tasks yet.",addTaskModal:"Add Progress Task",taskName:"Task name",selectSite:"Select site",periodNumber:"Period number",days:"Days",weeks:"Weeks",saveTask:"Save Task",editTask:"Edit Progress Task",edit:"Edit",delete:"Delete"},
     reports:{title:"Generate Reports",general:"General",payroll:"Worker Payroll",stockReport:"Stock",selectSite:"Select Site",allSites:"All Sites",department:"Department",allDepartments:"All Departments",startDate:"Start Date",endDate:"End Date",exportCSV:"Export CSV",printPDF:"Print / PDF",noAttendance:"No attendance records found.",info:"Please ensure managers have recorded attendance for the workers.",searchWorker:"Search worker...",position:"Position",allPositions:"All Positions",paymentStatus:"Payment Status",paid:"Paid",unpaid:"Unpaid",allPayments:"All (Unpaid)",totalWorkers:"Total Workers",workerDays:"Worker-Days",totalPayroll:"Total Payroll",avgDaily:"Avg. Daily Labor Cost",worker:"Worker",daysWorked:"Days Worked",dailyRate:"Daily Rate",totalPayable:"Total Payable",total:"Total"},
     finances:{title:"Finances",info:"Site Info",overview:"Financial Overview",budget:"Budget",totalSpent:"Total Spent",materialsCost:"Materials Cost",workersCost:"Workers Cost",remaining:"Remaining",dailyAvg:"Daily average",monthlyAvg:"Monthly average",addBudget:"Add Budget",newBudget:"New Budget Amount",updateBudget:"Update Budget",exceeded:"Budget exceeded!",costControl:"Cost control needed."},
-    managers:{title:"Site Managers",info:"Managers assigned to your sites.",inviteManager:"Invite Manager",assignSite:"Assign to Site",email:"Email",password:"Password",invite:"Invite Manager",noManagers:"No managers invited yet.",remove:"Remove",assignedSite:"Assigned site"},
+    managers:{title:"Site Managers",info:"Managers assigned to your sites. The list updates automatically.",inviteManager:"Invite Manager",assignSite:"Assign to Site",email:"Email",password:"Password",invite:"Invite Manager",noManagers:"No managers invited yet.",remove:"Remove",assignedSite:"Assigned site"},
     gallery:{title:"Site Gallery",selectSite:"Select Site",allSites:"All Sites",viewImage:"View Image",noImages:"No gallery images",close:"Close",description:"Description"},
     settings:{title:"Settings",profile:"Profile",account:"Account",security:"Security",preferences:"Preferences",subscription:"Subscription",profileInfo:"Profile Information",fullName:"Full Name",phone:"Phone Number",email:"Email Address",saveChanges:"Save Changes",accountInfo:"Account Information",accountName:"Account Name",role:"Role",accountStatus:"Account Status",active:"Active",memberSince:"Member Since",changePasscode:"Change Passcode",currentPasscode:"Current Passcode",newPasscode:"New Passcode",confirmPasscode:"Confirm New Passcode",changePass:"Change Passcode",language:"Language",currency:"Currency",dateFormat:"Date Format",notifications:"Enable Notifications",savePrefs:"Save Preferences",changePhoto:"Change Photo",removePhoto:"Erase Photo"},
-    subscription:{title:"Subscription & Billing",currentPlan:"Current Plan",status:"Status",planName:"Plan",price:"Price",trialStart:"Trial Start",trialEnd:"Trial End",subStart:"Subscription Start",renewal:"Renewal / Expiration",remaining:"Remaining",usage:"Usage",features:"Features",upgradeNow:"Upgrade Now",viewPlans:"View Subscription Plans",managePlan:"Manage plan",daysLeft:"{n} DAYS LEFT",dayLeft:"1 DAY LEFT",endsToday:"Your free trial ends today.",trialMsg:"Your free trial gives you full access to SHDR Management System.",freeTrialEnded:"Your 14-Day Free Trial Has Ended",trialEndedOn:"Your free trial ended on {date}.",dataSafe:"Your company data is safe and has not been deleted.",upgradeContinue:"Upgrade your subscription to continue using SHDR Construction Management System.",unlimited:"Unlimited",sites:"Sites",managers:"Managers",workers:"Workers",chooseStarter:"Choose Starter",chooseProfessional:"Choose Professional",chooseEnterprise:"Choose Enterprise",perMonth:"/ month",trialIncluded:"14-Day Free Trial Included",limitReached:"Limit Reached",limitMsg:"Your {plan} plan allows a maximum of {max} {res}.",upgradeToAdd:"Upgrade your plan to add more.",paymentIssue:"Payment Issue",paymentIssueMsg:"We couldn't confirm your latest subscription payment. Please renew to continue."}
+    subscription:{title:"Subscription & Billing",currentPlan:"Current Plan",status:"Status",planName:"Plan",price:"Price",trialStart:"Trial Start",trialEnd:"Trial End",subStart:"Subscription Start",renewal:"Renewal",remaining:"Remaining",usage:"Usage",features:"Features",upgradeNow:"Upgrade Now",viewPlans:"View Plans",managePlan:"Manage plan",daysLeft:"{n} DAYS LEFT",dayLeft:"1 DAY LEFT",endsToday:"Your free trial ends today.",trialMsg:"Your free trial gives you full access to SHDR Management System.",freeTrialEnded:"Your 14-Day Free Trial Has Ended",trialEndedOn:"Your free trial ended on {date}.",dataSafe:"Your company data is safe and has not been deleted.",upgradeContinue:"Upgrade your subscription to continue using SHDR Construction Management System.",unlimited:"Unlimited",sites:"Sites",managers:"Managers",workers:"Workers",trialIncluded:"14-Day Free Trial Included",mostPopular:"MOST POPULAR",limitReached:"Limit Reached",limitMsg:"Your {plan} plan allows a maximum of {max} {res}.",upgradeToAdd:"Upgrade your plan to add more.",choosePlan:"Choose {plan}",manualActivation:"Manual activation (temporary):",upgradeInstructions:"To activate your subscription, please complete the payment using the details below. After payment confirmation, your account will be upgraded automatically.",reference:"Reference",close:"Close",upgradeTitle:"Upgrade to {plan}",planSelected:"Plan",period:"Period",perMonth:"/ month",contactInfo:"Contact Information",email:"Email",phone:"Phone",earlyUpgradeBenefit:"Upgrade now and your paid subscription will start immediately after payment confirmation. Your existing company data will remain intact.",oneActiveSub:"Only one active subscription per company.",starter:"Starter",professional:"Professional",enterprise:"Enterprise",trialPlan:"Trial (Professional)",noActive:"No active subscription",pastDue:"Payment Issue",pastDueMsg:"We couldn't confirm your latest subscription payment. Please renew to continue."},
+    status:{active:"Active",completed:"Completed",pending:"Pending",cancelled:"Cancelled",notStarted:"Not Started",inProgress:"In Progress",finished:"Finished"}
   },
-  rw:{common:{save:"Bika",cancel:"Hagarika",delete:"Siba",edit:"Hindura",close:"Funga",areYouSure:"Urabyemeza?",updatedSuccessfully:"Byavuguruwe neza",deletedSuccessfully:"Byasibwe neza",savedSuccessfully:"Byabitswe neza",somethingWentWrong:"Hari ikitagenze neza",requiredField:"Ibi birakenewe",invalidValue:"Agaciro katariyo",noDataAvailable:"Nta makuru",loading:"Birimo...",view:"Reba"},navigation:{dashboard:"Imbonerahamwe",sites:"Ibibanza",materials:"Ibikoresho",stock:"Imbuganyuro",workers:"Abakozi",progress:"Ibitekerezo",reports:"Raporo",finances:"Imari",managers:"Abayobozi",gallery:"Amafoto",settings:"Igenamiterere",logout:"Sohoka"},dashboard:{welcome:"Murakaza neza, {name}",overview:"Dore ikibazo cy'umurimo wawe",totalSites:"Imibare y'ibibanza",totalWorkers:"Imibare y'abakozi",spentOnMaterials:"Amafaranga ku bikoresho",recentProgress:"Ibitekerezo bishya",selectSite:"Hitamo igibanza",noData:"Nta makuru",noSites:"Nta bibanza",noWorkers:"Nta bakozi",endDate:"Iherezo"},sites:{title:"Ibibanza byawe",addSite:"Ongeraho igibanza",editSite:"Hindura igibanza",siteName:"Izina ry'igibanza",location:"Aho biherereye",client:"Umukiriya",startDate:"Itariki yo gutangira",endDate:"Itariki yo kurangira",budget:"Ingengo y'imari",status:"Imiterere",markFinished:"Menya ko byarangiye",noSites:"Nta bibanza",district:"Akarere",sector:"Umurenge",saveSite:"Bika igibanza",edit:"Hindura",delete:"Siba"},materials:{title:"Ibikoresho",requisitions:"Ubusabe",noMaterials:"Nta bikoresho",quantityUsed:"Umubare wakoreshejwe",unitCost:"Igiciro cy'igice",totalAmount:"Amafaranga yose",edit:"Hindura",delete:"Siba",noRequisitions:"Nta busabe",reqNumber:"Nomero",site:"Igibanza",requestedBy:"Wasabye",requestDate:"Itariki yo Gusaba",requiredDate:"Itariki Ikenewe",priority:"Ubwihutirwa",status:"Imiterere",actions:"Ibikorwa",approve:"Emeza",reject:"Anza",supply:"Tanga",urgent:"Byihutirwa",normal:"Bisanzwe",pending:"Bitegereje",approved:"Byemewe",rejected:"Byanze",partiallySupplied:"Byatanzwe Igice",suppliedStatus:"Byatanzwe",material:"Ibikoresho",requested:"Basabwe",supplied:"Byatanzwe",remaining:"Bisigaye",available:"Biboneka",unit:"Igice",notes:"Ibisobanuro",rejectionReason:"Impamvu yo Kwanza"},stock:{title:"Imbuganyuro",noStock:"Nta mbuganyuro",info:"Abayobozi bazongeraho ibikoresho",material:"Ibikoresho",quantity:"Umubare",value:"Agaciro",status:"Imiterere",updated:"Byavuguruwe",min:"Ubugabanyiro",normal:"Bisanzwe",low:"Bike",out:"Byashaje",recentTransactions:"Ibikorwa bishya",date:"Itariki",site:"Igibanza",type:"Ubwoko",qty:"Umubare",notes:"Ibisobanuro"},workers:{title:"Abakozi",addWorker:"Ongeraho umwanya",role:"Umwanya",site:"Igibanza",salaryType:"Ubwoko bw'umushahara",estCost:"Igiciro gike",actions:"Ibikorwa",noPositions:"Nta mwanya",actualWorkers:"Abakozi bagenzwe n'abayobozi",search:"Shakisha izina...",noAssigned:"Nta bakozi",fullName:"Amazina yombi",phone:"Telefoni",salary:"Umushahara",update:"Vugurura",viewDetails:"Ibisobanuro",assignedSite:"Igibanza:",position:"Umwanya",addPosition:"Ongeraho umwanya",roleName:"Izina ry'umwanya",allSites:"Ibibanza byose",daily:"Buri munsi",monthly:"Buri kwezi",estimatedCost:"Umushahara uganijwe",savePosition:"Bika umwanya",updatePosition:"Vugurura umwanya"},progress:{title:"Imirimo",addTask:"Ongeraho umurimo",task:"Umurimo",start:"Tangira",end:"Rangira",status:"Imiterere",pending:"Bitegereje",completed:"Byarangiye",noTasks:"Nta mirimo",addTaskModal:"Ongeraho umurimo",taskName:"Izina",selectSite:"Hitamo igibanza",periodNumber:"Umubare w'igihe",days:"Iminsi",weeks:"Ibyumweru",saveTask:"Bika",editTask:"Hindura",edit:"Hindura",delete:"Siba"},reports:{title:"Kora Raporo",general:"Rusange",payroll:"Umushahara",stockReport:"Imbuganyuro",selectSite:"Hitamo Igibanza",allSites:"Ibibanza Byose",department:"Ishami",allDepartments:"Amashami Yose",startDate:"Itariki yo gutangira",endDate:"Itariki yo kurangira",exportCSV:"Sohora CSV",printPDF:"Capa / PDF",noAttendance:"Nta makuru yo kwitaba",info:"Nyamuneka menya neza ko abayobozi banditse kwitaba",searchWorker:"Shakisha umukozi...",position:"Umwanya",allPositions:"Imiryango Yose",paymentStatus:"Imiterere y'ubwishyu",paid:"Byishyuwe",unpaid:"Bitishyuwe",allPayments:"Byose",totalWorkers:"Abakozi Bose",workerDays:"Iminsi",totalPayroll:"Umushahara Wose",avgDaily:"Igiciro cy'umunsi",worker:"Umukozi",daysWorked:"Iminsi Yakozwe",dailyRate:"Umushahara w'umunsi",totalPayable:"Amafaranga Yose",total:"Igiteranyo"},finances:{title:"Imari",info:"Amakuru y'Igibanza",overview:"Imbonerahamwe",budget:"Ingengo",totalSpent:"Amafaranga Yakoreshejwe",materialsCost:"Ibikoresho",workersCost:"Abakozi",remaining:"Isigazwa",dailyAvg:"Buri munsi",monthlyAvg:"Buri kwezi",addBudget:"Ongeraho Ingengo",newBudget:"Ingengo nshya",updateBudget:"Vugurura",exceeded:"Ingengo yarengwe!",costControl:"Birakenewe kugenzura"},managers:{title:"Abayobozi",info:"Abayobozi bagenzwe kuri ibibanza",inviteManager:"Tumira Umuyobozi",assignSite:"Mwize igibanza",email:"Email",password:"Ijambobanga",invite:"Tumira",noManagers:"Nta bayobozi",remove:"Kuraho",assignedSite:"Igibanza"},gallery:{title:"Amafoto",selectSite:"Hitamo Igibanza",allSites:"Ibibanza Byose",viewImage:"Reba Ifoto",noImages:"Nta mafoto",close:"Funga",description:"Ibisobanuro"},settings:{title:"Igenamiterere",profile:"Umwirondoro",account:"Kontu",security:"Umutekano",preferences:"Amahitamo",subscription:"Kwiyandikisha",profileInfo:"Amakuru bwite",fullName:"Amazina yombi",phone:"Telefoni",email:"Email",saveChanges:"Bika",accountInfo:"Amakuru ya kontu",accountName:"Izina rya kontu",role:"Umwanya",accountStatus:"Imiterere",active:"Bikora",memberSince:"Kuva",changePasscode:"Hindura passcode",currentPasscode:"Passcode y'ubu",newPasscode:"Passcode nshya",confirmPasscode:"Emeza passcode",changePass:"Hindura",language:"Ururimi",currency:"Ifaranga",dateFormat:"Imiterere y'itariki",notifications:"Koresha imenyesha",savePrefs:"Bika",changePhoto:"Hindura ifoto",removePhoto:"Kuraho ifoto"},subscription:{title:"Kwiyandikisha",currentPlan:"Gahunda",status:"Imiterere",planName:"Izina",price:"Igiciro",trialStart:"Itariki yo Gutangira",trialEnd:"Itariki yo Kurangira",subStart:"Gutangira",renewal:"Kuvugurura",remaining:"Bisigaye",usage:"Gukoresha",features:"Ibiranga",upgradeNow:"Ongeraho Uburyo",viewPlans:"Reba Gahunda",managePlan:"Genzura",daysLeft:"IMINSI {n} ISIGAYE",dayLeft:"UMUNSI 1 USIGAYE",endsToday:"Igihe cyo kugerageza kirangira uyu munsi.",trialMsg:"Igihe cyo kugerageza kirimo uburenganzira bwose.",freeTrialEnded:"Igihe cyo Kugerageza cyarangiye",trialEndedOn:"Igihe cyo kugerageza cyarangiye ku {date}.",dataSafe:"Amakuru yawe arategetswe.",upgradeContinue:"Ongeraho uburyo bwo gukomeza gukoresha SHDR.",unlimited:"Nta Kigero",sites:"Ibibanza",managers:"Abayobozi",workers:"Abakozi",chooseStarter:"Hitamo Starter",chooseProfessional:"Hitamo Professional",chooseEnterprise:"Hitamo Enterprise",perMonth:"/ ukwezi",trialIncluded:"Iminsi 14 yo Kugerageza",limitReached:"Umubare Warenze",limitMsg:"Gahunda yawe ya {plan} yemera {max} {res} gusa.",upgradeToAdd:"Ongeraho gahunda kongeraho.",paymentIssue:"Ikibazo cy'Ubwishyu",paymentIssueMsg:"Ntibyashobotse kwemeza ubwishyu bwawe."}},
-  fr:{common:{save:"Enregistrer",cancel:"Annuler",delete:"Supprimer",edit:"Modifier",close:"Fermer",areYouSure:"Êtes-vous sûr ?",updatedSuccessfully:"Mis à jour",deletedSuccessfully:"Supprimé",savedSuccessfully:"Enregistré",somethingWentWrong:"Une erreur s'est produite",requiredField:"Champ requis",invalidValue:"Valeur invalide",noDataAvailable:"Aucune donnée",loading:"Chargement...",view:"Voir"},navigation:{dashboard:"Tableau de bord",sites:"Sites",materials:"Matériaux",stock:"Stock",workers:"Ouvriers",progress:"Progrès",reports:"Rapports",finances:"Finances",managers:"Gestionnaires",gallery:"Galerie",settings:"Paramètres",logout:"Déconnexion"},dashboard:{welcome:"Bienvenue, {name}",overview:"Voici votre aperçu du chantier",totalSites:"Total des sites",totalWorkers:"Total des ouvriers",spentOnMaterials:"Dépensé en matériaux",recentProgress:"Progrès récents",selectSite:"Sélectionner un site",noData:"Aucune donnée",noSites:"Aucun site",noWorkers:"Aucun ouvrier",endDate:"Fin"},sites:{title:"Vos sites",addSite:"Ajouter un site",editSite:"Modifier",siteName:"Nom",location:"Emplacement",client:"Client",startDate:"Début",endDate:"Fin",budget:"Budget",status:"Statut",markFinished:"Marquer terminé",noSites:"Aucun site",district:"District",sector:"Secteur",saveSite:"Enregistrer",edit:"Modifier",delete:"Supprimer"},materials:{title:"Matériaux",requisitions:"Réquisitions",noMaterials:"Aucun matériau",quantityUsed:"Quantité utilisée",unitCost:"Coût unitaire",totalAmount:"Montant total",edit:"Modifier",delete:"Supprimer",noRequisitions:"Aucune réquisition",reqNumber:"Numéro",site:"Site",requestedBy:"Demandé par",requestDate:"Date",requiredDate:"Requise",priority:"Priorité",status:"Statut",actions:"Actions",approve:"Approuver",reject:"Rejeter",supply:"Fournir",urgent:"Urgent",normal:"Normal",pending:"En attente",approved:"Approuvé",rejected:"Rejeté",partiallySupplied:"Partiellement Fourni",suppliedStatus:"Fourni",material:"Matériau",requested:"Demandé",supplied:"Fourni",remaining:"Restant",available:"Disponible",unit:"Unité",notes:"Notes",rejectionReason:"Motif"},stock:{title:"Stock",noStock:"Aucun enregistrement",info:"Les gestionnaires ajouteront du stock",material:"Matériau",quantity:"Quantité",value:"Valeur",status:"Statut",updated:"Mis à jour",min:"Min",normal:"Normal",low:"Faible",out:"Épuisé",recentTransactions:"Transactions récentes",date:"Date",site:"Site",type:"Type",qty:"Qté",notes:"Notes"},workers:{title:"Ouvriers",addWorker:"Ajouter un poste",role:"Rôle",site:"Site",salaryType:"Type de salaire",estCost:"Coût estimé",actions:"Actions",noPositions:"Aucun poste",actualWorkers:"Ouvriers assignés",search:"Rechercher...",noAssigned:"Aucun ouvrier",fullName:"Nom complet",phone:"Téléphone",salary:"Salaire",update:"Mettre à jour",viewDetails:"Détails",assignedSite:"Site:",position:"Rôle",addPosition:"Ajouter un poste",roleName:"Nom du rôle",allSites:"Tous les sites",daily:"Journalier",monthly:"Mensuel",estimatedCost:"Salaire estimé",savePosition:"Enregistrer",updatePosition:"Mettre à jour"},progress:{title:"Tâches",addTask:"Ajouter une tâche",task:"Tâche",start:"Début",end:"Fin",status:"Statut",pending:"En attente",completed:"Terminé",noTasks:"Aucune tâche",addTaskModal:"Ajouter une tâche",taskName:"Nom",selectSite:"Sélectionner",periodNumber:"Numéro période",days:"Jours",weeks:"Semaines",saveTask:"Enregistrer",editTask:"Modifier",edit:"Modifier",delete:"Supprimer"},reports:{title:"Rapports",general:"Général",payroll:"Paie",stockReport:"Stock",selectSite:"Site",allSites:"Tous",department:"Département",allDepartments:"Tous",startDate:"Début",endDate:"Fin",exportCSV:"Exporter CSV",printPDF:"Imprimer / PDF",noAttendance:"Aucune présence",info:"Assurez-vous que les gestionnaires ont enregistré la présence",searchWorker:"Rechercher...",position:"Poste",allPositions:"Tous",paymentStatus:"Statut du paiement",paid:"Payé",unpaid:"Non payé",allPayments:"Tous",totalWorkers:"Ouvriers",workerDays:"Jours-ouvriers",totalPayroll:"Paie totale",avgDaily:"Coût journalier moyen",worker:"Ouvrier",daysWorked:"Jours",dailyRate:"Taux",totalPayable:"Total",total:"Total"},finances:{title:"Finances",info:"Infos site",overview:"Aperçu",budget:"Budget",totalSpent:"Dépenses",materialsCost:"Matériaux",workersCost:"Ouvriers",remaining:"Restant",dailyAvg:"Moyenne journalière",monthlyAvg:"Moyenne mensuelle",addBudget:"Ajouter budget",newBudget:"Nouveau budget",updateBudget:"Mettre à jour",exceeded:"Budget dépassé!",costControl:"Contrôle nécessaire"},managers:{title:"Gestionnaires",info:"Gestionnaires assignés",inviteManager:"Inviter",assignSite:"Assigner",email:"E-mail",password:"Mot de passe",invite:"Inviter",noManagers:"Aucun",remove:"Retirer",assignedSite:"Site"},gallery:{title:"Galerie",selectSite:"Site",allSites:"Tous",viewImage:"Voir",noImages:"Aucune image",close:"Fermer",description:"Description"},settings:{title:"Paramètres",profile:"Profil",account:"Compte",security:"Sécurité",preferences:"Préférences",subscription:"Abonnement",profileInfo:"Profil",fullName:"Nom",phone:"Téléphone",email:"E-mail",saveChanges:"Enregistrer",accountInfo:"Compte",accountName:"Nom du compte",role:"Rôle",accountStatus:"Statut",active:"Actif",memberSince:"Membre depuis",changePasscode:"Changer le code",currentPasscode:"Code actuel",newPasscode:"Nouveau code",confirmPasscode:"Confirmer",changePass:"Changer",language:"Langue",currency:"Devise",dateFormat:"Format",notifications:"Notifications",savePrefs:"Enregistrer",changePhoto:"Changer la photo",removePhoto:"Supprimer"},subscription:{title:"Abonnement",currentPlan:"Plan actuel",status:"Statut",planName:"Plan",price:"Prix",trialStart:"Début d'essai",trialEnd:"Fin d'essai",subStart:"Début abonnement",renewal:"Renouvellement",remaining:"Restant",usage:"Utilisation",features:"Fonctionnalités",upgradeNow:"Mettre à niveau",viewPlans:"Voir les plans",managePlan:"Gérer",daysLeft:"{n} JOURS RESTANTS",dayLeft:"1 JOUR RESTANT",endsToday:"Votre essai se termine aujourd'hui.",trialMsg:"Votre essai donne accès complet à SHDR.",freeTrialEnded:"Votre essai gratuit a pris fin",trialEndedOn:"Votre essai a pris fin le {date}.",dataSafe:"Vos données sont conservées.",upgradeContinue:"Mettez à niveau pour continuer à utiliser SHDR.",unlimited:"Illimité",sites:"Sites",managers:"Gestionnaires",workers:"Ouvriers",chooseStarter:"Choisir Starter",chooseProfessional:"Choisir Professional",chooseEnterprise:"Choisir Enterprise",perMonth:"/ mois",trialIncluded:"Essai de 14 jours inclus",limitReached:"Limite atteinte",limitMsg:"Votre plan {plan} autorise {max} {res}.",upgradeToAdd:"Mettez à niveau pour en ajouter.",paymentIssue:"Problème de paiement",paymentIssueMsg:"Impossible de confirmer votre paiement."}}
+  rw:{
+    common:{save:"Bika",cancel:"Hagarika",delete:"Siba",edit:"Hindura",close:"Funga",areYouSure:"Urabyemeza?",cannotUndo:"Ibi ntibishobora guhindurwa",updatedSuccessfully:"Byavuguruwe neza",deletedSuccessfully:"Byasibwe neza",savedSuccessfully:"Byabitswe neza",somethingWentWrong:"Hari ikitagenze neza",requiredField:"Ibi birakenewe",invalidValue:"Agaciro katariyo",noDataAvailable:"Nta makuru",loading:"Birimo...",view:"Reba",comingSoon:"Biraza"},
+    navigation:{dashboard:"Imbonerahamwe",sites:"Ibibanza",materials:"Ibikoresho",stock:"Imbuganyuro",workers:"Abakozi",progress:"Ibitekerezo",reports:"Raporo",finances:"Imari",managers:"Abayobozi",gallery:"Amafoto",officeHub:"Office Hub",settings:"Igenamiterere",logout:"Sohoka",ownerPanel:"Ipaneli ya nyir'ubwite"},
+    dashboard:{welcome:"Murakaza neza, {name}",overview:"Dore ikibazo cy'umurimo wawe",totalSites:"Imibare y'ibibanza",totalWorkers:"Imibare y'abakozi",spentOnMaterials:"Amafaranga ku bikoresho",recentProgress:"Ibitekerezo bishya",selectSite:"Hitamo igibanza",noData:"Nta makuru",noSites:"Nta bibanza",noWorkers:"Nta bakozi",endDate:"Iherezo"},
+    sites:{title:"Ibibanza byawe",addSite:"Ongeraho igibanza",editSite:"Hindura igibanza",siteName:"Izina ry'igibanza",location:"Aho biherereye",client:"Umukiriya",startDate:"Itariki yo gutangira",endDate:"Itariki yo kurangira",budget:"Ingengo y'imari",status:"Imiterere",markFinished:"Menya ko byarangiye",noSites:"Nta bibanza",district:"Akarere",sector:"Umurenge",saveSite:"Bika igibanza",edit:"Hindura",delete:"Siba"},
+    materials:{title:"Ibikoresho",requisitions:"Ubusabe",noMaterials:"Nta bikoresho",quantityUsed:"Umubare wakoreshejwe",unitCost:"Igiciro cy'igice",totalAmount:"Amafaranga yose",edit:"Hindura",delete:"Siba",noRequisitions:"Nta busabe",reqNumber:"Nomero",site:"Igibanza",requestedBy:"Wasabye",requestDate:"Itariki yo Gusaba",requiredDate:"Itariki Ikenewe",priority:"Ubwihutirwa",status:"Imiterere",actions:"Ibikorwa",approve:"Emeza",reject:"Anza",supply:"Tanga",urgent:"Byihutirwa",normal:"Bisanzwe",pending:"Bitegereje",approved:"Byemewe",rejected:"Byanze",partiallySupplied:"Byatanzwe Igice",suppliedStatus:"Byatanzwe",material:"Ibikoresho",requested:"Basabwe",supplied:"Byatanzwe",remaining:"Bisigaye",available:"Biboneka",unit:"Igice",notes:"Ibisobanuro",rejectionReason:"Impamvu yo Kwanza"},
+    stock:{title:"Imbuganyuro",noStock:"Nta mbuganyuro",info:"Abayobozi bazongeraho ibikoresho",material:"Ibikoresho",quantity:"Umubare",value:"Agaciro",status:"Imiterere",updated:"Byavuguruwe",min:"Ubugabanyiro",normal:"Bisanzwe",low:"Bike",out:"Byashaje",recentTransactions:"Ibikorwa bishya",date:"Itariki",site:"Igibanza",type:"Ubwoko",qty:"Umubare",notes:"Ibisobanuro"},
+    workers:{title:"Abakozi",addWorker:"Ongeraho umwanya",role:"Umwanya",site:"Igibanza",salaryType:"Ubwoko bw'umushahara",estCost:"Igiciro gike",actions:"Ibikorwa",noPositions:"Nta mwanya",actualWorkers:"Abakozi bagenzwe",search:"Shakisha izina...",noAssigned:"Nta bakozi",fullName:"Amazina yombi",phone:"Telefoni",salary:"Umushahara",update:"Vugurura",viewDetails:"Ibisobanuro",assignedSite:"Igibanza:",position:"Umwanya",addPosition:"Ongeraho umwanya",roleName:"Izina ry'umwanya",allSites:"Ibibanza byose",daily:"Buri munsi",monthly:"Buri kwezi",estimatedCost:"Umushahara uganijwe",savePosition:"Bika umwanya",updatePosition:"Vugurura umwanya"},
+    progress:{title:"Imirimo",addTask:"Ongeraho umurimo",task:"Umurimo",start:"Tangira",end:"Rangira",status:"Imiterere",pending:"Bitegereje",completed:"Byarangiye",noTasks:"Nta mirimo",addTaskModal:"Ongeraho umurimo",taskName:"Izina",selectSite:"Hitamo igibanza",periodNumber:"Umubare w'igihe",days:"Iminsi",weeks:"Ibyumweru",saveTask:"Bika",editTask:"Hindura",edit:"Hindura",delete:"Siba"},
+    reports:{title:"Kora Raporo",general:"Rusange",payroll:"Umushahara",stockReport:"Imbuganyuro",selectSite:"Hitamo Igibanza",allSites:"Ibibanza Byose",department:"Ishami",allDepartments:"Amashami Yose",startDate:"Itariki yo gutangira",endDate:"Itariki yo kurangira",exportCSV:"Sohora CSV",printPDF:"Capa / PDF",noAttendance:"Nta makuru yo kwitaba",info:"Nyamuneka menya neza ko abayobozi banditse kwitaba",searchWorker:"Shakisha umukozi...",position:"Umwanya",allPositions:"Imiryango Yose",paymentStatus:"Imiterere y'ubwishyu",paid:"Byishyuwe",unpaid:"Bitishyuwe",allPayments:"Byose",totalWorkers:"Abakozi Bose",workerDays:"Iminsi",totalPayroll:"Umushahara Wose",avgDaily:"Igiciro cy'umunsi",worker:"Umukozi",daysWorked:"Iminsi Yakozwe",dailyRate:"Umushahara w'umunsi",totalPayable:"Amafaranga Yose",total:"Igiteranyo"},
+    finances:{title:"Imari",info:"Amakuru y'Igibanza",overview:"Imbonerahamwe",budget:"Ingengo",totalSpent:"Amafaranga Yakoreshejwe",materialsCost:"Ibikoresho",workersCost:"Abakozi",remaining:"Isigazwa",dailyAvg:"Buri munsi",monthlyAvg:"Buri kwezi",addBudget:"Ongeraho Ingengo",newBudget:"Ingengo nshya",updateBudget:"Vugurura",exceeded:"Ingengo yarengwe!",costControl:"Birakenewe kugenzura"},
+    managers:{title:"Abayobozi",info:"Abayobozi bagenzwe kuri ibibanza",inviteManager:"Tumira Umuyobozi",assignSite:"Mwize igibanza",email:"Email",password:"Ijambobanga",invite:"Tumira",noManagers:"Nta bayobozi",remove:"Kuraho",assignedSite:"Igibanza"},
+    gallery:{title:"Amafoto",selectSite:"Hitamo Igibanza",allSites:"Ibibanza Byose",viewImage:"Reba Ifoto",noImages:"Nta mafoto",close:"Funga",description:"Ibisobanuro"},
+    settings:{title:"Igenamiterere",profile:"Umwirondoro",account:"Kontu",security:"Umutekano",preferences:"Amahitamo",subscription:"Kwiyandikisha",profileInfo:"Amakuru bwite",fullName:"Amazina yombi",phone:"Telefoni",email:"Email",saveChanges:"Bika",accountInfo:"Amakuru ya kontu",accountName:"Izina rya kontu",role:"Umwanya",accountStatus:"Imiterere",active:"Bikora",memberSince:"Kuva",changePasscode:"Hindura passcode",currentPasscode:"Passcode y'ubu",newPasscode:"Passcode nshya",confirmPasscode:"Emeza passcode",changePass:"Hindura",language:"Ururimi",currency:"Ifaranga",dateFormat:"Imiterere y'itariki",notifications:"Koresha imenyesha",savePrefs:"Bika",changePhoto:"Hindura ifoto",removePhoto:"Kuraho ifoto"},
+    subscription:{title:"Kwiyandikisha",currentPlan:"Gahunda",status:"Imiterere",planName:"Izina",price:"Igiciro",trialStart:"Itariki yo Gutangira",trialEnd:"Itariki yo Kurangira",subStart:"Gutangira",renewal:"Kuvugurura",remaining:"Bisigaye",usage:"Gukoresha",features:"Ibiranga",upgradeNow:"Ongeraho Uburyo",viewPlans:"Reba Gahunda",managePlan:"Genzura",daysLeft:"IMINSI {n} ISIGAYE",dayLeft:"UMUNSI 1 USIGAYE",endsToday:"Igihe cyo kugerageza kirangira uyu munsi.",trialMsg:"Igihe cyo kugerageza kirimo uburenganzira bwose.",freeTrialEnded:"Igihe cyo Kugerageza cyarangiye",trialEndedOn:"Igihe cyo kugerageza cyarangiye ku {date}.",dataSafe:"Amakuru yawe arategetswe.",upgradeContinue:"Ongeraho uburyo bwo gukomeza gukoresha SHDR.",unlimited:"Nta Kigero",sites:"Ibibanza",managers:"Abayobozi",workers:"Abakozi",trialIncluded:"Iminsi 14 yo Kugerageza",mostPopular:"IKORESHEJWE CYA",limitReached:"Umubare Warenze",limitMsg:"Gahunda yawe ya {plan} yemera {max} {res} gusa.",upgradeToAdd:"Ongeraho gahunda kongeraho.",choosePlan:"Hitamo {plan}",manualActivation:"Kwemeza n'intoki (by'agateganyo):",upgradeInstructions:"Kugirango wemeze kwiyandikisha, koresha amakuru ari hasi. Nyuma yo kwemeza ubwishyu, konti yawe izahindurwa.",reference:"Nomero",close:"Funga",upgradeTitle:"Ongeraho kuri {plan}",planSelected:"Gahunda",period:"Igihe",perMonth:"/ ukwezi",contactInfo:"Amakuru yo guhamagara",email:"Email",phone:"Telefoni",earlyUpgradeBenefit:"Ongeraho ubu kandi kwiyandikisha bizatangira ako kanya nyuma yo kwemeza. Amakuru yawe azaguma.",oneActiveSub:"Kwiyandikisha kumwe gusa ku kampani.",starter:"Starter",professional:"Professional",enterprise:"Enterprise",trialPlan:"Kugerageza (Professional)",noActive:"Nta kwiyandikisha",pastDue:"Ikibazo cy'Ubwishyu",pastDueMsg:"Ntibyashobotse kwemeza ubwishyu bwawe."},
+    status:{active:"Bikora",completed:"Byarangiye",pending:"Bitegereje",cancelled:"Byahagaritswe",notStarted:"Ntibitangira",inProgress:"Bikorwa",finished:"Byarangiye"}
+  },
+  fr:{
+    common:{save:"Enregistrer",cancel:"Annuler",delete:"Supprimer",edit:"Modifier",close:"Fermer",areYouSure:"Êtes-vous sûr ?",cannotUndo:"Cette action est irréversible",updatedSuccessfully:"Mis à jour",deletedSuccessfully:"Supprimé",savedSuccessfully:"Enregistré",somethingWentWrong:"Une erreur s'est produite",requiredField:"Champ requis",invalidValue:"Valeur invalide",noDataAvailable:"Aucune donnée",loading:"Chargement...",view:"Voir",comingSoon:"Bientôt"},
+    navigation:{dashboard:"Tableau de bord",sites:"Sites",materials:"Matériaux",stock:"Stock",workers:"Ouvriers",progress:"Progrès",reports:"Rapports",finances:"Finances",managers:"Gestionnaires",gallery:"Galerie",officeHub:"Bureau",settings:"Paramètres",logout:"Déconnexion",ownerPanel:"Panneau propriétaire"},
+    dashboard:{welcome:"Bienvenue, {name}",overview:"Voici votre aperçu du chantier",totalSites:"Total des sites",totalWorkers:"Total des ouvriers",spentOnMaterials:"Dépensé en matériaux",recentProgress:"Progrès récents",selectSite:"Sélectionner",noData:"Aucune donnée",noSites:"Aucun site",noWorkers:"Aucun ouvrier",endDate:"Fin"},
+    sites:{title:"Vos sites",addSite:"Ajouter",editSite:"Modifier",siteName:"Nom",location:"Emplacement",client:"Client",startDate:"Début",endDate:"Fin",budget:"Budget",status:"Statut",markFinished:"Marquer terminé",noSites:"Aucun site",district:"District",sector:"Secteur",saveSite:"Enregistrer",edit:"Modifier",delete:"Supprimer"},
+    materials:{title:"Matériaux",requisitions:"Réquisitions",noMaterials:"Aucun matériau",quantityUsed:"Quantité utilisée",unitCost:"Coût unitaire",totalAmount:"Montant total",edit:"Modifier",delete:"Supprimer",noRequisitions:"Aucune réquisition",reqNumber:"Numéro",site:"Site",requestedBy:"Demandé par",requestDate:"Date",requiredDate:"Requise",priority:"Priorité",status:"Statut",actions:"Actions",approve:"Approuver",reject:"Rejeter",supply:"Fournir",urgent:"Urgent",normal:"Normal",pending:"En attente",approved:"Approuvé",rejected:"Rejeté",partiallySupplied:"Partiel",suppliedStatus:"Fourni",material:"Matériau",requested:"Demandé",supplied:"Fourni",remaining:"Restant",available:"Disponible",unit:"Unité",notes:"Notes",rejectionReason:"Motif"},
+    stock:{title:"Stock",noStock:"Aucun enregistrement",info:"Les gestionnaires ajouteront du stock",material:"Matériau",quantity:"Quantité",value:"Valeur",status:"Statut",updated:"Mis à jour",min:"Min",normal:"Normal",low:"Faible",out:"Épuisé",recentTransactions:"Transactions récentes",date:"Date",site:"Site",type:"Type",qty:"Qté",notes:"Notes"},
+    workers:{title:"Ouvriers",addWorker:"Ajouter",role:"Rôle",site:"Site",salaryType:"Type de salaire",estCost:"Coût estimé",actions:"Actions",noPositions:"Aucun poste",actualWorkers:"Ouvriers assignés",search:"Rechercher...",noAssigned:"Aucun ouvrier",fullName:"Nom",phone:"Téléphone",salary:"Salaire",update:"Mettre à jour",viewDetails:"Détails",assignedSite:"Site:",position:"Rôle",addPosition:"Ajouter",roleName:"Nom du rôle",allSites:"Tous",daily:"Journalier",monthly:"Mensuel",estimatedCost:"Salaire estimé",savePosition:"Enregistrer",updatePosition:"Mettre à jour"},
+    progress:{title:"Tâches",addTask:"Ajouter",task:"Tâche",start:"Début",end:"Fin",status:"Statut",pending:"En attente",completed:"Terminé",noTasks:"Aucune tâche",addTaskModal:"Ajouter",taskName:"Nom",selectSite:"Sélectionner",periodNumber:"Période",days:"Jours",weeks:"Semaines",saveTask:"Enregistrer",editTask:"Modifier",edit:"Modifier",delete:"Supprimer"},
+    reports:{title:"Rapports",general:"Général",payroll:"Paie",stockReport:"Stock",selectSite:"Site",allSites:"Tous",department:"Département",allDepartments:"Tous",startDate:"Début",endDate:"Fin",exportCSV:"CSV",printPDF:"PDF",noAttendance:"Aucune présence",info:"Assurez-vous que les gestionnaires ont enregistré la présence",searchWorker:"Rechercher...",position:"Poste",allPositions:"Tous",paymentStatus:"Paiement",paid:"Payé",unpaid:"Non payé",allPayments:"Tous",totalWorkers:"Ouvriers",workerDays:"Jours",totalPayroll:"Paie totale",avgDaily:"Coût journalier",worker:"Ouvrier",daysWorked:"Jours",dailyRate:"Taux",totalPayable:"Total",total:"Total"},
+    finances:{title:"Finances",info:"Infos",overview:"Aperçu",budget:"Budget",totalSpent:"Dépenses",materialsCost:"Matériaux",workersCost:"Ouvriers",remaining:"Restant",dailyAvg:"Journalière",monthlyAvg:"Mensuelle",addBudget:"Ajouter budget",newBudget:"Nouveau",updateBudget:"Mettre à jour",exceeded:"Dépassé!",costControl:"Contrôle requis"},
+    managers:{title:"Gestionnaires",info:"Gestionnaires assignés",inviteManager:"Inviter",assignSite:"Assigner",email:"E-mail",password:"Mot de passe",invite:"Inviter",noManagers:"Aucun",remove:"Retirer",assignedSite:"Site"},
+    gallery:{title:"Galerie",selectSite:"Site",allSites:"Tous",viewImage:"Voir",noImages:"Aucune image",close:"Fermer",description:"Description"},
+    settings:{title:"Paramètres",profile:"Profil",account:"Compte",security:"Sécurité",preferences:"Préférences",subscription:"Abonnement",profileInfo:"Profil",fullName:"Nom",phone:"Téléphone",email:"E-mail",saveChanges:"Enregistrer",accountInfo:"Compte",accountName:"Nom",role:"Rôle",accountStatus:"Statut",active:"Actif",memberSince:"Membre depuis",changePasscode:"Changer",currentPasscode:"Actuel",newPasscode:"Nouveau",confirmPasscode:"Confirmer",changePass:"Changer",language:"Langue",currency:"Devise",dateFormat:"Format",notifications:"Notifications",savePrefs:"Enregistrer",changePhoto:"Changer photo",removePhoto:"Supprimer"},
+    subscription:{title:"Abonnement",currentPlan:"Plan actuel",status:"Statut",planName:"Plan",price:"Prix",trialStart:"Début essai",trialEnd:"Fin essai",subStart:"Début",renewal:"Renouvellement",remaining:"Restant",usage:"Utilisation",features:"Fonctionnalités",upgradeNow:"Améliorer",viewPlans:"Voir les plans",managePlan:"Gérer",daysLeft:"{n} JOURS RESTANTS",dayLeft:"1 JOUR RESTANT",endsToday:"Votre essai se termine aujourd'hui.",trialMsg:"Votre essai donne accès complet.",freeTrialEnded:"Essai gratuit terminé",trialEndedOn:"Votre essai a pris fin le {date}.",dataSafe:"Vos données sont conservées.",upgradeContinue:"Mettez à niveau pour continuer.",unlimited:"Illimité",sites:"Sites",managers:"Gestionnaires",workers:"Ouvriers",trialIncluded:"Essai 14 jours inclus",mostPopular:"POPULAIRE",limitReached:"Limite atteinte",limitMsg:"Votre plan {plan} autorise {max} {res}.",upgradeToAdd:"Améliorez votre plan.",choosePlan:"Choisir {plan}",manualActivation:"Activation manuelle:",upgradeInstructions:"Pour activer, utilisez les coordonnées ci-dessous.",reference:"Référence",close:"Fermer",upgradeTitle:"Passer à {plan}",planSelected:"Plan",period:"Période",perMonth:"/ mois",contactInfo:"Contact",email:"E-mail",phone:"Téléphone",earlyUpgradeBenefit:"Améliorez maintenant, votre abonnement démarrera après confirmation.",oneActiveSub:"Un seul abonnement actif par entreprise.",starter:"Starter",professional:"Professional",enterprise:"Enterprise",trialPlan:"Essai (Professional)",noActive:"Aucun abonnement",pastDue:"Problème de paiement",pastDueMsg:"Impossible de confirmer votre paiement."},
+    status:{active:"Actif",completed:"Terminé",pending:"En attente",cancelled:"Annulé",notStarted:"Non commencé",inProgress:"En cours",finished:"Terminé"}
+  }
 };
 let currentLanguage = localStorage.getItem('shdr_language') || 'en';
-function getNested(o,k){return k.split('.').reduce((a,b)=>(a?a[b]:undefined),o);}
-function t(k,p){let v=getNested(translations[currentLanguage],k);if(v===undefined)v=getNested(translations.en,k);if(v===undefined)return k;if(p)Object.keys(p).forEach(q=>{v=v.replace(new RegExp(`{${q}}`,'g'),p[q]);});return v;}
-function applyTranslations(){document.querySelectorAll('[data-i18n]').forEach(el=>{el.textContent=t(el.dataset.i18n);});}
-function setLanguage(lang){if(!['en','rw','fr'].includes(lang))return;currentLanguage=lang;localStorage.setItem('shdr_language',lang);document.querySelectorAll('.lang-btn').forEach(b=>b.classList.toggle('active',b.dataset.language===lang));document.documentElement.lang=lang;applyTranslations();if(typeof showSection==='function')showSection(currentSection);}
-document.querySelectorAll('.lang-btn').forEach(b=>b.addEventListener('click',()=>setLanguage(b.dataset.language)));
+function getNestedTranslation(obj, key){return key.split('.').reduce((o,i)=>(o?o[i]:undefined),obj);}
+function t(key, params = {}) {
+  let value = getNestedTranslation(translations[currentLanguage], key);
+  if (value === undefined) value = getNestedTranslation(translations.en, key);
+  if (value === undefined) return key;
+  if (params) Object.keys(params).forEach(p => { value = value.replace(new RegExp(`{${p}}`, 'g'), params[p]); });
+  return value;
+}
+function applyTranslations() {
+  document.querySelectorAll('[data-i18n]').forEach(el => { el.textContent = t(el.dataset.i18n); });
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => { el.placeholder = t(el.dataset.i18nPlaceholder); });
+}
+function setLanguage(lang) {
+  if (!['en','rw','fr'].includes(lang)) return;
+  currentLanguage = lang;
+  localStorage.setItem('shdr_language', lang);
+  document.querySelectorAll('.lang-btn').forEach(btn => {
+    const isActive = btn.dataset.language === lang;
+    btn.classList.toggle('active', isActive);
+    btn.setAttribute('aria-pressed', isActive.toString());
+  });
+  document.documentElement.lang = lang;
+  applyTranslations();
+  if (typeof showSection === 'function' && typeof currentSection !== 'undefined') showSection(currentSection);
+}
+document.querySelectorAll('.lang-btn').forEach(btn => btn.addEventListener('click', () => setLanguage(btn.dataset.language)));
 
 // =================================================================
-// Firebase
+// 2. FIREBASE + APP
 // =================================================================
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
 import { getAuth, onAuthStateChanged, signOut, reauthenticateWithCredential, EmailAuthProvider, updatePassword, updateEmail, sendEmailVerification } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
@@ -209,10 +277,23 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 const IMGBB_API_KEY = '6b1b5028aba07a31bf702efd9c0ef4fe';
 const PLACEHOLDER_IMG = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="200"%3E%3Crect width="400" height="200" fill="%23e2e8f0"/%3E%3Ctext x="50%25" y="50%25" dominant-baseline="middle" text-anchor="middle" fill="%2394a3b8" font-size="20"%3ENo Image%3C/text%3E%3C/svg%3E';
-
 function escapeHTML(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 
-function getCompanyDetails(){return{name:'Sustainable Homes Design Rwanda Ltd',systemName:'Construction Sites Management System',address:'KG 11 Avenue, Kimironko, Gasabo District',location:'Yussa Plaza, 1st Floor',city:'Kigali City, Rwanda',phone:'+250 788 474 110',email:'sustainablehomedesign@gmail.com',logo:'shdr_logo Background Removed.png'};}
+// =================================================================
+// COMPANY PROFILE
+// =================================================================
+function getCompanyDetails() {
+  return {
+    name: 'Sustainable Homes Design Rwanda Ltd',
+    systemName: 'Construction Sites Management System',
+    address: 'KG 11 Avenue, Kimironko, Gasabo District',
+    location: 'Yussa Plaza, 1st Floor',
+    city: 'Kigali City, Rwanda',
+    phone: '+250 788 474 110',
+    email: 'sustainablehomedesign@gmail.com',
+    logo: 'shdr_logo Background Removed.png'
+  };
+}
 
 let _shdrLogoDataUrl=null,_shdrLogoPromise=null;
 const SHDR_LOGO_FALLBACK_SVG='<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" width="240" height="240"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#10b981"/><stop offset="1" stop-color="#047857"/></linearGradient></defs><circle cx="120" cy="120" r="115" fill="url(#g)"/><text x="120" y="135" font-family="Arial Black" font-size="52" font-weight="900" fill="#fff" text-anchor="middle">SHDR</text><text x="120" y="172" font-family="Arial" font-size="20" font-weight="700" fill="#fff" text-anchor="middle" letter-spacing="4">LTD</text></svg>';
@@ -225,8 +306,9 @@ function buildReportFooterHTML(c){return `<div class="report-footer"><div class=
 function buildCsvMetadata(c,label){return [`"${c.name}"`,`"${c.systemName}"`,`"${c.address}"`,`"${c.location}"`,`"${c.city}"`,`"Tel: ${c.phone}"`,`"Email: ${c.email}"`,`"Report: ${label}"`,`"Generated: ${formatDate(new Date())}"`];}
 
 // =================================================================
-// PLAN DEFINITIONS
+// SUBSCRIPTION PLANS
 // =================================================================
+const TRIAL_DAYS = 14;
 const PLAN_DEFINITIONS = {
   starter: {
     id: 'starter', name: 'Starter', price: 100000, currency: 'RWF', interval: 'month',
@@ -245,16 +327,12 @@ const PLAN_DEFINITIONS = {
   }
 };
 const PLAN_ORDER = ['starter', 'professional', 'enterprise'];
-const TRIAL_DAYS = 14;
 
-// =================================================================
-// App state
-// =================================================================
 let currentUser = null;
 let ownerProfile = null;
-let sitesData = [], materialsData = [], workersData = [], progressTasks = [], expensesData = [], managersData = [], assignedWorkersData = [], galleryData = [], attendanceData = [], stockData = [], stockTransactions = [];
+let sitesData = [], materialsData = [], workersData = [], progressTasks = [], expensesData = [], managersData = [], assignedWorkersData = [], galleryData = [], attendanceData = [];
+let stockData = [], stockTransactions = [];
 let ownerRequisitionsData = [], ownerRequisitionItemsData = [], ownerRequisitionHistoryData = [];
-let selectedMatSite = null, selectedWorkerViewSite = null, selectedGallerySite = null, selectedFinanceSite = null;
 let materialsTab = 'materials';
 let unsubscribeSnapshots = [];
 let unsubscribeSubscription = null;
@@ -278,36 +356,34 @@ function getFormSubmitBtn(f){return f.querySelector('button[type="submit"]');}
 function showToast(m,ty='info'){const el=document.getElementById('toast');const ic={success:'✅',error:'❌',info:'ℹ️'};el.innerHTML=`<span>${ic[ty]||'ℹ️'}</span> ${m}`;el.className='toast '+(ty||'info');el.classList.add('show');clearTimeout(el._h);el._h=setTimeout(()=>el.classList.remove('show'),5000);}
 
 // =================================================================
-// SUBSCRIPTION STATE MANAGEMENT
+// SUBSCRIPTION HELPERS
 // =================================================================
 function daysBetween(a,b){return Math.ceil((new Date(b).getTime()-new Date(a).getTime())/(1000*60*60*24));}
 
 function subscriptionState(){
-  if(!subscription) return { state:'none', plan:null, daysLeft:0, trialEndsAt:null };
+  if(!subscription) return { state:'none', plan:null, daysLeft:0, trialEndsAt:null, planId:null };
   const now = new Date();
   const status = subscription.status;
   const trialEnd = subscription.trial_ends_at ? new Date(subscription.trial_ends_at) : null;
   const periodEnd = subscription.subscription_ends_at ? new Date(subscription.subscription_ends_at) : null;
 
   if (status === 'trialing' && trialEnd) {
-    if (trialEnd > now) return { state:'trialing', plan: PLAN_DEFINITIONS.professional, daysLeft: daysBetween(now,trialEnd), trialEndsAt: trialEnd, planId: subscription.plan_id || 'professional' };
-    return { state:'trial-expired', plan:null, daysLeft:0, trialEndsAt: trialEnd, planId: subscription.plan_id };
+    if (trialEnd > now) return { state:'trialing', plan:PLAN_DEFINITIONS.professional, daysLeft:daysBetween(now,trialEnd), trialEndsAt:trialEnd, planId:'professional' };
+    return { state:'trial-expired', plan:null, daysLeft:0, trialEndsAt:trialEnd, planId:'professional' };
   }
-  if (status === 'active' && periodEnd && periodEnd > now) {
-    return { state:'active', plan: PLAN_DEFINITIONS[subscription.plan_id] || null, daysLeft: daysBetween(now,periodEnd), trialEndsAt: null, planId: subscription.plan_id };
+  if ((status === 'active' || status === 'cancelled') && periodEnd && periodEnd > now) {
+    return { state:'active', plan:PLAN_DEFINITIONS[subscription.plan_id]||null, daysLeft:daysBetween(now,periodEnd), trialEndsAt:null, planId:subscription.plan_id };
   }
   if (status === 'past_due' && periodEnd && periodEnd > now) {
-    return { state:'past_due', plan: PLAN_DEFINITIONS[subscription.plan_id] || null, daysLeft: daysBetween(now,periodEnd), trialEndsAt: null, planId: subscription.plan_id };
+    return { state:'past_due', plan:PLAN_DEFINITIONS[subscription.plan_id]||null, daysLeft:daysBetween(now,periodEnd), trialEndsAt:null, planId:subscription.plan_id };
   }
-  if (status === 'cancelled' && periodEnd && periodEnd > now) {
-    return { state:'active', plan: PLAN_DEFINITIONS[subscription.plan_id] || null, daysLeft: daysBetween(now,periodEnd), trialEndsAt: null, planId: subscription.plan_id };
-  }
-  if (status === 'expired') return { state:'expired', plan:null, daysLeft:0, trialEndsAt: trialEnd, planId: subscription.plan_id };
-  return { state:'expired', plan:null, daysLeft:0, trialEndsAt: trialEnd, planId: subscription.plan_id };
+  if (status === 'expired') return { state:'expired', plan:null, daysLeft:0, trialEndsAt:trialEnd, planId:subscription.plan_id };
+  return { state:'expired', plan:null, daysLeft:0, trialEndsAt:trialEnd, planId:subscription.plan_id };
 }
 
-function isBlocked(){ const s = subscriptionState().state; return s === 'expired' || s === 'trial-expired' || s === 'none'; }
-function hasFeature(key){ const st = subscriptionState(); if(st.state === 'trialing') return true; if(!st.plan) return false; return true; }
+function isBlocked(){ const s = subscriptionState().state; return s==='expired' || s==='trial-expired' || s==='none'; }
+function hasFeature(){ return !isBlocked(); }
+
 function getCurrentPlanLimits(){
   const st = subscriptionState();
   if (st.state === 'trialing') return { max_sites: PLAN_DEFINITIONS.professional.max_sites, max_managers: PLAN_DEFINITIONS.professional.max_managers, max_workers: PLAN_DEFINITIONS.professional.max_workers, planName: 'Trial (Professional)' };
@@ -317,42 +393,38 @@ function getCurrentPlanLimits(){
 function withinLimit(field, current){
   const lim = getCurrentPlanLimits();
   const max = lim[field];
-  if (max === null || max === undefined) return true; // unlimited
+  if (max === null || max === undefined) return true;
   return current < max;
-}
-function isUnlimited(field){
-  const lim = getCurrentPlanLimits();
-  return lim[field] === null || lim[field] === undefined;
 }
 
 async function ensureTrial(user){
   const ref = doc(db, 'subscriptions', user.uid);
-  const snap = await getDoc(ref);
-  if (snap.exists()) return snap.data();
-  const now = new Date();
-  const trialEnd = new Date(now.getTime() + TRIAL_DAYS*24*60*60*1000);
-  const data = {
-    id: user.uid,
-    company_id: user.uid,
-    plan_id: 'professional',
-    status: 'trialing',
-    is_trial: true,
-    trial_started_at: now.toISOString(),
-    trial_ends_at: trialEnd.toISOString(),
-    subscription_started_at: null,
-    subscription_ends_at: null,
-    auto_renew: false,
-    created_at: now.toISOString(),
-    updated_at: now.toISOString()
-  };
   try {
+    const snap = await getDoc(ref);
+    if (snap.exists()) return snap.data();
+    const now = new Date();
+    const trialEnd = new Date(now.getTime() + TRIAL_DAYS*24*60*60*1000);
+    const data = {
+      id: user.uid,
+      company_id: user.uid,
+      plan_id: 'professional',
+      status: 'trialing',
+      is_trial: true,
+      trial_started_at: now.toISOString(),
+      trial_ends_at: trialEnd.toISOString(),
+      subscription_started_at: null,
+      subscription_ends_at: null,
+      auto_renew: false,
+      created_at: now.toISOString(),
+      updated_at: now.toISOString()
+    };
     await setDoc(ref, data);
     await setDoc(doc(db, 'profiles', user.uid), { subscription_status:'trialing', trial_ends_at: trialEnd.toISOString(), plan_id: 'professional' }, { merge: true });
+    return data;
   } catch (err) {
-    // If Firestore rules block write, the doc likely exists already; ignore.
-    console.warn('[subscription] ensureTrial could not create — assuming pre-existing or rules block:', err.message);
+    console.warn('[subscription] ensureTrial error (possibly rules or existing):', err.message);
+    try { const snap = await getDoc(ref); return snap.exists() ? snap.data() : null; } catch(_) { return null; }
   }
-  return data;
 }
 
 function attachSubscriptionListener(){
@@ -370,7 +442,6 @@ function attachSubscriptionListener(){
 }
 
 function applySubscriptionUI(){
-  // Sidebar badge
   const badge = document.getElementById('user-plan-badge');
   if (badge) {
     const st = subscriptionState();
@@ -380,18 +451,19 @@ function applySubscriptionUI(){
     else if (st.state === 'expired' || st.state === 'trial-expired') { badge.textContent = 'EXPIRED'; badge.className = 'text-[10px] mt-0.5 font-semibold text-red-600'; }
     else badge.textContent = '';
   }
-  // Trial banner
   const wrap = document.getElementById('trial-banner-wrap');
   if (!wrap) return;
   const st = subscriptionState();
   if (st.state === 'trialing') {
     const cls = st.daysLeft <= 3 ? 'trial-banner danger' : st.daysLeft <= 7 ? 'trial-banner warn' : 'trial-banner';
     const msg = st.daysLeft === 0 ? t('subscription.endsToday') : st.daysLeft === 1 ? t('subscription.dayLeft') : t('subscription.daysLeft',{n:st.daysLeft});
-    wrap.innerHTML = `<div class="${cls}"><div class="flex items-center gap-3"><iconify-icon icon="material-symbols:timer" width="24"></iconify-icon><div><p class="font-bold text-sm">${escapeHTML(msg)}</p><p class="text-xs opacity-90">${escapeHTML(t('subscription.trialMsg'))}</p></div></div><button onclick="showPricingModal()" class="px-4 py-2 bg-white text-slate-900 rounded-lg text-sm font-semibold hover:bg-slate-100">${escapeHTML(t('subscription.viewPlans'))}</button></div>`;
+    wrap.innerHTML = `<div class="${cls}"><div class="flex items-center gap-3"><iconify-icon icon="material-symbols:timer" width="24"></iconify-icon><div><p class="font-bold text-sm">${escapeHTML(msg)}</p><p class="text-xs opacity-90">${escapeHTML(t('subscription.trialMsg'))}</p></div></div><div class="flex gap-2"><button onclick="showPricingModal()" class="px-4 py-2 bg-white text-slate-900 rounded-lg text-sm font-semibold hover:bg-slate-100">${escapeHTML(t('subscription.upgradeNow'))}</button><button onclick="switchSettingsTab('subscription');showSection('settings');" class="px-3 py-2 bg-white/20 text-white rounded-lg text-sm font-medium hover:bg-white/30">Details</button></div></div>`;
     wrap.classList.remove('hidden');
   } else if (st.state === 'past_due') {
-    wrap.innerHTML = `<div class="trial-banner warn"><div class="flex items-center gap-3"><iconify-icon icon="material-symbols:warning" width="24"></iconify-icon><div><p class="font-bold text-sm">${escapeHTML(t('subscription.paymentIssue'))}</p><p class="text-xs opacity-90">${escapeHTML(t('subscription.paymentIssueMsg'))}</p></div></div><button onclick="showPricingModal()" class="px-4 py-2 bg-white text-slate-900 rounded-lg text-sm font-semibold">Renew</button></div>`;
+    wrap.innerHTML = `<div class="trial-banner warn"><div class="flex items-center gap-3"><iconify-icon icon="material-symbols:warning" width="24"></iconify-icon><div><p class="font-bold text-sm">${escapeHTML(t('subscription.pastDue'))}</p><p class="text-xs opacity-90">${escapeHTML(t('subscription.pastDueMsg'))}</p></div></div><button onclick="showPricingModal()" class="px-4 py-2 bg-white text-slate-900 rounded-lg text-sm font-semibold">${t('subscription.upgradeNow')}</button></div>`;
     wrap.classList.remove('hidden');
+  } else if (st.state === 'active') {
+    wrap.classList.add('hidden'); wrap.innerHTML = '';
   } else {
     wrap.classList.add('hidden'); wrap.innerHTML = '';
   }
@@ -404,7 +476,7 @@ function showSubscriptionLock(){
   const dateEl = document.getElementById('lock-expired-date');
   if (dateEl && st.trialEndsAt) dateEl.textContent = t('subscription.trialEndedOn',{date:formatDate(st.trialEndsAt.toISOString())});
   const cards = document.getElementById('lock-plan-cards');
-  if (cards) cards.innerHTML = buildPlanCardsHTML({ cta: (p)=>`<button onclick="startCheckout('${p.id}')" class="w-full py-2.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold">${t('subscription.choose'+p.id.charAt(0).toUpperCase()+p.id.slice(1))}</button>` });
+  if (cards) cards.innerHTML = buildPlanCardsHTML({ showCta:true });
   lock.classList.remove('hidden'); lock.classList.add('flex');
   document.body.style.overflow = 'hidden';
 }
@@ -414,66 +486,76 @@ function hideSubscriptionLock(){
   lock.classList.add('hidden'); lock.classList.remove('flex');
   document.body.style.overflow = '';
 }
+function requireActiveSubscription(){ if (isBlocked()) { showSubscriptionLock(); return false; } return true; }
 
-function requireActiveSubscription(){
-  if (isBlocked()) { showSubscriptionLock(); return false; }
-  return true;
-}
-
-function buildPlanCardsHTML({ currentPlanId = null, cta } = {}){
+function buildPlanCardsHTML({ currentPlanId = null, showCta = true } = {}){
   return PLAN_ORDER.map(pid => {
     const p = PLAN_DEFINITIONS[pid];
     const isCurrent = currentPlanId === pid;
     const featured = pid === 'professional';
     return `<div class="plan-card ${featured?'featured':''} ${isCurrent?'current':''}">
-      ${featured ? '<div class="text-center mb-2"><span class="text-[10px] bg-emerald-600 text-white px-2 py-0.5 rounded-full font-bold">MOST POPULAR</span></div>' : ''}
-      <h3 class="text-lg font-bold text-slate-900 mb-1">${p.name}</h3>
+      ${featured ? `<div class="text-center mb-2"><span class="text-[10px] bg-emerald-600 text-white px-2 py-0.5 rounded-full font-bold">${t('subscription.mostPopular')}</span></div>` : ''}
+      <h3 class="text-lg font-bold text-slate-900 mb-1">${escapeHTML(p.name)}</h3>
       <p class="text-2xl font-bold text-emerald-700 mb-1">RWF ${p.price.toLocaleString()}</p>
       <p class="text-xs text-slate-500 mb-4">${t('subscription.perMonth')}</p>
-      <ul class="text-sm text-slate-600 space-y-2 mb-4">
-        ${p.features.map(f=>`<li class="flex items-start gap-2"><iconify-icon icon="material-symbols:check-circle" class="text-emerald-600 flex-shrink-0 mt-0.5" width="16"></iconify-icon>${f}</li>`).join('')}
+      <ul class="text-sm text-slate-600 space-y-2 mb-4 flex-1">
+        ${p.features.map(f=>`<li class="flex items-start gap-2"><iconify-icon icon="material-symbols:check-circle" class="text-emerald-600 flex-shrink-0 mt-0.5" width="16"></iconify-icon>${escapeHTML(f)}</li>`).join('')}
       </ul>
       <p class="text-[11px] text-emerald-600 font-medium mb-3">✓ ${t('subscription.trialIncluded')}</p>
-      ${isCurrent ? `<button disabled class="w-full py-2.5 rounded-lg bg-slate-200 text-slate-500 text-sm font-semibold">${t('subscription.currentPlan')}</button>` : (cta ? cta(p) : '')}
+      ${isCurrent ? `<button disabled class="w-full py-2.5 rounded-lg bg-slate-200 text-slate-500 text-sm font-semibold">${t('subscription.currentPlan')}</button>` : (showCta ? `<button onclick="startCheckout('${p.id}')" class="w-full py-2.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold">${t('subscription.choosePlan',{plan:p.name})}</button>` : '')}
     </div>`;
   }).join('');
 }
 
 window.showPricingModal = () => {
   const st = subscriptionState();
-  const currentPlanId = st.planId;
+  const currentPlanId = st.state === 'active' ? st.planId : null;
   openModal(t('subscription.viewPlans'), `
     <div class="space-y-4">
-      <p class="text-sm text-slate-600">Choose a plan to unlock full access to SHDR Management System. All plans include a 14-day free trial on first registration.</p>
+      <p class="text-sm text-slate-600">${t('subscription.earlyUpgradeBenefit')}</p>
       <div class="grid grid-cols-1 gap-4">${buildPlanCardsHTML({ currentPlanId })}</div>
     </div>
   `);
 };
 
 window.startCheckout = async (planId) => {
+  if (!requireActiveSubscription() && !isBlocked()) return;
   const plan = PLAN_DEFINITIONS[planId];
   if (!plan) { showToast('Invalid plan.', 'error'); return; }
-  const company = getCompanyDetails();
-  // Replace this alert with a call to your payment provider (see webhook section below).
-  openModal(`Upgrade to ${plan.name}`, `
+  const c = getCompanyDetails();
+  const refCode = `SUB-${(currentUser?.uid || 'anon').slice(0,8).toUpperCase()}-${planId.toUpperCase()}`;
+
+  // ============================================================
+  // TODO: Replace with real payment provider (Flutterwave/Paystack)
+  // The webhook MUST verify the payment server-side and then update
+  // /subscriptions/{ownerId} with:
+  //   { status: 'active', plan_id: planId, is_trial: false,
+  //     subscription_started_at: <now>,
+  //     subscription_ends_at: <now + 1 month> }
+  // The client listener will pick it up automatically.
+  // ============================================================
+  openModal(t('subscription.upgradeTitle',{plan:plan.name}), `
     <div class="space-y-4">
       <div class="bg-emerald-50 border border-emerald-200 rounded-xl p-4">
-        <p class="text-sm font-semibold text-emerald-800">${plan.name} — RWF ${plan.price.toLocaleString()} / month</p>
-        <p class="text-xs text-emerald-700 mt-1">${plan.features.join(' · ')}</p>
+        <p class="text-sm font-semibold text-emerald-800">${escapeHTML(plan.name)} — RWF ${plan.price.toLocaleString()} ${t('subscription.perMonth')}</p>
+        <p class="text-xs text-emerald-700 mt-1">${plan.features.map(f=>escapeHTML(f)).join(' · ')}</p>
       </div>
-      <p class="text-sm text-slate-600">You will be redirected to a secure payment page. After successful payment, your subscription will activate automatically.</p>
-      <div class="bg-amber-50 border border-amber-200 rounded-xl p-3 text-xs text-amber-800">
-        <strong>Manual activation (temporary):</strong><br>
-        Contact:<br>Email: ${company.email}<br>Phone: ${company.phone}<br>
-        Reference: <code class="bg-white px-1.5 py-0.5 rounded">SUB-${currentUser.uid.slice(0,8)}-${planId.toUpperCase()}</code>
+      <div class="bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs text-slate-700">
+        <p class="mb-2">${t('subscription.earlyUpgradeBenefit')}</p>
+        <p class="text-slate-500">${t('subscription.oneActiveSub')}</p>
       </div>
-      <button onclick="closeModal()" class="w-full bg-slate-200 hover:bg-slate-300 text-slate-800 py-3 rounded-xl font-semibold">Close</button>
+      <div class="bg-amber-50 border border-amber-200 rounded-xl p-3 text-xs text-amber-900">
+        <strong>${t('subscription.manualActivation')}</strong>
+        <p class="mt-1">${t('subscription.upgradeInstructions')}</p>
+        <div class="mt-2 space-y-1">
+          <p><strong>${t('subscription.email')}:</strong> <a href="mailto:${c.email}" class="text-emerald-700 font-medium">${escapeHTML(c.email)}</a></p>
+          <p><strong>${t('subscription.phone')}:</strong> <a href="tel:${c.phone}" class="text-emerald-700 font-medium">${escapeHTML(c.phone)}</a></p>
+          <p><strong>${t('subscription.reference')}:</strong> <code class="bg-white px-1.5 py-0.5 rounded font-mono">${refCode}</code></p>
+        </div>
+      </div>
+      <button onclick="closeModal()" class="w-full bg-slate-200 hover:bg-slate-300 text-slate-800 py-3 rounded-xl font-semibold">${t('subscription.close')}</button>
     </div>
   `);
-  // TODO: replace with real provider. Example:
-  // const fn = httpsCallable(functions, 'createCheckoutSession');
-  // const { data } = await fn({ planId });
-  // window.location.href = data.checkoutUrl;
 };
 
 // =================================================================
@@ -495,7 +577,7 @@ document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { const o 
 // Auth flow
 // =================================================================
 window.addEventListener('load', () => {
-  document.querySelectorAll('.lang-btn').forEach(b=>b.classList.toggle('active',b.dataset.language===currentLanguage));
+  document.querySelectorAll('.lang-btn').forEach(b=>b.classList.toggle('active', b.dataset.language===currentLanguage));
   document.documentElement.lang = currentLanguage;
   applyTranslations();
   preloadShdrLogo();
@@ -514,7 +596,7 @@ window.addEventListener('load', () => {
       updateProfileUI(profile);
       onSnapshot(profileRef, (s) => { if (s.exists()) { ownerProfile = s.data(); updateProfileUI(ownerProfile); if (currentSection === 'settings') populateSettingsForms(); } }, err => console.warn('profile snapshot error:', err));
 
-      // 🚀 Create trial subscription (idempotent)
+      // Auto-create the 14-day trial (idempotent)
       await ensureTrial(user);
 
       attachListeners();
@@ -538,7 +620,7 @@ function updateProfileUI(profile){
 function attachSnapshot(q, handler, label){
   unsubscribeSnapshots.push(onSnapshot(q, handler, err => {
     console.error(`[${label}] snapshot error:`, err);
-    if (err.code === 'failed-precondition') { console.warn(`[${label}] index required. See Firestore console for index creation link.`); }
+    if (err.code === 'failed-precondition') console.warn(`[${label}] index required. See Firestore console.`);
   }));
 }
 
@@ -556,10 +638,15 @@ function attachListeners(){
 function reloadRelated(){
   while (unsubscribeSnapshots.length > 1) { const fn = unsubscribeSnapshots.pop(); try { fn(); } catch(_){} }
   const siteIds = sitesData.map(s => s.id);
+  if (selectedMatSite && !siteIds.includes(selectedMatSite)) selectedMatSite = null;
+  if (selectedWorkerViewSite && !siteIds.includes(selectedWorkerViewSite)) selectedWorkerViewSite = null;
+  if (selectedGallerySite && !siteIds.includes(selectedGallerySite)) selectedGallerySite = null;
+  if (selectedFinanceSite && !siteIds.includes(selectedFinanceSite)) selectedFinanceSite = null;
   if (!siteIds.length) { materialsData=[]; workersData=[]; progressTasks=[]; expensesData=[]; managersData=[]; assignedWorkersData=[]; galleryData=[]; attendanceData=[]; stockData=[]; stockTransactions=[]; ownerRequisitionsData=[]; ownerRequisitionItemsData=[]; ownerRequisitionHistoryData=[]; return; }
   attachSnapshot(query(collection(db,'materials'), where('site_id','in',siteIds)), s=>{materialsData=s.docs.map(d=>({id:d.id,...d.data()}));refreshCurrentSection();},'materials');
   attachSnapshot(query(collection(db,'worker_positions'), where('site_id','in',siteIds)), s=>{workersData=s.docs.map(d=>({id:d.id,...d.data()}));refreshCurrentSection();},'worker positions');
   attachSnapshot(query(collection(db,'progress_tasks'), where('site_id','in',siteIds)), s=>{progressTasks=s.docs.map(d=>({id:d.id,...d.data()}));refreshCurrentSection();},'progress tasks');
+  attachSnapshot(query(collection(db,'expenses'), where('site_id','in',siteIds)), s=>{expensesData=s.docs.map(d=>({id:d.id,...d.data()}));refreshCurrentSection();},'expenses');
   attachSnapshot(query(collection(db,'profiles'), where('role','==','manager')), s=>{managersData=s.docs.map(d=>({id:d.id,...d.data()}));refreshCurrentSection();},'managers');
   attachSnapshot(query(collection(db,'site_workers'), where('site_id','in',siteIds)), s=>{assignedWorkersData=s.docs.map(d=>({id:d.id,...d.data()}));refreshCurrentSection();},'assigned workers');
   attachSnapshot(query(collection(db,'gallery'), where('site_id','in',siteIds)), s=>{galleryData=s.docs.map(d=>({id:d.id,...d.data()}));refreshCurrentSection();},'gallery');
@@ -569,7 +656,6 @@ function reloadRelated(){
   attachSnapshot(query(collection(db,'requisitions'), where('site_id','in',siteIds)), s=>{ownerRequisitionsData=s.docs.map(d=>({id:d.id,...d.data()}));refreshCurrentSection();},'requisitions');
   attachSnapshot(query(collection(db,'requisition_items'), where('site_id','in',siteIds)), s=>{ownerRequisitionItemsData=s.docs.map(d=>({id:d.id,...d.data()}));refreshCurrentSection();},'requisition items');
   attachSnapshot(query(collection(db,'requisition_history'), where('site_id','in',siteIds)), s=>{ownerRequisitionHistoryData=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>new Date(b.timestamp||0)-new Date(a.timestamp||0));refreshCurrentSection();},'requisition history');
-  attachSnapshot(query(collection(db,'expenses'), where('site_id','in',siteIds)), s=>{expensesData=s.docs.map(d=>({id:d.id,...d.data()}));refreshCurrentSection();},'expenses');
 }
 
 function refreshCurrentSection(){
@@ -577,13 +663,32 @@ function refreshCurrentSection(){
   if (window._refreshing) return;
   window._refreshing = true;
   requestAnimationFrame(() => {
-    try { showSection(currentSection); } finally { window._refreshing = false; }
+    try {
+      let savedFilters = null;
+      if (currentSection === 'reports') {
+        savedFilters = {
+          site: document.getElementById('report-site')?.value || document.getElementById('payroll-site')?.value || document.getElementById('stock-report-site')?.value || 'all',
+          dept: document.getElementById('report-dept')?.value || 'all',
+          start: document.getElementById('report-start')?.value || document.getElementById('payroll-start')?.value || '',
+          end: document.getElementById('report-end')?.value || document.getElementById('payroll-end')?.value || '',
+          search: document.getElementById('payroll-worker-search')?.value || '',
+          pos: document.getElementById('payroll-position')?.value || 'all',
+          status: document.getElementById('payroll-status')?.value || 'all'
+        };
+      }
+      showSection(currentSection);
+      if (currentSection === 'reports' && savedFilters) {
+        const setIf = (id,val) => { const el = document.getElementById(id); if (el && val != null) el.value = val; };
+        setIf('report-site', savedFilters.site); setIf('payroll-site', savedFilters.site); setIf('stock-report-site', savedFilters.site);
+        setIf('report-dept', savedFilters.dept); setIf('report-start', savedFilters.start); setIf('payroll-start', savedFilters.start);
+        setIf('report-end', savedFilters.end); setIf('payroll-end', savedFilters.end);
+        setIf('payroll-worker-search', savedFilters.search); setIf('payroll-position', savedFilters.pos); setIf('payroll-status', savedFilters.status);
+        if (reportType === 'payroll' && typeof updatePayrollReport === 'function') updatePayrollReport();
+      }
+    } finally { window._refreshing = false; }
   });
 }
 
-// =================================================================
-// Section routing
-// =================================================================
 function renderSection(section){
   const c = document.getElementById('content-area');
   c.innerHTML = '';
@@ -611,6 +716,8 @@ window.showSection = (section) => {
   document.getElementById('page-title').textContent = t(`navigation.${section}`);
   document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
   document.querySelector(`[data-section="${section}"]`)?.classList.add('active');
+  document.querySelectorAll('#bottom-nav a').forEach(a => a.classList.remove('active'));
+  document.querySelector(`#bottom-nav a[data-section="${section}"]`)?.classList.add('active');
   renderSection(section);
   if (window.innerWidth < 1024) { document.getElementById('sidebar').classList.add('-translate-x-full'); document.getElementById('sidebar-overlay').classList.add('hidden'); }
 };
@@ -630,40 +737,33 @@ function renderDashboard(container){
   const totalSites = sitesData.length;
   const totalWorkers = assignedWorkersData.length;
   const totalMatSpent = materialsData.reduce((s,m)=>s+calculateTotal(m.quantity_used||0,m.unit_cost||0),0);
-  const st = subscriptionState();
-  const welcomeName = (ownerProfile?.full_name || 'Owner').split(/\s+/).slice(-1)[0].toUpperCase();
+  const rawName = ownerProfile?.full_name || currentUser?.email?.split('@')[0] || 'Owner';
+  const displayName = rawName.split(/\s+/).slice(-1)[0].toUpperCase();
   container.innerHTML = `
     <div class="bg-white rounded-2xl overflow-hidden shadow-sm mb-4 sm:mb-6">
       <div class="relative h-40 sm:h-64 bg-cover bg-center" style="background-image:url('https://cdn.pixabay.com/photo/2018/12/12/23/02/site-3871804_1280.jpg');">
         <div class="absolute inset-0 bg-gradient-to-r from-emerald-900/80 to-emerald-800/40 flex items-center p-4 sm:p-6">
-          <div><h1 class="text-2xl sm:text-4xl font-bold text-white">${t('dashboard.welcome',{name:welcomeName})}</h1><p class="text-emerald-100 mt-2 text-sm sm:text-base">${t('dashboard.overview')}</p></div>
+          <div><h1 class="text-2xl sm:text-4xl font-bold text-white">${t('dashboard.welcome',{name:escapeHTML(displayName)})}</h1><p class="text-emerald-100 mt-2 text-sm sm:text-base">${t('dashboard.overview')}</p></div>
         </div>
       </div>
     </div>
     <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4 sm:mb-6">
       <div class="bg-white rounded-2xl border p-4 shadow-sm">
         <h3 class="font-semibold text-slate-900 text-sm mb-2 flex items-center gap-2"><iconify-icon icon="material-symbols:construction" class="text-emerald-600" width="18"></iconify-icon>${t('dashboard.totalSites')} (${totalSites})</h3>
-        <div class="scroll-box space-y-1 text-xs sm:text-sm">
-          ${sitesData.map(s=>`<div class="flex justify-between"><span>${escapeHTML(s.name)}</span><span class="text-slate-500">${escapeHTML(s.location||'—')}</span></div>`).join('') || `<p class="text-slate-400">${t('dashboard.noSites')}</p>`}
-        </div>
+        <div class="scroll-box space-y-1 text-xs sm:text-sm">${sitesData.map(s=>`<div class="flex justify-between"><span>${escapeHTML(s.name)}</span><span class="text-slate-500">${escapeHTML(s.location||'—')}</span></div>`).join('') || `<p class="text-slate-400">${t('dashboard.noSites')}</p>`}</div>
       </div>
       <div class="bg-white rounded-2xl border p-4 shadow-sm">
         <h3 class="font-semibold text-slate-900 text-sm mb-2 flex items-center gap-2"><iconify-icon icon="material-symbols:engineering" class="text-blue-600" width="18"></iconify-icon>${t('dashboard.totalWorkers')} (${totalWorkers})</h3>
-        <div class="scroll-box space-y-1 text-xs sm:text-sm">${totalWorkers ? sitesData.map(site => { const c = assignedWorkersData.filter(w=>w.site_id===site.id).length; if(!c) return ''; return `<div class="flex justify-between"><span>${escapeHTML(site.name)} (${c})</span></div>`; }).join('') : `<p class="text-slate-400">${t('dashboard.noWorkers')}</p>`}</div>
+        <div class="scroll-box space-y-1 text-xs sm:text-sm">${(()=>{const swc=sitesData.map(site=>({site,count:assignedWorkersData.filter(w=>w.site_id===site.id).length})).filter(s=>s.count>0);if(!swc.length)return `<p class="text-slate-400">${t('dashboard.noWorkers')}</p>`;return swc.map(sw=>`<div class="flex justify-between"><span>${escapeHTML(sw.site.name)} (${sw.count})</span></div>`).join('');})()}</div>
       </div>
       <div class="bg-white rounded-2xl border p-4 shadow-sm">
         <h3 class="font-semibold text-slate-900 text-sm mb-2 flex items-center gap-2"><iconify-icon icon="material-symbols:payments" class="text-emerald-600" width="18"></iconify-icon>${t('dashboard.spentOnMaterials')}</h3>
-        <div class="scroll-box space-y-1 text-xs sm:text-sm">
-          ${sitesData.map(site => { const spent = materialsData.filter(m=>m.site_id===site.id).reduce((a,m)=>a+calculateTotal(m.quantity_used||0,m.unit_cost||0),0); return `<div class="flex justify-between"><span>${escapeHTML(site.name)}</span><span class="text-slate-500">${spent.toLocaleString()} RWF</span></div>`; }).join('') || `<p class="text-slate-400">${t('dashboard.noData')}</p>`}
-        </div>
+        <div class="scroll-box space-y-1 text-xs sm:text-sm">${sitesData.map(site=>{const sp=materialsData.filter(m=>m.site_id===site.id).reduce((s,m)=>s+calculateTotal(m.quantity_used||0,m.unit_cost||0),0);return `<div class="flex justify-between"><span>${escapeHTML(site.name)}</span><span class="text-slate-500">${sp.toLocaleString()} RWF</span></div>`;}).join('') || `<p class="text-slate-400">${t('dashboard.noData')}</p>`}</div>
       </div>
     </div>
     <div class="bg-white rounded-2xl border p-4 shadow-sm">
       <h3 class="font-semibold text-slate-900 text-sm mb-3 flex items-center gap-2"><iconify-icon icon="material-symbols:trending-up" class="text-amber-600" width="18"></iconify-icon>${t('dashboard.recentProgress')}</h3>
-      <select id="progress-site-select" class="w-full border p-2 rounded-lg mb-3 text-sm" onchange="renderProgressBySite()">
-        <option value="">${t('dashboard.selectSite')}</option>
-        ${sitesData.map(s=>`<option value="${s.id}">${escapeHTML(s.name)}</option>`).join('')}
-      </select>
+      <select id="progress-site-select" class="w-full border p-2 rounded-lg mb-3 text-sm" onchange="renderProgressBySite()"><option value="">${t('dashboard.selectSite')}</option>${sitesData.map(s=>`<option value="${s.id}">${escapeHTML(s.name)}</option>`).join('')}</select>
       <div id="progress-tasks-list" class="space-y-1 text-sm text-slate-600"><p class="text-slate-400">${t('dashboard.selectSite')}</p></div>
     </div>`;
 }
@@ -687,10 +787,10 @@ function renderSites(container){
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
       ${sitesData.map(site=>{
         let status = site.status || 'active';
-        if (site.start_date && site.end_date) { const today=new Date(),start=new Date(site.start_date),end=new Date(site.end_date); status = today<start?'notStarted':today>end?'completed':'inProgress'; }
+        if (site.start_date && site.end_date) { const today=new Date(),start=new Date(site.start_date),end=new Date(site.end_date); if (today<start) status='notStarted'; else if (today>end) status='completed'; else status='inProgress'; }
         const sc = status==='completed'?'text-green-600':status==='notStarted'?'text-amber-600':'text-blue-600';
         return `<div class="bg-white rounded-2xl border overflow-hidden shadow-sm">
-          <img src="${escapeHTML(site.images?.[0]||PLACEHOLDER_IMG)}" class="w-full h-40 object-cover" alt="" onerror="this.src='${PLACEHOLDER_IMG}'">
+          <img src="${escapeHTML(site.images?.[0]||PLACEHOLDER_IMG)}" class="w-full h-40 object-cover" onerror="this.src='${PLACEHOLDER_IMG}'">
           <div class="p-3">
             <h3 class="font-bold text-base">${escapeHTML(site.name)}</h3>
             <p class="text-xs text-slate-500">${escapeHTML(site.location||'—')}</p>
@@ -698,7 +798,7 @@ function renderSites(container){
             ${site.sector ? `<p class="text-xs text-slate-500">${t('sites.sector')}: ${escapeHTML(site.sector)}</p>` : ''}
             ${site.client_name ? `<p class="text-xs text-slate-500">${t('sites.client')}: ${escapeHTML(site.client_name)}</p>` : ''}
             <p class="text-xs text-slate-500">${t('sites.budget')}: ${(site.budget||0).toLocaleString()} RWF</p>
-            <p class="text-xs font-medium ${sc}">${t('sites.status')}: ${escapeHTML(status)}</p>
+            <p class="text-xs font-medium ${sc}">${t('sites.status')}: ${escapeHTML(t('status.'+status))}</p>
             <div class="mt-2 flex gap-2 flex-wrap">
               <button onclick="markSiteFinished('${site.id}')" class="text-xs bg-green-100 text-green-700 px-3 py-1 rounded-full">${t('sites.markFinished')}</button>
               <button onclick="editSite('${site.id}')" class="text-xs text-emerald-600">${t('sites.edit')}</button>
@@ -711,11 +811,12 @@ function renderSites(container){
 }
 window.markSiteFinished = async (id) => {
   if (!confirm(t('common.areYouSure'))) return;
-  if (!confirm('This action cannot be undone.')) return;
+  if (!confirm(t('common.cannotUndo'))) return;
   try { await updateDoc(doc(db,'sites',id),{status:'finished'}); const ms = await getDocs(query(collection(db,'profiles'), where('assigned_site','==',id))); const b = writeBatch(db); ms.docs.forEach(d=>b.update(d.ref,{assigned_site:''})); await b.commit(); showToast(t('common.updatedSuccessfully'),'success'); } catch(e){console.error(e);showToast(t('common.somethingWentWrong'),'error');}
 };
 window.deleteSite = async (id) => {
   if (!confirm(t('common.areYouSure'))) return;
+  if (!confirm(t('common.cannotUndo'))) return;
   try {
     const cols = ['materials','site_workers','progress_tasks','expenses','gallery','stock','stock_transactions','requisitions','requisition_items','requisition_history','worker_attendance'];
     for (const col of cols) { const snap = await getDocs(query(collection(db,col), where('site_id','==',id))); if(!snap.empty){ const b=writeBatch(db); snap.docs.forEach(d=>b.delete(d.ref)); await b.commit(); } }
@@ -726,18 +827,17 @@ window.deleteSite = async (id) => {
 };
 window.editSite = (id) => {
   const s = sitesData.find(x=>x.id===id); if(!s) return;
-  openModal(t('sites.editSite'), `
-    <form onsubmit="handleEditSite(event, '${id}')" class="space-y-4">
-      <input class="w-full border rounded-lg p-3" value="${escapeHTML(s.name)}" id="edit-site-name" required>
-      <input class="w-full border rounded-lg p-3" value="${escapeHTML(s.location||'')}" id="edit-site-location">
-      <input class="w-full border rounded-lg p-3" value="${escapeHTML(s.district||'')}" id="edit-site-district" placeholder="${t('sites.district')}">
-      <input class="w-full border rounded-lg p-3" value="${escapeHTML(s.sector||'')}" id="edit-site-sector" placeholder="${t('sites.sector')}">
-      <input class="w-full border rounded-lg p-3" value="${escapeHTML(s.client_name||'')}" id="edit-site-client" placeholder="${t('sites.client')}">
-      <input class="w-full border rounded-lg p-3" type="number" value="${s.budget||0}" id="edit-site-budget" min="0">
-      <input class="w-full border rounded-lg p-3" type="date" value="${s.start_date?new Date(s.start_date).toISOString().split('T')[0]:''}" id="edit-site-start">
-      <input class="w-full border rounded-lg p-3" type="date" value="${s.end_date?new Date(s.end_date).toISOString().split('T')[0]:''}" id="edit-site-end">
-      <button type="submit" class="w-full bg-emerald-600 text-white py-3 rounded-xl">${t('common.save')}</button>
-    </form>`);
+  openModal(t('sites.editSite'), `<form onsubmit="handleEditSite(event, '${id}')" class="space-y-4">
+    <input class="w-full border rounded-lg p-3" value="${escapeHTML(s.name)}" id="edit-site-name" required>
+    <input class="w-full border rounded-lg p-3" value="${escapeHTML(s.location||'')}" id="edit-site-location">
+    <input class="w-full border rounded-lg p-3" value="${escapeHTML(s.district||'')}" id="edit-site-district" placeholder="${t('sites.district')}">
+    <input class="w-full border rounded-lg p-3" value="${escapeHTML(s.sector||'')}" id="edit-site-sector" placeholder="${t('sites.sector')}">
+    <input class="w-full border rounded-lg p-3" value="${escapeHTML(s.client_name||'')}" id="edit-site-client" placeholder="${t('sites.client')}">
+    <input class="w-full border rounded-lg p-3" type="number" value="${s.budget||0}" id="edit-site-budget" min="0">
+    <input class="w-full border rounded-lg p-3" type="date" value="${s.start_date?new Date(s.start_date).toISOString().split('T')[0]:''}" id="edit-site-start">
+    <input class="w-full border rounded-lg p-3" type="date" value="${s.end_date?new Date(s.end_date).toISOString().split('T')[0]:''}" id="edit-site-end">
+    <button type="submit" class="w-full bg-emerald-600 text-white py-3 rounded-xl">${t('common.save')}</button>
+  </form>`);
 };
 window.handleEditSite = async (e,id) => {
   e.preventDefault();
@@ -760,20 +860,19 @@ window.openAddSiteModal = () => {
     setTimeout(()=>showPricingModal(), 500);
     return;
   }
-  openModal(t('sites.addSite'), `
-    <form onsubmit="handleAddSite(event)" class="space-y-4">
-      <input class="w-full border rounded-lg p-3" placeholder="${t('sites.siteName')}" id="site-name" required>
-      <input class="w-full border rounded-lg p-3" placeholder="${t('sites.location')}" id="site-location">
-      <input class="w-full border rounded-lg p-3" placeholder="${t('sites.district')}" id="site-district">
-      <input class="w-full border rounded-lg p-3" placeholder="${t('sites.sector')}" id="site-sector">
-      <input class="w-full border rounded-lg p-3" placeholder="${t('sites.client')}" id="site-client">
-      <input class="w-full border rounded-lg p-3" placeholder="${t('sites.budget')}" type="number" id="site-budget" min="0">
-      <input class="w-full border rounded-lg p-3" type="date" id="site-start">
-      <input class="w-full border rounded-lg p-3" type="date" id="site-end">
-      <input type="file" id="site-images" multiple accept="image/*" onchange="previewSiteImages()" class="w-full mt-1">
-      <div id="image-preview" class="flex gap-2 mt-2 flex-wrap"></div>
-      <button type="submit" class="w-full bg-emerald-600 text-white py-3 rounded-xl">${t('sites.saveSite')}</button>
-    </form>`);
+  openModal(t('sites.addSite'), `<form onsubmit="handleAddSite(event)" class="space-y-4">
+    <input class="w-full border rounded-lg p-3" placeholder="${t('sites.siteName')}" id="site-name" required>
+    <input class="w-full border rounded-lg p-3" placeholder="${t('sites.location')}" id="site-location">
+    <input class="w-full border rounded-lg p-3" placeholder="${t('sites.district')}" id="site-district">
+    <input class="w-full border rounded-lg p-3" placeholder="${t('sites.sector')}" id="site-sector">
+    <input class="w-full border rounded-lg p-3" placeholder="${t('sites.client')}" id="site-client">
+    <input class="w-full border rounded-lg p-3" placeholder="${t('sites.budget')}" type="number" id="site-budget" min="0">
+    <input class="w-full border rounded-lg p-3" type="date" id="site-start">
+    <input class="w-full border rounded-lg p-3" type="date" id="site-end">
+    <input type="file" id="site-images" multiple accept="image/*" onchange="previewSiteImages()" class="w-full mt-1">
+    <div id="image-preview" class="flex gap-2 mt-2 flex-wrap"></div>
+    <button type="submit" class="w-full bg-emerald-600 text-white py-3 rounded-xl">${t('sites.saveSite')}</button>
+  </form>`);
 };
 window.previewSiteImages = () => { const f=document.getElementById('site-images').files; const p=document.getElementById('image-preview'); p.innerHTML=''; for(let i=0;i<Math.min(f.length,5);i++){const r=new FileReader();r.onload=e=>p.innerHTML+=`<img src="${e.target.result}" class="w-16 h-16 object-cover rounded-lg">`;r.readAsDataURL(f[i]);} };
 window.handleAddSite = async (e) => {
@@ -796,9 +895,9 @@ window.handleAddSite = async (e) => {
 // =================================================================
 // MATERIALS
 // =================================================================
+let selectedMatSite = null;
 function renderMaterials(container){
-  container.innerHTML = `
-    <h2 class="text-xl sm:text-2xl font-bold mb-3 flex items-center gap-2"><iconify-icon icon="material-symbols:package-2" class="text-emerald-600"></iconify-icon>${t('materials.title')}</h2>
+  container.innerHTML = `<h2 class="text-xl sm:text-2xl font-bold mb-3 flex items-center gap-2"><iconify-icon icon="material-symbols:package-2" class="text-emerald-600"></iconify-icon>${t('materials.title')}</h2>
     <div class="flex gap-2 p-1 bg-slate-200/60 rounded-xl mb-4 max-w-md">
       <button onclick="switchMaterialsTab('materials')" class="flex-1 px-4 py-2 rounded-lg text-sm font-semibold ${materialsTab==='materials'?'tab-active':'tab-inactive'}">${t('materials.title')}</button>
       <button onclick="switchMaterialsTab('requisitions')" class="flex-1 px-4 py-2 rounded-lg text-sm font-semibold ${materialsTab==='requisitions'?'tab-active':'tab-inactive'}">${t('materials.requisitions')}</button>
@@ -819,33 +918,12 @@ function renderMaterialCards(){
   if (!mats.length) { c.innerHTML = `<p class="text-slate-500 text-sm">${t('materials.noMaterials')}</p>`; return; }
   c.innerHTML = `<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">${mats.map(m=>{
     const qty = m.quantity_used||0, uc = m.unit_cost||0, total = calculateTotal(qty,uc);
-    return `<div class="bg-white rounded-2xl border overflow-hidden shadow-sm">
-      <img src="${escapeHTML(m.image||PLACEHOLDER_IMG)}" class="w-full h-48 object-cover" onerror="this.src='${PLACEHOLDER_IMG}'">
-      <div class="p-5">
-        <h3 class="font-bold text-lg text-slate-800 truncate">${escapeHTML(m.name)}</h3>
-        <div class="mt-4 space-y-2 text-sm">
-          <div class="flex justify-between border-b border-slate-100 pb-2"><span class="text-slate-500">${t('materials.quantityUsed')}</span><span class="font-semibold">${qty}</span></div>
-          <div class="flex justify-between border-b border-slate-100 pb-2"><span class="text-slate-500">${t('materials.unitCost')}</span><span class="font-semibold">${uc.toFixed(2)} RWF</span></div>
-          <div class="flex justify-between"><span class="text-slate-500">${t('materials.totalAmount')}</span><span class="font-bold text-emerald-600">${total.toFixed(2)} RWF</span></div>
-        </div>
-        <div class="mt-4 pt-3 border-t flex justify-end gap-3">
-          <button onclick="editMaterial('${m.id}')" class="text-sm text-emerald-600">${t('materials.edit')}</button>
-          <button onclick="deleteMaterial('${m.id}')" class="text-sm text-red-500">${t('materials.delete')}</button>
-        </div>
-      </div>
-    </div>`;
+    return `<div class="bg-white rounded-2xl border overflow-hidden shadow-sm"><img src="${escapeHTML(m.image||PLACEHOLDER_IMG)}" class="w-full h-48 object-cover" onerror="this.src='${PLACEHOLDER_IMG}'"><div class="p-5"><h3 class="font-bold text-lg text-slate-800 truncate">${escapeHTML(m.name)}</h3><div class="mt-4 space-y-2 text-sm"><div class="flex justify-between border-b pb-2"><span class="text-slate-500">${t('materials.quantityUsed')}</span><span class="font-semibold">${qty}</span></div><div class="flex justify-between border-b pb-2"><span class="text-slate-500">${t('materials.unitCost')}</span><span class="font-semibold">${uc.toFixed(2)} RWF</span></div><div class="flex justify-between"><span class="text-slate-500">${t('materials.totalAmount')}</span><span class="font-bold text-emerald-600">${total.toFixed(2)} RWF</span></div></div><div class="mt-4 pt-3 border-t flex justify-end gap-3"><button onclick="editMaterial('${m.id}')" class="text-sm text-emerald-600">${t('materials.edit')}</button><button onclick="deleteMaterial('${m.id}')" class="text-sm text-red-500">${t('materials.delete')}</button></div></div></div>`;
   }).join('')}</div>`;
 }
 window.editMaterial = (id) => {
   const m = materialsData.find(x=>x.id===id); if(!m) return;
-  openModal(t('materials.editMaterial'), `
-    <form onsubmit="handleEditMaterial(event, '${id}')" class="space-y-4">
-      <input class="w-full border rounded-lg p-3" value="${escapeHTML(m.name)}" id="edit-mat-name" required>
-      <input class="w-full border rounded-lg p-3" value="${m.quantity_used||0}" type="number" id="edit-mat-used" required step="0.01">
-      <input class="w-full border rounded-lg p-3" value="${m.unit_cost||0}" type="number" id="edit-mat-unit-cost" required step="0.01">
-      <input type="file" id="edit-mat-image" accept="image/*" class="w-full mt-1">
-      <button type="submit" class="w-full bg-emerald-600 text-white py-3 rounded-xl">${t('common.save')}</button>
-    </form>`);
+  openModal(t('materials.editMaterial'), `<form onsubmit="handleEditMaterial(event, '${id}')" class="space-y-4"><input class="w-full border rounded-lg p-3" value="${escapeHTML(m.name)}" id="edit-mat-name" required><input class="w-full border rounded-lg p-3" value="${m.quantity_used||0}" type="number" id="edit-mat-used" required step="0.01"><input class="w-full border rounded-lg p-3" value="${m.unit_cost||0}" type="number" id="edit-mat-unit-cost" required step="0.01"><input type="file" id="edit-mat-image" accept="image/*" class="w-full mt-1"><button type="submit" class="w-full bg-emerald-600 text-white py-3 rounded-xl">${t('common.save')}</button></form>`);
 };
 window.handleEditMaterial = async (e,id) => {
   e.preventDefault();
@@ -867,7 +945,7 @@ window.handleEditMaterial = async (e,id) => {
     if (file) upd.image = await uploadImageToImgbb(file);
     batch.update(doc(db,'materials',id), upd);
     batch.update(doc(db,'stock',stock.id), { quantity:newStock, updated_at:new Date().toISOString() });
-    batch.set(doc(collection(db,'stock_transactions')), { site_id:siteId, stock_id:stock.id, material_name:old.name, transaction_type:'MATERIAL_USAGE_EDITED', quantity:newUsed-oldUsed, previous_quantity:stock.quantity, new_quantity:newStock, unit:stock.unit||'units', notes:`Material usage edited`, recorded_by:currentUser.uid, created_at:new Date().toISOString() });
+    batch.set(doc(collection(db,'stock_transactions')), { site_id:siteId, stock_id:stock.id, material_name:old.name, transaction_type:'MATERIAL_USAGE_EDITED', quantity:newUsed-oldUsed, previous_quantity:stock.quantity, new_quantity:newStock, unit:stock.unit||'units', notes:'Material usage edited', recorded_by:currentUser.uid, created_at:new Date().toISOString() });
     await batch.commit();
     closeModal(); showToast(t('common.updatedSuccessfully'),'success');
   } catch(e){console.error(e);showToast(t('common.somethingWentWrong'),'error');}
@@ -884,7 +962,7 @@ window.deleteMaterial = (id) => {
       const b = writeBatch(db);
       b.update(doc(db,'stock',stock.id),{quantity:newQty,updated_at:new Date().toISOString()});
       b.delete(doc(db,'materials',id));
-      b.set(doc(collection(db,'stock_transactions')),{site_id:m.site_id,stock_id:stock.id,material_name:m.name,transaction_type:'MATERIAL_USAGE_DELETED',quantity:m.quantity_used||0,previous_quantity:stock.quantity,new_quantity:newQty,unit:stock.unit||'units',notes:`Material usage deleted`,recorded_by:currentUser.uid,created_at:new Date().toISOString()});
+      b.set(doc(collection(db,'stock_transactions')),{site_id:m.site_id,stock_id:stock.id,material_name:m.name,transaction_type:'MATERIAL_USAGE_DELETED',quantity:m.quantity_used||0,previous_quantity:stock.quantity,new_quantity:newQty,unit:stock.unit||'units',notes:'Material usage deleted',recorded_by:currentUser.uid,created_at:new Date().toISOString()});
       await b.commit();
       showToast(t('common.deletedSuccessfully'),'success');
     } catch(e){console.error(e);showToast(t('common.somethingWentWrong'),'error');}
@@ -899,32 +977,13 @@ function renderRequisitionsList(){
   const c = document.getElementById('materials-container'); if(!c) return;
   const reqs = ownerRequisitionsData.slice().sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
   if (!reqs.length) { c.innerHTML = `<div class="bg-white rounded-2xl border p-6 text-center"><p class="text-slate-500">${t('materials.noRequisitions')}</p></div>`; return; }
-  c.innerHTML = `<div class="bg-white rounded-2xl border shadow-sm overflow-hidden"><div class="overflow-x-auto"><table class="w-full text-left text-sm">
-    <thead class="bg-slate-50 text-slate-500 uppercase text-xs"><tr><th class="p-4">${t('materials.reqNumber')}</th><th class="p-4">${t('materials.site')}</th><th class="p-4">${t('materials.requestedBy')}</th><th class="p-4">${t('materials.status')}</th><th class="p-4">${t('materials.actions')}</th></tr></thead>
-    <tbody>${reqs.map(r=>{
-      const site = sitesData.find(s=>s.id===r.site_id);
-      return `<tr class="border-b hover:bg-slate-50">
-        <td class="p-4 font-medium text-emerald-600">${escapeHTML(r.requisition_number)}</td>
-        <td class="p-4 text-slate-600">${escapeHTML(site?site.name:'Unknown')}</td>
-        <td class="p-4 text-slate-600">${escapeHTML(r.requested_by_name)}</td>
-        <td class="p-4">${getRequisitionStatusBadge(r.status)}</td>
-        <td class="p-4 flex gap-2">
-          <button onclick="viewOwnerRequisition('${r.id}')" class="text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded">${t('common.view')}</button>
-          ${r.status==='Pending'?`<button onclick="approveRequisition('${r.id}')" class="text-xs bg-emerald-50 text-emerald-700 px-2 py-1 rounded">${t('materials.approve')}</button>`:''}
-          ${r.status==='Pending'?`<button onclick="rejectRequisition('${r.id}')" class="text-xs bg-red-50 text-red-700 px-2 py-1 rounded">${t('materials.reject')}</button>`:''}
-          ${['Approved','Partially Supplied'].includes(r.status)?`<button onclick="openSupplyModal('${r.id}')" class="text-xs bg-amber-50 text-amber-700 px-2 py-1 rounded">${t('materials.supply')}</button>`:''}
-          <button onclick="downloadOwnerRequisitionPDF('${r.id}')" class="text-xs bg-gray-50 text-gray-700 px-2 py-1 rounded">PDF</button>
-        </td>
-      </tr>`;
-    }).join('')}</tbody>
-  </table></div></div>`;
+  c.innerHTML = `<div class="bg-white rounded-2xl border shadow-sm overflow-hidden"><div class="overflow-x-auto"><table class="w-full text-left text-sm"><thead class="bg-slate-50 text-slate-500 uppercase text-xs"><tr><th class="p-4">${t('materials.reqNumber')}</th><th class="p-4">${t('materials.site')}</th><th class="p-4">${t('materials.requestedBy')}</th><th class="p-4">${t('materials.status')}</th><th class="p-4">${t('materials.actions')}</th></tr></thead><tbody>${reqs.map(r=>{const site=sitesData.find(s=>s.id===r.site_id);return `<tr class="border-b hover:bg-slate-50"><td class="p-4 font-medium text-emerald-600">${escapeHTML(r.requisition_number)}</td><td class="p-4 text-slate-600">${escapeHTML(site?site.name:'Unknown')}</td><td class="p-4 text-slate-600">${escapeHTML(r.requested_by_name)}</td><td class="p-4">${getRequisitionStatusBadge(r.status)}</td><td class="p-4 flex gap-2"><button onclick="viewOwnerRequisition('${r.id}')" class="text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded">${t('common.view')}</button>${r.status==='Pending'?`<button onclick="approveRequisition('${r.id}')" class="text-xs bg-emerald-50 text-emerald-700 px-2 py-1 rounded">${t('materials.approve')}</button>`:''}${r.status==='Pending'?`<button onclick="rejectRequisition('${r.id}')" class="text-xs bg-red-50 text-red-700 px-2 py-1 rounded">${t('materials.reject')}</button>`:''}${['Approved','Partially Supplied'].includes(r.status)?`<button onclick="openSupplyModal('${r.id}')" class="text-xs bg-amber-50 text-amber-700 px-2 py-1 rounded">${t('materials.supply')}</button>`:''}<button onclick="downloadOwnerRequisitionPDF('${r.id}')" class="text-xs bg-gray-50 text-gray-700 px-2 py-1 rounded">PDF</button></td></tr>`;}).join('')}</tbody></table></div></div>`;
 }
 window.viewOwnerRequisition = (id) => {
   const r = ownerRequisitionsData.find(x=>x.id===id); if(!r) return;
   const items = ownerRequisitionItemsData.filter(i=>i.requisition_id===id);
   const site = sitesData.find(s=>s.id===r.site_id);
-  let html = `<div class="space-y-2"><p><strong>Status:</strong> ${escapeHTML(r.status)}</p><p><strong>Site:</strong> ${escapeHTML(site?site.name:'—')}</p><p><strong>Requested by:</strong> ${escapeHTML(r.requested_by_name)}</p><table class="w-full text-sm mt-2"><thead class="bg-slate-50"><tr><th class="p-2 text-left">${t('materials.material')}</th><th class="p-2 text-right">${t('materials.requested')}</th><th class="p-2 text-right">${t('materials.supplied')}</th></tr></thead><tbody>${items.map(i=>`<tr class="border-b"><td class="p-2">${escapeHTML(i.material_name)}</td><td class="p-2 text-right">${i.quantity_requested}</td><td class="p-2 text-right">${i.quantity_supplied||0}</td></tr>`).join('')}</tbody></table></div>`;
-  openModal(`Requisition ${escapeHTML(r.requisition_number)}`, html);
+  openModal(`Requisition ${escapeHTML(r.requisition_number)}`, `<div class="space-y-2"><p><strong>Status:</strong> ${escapeHTML(r.status)}</p><p><strong>Site:</strong> ${escapeHTML(site?site.name:'—')}</p><p><strong>Requested by:</strong> ${escapeHTML(r.requested_by_name)}</p><table class="w-full text-sm mt-2"><thead class="bg-slate-50"><tr><th class="p-2 text-left">${t('materials.material')}</th><th class="p-2 text-right">${t('materials.requested')}</th><th class="p-2 text-right">${t('materials.supplied')}</th></tr></thead><tbody>${items.map(i=>`<tr class="border-b"><td class="p-2">${escapeHTML(i.material_name)}</td><td class="p-2 text-right">${i.quantity_requested}</td><td class="p-2 text-right">${i.quantity_supplied||0}</td></tr>`).join('')}</tbody></table></div>`);
 };
 window.approveRequisition = async (id) => {
   if (!confirm(t('common.areYouSure'))) return;
@@ -932,11 +991,7 @@ window.approveRequisition = async (id) => {
 };
 window.rejectRequisition = (id) => {
   const r = ownerRequisitionsData.find(x=>x.id===id); if(!r) return;
-  openModal(`Reject Requisition`, `
-    <form onsubmit="handleRejectSubmit(event, '${id}')" class="space-y-4">
-      <textarea id="reject-reason" class="w-full border rounded-lg p-3 text-sm" rows="3" required placeholder="${t('materials.rejectionReason')}"></textarea>
-      <button type="submit" class="w-full bg-red-600 text-white py-3 rounded-xl">${t('materials.reject')}</button>
-    </form>`);
+  openModal(`Reject Requisition`, `<form onsubmit="handleRejectSubmit(event, '${id}')" class="space-y-4"><textarea id="reject-reason" class="w-full border rounded-lg p-3 text-sm" rows="3" required placeholder="${t('materials.rejectionReason')}"></textarea><button type="submit" class="w-full bg-red-600 text-white py-3 rounded-xl">${t('materials.reject')}</button></form>`);
 };
 window.handleRejectSubmit = async (e,id) => {
   e.preventDefault();
@@ -1019,26 +1074,11 @@ function renderStock(container){
 // =================================================================
 // WORKERS
 // =================================================================
+let selectedWorkerViewSite = null;
 function renderWorkers(container){
-  container.innerHTML = `
-    <div class="flex justify-between items-center mb-4">
-      <h2 class="text-xl sm:text-2xl font-bold flex items-center gap-2"><iconify-icon icon="material-symbols:engineering" class="text-emerald-600"></iconify-icon>${t('workers.title')}</h2>
-      <button onclick="openAddWorkerModal()" class="px-3 py-2 bg-emerald-600 text-white rounded-xl text-sm flex items-center gap-2"><iconify-icon icon="material-symbols:add"></iconify-icon>${t('workers.addWorker')}</button>
-    </div>
-    <div class="bg-white rounded-2xl border overflow-hidden shadow-sm mb-4">
-      <table class="w-full text-sm">
-        <thead class="bg-slate-50 uppercase text-xs"><tr><th class="px-3 py-2 text-left">${t('workers.role')}</th><th class="px-3 py-2 text-left">${t('workers.site')}</th><th class="px-3 py-2 text-left">${t('workers.salaryType')}</th><th class="px-3 py-2 text-left">${t('workers.estCost')}</th><th class="px-3 py-2 text-left">${t('workers.actions')}</th></tr></thead>
-        <tbody>${workersData.map(w=>`<tr><td class="px-3 py-2 font-medium">${escapeHTML(w.role)}</td><td class="px-3 py-2">${w.site_id==='all'?t('workers.allSites'):escapeHTML(sitesData.find(s=>s.id===w.site_id)?.name||'—')}</td><td class="px-3 py-2">${escapeHTML(w.salary_type||t('workers.daily'))}</td><td class="px-3 py-2">${w.estimated_cost?.toLocaleString()||'—'}</td><td class="px-3 py-2 flex gap-2"><button onclick="editWorkerPosition('${w.id}')" class="text-emerald-600 text-xs">${t('common.edit')}</button><button onclick="deleteWorkerPosition('${w.id}')" class="text-red-500 text-xs">${t('common.delete')}</button></td></tr>`).join('') || `<tr><td colspan="5" class="p-4 text-slate-500">${t('workers.noPositions')}</td></tr>`}</tbody>
-      </table>
-    </div>
-    <div class="bg-white rounded-2xl border p-4 shadow-sm">
-      <h3 class="font-semibold text-sm mb-3">${t('workers.actualWorkers')}</h3>
-      <select class="w-full border rounded-lg p-2 mb-3 text-sm" onchange="selectWorkerViewSite(this.value)">
-        <option value="">${t('dashboard.selectSite')}</option>
-        ${sitesData.map(s=>`<option value="${s.id}" ${selectedWorkerViewSite===s.id?'selected':''}>${escapeHTML(s.name)}</option>`).join('')}
-      </select>
-      <div id="assigned-workers-container"><p class="text-slate-400 text-sm">${t('dashboard.selectSite')}</p></div>
-    </div>`;
+  container.innerHTML = `<div class="flex justify-between items-center mb-4"><h2 class="text-xl sm:text-2xl font-bold flex items-center gap-2"><iconify-icon icon="material-symbols:engineering" class="text-emerald-600"></iconify-icon>${t('workers.title')}</h2><button onclick="openAddWorkerModal()" class="px-3 py-2 bg-emerald-600 text-white rounded-xl text-sm flex items-center gap-2"><iconify-icon icon="material-symbols:add"></iconify-icon>${t('workers.addWorker')}</button></div>
+    <div class="bg-white rounded-2xl border overflow-hidden shadow-sm mb-4"><table class="w-full text-sm"><thead class="bg-slate-50 uppercase text-xs"><tr><th class="px-3 py-2 text-left">${t('workers.role')}</th><th class="px-3 py-2 text-left">${t('workers.site')}</th><th class="px-3 py-2 text-left">${t('workers.salaryType')}</th><th class="px-3 py-2 text-left">${t('workers.estCost')}</th><th class="px-3 py-2 text-left">${t('workers.actions')}</th></tr></thead><tbody>${workersData.map(w=>`<tr><td class="px-3 py-2 font-medium">${escapeHTML(w.role)}</td><td class="px-3 py-2">${w.site_id==='all'?t('workers.allSites'):escapeHTML(sitesData.find(s=>s.id===w.site_id)?.name||'—')}</td><td class="px-3 py-2">${escapeHTML(w.salary_type||t('workers.daily'))}</td><td class="px-3 py-2">${w.estimated_cost?.toLocaleString()||'—'}</td><td class="px-3 py-2 flex gap-2"><button onclick="editWorkerPosition('${w.id}')" class="text-emerald-600 text-xs">${t('common.edit')}</button><button onclick="deleteWorkerPosition('${w.id}')" class="text-red-500 text-xs">${t('common.delete')}</button></td></tr>`).join('') || `<tr><td colspan="5" class="p-4 text-slate-500">${t('workers.noPositions')}</td></tr>`}</tbody></table></div>
+    <div class="bg-white rounded-2xl border p-4 shadow-sm"><h3 class="font-semibold text-sm mb-3">${t('workers.actualWorkers')}</h3><select class="w-full border rounded-lg p-2 mb-3 text-sm" onchange="selectWorkerViewSite(this.value)"><option value="">${t('dashboard.selectSite')}</option>${sitesData.map(s=>`<option value="${s.id}" ${selectedWorkerViewSite===s.id?'selected':''}>${escapeHTML(s.name)}</option>`).join('')}</select><div id="assigned-workers-container"><p class="text-slate-400 text-sm">${t('dashboard.selectSite')}</p></div></div>`;
   if (selectedWorkerViewSite) selectWorkerViewSite(selectedWorkerViewSite);
 }
 window.selectWorkerViewSite = (siteId) => {
@@ -1117,15 +1157,7 @@ window.deleteWorkerPosition = async (id) => { if(!confirm(t('common.areYouSure')
 // PROGRESS
 // =================================================================
 function renderProgress(container){
-  container.innerHTML = `
-    <div class="flex justify-between items-center mb-4">
-      <h2 class="text-xl sm:text-2xl font-bold flex items-center gap-2"><iconify-icon icon="material-symbols:trending-up" class="text-emerald-600"></iconify-icon>${t('progress.title')}</h2>
-      <button onclick="openAddTaskModal()" class="px-3 py-2 bg-emerald-600 text-white rounded-xl text-sm flex items-center gap-2"><iconify-icon icon="material-symbols:add"></iconify-icon>${t('progress.addTask')}</button>
-    </div>
-    <div class="bg-white rounded-2xl border overflow-hidden shadow-sm">
-      <table class="w-full text-sm"><thead class="bg-slate-50 uppercase text-xs"><tr><th class="px-3 py-2 text-left">${t('progress.task')}</th><th class="px-3 py-2 text-left">${t('workers.site')}</th><th class="px-3 py-2 text-left">${t('progress.start')}</th><th class="px-3 py-2 text-left">${t('progress.end')}</th><th class="px-3 py-2 text-left">${t('progress.status')}</th><th class="px-3 py-2 text-left">${t('workers.actions')}</th></tr></thead>
-      <tbody>${progressTasks.map(task=>`<tr><td class="px-3 py-2 font-medium">${escapeHTML(task.name)}</td><td class="px-3 py-2">${escapeHTML(sitesData.find(s=>s.id===task.site_id)?.name||'—')}</td><td class="px-3 py-2">${formatDate(task.start_date)}</td><td class="px-3 py-2">${formatDate(task.end_date)}</td><td class="px-3 py-2">${escapeHTML(task.status||'pending')}</td><td class="px-3 py-2 flex gap-2"><button onclick="editTask('${task.id}')" class="text-emerald-600 text-xs">${t('common.edit')}</button><button onclick="deleteTask('${task.id}')" class="text-red-500 text-xs">${t('common.delete')}</button></td></tr>`).join('') || `<tr><td colspan="6" class="p-4 text-slate-500">${t('progress.noTasks')}</td></tr>`}</tbody></table>
-    </div>`;
+  container.innerHTML = `<div class="flex justify-between items-center mb-4"><h2 class="text-xl sm:text-2xl font-bold flex items-center gap-2"><iconify-icon icon="material-symbols:trending-up" class="text-emerald-600"></iconify-icon>${t('progress.title')}</h2><button onclick="openAddTaskModal()" class="px-3 py-2 bg-emerald-600 text-white rounded-xl text-sm flex items-center gap-2"><iconify-icon icon="material-symbols:add"></iconify-icon>${t('progress.addTask')}</button></div><div class="bg-white rounded-2xl border overflow-hidden shadow-sm"><table class="w-full text-sm"><thead class="bg-slate-50 uppercase text-xs"><tr><th class="px-3 py-2 text-left">${t('progress.task')}</th><th class="px-3 py-2 text-left">${t('workers.site')}</th><th class="px-3 py-2 text-left">${t('progress.start')}</th><th class="px-3 py-2 text-left">${t('progress.end')}</th><th class="px-3 py-2 text-left">${t('progress.status')}</th><th class="px-3 py-2 text-left">${t('workers.actions')}</th></tr></thead><tbody>${progressTasks.map(task=>`<tr><td class="px-3 py-2 font-medium">${escapeHTML(task.name)}</td><td class="px-3 py-2">${escapeHTML(sitesData.find(s=>s.id===task.site_id)?.name||'—')}</td><td class="px-3 py-2">${formatDate(task.start_date)}</td><td class="px-3 py-2">${formatDate(task.end_date)}</td><td class="px-3 py-2">${escapeHTML(task.status||'pending')}</td><td class="px-3 py-2 flex gap-2"><button onclick="editTask('${task.id}')" class="text-emerald-600 text-xs">${t('common.edit')}</button><button onclick="deleteTask('${task.id}')" class="text-red-500 text-xs">${t('common.delete')}</button></td></tr>`).join('') || `<tr><td colspan="6" class="p-4 text-slate-500">${t('progress.noTasks')}</td></tr>`}</tbody></table></div>`;
 }
 window.openAddTaskModal = () => {
   if (!requireActiveSubscription()) return;
@@ -1169,8 +1201,7 @@ window.deleteTask = (id) => { if(!confirm(t('common.areYouSure'))) return; delet
 // =================================================================
 function renderReports(container){
   const siteOpts = sitesData.map(s=>`<option value="${s.id}">${escapeHTML(s.name)}</option>`).join('');
-  container.innerHTML = `
-    <h2 class="text-xl sm:text-2xl font-bold mb-4 flex items-center gap-2"><iconify-icon icon="material-symbols:description" class="text-emerald-600"></iconify-icon>${t('reports.title')}</h2>
+  container.innerHTML = `<h2 class="text-xl sm:text-2xl font-bold mb-4 flex items-center gap-2"><iconify-icon icon="material-symbols:description" class="text-emerald-600"></iconify-icon>${t('reports.title')}</h2>
     <div class="flex gap-2 p-1 bg-slate-200/60 rounded-xl mb-6 max-w-md overflow-x-auto">
       ${[{k:'general',l:t('reports.general')},{k:'payroll',l:t('reports.payroll')},{k:'stock',l:t('reports.stockReport')}].map(tb=>`<button onclick="setReportType('${tb.k}')" class="flex-1 min-w-[120px] px-4 py-2 rounded-lg text-sm font-semibold ${reportType===tb.k?'report-tab-active':'report-tab-inactive'}">${tb.l}</button>`).join('')}
     </div>
@@ -1182,54 +1213,26 @@ function renderReports(container){
 }
 window.setReportType = (ty) => { reportType = ty; showSection('reports'); };
 function renderGeneralReport(c, siteOpts){
-  c.innerHTML = `<div class="bg-white rounded-2xl border p-4 max-w-lg space-y-4">
-    <div><label class="block text-sm font-medium mb-1">${t('reports.selectSite')}</label><select id="report-site" class="w-full border rounded-lg p-3"><option value="all">${t('reports.allSites')}</option>${siteOpts}</select></div>
-    <div><label class="block text-sm font-medium mb-1">${t('reports.department')}</label><select id="report-dept" class="w-full border rounded-lg p-3"><option value="all">${t('reports.allDepartments')}</option><option value="materials">${t('navigation.materials')}</option><option value="workers">${t('navigation.workers')}</option><option value="finances">${t('finances.title')}</option></select></div>
-    <div><label class="block text-sm font-medium mb-1">${t('reports.startDate')}</label><input type="date" id="report-start" class="w-full border rounded-lg p-3"></div>
-    <div><label class="block text-sm font-medium mb-1">${t('reports.endDate')}</label><input type="date" id="report-end" class="w-full border rounded-lg p-3"></div>
-    <div class="flex gap-3"><button onclick="exportGeneralReport('csv')" class="flex-1 bg-emerald-600 text-white py-3 rounded-xl">${t('reports.exportCSV')}</button><button onclick="exportGeneralReport('print')" class="flex-1 bg-slate-800 text-white py-3 rounded-xl">${t('reports.printPDF')}</button></div>
-  </div>`;
+  c.innerHTML = `<div class="bg-white rounded-2xl border p-4 max-w-lg space-y-4"><div><label class="block text-sm font-medium mb-1">${t('reports.selectSite')}</label><select id="report-site" class="w-full border rounded-lg p-3"><option value="all">${t('reports.allSites')}</option>${siteOpts}</select></div><div><label class="block text-sm font-medium mb-1">${t('reports.department')}</label><select id="report-dept" class="w-full border rounded-lg p-3"><option value="all">${t('reports.allDepartments')}</option><option value="materials">${t('navigation.materials')}</option><option value="workers">${t('navigation.workers')}</option><option value="finances">${t('finances.title')}</option></select></div><div><label class="block text-sm font-medium mb-1">${t('reports.startDate')}</label><input type="date" id="report-start" class="w-full border rounded-lg p-3"></div><div><label class="block text-sm font-medium mb-1">${t('reports.endDate')}</label><input type="date" id="report-end" class="w-full border rounded-lg p-3"></div><div class="flex gap-3"><button onclick="exportGeneralReport('csv')" class="flex-1 bg-emerald-600 text-white py-3 rounded-xl">${t('reports.exportCSV')}</button><button onclick="exportGeneralReport('print')" class="flex-1 bg-slate-800 text-white py-3 rounded-xl">${t('reports.printPDF')}</button></div></div>`;
 }
 function renderPayrollReport(c, siteOpts){
   if (!attendanceData.length) { c.innerHTML = `<div class="bg-white rounded-2xl border p-8 text-center"><p class="text-slate-600">${t('reports.noAttendance')}</p></div>`; return; }
   const positions = [...new Set([...assignedWorkersData.map(w=>w.role), ...attendanceData.map(a=>a.role)].filter(Boolean))].map(r=>`<option value="${r}">${escapeHTML(r)}</option>`).join('');
-  c.innerHTML = `<div class="space-y-6">
-    <div class="bg-white rounded-2xl border p-4 grid grid-cols-1 md:grid-cols-3 gap-4">
-      <div><label class="block text-sm font-medium mb-1">${t('reports.selectSite')}</label><select id="payroll-site" class="w-full border rounded-lg p-2.5 text-sm" onchange="updatePayrollReport()"><option value="all">${t('reports.allSites')}</option>${siteOpts}</select></div>
-      <div><label class="block text-sm font-medium mb-1">${t('reports.startDate')}</label><input type="date" id="payroll-start" class="w-full border rounded-lg p-2.5 text-sm" onchange="updatePayrollReport()"></div>
-      <div><label class="block text-sm font-medium mb-1">${t('reports.endDate')}</label><input type="date" id="payroll-end" class="w-full border rounded-lg p-2.5 text-sm" onchange="updatePayrollReport()"></div>
-      <div><label class="block text-sm font-medium mb-1">${t('reports.worker')}</label><input type="text" id="payroll-worker-search" class="w-full border rounded-lg p-2.5 text-sm" oninput="updatePayrollReport()"></div>
-      <div><label class="block text-sm font-medium mb-1">${t('reports.position')}</label><select id="payroll-position" class="w-full border rounded-lg p-2.5 text-sm" onchange="updatePayrollReport()"><option value="all">${t('reports.allPositions')}</option>${positions}</select></div>
-      <div><label class="block text-sm font-medium mb-1">${t('reports.paymentStatus')}</label><select id="payroll-status" class="w-full border rounded-lg p-2.5 text-sm" onchange="updatePayrollReport()"><option value="all">${t('reports.allPayments')}</option><option value="paid">${t('reports.paid')}</option><option value="unpaid">${t('reports.unpaid')}</option></select></div>
-    </div>
-    <div id="payroll-summary-cards" class="grid grid-cols-2 md:grid-cols-4 gap-4"></div>
-    <div id="payroll-table-container" class="bg-white rounded-2xl border overflow-hidden"></div>
-    <div class="flex gap-3 justify-end"><button onclick="exportPayrollReport('csv')" class="px-6 py-2 bg-emerald-600 text-white rounded-xl">${t('reports.exportCSV')}</button><button onclick="exportPayrollReport('print')" class="px-6 py-2 bg-slate-800 text-white rounded-xl">${t('reports.printPDF')}</button></div>
-  </div>`;
+  c.innerHTML = `<div class="space-y-6"><div class="bg-white rounded-2xl border p-4 grid grid-cols-1 md:grid-cols-3 gap-4"><div><label class="block text-sm font-medium mb-1">${t('reports.selectSite')}</label><select id="payroll-site" class="w-full border rounded-lg p-2.5 text-sm" onchange="updatePayrollReport()"><option value="all">${t('reports.allSites')}</option>${siteOpts}</select></div><div><label class="block text-sm font-medium mb-1">${t('reports.startDate')}</label><input type="date" id="payroll-start" class="w-full border rounded-lg p-2.5 text-sm" onchange="updatePayrollReport()"></div><div><label class="block text-sm font-medium mb-1">${t('reports.endDate')}</label><input type="date" id="payroll-end" class="w-full border rounded-lg p-2.5 text-sm" onchange="updatePayrollReport()"></div><div><label class="block text-sm font-medium mb-1">${t('reports.worker')}</label><input type="text" id="payroll-worker-search" class="w-full border rounded-lg p-2.5 text-sm" oninput="updatePayrollReport()"></div><div><label class="block text-sm font-medium mb-1">${t('reports.position')}</label><select id="payroll-position" class="w-full border rounded-lg p-2.5 text-sm" onchange="updatePayrollReport()"><option value="all">${t('reports.allPositions')}</option>${positions}</select></div><div><label class="block text-sm font-medium mb-1">${t('reports.paymentStatus')}</label><select id="payroll-status" class="w-full border rounded-lg p-2.5 text-sm" onchange="updatePayrollReport()"><option value="all">${t('reports.allPayments')}</option><option value="paid">${t('reports.paid')}</option><option value="unpaid">${t('reports.unpaid')}</option></select></div></div><div id="payroll-summary-cards" class="grid grid-cols-2 md:grid-cols-4 gap-4"></div><div id="payroll-table-container" class="bg-white rounded-2xl border overflow-hidden"></div><div class="flex gap-3 justify-end"><button onclick="exportPayrollReport('csv')" class="px-6 py-2 bg-emerald-600 text-white rounded-xl">${t('reports.exportCSV')}</button><button onclick="exportPayrollReport('print')" class="px-6 py-2 bg-slate-800 text-white rounded-xl">${t('reports.printPDF')}</button></div></div>`;
   requestAnimationFrame(()=>updatePayrollReport());
 }
 function renderStockReport(c, siteOpts){
-  c.innerHTML = `<div class="bg-white rounded-2xl border p-4 max-w-lg space-y-4">
-    <div><label class="block text-sm font-medium mb-1">${t('reports.selectSite')}</label><select id="stock-report-site" class="w-full border rounded-lg p-3"><option value="all">${t('reports.allSites')}</option>${siteOpts}</select></div>
-    <div class="flex gap-3"><button onclick="exportStockReport('csv')" class="flex-1 bg-emerald-600 text-white py-3 rounded-xl">${t('reports.exportCSV')}</button><button onclick="exportStockReport('print')" class="flex-1 bg-slate-800 text-white py-3 rounded-xl">${t('reports.printPDF')}</button></div>
-  </div>`;
+  c.innerHTML = `<div class="bg-white rounded-2xl border p-4 max-w-lg space-y-4"><div><label class="block text-sm font-medium mb-1">${t('reports.selectSite')}</label><select id="stock-report-site" class="w-full border rounded-lg p-3"><option value="all">${t('reports.allSites')}</option>${siteOpts}</select></div><div class="flex gap-3"><button onclick="exportStockReport('csv')" class="flex-1 bg-emerald-600 text-white py-3 rounded-xl">${t('reports.exportCSV')}</button><button onclick="exportStockReport('print')" class="flex-1 bg-slate-800 text-white py-3 rounded-xl">${t('reports.printPDF')}</button></div></div>`;
 }
 window.updatePayrollReport = () => {
-  const filters = {
-    siteId: document.getElementById('payroll-site')?.value || 'all',
-    start: document.getElementById('payroll-start')?.value || '',
-    end: document.getElementById('payroll-end')?.value || '',
-    q: document.getElementById('payroll-worker-search')?.value?.toLowerCase() || '',
-    pos: document.getElementById('payroll-position')?.value || 'all'
-  };
+  const filters = { siteId: document.getElementById('payroll-site')?.value||'all', start: document.getElementById('payroll-start')?.value||'', end: document.getElementById('payroll-end')?.value||'', q: document.getElementById('payroll-worker-search')?.value?.toLowerCase()||'', pos: document.getElementById('payroll-position')?.value||'all' };
   let filtered = attendanceData.slice();
-  if (filters.siteId !== 'all') filtered = filtered.filter(a=>a.site_id===filters.siteId);
-  if (filters.start) filtered = filtered.filter(a => String(a.date||'').slice(0,10) >= filters.start);
-  if (filters.end) filtered = filtered.filter(a => String(a.date||'').slice(0,10) <= filters.end);
-  if (filters.q) filtered = filtered.filter(a => (a.name||'').toLowerCase().includes(filters.q));
-  if (filters.pos !== 'all') filtered = filtered.filter(a => a.role===filters.pos);
-  const map = {};
-  filtered.forEach(r => { const k = r.worker_id||r.id; if(!map[k]) map[k]={name:r.name,role:r.role,rate:r.daily_rate||0,days:[],total:0}; map[k].days.push(r.date); map[k].total += (r.daily_rate||0); });
+  if (filters.siteId!=='all') filtered = filtered.filter(a=>a.site_id===filters.siteId);
+  if (filters.start) filtered = filtered.filter(a=>String(a.date||'').slice(0,10)>=filters.start);
+  if (filters.end) filtered = filtered.filter(a=>String(a.date||'').slice(0,10)<=filters.end);
+  if (filters.q) filtered = filtered.filter(a=>(a.name||'').toLowerCase().includes(filters.q));
+  if (filters.pos!=='all') filtered = filtered.filter(a=>a.role===filters.pos);
+  const map = {}; filtered.forEach(r => { const k = r.worker_id||r.id; if(!map[k]) map[k]={name:r.name,role:r.role,rate:r.daily_rate||0,days:[],total:0}; map[k].days.push(r.date); map[k].total += (r.daily_rate||0); });
   const workers = Object.values(map);
   const totalDays = workers.reduce((s,w)=>s+w.days.length,0);
   const totalPay = workers.reduce((s,w)=>s+w.total,0);
@@ -1240,6 +1243,7 @@ window.updatePayrollReport = () => {
   if (tbl) tbl.innerHTML = workers.length ? `<div class="overflow-x-auto"><table class="w-full text-sm"><thead class="bg-slate-50 text-xs"><tr><th class="px-3 py-2 text-left">${t('reports.worker')}</th><th class="px-3 py-2 text-left">${t('reports.position')}</th><th class="px-3 py-2 text-center">${t('reports.daysWorked')}</th><th class="px-3 py-2 text-right">${t('reports.dailyRate')}</th><th class="px-3 py-2 text-right">${t('reports.totalPayable')}</th></tr></thead><tbody>${workers.map(w=>`<tr><td class="px-3 py-2 font-medium">${escapeHTML(w.name)}</td><td class="px-3 py-2">${escapeHTML(w.role||'—')}</td><td class="px-3 py-2 text-center">${w.days.length}</td><td class="px-3 py-2 text-right">${w.rate.toLocaleString()} RWF</td><td class="px-3 py-2 text-right font-semibold text-emerald-600">${w.total.toLocaleString()} RWF</td></tr>`).join('')}</tbody><tfoot class="bg-slate-50 font-bold"><tr><td colspan="2" class="px-3 py-2 text-right">${t('reports.total')}</td><td class="px-3 py-2 text-center">${totalDays}</td><td></td><td class="px-3 py-2 text-right text-emerald-600">${totalPay.toLocaleString()} RWF</td></tr></tfoot></table></div>` : `<div class="p-4 text-slate-500 text-sm">${t('common.noDataAvailable')}</div>`;
 };
 window.exportPayrollReport = (fmt) => {
+  if (!requireActiveSubscription()) return;
   const filters = { siteId: document.getElementById('payroll-site')?.value||'all', start: document.getElementById('payroll-start')?.value||'', end: document.getElementById('payroll-end')?.value||'', q: document.getElementById('payroll-worker-search')?.value?.toLowerCase()||'', pos: document.getElementById('payroll-position')?.value||'all' };
   let filtered = attendanceData.slice();
   if (filters.siteId!=='all') filtered = filtered.filter(a=>a.site_id===filters.siteId);
@@ -1269,6 +1273,7 @@ window.exportPayrollReport = (fmt) => {
   w.document.close(); setTimeout(()=>w.print(),500);
 };
 window.exportStockReport = (fmt) => {
+  if (!requireActiveSubscription()) return;
   const siteId = document.getElementById('stock-report-site')?.value||'all';
   let filt = siteId==='all'?stockData:stockData.filter(s=>s.site_id===siteId);
   if (!filt.length) { showToast('No stock data','error'); return; }
@@ -1287,6 +1292,7 @@ window.exportStockReport = (fmt) => {
   w.document.close(); setTimeout(()=>w.print(),500);
 };
 window.exportGeneralReport = (fmt) => {
+  if (!requireActiveSubscription()) return;
   const c = getCompanyDetails();
   const siteId = document.getElementById('report-site')?.value||'all';
   const dept = document.getElementById('report-dept')?.value||'all';
@@ -1376,6 +1382,7 @@ window.removeManager = async (uid) => { if(!confirm(t('common.areYouSure'))) ret
 // =================================================================
 // GALLERY
 // =================================================================
+let selectedGallerySite = null;
 function renderGallery(container){
   const siteOpts = sitesData.map(s=>`<option value="${s.id}">${escapeHTML(s.name)}</option>`).join('');
   container.innerHTML = `<h2 class="text-xl sm:text-2xl font-bold mb-3 flex items-center gap-2"><iconify-icon icon="material-symbols:photo-library" class="text-emerald-600"></iconify-icon>${t('gallery.title')}</h2><div class="mb-4"><label class="block text-sm font-medium mb-1">${t('gallery.selectSite')}</label><select id="gallery-site-select" class="w-full border p-2 rounded-lg text-sm" onchange="filterGallery()"><option value="">${t('gallery.allSites')}</option>${siteOpts}</select></div><div id="gallery-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>`;
@@ -1394,7 +1401,7 @@ window.openGalleryImage = (url) => { const e = document.getElementById('gallery-
 window.closeGalleryImage = () => { document.getElementById('gallery-lightbox')?.remove(); document.body.style.overflow=''; };
 
 // =================================================================
-// SETTINGS (includes Subscription & Billing tab)
+// SETTINGS (with Subscription tab)
 // =================================================================
 function renderSettings(container){
   container.innerHTML = `<h2 class="text-xl sm:text-2xl font-bold mb-6 flex items-center gap-2"><iconify-icon icon="material-symbols:settings" class="text-emerald-600"></iconify-icon>${t('settings.title')}</h2>
@@ -1417,18 +1424,18 @@ function renderSettings(container){
 }
 function renderProfileSection(){
   const p = ownerProfile||{}; const photo = p.profile_picture||PLACEHOLDER_IMG;
-  return `<div class="settings-card"><h3>${t('settings.profileInfo')}</h3><form id="profile-form" onsubmit="handleProfileSave(event)"><div class="text-center mb-4"><div class="relative inline-block"><img id="settings-profile-photo-img" src="${escapeHTML(photo)}" class="w-24 h-24 rounded-full object-cover border-4 border-white shadow"><label class="absolute bottom-0 right-0 bg-emerald-600 text-white rounded-full w-8 h-8 flex items-center justify-center cursor-pointer"><iconify-icon icon="material-symbols:photo-camera" width="16"></iconify-icon><input type="file" id="settings-profile-photo-input" accept="image/*" style="display:none" onchange="previewProfilePhoto(event)"></label></div></div><div class="mb-4"><label>${t('settings.fullName')}</label><input type="text" id="settings-full-name" value="${escapeHTML(p.full_name||'')}"></div><div class="mb-4"><label>${t('settings.phone')}</label><input type="tel" id="settings-phone" value="${escapeHTML(p.phone||'')}"></div><div class="mb-4"><label>${t('settings.email')}</label><input type="email" id="settings-email" value="${escapeHTML(p.email||'')}"></div><button type="submit" class="save-btn">${t('settings.saveChanges')}</button></form></div>`;
+  return `<div class="settings-card"><h3><iconify-icon icon="material-symbols:person-outline" class="text-emerald-600"></iconify-icon>${t('settings.profileInfo')}</h3><form id="profile-form" onsubmit="handleProfileSave(event)"><div class="text-center mb-4"><div class="relative inline-block"><img id="settings-profile-photo-img" src="${escapeHTML(photo)}" class="w-24 h-24 rounded-full object-cover border-4 border-white shadow"><label class="absolute bottom-0 right-0 bg-emerald-600 text-white rounded-full w-8 h-8 flex items-center justify-center cursor-pointer"><iconify-icon icon="material-symbols:photo-camera" width="16"></iconify-icon><input type="file" id="settings-profile-photo-input" accept="image/*" style="display:none" onchange="previewProfilePhoto(event)"></label></div></div><div class="field-group"><label>${t('settings.fullName')}</label><input type="text" id="settings-full-name" value="${escapeHTML(p.full_name||'')}"></div><div class="field-group"><label>${t('settings.phone')}</label><input type="tel" id="settings-phone" value="${escapeHTML(p.phone||'')}"></div><div class="field-group"><label>${t('settings.email')}</label><input type="email" id="settings-email" value="${escapeHTML(p.email||'')}"></div><button type="submit" class="save-btn">${t('settings.saveChanges')}</button></form></div>`;
 }
 function renderAccountSection(){
   const p = ownerProfile||{};
-  return `<div class="settings-card"><h3>${t('settings.accountInfo')}</h3><div class="space-y-3 text-sm"><p><strong>${t('settings.accountName')}:</strong> ${escapeHTML(p.full_name||'N/A')}</p><p><strong>${t('settings.role')}:</strong> ${escapeHTML(p.role||'Owner')}</p><p><strong>${t('settings.email')}:</strong> ${escapeHTML(p.email||'N/A')}</p><p><strong>${t('settings.accountStatus')}:</strong> ${escapeHTML(p.status||t('settings.active'))}</p><p><strong>${t('settings.memberSince')}:</strong> ${p.created_at?formatDate(p.created_at):'N/A'}</p></div></div>`;
+  return `<div class="settings-card"><h3><iconify-icon icon="material-symbols:account-box-outline" class="text-emerald-600"></iconify-icon>${t('settings.accountInfo')}</h3><div class="space-y-3 text-sm"><p><strong>${t('settings.accountName')}:</strong> ${escapeHTML(p.full_name||'N/A')}</p><p><strong>${t('settings.role')}:</strong> ${escapeHTML(p.role||'Owner')}</p><p><strong>${t('settings.email')}:</strong> ${escapeHTML(p.email||'N/A')}</p><p><strong>${t('settings.accountStatus')}:</strong> ${escapeHTML(p.status||t('settings.active'))}</p><p><strong>${t('settings.memberSince')}:</strong> ${p.created_at?formatDate(p.created_at):'N/A'}</p></div></div>`;
 }
 function renderSecuritySection(){
-  return `<div class="settings-card"><h3>${t('settings.changePasscode')}</h3><form id="security-form" onsubmit="handlePasswordChange(event)"><div class="mb-4"><label>${t('settings.currentPasscode')}</label><input type="password" id="current-password" required></div><div class="mb-4"><label>${t('settings.newPasscode')}</label><input type="password" id="new-password" required minlength="6"></div><div class="mb-4"><label>${t('settings.confirmPasscode')}</label><input type="password" id="confirm-password" required></div><button type="submit" class="save-btn">${t('settings.changePass')}</button></form></div>`;
+  return `<div class="settings-card"><h3><iconify-icon icon="material-symbols:lock-outline" class="text-emerald-600"></iconify-icon>${t('settings.changePasscode')}</h3><form id="security-form" onsubmit="handlePasswordChange(event)"><div class="field-group"><label>${t('settings.currentPasscode')}</label><input type="password" id="current-password" required></div><div class="field-group"><label>${t('settings.newPasscode')}</label><input type="password" id="new-password" required minlength="6"></div><div class="field-group"><label>${t('settings.confirmPasscode')}</label><input type="password" id="confirm-password" required></div><button type="submit" class="save-btn">${t('settings.changePass')}</button></form></div>`;
 }
 function renderPreferencesSection(){
   const p = ownerProfile||{}; const prefs = p.preferences||{};
-  return `<div class="settings-card"><h3>${t('settings.preferences')}</h3><form id="preferences-form" onsubmit="handlePreferencesSave(event)"><div class="mb-4"><label>${t('settings.language')}</label><select id="settings-language"><option value="en" ${prefs.language==='en'?'selected':''}>English</option><option value="rw" ${prefs.language==='rw'?'selected':''}>Kinyarwanda</option><option value="fr" ${prefs.language==='fr'?'selected':''}>Français</option></select></div><button type="submit" class="save-btn">${t('settings.savePrefs')}</button></form></div>`;
+  return `<div class="settings-card"><h3><iconify-icon icon="material-symbols:tune" class="text-emerald-600"></iconify-icon>${t('settings.preferences')}</h3><form id="preferences-form" onsubmit="handlePreferencesSave(event)"><div class="field-group"><label>${t('settings.language')}</label><select id="settings-language"><option value="en" ${prefs.language==='en'?'selected':''}>English</option><option value="rw" ${prefs.language==='rw'?'selected':''}>Kinyarwanda</option><option value="fr" ${prefs.language==='fr'?'selected':''}>Français</option></select></div><button type="submit" class="save-btn">${t('settings.savePrefs')}</button></form></div>`;
 }
 function renderSubscriptionSection(){
   const st = subscriptionState();
@@ -1438,7 +1445,7 @@ function renderSubscriptionSection(){
   const wkrsCount = assignedWorkersData.length;
   const statusLabel = { trialing:'TRIAL', active:'ACTIVE', expired:'EXPIRED', past_due:'PAST DUE', cancelled:'CANCELLED', 'trial-expired':'EXPIRED' }[st.state] || 'INACTIVE';
   const statusColor = st.state==='active'?'text-emerald-600 bg-emerald-50':st.state==='trialing'?'text-blue-600 bg-blue-50':st.state==='past_due'?'text-amber-600 bg-amber-50':'text-red-600 bg-red-50';
-  const planName = st.plan?.name || (st.state==='trialing'?'Trial (Professional)':'None');
+  const planName = st.plan?.name || (st.state==='trialing'?t('subscription.trialPlan'):t('subscription.noActive'));
   const planPrice = st.plan?.price || (st.state==='trialing'?PLAN_DEFINITIONS.professional.price:0);
 
   const usageBar = (used, max, label) => {
@@ -1466,15 +1473,14 @@ function renderSubscriptionSection(){
         </div>
         <p class="text-amber-600 text-xs font-bold mt-3">${st.daysLeft===1?t('subscription.dayLeft'):t('subscription.daysLeft',{n:st.daysLeft})}</p>
       ` : ''}
-      ${st.state==='active' ? `
+      ${(st.state==='active') ? `
         <div class="grid grid-cols-2 gap-2 text-xs mt-3">
           <div><span class="text-slate-500">${t('subscription.subStart')}:</span> <strong>${subscription?.subscription_started_at?formatDate(subscription.subscription_started_at):'—'}</strong></div>
           <div><span class="text-slate-500">${t('subscription.renewal')}:</span> <strong>${subscription?.subscription_ends_at?formatDate(subscription.subscription_ends_at):'—'}</strong></div>
         </div>
       ` : ''}
-      ${st.state==='past_due' ? `<p class="text-amber-600 text-xs mt-3 font-bold">${t('subscription.paymentIssueMsg')}</p>` : ''}
       ${(st.state==='expired'||st.state==='trial-expired') ? `<p class="text-red-600 text-xs mt-3 font-bold">${t('subscription.freeTrialEnded')} — ${t('subscription.dataSafe')}</p>` : ''}
-      <p class="text-sm text-slate-600 mt-2">${planPrice?`RWF ${planPrice.toLocaleString()} ${t('subscription.perMonth')}`:''}</p>
+      ${planPrice ? `<p class="text-sm text-slate-600 mt-2">RWF ${planPrice.toLocaleString()} ${t('subscription.perMonth')}</p>` : ''}
     </div>
 
     <h4 class="font-semibold text-sm mb-2 mt-4">${t('subscription.usage')}</h4>
@@ -1483,8 +1489,7 @@ function renderSubscriptionSection(){
     ${usageBar(wkrsCount, lim.max_workers, t('subscription.workers'))}
 
     <div class="flex gap-2 flex-wrap mt-4">
-      ${(st.state!=='active') ? `<button onclick="showPricingModal()" class="save-btn">${t('subscription.upgradeNow')}</button>` : ''}
-      ${(st.state==='active') ? `<button onclick="showPricingModal()" class="save-btn" style="background:#475569">${t('subscription.managePlan')}</button>` : ''}
+      <button onclick="showPricingModal()" class="save-btn">${st.state==='active'?t('subscription.managePlan'):t('subscription.upgradeNow')}</button>
     </div>
   </div>`;
 }
@@ -1498,7 +1503,7 @@ window.switchSettingsTab = (tab) => {
   if (btn) btn.classList.add('active');
   const sec = document.getElementById(`settings-${tab}`);
   if (sec) sec.classList.add('active');
-  if (tab==='subscription') sec.innerHTML = renderSubscriptionSection();
+  if (tab==='subscription') { if(sec) sec.innerHTML = renderSubscriptionSection(); }
   else { populateSettingsForms(); attachSettingsChangeListeners(); }
 };
 window.previewProfilePhoto = (ev) => { const f = ev.target.files[0]; if(!f) return; const r = new FileReader(); r.onload = (e) => { const img = document.getElementById('settings-profile-photo-img'); if(img) img.src = e.target.result; _profilePhotoFile = f; hasUnsavedChanges = true; }; r.readAsDataURL(f); };
@@ -1548,12 +1553,11 @@ window.handlePreferencesSave = async (e) => {
   try { const lang = document.getElementById('settings-language').value; await updateDoc(doc(db,'profiles',currentUser.uid),{preferences:{language:lang},updated_at:new Date().toISOString()}); ownerProfile.preferences = { language:lang }; hasUnsavedChanges=false; setLanguage(lang); showToast(t('common.savedSuccessfully'),'success'); } catch(e){console.error(e);showToast(t('common.somethingWentWrong'),'error');}
   finally { setButtonLoading(btn,false); }
 };
-window.handleLogout = async () => { if (unsubscribeSubscription) { try { unsubscribeSubscription(); } catch(_){} } await signOut(auth); window.location.href = 'https://shdr-construction.vercel.app/index.html'; };
-
-// Init
-document.querySelectorAll('.lang-btn').forEach(b=>b.classList.toggle('active', b.dataset.language===currentLanguage));
-document.documentElement.lang = currentLanguage;
-applyTranslations();
+window.handleLogout = async () => {
+  if (unsubscribeSubscription) { try { unsubscribeSubscription(); } catch(_){} }
+  await signOut(auth);
+  window.location.href = 'https://shdr-construction.vercel.app/index.html';
+};
 </script>
 </body>
 </html>
