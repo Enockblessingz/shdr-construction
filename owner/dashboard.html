@@ -320,8 +320,6 @@ tbody tr:hover{background:#f1f5f9}
   // =================================================================
   // COMPANY PROFILE — SINGLE SOURCE OF TRUTH
   // =================================================================
-  // All reports, exports, headers and footers MUST read from here.
-  // Do not duplicate these values elsewhere.
   function getCompanyDetails() {
     return {
       name: 'Sustainable Homes Design Rwanda Ltd',
@@ -335,14 +333,67 @@ tbody tr:hover{background:#f1f5f9}
     };
   }
 
+  // -------------------------------------------------------------------
+  // LOGO FOR PRINT — loads the REAL shdr_logo Background Removed.png
+  // -------------------------------------------------------------------
+  // Print windows opened via window.open('', '_blank') use about:blank and
+  // cannot resolve relative paths. So we load the real PNG once, convert it
+  // to a base64 data URL via canvas, and cache it. Falls back to an embedded
+  // SVG only if the PNG fails to load.
+  let _shdrLogoDataUrl = null;
+  let _shdrLogoPromise = null;
+
+  const SHDR_LOGO_FALLBACK_SVG = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" width="240" height="240">'+
+    '<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#10b981"/><stop offset="1" stop-color="#047857"/></linearGradient></defs>'+
+    '<circle cx="120" cy="120" r="115" fill="url(#g)"/>'+
+    '<path d="M58 178 L58 104 L120 52 L182 104 L182 178 Z" fill="#ffffff" opacity="0.18"/>'+
+    '<path d="M58 178 L58 104 L120 52 L120 178 Z" fill="#ffffff" opacity="0.10"/>'+
+    '<text x="120" y="135" font-family="Arial Black, Arial, sans-serif" font-size="52" font-weight="900" fill="#ffffff" text-anchor="middle" letter-spacing="1">SHDR</text>'+
+    '<text x="120" y="172" font-family="Arial, sans-serif" font-size="20" font-weight="700" fill="#ffffff" text-anchor="middle" letter-spacing="4">LTD</text>'+
+    '</svg>';
+  const SHDR_LOGO_FALLBACK_BASE64 = 'data:image/svg+xml;base64,' + btoa(SHDR_LOGO_FALLBACK_SVG);
+
+  // Load the real PNG and convert to a base64 data URL (once).
+  function preloadShdrLogo() {
+    if (_shdrLogoDataUrl) return Promise.resolve(_shdrLogoDataUrl);
+    if (_shdrLogoPromise) return _shdrLogoPromise;
+    _shdrLogoPromise = new Promise((resolve) => {
+      const img = new Image();
+      img.onload = () => {
+        try {
+          const canvas = document.createElement('canvas');
+          canvas.width = img.naturalWidth || 240;
+          canvas.height = img.naturalHeight || 240;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+          _shdrLogoDataUrl = canvas.toDataURL('image/png');
+          resolve(_shdrLogoDataUrl);
+        } catch (e) {
+          console.warn('Logo canvas conversion failed, using fallback:', e);
+          resolve(SHDR_LOGO_FALLBACK_BASE64);
+        }
+      };
+      img.onerror = () => {
+        console.warn('shdr_logo Background Removed.png failed to load — using fallback logo.');
+        resolve(SHDR_LOGO_FALLBACK_BASE64);
+      };
+      img.src = 'shdr_logo Background Removed.png';
+    });
+    return _shdrLogoPromise;
+  }
+
+  // Returns the best available logo for print/PDF output.
+  // Prefers the real PNG (once preloaded), falls back to the embedded SVG.
+  function getCompanyLogoForPrint() {
+    return _shdrLogoDataUrl || SHDR_LOGO_FALLBACK_BASE64;
+  }
 
   // Build the shared company HTML header block used by all print reports.
-  // Consistent layout: logo + legal name + system name + full address + tel + email.
   function buildCompanyHeaderHTML(company) {
     return `
       <div class="company-header">
         <div class="company-left">
-          <img src="${getCompanyLogoForPrint()}" class="shdr_logo Background Removed.png" alt="${company.name} Logo" onerror="this.style.display='none'">
+          <img src="${getCompanyLogoForPrint()}" class="company-logo" alt="${company.name} Logo" onerror="this.style.display='none'">
           <div>
             <div class="company-name">${company.name}</div>
             <div class="company-subtitle">${company.systemName}</div>
@@ -362,10 +413,8 @@ tbody tr:hover{background:#f1f5f9}
       </div>`;
   }
 
-  // Shared CSS for all print report windows
   const REPORT_PRINT_CSS = `body{font-family:Arial,sans-serif;padding:30px;margin:0;color:#1f2937;background:#fff}.company-header{display:flex;align-items:flex-start;justify-content:space-between;border-bottom:3px solid #059669;padding-bottom:18px;margin-bottom:20px;gap:20px}.company-left{display:flex;align-items:flex-start;gap:15px}.company-logo{width:70px;height:70px;object-fit:contain;border-radius:8px}.company-name{font-size:20px;font-weight:700;color:#059669;margin-bottom:3px;line-height:1.2;letter-spacing:-.2px}.company-subtitle{font-size:12px;color:#4b5563;font-weight:600;margin-bottom:5px}.company-details{font-size:11px;line-height:1.5;color:#374151}.report-title{text-align:right;flex-shrink:0}.report-title h2{margin:0;font-size:21px;color:#111827}.report-title p{margin:5px 0 0;font-size:11px;color:#6b7280}.report-meta{background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:12px 15px;margin-bottom:20px;font-size:12px;line-height:1.6}table{border-collapse:collapse;width:100%;font-size:11px;margin-top:10px}th{background:#059669;color:#fff;font-weight:600;padding:9px;border:1px solid #047857;text-align:left}td{border:1px solid #d1d5db;padding:8px}tr:nth-child(even){background:#f9fafb}tfoot td{background:#ecfdf5;font-weight:800;color:#065f46}.report-footer{margin-top:30px;padding-top:12px;border-top:1px solid #d1d5db;text-align:center;font-size:11px;color:#6b7280;line-height:1.6}.footer-system{font-weight:600;color:#374151}.footer-copy{font-size:10px;color:#9ca3af}@media print{body{padding:15px}.company-header{break-inside:avoid}table{page-break-inside:auto}tr{page-break-inside:avoid}thead{display:table-header-group}.report-footer{page-break-inside:avoid}}`;
 
-  // Shared footer HTML (uses company + system name from the profile)
   function buildReportFooterHTML(company) {
     return `<div class="report-footer">
       <div class="footer-system">This report is generated automatically by the ${company.systemName}.</div>
@@ -373,7 +422,6 @@ tbody tr:hover{background:#f1f5f9}
     </div>`;
   }
 
-  // Standard CSV metadata block (matches the report header order)
   function buildCsvMetadata(company, reportLabel) {
     return [
       `"${company.name}"`,
@@ -470,6 +518,9 @@ tbody tr:hover{background:#f1f5f9}
     });
     document.documentElement.lang = currentLanguage;
     applyTranslations();
+
+    // Preload the real SHDR logo so it's ready for print/PDF reports
+    preloadShdrLogo();
 
     onAuthStateChanged(auth, async (user) => {
       if (!user) { window.location.href = 'https://shdr-construction.vercel.app/owner.html'; return; }
@@ -1800,7 +1851,6 @@ tbody tr:hover{background:#f1f5f9}
     `;
   }
 
-  // ── Payroll: read filters ──
   function readPayrollFilters() {
     const siteId = document.getElementById('payroll-site')?.value || 'all';
     const startDate = document.getElementById('payroll-start')?.value || '';
@@ -1843,7 +1893,6 @@ tbody tr:hover{background:#f1f5f9}
     return { workers, totalDays, totalPayroll, filtered };
   }
 
-  // ── Update Payroll UI ──
   window.updatePayrollReport = () => {
     const filters = readPayrollFilters();
     const { workers, totalDays, totalPayroll } = buildPayrollRows(filters);
@@ -1895,7 +1944,6 @@ tbody tr:hover{background:#f1f5f9}
     }
   };
 
-  // ── Export Payroll ──
   window.exportPayrollReport = (format) => {
     const company = getCompanyDetails();
     const filters = readPayrollFilters();
@@ -1953,7 +2001,6 @@ tbody tr:hover{background:#f1f5f9}
     setTimeout(() => win.print(), 500);
   };
 
-  // ── Export Stock Report ──
   window.exportStockReport = (format) => {
     const company = getCompanyDetails();
     const siteId = document.getElementById('stock-report-site')?.value || 'all';
@@ -2018,7 +2065,6 @@ tbody tr:hover{background:#f1f5f9}
     setTimeout(() => win.print(), 500);
   };
 
-  // ── Export General Report ──
   window.exportGeneralReport = (format) => {
     const company = getCompanyDetails();
     const siteId = document.getElementById('report-site')?.value || 'all';
