@@ -323,7 +323,7 @@ tbody tr:hover{background:#f1f5f9}
   function getCompanyDetails() {
     return {
       name: 'Sustainable Homes Design Rwanda Ltd',
-      systemName: 'Construction Management System',
+      systemName: 'Construction Sites Management System',
       address: 'KG 11 Avenue, Kimironko, Gasabo District',
       location: 'Yussa Plaza, 1st Floor',
       city: 'Kigali City, Rwanda',
@@ -418,7 +418,7 @@ tbody tr:hover{background:#f1f5f9}
   function buildReportFooterHTML(company) {
     return `<div class="report-footer">
       <div class="footer-system">This report is generated automatically by the ${company.systemName}.</div>
-      <div class="footer-copy">© ${new Date().getFullYear()} ${company.name} — All rights reserved.</div>
+      <div class="footer-copy">© ${new Date().getFullYear()} SHDR Ltd — All rights reserved.</div>
     </div>`;
   }
 
@@ -698,7 +698,7 @@ tbody tr:hover{background:#f1f5f9}
   }
 
   window.showSection = (section) => {
-    if (section === 'office') { showToast('🏗️ Office Hub is coming soon. Stay tuned!', 'info'); return; }
+    if (section === 'office') { showToast('Office Hub is coming soon. Stay tuned!', 'info'); return; }
     if (currentSection === 'settings' && hasUnsavedChanges) {
       if (!confirm(t('alerts.areYouSure'))) return;
       hasUnsavedChanges = false;
@@ -1315,7 +1315,7 @@ tbody tr:hover{background:#f1f5f9}
       <style>${REPORT_PRINT_CSS}</style>
       </head><body>
       ${buildCompanyHeaderHTML(company).replace('__REPORT_TITLE__', 'Material Requisition')}
-      <div class="report-meta"><strong>Requisition No.:</strong> ${req.requisition_number} &nbsp;|&nbsp; <strong>Site:</strong> ${siteName}<br><strong>Requested By:</strong> ${req.requested_by_name} &nbsp;|&nbsp; <strong>Request Date:</strong> ${formatDate(req.request_date)}<br><strong>Required Date:</strong> ${formatDate(req.required_date)} &nbsp;|&nbsp; <strong>Priority:</strong> ${req.priority === 'Urgent' ? t('materials.urgent') : t('materials.normal')} &nbsp;|&nbsp; <strong>Status:</strong> ${statusLabel}${req.notes ? `<br><strong>Notes:</strong> ${req.notes}` : ''}${req.rejection_reason ? `<br><strong style="color:#dc2626">Rejection Reason:</strong> ${req.rejection_reason}` : ''}</div>
+      <div class="report-meta"><strong>Requisition No.:</strong> ${req.requisition_number} &nbsp;|&nbsp; <strong>Site Name:</strong> ${siteName}<br><strong>Requested By:</strong> ${req.requested_by_name} &nbsp;|&nbsp; <strong>Request Date:</strong> ${formatDate(req.request_date)}<br><strong>Required Date:</strong> ${formatDate(req.required_date)} &nbsp;|&nbsp; <strong>Priority:</strong> ${req.priority === 'Urgent' ? t('materials.urgent') : t('materials.normal')} &nbsp;|&nbsp; <strong>Status:</strong> ${statusLabel}${req.notes ? `<br><strong>Notes:</strong> ${req.notes}` : ''}${req.rejection_reason ? `<br><strong style="color:#dc2626">Rejection Reason:</strong> ${req.rejection_reason}` : ''}</div>
       <table><thead><tr><th>Material</th><th style="text-align:right">Requested</th><th style="text-align:right">Supplied</th><th style="text-align:right">Remaining</th><th>Unit</th></tr></thead><tbody>${tableRows}</tbody></table>
       <h3 style="margin-top:30px; border-bottom:1px solid #ccc; padding-bottom:5px; font-size:13px; color:#065f46; text-transform:uppercase; letter-spacing:.5px;">Requisition History</h3>
       <div>${historyHtml || '<p style="font-size:12px; color:#888;">No history records.</p>'}</div>
@@ -1957,8 +1957,8 @@ tbody tr:hover{background:#f1f5f9}
     if (format === 'csv') {
       const headers = [t('reports.worker'), t('reports.position'), t('reports.daysWorked'), t('reports.dailyRate') + ' (RWF)', t('reports.totalPayable') + ' (RWF)'];
       const csvRows = [
-        ...buildCsvMetadata(company, 'Worker Attendance & Payroll'),
-        `"Site: ${siteName}"`,
+        ...buildCsvMetadata(company, "Workers' Attendance & Payroll"),
+        `"Site Name: ${siteName}"`,
         `"Period: ${period}"`,
         '',
         headers.map(h => `"${h}"`).join(',')
@@ -1988,11 +1988,11 @@ tbody tr:hover{background:#f1f5f9}
     if (!win) { showToast('Please allow pop-ups to print the report.', 'error'); return; }
     win.document.write(`
       <!DOCTYPE html>
-      <html><head><meta charset="UTF-8"><title>Worker Payroll Report</title>
+      <html><head><meta charset="UTF-8"><title>Workers' Payroll Report</title>
       <style>${REPORT_PRINT_CSS}</style>
       </head><body>
-      ${buildCompanyHeaderHTML(company).replace('__REPORT_TITLE__', 'Worker Payroll Report')}
-      <div class="report-meta"><strong>Site:</strong> ${siteName} &nbsp;|&nbsp; <strong>Period:</strong> ${period}<br><strong>Generated:</strong> ${generatedDate}</div>
+      ${buildCompanyHeaderHTML(company).replace('__REPORT_TITLE__', 'Workers' Payroll Report')}
+      <div class="report-meta"><strong>Site Name:</strong> ${siteName} &nbsp;|&nbsp; <strong>Period:</strong> ${period}<br><strong>Generated:</strong> ${generatedDate}</div>
       <table><thead><tr>${headers.map(h => `<th>${h}</th>`).join('')}</tr></thead><tbody>${tableRows}</tbody><tfoot><tr><td colspan="2" style="text-align:right">${t('reports.total')}</td><td style="text-align:center">${totalDays}</td><td></td><td style="text-align:right">${totalPayroll.toLocaleString()} RWF</td></tr></tfoot></table>
       ${buildReportFooterHTML(company)}
       </body></html>
@@ -2056,7 +2056,7 @@ tbody tr:hover{background:#f1f5f9}
       <style>${REPORT_PRINT_CSS}</style>
       </head><body>
       ${buildCompanyHeaderHTML(company).replace('__REPORT_TITLE__', 'Stock Report')}
-      <div class="report-meta"><strong>Scope:</strong> ${siteLabel} &nbsp;|&nbsp; <strong>Generated:</strong> ${generatedDate}</div>
+      <div class="report-meta"><strong>Site Name:</strong> ${siteLabel} &nbsp;|&nbsp; <strong>Generated:</strong> ${generatedDate}</div>
       <table><thead><tr><th>Site</th><th>Material</th><th style="text-align:right">Qty</th><th>Unit</th><th style="text-align:right">Min</th><th style="text-align:right">Unit Cost</th><th style="text-align:right">Stock Value</th><th>Status</th><th>Updated</th></tr></thead><tbody>${rows}</tbody></table>
       ${buildReportFooterHTML(company)}
       </body></html>
@@ -2112,8 +2112,8 @@ tbody tr:hover{background:#f1f5f9}
       let mats = siteId !== 'all' ? materialsData.filter(m => m.site_id === siteId) : materialsData;
       mats = filterByDate(mats, 'created_at');
       const totalMatCost = mats.reduce((sum, m) => sum + calculateTotal(m.quantity_used || 0, m.unit_cost || 0), 0);
-      data.push({ Department: 'Finances', Category: 'Materials (Used)', Amount: totalMatCost, Description: 'Total material cost from used quantities' });
-      data.push({ Department: 'Finances', Category: 'Workers (Attendance)', Amount: totalWorkerCost, Description: 'Total worker attendance cost' });
+      data.push({ Department: 'Finances', Category: 'Materials Used', Amount: totalMatCost, Description: 'Total material cost from used quantities' });
+      data.push({ Department: 'Finances', Category: "Workers' Attendance", Amount: totalWorkerCost, Description: 'Total workers attendance cost' });
       data.push({ Department: 'Finances', Category: 'Total Spend', Amount: totalMatCost + totalWorkerCost, Description: 'Combined spend for the selected period' });
     }
 
@@ -2129,7 +2129,7 @@ tbody tr:hover{background:#f1f5f9}
       const headers = Object.keys(data[0]);
       const csvRows = [
         ...buildCsvMetadata(company, 'Management Report'),
-        `"Site: ${siteLabel}"`,
+        `"Site Name: ${siteLabel}"`,
         `"Department: ${deptLabel}"`,
         `"Period: ${period}"`,
         '',
@@ -2162,7 +2162,7 @@ tbody tr:hover{background:#f1f5f9}
       <style>${REPORT_PRINT_CSS}</style>
       </head><body>
       ${buildCompanyHeaderHTML(company).replace('__REPORT_TITLE__', 'Management Report')}
-      <div class="report-meta"><strong>Site:</strong> ${siteLabel} &nbsp;|&nbsp; <strong>Department:</strong> ${deptLabel}<br><strong>Period:</strong> ${period} &nbsp;|&nbsp; <strong>Generated:</strong> ${generatedDate}</div>
+      <div class="report-meta"><strong>Site Name:</strong> ${siteLabel} &nbsp;|&nbsp; <strong>Department:</strong> ${deptLabel}<br><strong>Period:</strong> ${period} &nbsp;|&nbsp; <strong>Generated:</strong> ${generatedDate}</div>
       <table><thead><tr>${headers.map(h => `<th>${h}</th>`).join('')}</tr></thead><tbody>${tableRows}</tbody></table>
       ${buildReportFooterHTML(company)}
       </body></html>
