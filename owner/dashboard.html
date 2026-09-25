@@ -7,7 +7,7 @@
 <link rel="icon" type="image/jpeg" href="shdr_logo Background Removed.png">
 <link rel="apple-touch-icon" href="shdr_logo Background Removed.png">
 <link rel="manifest" href="manifest.json">
-<title>Sustainable Homes Design Rwanda Ltd — Construction Management System</title>
+<title>Sustainable Homes Design Rwanda Ltd — Construction Sites Management System</title>
 <script src="https://cdn.tailwindcss.com/3.4.17"></script>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/iconify-icon@2.3.0/dist/iconify-icon.min.js"></script>
@@ -317,6 +317,11 @@ tbody tr:hover{background:#f1f5f9}
   const IMGBB_API_KEY = '6b1b5028aba07a31bf702efd9c0ef4fe';
   const PLACEHOLDER_IMG = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="200"%3E%3Crect width="400" height="200" fill="%23e2e8f0"/%3E%3Ctext x="50%25" y="50%25" dominant-baseline="middle" text-anchor="middle" fill="%2394a3b8" font-size="20"%3ENo Image%3C/text%3E%3C/svg%3E';
 
+  // Escape user-controlled strings before injecting into print/HTML templates.
+  function escapeHTML(s) {
+    return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+
   // =================================================================
   // COMPANY PROFILE — SINGLE SOURCE OF TRUTH
   // =================================================================
@@ -336,10 +341,6 @@ tbody tr:hover{background:#f1f5f9}
   // -------------------------------------------------------------------
   // LOGO FOR PRINT — loads the REAL shdr_logo Background Removed.png
   // -------------------------------------------------------------------
-  // Print windows opened via window.open('', '_blank') use about:blank and
-  // cannot resolve relative paths. So we load the real PNG once, convert it
-  // to a base64 data URL via canvas, and cache it. Falls back to an embedded
-  // SVG only if the PNG fails to load.
   let _shdrLogoDataUrl = null;
   let _shdrLogoPromise = null;
 
@@ -353,7 +354,6 @@ tbody tr:hover{background:#f1f5f9}
     '</svg>';
   const SHDR_LOGO_FALLBACK_BASE64 = 'data:image/svg+xml;base64,' + btoa(SHDR_LOGO_FALLBACK_SVG);
 
-  // Load the real PNG and convert to a base64 data URL (once).
   function preloadShdrLogo() {
     if (_shdrLogoDataUrl) return Promise.resolve(_shdrLogoDataUrl);
     if (_shdrLogoPromise) return _shdrLogoPromise;
@@ -382,13 +382,10 @@ tbody tr:hover{background:#f1f5f9}
     return _shdrLogoPromise;
   }
 
-  // Returns the best available logo for print/PDF output.
-  // Prefers the real PNG (once preloaded), falls back to the embedded SVG.
   function getCompanyLogoForPrint() {
     return _shdrLogoDataUrl || SHDR_LOGO_FALLBACK_BASE64;
   }
 
-  // Build the shared company HTML header block used by all print reports.
   function buildCompanyHeaderHTML(company) {
     return `
       <div class="company-header">
@@ -418,7 +415,7 @@ tbody tr:hover{background:#f1f5f9}
   function buildReportFooterHTML(company) {
     return `<div class="report-footer">
       <div class="footer-system">This report is generated automatically by the ${company.systemName}.</div>
-      <div class="footer-copy">© ${new Date().getFullYear()} SHDR Ltd — All rights reserved.</div>
+      <div class="footer-copy">© ${new Date().getFullYear()} ${company.name} — All rights reserved.</div>
     </div>`;
   }
 
@@ -1219,16 +1216,31 @@ tbody tr:hover{background:#f1f5f9}
     } catch (err) { console.error(err); showToast(t('alerts.somethingWentWrong'), 'error'); }
   };
 
-  window.rejectRequisition = async (reqId) => {
-    const reason = prompt(t('materials.rejectionReason') || 'Enter rejection reason:');
+  window.rejectRequisition = (reqId) => {
+    const req = ownerRequisitionsData.find(r => r.id === reqId);
+    if (!req) return;
+    openModal(`${t('materials.reject')} — ${req.requisition_number}`, `
+      <form onsubmit="handleRejectRequisitionSubmit(event, '${reqId}')" class="space-y-4">
+        <label class="block text-sm font-medium">${t('materials.rejectionReason') || 'Rejection Reason'}</label>
+        <textarea id="reject-reason-input" class="w-full border rounded-lg p-3 text-sm" rows="3" required placeholder="${t('materials.rejectionReason') || 'Enter rejection reason...'}"></textarea>
+        <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white py-3 rounded-xl">${t('materials.reject')}</button>
+      </form>`);
+  };
+
+  window.handleRejectRequisitionSubmit = async (e, reqId) => {
+    e.preventDefault();
+    const reason = (document.getElementById('reject-reason-input')?.value || '').trim();
     if (!reason) return;
-    if (!confirm(t('alerts.areYouSure'))) return;
+    const btn = getFormSubmitBtn(e.target);
+    setButtonLoading(btn, true);
     try {
       const now = new Date().toISOString();
       await updateDoc(doc(db, 'requisitions', reqId), { status: 'Rejected', rejection_reason: reason, approved_by: currentUser.uid, approved_at: now, updated_at: now });
       await addDoc(collection(db, 'requisition_history'), { requisition_id: reqId, action: 'Rejected', actor: currentUser.uid, actor_name: ownerProfile.full_name || 'Owner', timestamp: now, details: 'Requisition rejected: ' + reason });
       showToast(t('alerts.updatedSuccessfully'), 'success');
+      closeModal();
     } catch (err) { console.error(err); showToast(t('alerts.somethingWentWrong'), 'error'); }
+    finally { setButtonLoading(btn, false); }
   };
 
   window.openSupplyModal = (reqId) => {
@@ -1308,14 +1320,14 @@ tbody tr:hover{background:#f1f5f9}
     const statusLabel = { 'Pending': t('materials.pending'), 'Approved': t('materials.approved'), 'Rejected': t('materials.rejected'), 'Partially Supplied': t('materials.partiallySupplied'), 'Supplied': t('materials.suppliedStatus') }[req.status] || req.status;
     let tableRows = items.map(item => {
       const remaining = toNumber(item.quantity_requested) - toNumber(item.quantity_supplied);
-      return `<tr><td>${item.material_name}</td><td style="text-align:right">${item.quantity_requested}</td><td style="text-align:right">${item.quantity_supplied || 0}</td><td style="text-align:right;color:#dc2626">${remaining}</td><td>${item.unit}</td></tr>`;
+      return `<tr><td>${escapeHTML(item.material_name)}</td><td style="text-align:right">${escapeHTML(item.quantity_requested)}</td><td style="text-align:right">${escapeHTML(item.quantity_supplied || 0)}</td><td style="text-align:right;color:#dc2626">${escapeHTML(remaining)}</td><td>${escapeHTML(item.unit)}</td></tr>`;
     }).join('');
-    let historyHtml = history.map(h => `<div style="font-size:12px; color:#555; border-bottom:1px solid #eee; padding:5px 0;"><strong>${h.action}</strong> by ${h.actor_name} — ${formatDate(h.timestamp)}</div>`).join('');
-    const printHTML = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>${req.requisition_number}</title>
+    let historyHtml = history.map(h => `<div style="font-size:12px; color:#555; border-bottom:1px solid #eee; padding:5px 0;"><strong>${escapeHTML(h.action)}</strong> by ${escapeHTML(h.actor_name)} — ${escapeHTML(formatDate(h.timestamp))}</div>`).join('');
+    const printHTML = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>${escapeHTML(req.requisition_number)}</title>
       <style>${REPORT_PRINT_CSS}</style>
       </head><body>
       ${buildCompanyHeaderHTML(company).replace('__REPORT_TITLE__', 'Material Requisition')}
-      <div class="report-meta"><strong>Requisition No.:</strong> ${req.requisition_number} &nbsp;|&nbsp; <strong>Site Name:</strong> ${siteName}<br><strong>Requested By:</strong> ${req.requested_by_name} &nbsp;|&nbsp; <strong>Request Date:</strong> ${formatDate(req.request_date)}<br><strong>Required Date:</strong> ${formatDate(req.required_date)} &nbsp;|&nbsp; <strong>Priority:</strong> ${req.priority === 'Urgent' ? t('materials.urgent') : t('materials.normal')} &nbsp;|&nbsp; <strong>Status:</strong> ${statusLabel}${req.notes ? `<br><strong>Notes:</strong> ${req.notes}` : ''}${req.rejection_reason ? `<br><strong style="color:#dc2626">Rejection Reason:</strong> ${req.rejection_reason}` : ''}</div>
+      <div class="report-meta"><strong>Requisition No.:</strong> ${escapeHTML(req.requisition_number)} &nbsp;|&nbsp; <strong>Site Name:</strong> ${escapeHTML(siteName)}<br><strong>Requested By:</strong> ${escapeHTML(req.requested_by_name)} &nbsp;|&nbsp; <strong>Request Date:</strong> ${escapeHTML(formatDate(req.request_date))}<br><strong>Required Date:</strong> ${escapeHTML(formatDate(req.required_date))} &nbsp;|&nbsp; <strong>Priority:</strong> ${escapeHTML(req.priority === 'Urgent' ? t('materials.urgent') : t('materials.normal'))} &nbsp;|&nbsp; <strong>Status:</strong> ${escapeHTML(statusLabel)}${req.notes ? `<br><strong>Notes:</strong> ${escapeHTML(req.notes)}` : ''}${req.rejection_reason ? `<br><strong style="color:#dc2626">Rejection Reason:</strong> ${escapeHTML(req.rejection_reason)}` : ''}</div>
       <table><thead><tr><th>Material</th><th style="text-align:right">Requested</th><th style="text-align:right">Supplied</th><th style="text-align:right">Remaining</th><th>Unit</th></tr></thead><tbody>${tableRows}</tbody></table>
       <h3 style="margin-top:30px; border-bottom:1px solid #ccc; padding-bottom:5px; font-size:13px; color:#065f46; text-transform:uppercase; letter-spacing:.5px;">Requisition History</h3>
       <div>${historyHtml || '<p style="font-size:12px; color:#888;">No history records.</p>'}</div>
@@ -1981,7 +1993,7 @@ tbody tr:hover{background:#f1f5f9}
 
     const headers = [t('reports.worker'), t('reports.position'), t('reports.daysWorked'), t('reports.dailyRate') + ' (RWF)', t('reports.totalPayable') + ' (RWF)'];
     const tableRows = workers.map(w => `
-      <tr><td>${w.name}</td><td>${w.role || '—'}</td><td style="text-align:center">${w.days.length}</td><td style="text-align:right">${w.dailyRate.toLocaleString()} RWF</td><td style="text-align:right">${w.totalPayable.toLocaleString()} RWF</td></tr>
+      <tr><td>${escapeHTML(w.name)}</td><td>${escapeHTML(w.role || '—')}</td><td style="text-align:center">${escapeHTML(w.days.length)}</td><td style="text-align:right">${escapeHTML(w.dailyRate.toLocaleString())} RWF</td><td style="text-align:right">${escapeHTML(w.totalPayable.toLocaleString())} RWF</td></tr>
     `).join('');
 
     const win = window.open('', '_blank', 'width=1000,height=700');
@@ -1991,9 +2003,9 @@ tbody tr:hover{background:#f1f5f9}
       <html><head><meta charset="UTF-8"><title>Workers' Payroll Report</title>
       <style>${REPORT_PRINT_CSS}</style>
       </head><body>
-      ${buildCompanyHeaderHTML(company).replace('__REPORT_TITLE__', 'Workers' Payroll Report')}
-      <div class="report-meta"><strong>Site Name:</strong> ${siteName} &nbsp;|&nbsp; <strong>Period:</strong> ${period}<br><strong>Generated:</strong> ${generatedDate}</div>
-      <table><thead><tr>${headers.map(h => `<th>${h}</th>`).join('')}</tr></thead><tbody>${tableRows}</tbody><tfoot><tr><td colspan="2" style="text-align:right">${t('reports.total')}</td><td style="text-align:center">${totalDays}</td><td></td><td style="text-align:right">${totalPayroll.toLocaleString()} RWF</td></tr></tfoot></table>
+      ${buildCompanyHeaderHTML(company).replace('__REPORT_TITLE__', "Workers' Payroll Report")}
+      <div class="report-meta"><strong>Site Name:</strong> ${escapeHTML(siteName)} &nbsp;|&nbsp; <strong>Period:</strong> ${escapeHTML(period)}<br><strong>Generated:</strong> ${escapeHTML(generatedDate)}</div>
+      <table><thead><tr>${headers.map(h => `<th>${escapeHTML(h)}</th>`).join('')}</tr></thead><tbody>${tableRows}</tbody><tfoot><tr><td colspan="2" style="text-align:right">${t('reports.total')}</td><td style="text-align:center">${escapeHTML(totalDays)}</td><td></td><td style="text-align:right">${escapeHTML(totalPayroll.toLocaleString())} RWF</td></tr></tfoot></table>
       ${buildReportFooterHTML(company)}
       </body></html>
     `);
@@ -2045,7 +2057,7 @@ tbody tr:hover{background:#f1f5f9}
 
     const rows = filteredStock.map(item => {
       const r = buildRow(item);
-      return `<tr><td>${r.siteName}</td><td>${r.item.material_name}</td><td style="text-align:right">${r.item.quantity}</td><td>${r.item.unit || 'units'}</td><td style="text-align:right">${r.item.minimum_quantity || '-'}</td><td style="text-align:right">${r.unitCost.toFixed(2)}</td><td style="text-align:right">${r.stockValue.toFixed(2)}</td><td>${r.status}</td><td>${r.item.updated_at ? formatDateShort(r.item.updated_at) : '-'}</td></tr>`;
+      return `<tr><td>${escapeHTML(r.siteName)}</td><td>${escapeHTML(r.item.material_name)}</td><td style="text-align:right">${escapeHTML(r.item.quantity)}</td><td>${escapeHTML(r.item.unit || 'units')}</td><td style="text-align:right">${escapeHTML(r.item.minimum_quantity || '-')}</td><td style="text-align:right">${escapeHTML(r.unitCost.toFixed(2))}</td><td style="text-align:right">${escapeHTML(r.stockValue.toFixed(2))}</td><td>${escapeHTML(r.status)}</td><td>${escapeHTML(r.item.updated_at ? formatDateShort(r.item.updated_at) : '-')}</td></tr>`;
     }).join('');
 
     const win = window.open('', '_blank', 'width=1000,height=700');
@@ -2056,7 +2068,7 @@ tbody tr:hover{background:#f1f5f9}
       <style>${REPORT_PRINT_CSS}</style>
       </head><body>
       ${buildCompanyHeaderHTML(company).replace('__REPORT_TITLE__', 'Stock Report')}
-      <div class="report-meta"><strong>Site Name:</strong> ${siteLabel} &nbsp;|&nbsp; <strong>Generated:</strong> ${generatedDate}</div>
+      <div class="report-meta"><strong>Site Name:</strong> ${escapeHTML(siteLabel)} &nbsp;|&nbsp; <strong>Generated:</strong> ${escapeHTML(generatedDate)}</div>
       <table><thead><tr><th>Site</th><th>Material</th><th style="text-align:right">Qty</th><th>Unit</th><th style="text-align:right">Min</th><th style="text-align:right">Unit Cost</th><th style="text-align:right">Stock Value</th><th>Status</th><th>Updated</th></tr></thead><tbody>${rows}</tbody></table>
       ${buildReportFooterHTML(company)}
       </body></html>
@@ -2085,26 +2097,52 @@ tbody tr:hover{background:#f1f5f9}
     };
     const getSiteName = (id) => sitesData.find(s => s.id === id)?.name || 'Unknown';
 
-    let data = [];
+    // Build sections; each section has its own headers and rows.
+    const sections = [];
+
     if (dept === 'all' || dept === 'materials') {
       let mats = siteId !== 'all' ? materialsData.filter(m => m.site_id === siteId) : materialsData;
       mats = filterByDate(mats, 'created_at');
-      data = data.concat(mats.map(m => ({
-        Department: 'Materials',
-        Site: getSiteName(m.site_id),
-        Name: m.name,
-        'Quantity Used': m.quantity_used || 0,
-        'Unit Cost (RWF)': m.unit_cost || 0,
-        'Total Amount (RWF)': calculateTotal(m.quantity_used || 0, m.unit_cost || 0),
-        Date: m.created_at ? formatDateShort(m.created_at) : ''
-      })));
+      sections.push({
+        title: 'Materials Used',
+        headers: ['Site', 'Material', 'Quantity Used', 'Unit Cost (RWF)', 'Total Amount (RWF)', 'Date'],
+        rows: mats.map(m => [
+          getSiteName(m.site_id),
+          m.name || '',
+          m.quantity_used || 0,
+          m.unit_cost || 0,
+          calculateTotal(m.quantity_used || 0, m.unit_cost || 0),
+          m.created_at ? formatDateShort(m.created_at) : ''
+        ])
+      });
     }
+
     if (dept === 'all' || dept === 'workers') {
       let assigned = siteId !== 'all' ? assignedWorkersData.filter(w => w.site_id === siteId) : assignedWorkersData;
-      data = data.concat(assigned.map(w => ({ Department: 'Workers', Site: getSiteName(w.site_id), Name: w.name, Role: w.role, Salary: w.salary, Phone: w.phone })));
+      sections.push({
+        title: 'Workers',
+        headers: ['Site', 'Name', 'Role', 'Salary (RWF)', 'Phone'],
+        rows: assigned.map(w => [
+          getSiteName(w.site_id),
+          w.name || '',
+          w.role || '',
+          w.salary || 0,
+          w.phone || ''
+        ])
+      });
       let positions = siteId !== 'all' ? workersData.filter(p => p.site_id === siteId || p.site_id === 'all') : workersData;
-      data = data.concat(positions.map(p => ({ Department: 'Worker Positions', Site: p.site_id === 'all' ? 'All Sites' : getSiteName(p.site_id), Role: p.role, 'Salary Type': p.salary_type, 'Est. Cost': p.estimated_cost })));
+      sections.push({
+        title: 'Worker Positions',
+        headers: ['Site', 'Role', 'Salary Type', 'Est. Cost (RWF)'],
+        rows: positions.map(p => [
+          p.site_id === 'all' ? 'All Sites' : getSiteName(p.site_id),
+          p.role || '',
+          p.salary_type || '',
+          p.estimated_cost || 0
+        ])
+      });
     }
+
     if (dept === 'all' || dept === 'finances') {
       let att = siteId !== 'all' ? attendanceData.filter(a => a.site_id === siteId) : attendanceData;
       att = filterByDate(att, 'date');
@@ -2112,12 +2150,19 @@ tbody tr:hover{background:#f1f5f9}
       let mats = siteId !== 'all' ? materialsData.filter(m => m.site_id === siteId) : materialsData;
       mats = filterByDate(mats, 'created_at');
       const totalMatCost = mats.reduce((sum, m) => sum + calculateTotal(m.quantity_used || 0, m.unit_cost || 0), 0);
-      data.push({ Department: 'Finances', Category: 'Materials Used', Amount: totalMatCost, Description: 'Total material cost from used quantities' });
-      data.push({ Department: 'Finances', Category: "Workers' Attendance", Amount: totalWorkerCost, Description: 'Total workers attendance cost' });
-      data.push({ Department: 'Finances', Category: 'Total Spend', Amount: totalMatCost + totalWorkerCost, Description: 'Combined spend for the selected period' });
+      sections.push({
+        title: 'Finances',
+        headers: ['Category', 'Amount (RWF)', 'Description'],
+        rows: [
+          ['Materials Used', totalMatCost, 'Total material cost from used quantities'],
+          ["Workers' Attendance", totalWorkerCost, 'Total workers attendance cost'],
+          ['Total Spend', totalMatCost + totalWorkerCost, 'Combined spend for the selected period']
+        ]
+      });
     }
 
-    if (!data.length) { showToast('No data found for the selected filters.', 'error'); return; }
+    const hasAnyRows = sections.some(s => s.rows.length);
+    if (!hasAnyRows) { showToast('No data found for the selected filters.', 'error'); return; }
 
     const siteLabel = siteId === 'all' ? t('reports.allSites') : (sitesData.find(s => s.id === siteId)?.name || 'Site');
     const deptLabel = dept === 'all' ? t('reports.allDepartments') : dept.charAt(0).toUpperCase() + dept.slice(1);
@@ -2125,19 +2170,23 @@ tbody tr:hover{background:#f1f5f9}
     const period = (startDate || endDate) ? `${startDate || 'Start'} → ${endDate || 'Now'}` : 'All Time';
     const filename = `SHDR_${siteLabel.replace(/\s+/g,'_')}_${deptLabel.replace(/\s+/g,'_')}`;
 
+    // ---------- CSV ----------
     if (format === 'csv') {
-      const headers = Object.keys(data[0]);
       const csvRows = [
         ...buildCsvMetadata(company, 'Management Report'),
         `"Site Name: ${siteLabel}"`,
         `"Department: ${deptLabel}"`,
         `"Period: ${period}"`,
-        '',
-        headers.map(h => `"${h}"`).join(',')
+        ''
       ];
-      for (const row of data) {
-        const values = headers.map(h => `"${String(row[h] ?? '').replace(/"/g, '""')}"`);
-        csvRows.push(values.join(','));
+      for (const sec of sections) {
+        if (!sec.rows.length) continue;
+        csvRows.push(`"--- ${sec.title} ---"`);
+        csvRows.push(sec.headers.map(h => `"${String(h).replace(/"/g,'""')}"`).join(','));
+        for (const r of sec.rows) {
+          csvRows.push(r.map(v => `"${String(v ?? '').replace(/"/g,'""')}"`).join(','));
+        }
+        csvRows.push('');
       }
       const csv = csvRows.join('\n');
       const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
@@ -2151,19 +2200,29 @@ tbody tr:hover{background:#f1f5f9}
       return;
     }
 
-    const headers = Object.keys(data[0]);
-    const tableRows = data.map(row => `<tr>${headers.map(h => `<td>${row[h] ?? ''}</td>`).join('')}</tr>`).join('');
+    // ---------- PRINT ----------
+    const sectionTitleCSS = 'margin:22px 0 6px; font-size:13px; color:#065f46; text-transform:uppercase; letter-spacing:.5px; border-bottom:1px solid #d1d5db; padding-bottom:4px;';
+    let sectionsHtml = '';
+    for (const sec of sections) {
+      if (!sec.rows.length) continue;
+      sectionsHtml += `<h3 style="${sectionTitleCSS}">${escapeHTML(sec.title)}</h3>`;
+      sectionsHtml += `<table><thead><tr>${sec.headers.map(h => `<th>${escapeHTML(h)}</th>`).join('')}</tr></thead><tbody>`;
+      for (const r of sec.rows) {
+        sectionsHtml += `<tr>${r.map(v => `<td>${escapeHTML(String(v ?? ''))}</td>`).join('')}</tr>`;
+      }
+      sectionsHtml += `</tbody></table>`;
+    }
 
     const win = window.open('', '_blank', 'width=1000,height=700');
     if (!win) { showToast('Please allow pop-ups to print the report.', 'error'); return; }
     win.document.write(`
       <!DOCTYPE html>
-      <html><head><meta charset="UTF-8"><title>${filename}</title>
+      <html><head><meta charset="UTF-8"><title>${escapeHTML(filename)}</title>
       <style>${REPORT_PRINT_CSS}</style>
       </head><body>
       ${buildCompanyHeaderHTML(company).replace('__REPORT_TITLE__', 'Management Report')}
-      <div class="report-meta"><strong>Site Name:</strong> ${siteLabel} &nbsp;|&nbsp; <strong>Department:</strong> ${deptLabel}<br><strong>Period:</strong> ${period} &nbsp;|&nbsp; <strong>Generated:</strong> ${generatedDate}</div>
-      <table><thead><tr>${headers.map(h => `<th>${h}</th>`).join('')}</tr></thead><tbody>${tableRows}</tbody></table>
+      <div class="report-meta"><strong>Site Name:</strong> ${escapeHTML(siteLabel)} &nbsp;|&nbsp; <strong>Department:</strong> ${escapeHTML(deptLabel)}<br><strong>Period:</strong> ${escapeHTML(period)} &nbsp;|&nbsp; <strong>Generated:</strong> ${escapeHTML(generatedDate)}</div>
+      ${sectionsHtml}
       ${buildReportFooterHTML(company)}
       </body></html>
     `);
