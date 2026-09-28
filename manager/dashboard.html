@@ -93,6 +93,11 @@ body{background:#f8fafc}
 .img-preview-wrap img{max-width:100%;max-height:220px;border-radius:12px;object-fit:cover;border:1px solid #e2e8f0}
 .img-preview-wrap .remove-img-btn{position:absolute;top:6px;right:6px;background:rgba(220,38,38,.9);color:#fff;border:none;border-radius:50%;width:30px;height:30px;display:flex;align-items:center;justify-content:center;cursor:pointer}
 @media (max-width:640px){.usage-material-grid{grid-template-columns:repeat(auto-fill,minmax(100px,1fr))}.usage-material-grid .mat-card{padding:8px 4px;min-height:70px}}
+/* ===== MESSAGING ===== */
+#messages-nav-badge{background:#ef4444;color:#fff;font-size:10px;font-weight:700;padding:1px 6px;border-radius:999px;margin-left:auto}
+.presence-dot{width:10px;height:10px;border-radius:50%;border:2px solid #fff;position:absolute;bottom:0;right:0}
+.presence-online{background:#22c55e}
+.presence-offline{background:#cbd5e1}
 </style>
 </head>
 <body class="min-h-screen flex">
@@ -118,6 +123,7 @@ body{background:#f8fafc}
     <a href="#" onclick="showSection('workers')" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg text-slate-600 hover:bg-slate-50" data-section="workers"><iconify-icon icon="material-symbols:engineering-outline" width="20"></iconify-icon> <span data-i18n="navigation.workers">Workers</span></a>
     <a href="#" onclick="showSection('progress')" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg text-slate-600 hover:bg-slate-50" data-section="progress"><iconify-icon icon="material-symbols:trending-up-outline" width="20"></iconify-icon> <span data-i18n="navigation.progress">Progress</span></a>
     <a href="#" onclick="showSection('reports')" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg text-slate-600 hover:bg-slate-50" data-section="reports"><iconify-icon icon="material-symbols:description-outline" width="20"></iconify-icon> <span data-i18n="navigation.reports">Reports</span></a>
+    <a href="#" onclick="showSection('messages')" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg text-slate-600 hover:bg-slate-50" data-section="messages"><iconify-icon icon="material-symbols:forum-outline" width="20"></iconify-icon> <span data-i18n="navigation.messages">Messages</span><span id="messages-nav-badge" class="hidden">0</span></a>
     <a href="#" onclick="showSection('gallery')" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg text-slate-600 hover:bg-slate-50" data-section="gallery"><iconify-icon icon="material-symbols:photo-library-outline" width="20"></iconify-icon> <span data-i18n="navigation.gallery">Gallery</span></a>
     <a href="#" onclick="showSection('settings')" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg text-slate-600 hover:bg-slate-50" data-section="settings"><iconify-icon icon="material-symbols:settings-outline" width="20"></iconify-icon> <span data-i18n="navigation.settings">Settings</span></a>
   </nav>
@@ -166,7 +172,7 @@ body{background:#f8fafc}
     <a href="#" onclick="showSection('materials')" data-section="materials"><iconify-icon icon="material-symbols:package-2-outline"></iconify-icon><span data-i18n="navigation.materials">Materials</span></a>
     <a href="#" onclick="showSection('stock')" data-section="stock"><iconify-icon icon="material-symbols:inventory-2-outline"></iconify-icon><span data-i18n="navigation.stock">Stock</span></a>
     <a href="#" onclick="showSection('workers')" data-section="workers"><iconify-icon icon="material-symbols:engineering-outline"></iconify-icon><span data-i18n="navigation.workers">Workers</span></a>
-    <a href="#" onclick="showSection('reports')" data-section="reports"><iconify-icon icon="material-symbols:description-outline"></iconify-icon><span data-i18n="navigation.reports">Reports</span></a>
+    <a href="#" onclick="showSection('messages')" data-section="messages"><iconify-icon icon="material-symbols:forum-outline"></iconify-icon><span data-i18n="navigation.messages">Messages</span></a>
     <a href="#" onclick="showSection('gallery')" data-section="gallery"><iconify-icon icon="material-symbols:photo-library-outline"></iconify-icon><span data-i18n="navigation.gallery">Gallery</span></a>
     <a href="#" onclick="showSection('settings')" data-section="settings"><iconify-icon icon="material-symbols:settings-outline"></iconify-icon><span data-i18n="navigation.settings">Settings</span></a>
   </div>
@@ -186,8 +192,9 @@ body{background:#f8fafc}
 // I18N
 // ============================================================
 const translations={
-en:{navigation:{managerPanel:"Manager's Panel",dashboard:"Dashboard",materials:"Materials",stock:"Stock",workers:"Workers",progress:"Progress",reports:"Reports",gallery:"Gallery",settings:"Settings",logout:"Sign Out"},
+en:{navigation:{managerPanel:"Manager's Panel",dashboard:"Dashboard",materials:"Materials",stock:"Stock",workers:"Workers",progress:"Progress",reports:"Reports",messages:"Messages",gallery:"Gallery",settings:"Settings",logout:"Sign Out"},
 common:{save:"Save",cancel:"Cancel",close:"Close",add:"Add",edit:"Edit",delete:"Delete",view:"View",upload:"Upload",search:"Search",loading:"Loading...",areYouSure:"Are you sure?",cannotUndo:"This action cannot be undone",savedSuccessfully:"Saved successfully",updatedSuccessfully:"Updated successfully",deletedSuccessfully:"Deleted successfully",somethingWentWrong:"Something went wrong",noDataAvailable:"No data available",requiredField:"Required field",invalidValue:"Invalid value",selectAll:"Select All",today:"Today",remove:"Remove",print:"Print",download:"Download",export:"Export",filter:"Filter",clear:"Clear",accessDenied:"Access denied"},
+messages:{title:"Messages",emptyThread:"No messages yet. Say hello 👋",inputPlaceholder:"Type a message...",send:"Send",online:"Online",offline:"Offline",you:"You",yesterday:"Yesterday",notAuthorized:"You are not authorized to view this conversation.",noOwner:"No owner is associated with your account yet.",loading:"Loading conversation...",sendFailed:"Failed to send message.",back:"Back"},
 dashboard:{siteStatus:"Status",siteManager:"Manager",workersOnSite:"Workers On Site",progress:"Progress",recentMaterials:"Recent Materials",pendingTasks:"Pending Tasks"},
 materials:{title:"Materials Used",recordUsage:"Record Usage",editMaterial:"Edit Material",materialName:"Material Name",quantityUsed:"Qty Used",unitCost:"Unit Cost",totalAmount:"Total Amount",noMaterials:"No materials recorded yet.",requisitions:"Requisitions",newRequisition:"+ New Requisition",requested:"Requested",supplied:"Supplied",remaining:"Remaining",reqNumber:"Req. ID",site:"Site",requestedBy:"Requested By",requestDate:"Date Requested",requiredDate:"Required Date",priority:"Priority",status:"Status",actions:"Actions",pending:"Pending",urgent:"Urgent",approved:"Approved",partiallySupplied:"Partially Supplied",suppliedStatus:"Supplied",normal:"Normal",createRequisition:"New Material Requisition",submitRequisition:"Submit Requisition",notes:"Notes",material:"Material",available:"Available",requestedQty:"Requested Qty",unit:"Unit",noRequisitions:"No requisitions found.",batchMaterialUsage:"Batch Material Usage",dateUsed:"Date *",selectMaterials:"Select Materials to Add",selectMaterialsHint:"Click to select / deselect materials",batchTotal:"Total Usage Amount",saveUsageBatch:"Save Usage Batch",selectAtLeastOneMaterial:"Please select at least one material with quantity > 0.",quantityMustBePositive:"Quantity must be > 0",unitCostCannotBeNegative:"Unit cost cannot be negative",insufficientStock:"Insufficient stock",stockNotFound:"Stock item not found",batchSaved:"Usage batch saved successfully!",currentStock:"Current Stock",materialItems:"Material Items",materials:"materials",usagePhoto:"Material Usage Photo (Optional)",usagePhotoHint:"Take or select a photo of the materials used at the site",search:"Search requisitions...",allPriorities:"All Priorities",allStatuses:"All Statuses",clearFilters:"Clear Filters"},
 stock:{title:"Stock Management",receiveStock:"Receive Stock",editStock:"Edit Stock",stockHistory:"Stock History",quantity:"Quantity",minimumStock:"Minimum Stock",stockValue:"Stock Value",lastUpdated:"Last Updated",notes:"Notes",normal:"Normal",lowStock:"Low Stock",outOfStock:"Out of Stock",unit:"Unit",unitCost:"Unit Cost",currentStock:"Current Stock"},
@@ -196,8 +203,9 @@ progress:{title:"Progress Tasks",task:"Task",start:"Start",end:"End",status:"Sta
 reports:{title:"Generate Reports",general:"General",workerPayroll:"Worker Payroll",materials:"Materials",workers:"Workers",selectSite:"Select Site",allSites:"All Sites",department:"Department",allDepartments:"All Departments",startDate:"Start Date",endDate:"End Date",exportCSV:"Export CSV",printPDF:"Print / PDF",noAttendance:"No attendance records found.",info:"Please ensure attendance has been recorded for the workers.",searchWorker:"Search worker...",position:"Position",allPositions:"All Positions",paymentStatus:"Payment Status",paid:"Paid",unpaid:"Unpaid",totalWorkers:"Total Workers",workerDays:"Worker-Days",totalPayroll:"Total Payroll",avgDaily:"Avg. Daily Labor Cost",worker:"Worker",daysWorked:"Days Worked",dailyRate:"Daily Rate",totalPayable:"Total Payable",total:"Total",generated:"Generated on",reportTitles:{general:"Management Report",payroll:"Workers' Attendance & Payroll Report",materials:"Materials Report",workers:"Workers Report"},labels:{siteName:"Site Name",period:"Period",department:"Department"}},
 gallery:{title:"Site Gallery",uploadImage:"Upload New Image",description:"Description",upload:"Upload",noImages:"No images uploaded yet.",close:"Close"},
 settings:{title:"Settings",profile:"Profile",account:"Account",security:"Security",preferences:"Preferences",profileInfo:"Profile Information",fullName:"Full Name",phone:"Phone Number",email:"Email Address",changePhoto:"Change Photo",removePhoto:"Remove Photo",saveProfile:"Save Profile Changes",accountInfo:"Account Information",accountName:"Account Name",role:"Role",accountStatus:"Account Status",active:"Active",memberSince:"Member Since",changePassword:"Change Password",currentPassword:"Current Password",newPassword:"New Password",confirmPassword:"Confirm New Password",changePassBtn:"Change Password",prefs:"Preferences",language:"Language",currency:"Currency",dateFormat:"Date Format",notifications:"Enable Notifications",savePrefs:"Save Preferences"}},
-rw:{navigation:{managerPanel:"Ipaneli y'umuyobozi",dashboard:"Imbonerahamwe",materials:"Ibikoresho",stock:"Imbuganyuro",workers:"Abakozi",progress:"Ibitekerezo",reports:"Raporo",gallery:"Amafoto",settings:"Igenamiterere",logout:"Sohoka"},
+rw:{navigation:{managerPanel:"Ipaneli y'umuyobozi",dashboard:"Imbonerahamwe",materials:"Ibikoresho",stock:"Imbuganyuro",workers:"Abakozi",progress:"Ibitekerezo",reports:"Raporo",messages:"Ubutumwa",gallery:"Amafoto",settings:"Igenamiterere",logout:"Sohoka"},
 common:{save:"Bika",cancel:"Hagarika",close:"Funga",add:"Ongeraho",edit:"Hindura",delete:"Siba",view:"Reba",upload:"Ohereza",search:"Shakisha",loading:"Birimo...",areYouSure:"Urabyemeza?",cannotUndo:"Ntibishobora guhindurwa",savedSuccessfully:"Byabitswe",updatedSuccessfully:"Byavuguruwe",deletedSuccessfully:"Byasibwe",somethingWentWrong:"Hari ikitagenze neza",noDataAvailable:"Nta makuru",requiredField:"Birakenewe",invalidValue:"Agaciro katariyo",selectAll:"Hitamo Byose",today:"Uyu Munsi",remove:"Kuraho",print:"Capa",download:"Kuramo",export:"Sohora",filter:"Shungura",clear:"Siba",accessDenied:"Ntabwo wemerewe"},
+messages:{title:"Ubutumwa",emptyThread:"Nta butumwa burahari. Vuga muraho 👋",inputPlaceholder:"Andika ubutumwa...",send:"Ohereza",online:"Kuri interineti",offline:"Nta murongo",you:"Wowe",yesterday:"Ejo hashize",notAuthorized:"Ntabwo ureherewe kureba iki kiganiro.",noOwner:"Nta nyir'ubwite uhujwe na konti yawe.",loading:"Turimo gutegura ikiganiro...",sendFailed:"Kohereza byanze.",back:"Subira"},
 dashboard:{siteStatus:"Imiterere",siteManager:"Umuyobozi",workersOnSite:"Abakozi",progress:"Ibitekerezo",recentMaterials:"Ibikoresho bishya",pendingTasks:"Imirimo itegereje"},
 materials:{title:"Ibikoresho Byakoreshejwe",recordUsage:"Andika Gukoresha",editMaterial:"Hindura",materialName:"Izina",quantityUsed:"Umubare",unitCost:"Igiciro",totalAmount:"Amafaranga",noMaterials:"Nta bikoresho.",requisitions:"Ubusabe",newRequisition:"+ Ubusabe Bushya",requested:"Basabwe",supplied:"Byatanzwe",remaining:"Bisigaye",reqNumber:"Nomero",site:"Ukibanza",requestedBy:"Wasabye",requestDate:"Itariki yo Gusaba",requiredDate:"Itariki Ikenewe",priority:"Ubwihutirwa",status:"Imiterere",actions:"Ibikorwa",pending:"Bitegereje",urgent:"Byihutirwa",approved:"Byemewe",partiallySupplied:"Igice",suppliedStatus:"Byatanzwe",normal:"Bisanzwe",createRequisition:"Ubusabe Bushya",submitRequisition:"Ohereza",notes:"Ibisobanuro",material:"Ibikoresho",available:"Biboneka",requestedQty:"Umubare",unit:"Igice",noRequisitions:"Nta busabe.",batchMaterialUsage:"Gukoresha Ibikoresho",dateUsed:"Itariki *",selectMaterials:"Hitamo Ibikoresho",selectMaterialsHint:"Kanda guhitamo",batchTotal:"Igiteranyo",saveUsageBatch:"Bika",selectAtLeastOneMaterial:"Hitamo byibura kimwe",quantityMustBePositive:"Umubare > 0",unitCostCannotBeNegative:"Igiciro ntigishobora kuba nini",insufficientStock:"Imbuganyuro ntihagije",stockNotFound:"Ntiboneka",batchSaved:"Byabitswe!",currentStock:"Ziriho",materialItems:"Ibikoresho",materials:"ibikoresho",usagePhoto:"Ifoto (Bidahatirwa)",usagePhotoHint:"Fata cyangwa hitamo ifoto",search:"Shakisha...",allPriorities:"Ubwihutirwa bwose",allStatuses:"Imiterere yose",clearFilters:"Siba amashungura"},
 stock:{title:"Imbuganyuro",receiveStock:"Akira",editStock:"Hindura",stockHistory:"Amateka",quantity:"Umubare",minimumStock:"Ntarengwa",stockValue:"Agaciro",lastUpdated:"Byavuguruwe",notes:"Ibisobanuro",normal:"Bisanzwe",lowStock:"Nke",outOfStock:"Yashaje",unit:"Igice",unitCost:"Igiciro",currentStock:"Ziriho"},
@@ -206,8 +214,9 @@ progress:{title:"Imirimo",task:"Umurimo",start:"Tangira",end:"Rangira",status:"I
 reports:{title:"Raporo",general:"Rusange",workerPayroll:"Umushahara",materials:"Ibikoresho",workers:"Abakozi",selectSite:"Hitamo Igibanza",allSites:"Ibibanza Byose",department:"Ishami",allDepartments:"Amashami Yose",startDate:"Itariki yo gutangira",endDate:"Itariki yo kurangira",exportCSV:"Sohora CSV",printPDF:"Capa / PDF",noAttendance:"Nta makuru yo kwitaba.",info:"Nyamuneka menya neza ko abakozi banditswe.",searchWorker:"Shakisha umukozi...",position:"Umwanya",allPositions:"Imiryango Yose",paymentStatus:"Imiterere y'ubwishyu",paid:"Byishyuwe",unpaid:"Bitishyuwe",totalWorkers:"Abakozi Bose",workerDays:"Iminsi y'Abakozi",totalPayroll:"Umushahara Wose",avgDaily:"Igiciro cy'umunsi",worker:"Umukozi",daysWorked:"Iminsi Yakozwe",dailyRate:"Umushahara w'umunsi",totalPayable:"Amafaranga Yose",total:"Igiteranyo",generated:"Byakozwe",reportTitles:{general:"Raporo y'Ubutegetsi",payroll:"Raporo y'Abakozi n'Umushahara",materials:"Raporo y'Ibikoresho",workers:"Raporo y'Abakozi"},labels:{siteName:"Izina ry'Igibanza",period:"Igihe",department:"Ishami"}},
 gallery:{title:"Amafoto",uploadImage:"Ohereza Ifoto",description:"Ibisobanuro",upload:"Ohereza",noImages:"Nta mafoto.",close:"Funga"},
 settings:{title:"Igenamiterere",profile:"Umwirondoro",account:"Kontu",security:"Umutekano",preferences:"Amahitamo",profileInfo:"Amakuru bwite",fullName:"Amazina",phone:"Telefoni",email:"Email",changePhoto:"Hindura ifoto",removePhoto:"Kuraho",saveProfile:"Bika",accountInfo:"Kontu",accountName:"Izina",role:"Umwanya",accountStatus:"Imiterere",active:"Bikora",memberSince:"Kuva",changePassword:"Hindura Ijambobanga",currentPassword:"Risanzwe",newPassword:"Rishya",confirmPassword:"Emeza",changePassBtn:"Hindura",prefs:"Amahitamo",language:"Ururimi",currency:"Ifaranga",dateFormat:"Itariki",notifications:"Imenyesha",savePrefs:"Bika"}},
-fr:{navigation:{managerPanel:"Panneau du gestionnaire",dashboard:"Tableau de bord",materials:"Matériaux",stock:"Stock",workers:"Ouvriers",progress:"Progrès",reports:"Rapports",gallery:"Galerie",settings:"Paramètres",logout:"Déconnexion"},
+fr:{navigation:{managerPanel:"Panneau du gestionnaire",dashboard:"Tableau de bord",materials:"Matériaux",stock:"Stock",workers:"Ouvriers",progress:"Progrès",reports:"Rapports",messages:"Messages",gallery:"Galerie",settings:"Paramètres",logout:"Déconnexion"},
 common:{save:"Enregistrer",cancel:"Annuler",close:"Fermer",add:"Ajouter",edit:"Modifier",delete:"Supprimer",view:"Voir",upload:"Télécharger",search:"Rechercher",loading:"Chargement...",areYouSure:"Êtes-vous sûr ?",cannotUndo:"Action irréversible",savedSuccessfully:"Enregistré",updatedSuccessfully:"Mis à jour",deletedSuccessfully:"Supprimé",somethingWentWrong:"Une erreur s'est produite",noDataAvailable:"Aucune donnée",requiredField:"Champ requis",invalidValue:"Valeur invalide",selectAll:"Tout Sélectionner",today:"Aujourd'hui",remove:"Retirer",print:"Imprimer",download:"Télécharger",export:"Exporter",filter:"Filtrer",clear:"Effacer",accessDenied:"Accès refusé"},
+messages:{title:"Messages",emptyThread:"Aucun message. Dites bonjour 👋",inputPlaceholder:"Tapez un message...",send:"Envoyer",online:"En ligne",offline:"Hors ligne",you:"Vous",yesterday:"Hier",notAuthorized:"Vous n'êtes pas autorisé à voir cette conversation.",noOwner:"Aucun propriétaire n'est associé à votre compte.",loading:"Chargement de la conversation...",sendFailed:"Échec de l'envoi.",back:"Retour"},
 dashboard:{siteStatus:"Statut",siteManager:"Gestionnaire",workersOnSite:"Ouvriers",progress:"Progrès",recentMaterials:"Matériaux récents",pendingTasks:"Tâches en attente"},
 materials:{title:"Matériaux utilisés",recordUsage:"Enregistrer",editMaterial:"Modifier",materialName:"Nom",quantityUsed:"Qté",unitCost:"Coût",totalAmount:"Total",noMaterials:"Aucun matériau.",requisitions:"Réquisitions",newRequisition:"+ Nouvelle",requested:"Demandé",supplied:"Fourni",remaining:"Restant",reqNumber:"N°",site:"Chantier",requestedBy:"Demandé par",requestDate:"Date demande",requiredDate:"Date requise",priority:"Priorité",status:"Statut",actions:"Actions",pending:"En attente",urgent:"Urgent",approved:"Approuvé",partiallySupplied:"Partiel",suppliedStatus:"Fourni",normal:"Normal",createRequisition:"Nouvelle Réquisition",submitRequisition:"Soumettre",notes:"Notes",material:"Matériau",available:"Disponible",requestedQty:"Qté demandée",unit:"Unité",noRequisitions:"Aucune réquisition.",batchMaterialUsage:"Utilisation par lot",dateUsed:"Date *",selectMaterials:"Sélectionner",selectMaterialsHint:"Cliquez pour sélectionner",batchTotal:"Montant total",saveUsageBatch:"Enregistrer",selectAtLeastOneMaterial:"Sélectionnez au moins un matériau",quantityMustBePositive:"Quantité > 0",unitCostCannotBeNegative:"Coût non négatif",insufficientStock:"Stock insuffisant",stockNotFound:"Introuvable",batchSaved:"Lot enregistré!",currentStock:"Stock actuel",materialItems:"Articles",materials:"matériaux",usagePhoto:"Photo (facultatif)",usagePhotoHint:"Prenez ou sélectionnez une photo",search:"Rechercher...",allPriorities:"Toutes priorités",allStatuses:"Tous statuts",clearFilters:"Effacer filtres"},
 stock:{title:"Gestion du stock",receiveStock:"Recevoir",editStock:"Modifier",stockHistory:"Historique",quantity:"Quantité",minimumStock:"Stock min",stockValue:"Valeur",lastUpdated:"Mis à jour",notes:"Notes",normal:"Normal",lowStock:"Faible",outOfStock:"Épuisé",unit:"Unité",unitCost:"Coût unitaire",currentStock:"Stock actuel"},
@@ -230,7 +239,8 @@ document.querySelectorAll('.lang-btn').forEach(b=>b.addEventListener('click',()=
 // ============================================================
 import{initializeApp}from"https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
 import{getAuth,onAuthStateChanged,signOut,reauthenticateWithCredential,EmailAuthProvider,updatePassword}from"https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
-import{getFirestore,collection,query,where,onSnapshot,addDoc,updateDoc,doc,getDoc,deleteDoc,getDocs,writeBatch,orderBy,setDoc,runTransaction}from"https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
+import{getFirestore,collection,query,where,onSnapshot,addDoc,updateDoc,doc,getDoc,deleteDoc,getDocs,writeBatch,orderBy,setDoc,runTransaction,increment,limit}from"https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
+import{getDatabase,ref as rtdbRef,onValue as rtdbOnValue,set as rtdbSet,onDisconnect}from"https://www.gstatic.com/firebasejs/12.16.0/firebase-database.js";
 
 const firebaseConfig={apiKey:"AIzaSyBVTLxC6nWpWL6a4BLI3xghdgUoR_cgGzw",authDomain:"shdr-construction.firebaseapp.com",databaseURL:"https://shdr-construction-default-rtdb.firebaseio.com",projectId:"shdr-construction",storageBucket:"shdr-construction.firebasestorage.app",messagingSenderId:"418309267761",appId:"1:418309267761:web:328922587ea18021e21010",measurementId:"G-Y4KMGWDBH3"};
 const app=initializeApp(firebaseConfig);const auth=getAuth(app);const db=getFirestore(app);
@@ -296,9 +306,10 @@ function getMaterialIcon(name){const l=String(name).toLowerCase();if(l.includes(
 function showToast(msg,type='info'){const el=document.getElementById('toast');const i={success:'✅',error:'❌',info:'ℹ️'};el.innerHTML=`<span>${i[type]||'ℹ️'}</span> ${msg}`;el.className='toast '+(type||'info');el.classList.add('show');clearTimeout(el._h);el._h=setTimeout(()=>el.classList.remove('show'),5000)}
 async function uploadImageToImgbb(file){const fd=new FormData();fd.append('image',file);const res=await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`,{method:'POST',body:fd});const j=await res.json();if(!j.success)throw new Error('Image upload failed');return j.data.url}
 function safeFilename(s){return String(s||'').replace(/[^\w\-]+/g,'_').replace(/_+/g,'_').slice(0,120)}
+function escapeHTML(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 
 // ============================================================
-// COMPANY + REPORT HTML (Owner-style)
+// COMPANY + REPORT HTML
 // ============================================================
 function getCompanyDetails(){
   return{
@@ -394,7 +405,6 @@ function renderReports(container){
 
 window.setReportType = (type) => { reportType = type; showSection('reports'); };
 
-// ---- GENERAL REPORT ----
 function renderGeneralReport(siteOpts){
   return `<div class="space-y-6">
     <div class="bg-white rounded-2xl border p-4 grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -548,7 +558,6 @@ window.exportGeneralReport = (format) => {
   setTimeout(()=>win.print(), 500);
 };
 
-// ---- PAYROLL REPORT ----
 function renderPayrollReport(siteOpts){
   return `<div class="space-y-6">
     <div class="bg-white rounded-2xl border p-4 grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -697,7 +706,6 @@ window.exportPayrollReport = (format) => {
   setTimeout(()=>win.print(), 500);
 };
 
-// ---- MATERIALS REPORT ----
 function renderMaterialsReport(siteOpts){
   return `<div class="space-y-6">
     <div class="bg-white rounded-2xl border p-4 grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -816,7 +824,6 @@ window.exportMaterialsReport = (format) => {
   setTimeout(()=>win.print(), 500);
 };
 
-// ---- WORKERS REPORT ----
 function renderWorkersReport(siteOpts){
   return `<div class="space-y-6">
     <div class="bg-white rounded-2xl border p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -925,7 +932,7 @@ window.exportWorkersReport = (format) => {
 };
 
 // ============================================================
-// LEGACY: Requisition report & Material Usage report
+// LEGACY PDF helpers
 // ============================================================
 function drawPdfHeader(doc, company, model){
   const W = doc.internal.pageSize.getWidth();
@@ -2066,6 +2073,7 @@ window.showSection=function(section){
       case 'workers':renderWorkers(c);break;
       case 'progress':renderProgress(c);break;
       case 'reports':renderReports(c);break;
+      case 'messages':renderMessages(c);break;
       case 'gallery':renderGallery(c);break;
       case 'settings':renderSettings(c);break;
       default:renderDashboard(c);
@@ -2076,7 +2084,15 @@ window.showSection=function(section){
 window.closeModal=function(){document.getElementById('modal-overlay').classList.remove('active')};
 window.openModal=function(title,bodyHTML){document.getElementById('modal-title').textContent=title;document.getElementById('modal-body').innerHTML=bodyHTML;document.getElementById('modal-overlay').classList.add('active')};
 window.toggleSidebar=function(){document.getElementById('sidebar').classList.toggle('-translate-x-full');document.getElementById('sidebar-overlay').classList.toggle('hidden')};
-window.handleLogout=async function(){await signOut(auth);window.location.href='../index.html'};
+window.handleLogout=async function(){
+  try{
+    if(typeof rtdb!=='undefined'&&rtdb&&currentUser){
+      await rtdbSet(rtdbRef(rtdb,`presence/${currentUser.uid}`),{online:false,last_changed:Date.now()});
+    }
+  }catch(_){}
+  await signOut(auth);
+  window.location.href='../index.html';
+};
 
 // ============================================================
 // PROFILE UI + LISTENERS
@@ -2107,6 +2123,7 @@ function attachListeners(){
   unsubscribeSnapshots.push(onSnapshot(query(collection(db,'requisition_history'),where('site_id','==',sid),orderBy('timestamp','desc')),s=>{requisitionHistoryData=s.docs.map(d=>({id:d.id,...d.data()}));refreshCurrentSection()}));
 }
 function refreshCurrentSection(){
+  if(currentSection==='messages'){renderMessagesThread();updateMessagesBadge();return;}
   if(window._refreshing)return;window._refreshing=true;
   requestAnimationFrame(()=>{
     if(currentUser&&currentSiteId){
@@ -2143,6 +2160,343 @@ function refreshCurrentSection(){
 }
 window.switchSite=function(id){currentSiteId=id;attachListeners();showSection(currentSection)};
 
+// =================================================================
+// ============== MESSAGING ENGINE (Manager ↔ Owner) ===============
+// =================================================================
+const CONVERSATIONS = 'conversations';
+let conversationsData     = [];
+let activeOwnerId         = null;
+let activeOwnerProfile    = null;
+let activeConversationId  = null;
+let messagesCache         = [];
+let messageUnsub          = null;
+let chatUnsubs            = [];
+let presenceMap           = {};
+let rtdb                  = null;
+
+function buildConversationId(ownerId, managerId) {
+  // Same deterministic formula as the owner panel — identity-based,
+  // never derived from a site ID, so reassigning the manager to another
+  // site does not fork the message history.
+  return `owner_${ownerId}_manager_${managerId}`;
+}
+
+function getManagerOwnerId() {
+  const conv = conversationsData.find(c => c.type === 'owner_manager' && c.owner_id);
+  if (conv?.owner_id) return conv.owner_id;
+  for (const s of assignedSites) if (s.owner_id) return s.owner_id;
+  return null;
+}
+
+function formatChatTime(v) {
+  if (!v) return '';
+  const d = new Date(v);
+  if (isNaN(d.getTime())) return '';
+  const now = new Date();
+  const hh = String(d.getHours()).padStart(2, '0');
+  const mm = String(d.getMinutes()).padStart(2, '0');
+  if (d.toDateString() === now.toDateString()) return `${hh}:${mm}`;
+  const y = new Date(now); y.setDate(y.getDate() - 1);
+  if (d.toDateString() === y.toDateString()) return `${t('messages.yesterday')} ${hh}:${mm}`;
+  return `${d.getDate()}/${d.getMonth() + 1}/${d.getFullYear()} ${hh}:${mm}`;
+}
+
+function initialsOf(name) {
+  return String(name || '?').trim().charAt(0).toUpperCase() || '?';
+}
+
+function initPresence() {
+  if (!currentUser) return;
+  try { rtdb = rtdb || getDatabase(app); } catch (e) { console.warn('RTDB init failed:', e); return; }
+  const connectedRef = rtdbRef(rtdb, '.info/connected');
+  rtdbOnValue(connectedRef, (snap) => {
+    if (snap.val() === false) return;
+    const myPresence = rtdbRef(rtdb, `presence/${currentUser.uid}`);
+    onDisconnect(myPresence)
+      .set({ online: false, last_changed: Date.now() })
+      .then(() => rtdbSet(myPresence, { online: true, last_changed: Date.now() }))
+      .catch(err => console.warn('presence set failed:', err));
+  });
+  const treeRef = rtdbRef(rtdb, 'presence');
+  chatUnsubs.push(rtdbOnValue(treeRef, (snap) => {
+    presenceMap = snap.val() || {};
+    if (currentSection === 'messages') renderMessagesThread();
+  }, err => console.warn('presence listener:', err)));
+}
+
+function attachMessagingListeners() {
+  chatUnsubs.forEach(fn => { try { fn(); } catch (_) {} });
+  chatUnsubs = [];
+  if (!currentUser) return;
+
+  const convQ = query(
+    collection(db, CONVERSATIONS),
+    where('participants', 'array-contains', currentUser.uid)
+  );
+
+  chatUnsubs.push(onSnapshot(convQ, (snap) => {
+    conversationsData = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    updateMessagesBadge();
+    if (currentSection === 'messages') {
+      if (activeConversationId && !conversationsData.some(c => c.id === activeConversationId)) {
+        resetActiveConversation();
+      }
+      renderMessagesThread();
+    }
+  }, err => console.error('[conversations] snapshot error:', err)));
+
+  initPresence();
+}
+
+function subscribeToMessages(conversationId) {
+  if (messageUnsub) { try { messageUnsub(); } catch (_) {} messageUnsub = null; }
+  messagesCache = [];
+  const msgQ = query(
+    collection(db, CONVERSATIONS, conversationId, 'messages'),
+    orderBy('created_at', 'asc'),
+    limit(500)
+  );
+  messageUnsub = onSnapshot(msgQ, (snap) => {
+    messagesCache = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    renderMessagesThread();
+    markConversationRead(conversationId);
+  }, err => {
+    console.error('[messages] snapshot error:', err);
+    showToast(t('messages.notAuthorized'), 'error');
+  });
+}
+
+async function ensureOwnerConversation(ownerId) {
+  const managerId = currentUser.uid;
+  const cid = buildConversationId(ownerId, managerId);
+  const ref = doc(db, CONVERSATIONS, cid);
+  let snap;
+  try { snap = await getDoc(ref); } catch (e) { throw new Error(t('messages.notAuthorized')); }
+  if (!snap.exists()) {
+    const payload = {
+      type: 'owner_manager',
+      owner_id: ownerId,
+      manager_id: managerId,
+      participants: [ownerId, managerId],
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+      last_message: null,
+      unread: { [ownerId]: 0, [managerId]: 0 }
+    };
+    try { await setDoc(ref, payload); }
+    catch (err) {
+      const again = await getDoc(ref);
+      if (!again.exists()) throw err;
+    }
+  }
+  return cid;
+}
+
+async function markConversationRead(conversationId) {
+  if (!currentUser || !conversationId) return;
+  let conv = conversationsData.find(c => c.id === conversationId);
+  if (!conv) {
+    try {
+      const snap = await getDoc(doc(db, CONVERSATIONS, conversationId));
+      if (snap.exists()) conv = { id: snap.id, ...snap.data() };
+    } catch (_) {}
+  }
+  if (!conv) return;
+  const unread = (conv.unread && conv.unread[currentUser.uid]) || 0;
+  if (!unread) return;
+  try {
+    await updateDoc(doc(db, CONVERSATIONS, conversationId), {
+      [`unread.${currentUser.uid}`]: 0,
+      [`last_read.${currentUser.uid}`]: new Date().toISOString()
+    });
+  } catch (err) { console.warn('mark read failed:', err); }
+}
+
+function resetActiveConversation() {
+  if (messageUnsub) { try { messageUnsub(); } catch (_) {} messageUnsub = null; }
+  activeOwnerId = null;
+  activeOwnerProfile = null;
+  activeConversationId = null;
+  messagesCache = [];
+}
+
+window.sendOwnerMessage = async () => {
+  const input = document.getElementById('message-input');
+  if (!input || !activeConversationId) return;
+  const text = (input.value || '').trim();
+  if (!text) return;
+  if (text.length > 4000) { showToast(t('common.invalidValue'), 'error'); return; }
+
+  const btn = document.getElementById('message-send-btn');
+  if (btn) btn.disabled = true;
+
+  const now = new Date().toISOString();
+  const msgRef = doc(collection(db, CONVERSATIONS, activeConversationId, 'messages'));
+  input.value = '';
+
+  try {
+    const batch = writeBatch(db);
+    batch.set(msgRef, {
+      sender_id: currentUser.uid,
+      sender_role: 'manager',
+      text,
+      created_at: now
+    });
+    batch.update(doc(db, CONVERSATIONS, activeConversationId), {
+      last_message: { text: text.slice(0, 200), sender_id: currentUser.uid, created_at: now },
+      updated_at: now,
+      [`unread.${activeOwnerId}`]: increment(1)
+    });
+    await batch.commit();
+  } catch (err) {
+    console.error(err);
+    input.value = text;
+    showToast(t('messages.sendFailed'), 'error');
+  } finally {
+    if (btn) btn.disabled = false;
+  }
+};
+
+window.handleOwnerMessageKeydown = (event) => {
+  if (event.key === 'Enter' && !event.shiftKey) {
+    event.preventDefault();
+    sendOwnerMessage();
+  }
+};
+
+window.renderMessages = async function (container) {
+  container.innerHTML = `
+    <h2 class="text-xl sm:text-2xl font-bold mb-4 flex items-center gap-2">
+      <iconify-icon icon="material-symbols:forum" class="text-emerald-600"></iconify-icon>
+      ${t('messages.title')}
+    </h2>
+    <div class="bg-white rounded-2xl border shadow-sm overflow-hidden" style="height:calc(100vh - 260px);min-height:440px">
+      <div id="messages-thread" class="flex flex-col h-full min-h-0"></div>
+    </div>`;
+
+  const threadEl = document.getElementById('messages-thread');
+  if (threadEl) {
+    threadEl.innerHTML = `<div class="flex-1 flex flex-col items-center justify-center">
+      <div class="spinner"></div>
+      <p class="text-slate-400 text-sm mt-3">${t('messages.loading')}</p>
+    </div>`;
+  }
+
+  try {
+    const ownerId = getManagerOwnerId();
+    if (!ownerId) {
+      if (threadEl) threadEl.innerHTML = `<div class="flex-1 flex flex-col items-center justify-center p-8 text-center">
+        <iconify-icon icon="material-symbols:info-outline" class="text-5xl text-slate-300 mb-3"></iconify-icon>
+        <p class="text-slate-500 text-sm">${t('messages.noOwner')}</p>
+      </div>`;
+      return;
+    }
+
+    try {
+      const snap = await getDoc(doc(db, 'profiles', ownerId));
+      if (snap.exists()) activeOwnerProfile = { id: snap.id, ...snap.data() };
+    } catch (e) { console.warn('owner profile lookup:', e); }
+
+    const cid = await ensureOwnerConversation(ownerId);
+    activeOwnerId = ownerId;
+    activeConversationId = cid;
+
+    subscribeToMessages(cid);
+    renderMessagesThread();
+    await markConversationRead(cid);
+  } catch (err) {
+    console.error(err);
+    if (threadEl) threadEl.innerHTML = `<div class="flex-1 flex flex-col items-center justify-center p-8 text-center">
+      <iconify-icon icon="material-symbols:error-outline" class="text-5xl text-red-300 mb-3"></iconify-icon>
+      <p class="text-red-600 text-sm">${escapeHTML(err.message || t('common.somethingWentWrong'))}</p>
+    </div>`;
+  }
+};
+
+function renderMessagesThread() {
+  const el = document.getElementById('messages-thread');
+  if (!el) return;
+  if (!activeOwnerId) return;
+
+  const prevInput = document.getElementById('message-input')?.value || '';
+  const wasFocused = document.activeElement?.id === 'message-input';
+
+  const op = activeOwnerProfile || {};
+  const name = op.full_name || 'Owner';
+  const photo = op.profile_picture || '';
+  const online = !!presenceMap[activeOwnerId]?.online;
+
+  const bubbles = messagesCache.map(msg => {
+    const mine = msg.sender_id === currentUser.uid;
+    return `
+      <div class="flex ${mine ? 'justify-end' : 'justify-start'} mb-2">
+        <div class="max-w-[80%] px-3.5 py-2 rounded-2xl text-sm break-words shadow-sm
+          ${mine ? 'bg-emerald-600 text-white rounded-br-md' : 'bg-slate-100 border border-slate-200 text-slate-800 rounded-bl-md'}">
+          <p class="whitespace-pre-wrap">${escapeHTML(msg.text)}</p>
+          <p class="text-[10px] mt-1 ${mine ? 'text-emerald-100' : 'text-slate-400'} text-right">
+            ${escapeHTML(formatChatTime(msg.created_at))}
+          </p>
+        </div>
+      </div>`;
+  }).join('');
+
+  el.innerHTML = `
+    <div class="flex items-center gap-3 p-3 border-b bg-white">
+      <div class="relative flex-shrink-0">
+        ${photo
+          ? `<img src="${escapeHTML(photo)}" class="w-10 h-10 rounded-full object-cover" alt="">`
+          : `<div class="w-10 h-10 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold">${escapeHTML(initialsOf(name))}</div>`}
+        <span class="presence-dot ${online ? 'presence-online' : 'presence-offline'}"></span>
+      </div>
+      <div class="min-w-0">
+        <p class="font-semibold text-sm text-slate-900 truncate">${escapeHTML(name)}</p>
+        <p class="text-[11px] text-slate-500">
+          <span class="${online ? 'text-green-600' : 'text-slate-400'}">${online ? t('messages.online') : t('messages.offline')}</span>
+        </p>
+      </div>
+    </div>
+
+    <div id="message-scroll" class="flex-1 overflow-y-auto p-4 bg-slate-50">
+      ${bubbles || `
+        <div class="h-full flex flex-col items-center justify-center text-center">
+          <iconify-icon icon="material-symbols:waving-hand" class="text-4xl text-slate-300 mb-2"></iconify-icon>
+          <p class="text-sm text-slate-400">${t('messages.emptyThread')}</p>
+        </div>`}
+    </div>
+
+    <div class="p-3 border-t bg-white flex gap-2 items-end">
+      <textarea id="message-input" rows="1"
+        onkeydown="handleOwnerMessageKeydown(event)"
+        placeholder="${t('messages.inputPlaceholder')}"
+        class="flex-1 resize-none border rounded-xl px-3 py-2 text-sm max-h-32 focus:outline-none focus:border-emerald-600"></textarea>
+      <button id="message-send-btn" type="button" onclick="sendOwnerMessage()"
+        class="bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl px-4 py-2.5 flex items-center gap-1 disabled:opacity-60">
+        <iconify-icon icon="material-symbols:send" width="18"></iconify-icon>
+        <span class="hidden sm:inline text-sm">${t('messages.send')}</span>
+      </button>
+    </div>`;
+
+  const inp = document.getElementById('message-input');
+  if (inp) { inp.value = prevInput; if (wasFocused) inp.focus(); }
+  const scroller = document.getElementById('message-scroll');
+  if (scroller) scroller.scrollTop = scroller.scrollHeight;
+}
+
+function updateMessagesBadge() {
+  if (!currentUser) return;
+  const total = conversationsData.reduce(
+    (sum, c) => sum + ((c.unread && c.unread[currentUser.uid]) || 0), 0
+  );
+  const badge = document.getElementById('messages-nav-badge');
+  if (!badge) return;
+  if (total > 0) {
+    badge.textContent = total > 99 ? '99+' : String(total);
+    badge.classList.remove('hidden');
+  } else {
+    badge.classList.add('hidden');
+  }
+}
+
 // ============================================================
 // INIT
 // ============================================================
@@ -2175,12 +2529,13 @@ async function initApp(){
           attachListeners();
         }
       }
+      attachMessagingListeners();
       showSection('dashboard');
     }catch(err){console.error('Init error:',err);showError('Failed to initialize: '+err.message)}
   });
 }
 if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',initApp)}else{initApp()}
-console.log('✅ SHDR Manager Dashboard — date format: September 24, 2026, 18:33 PM');
+console.log('✅ SHDR Manager Dashboard — messaging enabled');
 </script>
 </main>
 </body>
