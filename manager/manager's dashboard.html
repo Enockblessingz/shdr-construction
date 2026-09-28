@@ -93,11 +93,85 @@ body{background:#f8fafc}
 .img-preview-wrap img{max-width:100%;max-height:220px;border-radius:12px;object-fit:cover;border:1px solid #e2e8f0}
 .img-preview-wrap .remove-img-btn{position:absolute;top:6px;right:6px;background:rgba(220,38,38,.9);color:#fff;border:none;border-radius:50%;width:30px;height:30px;display:flex;align-items:center;justify-content:center;cursor:pointer}
 @media (max-width:640px){.usage-material-grid{grid-template-columns:repeat(auto-fill,minmax(100px,1fr))}.usage-material-grid .mat-card{padding:8px 4px;min-height:70px}}
+
 /* ===== MESSAGING ===== */
-#messages-nav-badge{background:#ef4444;color:#fff;font-size:10px;font-weight:700;padding:1px 6px;border-radius:999px;margin-left:auto}
+.messages-shell{display:grid;grid-template-columns:320px 1fr;height:calc(100vh - 240px);min-height:440px}
+.messages-directory{border-right:1px solid #e5e7eb;display:flex;flex-direction:column;min-height:0}
+.messages-thread{display:flex;flex-direction:column;min-height:0;background:#f8fafc}
+.msg-row{transition:background .15s;cursor:pointer}
+.msg-row:hover{background:#f1f5f9}
+.msg-row.active{background:#ecfdf5;border-left:3px solid #059669}
 .presence-dot{width:10px;height:10px;border-radius:50%;border:2px solid #fff;position:absolute;bottom:0;right:0}
 .presence-online{background:#22c55e}
 .presence-offline{background:#cbd5e1}
+#messages-nav-badge{background:#ef4444;color:#fff;font-size:10px;font-weight:700;padding:1px 6px;border-radius:999px;margin-left:auto}
+@media (max-width:767px){
+  .messages-shell{grid-template-columns:1fr;height:calc(100vh - 200px)}
+  .messages-shell.thread-open .messages-directory{display:none}
+  .messages-shell:not(.thread-open) .messages-thread{display:none}
+}
+
+/* WhatsApp-style extras */
+.msg-tick{font-size:11px;letter-spacing:-2px;display:inline-block;line-height:1}
+.msg-tick.read{color:#53bdeb}
+.msg-tick.delivered{color:#e5e7eb}
+.msg-tick.sent{color:#e5e7eb}
+
+.msg-bubble-wrap{position:relative;display:flex;flex-direction:column}
+.msg-actions{position:absolute;top:-10px;display:none;gap:2px;background:#fff;border:1px solid #e5e7eb;border-radius:999px;padding:2px;box-shadow:0 4px 12px rgba(0,0,0,.08);z-index:5}
+.msg-actions.right{right:calc(100% + 8px)}
+.msg-actions.left{left:calc(100% + 8px)}
+.msg-bubble-wrap:hover .msg-actions{display:flex}
+@media (hover:none){.msg-actions{display:none!important}}
+.msg-actions button{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:transparent;color:#64748b;border:none;cursor:pointer}
+.msg-actions button:hover{background:#f1f5f9;color:#059669}
+
+.msg-reply-quote{border-left:3px solid #059669;background:rgba(5,150,105,.06);border-radius:6px;padding:4px 8px;margin-bottom:4px;font-size:11px;color:#334155;cursor:pointer}
+.msg-reply-quote .rq-name{font-weight:600;color:#059669}
+.msg-reply-quote .rq-text{opacity:.85;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:220px;display:block}
+
+.msg-reactions{display:flex;gap:3px;flex-wrap:wrap;margin-top:4px}
+.msg-reactions .react-pill{background:#fff;border:1px solid #e5e7eb;border-radius:999px;padding:1px 7px;font-size:11px;display:inline-flex;gap:3px;align-items:center;cursor:pointer;line-height:1.4}
+.msg-reactions .react-pill.mine{background:#ecfdf5;border-color:#059669;color:#065f46}
+
+.msg-highlight{animation:msgHighlight 1.4s ease}
+@keyframes msgHighlight{0%{background:#fef08a}100%{background:transparent}}
+
+.msg-deleted{font-style:italic;opacity:.65;font-size:12px}
+
+.composer-toolbar{display:flex;gap:2px;align-items:center}
+.composer-toolbar button{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#64748b;background:transparent;border:none;cursor:pointer}
+.composer-toolbar button:hover{background:#f1f5f9;color:#059669}
+.composer-toolbar button.active{background:#ecfdf5;color:#059669}
+
+.emoji-picker{position:absolute;bottom:60px;left:12px;right:12px;max-width:340px;background:#fff;border:1px solid #e5e7eb;border-radius:14px;box-shadow:0 12px 32px rgba(0,0,0,.12);padding:10px;z-index:20;display:none}
+.emoji-picker.open{display:block}
+.emoji-picker .emoji-grid{display:grid;grid-template-columns:repeat(8,1fr);gap:2px;max-height:220px;overflow-y:auto}
+.emoji-picker .emoji-grid button{font-size:22px;padding:6px 0;border-radius:8px;background:transparent;border:none;cursor:pointer}
+.emoji-picker .emoji-grid button:hover{background:#f1f5f9}
+
+.reaction-picker{position:absolute;bottom:calc(100% + 6px);background:#fff;border:1px solid #e5e7eb;border-radius:999px;padding:4px;box-shadow:0 8px 24px rgba(0,0,0,.12);display:none;gap:2px;z-index:30}
+.reaction-picker.open{display:flex}
+.reaction-picker button{width:32px;height:32px;border-radius:50%;font-size:18px;display:flex;align-items:center;justify-content:center;background:transparent;border:none;cursor:pointer}
+.reaction-picker button:hover{background:#f1f5f9}
+
+.composer-reply{display:flex;align-items:center;gap:8px;border-left:3px solid #059669;background:rgba(5,150,105,.06);padding:6px 10px;border-radius:6px;margin-bottom:6px;font-size:12px}
+.composer-reply .close-x{margin-left:auto;color:#64748b;padding:2px;background:none;border:none;cursor:pointer}
+
+.composer-attachment{display:flex;align-items:center;gap:8px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:6px 10px;margin-bottom:6px;font-size:12px}
+
+.msg-search-panel{background:#fff;border-bottom:1px solid #e5e7eb;padding:8px 12px;display:none}
+.msg-search-panel.open{display:block}
+.msg-search-result{padding:6px 10px;border-radius:8px;cursor:pointer;font-size:12px}
+.msg-search-result:hover{background:#f1f5f9}
+
+.shared-card{background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:10px;font-size:12px;max-width:280px}
+.shared-card .sc-title{font-weight:700;color:#065f46;display:flex;align-items:center;gap:6px;margin-bottom:6px}
+.shared-card .sc-row{display:flex;justify-content:space-between;color:#334155;padding:2px 0}
+
+.attach-preview{max-width:220px;border-radius:8px;overflow:hidden;margin-bottom:4px;background:#000}
+.attach-preview img{display:block;width:100%;max-height:200px;object-fit:cover;cursor:pointer}
+.attach-file{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.15);border-radius:8px;padding:6px 8px;margin-bottom:4px;font-size:12px;color:inherit;text-decoration:none}
 </style>
 </head>
 <body class="min-h-screen flex">
@@ -194,7 +268,16 @@ body{background:#f8fafc}
 const translations={
 en:{navigation:{managerPanel:"Manager's Panel",dashboard:"Dashboard",materials:"Materials",stock:"Stock",workers:"Workers",progress:"Progress",reports:"Reports",messages:"Messages",gallery:"Gallery",settings:"Settings",logout:"Sign Out"},
 common:{save:"Save",cancel:"Cancel",close:"Close",add:"Add",edit:"Edit",delete:"Delete",view:"View",upload:"Upload",search:"Search",loading:"Loading...",areYouSure:"Are you sure?",cannotUndo:"This action cannot be undone",savedSuccessfully:"Saved successfully",updatedSuccessfully:"Updated successfully",deletedSuccessfully:"Deleted successfully",somethingWentWrong:"Something went wrong",noDataAvailable:"No data available",requiredField:"Required field",invalidValue:"Invalid value",selectAll:"Select All",today:"Today",remove:"Remove",print:"Print",download:"Download",export:"Export",filter:"Filter",clear:"Clear",accessDenied:"Access denied"},
-messages:{title:"Messages",emptyThread:"No messages yet. Say hello 👋",inputPlaceholder:"Type a message...",send:"Send",online:"Online",offline:"Offline",you:"You",yesterday:"Yesterday",notAuthorized:"You are not authorized to view this conversation.",noOwner:"No owner is associated with your account yet.",loading:"Loading conversation...",sendFailed:"Failed to send message.",back:"Back"},
+messages:{title:"Messages",emptyThread:"No messages yet. Say hello 👋",inputPlaceholder:"Type a message...",send:"Send",online:"Online",offline:"Offline",lastSeen:"Last seen",you:"You",yesterday:"Yesterday",notAuthorized:"You are not authorized to view this conversation.",noOwner:"No owner is associated with your account yet.",loading:"Loading conversation...",sendFailed:"Failed to send message.",back:"Back",ownerRole:"Owner / Admin",
+attach:"Attach file",emoji:"Emoji",share:"Share SHDR record",shareMaterial:"Share Material",shareWorker:"Share Worker",shareReport:"Share Report",sendFile:"Send file",cancelReply:"Cancel reply",replyingTo:"Replying to {name}",
+reply:"Reply",react:"React",copy:"Copy",deleteForMe:"Delete for me",deleteForEveryone:"Delete for everyone",edited:"edited",deleted:"This message was deleted",copySuccess:"Message copied",
+statusSent:"Sent",statusDelivered:"Delivered",statusRead:"Read",
+isTyping:"{name} is typing...",severalTyping:"several people are typing...",
+searchInConversation:"Search in conversation",searchResults:"{n} results",noSearchResults:"No messages match your search",closeSearch:"Close search",
+pinConversation:"Pin",unpinConversation:"Unpin",muteConversation:"Mute",unmuteConversation:"Unmute",archiveConversation:"Archive",unarchiveConversation:"Unarchive",pinnedSection:"Pinned",archivedSection:"Archived",noConversations:"No conversations",
+uploading:"Uploading {name}...",fileTooLarge:"File is too large (max 10 MB)",fileTypeNotAllowed:"File type not allowed",downloadAttachment:"Download",
+newMessageFrom:"New message from {name}",
+editMessage:"Edit message",saveEdit:"Save changes",editWindowExpired:"You can only edit within 15 minutes",deleteWindowExpired:"Delete for everyone is only available for 15 minutes"},
 dashboard:{siteStatus:"Status",siteManager:"Manager",workersOnSite:"Workers On Site",progress:"Progress",recentMaterials:"Recent Materials",pendingTasks:"Pending Tasks"},
 materials:{title:"Materials Used",recordUsage:"Record Usage",editMaterial:"Edit Material",materialName:"Material Name",quantityUsed:"Qty Used",unitCost:"Unit Cost",totalAmount:"Total Amount",noMaterials:"No materials recorded yet.",requisitions:"Requisitions",newRequisition:"+ New Requisition",requested:"Requested",supplied:"Supplied",remaining:"Remaining",reqNumber:"Req. ID",site:"Site",requestedBy:"Requested By",requestDate:"Date Requested",requiredDate:"Required Date",priority:"Priority",status:"Status",actions:"Actions",pending:"Pending",urgent:"Urgent",approved:"Approved",partiallySupplied:"Partially Supplied",suppliedStatus:"Supplied",normal:"Normal",createRequisition:"New Material Requisition",submitRequisition:"Submit Requisition",notes:"Notes",material:"Material",available:"Available",requestedQty:"Requested Qty",unit:"Unit",noRequisitions:"No requisitions found.",batchMaterialUsage:"Batch Material Usage",dateUsed:"Date *",selectMaterials:"Select Materials to Add",selectMaterialsHint:"Click to select / deselect materials",batchTotal:"Total Usage Amount",saveUsageBatch:"Save Usage Batch",selectAtLeastOneMaterial:"Please select at least one material with quantity > 0.",quantityMustBePositive:"Quantity must be > 0",unitCostCannotBeNegative:"Unit cost cannot be negative",insufficientStock:"Insufficient stock",stockNotFound:"Stock item not found",batchSaved:"Usage batch saved successfully!",currentStock:"Current Stock",materialItems:"Material Items",materials:"materials",usagePhoto:"Material Usage Photo (Optional)",usagePhotoHint:"Take or select a photo of the materials used at the site",search:"Search requisitions...",allPriorities:"All Priorities",allStatuses:"All Statuses",clearFilters:"Clear Filters"},
 stock:{title:"Stock Management",receiveStock:"Receive Stock",editStock:"Edit Stock",stockHistory:"Stock History",quantity:"Quantity",minimumStock:"Minimum Stock",stockValue:"Stock Value",lastUpdated:"Last Updated",notes:"Notes",normal:"Normal",lowStock:"Low Stock",outOfStock:"Out of Stock",unit:"Unit",unitCost:"Unit Cost",currentStock:"Current Stock"},
@@ -205,7 +288,14 @@ gallery:{title:"Site Gallery",uploadImage:"Upload New Image",description:"Descri
 settings:{title:"Settings",profile:"Profile",account:"Account",security:"Security",preferences:"Preferences",profileInfo:"Profile Information",fullName:"Full Name",phone:"Phone Number",email:"Email Address",changePhoto:"Change Photo",removePhoto:"Remove Photo",saveProfile:"Save Profile Changes",accountInfo:"Account Information",accountName:"Account Name",role:"Role",accountStatus:"Account Status",active:"Active",memberSince:"Member Since",changePassword:"Change Password",currentPassword:"Current Password",newPassword:"New Password",confirmPassword:"Confirm New Password",changePassBtn:"Change Password",prefs:"Preferences",language:"Language",currency:"Currency",dateFormat:"Date Format",notifications:"Enable Notifications",savePrefs:"Save Preferences"}},
 rw:{navigation:{managerPanel:"Ipaneli y'umuyobozi",dashboard:"Imbonerahamwe",materials:"Ibikoresho",stock:"Imbuganyuro",workers:"Abakozi",progress:"Ibitekerezo",reports:"Raporo",messages:"Ubutumwa",gallery:"Amafoto",settings:"Igenamiterere",logout:"Sohoka"},
 common:{save:"Bika",cancel:"Hagarika",close:"Funga",add:"Ongeraho",edit:"Hindura",delete:"Siba",view:"Reba",upload:"Ohereza",search:"Shakisha",loading:"Birimo...",areYouSure:"Urabyemeza?",cannotUndo:"Ntibishobora guhindurwa",savedSuccessfully:"Byabitswe",updatedSuccessfully:"Byavuguruwe",deletedSuccessfully:"Byasibwe",somethingWentWrong:"Hari ikitagenze neza",noDataAvailable:"Nta makuru",requiredField:"Birakenewe",invalidValue:"Agaciro katariyo",selectAll:"Hitamo Byose",today:"Uyu Munsi",remove:"Kuraho",print:"Capa",download:"Kuramo",export:"Sohora",filter:"Shungura",clear:"Siba",accessDenied:"Ntabwo wemerewe"},
-messages:{title:"Ubutumwa",emptyThread:"Nta butumwa burahari. Vuga muraho 👋",inputPlaceholder:"Andika ubutumwa...",send:"Ohereza",online:"Kuri interineti",offline:"Nta murongo",you:"Wowe",yesterday:"Ejo hashize",notAuthorized:"Ntabwo ureherewe kureba iki kiganiro.",noOwner:"Nta nyir'ubwite uhujwe na konti yawe.",loading:"Turimo gutegura ikiganiro...",sendFailed:"Kohereza byanze.",back:"Subira"},
+messages:{title:"Ubutumwa",emptyThread:"Nta butumwa burahari. Vuga muraho 👋",inputPlaceholder:"Andika ubutumwa...",send:"Ohereza",online:"Kuri interineti",offline:"Nta murongo",lastSeen:"Byagarutse",you:"Wowe",yesterday:"Ejo hashize",notAuthorized:"Ntabwo ureherewe kureba iki kiganiro.",noOwner:"Nta nyir'ubwite uhujwe na konti yawe.",loading:"Turimo gutegura ikiganiro...",sendFailed:"Kohereza byanze.",back:"Subira",ownerRole:"Nyir'ubwite / Umuyobozi",
+attach:"Ohereza dosiye",emoji:"Emoji",share:"Sangiza inyandiko",shareMaterial:"Sangiza Ibikoresho",shareWorker:"Sangiza Umukozi",shareReport:"Sangiza Raporo",cancelReply:"Hagarika gusubiza",replyingTo:"Gusubiza {name}",
+reply:"Subiza",react:"Tangiza",deleteForMe:"Siba kuri njye",deleteForEveryone:"Siba kuri bose",edited:"byahinduwe",deleted:"Ubu butumwa bwasibwe",
+searchInConversation:"Shakisha mu kiganiro",noSearchResults:"Nta butumwa buhuye",
+pinConversation:"Shyira hejuru",unpinConversation:"Kura hejuru",muteConversation:"Nyereza",unmuteConversation:"Kumurura",archiveConversation:"Bika",unarchiveConversation:"Kuraho",
+uploading:"Turaohereza {name}...",fileTooLarge:"Dosiye ni nini cyane (max 10 MB)",fileTypeNotAllowed:"Ubwoko bwa dosiye ntibwemewe",
+newMessageFrom:"Ubutumwa bushya buturutse {name}",
+editMessage:"Hindura ubutumwa",saveEdit:"Bika",editWindowExpired:"Ushobora guhindura gusa mu minota 15",deleteWindowExpired:"Gusiba kuri bose bishoboka gusa mu minota 15"},
 dashboard:{siteStatus:"Imiterere",siteManager:"Umuyobozi",workersOnSite:"Abakozi",progress:"Ibitekerezo",recentMaterials:"Ibikoresho bishya",pendingTasks:"Imirimo itegereje"},
 materials:{title:"Ibikoresho Byakoreshejwe",recordUsage:"Andika Gukoresha",editMaterial:"Hindura",materialName:"Izina",quantityUsed:"Umubare",unitCost:"Igiciro",totalAmount:"Amafaranga",noMaterials:"Nta bikoresho.",requisitions:"Ubusabe",newRequisition:"+ Ubusabe Bushya",requested:"Basabwe",supplied:"Byatanzwe",remaining:"Bisigaye",reqNumber:"Nomero",site:"Ukibanza",requestedBy:"Wasabye",requestDate:"Itariki yo Gusaba",requiredDate:"Itariki Ikenewe",priority:"Ubwihutirwa",status:"Imiterere",actions:"Ibikorwa",pending:"Bitegereje",urgent:"Byihutirwa",approved:"Byemewe",partiallySupplied:"Igice",suppliedStatus:"Byatanzwe",normal:"Bisanzwe",createRequisition:"Ubusabe Bushya",submitRequisition:"Ohereza",notes:"Ibisobanuro",material:"Ibikoresho",available:"Biboneka",requestedQty:"Umubare",unit:"Igice",noRequisitions:"Nta busabe.",batchMaterialUsage:"Gukoresha Ibikoresho",dateUsed:"Itariki *",selectMaterials:"Hitamo Ibikoresho",selectMaterialsHint:"Kanda guhitamo",batchTotal:"Igiteranyo",saveUsageBatch:"Bika",selectAtLeastOneMaterial:"Hitamo byibura kimwe",quantityMustBePositive:"Umubare > 0",unitCostCannotBeNegative:"Igiciro ntigishobora kuba nini",insufficientStock:"Imbuganyuro ntihagije",stockNotFound:"Ntiboneka",batchSaved:"Byabitswe!",currentStock:"Ziriho",materialItems:"Ibikoresho",materials:"ibikoresho",usagePhoto:"Ifoto (Bidahatirwa)",usagePhotoHint:"Fata cyangwa hitamo ifoto",search:"Shakisha...",allPriorities:"Ubwihutirwa bwose",allStatuses:"Imiterere yose",clearFilters:"Siba amashungura"},
 stock:{title:"Imbuganyuro",receiveStock:"Akira",editStock:"Hindura",stockHistory:"Amateka",quantity:"Umubare",minimumStock:"Ntarengwa",stockValue:"Agaciro",lastUpdated:"Byavuguruwe",notes:"Ibisobanuro",normal:"Bisanzwe",lowStock:"Nke",outOfStock:"Yashaje",unit:"Igice",unitCost:"Igiciro",currentStock:"Ziriho"},
@@ -216,7 +306,14 @@ gallery:{title:"Amafoto",uploadImage:"Ohereza Ifoto",description:"Ibisobanuro",u
 settings:{title:"Igenamiterere",profile:"Umwirondoro",account:"Kontu",security:"Umutekano",preferences:"Amahitamo",profileInfo:"Amakuru bwite",fullName:"Amazina",phone:"Telefoni",email:"Email",changePhoto:"Hindura ifoto",removePhoto:"Kuraho",saveProfile:"Bika",accountInfo:"Kontu",accountName:"Izina",role:"Umwanya",accountStatus:"Imiterere",active:"Bikora",memberSince:"Kuva",changePassword:"Hindura Ijambobanga",currentPassword:"Risanzwe",newPassword:"Rishya",confirmPassword:"Emeza",changePassBtn:"Hindura",prefs:"Amahitamo",language:"Ururimi",currency:"Ifaranga",dateFormat:"Itariki",notifications:"Imenyesha",savePrefs:"Bika"}},
 fr:{navigation:{managerPanel:"Panneau du gestionnaire",dashboard:"Tableau de bord",materials:"Matériaux",stock:"Stock",workers:"Ouvriers",progress:"Progrès",reports:"Rapports",messages:"Messages",gallery:"Galerie",settings:"Paramètres",logout:"Déconnexion"},
 common:{save:"Enregistrer",cancel:"Annuler",close:"Fermer",add:"Ajouter",edit:"Modifier",delete:"Supprimer",view:"Voir",upload:"Télécharger",search:"Rechercher",loading:"Chargement...",areYouSure:"Êtes-vous sûr ?",cannotUndo:"Action irréversible",savedSuccessfully:"Enregistré",updatedSuccessfully:"Mis à jour",deletedSuccessfully:"Supprimé",somethingWentWrong:"Une erreur s'est produite",noDataAvailable:"Aucune donnée",requiredField:"Champ requis",invalidValue:"Valeur invalide",selectAll:"Tout Sélectionner",today:"Aujourd'hui",remove:"Retirer",print:"Imprimer",download:"Télécharger",export:"Exporter",filter:"Filtrer",clear:"Effacer",accessDenied:"Accès refusé"},
-messages:{title:"Messages",emptyThread:"Aucun message. Dites bonjour 👋",inputPlaceholder:"Tapez un message...",send:"Envoyer",online:"En ligne",offline:"Hors ligne",you:"Vous",yesterday:"Hier",notAuthorized:"Vous n'êtes pas autorisé à voir cette conversation.",noOwner:"Aucun propriétaire n'est associé à votre compte.",loading:"Chargement de la conversation...",sendFailed:"Échec de l'envoi.",back:"Retour"},
+messages:{title:"Messages",emptyThread:"Aucun message. Dites bonjour 👋",inputPlaceholder:"Tapez un message...",send:"Envoyer",online:"En ligne",offline:"Hors ligne",lastSeen:"Vu pour la dernière fois",you:"Vous",yesterday:"Hier",notAuthorized:"Vous n'êtes pas autorisé à voir cette conversation.",noOwner:"Aucun propriétaire n'est associé à votre compte.",loading:"Chargement de la conversation...",sendFailed:"Échec de l'envoi.",back:"Retour",ownerRole:"Propriétaire / Admin",
+attach:"Joindre un fichier",emoji:"Emoji",share:"Partager un enregistrement",shareMaterial:"Partager Matériau",shareWorker:"Partager Ouvrier",shareReport:"Partager Rapport",cancelReply:"Annuler la réponse",replyingTo:"Réponse à {name}",
+reply:"Répondre",react:"Réagir",deleteForMe:"Supprimer pour moi",deleteForEveryone:"Supprimer pour tout le monde",edited:"modifié",deleted:"Ce message a été supprimé",
+searchInConversation:"Rechercher dans la conversation",noSearchResults:"Aucun message ne correspond",
+pinConversation:"Épingler",unpinConversation:"Désépingler",muteConversation:"Mettre en sourdine",unmuteConversation:"Réactiver",archiveConversation:"Archiver",unarchiveConversation:"Désarchiver",
+uploading:"Envoi de {name}...",fileTooLarge:"Fichier trop volumineux (max 10 Mo)",fileTypeNotAllowed:"Type de fichier non autorisé",
+newMessageFrom:"Nouveau message de {name}",
+editMessage:"Modifier le message",saveEdit:"Enregistrer",editWindowExpired:"Modifiable uniquement dans les 15 minutes",deleteWindowExpired:"Suppression pour tous uniquement dans les 15 minutes"},
 dashboard:{siteStatus:"Statut",siteManager:"Gestionnaire",workersOnSite:"Ouvriers",progress:"Progrès",recentMaterials:"Matériaux récents",pendingTasks:"Tâches en attente"},
 materials:{title:"Matériaux utilisés",recordUsage:"Enregistrer",editMaterial:"Modifier",materialName:"Nom",quantityUsed:"Qté",unitCost:"Coût",totalAmount:"Total",noMaterials:"Aucun matériau.",requisitions:"Réquisitions",newRequisition:"+ Nouvelle",requested:"Demandé",supplied:"Fourni",remaining:"Restant",reqNumber:"N°",site:"Chantier",requestedBy:"Demandé par",requestDate:"Date demande",requiredDate:"Date requise",priority:"Priorité",status:"Statut",actions:"Actions",pending:"En attente",urgent:"Urgent",approved:"Approuvé",partiallySupplied:"Partiel",suppliedStatus:"Fourni",normal:"Normal",createRequisition:"Nouvelle Réquisition",submitRequisition:"Soumettre",notes:"Notes",material:"Matériau",available:"Disponible",requestedQty:"Qté demandée",unit:"Unité",noRequisitions:"Aucune réquisition.",batchMaterialUsage:"Utilisation par lot",dateUsed:"Date *",selectMaterials:"Sélectionner",selectMaterialsHint:"Cliquez pour sélectionner",batchTotal:"Montant total",saveUsageBatch:"Enregistrer",selectAtLeastOneMaterial:"Sélectionnez au moins un matériau",quantityMustBePositive:"Quantité > 0",unitCostCannotBeNegative:"Coût non négatif",insufficientStock:"Stock insuffisant",stockNotFound:"Introuvable",batchSaved:"Lot enregistré!",currentStock:"Stock actuel",materialItems:"Articles",materials:"matériaux",usagePhoto:"Photo (facultatif)",usagePhotoHint:"Prenez ou sélectionnez une photo",search:"Rechercher...",allPriorities:"Toutes priorités",allStatuses:"Tous statuts",clearFilters:"Effacer filtres"},
 stock:{title:"Gestion du stock",receiveStock:"Recevoir",editStock:"Modifier",stockHistory:"Historique",quantity:"Quantité",minimumStock:"Stock min",stockValue:"Valeur",lastUpdated:"Mis à jour",notes:"Notes",normal:"Normal",lowStock:"Faible",outOfStock:"Épuisé",unit:"Unité",unitCost:"Coût unitaire",currentStock:"Stock actuel"},
@@ -376,7 +473,7 @@ function generateReportHTML(title, bodyHTML, meta){
 }
 
 // ============================================================
-// REPORTS PAGE — 4 report types
+// REPORTS PAGE
 // ============================================================
 function renderReports(container){
   const siteOpts = assignedSites.map(s => `<option value="${s.id}">${s.name}</option>`).join('');
@@ -932,7 +1029,7 @@ window.exportWorkersReport = (format) => {
 };
 
 // ============================================================
-// LEGACY PDF helpers
+// LEGACY PDF HELPERS
 // ============================================================
 function drawPdfHeader(doc, company, model){
   const W = doc.internal.pageSize.getWidth();
@@ -2123,7 +2220,7 @@ function attachListeners(){
   unsubscribeSnapshots.push(onSnapshot(query(collection(db,'requisition_history'),where('site_id','==',sid),orderBy('timestamp','desc')),s=>{requisitionHistoryData=s.docs.map(d=>({id:d.id,...d.data()}));refreshCurrentSection()}));
 }
 function refreshCurrentSection(){
-  if(currentSection==='messages'){renderMessagesThread();updateMessagesBadge();return;}
+  if(currentSection==='messages'){renderMessagesThread();renderMessagesSidebar();updateMessagesBadge();return;}
   if(window._refreshing)return;window._refreshing=true;
   requestAnimationFrame(()=>{
     if(currentUser&&currentSiteId){
@@ -2161,32 +2258,41 @@ function refreshCurrentSection(){
 window.switchSite=function(id){currentSiteId=id;attachListeners();showSection(currentSection)};
 
 // =================================================================
-// ============== MESSAGING ENGINE (Manager ↔ Owner) ===============
+// ============== MESSAGING ENGINE v2 (Manager ↔ Owner) ============
 // =================================================================
 const CONVERSATIONS = 'conversations';
+const EDIT_WINDOW_MS   = 15 * 60 * 1000;
+const MAX_FILE_BYTES   = 10 * 1024 * 1024;
+const ALLOWED_MIME     = ['image/jpeg','image/png','image/gif','image/webp','application/pdf','application/msword','application/vnd.openxmlformats-officedocument.wordprocessingml.document','application/vnd.ms-excel','application/vnd.openxmlformats-officedocument.spreadsheetml.sheet','text/plain'];
+const EMOJI_SET = ['😀','😃','😄','😁','😆','😅','😂','🤣','😊','😇','🙂','🙃','😉','😌','😍','🥰','😘','😗','😙','😚','😋','😛','😝','😜','🤪','🤨','🧐','🤓','😎','🤩','🥳','😏','😒','😞','😔','😟','😕','🙁','☹️','😣','😖','😫','😩','🥺','😢','😭','😤','😠','😡','🤬','🤯','😳','🥵','🥶','😱','😨','😰','😥','😓','🤗','🤔','🤭','🤫','🤥','😶','😐','😑','😬','🙄','😯','😦','😧','😮','😲','🥱','😴','🤤','😪','😵','🤐','🥴','🤢','🤮','🤧','😷','🤒','🤕','🤑','🤠','😈','👿','👹','👺','🤡','💩','👻','💀','☠️','👽','👾','🤖','🎃','😺','😸','😹','😻','😼','😽','🙀','😿','😾','👍','👎','👌','✌️','🤞','🤟','🤘','🤙','👈','👉','👆','👇','☝️','✋','🤚','🖐️','🖖','👋','🤝','🙏','✍️','💪','🦾','🦿','🦵','🦶','👂','🦻','👃','🧠','🦷','👀','👁️','👅','👄','❤️','🧡','💛','💚','💙','💜','🖤','🤍','🤎','💔','❣️','💕','💞','💓','💗','💖','💘','💝','💟','☮️','✨','⭐','🌟','💫','⚡','🔥','💥','💢','💨','💦','💤','🎉','🎊','🎁','🏆','🥇','🥈','🥉','⚽','🏀','🏈','⚾','🎾','🏐','🏉','🎱','🏓','🏸','🥊','🥋','⛳','🛹','🛼','🛷','⛸️','🥌','🎿','⛷️','🏂','🏋️','🤼','🤸','⛹️','🤾','🏌️','🏇','🧘','🏄','🏊','🤽','🚣','🧗','🚵','🚴','🏅','🎖️','🏵️','🎗️','🎫','🎟️','🎪','🤹','🎭','🩰','🎨','🎬','🎤','🎧','🎼','🎹','🥁','🎷','🎺','🎸','🪕','🎻','🎲','♟️','🎯','🎳','🎮','🎰','🧩'];
+
 let conversationsData     = [];
 let activeOwnerId         = null;
 let activeOwnerProfile    = null;
 let activeConversationId  = null;
 let messagesCache         = [];
-let messageUnsub          = null;
+let messagesUnsub         = null;
+let typingUnsub           = null;
 let chatUnsubs            = [];
 let presenceMap           = {};
+let typingMap             = {};
 let rtdb                  = null;
+let replyingTo            = null;
+let pendingAttachment     = null;
+let emojiPickerOpen       = false;
+let searchPanelOpen       = false;
+let currentSearchQuery    = '';
 
 function buildConversationId(ownerId, managerId) {
-  // Same deterministic formula as the owner panel — identity-based,
-  // never derived from a site ID, so reassigning the manager to another
-  // site does not fork the message history.
   return `owner_${ownerId}_manager_${managerId}`;
 }
-
 function getManagerOwnerId() {
   const conv = conversationsData.find(c => c.type === 'owner_manager' && c.owner_id);
   if (conv?.owner_id) return conv.owner_id;
   for (const s of assignedSites) if (s.owner_id) return s.owner_id;
   return null;
 }
+function initialsOf(name) { return String(name || '?').trim().charAt(0).toUpperCase() || '?'; }
 
 function formatChatTime(v) {
   if (!v) return '';
@@ -2201,8 +2307,21 @@ function formatChatTime(v) {
   return `${d.getDate()}/${d.getMonth() + 1}/${d.getFullYear()} ${hh}:${mm}`;
 }
 
-function initialsOf(name) {
-  return String(name || '?').trim().charAt(0).toUpperCase() || '?';
+function formatBytes(bytes) {
+  if (!bytes) return '0 B';
+  const k = 1024, sizes = ['B','KB','MB','GB'];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return `${(bytes / Math.pow(k, i)).toFixed(1)} ${sizes[i]}`;
+}
+
+function getDraft(cid) {
+  try { return localStorage.getItem(`shdr_draft_${cid}`) || ''; } catch { return ''; }
+}
+function setDraft(cid, text) {
+  try {
+    if (text && text.trim()) localStorage.setItem(`shdr_draft_${cid}`, text);
+    else localStorage.removeItem(`shdr_draft_${cid}`);
+  } catch {}
 }
 
 function initPresence() {
@@ -2217,49 +2336,69 @@ function initPresence() {
       .then(() => rtdbSet(myPresence, { online: true, last_changed: Date.now() }))
       .catch(err => console.warn('presence set failed:', err));
   });
-  const treeRef = rtdbRef(rtdb, 'presence');
-  chatUnsubs.push(rtdbOnValue(treeRef, (snap) => {
+  chatUnsubs.push(rtdbOnValue(rtdbRef(rtdb, 'presence'), (snap) => {
     presenceMap = snap.val() || {};
     if (currentSection === 'messages') renderMessagesThread();
   }, err => console.warn('presence listener:', err)));
+}
+
+function startTyping(cid) {
+  if (!rtdb || !cid) return;
+  const ref = rtdbRef(rtdb, `typing/${cid}/${currentUser.uid}`);
+  rtdbSet(ref, Date.now()).catch(() => {});
+}
+function stopTyping(cid) {
+  if (!rtdb || !cid) return;
+  rtdbSet(rtdbRef(rtdb, `typing/${cid}/${currentUser.uid}`), null).catch(() => {});
+}
+let _typingTimer = null;
+function onComposerInput() {
+  if (!activeConversationId) return;
+  startTyping(activeConversationId);
+  clearTimeout(_typingTimer);
+  _typingTimer = setTimeout(() => stopTyping(activeConversationId), 3000);
+}
+function subscribeToTyping(cid) {
+  if (typingUnsub) { try { typingUnsub(); } catch (_) {} typingUnsub = null; }
+  typingMap = {};
+  if (!rtdb || !cid) return;
+  typingUnsub = rtdbOnValue(rtdbRef(rtdb, `typing/${cid}`), (snap) => {
+    const val = snap.val() || {};
+    const now = Date.now();
+    typingMap = {};
+    Object.entries(val).forEach(([uid, ts]) => {
+      if (uid !== currentUser.uid && now - ts < 5000) typingMap[uid] = ts;
+    });
+    renderTypingIndicator();
+  }, err => console.warn('typing listener:', err));
 }
 
 function attachMessagingListeners() {
   chatUnsubs.forEach(fn => { try { fn(); } catch (_) {} });
   chatUnsubs = [];
   if (!currentUser) return;
-
-  const convQ = query(
-    collection(db, CONVERSATIONS),
-    where('participants', 'array-contains', currentUser.uid)
-  );
-
+  const convQ = query(collection(db, CONVERSATIONS), where('participants', 'array-contains', currentUser.uid));
   chatUnsubs.push(onSnapshot(convQ, (snap) => {
     conversationsData = snap.docs.map(d => ({ id: d.id, ...d.data() }));
     updateMessagesBadge();
     if (currentSection === 'messages') {
-      if (activeConversationId && !conversationsData.some(c => c.id === activeConversationId)) {
-        resetActiveConversation();
-      }
+      if (activeConversationId && !conversationsData.some(c => c.id === activeConversationId)) resetActiveConversation();
+      renderMessagesSidebar();
       renderMessagesThread();
     }
   }, err => console.error('[conversations] snapshot error:', err)));
-
   initPresence();
 }
 
-function subscribeToMessages(conversationId) {
-  if (messageUnsub) { try { messageUnsub(); } catch (_) {} messageUnsub = null; }
+function subscribeToMessages(cid) {
+  if (messagesUnsub) { try { messagesUnsub(); } catch (_) {} messagesUnsub = null; }
   messagesCache = [];
-  const msgQ = query(
-    collection(db, CONVERSATIONS, conversationId, 'messages'),
-    orderBy('created_at', 'asc'),
-    limit(500)
-  );
-  messageUnsub = onSnapshot(msgQ, (snap) => {
+  const msgQ = query(collection(db, CONVERSATIONS, cid, 'messages'), orderBy('created_at', 'asc'), limit(500));
+  messagesUnsub = onSnapshot(msgQ, (snap) => {
     messagesCache = snap.docs.map(d => ({ id: d.id, ...d.data() }));
     renderMessagesThread();
-    markConversationRead(conversationId);
+    markConversationRead(cid);
+    markConversationDelivered(cid);
   }, err => {
     console.error('[messages] snapshot error:', err);
     showToast(t('messages.notAuthorized'), 'error');
@@ -2281,7 +2420,8 @@ async function ensureOwnerConversation(ownerId) {
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
       last_message: null,
-      unread: { [ownerId]: 0, [managerId]: 0 }
+      unread: { [ownerId]: 0, [managerId]: 0 },
+      user_settings: { [ownerId]: { pinned:false, muted:false, archived:false }, [managerId]: { pinned:false, muted:false, archived:false } }
     };
     try { await setDoc(ref, payload); }
     catch (err) {
@@ -2292,66 +2432,121 @@ async function ensureOwnerConversation(ownerId) {
   return cid;
 }
 
-async function markConversationRead(conversationId) {
-  if (!currentUser || !conversationId) return;
-  let conv = conversationsData.find(c => c.id === conversationId);
-  if (!conv) {
-    try {
-      const snap = await getDoc(doc(db, CONVERSATIONS, conversationId));
-      if (snap.exists()) conv = { id: snap.id, ...snap.data() };
-    } catch (_) {}
-  }
-  if (!conv) return;
-  const unread = (conv.unread && conv.unread[currentUser.uid]) || 0;
+async function markConversationRead(cid) {
+  if (!currentUser || !cid) return;
+  const conv = conversationsData.find(c => c.id === cid);
+  const unread = (conv?.unread && conv.unread[currentUser.uid]) || 0;
   if (!unread) return;
   try {
-    await updateDoc(doc(db, CONVERSATIONS, conversationId), {
+    await updateDoc(doc(db, CONVERSATIONS, cid), {
       [`unread.${currentUser.uid}`]: 0,
       [`last_read.${currentUser.uid}`]: new Date().toISOString()
     });
   } catch (err) { console.warn('mark read failed:', err); }
+  const now = new Date().toISOString();
+  const batch = writeBatch(db);
+  let touched = 0;
+  messagesCache.forEach(m => {
+    if (m.sender_id === currentUser.uid) return;
+    if (m.read_at) return;
+    batch.update(doc(db, CONVERSATIONS, cid, 'messages', m.id), { read_at: now });
+    touched++;
+  });
+  if (touched) { try { await batch.commit(); } catch (e) { console.warn('read-receipt batch:', e); } }
+}
+
+async function markConversationDelivered(cid) {
+  if (!currentUser || !cid) return;
+  const now = new Date().toISOString();
+  const batch = writeBatch(db);
+  let touched = 0;
+  messagesCache.forEach(m => {
+    if (m.sender_id === currentUser.uid) return;
+    if (m.delivered_at) return;
+    batch.update(doc(db, CONVERSATIONS, cid, 'messages', m.id), { delivered_at: now });
+    touched++;
+  });
+  if (touched) { try { await batch.commit(); } catch (e) { console.warn('delivered batch:', e); } }
 }
 
 function resetActiveConversation() {
-  if (messageUnsub) { try { messageUnsub(); } catch (_) {} messageUnsub = null; }
+  if (messagesUnsub) { try { messagesUnsub(); } catch (_) {} messagesUnsub = null; }
+  if (typingUnsub)   { try { typingUnsub();   } catch (_) {} typingUnsub = null; }
+  if (activeConversationId) stopTyping(activeConversationId);
   activeOwnerId = null;
   activeOwnerProfile = null;
   activeConversationId = null;
   messagesCache = [];
+  replyingTo = null;
+  pendingAttachment = null;
+  typingMap = {};
+  currentSearchQuery = '';
+  searchPanelOpen = false;
 }
 
 window.sendOwnerMessage = async () => {
   const input = document.getElementById('message-input');
   if (!input || !activeConversationId) return;
   const text = (input.value || '').trim();
-  if (!text) return;
+  const hasAttachment = !!pendingAttachment;
+  const hasShared = !!window._pendingSharedRecord;
+  if (!text && !hasAttachment && !hasShared) return;
   if (text.length > 4000) { showToast(t('common.invalidValue'), 'error'); return; }
-
   const btn = document.getElementById('message-send-btn');
   if (btn) btn.disabled = true;
-
   const now = new Date().toISOString();
   const msgRef = doc(collection(db, CONVERSATIONS, activeConversationId, 'messages'));
+  const reply = replyingTo;
+  const shared = window._pendingSharedRecord || null;
   input.value = '';
-
+  setDraft(activeConversationId, '');
+  replyingTo = null;
+  renderComposerReplyPreview();
+  stopTyping(activeConversationId);
   try {
-    const batch = writeBatch(db);
-    batch.set(msgRef, {
+    let attachment = null;
+    if (hasAttachment) {
+      const f = pendingAttachment.file;
+      if (!ALLOWED_MIME.includes(f.type)) throw new Error(t('messages.fileTypeNotAllowed'));
+      if (f.size > MAX_FILE_BYTES) throw new Error(t('messages.fileTooLarge'));
+      showToast(t('messages.uploading', { name: f.name }), 'info');
+      const url = await uploadFileToImgbb(f);
+      attachment = { url, name: f.name, size: f.size, mime: f.type };
+      clearPendingAttachment();
+    }
+    const msgPayload = {
       sender_id: currentUser.uid,
       sender_role: 'manager',
-      text,
-      created_at: now
-    });
+      text: text || '',
+      type: attachment ? 'attachment' : (shared ? 'shared_record' : 'text'),
+      attachment: attachment,
+      shared_record: shared,
+      reply_to: reply?.id || null,
+      reply_preview: reply ? { sender_name: reply.sender_name, text: reply.text } : null,
+      reactions: {},
+      edited_at: null,
+      deleted_for_all: false,
+      deleted_for: [],
+      created_at: now,
+      sent_at: now,
+      delivered_at: null,
+      read_at: null
+    };
+    const previewText = attachment ? `📎 ${attachment.name}` : shared ? `📋 ${shared.title}` : text.slice(0, 200);
+    const batch = writeBatch(db);
+    batch.set(msgRef, msgPayload);
     batch.update(doc(db, CONVERSATIONS, activeConversationId), {
-      last_message: { text: text.slice(0, 200), sender_id: currentUser.uid, created_at: now },
+      last_message: { text: previewText, sender_id: currentUser.uid, created_at: now },
       updated_at: now,
       [`unread.${activeOwnerId}`]: increment(1)
     });
     await batch.commit();
+    window._pendingSharedRecord = null;
+    renderComposerAttachment();
   } catch (err) {
     console.error(err);
     input.value = text;
-    showToast(t('messages.sendFailed'), 'error');
+    showToast(err.message || t('messages.sendFailed'), 'error');
   } finally {
     if (btn) btn.disabled = false;
   }
@@ -2364,98 +2559,445 @@ window.handleOwnerMessageKeydown = (event) => {
   }
 };
 
+async function uploadFileToImgbb(file) {
+  const fd = new FormData();
+  fd.append('image', file);
+  const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, { method: 'POST', body: fd });
+  const j = await res.json();
+  if (!j.success) throw new Error('File upload failed');
+  return j.data.url;
+}
+
+window.pickAttachment = () => {
+  const inp = document.createElement('input');
+  inp.type = 'file';
+  inp.accept = ALLOWED_MIME.join(',');
+  inp.onchange = () => {
+    const f = inp.files?.[0];
+    if (!f) return;
+    if (!ALLOWED_MIME.includes(f.type)) { showToast(t('messages.fileTypeNotAllowed'), 'error'); return; }
+    if (f.size > MAX_FILE_BYTES) { showToast(t('messages.fileTooLarge'), 'error'); return; }
+    pendingAttachment = { file: f, name: f.name, size: f.size, mime: f.type };
+    renderComposerAttachment();
+  };
+  inp.click();
+};
+function clearPendingAttachment() { pendingAttachment = null; renderComposerAttachment(); }
+
+window.toggleEmojiPicker = () => { emojiPickerOpen = !emojiPickerOpen; renderEmojiPicker(); };
+window.insertEmoji = (emoji) => {
+  const inp = document.getElementById('message-input');
+  if (!inp) return;
+  const start = inp.selectionStart ?? inp.value.length;
+  const end = inp.selectionEnd ?? inp.value.length;
+  inp.value = inp.value.slice(0, start) + emoji + inp.value.slice(end);
+  inp.selectionStart = inp.selectionEnd = start + emoji.length;
+  inp.focus();
+  onComposerInput();
+};
+
+window.startReply = (mid) => {
+  const m = messagesCache.find(x => x.id === mid);
+  if (!m || m.deleted_for_all) return;
+  const senderName = m.sender_id === currentUser.uid ? (managerProfile?.full_name || 'You') : (activeOwnerProfile?.full_name || 'Owner');
+  const body = m.type === 'attachment' ? `📎 ${m.attachment?.name || 'file'}` : m.type === 'shared_record' ? `📋 ${m.shared_record?.title || 'record'}` : (m.text || '');
+  replyingTo = { id: mid, sender_name: senderName, text: body.slice(0, 120) };
+  renderComposerReplyPreview();
+  document.getElementById('message-input')?.focus();
+};
+window.cancelReply = () => { replyingTo = null; renderComposerReplyPreview(); };
+
+window.toggleReaction = async (mid, emoji) => {
+  if (!activeConversationId) return;
+  const m = messagesCache.find(x => x.id === mid);
+  if (!m) return;
+  const map = { ...(m.reactions || {}) };
+  const arr = new Set(map[emoji] || []);
+  if (arr.has(currentUser.uid)) arr.delete(currentUser.uid);
+  else arr.add(currentUser.uid);
+  if (arr.size) map[emoji] = Array.from(arr);
+  else delete map[emoji];
+  try {
+    await updateDoc(doc(db, CONVERSATIONS, activeConversationId, 'messages', mid), { reactions: map });
+  } catch (err) { showToast(t('common.somethingWentWrong'), 'error'); }
+};
+window.openReactionPicker = (mid, ev) => {
+  ev?.stopPropagation?.();
+  document.querySelectorAll('.reaction-picker.open').forEach(el => el.classList.remove('open'));
+  const picker = document.getElementById(`reaction-picker-${mid}`);
+  if (picker) picker.classList.add('open');
+};
+
+window.startEdit = (mid) => {
+  const m = messagesCache.find(x => x.id === mid);
+  if (!m || m.sender_id !== currentUser.uid || m.deleted_for_all) return;
+  if (m.type !== 'text') { showToast(t('messages.editWindowExpired'), 'error'); return; }
+  const age = Date.now() - new Date(m.created_at).getTime();
+  if (age > EDIT_WINDOW_MS) { showToast(t('messages.editWindowExpired'), 'error'); return; }
+  openModal('✏️ ' + t('messages.editMessage'), `
+    <form onsubmit="submitEdit(event, '${mid}')" class="space-y-4">
+      <textarea id="edit-input" rows="4" class="w-full border rounded-lg p-3 text-sm">${escapeHTML(m.text || '')}</textarea>
+      <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-xl font-semibold">${t('messages.saveEdit')}</button>
+    </form>`);
+  setTimeout(() => {
+    const inp = document.getElementById('edit-input');
+    if (inp) { inp.focus(); inp.selectionStart = inp.selectionEnd = inp.value.length; }
+  }, 80);
+};
+window.submitEdit = async (e, mid) => {
+  e.preventDefault();
+  const btn = getFormSubmitBtn(e.target);
+  setButtonLoading(btn, true);
+  try {
+    const text = (document.getElementById('edit-input').value || '').trim();
+    if (!text) { showToast(t('common.requiredField'), 'error'); return; }
+    await updateDoc(doc(db, CONVERSATIONS, activeConversationId, 'messages', mid), { text, edited_at: new Date().toISOString() });
+    closeModal();
+  } catch (err) { showToast(t('common.somethingWentWrong'), 'error'); }
+  finally { setButtonLoading(btn, false); }
+};
+
+window.openDeleteMenu = (mid, ev) => {
+  ev?.stopPropagation?.();
+  const m = messagesCache.find(x => x.id === mid);
+  if (!m) return;
+  const mine = m.sender_id === currentUser.uid;
+  const age = Date.now() - new Date(m.created_at).getTime();
+  const canDeleteAll = mine && age <= EDIT_WINDOW_MS;
+  openModal('🗑️ ' + t('messages.delete'), `
+    <div class="space-y-3">
+      <button onclick="deleteMessage('${mid}','me')" class="w-full text-left px-4 py-3 rounded-xl border hover:bg-slate-50 flex items-center gap-3">
+        <iconify-icon icon="material-symbols:visibility-off-outline" width="20" class="text-slate-500"></iconify-icon>
+        <span class="font-medium">${t('messages.deleteForMe')}</span>
+      </button>
+      ${canDeleteAll ? `
+      <button onclick="deleteMessage('${mid}','all')" class="w-full text-left px-4 py-3 rounded-xl border hover:bg-red-50 flex items-center gap-3">
+        <iconify-icon icon="material-symbols:delete-outline" width="20" class="text-red-500"></iconify-icon>
+        <span class="font-medium text-red-600">${t('messages.deleteForEveryone')}</span>
+      </button>` : `<p class="text-xs text-slate-400 px-1">${t('messages.deleteWindowExpired')}</p>`}
+    </div>`);
+};
+window.deleteMessage = async (mid, scope) => {
+  closeModal();
+  try {
+    const mRef = doc(db, CONVERSATIONS, activeConversationId, 'messages', mid);
+    if (scope === 'me') {
+      const m = messagesCache.find(x => x.id === mid);
+      const deletedFor = Array.from(new Set([...(m?.deleted_for || []), currentUser.uid]));
+      await updateDoc(mRef, { deleted_for: deletedFor });
+    } else {
+      await updateDoc(mRef, { deleted_for_all: true, text: '', attachment: null, shared_record: null });
+    }
+  } catch (err) { showToast(t('common.somethingWentWrong'), 'error'); }
+};
+
+window.scrollToMessage = (mid) => {
+  const el = document.getElementById(`msg-${mid}`);
+  if (!el) return;
+  el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  el.classList.add('msg-highlight');
+  setTimeout(() => el.classList.remove('msg-highlight'), 1500);
+};
+
+window.toggleSearchPanel = () => { searchPanelOpen = !searchPanelOpen; renderSearchPanel(); };
+window.onSearchInput = (e) => { currentSearchQuery = (e.target.value || '').trim(); renderSearchPanel(); };
+function getSearchResults() {
+  if (!currentSearchQuery) return [];
+  const q = currentSearchQuery.toLowerCase();
+  return messagesCache.map((m, idx) => ({ m, idx })).filter(({ m }) => {
+    if (m.deleted_for_all) return false;
+    const hay = [m.text, m.attachment?.name, m.shared_record?.title].filter(Boolean).join(' ').toLowerCase();
+    return hay.includes(q);
+  }).slice(-30);
+}
+
+async function updateUserSetting(cid, patch) {
+  try {
+    const data = {};
+    Object.entries(patch).forEach(([k, v]) => { data[`user_settings.${currentUser.uid}.${k}`] = v; });
+    await updateDoc(doc(db, CONVERSATIONS, cid), data);
+  } catch (err) { showToast(t('common.somethingWentWrong'), 'error'); }
+}
+window.togglePin = async (cid) => {
+  const c = conversationsData.find(x => x.id === cid);
+  const cur = c?.user_settings?.[currentUser.uid]?.pinned || false;
+  await updateUserSetting(cid, { pinned: !cur });
+};
+window.toggleMute = async (cid) => {
+  const c = conversationsData.find(x => x.id === cid);
+  const cur = c?.user_settings?.[currentUser.uid]?.muted || false;
+  await updateUserSetting(cid, { muted: !cur });
+};
+window.toggleArchive = async (cid) => {
+  const c = conversationsData.find(x => x.id === cid);
+  const cur = c?.user_settings?.[currentUser.uid]?.archived || false;
+  await updateUserSetting(cid, { archived: !cur });
+};
+
+window.openSharePicker = () => {
+  openModal('📎 ' + t('messages.share'), `
+    <div class="space-y-3">
+      <button onclick="shareMaterialPicker()" class="w-full text-left px-4 py-3 rounded-xl border hover:bg-slate-50 flex items-center gap-3">
+        <iconify-icon icon="material-symbols:package-2-outline" width="20" class="text-emerald-600"></iconify-icon>
+        <span class="font-medium">${t('messages.shareMaterial')}</span>
+      </button>
+      <button onclick="shareWorkerPicker()" class="w-full text-left px-4 py-3 rounded-xl border hover:bg-slate-50 flex items-center gap-3">
+        <iconify-icon icon="material-symbols:engineering-outline" width="20" class="text-blue-600"></iconify-icon>
+        <span class="font-medium">${t('messages.shareWorker')}</span>
+      </button>
+      <button onclick="shareReportPicker()" class="w-full text-left px-4 py-3 rounded-xl border hover:bg-slate-50 flex items-center gap-3">
+        <iconify-icon icon="material-symbols:description-outline" width="20" class="text-amber-600"></iconify-icon>
+        <span class="font-medium">${t('messages.shareReport')}</span>
+      </button>
+    </div>`);
+};
+window.shareMaterialPicker = () => {
+  const items = stockData.filter(s => s.site_id === currentSiteId).slice(0, 30);
+  if (!items.length) { showToast(t('common.noDataAvailable'), 'error'); return; }
+  const rows = items.map(s => `
+    <button onclick="pickShareMaterial('${s.id}')" class="w-full text-left px-3 py-2 rounded-lg hover:bg-slate-50 border-b flex justify-between items-center">
+      <span class="font-medium text-sm">${escapeHTML(s.material_name || '')}</span>
+      <span class="text-xs text-slate-500">${toNumber(s.quantity)} ${escapeHTML(s.unit || 'units')}</span>
+    </button>`).join('');
+  openModal('🧱 ' + t('messages.shareMaterial'), `<div class="max-h-[60vh] overflow-y-auto">${rows}</div>`);
+};
+window.pickShareMaterial = (sid) => {
+  const s = stockData.find(x => x.id === sid);
+  if (!s) return;
+  const unit = s.unit || 'units';
+  const uc = toNumber(s.unit_cost);
+  const qty = toNumber(s.quantity);
+  const site = assignedSites.find(x => x.id === currentSiteId);
+  window._pendingSharedRecord = {
+    kind: 'material',
+    title: `🧱 ${t('messages.shareMaterial')}`,
+    subtitle: escapeHTML(s.material_name || ''),
+    lines: [
+      [t('materials.quantityUsed'), `${qty} ${unit}`],
+      [t('stock.unitCost'), formatRWF(uc)],
+      [t('materials.totalAmount'), formatRWF(qty * uc)],
+      [t('materials.site'), site?.name || '—']
+    ]
+  };
+  closeModal();
+  renderComposerAttachment();
+  document.getElementById('message-input')?.focus();
+};
+window.shareWorkerPicker = () => {
+  const items = siteWorkersData.slice(0, 40);
+  if (!items.length) { showToast(t('common.noDataAvailable'), 'error'); return; }
+  const rows = items.map(w => `
+    <button onclick="pickShareWorker('${w.id}')" class="w-full text-left px-3 py-2 rounded-lg hover:bg-slate-50 border-b flex justify-between items-center">
+      <span class="font-medium text-sm">${escapeHTML(w.name || '')}</span>
+      <span class="text-xs text-slate-500">${escapeHTML(w.role || '')}</span>
+    </button>`).join('');
+  openModal('👷 ' + t('messages.shareWorker'), `<div class="max-h-[60vh] overflow-y-auto">${rows}</div>`);
+};
+window.pickShareWorker = (wid) => {
+  const w = siteWorkersData.find(x => x.id === wid);
+  if (!w) return;
+  const attendance = attendanceData.filter(a => a.worker_id === w.id);
+  const days = attendance.length;
+  const rate = toNumber(w.salary);
+  const payable = days * rate;
+  window._pendingSharedRecord = {
+    kind: 'worker',
+    title: `👷 ${t('messages.shareWorker')}`,
+    subtitle: escapeHTML(w.name || ''),
+    lines: [
+      [t('workers.position'), escapeHTML(w.role || '—')],
+      [t('workers.attendanceLogs'), `${days}`],
+      [t('reports.totalPayable'), formatRWF(payable)]
+    ]
+  };
+  closeModal();
+  renderComposerAttachment();
+  document.getElementById('message-input')?.focus();
+};
+window.shareReportPicker = () => {
+  const site = assignedSites.find(x => x.id === currentSiteId);
+  const totalTasks = progressTasks.length;
+  const doneTasks = progressTasks.filter(t2 => t2.status === 'completed').length;
+  const pct = totalTasks ? Math.round((doneTasks / totalTasks) * 100) : 0;
+  const monthName = new Date().toLocaleString('en', { month: 'long' });
+  const yearNum = new Date().getFullYear();
+  window._pendingSharedRecord = {
+    kind: 'report',
+    title: `📄 ${t('messages.shareReport')}`,
+    subtitle: site?.name || '—',
+    lines: [
+      [t('reports.labels.period'), `${monthName} ${yearNum}`],
+      [t('dashboard.progress'), `${pct}%`]
+    ]
+  };
+  closeModal();
+  renderComposerAttachment();
+  document.getElementById('message-input')?.focus();
+};
+
+window.openOwnerConversation = async () => {
+  try {
+    const ownerId = getManagerOwnerId();
+    if (!ownerId) { showToast(t('messages.noOwner'), 'error'); return; }
+    try {
+      const snap = await getDoc(doc(db, 'profiles', ownerId));
+      if (snap.exists()) activeOwnerProfile = { id: snap.id, ...snap.data() };
+    } catch (e) { console.warn('owner profile lookup:', e); }
+    const cid = await ensureOwnerConversation(ownerId);
+    activeOwnerId = ownerId;
+    activeConversationId = cid;
+    document.querySelector('.messages-shell')?.classList.add('thread-open');
+    subscribeToMessages(cid);
+    subscribeToTyping(cid);
+    renderMessagesThread();
+    renderMessagesSidebar();
+    await markConversationRead(cid);
+    await markConversationDelivered(cid);
+  } catch (err) {
+    console.error(err);
+    showToast(err.message || t('alerts.somethingWentWrong'), 'error');
+  }
+};
+
+window.closeManagerConversation = () => {
+  if (activeConversationId) stopTyping(activeConversationId);
+  resetActiveConversation();
+  document.querySelector('.messages-shell')?.classList.remove('thread-open');
+  renderMessagesSidebar();
+  renderMessagesThread();
+};
+
 window.renderMessages = async function (container) {
   container.innerHTML = `
     <h2 class="text-xl sm:text-2xl font-bold mb-4 flex items-center gap-2">
       <iconify-icon icon="material-symbols:forum" class="text-emerald-600"></iconify-icon>
       ${t('messages.title')}
     </h2>
-    <div class="bg-white rounded-2xl border shadow-sm overflow-hidden" style="height:calc(100vh - 260px);min-height:440px">
-      <div id="messages-thread" class="flex flex-col h-full min-h-0"></div>
+    <div class="bg-white rounded-2xl border shadow-sm overflow-hidden messages-shell">
+      <div id="messages-directory" class="messages-directory"></div>
+      <div id="messages-thread" class="messages-thread"></div>
     </div>`;
-
-  const threadEl = document.getElementById('messages-thread');
-  if (threadEl) {
-    threadEl.innerHTML = `<div class="flex-1 flex flex-col items-center justify-center">
-      <div class="spinner"></div>
-      <p class="text-slate-400 text-sm mt-3">${t('messages.loading')}</p>
-    </div>`;
-  }
-
-  try {
-    const ownerId = getManagerOwnerId();
-    if (!ownerId) {
-      if (threadEl) threadEl.innerHTML = `<div class="flex-1 flex flex-col items-center justify-center p-8 text-center">
-        <iconify-icon icon="material-symbols:info-outline" class="text-5xl text-slate-300 mb-3"></iconify-icon>
-        <p class="text-slate-500 text-sm">${t('messages.noOwner')}</p>
-      </div>`;
-      return;
-    }
-
-    try {
-      const snap = await getDoc(doc(db, 'profiles', ownerId));
-      if (snap.exists()) activeOwnerProfile = { id: snap.id, ...snap.data() };
-    } catch (e) { console.warn('owner profile lookup:', e); }
-
-    const cid = await ensureOwnerConversation(ownerId);
-    activeOwnerId = ownerId;
-    activeConversationId = cid;
-
-    subscribeToMessages(cid);
-    renderMessagesThread();
-    await markConversationRead(cid);
-  } catch (err) {
-    console.error(err);
-    if (threadEl) threadEl.innerHTML = `<div class="flex-1 flex flex-col items-center justify-center p-8 text-center">
-      <iconify-icon icon="material-symbols:error-outline" class="text-5xl text-red-300 mb-3"></iconify-icon>
-      <p class="text-red-600 text-sm">${escapeHTML(err.message || t('common.somethingWentWrong'))}</p>
-    </div>`;
-  }
+  renderMessagesSidebar();
+  await window.openOwnerConversation();
 };
+
+function renderMessagesSidebar() {
+  const el = document.getElementById('messages-directory');
+  if (!el) return;
+  const ownerId = getManagerOwnerId();
+  if (!ownerId) {
+    el.innerHTML = `<div class="p-4 text-sm text-slate-400">${t('messages.noOwner')}</div>`;
+    return;
+  }
+  const owner = activeOwnerProfile || {};
+  const name = owner.full_name || 'Owner';
+  const photo = owner.profile_picture || '';
+  const online = !!presenceMap[ownerId]?.online;
+  const conv = conversationsData.find(c => c.id === activeConversationId);
+  const unread = (conv?.unread && conv.unread[currentUser.uid]) || 0;
+  const lastAt = conv?.last_message?.created_at || conv?.updated_at || null;
+  const lastText = conv?.last_message?.text || '';
+  const isActive = !!activeConversationId;
+  el.innerHTML = `
+    <div class="p-3 border-b bg-white">
+      <div class="relative">
+        <input type="text" disabled placeholder="${t('messages.searchInConversation')}"
+          class="w-full border rounded-lg py-2 pl-9 pr-3 text-sm bg-slate-50 cursor-pointer"
+          onclick="toggleSearchPanel()">
+        <iconify-icon icon="material-symbols:search" width="16"
+          class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></iconify-icon>
+      </div>
+    </div>
+    <button type="button" onclick="openOwnerConversation()"
+      class="msg-row ${isActive ? 'active' : ''} w-full text-left px-3 py-3 border-b border-slate-100 flex gap-3 items-start">
+      <div class="relative flex-shrink-0">
+        ${photo
+          ? `<img src="${escapeHTML(photo)}" class="w-11 h-11 rounded-full object-cover" alt="">`
+          : `<div class="w-11 h-11 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold">${escapeHTML(initialsOf(name))}</div>`}
+        <span class="presence-dot ${online ? 'presence-online' : 'presence-offline'}"></span>
+      </div>
+      <div class="flex-1 min-w-0">
+        <div class="flex items-center justify-between gap-2">
+          <p class="font-semibold text-sm text-slate-900 truncate">${escapeHTML(name)}</p>
+          <span class="text-[10px] text-slate-400 flex-shrink-0">${lastAt ? escapeHTML(formatChatTime(lastAt)) : ''}</span>
+        </div>
+        <p class="text-[11px] text-emerald-700 truncate mt-0.5">
+          <iconify-icon icon="material-symbols:shield-person-outline" width="11"></iconify-icon>
+          ${t('messages.ownerRole')}
+        </p>
+        <div class="flex items-center justify-between gap-2 mt-0.5">
+          <p class="text-xs text-slate-500 truncate">${escapeHTML(lastText) || `<span class="italic text-slate-400">${t('messages.emptyThread')}</span>`}</p>
+          ${unread > 0 ? `<span class="flex-shrink-0 bg-emerald-600 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">${unread > 99 ? '99+' : unread}</span>` : ''}
+        </div>
+      </div>
+    </button>`;
+}
 
 function renderMessagesThread() {
   const el = document.getElementById('messages-thread');
   if (!el) return;
-  if (!activeOwnerId) return;
-
+  if (!activeConversationId) {
+    el.innerHTML = `
+      <div class="flex-1 flex flex-col items-center justify-center text-center p-8">
+        <iconify-icon icon="material-symbols:forum-outline" class="text-6xl text-slate-300 mb-3"></iconify-icon>
+        <p class="text-slate-500 text-sm">${t('messages.loading')}</p>
+      </div>`;
+    return;
+  }
   const prevInput = document.getElementById('message-input')?.value || '';
   const wasFocused = document.activeElement?.id === 'message-input';
-
   const op = activeOwnerProfile || {};
   const name = op.full_name || 'Owner';
   const photo = op.profile_picture || '';
   const online = !!presenceMap[activeOwnerId]?.online;
-
-  const bubbles = messagesCache.map(msg => {
-    const mine = msg.sender_id === currentUser.uid;
-    return `
-      <div class="flex ${mine ? 'justify-end' : 'justify-start'} mb-2">
-        <div class="max-w-[80%] px-3.5 py-2 rounded-2xl text-sm break-words shadow-sm
-          ${mine ? 'bg-emerald-600 text-white rounded-br-md' : 'bg-slate-100 border border-slate-200 text-slate-800 rounded-bl-md'}">
-          <p class="whitespace-pre-wrap">${escapeHTML(msg.text)}</p>
-          <p class="text-[10px] mt-1 ${mine ? 'text-emerald-100' : 'text-slate-400'} text-right">
-            ${escapeHTML(formatChatTime(msg.created_at))}
-          </p>
-        </div>
-      </div>`;
-  }).join('');
-
+  const lastSeenTs = presenceMap[activeOwnerId]?.last_changed;
+  const presenceLabel = online ? t('messages.online') : (lastSeenTs ? `${t('messages.lastSeen')} ${new Date(lastSeenTs).toLocaleString()}` : t('messages.offline'));
+  const searchResults = searchPanelOpen ? getSearchResults() : [];
+  const bubbles = messagesCache.filter(m => !(m.deleted_for && m.deleted_for.includes(currentUser.uid))).map(m => renderMessageBubble(m)).join('');
   el.innerHTML = `
     <div class="flex items-center gap-3 p-3 border-b bg-white">
+      <button type="button" onclick="closeManagerConversation()"
+        class="md:hidden text-slate-500 hover:text-slate-800 p-1" aria-label="${t('messages.back')}">
+        <iconify-icon icon="material-symbols:arrow-back" width="22"></iconify-icon>
+      </button>
       <div class="relative flex-shrink-0">
         ${photo
           ? `<img src="${escapeHTML(photo)}" class="w-10 h-10 rounded-full object-cover" alt="">`
           : `<div class="w-10 h-10 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold">${escapeHTML(initialsOf(name))}</div>`}
         <span class="presence-dot ${online ? 'presence-online' : 'presence-offline'}"></span>
       </div>
-      <div class="min-w-0">
+      <div class="min-w-0 flex-1">
         <p class="font-semibold text-sm text-slate-900 truncate">${escapeHTML(name)}</p>
-        <p class="text-[11px] text-slate-500">
-          <span class="${online ? 'text-green-600' : 'text-slate-400'}">${online ? t('messages.online') : t('messages.offline')}</span>
-        </p>
+        <p class="text-[11px] text-slate-500 truncate">${escapeHTML(presenceLabel)}</p>
       </div>
+      <button type="button" onclick="toggleSearchPanel()" class="text-slate-500 hover:text-emerald-700 p-2 rounded-lg hover:bg-slate-100" title="${t('messages.searchInConversation')}">
+        <iconify-icon icon="material-symbols:search" width="20"></iconify-icon>
+      </button>
+      <button type="button" onclick="openChatMenu()" class="text-slate-500 hover:text-emerald-700 p-2 rounded-lg hover:bg-slate-100">
+        <iconify-icon icon="material-symbols:more-vert" width="22"></iconify-icon>
+      </button>
     </div>
-
+    <div id="msg-search-panel" class="msg-search-panel ${searchPanelOpen ? 'open' : ''}">
+      <div class="flex items-center gap-2">
+        <input type="text" id="msg-search-input" value="${escapeHTML(currentSearchQuery)}"
+          oninput="onSearchInput(event)"
+          placeholder="${t('messages.searchInConversation')}"
+          class="flex-1 border rounded-lg py-2 px-3 text-sm">
+        <button type="button" onclick="toggleSearchPanel()" class="text-slate-500 p-2">
+          <iconify-icon icon="material-symbols:close" width="18"></iconify-icon>
+        </button>
+      </div>
+      ${searchPanelOpen && currentSearchQuery ? `
+        <div class="mt-2 max-h-[240px] overflow-y-auto">
+          ${searchResults.length
+            ? searchResults.map(r => `
+              <div class="msg-search-result" onclick="scrollToMessage('${r.m.id}')">
+                <div class="text-slate-700 truncate">${escapeHTML((r.m.text || r.m.attachment?.name || r.m.shared_record?.title || '').slice(0, 120))}</div>
+                <div class="text-[10px] text-slate-400">${escapeHTML(formatChatTime(r.m.created_at))}</div>
+              </div>`).join('')
+            : `<p class="text-xs text-slate-400 p-2">${t('messages.noSearchResults')}</p>`}
+        </div>` : ''}
+    </div>
     <div id="message-scroll" class="flex-1 overflow-y-auto p-4 bg-slate-50">
       ${bubbles || `
         <div class="h-full flex flex-col items-center justify-center text-center">
@@ -2463,39 +3005,288 @@ function renderMessagesThread() {
           <p class="text-sm text-slate-400">${t('messages.emptyThread')}</p>
         </div>`}
     </div>
-
-    <div class="p-3 border-t bg-white flex gap-2 items-end">
-      <textarea id="message-input" rows="1"
-        onkeydown="handleOwnerMessageKeydown(event)"
-        placeholder="${t('messages.inputPlaceholder')}"
-        class="flex-1 resize-none border rounded-xl px-3 py-2 text-sm max-h-32 focus:outline-none focus:border-emerald-600"></textarea>
-      <button id="message-send-btn" type="button" onclick="sendOwnerMessage()"
-        class="bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl px-4 py-2.5 flex items-center gap-1 disabled:opacity-60">
-        <iconify-icon icon="material-symbols:send" width="18"></iconify-icon>
-        <span class="hidden sm:inline text-sm">${t('messages.send')}</span>
-      </button>
+    <div id="typing-indicator" class="px-4 py-1 text-xs text-emerald-700 hidden">
+      <span class="italic"></span>
+    </div>
+    <div class="p-3 border-t bg-white relative">
+      <div id="composer-reply" class="hidden"></div>
+      <div id="composer-attachment" class="hidden"></div>
+      <div id="emoji-picker" class="emoji-picker"></div>
+      <div class="flex items-end gap-2">
+        <div class="composer-toolbar">
+          <button type="button" onclick="toggleEmojiPicker()" title="${t('messages.emoji')}" class="${emojiPickerOpen ? 'active' : ''}">
+            <iconify-icon icon="material-symbols:emoji-emotions-outline" width="22"></iconify-icon>
+          </button>
+          <button type="button" onclick="pickAttachment()" title="${t('messages.attach')}">
+            <iconify-icon icon="material-symbols:attach-file" width="22"></iconify-icon>
+          </button>
+          <button type="button" onclick="openSharePicker()" title="${t('messages.share')}">
+            <iconify-icon icon="material-symbols:add-link" width="22"></iconify-icon>
+          </button>
+        </div>
+        <textarea id="message-input" rows="1"
+          onkeydown="handleOwnerMessageKeydown(event)"
+          oninput="onComposerInput();saveDraftSoon();"
+          placeholder="${t('messages.inputPlaceholder')}"
+          class="flex-1 resize-none border rounded-xl px-3 py-2 text-sm max-h-32 focus:outline-none focus:border-emerald-600"></textarea>
+        <button id="message-send-btn" type="button" onclick="sendOwnerMessage()"
+          class="bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl px-4 py-2.5 flex items-center gap-1 disabled:opacity-60">
+          <iconify-icon icon="material-symbols:send" width="18"></iconify-icon>
+          <span class="hidden sm:inline text-sm">${t('messages.send')}</span>
+        </button>
+      </div>
     </div>`;
-
   const inp = document.getElementById('message-input');
-  if (inp) { inp.value = prevInput; if (wasFocused) inp.focus(); }
+  if (inp) {
+    inp.value = prevInput || getDraft(activeConversationId) || '';
+    if (wasFocused || !prevInput) inp.focus();
+  }
+  renderComposerReplyPreview();
+  renderComposerAttachment();
+  renderEmojiPicker();
+  renderTypingIndicator();
   const scroller = document.getElementById('message-scroll');
   if (scroller) scroller.scrollTop = scroller.scrollHeight;
 }
 
+function saveDraftSoon() {
+  if (!activeConversationId) return;
+  const inp = document.getElementById('message-input');
+  if (!inp) return;
+  setDraft(activeConversationId, inp.value);
+}
+
+function renderTypingIndicator() {
+  const el = document.getElementById('typing-indicator');
+  if (!el) return;
+  const names = Object.keys(typingMap);
+  if (!names.length) { el.classList.add('hidden'); return; }
+  el.classList.remove('hidden');
+  const label = names.length === 1 ? t('messages.isTyping', { name: activeOwnerProfile?.full_name || 'Owner' }) : t('messages.severalTyping');
+  el.querySelector('span').textContent = label;
+}
+
+function renderComposerReplyPreview() {
+  const el = document.getElementById('composer-reply');
+  if (!el) return;
+  if (!replyingTo) { el.classList.add('hidden'); el.innerHTML = ''; return; }
+  el.classList.remove('hidden');
+  el.innerHTML = `
+    <div class="composer-reply">
+      <iconify-icon icon="material-symbols:reply" width="16" class="text-emerald-600"></iconify-icon>
+      <div class="min-w-0">
+        <div class="font-semibold text-emerald-700 text-[11px]">${escapeHTML(replyingTo.sender_name)}</div>
+        <div class="text-slate-600 truncate text-[11px]">${escapeHTML(replyingTo.text)}</div>
+      </div>
+      <button type="button" class="close-x" onclick="cancelReply()">
+        <iconify-icon icon="material-symbols:close" width="16"></iconify-icon>
+      </button>
+    </div>`;
+}
+
+function renderComposerAttachment() {
+  const el = document.getElementById('composer-attachment');
+  if (!el) return;
+  const hasShared = !!window._pendingSharedRecord;
+  if (!pendingAttachment && !hasShared) { el.classList.add('hidden'); el.innerHTML = ''; return; }
+  el.classList.remove('hidden');
+  if (pendingAttachment) {
+    const f = pendingAttachment;
+    el.innerHTML = `
+      <div class="composer-attachment">
+        <iconify-icon icon="material-symbols:attach-file" width="16" class="text-emerald-600"></iconify-icon>
+        <span class="truncate">${escapeHTML(f.name)}</span>
+        <span class="text-slate-400">${formatBytes(f.size)}</span>
+        <button type="button" class="ml-auto text-slate-500" onclick="clearPendingAttachment()">
+          <iconify-icon icon="material-symbols:close" width="16"></iconify-icon>
+        </button>
+      </div>`;
+    return;
+  }
+  const s = window._pendingSharedRecord;
+  el.innerHTML = `
+    <div class="composer-attachment">
+      <iconify-icon icon="material-symbols:add-link" width="16" class="text-emerald-600"></iconify-icon>
+      <span class="truncate">${escapeHTML(s.title)} — ${escapeHTML(s.subtitle)}</span>
+      <button type="button" class="ml-auto text-slate-500" onclick="window._pendingSharedRecord=null;renderComposerAttachment();">
+        <iconify-icon icon="material-symbols:close" width="16"></iconify-icon>
+      </button>
+    </div>`;
+}
+
+function renderEmojiPicker() {
+  const el = document.getElementById('emoji-picker');
+  if (!el) return;
+  el.classList.toggle('open', emojiPickerOpen);
+  if (!emojiPickerOpen) return;
+  if (el.dataset.rendered === '1') return;
+  el.dataset.rendered = '1';
+  el.innerHTML = `<div class="emoji-grid">${EMOJI_SET.map(e => `<button type="button" onclick="insertEmoji('${e}')">${e}</button>`).join('')}</div>`;
+}
+
+function renderMessageBubble(m) {
+  const mine = m.sender_id === currentUser.uid;
+  const isDeleted = m.deleted_for_all;
+  const age = Date.now() - new Date(m.created_at).getTime();
+  const canEdit = mine && !isDeleted && m.type === 'text' && age <= EDIT_WINDOW_MS;
+  const canDeleteAll = mine && !isDeleted && age <= EDIT_WINDOW_MS;
+  let tickHTML = '';
+  if (mine && !isDeleted) {
+    if (m.read_at) tickHTML = `<span class="msg-tick read">✓✓</span>`;
+    else if (m.delivered_at) tickHTML = `<span class="msg-tick delivered">✓✓</span>`;
+    else tickHTML = `<span class="msg-tick sent">✓</span>`;
+  }
+  const reply = m.reply_preview ? `
+    <div class="msg-reply-quote" onclick="scrollToMessage('${m.reply_to}')">
+      <div class="rq-name">${escapeHTML(m.reply_preview.sender_name)}</div>
+      <span class="rq-text">${escapeHTML(m.reply_preview.text)}</span>
+    </div>` : '';
+  let bodyHTML = '';
+  if (isDeleted) {
+    bodyHTML = `<p class="msg-deleted">${t('messages.deleted')}</p>`;
+  } else {
+    if (m.type === 'attachment' && m.attachment) {
+      const a = m.attachment;
+      if (a.mime?.startsWith('image/')) {
+        bodyHTML += `<div class="attach-preview"><img src="${escapeHTML(a.url)}" onclick="openAttachmentLightbox('${escapeHTML(a.url)}')" alt=""></div>`;
+      } else {
+        bodyHTML += `<a href="${escapeHTML(a.url)}" target="_blank" rel="noopener" class="attach-file">
+          <iconify-icon icon="material-symbols:description" width="18"></iconify-icon>
+          <span class="truncate">${escapeHTML(a.name)}</span>
+          <iconify-icon icon="material-symbols:download" width="16" class="ml-auto"></iconify-icon>
+        </a>`;
+      }
+    }
+    if (m.type === 'shared_record' && m.shared_record) {
+      const s = m.shared_record;
+      bodyHTML += `<div class="shared-card">
+        <div class="sc-title">${escapeHTML(s.title)}</div>
+        <div class="font-semibold text-slate-800 mb-1">${escapeHTML(s.subtitle)}</div>
+        ${(s.lines || []).map(([k, v]) => `<div class="sc-row"><span class="text-slate-500">${escapeHTML(k)}</span><span class="font-medium">${escapeHTML(v)}</span></div>`).join('')}
+      </div>`;
+    }
+    if (m.text) bodyHTML += `<p class="whitespace-pre-wrap">${escapeHTML(m.text)}</p>`;
+  }
+  const reactions = m.reactions || {};
+  const reactionKeys = Object.keys(reactions).filter(k => Array.isArray(reactions[k]) && reactions[k].length);
+  const reactionsHTML = reactionKeys.length ? `
+    <div class="msg-reactions">
+      ${reactionKeys.map(k => {
+        const mineR = reactions[k].includes(currentUser.uid);
+        return `<span class="react-pill ${mineR ? 'mine' : ''}" onclick="toggleReaction('${m.id}','${k}')">${k}<span class="count">${reactions[k].length}</span></span>`;
+      }).join('')}
+    </div>` : '';
+  const actionsHTML = isDeleted ? '' : `
+    <div class="msg-actions ${mine ? 'right' : 'left'}">
+      <button type="button" onclick="openReactionPicker('${m.id}',event)" title="${t('messages.react')}">
+        <iconify-icon icon="material-symbols:sentiment-satisfied-outline" width="16"></iconify-icon>
+      </button>
+      <button type="button" onclick="startReply('${m.id}')" title="${t('messages.reply')}">
+        <iconify-icon icon="material-symbols:reply" width="16"></iconify-icon>
+      </button>
+      ${canEdit ? `<button type="button" onclick="startEdit('${m.id}')" title="${t('messages.edit')}"><iconify-icon icon="material-symbols:edit" width="16"></iconify-icon></button>` : ''}
+      <button type="button" onclick="openDeleteMenu('${m.id}',event)" title="${t('messages.delete')}">
+        <iconify-icon icon="material-symbols:delete-outline" width="16"></iconify-icon>
+      </button>
+    </div>`;
+  const pickerHTML = isDeleted ? '' : `
+    <div class="reaction-picker" id="reaction-picker-${m.id}">
+      ${['👍','❤️','😂','😮','😢','🙏'].map(e => `<button type="button" onclick="toggleReaction('${m.id}','${e}');document.querySelectorAll('.reaction-picker.open').forEach(x=>x.classList.remove('open'));">${e}</button>`).join('')}
+    </div>`;
+  const editedHTML = m.edited_at && !isDeleted ? ` <span class="text-[10px] opacity-70">(${t('messages.edited')})</span>` : '';
+  return `
+    <div class="flex ${mine ? 'justify-end' : 'justify-start'} mb-3" id="msg-${m.id}">
+      <div class="msg-bubble-wrap max-w-[80%] relative">
+        ${pickerHTML}
+        ${actionsHTML}
+        <div class="px-3.5 py-2 rounded-2xl text-sm break-words shadow-sm ${mine ? 'bg-emerald-600 text-white rounded-br-md' : 'bg-white border border-slate-200 text-slate-800 rounded-bl-md'}">
+          ${reply}
+          ${bodyHTML}
+          <div class="text-[10px] mt-1 ${mine ? 'text-emerald-100' : 'text-slate-400'} text-right flex items-center gap-1 justify-end">
+            ${editedHTML}
+            <span>${escapeHTML(formatChatTime(m.created_at))}</span>
+            ${tickHTML}
+          </div>
+        </div>
+        ${reactionsHTML}
+      </div>
+    </div>`;
+}
+
+window.openAttachmentLightbox = function (url) {
+  const v = document.createElement('div');
+  v.className = 'fixed inset-0 z-[9999] bg-black/85 flex items-center justify-center p-4';
+  v.onclick = () => v.remove();
+  v.innerHTML = `<img src="${escapeHTML(url)}" class="max-w-full max-h-[85vh] object-contain rounded-xl" onclick="event.stopPropagation()">`;
+  document.body.appendChild(v);
+};
+
+window.openChatMenu = () => {
+  if (!activeConversationId) return;
+  const c = conversationsData.find(x => x.id === activeConversationId);
+  const s = c?.user_settings?.[currentUser.uid] || {};
+  openModal('⚙️ ' + t('messages.title'), `
+    <div class="space-y-2">
+      <button onclick="togglePin('${activeConversationId}');closeModal();" class="w-full text-left px-4 py-3 rounded-xl border hover:bg-slate-50 flex items-center gap-3">
+        <iconify-icon icon="material-symbols:push-pin" width="20" class="text-emerald-600"></iconify-icon>
+        <span class="font-medium">${s.pinned ? t('messages.unpinConversation') : t('messages.pinConversation')}</span>
+      </button>
+      <button onclick="toggleMute('${activeConversationId}');closeModal();" class="w-full text-left px-4 py-3 rounded-xl border hover:bg-slate-50 flex items-center gap-3">
+        <iconify-icon icon="material-symbols:notifications-off-outline" width="20" class="text-blue-600"></iconify-icon>
+        <span class="font-medium">${s.muted ? t('messages.unmuteConversation') : t('messages.muteConversation')}</span>
+      </button>
+      <button onclick="toggleArchive('${activeConversationId}');closeModal();" class="w-full text-left px-4 py-3 rounded-xl border hover:bg-slate-50 flex items-center gap-3">
+        <iconify-icon icon="material-symbols:archive-outline" width="20" class="text-amber-600"></iconify-icon>
+        <span class="font-medium">${s.archived ? t('messages.unarchiveConversation') : t('messages.archiveConversation')}</span>
+      </button>
+    </div>`);
+};
+
 function updateMessagesBadge() {
   if (!currentUser) return;
-  const total = conversationsData.reduce(
-    (sum, c) => sum + ((c.unread && c.unread[currentUser.uid]) || 0), 0
-  );
+  const total = conversationsData.reduce((sum, c) => sum + ((c.unread && c.unread[currentUser.uid]) || 0), 0);
   const badge = document.getElementById('messages-nav-badge');
   if (!badge) return;
-  if (total > 0) {
-    badge.textContent = total > 99 ? '99+' : String(total);
-    badge.classList.remove('hidden');
-  } else {
-    badge.classList.add('hidden');
-  }
+  if (total > 0) { badge.textContent = total > 99 ? '99+' : String(total); badge.classList.remove('hidden'); }
+  else badge.classList.add('hidden');
+  maybeShowDesktopNotification(total);
 }
+let _lastNotified = 0;
+function maybeShowDesktopNotification(total) {
+  if (!('Notification' in window)) return;
+  if (Notification.permission !== 'granted') return;
+  if (total <= _lastNotified) { _lastNotified = total; return; }
+  _lastNotified = total;
+  const c = conversationsData.find(x => x.unread && x.unread[currentUser.uid] > 0);
+  if (!c) return;
+  const s = c.user_settings?.[currentUser.uid] || {};
+  if (s.muted) return;
+  try {
+    new Notification(t('messages.newMessageFrom', { name: activeOwnerProfile?.full_name || 'Owner' }), {
+      body: c.last_message?.text || '',
+      icon: 'shdr_logo Background Removed.png'
+    });
+  } catch (_) {}
+}
+window.requestNotificationPermission = () => {
+  if (!('Notification' in window)) return;
+  if (Notification.permission === 'default') Notification.requestPermission();
+};
+
+// Outside-click: close emoji picker + reaction pickers
+document.addEventListener('click', (ev) => {
+  if (emojiPickerOpen) {
+    const picker = document.getElementById('emoji-picker');
+    const btn = ev.target.closest?.('button[onclick*="toggleEmojiPicker"]');
+    if (picker && !picker.contains(ev.target) && !btn) {
+      emojiPickerOpen = false;
+      picker.classList.remove('open');
+    }
+  }
+  document.querySelectorAll('.reaction-picker.open').forEach((el) => {
+    if (!el.contains(ev.target)) el.classList.remove('open');
+  });
+});
 
 // ============================================================
 // INIT
@@ -2530,12 +3321,13 @@ async function initApp(){
         }
       }
       attachMessagingListeners();
+      window.requestNotificationPermission();
       showSection('dashboard');
     }catch(err){console.error('Init error:',err);showError('Failed to initialize: '+err.message)}
   });
 }
 if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',initApp)}else{initApp()}
-console.log('✅ SHDR Manager Dashboard — messaging enabled');
+console.log('✅ SHDR Manager Dashboard — messaging v2 enabled');
 </script>
 </main>
 </body>
