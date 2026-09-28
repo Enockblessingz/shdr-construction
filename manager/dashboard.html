@@ -116,49 +116,72 @@ body{background:#f8fafc}
 .msg-tick.delivered{color:#e5e7eb}
 .msg-tick.sent{color:#e5e7eb}
 
-.msg-bubble-wrap{position:relative;display:flex;flex-direction:column}
-.msg-actions{position:absolute;top:-10px;display:none;gap:2px;background:#fff;border:1px solid #e5e7eb;border-radius:999px;padding:2px;box-shadow:0 4px 12px rgba(0,0,0,.08);z-index:5}
-.msg-actions.right{right:calc(100% + 8px)}
-.msg-actions.left{left:calc(100% + 8px)}
-.msg-bubble-wrap:hover .msg-actions{display:flex}
-.msg-actions button{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:transparent;color:#64748b;border:none;cursor:pointer}
-.msg-actions button:hover{background:#f1f5f9;color:#059669}
+/* ===== NEW message row layout with always-visible kebab menu ===== */
+.msg-bubble-row{display:flex;align-items:flex-start;gap:6px;width:100%}
+.msg-bubble-row.mine{flex-direction:row-reverse}
+.msg-bubble-col{max-width:80%;display:flex;flex-direction:column;position:relative}
+.msg-bubble-row.mine .msg-bubble-col{align-items:flex-end}
+.msg-bubble-row:not(.mine) .msg-bubble-col{align-items:flex-start}
 
-/* MOBILE FIX: message actions become inline chips below the bubble */
-@media (hover:none){
-  .msg-bubble-wrap .msg-actions{
-    display:flex!important;
-    position:static;
-    margin-top:6px;
-    align-self:flex-end;
-    background:transparent;
-    border:none;
-    box-shadow:none;
-    padding:0;
-    gap:4px;
-  }
-  .msg-bubble-wrap .msg-actions.right,
-  .msg-bubble-wrap .msg-actions.left{ right:auto; left:auto; }
-  .msg-bubble-wrap .msg-actions button{
-    background:#f8fafc;
-    border:1px solid #e5e7eb;
-    width:30px;
-    height:30px;
-  }
+.msg-menu-btn{
+  width:28px;height:28px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  background:#fff;border:1px solid #e5e7eb;color:#94a3b8;
+  cursor:pointer;flex-shrink:0;
+  transition:all .15s ease;
+  margin-top:4px;
 }
+.msg-menu-btn:hover,.msg-menu-btn:active{background:#ecfdf5;color:#059669;border-color:#059669}
+.msg-menu-btn iconify-icon{font-size:20px}
 
-.msg-reply-quote{border-left:3px solid #059669;background:rgba(5,150,105,.06);border-radius:6px;padding:4px 8px;margin-bottom:4px;font-size:11px;color:#334155;cursor:pointer}
+/* Floating action menu — position:fixed so it never gets clipped or moves */
+.msg-action-menu{
+  position:fixed;
+  background:#fff;border:1px solid #e5e7eb;border-radius:12px;
+  box-shadow:0 12px 32px rgba(0,0,0,.18);
+  padding:4px;z-index:9000;
+  display:flex;flex-direction:column;
+  min-width:170px;
+}
+.msg-action-menu button{
+  display:flex;align-items:center;gap:10px;
+  padding:9px 12px;border-radius:8px;
+  font-size:14px;font-weight:500;color:#334155;background:none;border:none;cursor:pointer;
+  text-align:left;width:100%;
+}
+.msg-action-menu button:hover{background:#f1f5f9;color:#059669}
+.msg-action-menu button.danger:hover{background:#fef2f2;color:#dc2626}
+.msg-action-menu .menu-icon{width:18px;display:inline-flex;justify-content:center}
+
+/* Floating reaction picker */
+.reaction-picker-floating{
+  position:fixed;
+  background:#fff;border:1px solid #e5e7eb;border-radius:999px;
+  box-shadow:0 8px 24px rgba(0,0,0,.15);
+  padding:4px;z-index:9001;
+  display:flex;gap:2px;
+}
+.reaction-picker-floating button{
+  width:36px;height:36px;border-radius:50%;font-size:20px;
+  display:flex;align-items:center;justify-content:center;
+  background:transparent;border:none;cursor:pointer;
+  transition:transform .12s ease;
+}
+.reaction-picker-floating button:hover{background:#f1f5f9;transform:scale(1.15)}
+
+.msg-reply-quote{border-left:3px solid #059669;background:rgba(5,150,105,.08);border-radius:6px;padding:4px 8px;margin-bottom:5px;font-size:11px;color:#334155;cursor:pointer}
 .msg-reply-quote .rq-name{font-weight:600;color:#059669}
 .msg-reply-quote .rq-text{opacity:.85;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:220px;display:block}
 
-.msg-reactions{display:flex;gap:3px;flex-wrap:wrap;margin-top:4px}
-.msg-reactions .react-pill{background:#fff;border:1px solid #e5e7eb;border-radius:999px;padding:1px 7px;font-size:11px;display:inline-flex;gap:3px;align-items:center;cursor:pointer;line-height:1.4}
+.msg-reactions{display:flex;gap:3px;flex-wrap:wrap;margin-top:5px}
+.msg-reactions .react-pill{background:#fff;border:1px solid #e5e7eb;border-radius:999px;padding:2px 8px;font-size:12px;display:inline-flex;gap:3px;align-items:center;cursor:pointer;line-height:1.4;transition:all .15s}
+.msg-reactions .react-pill:hover{background:#f8fafc}
 .msg-reactions .react-pill.mine{background:#ecfdf5;border-color:#059669;color:#065f46}
 
 .msg-highlight{animation:msgHighlight 1.4s ease}
 @keyframes msgHighlight{0%{background:#fef08a}100%{background:transparent}}
 
-.msg-deleted{font-style:italic;opacity:.65;font-size:12px}
+.msg-deleted{font-style:italic;opacity:.7;font-size:12px}
 
 .composer-toolbar{display:flex;gap:2px;align-items:center}
 .composer-toolbar button{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#64748b;background:transparent;border:none;cursor:pointer}
@@ -170,11 +193,6 @@ body{background:#f8fafc}
 .emoji-picker .emoji-grid{display:grid;grid-template-columns:repeat(8,1fr);gap:2px;max-height:220px;overflow-y:auto}
 .emoji-picker .emoji-grid button{font-size:22px;padding:6px 0;border-radius:8px;background:transparent;border:none;cursor:pointer}
 .emoji-picker .emoji-grid button:hover{background:#f1f5f9}
-
-.reaction-picker{position:absolute;bottom:calc(100% + 6px);background:#fff;border:1px solid #e5e7eb;border-radius:999px;padding:4px;box-shadow:0 8px 24px rgba(0,0,0,.12);display:none;gap:2px;z-index:30}
-.reaction-picker.open{display:flex}
-.reaction-picker button{width:32px;height:32px;border-radius:50%;font-size:18px;display:flex;align-items:center;justify-content:center;background:transparent;border:none;cursor:pointer}
-.reaction-picker button:hover{background:#f1f5f9}
 
 .composer-reply{display:flex;align-items:center;gap:8px;border-left:3px solid #059669;background:rgba(5,150,105,.06);padding:6px 10px;border-radius:6px;margin-bottom:6px;font-size:12px}
 .composer-reply .close-x{margin-left:auto;color:#64748b;padding:2px;background:none;border:none;cursor:pointer}
@@ -433,7 +451,7 @@ async function uploadImageToImgbb(file){const fd=new FormData();fd.append('image
 function escapeHTML(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 
 // ============================================================
-// COMPANY + REPORT HTML
+// COMPANY + REPORT
 // ============================================================
 function getCompanyDetails(){
   return{name:'Sustainable Homes Design Rwanda Ltd',address:'KG 11 Avenue, Kimironko, Gasabo District',location:'Yussa Plaza, 1st Floor',city:'Kigali City, Rwanda',phone:'+250 788 474 110',email:'sustainablehomedesign@gmail.com',logo:'shdr_logo Background Removed.png'};
@@ -1018,7 +1036,7 @@ window.printMaterialUsage=function(){
 };
 
 // ============================================================
-// MATERIAL USAGE BATCH MODAL
+// MATERIAL USAGE BATCH
 // ============================================================
 window.openAddMaterialModal=function(){
   _usageSelectedMaterials=new Map();
@@ -1319,7 +1337,7 @@ window.openWorkerPhotoLightbox=function(url){
 };
 
 // ============================================================
-// RENDER — Materials
+// MATERIALS RENDER
 // ============================================================
 function renderMaterials(container){
   const site=assignedSites.find(s=>s.id===currentSiteId);
@@ -1710,7 +1728,7 @@ window.viewStockHistory=function(id){
 };
 
 // ============================================================
-// WORKERS
+// WORKERS RENDER
 // ============================================================
 function renderWorkers(container){
   container.innerHTML=`<div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6"><div class="flex gap-2 p-1 bg-slate-200/60 rounded-xl"><button onclick="switchWorkersTab('view')" class="px-4 py-2 rounded-lg text-sm font-semibold transition ${workersTab==='view'?'tab-active shadow-sm':'tab-inactive'} flex items-center gap-2"><iconify-icon icon="material-symbols:grid-view" width="18"></iconify-icon> ${t('workers.view')}</button><button onclick="switchWorkersTab('record')" class="px-4 py-2 rounded-lg text-sm font-semibold transition ${workersTab==='record'?'tab-active shadow-sm':'tab-inactive'} flex items-center gap-2"><iconify-icon icon="material-symbols:edit-calendar" width="18"></iconify-icon> ${t('workers.recordAttendance')}</button></div>${workersTab==='view'?`<button onclick="openAddWorkerModal()" class="px-4 py-2 bg-emerald-600 text-white rounded-xl hover:bg-emerald-700 flex items-center gap-2 text-sm font-medium"><iconify-icon icon="material-symbols:person-add-outline"></iconify-icon> ${t('workers.addWorker')}</button>`:''}</div><div id="workers-content">${workersTab==='view'?renderWorkersView():renderWorkersRecord()}</div>`;
@@ -1864,7 +1882,7 @@ function renderSecuritySection(){return `<div class="settings-card"><h3><iconify
 function renderPreferencesSection(){
   const p=managerProfile||{},pr=p.preferences||{};
   const notifGranted = ('Notification' in window && Notification.permission === 'granted');
-  return `<div class="settings-card"><h3><iconify-icon icon="material-symbols:tune" class="text-emerald-600"></iconify-icon> ${t('settings.preferences')}</h3><form id="preferences-form" onsubmit="handlePreferencesSave(event)"><div class="field-group"><label>${t('settings.language')}</label><select id="settings-language"><option value="en" ${pr.language==='en'?'selected':''}>English</option><option value="fr" ${pr.language==='fr'?'selected':''}>French</option><option value="rw" ${pr.language==='rw'?'selected':''}>Kinyarwanda</option></select></div><div class="field-group"><label>${t('settings.currency')}</label><select id="settings-currency"><option value="RWF" ${pr.currency==='RWF'?'selected':''}>RWF</option><option value="USD" ${pr.currency==='USD'?'selected':''}>USD</option><option value="EUR" ${pr.currency==='EUR'?'selected':''}>EUR</option></select></div><div class="field-group flex items-center gap-3"><input type="checkbox" id="settings-notifications" class="w-5 h-5" ${pr.notifications!==false?'checked':''}><label class="mb-0">${t('settings.notifications')}</label></div><div class="field-group flex items-center gap-3"><input type="checkbox" id="settings-browser-notif" class="w-5 h-5" ${notifGranted?'checked':''} onchange="(function(cb){ if(cb.checked && 'Notification' in window){ Notification.requestPermission().then(function(p){ if(p!=='granted') cb.checked=false; }); } else if(!cb.checked && 'Notification' in window && Notification.permission==='granted'){ /* user can't revoke via JS — inform them */ } })(this)"><label class="mb-0">${t('settings.browserNotifications')}</label></div><button type="submit" class="save-btn">${t('settings.savePrefs')}</button></form></div>`;
+  return `<div class="settings-card"><h3><iconify-icon icon="material-symbols:tune" class="text-emerald-600"></iconify-icon> ${t('settings.preferences')}</h3><form id="preferences-form" onsubmit="handlePreferencesSave(event)"><div class="field-group"><label>${t('settings.language')}</label><select id="settings-language"><option value="en" ${pr.language==='en'?'selected':''}>English</option><option value="fr" ${pr.language==='fr'?'selected':''}>French</option><option value="rw" ${pr.language==='rw'?'selected':''}>Kinyarwanda</option></select></div><div class="field-group"><label>${t('settings.currency')}</label><select id="settings-currency"><option value="RWF" ${pr.currency==='RWF'?'selected':''}>RWF</option><option value="USD" ${pr.currency==='USD'?'selected':''}>USD</option><option value="EUR" ${pr.currency==='EUR'?'selected':''}>EUR</option></select></div><div class="field-group flex items-center gap-3"><input type="checkbox" id="settings-notifications" class="w-5 h-5" ${pr.notifications!==false?'checked':''}><label class="mb-0">${t('settings.notifications')}</label></div><div class="field-group flex items-center gap-3"><input type="checkbox" id="settings-browser-notif" class="w-5 h-5" ${notifGranted?'checked':''} onchange="if(this.checked && 'Notification' in window){Notification.requestPermission().then(p=>{ if(p!=='granted') this.checked=false; }.bind(this));}"><label class="mb-0">${t('settings.browserNotifications')}</label></div><button type="submit" class="save-btn">${t('settings.savePrefs')}</button></form></div>`;
 }
 function populateSettingsForms(){const p=managerProfile||{};const n=document.getElementById('settings-full-name');if(n)n.value=p.full_name||'';const ph=document.getElementById('settings-phone');if(ph)ph.value=p.phone||'';const em=document.getElementById('settings-email');if(em)em.value=p.email||'';const img=document.getElementById('settings-profile-photo-img');if(img)img.src=p.profile_picture||PLACEHOLDER_IMG}
 function attachSettingsChangeListeners(){document.querySelectorAll('#settings-profile input, #settings-preferences input, #settings-preferences select, #settings-security input').forEach(el=>{el.addEventListener('input',()=>{if(!hasUnsavedChanges)hasUnsavedChanges=true});el.addEventListener('change',()=>{if(!hasUnsavedChanges)hasUnsavedChanges=true})})}
@@ -1955,11 +1973,7 @@ window.closeModal=function(){document.getElementById('modal-overlay').classList.
 window.openModal=function(title,bodyHTML){document.getElementById('modal-title').textContent=title;document.getElementById('modal-body').innerHTML=bodyHTML;document.getElementById('modal-overlay').classList.add('active')};
 window.toggleSidebar=function(){document.getElementById('sidebar').classList.toggle('-translate-x-full');document.getElementById('sidebar-overlay').classList.toggle('hidden')};
 window.handleLogout=async function(){
-  try{
-    if(typeof rtdb!=='undefined'&&rtdb&&currentUser){
-      await rtdbSet(rtdbRef(rtdb,`presence/${currentUser.uid}`),{online:false,last_changed:Date.now()});
-    }
-  }catch(_){}
+  try{if(typeof rtdb!=='undefined'&&rtdb&&currentUser){await rtdbSet(rtdbRef(rtdb,`presence/${currentUser.uid}`),{online:false,last_changed:Date.now()});}}catch(_){}
   await signOut(auth);
   window.location.href='../index.html';
 };
@@ -2022,7 +2036,7 @@ function refreshCurrentSection(){
 window.switchSite=function(id){currentSiteId=id;attachListeners();showSection(currentSection)};
 
 // =================================================================
-// ============== MESSAGING ENGINE v2 (Manager ↔ Owner) ============
+// ============== MESSAGING ENGINE v3 ==============================
 // =================================================================
 const CONVERSATIONS = 'conversations';
 const EDIT_WINDOW_MS   = 15 * 60 * 1000;
@@ -2193,6 +2207,7 @@ function resetActiveConversation() {
   activeOwnerId = null; activeOwnerProfile = null; activeConversationId = null; messagesCache = [];
   replyingTo = null; pendingAttachment = null; typingMap = {};
   currentSearchQuery = ''; searchPanelOpen = false; _lastRenderedCid = null;
+  closeMsgMenu(); closeReactionPicker();
 }
 
 window.sendOwnerMessage = async () => {
@@ -2307,11 +2322,124 @@ window.toggleReaction = async (mid, emoji) => {
   try { await updateDoc(doc(db, CONVERSATIONS, activeConversationId, 'messages', mid), { reactions: map }); }
   catch (err) { showToast(t('common.somethingWentWrong'), 'error'); }
 };
-window.openReactionPicker = (mid, ev) => {
-  ev?.stopPropagation?.();
-  document.querySelectorAll('.reaction-picker.open').forEach(el => el.classList.remove('open'));
-  const picker = document.getElementById(`reaction-picker-${mid}`);
-  if (picker) picker.classList.add('open');
+
+/* ============ NEW: floating action menu ============ */
+window.openMsgMenu = function (ev, mid) {
+  if (ev && ev.stopPropagation) ev.stopPropagation();
+  closeReactionPicker();
+  closeMsgMenu();
+
+  const m = messagesCache.find(x => x.id === mid);
+  if (!m) return;
+
+  const mine = m.sender_id === currentUser.uid;
+  const isDeleted = m.deleted_for_all;
+  if (isDeleted) return;
+
+  const age = Date.now() - new Date(m.created_at).getTime();
+  const canEdit = mine && m.type === 'text' && age <= EDIT_WINDOW_MS;
+  const canDeleteAll = mine && age <= EDIT_WINDOW_MS;
+
+  const items = [
+    { key: 'react', icon: 'material-symbols:sentiment-satisfied-outline', label: t('messages.react'), cls: '' },
+    { key: 'reply', icon: 'material-symbols:reply', label: t('messages.reply'), cls: '' }
+  ];
+  if (canEdit) items.push({ key: 'edit', icon: 'material-symbols:edit', label: t('messages.edit'), cls: '' });
+  items.push({ key: 'delete', icon: 'material-symbols:delete-outline', label: t('messages.delete'), cls: 'danger' });
+
+  const menu = document.createElement('div');
+  menu.className = 'msg-action-menu';
+  menu.id = 'msg-action-menu';
+  menu.addEventListener('click', (e) => e.stopPropagation());
+  menu.innerHTML = items.map(it =>
+    `<button type="button" data-action="${it.key}" data-mid="${mid}" class="${it.cls}">
+      <span class="menu-icon"><iconify-icon icon="${it.icon}" width="18"></iconify-icon></span>
+      <span>${it.label}</span>
+    </button>`
+  ).join('');
+  document.body.appendChild(menu);
+
+  // position: anchor near the button that was clicked
+  const anchor = ev?.currentTarget || ev?.target;
+  let rect;
+  if (anchor && anchor.getBoundingClientRect) {
+    rect = anchor.getBoundingClientRect();
+  } else {
+    const msgEl = document.getElementById('msg-' + mid);
+    rect = msgEl ? msgEl.getBoundingClientRect() : { left: 40, right: 240, top: 200, bottom: 240 };
+  }
+
+  const mw = menu.offsetWidth, mh = menu.offsetHeight;
+  // Prefer below the button for messages I sent, above for the other person
+  let left = mine ? (rect.right - mw) : rect.left;
+  let top = rect.bottom + 6;
+
+  // flip up if not enough room below
+  if (top + mh > window.innerHeight - 8) top = rect.top - mh - 6;
+  // clamp horizontally
+  if (left < 8) left = 8;
+  if (left + mw > window.innerWidth - 8) left = window.innerWidth - mw - 8;
+  if (top < 8) top = 8;
+
+  menu.style.left = left + 'px';
+  menu.style.top = top + 'px';
+
+  // dispatch clicks
+  menu.querySelectorAll('button[data-action]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const action = btn.dataset.action;
+      const msgId = btn.dataset.mid;
+      closeMsgMenu();
+      if (action === 'react') {
+        openReactionPickerFixed(msgId);
+      } else if (action === 'reply') {
+        startReply(msgId);
+      } else if (action === 'edit') {
+        startEdit(msgId);
+      } else if (action === 'delete') {
+        openDeleteMenu(msgId, { stopPropagation: () => {} });
+      }
+    });
+  });
+};
+window.closeMsgMenu = function () {
+  const el = document.getElementById('msg-action-menu');
+  if (el) el.remove();
+};
+
+window.openReactionPickerFixed = function (mid) {
+  closeReactionPicker();
+  const msgEl = document.getElementById('msg-' + mid);
+  const rect = msgEl ? msgEl.getBoundingClientRect() : { left: 40, right: 240, top: 200, bottom: 240 };
+
+  const picker = document.createElement('div');
+  picker.className = 'reaction-picker-floating';
+  picker.id = 'reaction-picker-floating';
+  picker.addEventListener('click', (e) => e.stopPropagation());
+  picker.innerHTML = ['👍','❤️','😂','😮','😢','🙏']
+    .map(e => `<button type="button" data-emoji="${e}">${e}</button>`).join('');
+  document.body.appendChild(picker);
+
+  const pw = picker.offsetWidth, ph = picker.offsetHeight;
+  let left = rect.left + (rect.width / 2) - (pw / 2);
+  let top = rect.top - ph - 6;
+  if (top < 8) top = rect.bottom + 6;
+  if (left < 8) left = 8;
+  if (left + pw > window.innerWidth - 8) left = window.innerWidth - pw - 8;
+  picker.style.left = left + 'px';
+  picker.style.top = top + 'px';
+
+  picker.querySelectorAll('button[data-emoji]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const emoji = btn.dataset.emoji;
+      toggleReaction(mid, emoji);
+      closeReactionPicker();
+    });
+  });
+};
+window.closeReactionPicker = function () {
+  const el = document.getElementById('reaction-picker-floating');
+  if (el) el.remove();
 };
 
 window.startEdit = (mid) => {
@@ -2385,10 +2513,7 @@ window.toggleSearchPanel = () => {
   renderSearchPanel();
   if (searchPanelOpen) setTimeout(() => document.getElementById('msg-search-input')?.focus(), 50);
 };
-window.onSearchInput = (e) => {
-  currentSearchQuery = (e.target.value || '').trim();
-  renderSearchPanel();
-};
+window.onSearchInput = (e) => { currentSearchQuery = (e.target.value || '').trim(); renderSearchPanel(); };
 
 function getSearchResults() {
   if (!currentSearchQuery) return [];
@@ -2403,7 +2528,6 @@ function getSearchResults() {
     })
     .slice(-30);
 }
-
 function renderSearchPanel() {
   const panel = document.getElementById('msg-search-panel');
   if (!panel) return;
@@ -2438,6 +2562,7 @@ window.togglePin = async (cid) => { const c = conversationsData.find(x => x.id =
 window.toggleMute = async (cid) => { const c = conversationsData.find(x => x.id === cid); const cur = c?.user_settings?.[currentUser.uid]?.muted || false; await updateUserSetting(cid, { muted: !cur }); };
 window.toggleArchive = async (cid) => { const c = conversationsData.find(x => x.id === cid); const cur = c?.user_settings?.[currentUser.uid]?.archived || false; await updateUserSetting(cid, { archived: !cur }); };
 
+/* ============ SHDR shared records — FIXED to avoid nested arrays ============ */
 window.openSharePicker = () => {
   openModal('📎 ' + t('messages.share'), `
     <div class="space-y-3">
@@ -2456,7 +2581,17 @@ window.pickShareMaterial = (sid) => {
   const s = stockData.find(x => x.id === sid); if (!s) return;
   const unit = s.unit || 'units'; const uc = toNumber(s.unit_cost); const qty = toNumber(s.quantity);
   const site = assignedSites.find(x => x.id === currentSiteId);
-  window._pendingSharedRecord = { kind: 'material', title: `🧱 ${t('messages.shareMaterial')}`, subtitle: escapeHTML(s.material_name || ''), lines: [[t('materials.quantityUsed'), `${qty} ${unit}`],[t('stock.unitCost'), formatRWF(uc)],[t('materials.totalAmount'), formatRWF(qty * uc)],[t('materials.site'), site?.name || '—']] };
+  window._pendingSharedRecord = {
+    kind: 'material',
+    title: `🧱 ${t('messages.shareMaterial')}`,
+    subtitle: escapeHTML(s.material_name || ''),
+    lines: [
+      { label: t('materials.quantityUsed'), value: `${qty} ${unit}` },
+      { label: t('stock.unitCost'),        value: formatRWF(uc) },
+      { label: t('materials.totalAmount'), value: formatRWF(qty * uc) },
+      { label: t('materials.site'),        value: site?.name || '—' }
+    ]
+  };
   closeModal(); renderComposerAttachment(); document.getElementById('message-input')?.focus();
 };
 window.shareWorkerPicker = () => {
@@ -2469,7 +2604,16 @@ window.pickShareWorker = (wid) => {
   const w = siteWorkersData.find(x => x.id === wid); if (!w) return;
   const attendance = attendanceData.filter(a => a.worker_id === w.id);
   const days = attendance.length; const rate = toNumber(w.salary); const payable = days * rate;
-  window._pendingSharedRecord = { kind: 'worker', title: `👷 ${t('messages.shareWorker')}`, subtitle: escapeHTML(w.name || ''), lines: [[t('workers.position'), escapeHTML(w.role || '—')],[t('workers.attendanceLogs'), `${days}`],[t('reports.totalPayable'), formatRWF(payable)]] };
+  window._pendingSharedRecord = {
+    kind: 'worker',
+    title: `👷 ${t('messages.shareWorker')}`,
+    subtitle: escapeHTML(w.name || ''),
+    lines: [
+      { label: t('workers.position'),       value: escapeHTML(w.role || '—') },
+      { label: t('workers.attendanceLogs'), value: `${days}` },
+      { label: t('reports.totalPayable'),   value: formatRWF(payable) }
+    ]
+  };
   closeModal(); renderComposerAttachment(); document.getElementById('message-input')?.focus();
 };
 window.shareReportPicker = () => {
@@ -2479,7 +2623,15 @@ window.shareReportPicker = () => {
   const pct = totalTasks ? Math.round((doneTasks / totalTasks) * 100) : 0;
   const monthName = new Date().toLocaleString('en', { month: 'long' });
   const yearNum = new Date().getFullYear();
-  window._pendingSharedRecord = { kind: 'report', title: `📄 ${t('messages.shareReport')}`, subtitle: site?.name || '—', lines: [[t('reports.labels.period'), `${monthName} ${yearNum}`],[t('dashboard.progress'), `${pct}%`]] };
+  window._pendingSharedRecord = {
+    kind: 'report',
+    title: `📄 ${t('messages.shareReport')}`,
+    subtitle: site?.name || '—',
+    lines: [
+      { label: t('reports.labels.period'), value: `${monthName} ${yearNum}` },
+      { label: t('dashboard.progress'),    value: `${pct}%` }
+    ]
+  };
   closeModal(); renderComposerAttachment(); document.getElementById('message-input')?.focus();
 };
 
@@ -2531,10 +2683,7 @@ function renderMessagesSidebar() {
   const el = document.getElementById('messages-directory');
   if (!el) return;
   const ownerId = getManagerOwnerId();
-  if (!ownerId) {
-    el.innerHTML = `<div class="p-4 text-sm text-slate-400">${t('messages.noOwner')}</div>`;
-    return;
-  }
+  if (!ownerId) { el.innerHTML = `<div class="p-4 text-sm text-slate-400">${t('messages.noOwner')}</div>`; return; }
   const owner = activeOwnerProfile || {};
   const name = owner.full_name || 'Owner';
   const photo = owner.profile_picture || '';
@@ -2580,11 +2729,7 @@ function renderMessagesThread() {
   const el = document.getElementById('messages-thread');
   if (!el) return;
   if (!activeConversationId) {
-    el.innerHTML = `
-      <div class="flex-1 flex flex-col items-center justify-center text-center p-8">
-        <iconify-icon icon="material-symbols:forum-outline" class="text-6xl text-slate-300 mb-3"></iconify-icon>
-        <p class="text-slate-500 text-sm">${t('messages.selectConversation')}</p>
-      </div>`;
+    el.innerHTML = `<div class="flex-1 flex flex-col items-center justify-center text-center p-8"><iconify-icon icon="material-symbols:forum-outline" class="text-6xl text-slate-300 mb-3"></iconify-icon><p class="text-slate-500 text-sm">${t('messages.selectConversation')}</p></div>`;
     return;
   }
   const isFirstRender = _lastRenderedCid !== activeConversationId;
@@ -2595,9 +2740,7 @@ function renderMessagesThread() {
   const prevSearch = document.getElementById('msg-search-input')?.value || '';
   const searchWasFocused = document.activeElement?.id === 'msg-search-input';
   const scrollerBefore = document.getElementById('message-scroll');
-  const wasAtBottom = scrollerBefore
-    ? (scrollerBefore.scrollHeight - scrollerBefore.scrollTop - scrollerBefore.clientHeight) < 80
-    : true;
+  const wasAtBottom = scrollerBefore ? (scrollerBefore.scrollHeight - scrollerBefore.scrollTop - scrollerBefore.clientHeight) < 80 : true;
 
   const op = activeOwnerProfile || {};
   const name = op.full_name || 'Owner';
@@ -2660,19 +2803,9 @@ function renderMessagesThread() {
     </div>`;
 
   const inp = document.getElementById('message-input');
-  if (inp) {
-    inp.value = prevInput || getDraft(activeConversationId) || '';
-    if (wasFocused || (isFirstRender && !searchWasFocused)) inp.focus();
-  }
-
+  if (inp) { inp.value = prevInput || getDraft(activeConversationId) || ''; if (wasFocused || (isFirstRender && !searchWasFocused)) inp.focus(); }
   const sInp = document.getElementById('msg-search-input');
-  if (sInp) {
-    sInp.value = currentSearchQuery || prevSearch;
-    if (searchWasFocused) {
-      sInp.focus();
-      sInp.setSelectionRange(sInp.value.length, sInp.value.length);
-    }
-  }
+  if (sInp) { sInp.value = currentSearchQuery || prevSearch; if (searchWasFocused) { sInp.focus(); sInp.setSelectionRange(sInp.value.length, sInp.value.length); } }
 
   renderComposerReplyPreview();
   renderComposerAttachment();
@@ -2690,7 +2823,6 @@ function saveDraftSoon() {
   if (!inp) return;
   setDraft(activeConversationId, inp.value);
 }
-
 function renderTypingIndicator() {
   const el = document.getElementById('typing-indicator');
   if (!el) return;
@@ -2700,23 +2832,13 @@ function renderTypingIndicator() {
   const label = names.length === 1 ? t('messages.isTyping', { name: activeOwnerProfile?.full_name || 'Owner' }) : t('messages.severalTyping');
   el.querySelector('span').textContent = label;
 }
-
 function renderComposerReplyPreview() {
   const el = document.getElementById('composer-reply');
   if (!el) return;
   if (!replyingTo) { el.classList.add('hidden'); el.innerHTML = ''; return; }
   el.classList.remove('hidden');
-  el.innerHTML = `
-    <div class="composer-reply">
-      <iconify-icon icon="material-symbols:reply" width="16" class="text-emerald-600"></iconify-icon>
-      <div class="min-w-0">
-        <div class="font-semibold text-emerald-700 text-[11px]">${escapeHTML(replyingTo.sender_name)}</div>
-        <div class="text-slate-600 truncate text-[11px]">${escapeHTML(replyingTo.text)}</div>
-      </div>
-      <button type="button" class="close-x" onclick="cancelReply()"><iconify-icon icon="material-symbols:close" width="16"></iconify-icon></button>
-    </div>`;
+  el.innerHTML = `<div class="composer-reply"><iconify-icon icon="material-symbols:reply" width="16" class="text-emerald-600"></iconify-icon><div class="min-w-0"><div class="font-semibold text-emerald-700 text-[11px]">${escapeHTML(replyingTo.sender_name)}</div><div class="text-slate-600 truncate text-[11px]">${escapeHTML(replyingTo.text)}</div></div><button type="button" class="close-x" onclick="cancelReply()"><iconify-icon icon="material-symbols:close" width="16"></iconify-icon></button></div>`;
 }
-
 function renderComposerAttachment() {
   const el = document.getElementById('composer-attachment');
   if (!el) return;
@@ -2731,7 +2853,6 @@ function renderComposerAttachment() {
   const s = window._pendingSharedRecord;
   el.innerHTML = `<div class="composer-attachment"><iconify-icon icon="material-symbols:add-link" width="16" class="text-emerald-600"></iconify-icon><span class="truncate">${escapeHTML(s.title)} — ${escapeHTML(s.subtitle)}</span><button type="button" class="ml-auto text-slate-500" onclick="window._pendingSharedRecord=null;renderComposerAttachment();"><iconify-icon icon="material-symbols:close" width="16"></iconify-icon></button></div>`;
 }
-
 function renderEmojiPicker() {
   const el = document.getElementById('emoji-picker');
   if (!el) return;
@@ -2742,12 +2863,10 @@ function renderEmojiPicker() {
   el.innerHTML = `<div class="emoji-grid">${EMOJI_SET.map(e => `<button type="button" onclick="insertEmoji('${e}')">${e}</button>`).join('')}</div>`;
 }
 
+/* ============ Message bubble: NEW kebab-menu design ============ */
 function renderMessageBubble(m) {
   const mine = m.sender_id === currentUser.uid;
   const isDeleted = m.deleted_for_all;
-  const age = Date.now() - new Date(m.created_at).getTime();
-  const canEdit = mine && !isDeleted && m.type === 'text' && age <= EDIT_WINDOW_MS;
-  const canDeleteAll = mine && !isDeleted && age <= EDIT_WINDOW_MS;
   let tickHTML = '';
   if (mine && !isDeleted) {
     if (m.read_at) tickHTML = `<span class="msg-tick read">✓✓</span>`;
@@ -2765,23 +2884,40 @@ function renderMessageBubble(m) {
     }
     if (m.type === 'shared_record' && m.shared_record) {
       const s = m.shared_record;
-      bodyHTML += `<div class="shared-card"><div class="sc-title">${escapeHTML(s.title)}</div><div class="font-semibold text-slate-800 mb-1">${escapeHTML(s.subtitle)}</div>${(s.lines || []).map(([k, v]) => `<div class="sc-row"><span class="text-slate-500">${escapeHTML(k)}</span><span class="font-medium">${escapeHTML(v)}</span></div>`).join('')}</div>`;
+      const lineRows = (s.lines || []).map(line => {
+        const label = Array.isArray(line) ? line[0] : (line.label ?? '');
+        const value = Array.isArray(line) ? line[1] : (line.value ?? '');
+        return `<div class="sc-row"><span class="text-slate-500">${escapeHTML(label)}</span><span class="font-medium">${escapeHTML(value)}</span></div>`;
+      }).join('');
+      bodyHTML += `<div class="shared-card"><div class="sc-title">${escapeHTML(s.title)}</div><div class="font-semibold text-slate-800 mb-1">${escapeHTML(s.subtitle)}</div>${lineRows}</div>`;
     }
     if (m.text) bodyHTML += `<p class="whitespace-pre-wrap">${escapeHTML(m.text)}</p>`;
   }
   const reactions = m.reactions || {};
   const reactionKeys = Object.keys(reactions).filter(k => Array.isArray(reactions[k]) && reactions[k].length);
   const reactionsHTML = reactionKeys.length ? `<div class="msg-reactions">${reactionKeys.map(k => { const mineR = reactions[k].includes(currentUser.uid); return `<span class="react-pill ${mineR ? 'mine' : ''}" onclick="toggleReaction('${m.id}','${k}')">${k}<span class="count">${reactions[k].length}</span></span>`; }).join('')}</div>` : '';
-  const actionsHTML = isDeleted ? '' : `
-    <div class="msg-actions ${mine ? 'right' : 'left'}">
-      <button type="button" onclick="openReactionPicker('${m.id}',event)" title="${t('messages.react')}"><iconify-icon icon="material-symbols:sentiment-satisfied-outline" width="16"></iconify-icon></button>
-      <button type="button" onclick="startReply('${m.id}')" title="${t('messages.reply')}"><iconify-icon icon="material-symbols:reply" width="16"></iconify-icon></button>
-      ${canEdit ? `<button type="button" onclick="startEdit('${m.id}')" title="${t('messages.edit')}"><iconify-icon icon="material-symbols:edit" width="16"></iconify-icon></button>` : ''}
-      <button type="button" onclick="openDeleteMenu('${m.id}',event)" title="${t('messages.delete')}"><iconify-icon icon="material-symbols:delete-outline" width="16"></iconify-icon></button>
-    </div>`;
-  const pickerHTML = isDeleted ? '' : `<div class="reaction-picker" id="reaction-picker-${m.id}">${['👍','❤️','😂','😮','😢','🙏'].map(e => `<button type="button" onclick="toggleReaction('${m.id}','${e}');document.querySelectorAll('.reaction-picker.open').forEach(x=>x.classList.remove('open'));">${e}</button>`).join('')}</div>`;
   const editedHTML = m.edited_at && !isDeleted ? ` <span class="text-[10px] opacity-70">(${t('messages.edited')})</span>` : '';
-  return `<div class="flex ${mine ? 'justify-end' : 'justify-start'} mb-3" id="msg-${m.id}"><div class="msg-bubble-wrap max-w-[80%] relative">${pickerHTML}${actionsHTML}<div class="px-3.5 py-2 rounded-2xl text-sm break-words shadow-sm ${mine ? 'bg-emerald-600 text-white rounded-br-md' : 'bg-white border border-slate-200 text-slate-800 rounded-bl-md'}">${reply}${bodyHTML}<div class="text-[10px] mt-1 ${mine ? 'text-emerald-100' : 'text-slate-400'} text-right flex items-center gap-1 justify-end">${editedHTML}<span>${escapeHTML(formatChatTime(m.created_at))}</span>${tickHTML}</div></div>${reactionsHTML}</div></div>`;
+
+  // Always-visible kebab menu button — no hover dependency
+  const menuBtn = isDeleted ? '' : `<button type="button" class="msg-menu-btn" onclick="openMsgMenu(event,'${m.id}')" aria-label="Message actions"><iconify-icon icon="material-symbols:more-vert" width="20"></iconify-icon></button>`;
+
+  return `
+    <div class="flex ${mine ? 'justify-end' : 'justify-start'} mb-3" id="msg-${m.id}">
+      <div class="msg-bubble-row ${mine ? 'mine' : ''}">
+        ${mine ? menuBtn : ''}
+        <div class="msg-bubble-col">
+          <div class="px-3.5 py-2 rounded-2xl text-sm break-words shadow-sm ${mine ? 'bg-emerald-600 text-white rounded-br-md' : 'bg-white border border-slate-200 text-slate-800 rounded-bl-md'}">
+            ${reply}
+            ${bodyHTML}
+            <div class="text-[10px] mt-1 ${mine ? 'text-emerald-100' : 'text-slate-400'} text-right flex items-center gap-1 justify-end">
+              ${editedHTML}<span>${escapeHTML(formatChatTime(m.created_at))}</span>${tickHTML}
+            </div>
+          </div>
+          ${reactionsHTML}
+        </div>
+        ${mine ? '' : menuBtn}
+      </div>
+    </div>`;
 }
 
 window.openAttachmentLightbox = function (url) {
@@ -2826,13 +2962,20 @@ function maybeShowDesktopNotification(total) {
   try { new Notification(t('messages.newMessageFrom', { name: activeOwnerProfile?.full_name || 'Owner' }), { body: c.last_message?.text || '', icon: 'shdr_logo Background Removed.png' }); } catch (_) {}
 }
 
+/* Global click: close menus when user clicks outside */
 document.addEventListener('click', (ev) => {
   if (emojiPickerOpen) {
     const picker = document.getElementById('emoji-picker');
     const btn = ev.target.closest?.('button[onclick*="toggleEmojiPicker"]');
     if (picker && !picker.contains(ev.target) && !btn) { emojiPickerOpen = false; picker.classList.remove('open'); }
   }
-  document.querySelectorAll('.reaction-picker.open').forEach((el) => { if (!el.contains(ev.target)) el.classList.remove('open'); });
+  const menu = document.getElementById('msg-action-menu');
+  if (menu && !menu.contains(ev.target)) closeMsgMenu();
+  const rp = document.getElementById('reaction-picker-floating');
+  if (rp && !rp.contains(ev.target)) closeReactionPicker();
+});
+document.addEventListener('keydown', (ev) => {
+  if (ev.key === 'Escape') { closeMsgMenu(); closeReactionPicker(); }
 });
 
 // ============================================================
@@ -2873,7 +3016,7 @@ async function initApp(){
   });
 }
 if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',initApp)}else{initApp()}
-console.log('✅ SHDR Manager Dashboard — messaging v2 enabled');
+console.log('✅ SHDR Manager Dashboard — messaging v3 enabled');
 </script>
 </main>
 </body>
