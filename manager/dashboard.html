@@ -2240,7 +2240,7 @@ window.sendOwnerMessage = async () => {
       attachment = { url, name: f.name, size: f.size, mime: f.type };
     }
     const msgPayload = { sender_id: currentUser.uid, sender_role: 'manager', text: text || '', type: attachment ? 'attachment' : (shared ? 'shared_record' : 'text'), attachment: attachment, shared_record: shared, reply_to: reply?.id || null, reply_preview: reply ? { sender_name: reply.sender_name, text: reply.text } : null, reactions: {}, edited_at: null, deleted_for_all: false, deleted_for: [], created_at: now, sent_at: now, delivered_at: null, read_at: null };
-    const previewText = attachment ? `📎 ${attachment.name}` : shared ? `📋 ${shared.title}` : text.slice(0, 200);
+    const previewText = attachment ? `📎 ${attachment.name}` : shared ? ` ${shared.title}` : text.slice(0, 200);
     const batch = writeBatch(db);
     batch.set(msgRef, msgPayload);
     batch.update(doc(db, CONVERSATIONS, activeConversationId), { last_message: { text: previewText, sender_id: currentUser.uid, created_at: now }, updated_at: now, [`unread.${activeOwnerId}`]: increment(1) });
@@ -2302,7 +2302,7 @@ window.startReply = (mid) => {
   const m = messagesCache.find(x => x.id === mid);
   if (!m || m.deleted_for_all) return;
   const senderName = m.sender_id === currentUser.uid ? (managerProfile?.full_name || 'You') : (activeOwnerProfile?.full_name || 'Owner');
-  const body = m.type === 'attachment' ? `📎 ${m.attachment?.name || 'file'}` : m.type === 'shared_record' ? `📋 ${m.shared_record?.title || 'record'}` : (m.text || '');
+  const body = m.type === 'attachment' ? `📎 ${m.attachment?.name || 'file'}` : m.type === 'shared_record' ? ` ${m.shared_record?.title || 'record'}` : (m.text || '');
   replyingTo = { id: mid, sender_name: senderName, text: body.slice(0, 120) };
   renderComposerReplyPreview();
   document.getElementById('message-input')?.focus();
@@ -2448,7 +2448,7 @@ window.startEdit = (mid) => {
   if (m.type !== 'text') { showToast(t('messages.editWindowExpired'), 'error'); return; }
   const age = Date.now() - new Date(m.created_at).getTime();
   if (age > EDIT_WINDOW_MS) { showToast(t('messages.editWindowExpired'), 'error'); return; }
-  openModal('✏️ ' + t('messages.editMessage'), `
+  openModal(' ' + t('Edit'), `
     <form onsubmit="submitEdit(event, '${mid}')" class="space-y-4">
       <textarea id="edit-input" rows="4" class="w-full border rounded-lg p-3 text-sm">${escapeHTML(m.text || '')}</textarea>
       <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-xl font-semibold">${t('messages.saveEdit')}</button>
@@ -2475,7 +2475,7 @@ window.openDeleteMenu = (mid, ev) => {
   const mine = m.sender_id === currentUser.uid;
   const age = Date.now() - new Date(m.created_at).getTime();
   const canDeleteAll = mine && age <= EDIT_WINDOW_MS;
-  openModal('🗑️ ' + t('messages.delete'), `
+  openModal('' + t('Delete'), `
     <div class="space-y-3">
       <button onclick="deleteMessage('${mid}','me')" class="w-full text-left px-4 py-3 rounded-xl border hover:bg-slate-50 flex items-center gap-3">
         <iconify-icon icon="material-symbols:visibility-off-outline" width="20" class="text-slate-500"></iconify-icon>
