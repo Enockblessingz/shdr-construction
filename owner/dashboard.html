@@ -10,7 +10,9 @@
 <title>Sustainable Homes Design Rwanda Ltd — Construction Sites Management System</title>
 <script src="https://cdn.tailwindcss.com/3.4.17"></script>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/iconify-icon@2.3.0/dist/iconify-icon.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,300..700,0..1,-50..200&display=swap" rel="stylesheet">
 <style>
 .language-switcher{display:flex;align-items:center;background-color:rgba(30,86,160,.1);border:1px solid rgba(30,86,160,.2);border-radius:50px;padding:4px;box-shadow:0 2px 4px rgba(0,0,0,.05)}
 .lang-btn{background:transparent;border:2px solid transparent;color:#64748b;font-size:14px;font-weight:700;padding:6px 16px;border-radius:50px;cursor:pointer;transition:all .3s ease;outline:none}
@@ -98,7 +100,6 @@ tbody tr:hover{background:#f1f5f9}
 .msg-tick.delivered{color:#e5e7eb}
 .msg-tick.sent{color:#e5e7eb}
 
-/* Message row layout with always-visible kebab menu */
 .msg-bubble-row{display:flex;align-items:flex-start;gap:6px;width:100%}
 .msg-bubble-row.mine{flex-direction:row-reverse}
 .msg-bubble-col{max-width:80%;display:flex;flex-direction:column;position:relative}
@@ -191,7 +192,66 @@ tbody tr:hover{background:#f1f5f9}
 .attach-preview{max-width:220px;border-radius:8px;overflow:hidden;margin-bottom:4px;background:#000}
 .attach-preview img{display:block;width:100%;max-height:200px;object-fit:cover;cursor:pointer}
 .attach-file{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.15);border-radius:8px;padding:6px 8px;margin-bottom:4px;font-size:12px;color:inherit;text-decoration:none}
+
+/* ===== Material Symbols — real font-based icons ===== */
+.material-symbols-outlined{
+  font-family:'Material Symbols Outlined',sans-serif !important;
+  font-weight:normal;
+  font-style:normal;
+  font-size:20px;
+  line-height:1;
+  letter-spacing:normal;
+  text-transform:none;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  white-space:nowrap;
+  word-wrap:normal;
+  direction:ltr;
+  -webkit-font-feature-settings:'liga';
+  -webkit-font-smoothing:antialiased;
+  font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24;
+}
+.material-symbols-outlined.filled{
+  font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24;
+}
 </style>
+
+<script>
+/* ============================================================
+   iconify-icon shim → Material Symbols font
+   Keeps every existing <iconify-icon icon="material-symbols:xxx" />
+   tag working, but renders it as a real font glyph instead of
+   loading the iconify JS bundle.
+   ============================================================ */
+(function(){
+  class IconifyIconShim extends HTMLElement {
+    static get observedAttributes(){ return ['icon','width','height','class','style']; }
+    connectedCallback(){ this._render(); }
+    attributeChangedCallback(){ this._render(); }
+    _render(){
+      if (this._rendered) return;
+      this._rendered = true;
+
+      const raw = this.getAttribute('icon') || '';
+      let name = raw.replace(/^material-symbols:/, '');
+      name = name.replace(/-outline$/, '');
+      name = name.replace(/-/g, '_');
+
+      const w = parseInt(this.getAttribute('width') || '20', 10);
+      const h = parseInt(this.getAttribute('height') || String(w), 10);
+      const size = Math.max(w, h) || 20;
+      const extraClass = this.getAttribute('class') || '';
+      const extraStyle = this.getAttribute('style') || '';
+
+      this.innerHTML = `<span class="material-symbols-outlined ${extraClass}" style="font-size:${size}px;width:${w||size}px;height:${h||size}px;${extraStyle}">${name}</span>`;
+    }
+  }
+  if (!customElements.get('iconify-icon')) {
+    customElements.define('iconify-icon', IconifyIconShim);
+  }
+})();
+</script>
 </head>
 <body class="min-h-screen flex">
 
@@ -311,7 +371,7 @@ tbody tr:hover{background:#f1f5f9}
     <div class="bg-white rounded-2xl p-6 w-full max-w-md shadow-xl max-h-[90vh] overflow-y-auto" onclick="event.stopPropagation()">
       <div class="flex justify-between items-center mb-4">
         <h3 id="modal-title" class="text-xl font-bold"></h3>
-        <button onclick="closeModal()" class="text-slate-400 hover:text-slate-600"><iconify-icon icon="material-symbols:close" width="24"></iconify-icon></button>
+        <button onclick="closeModal()" class="text-slate-400 hover:text-slate-600"><iconify-icon icon="material-symbols:close" width="24" height="24"></iconify-icon></button>
       </div>
       <div id="modal-body"></div>
     </div>
@@ -1123,8 +1183,8 @@ tbody tr:hover{background:#f1f5f9}
     openModal(t('materials.editMaterial'), `
       <form onsubmit="handleEditMaterial(event, '${id}')" class="space-y-4">
         <input class="w-full border rounded-lg p-3" value="${mat.name}" id="edit-mat-name" required>
-        <input class="w-full border rounded-lg p-3" value="${mat.quantity_used || 0}" type="number" id="edit-mat-used" required step="0.01" placeholder="${t('materials.quantityUsed')}">
-        <input class="w-full border rounded-lg p-3" value="${mat.unit_cost || 0}" type="number" id="edit-mat-unit-cost" required step="0.01" placeholder="${t('materials.unitCost')}">
+        <input class="w-full border rounded-lg p-3" value="${mat.quantity_used || 0}" type="number" id="edit-mat-used" required step="0.01">
+        <input class="w-full border rounded-lg p-3" value="${mat.unit_cost || 0}" type="number" id="edit-mat-unit-cost" required step="0.01">
         <div><label class="text-sm font-medium">New Image (optional)</label><input type="file" id="edit-mat-image" accept="image/*" class="w-full mt-1"></div>
         <button type="submit" class="w-full bg-emerald-600 text-white py-3 rounded-xl">${t('common.save')}</button>
       </form>`);
@@ -2827,7 +2887,7 @@ tbody tr:hover{background:#f1f5f9}
     setTimeout(() => scrollToMessage(mid), 60);
   };
 
-  /* ====== SHDR shared records — object lines (no nested arrays) ====== */
+  /* ====== SHDR shared records ====== */
   window.openSharePicker = () => {
     openModal('📎 ' + t('messages.share'), `<div class="space-y-3"><button onclick="shareMaterialPicker()" class="w-full text-left px-4 py-3 rounded-xl border hover:bg-slate-50 flex items-center gap-3"><iconify-icon icon="material-symbols:package-2-outline" width="20" class="text-emerald-600"></iconify-icon><span class="font-medium">${t('messages.shareMaterial')}</span></button><button onclick="shareWorkerPicker()" class="w-full text-left px-4 py-3 rounded-xl border hover:bg-slate-50 flex items-center gap-3"><iconify-icon icon="material-symbols:engineering-outline" width="20" class="text-blue-600"></iconify-icon><span class="font-medium">${t('messages.shareWorker')}</span></button><button onclick="shareReportPicker()" class="w-full text-left px-4 py-3 rounded-xl border hover:bg-slate-50 flex items-center gap-3"><iconify-icon icon="material-symbols:description-outline" width="20" class="text-amber-600"></iconify-icon><span class="font-medium">${t('messages.shareReport')}</span></button></div>`);
   };
@@ -2873,7 +2933,6 @@ tbody tr:hover{background:#f1f5f9}
     closeModal(); renderComposerAttachment(); document.getElementById('message-input')?.focus();
   };
   window.shareReportPicker = () => {
-    const site = sitesData.find(x => x.id === activeManagerId ? null : null);
     const totalTasks = progressTasks.length;
     const doneTasks = progressTasks.filter(t2 => t2.status === 'completed').length;
     const pct = totalTasks ? Math.round((doneTasks / totalTasks) * 100) : 0;
