@@ -396,6 +396,7 @@ tbody tr:hover{background:#f1f5f9}
       pinConversation:"Pin",unpinConversation:"Unpin",muteConversation:"Mute",unmuteConversation:"Unmute",archiveConversation:"Archive",unarchiveConversation:"Unarchive",
       uploading:"Uploading {name}...",fileTooLarge:"File is too large (max 10 MB)",fileTypeNotAllowed:"Only images can be sent right now (JPG, PNG, GIF, WEBP)",
       newMessageFrom:"New message from {name}",
+      edit:"Edit Message", delete:"Delete Message",
       editMessage:"Edit message",saveEdit:"Save changes",editWindowExpired:"You can only edit within 15 minutes",deleteWindowExpired:"Delete for everyone is only available for 15 minutes"},
       dashboard:{title:"Dashboard",totalSites:"Total Sites",totalWorkers:"Total Workers",welcome:"Welcome back, {name}",overview:"Here's your construction site overview",noSites:"No sites",noWorkers:"No workers assigned",noData:"No data",spentOnMaterials:"Spent on Materials",recentProgress:"Recent Progress",selectSite:"Select a site",endDate:"End"},
       sites:{title:"Your Sites",addSite:"Add Site",editSite:"Edit Site",siteName:"Site Name",location:"Location",client:"Client",startDate:"Start Date",endDate:"End Date",budget:"Budget",status:"Status",markFinished:"Mark Finished",noSites:"No sites yet",district:"District",sector:"Sector",saveSite:"Save Site",deleteSite:"Delete Site"},
@@ -423,6 +424,7 @@ tbody tr:hover{background:#f1f5f9}
       pinConversation:"Shyira hejuru",unpinConversation:"Kura hejuru",muteConversation:"Nyereza",unmuteConversation:"Kumurura",archiveConversation:"Bika",unarchiveConversation:"Kuraho",
       uploading:"Turaohereza {name}...",fileTooLarge:"Dosiye ni nini cyane (max 10 MB)",fileTypeNotAllowed:"Ifoto gusa (JPG, PNG, GIF, WEBP)",
       newMessageFrom:"Ubutumwa bushya buturutse {name}",
+      edit:"Hindura Ubutumwa", delete:"Siba Ubutumwa",
       editMessage:"Hindura ubutumwa",saveEdit:"Bika",editWindowExpired:"Ushobora guhindura gusa mu minota 15",deleteWindowExpired:"Gusiba kuri bose bishoboka gusa mu minota 15"},
       dashboard:{title:"Imbonerahamwe",totalSites:"Imibare y'ibibanza",totalWorkers:"Imibare y'abakozi",welcome:"Murakaza neza, {name}",overview:"Dore ikibazo cy'umurimo wawe",noSites:"Nta bibanza",noWorkers:"Nta bakozi bagenwe",noData:"Nta makuru",spentOnMaterials:"Amafaranga yakoreshejwe ku bikoresho",recentProgress:"Ibitekerezo bishya",selectSite:"Hitamo igibanza",endDate:"Iherezo"},
       sites:{title:"Ibibanza byawe",addSite:"Ongeraho igibanza",editSite:"Hindura igibanza",siteName:"Izina",location:"Aho biherereye",client:"Umukiriya",startDate:"Itariki yo gutangira",endDate:"Itariki yo kurangira",budget:"Ingengo y'imari",status:"Imiterere",markFinished:"Rangiza",noSites:"Nta bibanza birahari",district:"Akarere",sector:"Umurenge",saveSite:"Bika",deleteSite:"Siba"},
@@ -450,6 +452,7 @@ tbody tr:hover{background:#f1f5f9}
       pinConversation:"Épingler",unpinConversation:"Désépingler",muteConversation:"Sourdine",unmuteConversation:"Réactiver",archiveConversation:"Archiver",unarchiveConversation:"Désarchiver",
       uploading:"Envoi {name}...",fileTooLarge:"Trop volumineux (max 10 Mo)",fileTypeNotAllowed:"Images uniquement (JPG, PNG, GIF, WEBP)",
       newMessageFrom:"Nouveau message de {name}",
+      edit:"Modifier le message", delete:"Supprimer le message",
       editMessage:"Modifier",saveEdit:"Enregistrer",editWindowExpired:"Modifiable dans les 15 minutes",deleteWindowExpired:"Suppression pour tous dans les 15 minutes"},
       dashboard:{title:"Tableau de bord",totalSites:"Sites",totalWorkers:"Ouvriers",welcome:"Bienvenue, {name}",overview:"Aperçu",noSites:"Aucun site",noWorkers:"Aucun ouvrier",noData:"Aucune donnée",spentOnMaterials:"Dépensé",recentProgress:"Progrès récents",selectSite:"Sélectionner",endDate:"Fin"},
       sites:{title:"Vos sites",addSite:"Ajouter",editSite:"Modifier",siteName:"Nom",location:"Emplacement",client:"Client",startDate:"Début",endDate:"Fin",budget:"Budget",status:"Statut",markFinished:"Marquer",noSites:"Aucun site",district:"District",sector:"Secteur",saveSite:"Enregistrer",deleteSite:"Supprimer"},
@@ -2805,7 +2808,16 @@ tbody tr:hover{background:#f1f5f9}
     if (m.type !== 'text') { showToast(t('messages.editWindowExpired'), 'error'); return; }
     const age = Date.now() - new Date(m.created_at).getTime();
     if (age > EDIT_WINDOW_MS) { showToast(t('messages.editWindowExpired'), 'error'); return; }
-    openModal('✏️ ' + t('messages.editMessage'), `<form onsubmit="submitEdit(event, '${mid}')" class="space-y-4"><textarea id="edit-input" rows="4" class="w-full border rounded-lg p-3 text-sm">${escapeHTML(m.text || '')}</textarea><button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-xl font-semibold">${t('messages.saveEdit')}</button></form>`);
+    
+    openModal(t('messages.edit'), `<form onsubmit="submitEdit(event, '${mid}')" class="space-y-4">
+      <div class="flex items-center gap-2 text-emerald-700 mb-2">
+        <iconify-icon icon="material-symbols:edit" width="24"></iconify-icon>
+        <span class="font-bold text-lg">${t('messages.edit')}</span>
+      </div>
+      <textarea id="edit-input" rows="4" class="w-full border rounded-lg p-3 text-sm">${escapeHTML(m.text || '')}</textarea>
+      <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-xl font-semibold">${t('messages.saveEdit')}</button>
+    </form>`);
+    
     setTimeout(() => { const inp = document.getElementById('edit-input'); if (inp) { inp.focus(); inp.selectionStart = inp.selectionEnd = inp.value.length; } }, 80);
   };
   window.submitEdit = async (e, mid) => {
@@ -2828,7 +2840,22 @@ tbody tr:hover{background:#f1f5f9}
     const mine = m.sender_id === currentUser.uid;
     const age = Date.now() - new Date(m.created_at).getTime();
     const canDeleteAll = mine && age <= EDIT_WINDOW_MS;
-    openModal('🗑️ ' + t('messages.delete'), `<div class="space-y-3"><button onclick="deleteMessage('${mid}','me')" class="w-full text-left px-4 py-3 rounded-xl border hover:bg-slate-50 flex items-center gap-3"><iconify-icon icon="material-symbols:visibility-off-outline" width="20" class="text-slate-500"></iconify-icon><span class="font-medium">${t('messages.deleteForMe')}</span></button>${canDeleteAll ? `<button onclick="deleteMessage('${mid}','all')" class="w-full text-left px-4 py-3 rounded-xl border hover:bg-red-50 flex items-center gap-3"><iconify-icon icon="material-symbols:delete-outline" width="20" class="text-red-500"></iconify-icon><span class="font-medium text-red-600">${t('messages.deleteForEveryone')}</span></button>` : `<p class="text-xs text-slate-400 px-1">${t('messages.deleteWindowExpired')}</p>`}</div>`);
+    
+    openModal(t('messages.delete'), `<div class="space-y-3">
+      <div class="flex items-center gap-2 text-red-600 mb-4">
+        <iconify-icon icon="material-symbols:delete-outline" width="24"></iconify-icon>
+        <span class="font-bold text-lg">${t('messages.delete')}</span>
+      </div>
+      <button onclick="deleteMessage('${mid}','me')" class="w-full text-left px-4 py-3 rounded-xl border hover:bg-slate-50 flex items-center gap-3">
+        <iconify-icon icon="material-symbols:visibility-off-outline" width="20" class="text-slate-500"></iconify-icon>
+        <span class="font-medium">${t('messages.deleteForMe')}</span>
+      </button>
+      ${canDeleteAll ? `
+      <button onclick="deleteMessage('${mid}','all')" class="w-full text-left px-4 py-3 rounded-xl border hover:bg-red-50 flex items-center gap-3">
+        <iconify-icon icon="material-symbols:delete-outline" width="20" class="text-red-500"></iconify-icon>
+        <span class="font-medium text-red-600">${t('messages.deleteForEveryone')}</span>
+      </button>` : `<p class="text-xs text-slate-400 px-1">${t('messages.deleteWindowExpired')}</p>`}
+    </div>`);
   };
   window.deleteMessage = async (mid, scope) => {
     closeModal();
