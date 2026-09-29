@@ -9,6 +9,8 @@
 <link rel="apple-touch-icon" sizes="180x180" href="shdr_logo%20Background%20Removed.png">
 <script src="https://cdn.tailwindcss.com/3.4.17"></script>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<!-- Added Material Symbols Font for reliable emoji icon rendering -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,300..700,0..1,-50..200&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/iconify-icon@2.3.0/dist/iconify-icon.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
@@ -208,6 +210,25 @@ body{background:#f8fafc}
 .attach-preview{max-width:220px;border-radius:8px;overflow:hidden;margin-bottom:4px;background:#000}
 .attach-preview img{display:block;width:100%;max-height:200px;object-fit:cover;cursor:pointer}
 .attach-file{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.15);border-radius:8px;padding:6px 8px;margin-bottom:4px;font-size:12px;color:inherit;text-decoration:none}
+
+/* Material Symbols font fallback styling */
+.material-symbols-outlined {
+  font-family: 'Material Symbols Outlined' !important;
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-feature-settings: 'liga';
+  -webkit-font-smoothing: antialiased;
+}
 </style>
 </head>
 <body class="min-h-screen flex">
@@ -2802,7 +2823,10 @@ function renderMessagesThread() {
       <div id="emoji-picker" class="emoji-picker"></div>
       <div class="flex items-end gap-2">
         <div class="composer-toolbar">
-          <button type="button" onclick="toggleEmojiPicker()" title="${t('messages.emoji')}" class="${emojiPickerOpen ? 'active' : ''}"><iconify-icon icon="material-symbols:emoji-emotions-outline" width="22"></iconify-icon></button>
+          <!-- FIXED: Using native Material Symbols font instead of Iconify CDN for emoji button to prevent missing icon -->
+          <button type="button" onclick="toggleEmojiPicker()" title="${t('messages.emoji')}" class="${emojiPickerOpen ? 'active' : ''}">
+            <span class="material-symbols-outlined" style="font-size:22px;">emoji_emotions</span>
+          </button>
           <button type="button" onclick="pickAttachment()" title="${t('messages.attach')}"><iconify-icon icon="material-symbols:attach-file" width="22"></iconify-icon></button>
           <button type="button" onclick="openSharePicker()" title="${t('messages.share')}"><iconify-icon icon="material-symbols:add-link" width="22"></iconify-icon></button>
         </div>
