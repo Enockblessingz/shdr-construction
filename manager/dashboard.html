@@ -9,6 +9,8 @@
 <link rel="apple-touch-icon" sizes="180x180" href="shdr_logo%20Background%20Removed.png">
 <script src="https://cdn.tailwindcss.com/3.4.17"></script>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<!-- Added Material Symbols Font for reliable emoji icon rendering -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,300..700,0..1,-50..200&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/iconify-icon@2.3.0/dist/iconify-icon.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
@@ -116,7 +118,6 @@ body{background:#f8fafc}
 .msg-tick.delivered{color:#e5e7eb}
 .msg-tick.sent{color:#e5e7eb}
 
-/* ===== NEW message row layout with always-visible kebab menu ===== */
 .msg-bubble-row{display:flex;align-items:flex-start;gap:6px;width:100%}
 .msg-bubble-row.mine{flex-direction:row-reverse}
 .msg-bubble-col{max-width:80%;display:flex;flex-direction:column;position:relative}
@@ -134,7 +135,6 @@ body{background:#f8fafc}
 .msg-menu-btn:hover,.msg-menu-btn:active{background:#ecfdf5;color:#059669;border-color:#059669}
 .msg-menu-btn iconify-icon{font-size:20px}
 
-/* Floating action menu — position:fixed so it never gets clipped or moves */
 .msg-action-menu{
   position:fixed;
   background:#fff;border:1px solid #e5e7eb;border-radius:12px;
@@ -153,7 +153,6 @@ body{background:#f8fafc}
 .msg-action-menu button.danger:hover{background:#fef2f2;color:#dc2626}
 .msg-action-menu .menu-icon{width:18px;display:inline-flex;justify-content:center}
 
-/* Floating reaction picker */
 .reaction-picker-floating{
   position:fixed;
   background:#fff;border:1px solid #e5e7eb;border-radius:999px;
@@ -211,6 +210,25 @@ body{background:#f8fafc}
 .attach-preview{max-width:220px;border-radius:8px;overflow:hidden;margin-bottom:4px;background:#000}
 .attach-preview img{display:block;width:100%;max-height:200px;object-fit:cover;cursor:pointer}
 .attach-file{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.15);border-radius:8px;padding:6px 8px;margin-bottom:4px;font-size:12px;color:inherit;text-decoration:none}
+
+/* Material Symbols font fallback styling */
+.material-symbols-outlined {
+  font-family: 'Material Symbols Outlined' !important;
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-feature-settings: 'liga';
+  -webkit-font-smoothing: antialiased;
+}
 </style>
 </head>
 <body class="min-h-screen flex">
@@ -316,6 +334,7 @@ searchInConversation:"Search in conversation",searchResults:"{n} results",noSear
 pinConversation:"Pin",unpinConversation:"Unpin",muteConversation:"Mute",unmuteConversation:"Unmute",archiveConversation:"Archive",unarchiveConversation:"Unarchive",pinnedSection:"Pinned",archivedSection:"Archived",noConversations:"No conversations",
 uploading:"Uploading {name}...",fileTooLarge:"File is too large (max 10 MB)",fileTypeNotAllowed:"Only images can be sent right now (JPG, PNG, GIF, WEBP)",downloadAttachment:"Download",
 newMessageFrom:"New message from {name}",
+edit:"Edit Message",delete:"Delete Message",
 editMessage:"Edit message",saveEdit:"Save changes",editWindowExpired:"You can only edit within 15 minutes",deleteWindowExpired:"Delete for everyone is only available for 15 minutes"},
 dashboard:{siteStatus:"Status",siteManager:"Manager",workersOnSite:"Workers On Site",progress:"Progress",recentMaterials:"Recent Materials",pendingTasks:"Pending Tasks"},
 materials:{title:"Materials Used",recordUsage:"Record Usage",editMaterial:"Edit Material",materialName:"Material Name",quantityUsed:"Qty Used",unitCost:"Unit Cost",totalAmount:"Total Amount",noMaterials:"No materials recorded yet.",requisitions:"Requisitions",newRequisition:"+ New Requisition",requested:"Requested",supplied:"Supplied",remaining:"Remaining",reqNumber:"Req. ID",site:"Site",requestedBy:"Requested By",requestDate:"Date Requested",requiredDate:"Required Date",priority:"Priority",status:"Status",actions:"Actions",pending:"Pending",urgent:"Urgent",approved:"Approved",partiallySupplied:"Partially Supplied",suppliedStatus:"Supplied",normal:"Normal",createRequisition:"New Material Requisition",submitRequisition:"Submit Requisition",notes:"Notes",material:"Material",available:"Available",requestedQty:"Requested Qty",unit:"Unit",noRequisitions:"No requisitions found.",batchMaterialUsage:"Batch Material Usage",dateUsed:"Date *",selectMaterials:"Select Materials to Add",selectMaterialsHint:"Click to select / deselect materials",batchTotal:"Total Usage Amount",saveUsageBatch:"Save Usage Batch",selectAtLeastOneMaterial:"Please select at least one material with quantity > 0.",quantityMustBePositive:"Quantity must be > 0",unitCostCannotBeNegative:"Unit cost cannot be negative",insufficientStock:"Insufficient stock",stockNotFound:"Stock item not found",batchSaved:"Usage batch saved successfully!",currentStock:"Current Stock",materialItems:"Material Items",materials:"materials",usagePhoto:"Material Usage Photo (Optional)",usagePhotoHint:"Take or select a photo of the materials used at the site",search:"Search requisitions...",allPriorities:"All Priorities",allStatuses:"All Statuses",clearFilters:"Clear Filters"},
@@ -334,6 +353,7 @@ searchInConversation:"Shakisha mu kiganiro",noSearchResults:"Nta butumwa buhuye"
 pinConversation:"Shyira hejuru",unpinConversation:"Kura hejuru",muteConversation:"Nyereza",unmuteConversation:"Kumurura",archiveConversation:"Bika",unarchiveConversation:"Kuraho",
 uploading:"Turaohereza {name}...",fileTooLarge:"Dosiye ni nini cyane (max 10 MB)",fileTypeNotAllowed:"Ifoto gusa (JPG, PNG, GIF, WEBP)",
 newMessageFrom:"Ubutumwa bushya buturutse {name}",
+edit:"Hindura Ubutumwa",delete:"Siba Ubutumwa",
 editMessage:"Hindura ubutumwa",saveEdit:"Bika",editWindowExpired:"Ushobora guhindura gusa mu minota 15",deleteWindowExpired:"Gusiba kuri bose bishoboka gusa mu minota 15"},
 dashboard:{siteStatus:"Imiterere",siteManager:"Umuyobozi",workersOnSite:"Abakozi",progress:"Ibitekerezo",recentMaterials:"Ibikoresho bishya",pendingTasks:"Imirimo itegereje"},
 materials:{title:"Ibikoresho Byakoreshejwe",recordUsage:"Andika Gukoresha",editMaterial:"Hindura",materialName:"Izina",quantityUsed:"Umubare",unitCost:"Igiciro",totalAmount:"Amafaranga",noMaterials:"Nta bikoresho.",requisitions:"Ubusabe",newRequisition:"+ Ubusabe Bushya",requested:"Basabwe",supplied:"Byatanzwe",remaining:"Bisigaye",reqNumber:"Nomero",site:"Ukibanza",requestedBy:"Wasabye",requestDate:"Itariki yo Gusaba",requiredDate:"Itariki Ikenewe",priority:"Ubwihutirwa",status:"Imiterere",actions:"Ibikorwa",pending:"Bitegereje",urgent:"Byihutirwa",approved:"Byemewe",partiallySupplied:"Igice",suppliedStatus:"Byatanzwe",normal:"Bisanzwe",createRequisition:"Ubusabe Bushya",submitRequisition:"Ohereza",notes:"Ibisobanuro",material:"Ibikoresho",available:"Biboneka",requestedQty:"Umubare",unit:"Igice",noRequisitions:"Nta busabe.",batchMaterialUsage:"Gukoresha Ibikoresho",dateUsed:"Itariki *",selectMaterials:"Hitamo Ibikoresho",selectMaterialsHint:"Kanda guhitamo",batchTotal:"Igiteranyo",saveUsageBatch:"Bika",selectAtLeastOneMaterial:"Hitamo byibura kimwe",quantityMustBePositive:"Umubare > 0",unitCostCannotBeNegative:"Igiciro ntigishobora kuba nini",insufficientStock:"Imbuganyuro ntihagije",stockNotFound:"Ntiboneka",batchSaved:"Byabitswe!",currentStock:"Ziriho",materialItems:"Ibikoresho",materials:"ibikoresho",usagePhoto:"Ifoto (Bidahatirwa)",usagePhotoHint:"Fata cyangwa hitamo ifoto",search:"Shakisha...",allPriorities:"Ubwihutirwa bwose",allStatuses:"Imiterere yose",clearFilters:"Siba amashungura"},
@@ -352,6 +372,7 @@ searchInConversation:"Rechercher dans la conversation",noSearchResults:"Aucun me
 pinConversation:"Épingler",unpinConversation:"Désépingler",muteConversation:"Mettre en sourdine",unmuteConversation:"Réactiver",archiveConversation:"Archiver",unarchiveConversation:"Désarchiver",
 uploading:"Envoi de {name}...",fileTooLarge:"Fichier trop volumineux (max 10 Mo)",fileTypeNotAllowed:"Images uniquement (JPG, PNG, GIF, WEBP)",
 newMessageFrom:"Nouveau message de {name}",
+edit:"Modifier le message",delete:"Supprimer le message",
 editMessage:"Modifier le message",saveEdit:"Enregistrer",editWindowExpired:"Modifiable uniquement dans les 15 minutes",deleteWindowExpired:"Suppression pour tous uniquement dans les 15 minutes"},
 dashboard:{siteStatus:"Statut",siteManager:"Gestionnaire",workersOnSite:"Ouvriers",progress:"Progrès",recentMaterials:"Matériaux récents",pendingTasks:"Tâches en attente"},
 materials:{title:"Matériaux utilisés",recordUsage:"Enregistrer",editMaterial:"Modifier",materialName:"Nom",quantityUsed:"Qté",unitCost:"Coût",totalAmount:"Total",noMaterials:"Aucun matériau.",requisitions:"Réquisitions",newRequisition:"+ Nouvelle",requested:"Demandé",supplied:"Fourni",remaining:"Restant",reqNumber:"N°",site:"Chantier",requestedBy:"Demandé par",requestDate:"Date demande",requiredDate:"Date requise",priority:"Priorité",status:"Statut",actions:"Actions",pending:"En attente",urgent:"Urgent",approved:"Approuvé",partiallySupplied:"Partiel",suppliedStatus:"Fourni",normal:"Normal",createRequisition:"Nouvelle Réquisition",submitRequisition:"Soumettre",notes:"Notes",material:"Matériau",available:"Disponible",requestedQty:"Qté demandée",unit:"Unité",noRequisitions:"Aucune réquisition.",batchMaterialUsage:"Utilisation par lot",dateUsed:"Date *",selectMaterials:"Sélectionner",selectMaterialsHint:"Cliquez pour sélectionner",batchTotal:"Montant total",saveUsageBatch:"Enregistrer",selectAtLeastOneMaterial:"Sélectionnez au moins un matériau",quantityMustBePositive:"Quantité > 0",unitCostCannotBeNegative:"Coût non négatif",insufficientStock:"Stock insuffisant",stockNotFound:"Introuvable",batchSaved:"Lot enregistré!",currentStock:"Stock actuel",materialItems:"Articles",materials:"matériaux",usagePhoto:"Photo (facultatif)",usagePhotoHint:"Prenez ou sélectionnez une photo",search:"Rechercher...",allPriorities:"Toutes priorités",allStatuses:"Tous statuts",clearFilters:"Effacer filtres"},
@@ -2359,7 +2380,6 @@ window.openMsgMenu = function (ev, mid) {
   ).join('');
   document.body.appendChild(menu);
 
-  // position: anchor near the button that was clicked
   const anchor = ev?.currentTarget || ev?.target;
   let rect;
   if (anchor && anchor.getBoundingClientRect) {
@@ -2370,21 +2390,15 @@ window.openMsgMenu = function (ev, mid) {
   }
 
   const mw = menu.offsetWidth, mh = menu.offsetHeight;
-  // Prefer below the button for messages I sent, above for the other person
   let left = mine ? (rect.right - mw) : rect.left;
   let top = rect.bottom + 6;
-
-  // flip up if not enough room below
   if (top + mh > window.innerHeight - 8) top = rect.top - mh - 6;
-  // clamp horizontally
   if (left < 8) left = 8;
   if (left + mw > window.innerWidth - 8) left = window.innerWidth - mw - 8;
   if (top < 8) top = 8;
-
   menu.style.left = left + 'px';
   menu.style.top = top + 'px';
 
-  // dispatch clicks
   menu.querySelectorAll('button[data-action]').forEach(btn => {
     btn.addEventListener('click', () => {
       const action = btn.dataset.action;
@@ -2442,14 +2456,20 @@ window.closeReactionPicker = function () {
   if (el) el.remove();
 };
 
+/* ============ FIXED: Edit modal with real Material Symbol icon ============ */
 window.startEdit = (mid) => {
   const m = messagesCache.find(x => x.id === mid);
   if (!m || m.sender_id !== currentUser.uid || m.deleted_for_all) return;
   if (m.type !== 'text') { showToast(t('messages.editWindowExpired'), 'error'); return; }
   const age = Date.now() - new Date(m.created_at).getTime();
   if (age > EDIT_WINDOW_MS) { showToast(t('messages.editWindowExpired'), 'error'); return; }
-  openModal(' ' + t('Edit'), `
+
+  openModal(t('messages.edit'), `
     <form onsubmit="submitEdit(event, '${mid}')" class="space-y-4">
+      <div class="flex items-center gap-2 text-emerald-700 mb-2">
+        <iconify-icon icon="material-symbols:edit" width="24"></iconify-icon>
+        <span class="font-bold text-lg">${t('messages.edit')}</span>
+      </div>
       <textarea id="edit-input" rows="4" class="w-full border rounded-lg p-3 text-sm">${escapeHTML(m.text || '')}</textarea>
       <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-xl font-semibold">${t('messages.saveEdit')}</button>
     </form>`);
@@ -2468,6 +2488,7 @@ window.submitEdit = async (e, mid) => {
   finally { setButtonLoading(btn, false); }
 };
 
+/* ============ FIXED: Delete modal with real Material Symbol icon ============ */
 window.openDeleteMenu = (mid, ev) => {
   ev?.stopPropagation?.();
   const m = messagesCache.find(x => x.id === mid);
@@ -2475,13 +2496,22 @@ window.openDeleteMenu = (mid, ev) => {
   const mine = m.sender_id === currentUser.uid;
   const age = Date.now() - new Date(m.created_at).getTime();
   const canDeleteAll = mine && age <= EDIT_WINDOW_MS;
-  openModal('' + t('Delete'), `
+
+  openModal(t('messages.delete'), `
     <div class="space-y-3">
+      <div class="flex items-center gap-2 text-red-600 mb-4">
+        <iconify-icon icon="material-symbols:delete-outline" width="24"></iconify-icon>
+        <span class="font-bold text-lg">${t('messages.delete')}</span>
+      </div>
       <button onclick="deleteMessage('${mid}','me')" class="w-full text-left px-4 py-3 rounded-xl border hover:bg-slate-50 flex items-center gap-3">
         <iconify-icon icon="material-symbols:visibility-off-outline" width="20" class="text-slate-500"></iconify-icon>
         <span class="font-medium">${t('messages.deleteForMe')}</span>
       </button>
-      ${canDeleteAll ? `<button onclick="deleteMessage('${mid}','all')" class="w-full text-left px-4 py-3 rounded-xl border hover:bg-red-50 flex items-center gap-3"><iconify-icon icon="material-symbols:delete-outline" width="20" class="text-red-500"></iconify-icon><span class="font-medium text-red-600">${t('messages.deleteForEveryone')}</span></button>` : `<p class="text-xs text-slate-400 px-1">${t('messages.deleteWindowExpired')}</p>`}
+      ${canDeleteAll ? `
+      <button onclick="deleteMessage('${mid}','all')" class="w-full text-left px-4 py-3 rounded-xl border hover:bg-red-50 flex items-center gap-3">
+        <iconify-icon icon="material-symbols:delete-outline" width="20" class="text-red-500"></iconify-icon>
+        <span class="font-medium text-red-600">${t('messages.deleteForEveryone')}</span>
+      </button>` : `<p class="text-xs text-slate-400 px-1">${t('messages.deleteWindowExpired')}</p>`}
     </div>`);
 };
 window.deleteMessage = async (mid, scope) => {
@@ -2562,7 +2592,7 @@ window.togglePin = async (cid) => { const c = conversationsData.find(x => x.id =
 window.toggleMute = async (cid) => { const c = conversationsData.find(x => x.id === cid); const cur = c?.user_settings?.[currentUser.uid]?.muted || false; await updateUserSetting(cid, { muted: !cur }); };
 window.toggleArchive = async (cid) => { const c = conversationsData.find(x => x.id === cid); const cur = c?.user_settings?.[currentUser.uid]?.archived || false; await updateUserSetting(cid, { archived: !cur }); };
 
-/* ============ SHDR shared records — FIXED to avoid nested arrays ============ */
+/* ============ SHDR shared records ============ */
 window.openSharePicker = () => {
   openModal('📎 ' + t('messages.share'), `
     <div class="space-y-3">
@@ -2793,7 +2823,10 @@ function renderMessagesThread() {
       <div id="emoji-picker" class="emoji-picker"></div>
       <div class="flex items-end gap-2">
         <div class="composer-toolbar">
-          <button type="button" onclick="toggleEmojiPicker()" title="${t('messages.emoji')}" class="${emojiPickerOpen ? 'active' : ''}"><iconify-icon icon="material-symbols:emoji-emotions-outline" width="22"></iconify-icon></button>
+          <!-- FIXED: Using native Material Symbols font instead of Iconify CDN for emoji button to prevent missing icon -->
+          <button type="button" onclick="toggleEmojiPicker()" title="${t('messages.emoji')}" class="${emojiPickerOpen ? 'active' : ''}">
+            <span class="material-symbols-outlined" style="font-size:22px;">emoji_emotions</span>
+          </button>
           <button type="button" onclick="pickAttachment()" title="${t('messages.attach')}"><iconify-icon icon="material-symbols:attach-file" width="22"></iconify-icon></button>
           <button type="button" onclick="openSharePicker()" title="${t('messages.share')}"><iconify-icon icon="material-symbols:add-link" width="22"></iconify-icon></button>
         </div>
@@ -2863,7 +2896,6 @@ function renderEmojiPicker() {
   el.innerHTML = `<div class="emoji-grid">${EMOJI_SET.map(e => `<button type="button" onclick="insertEmoji('${e}')">${e}</button>`).join('')}</div>`;
 }
 
-/* ============ Message bubble: NEW kebab-menu design ============ */
 function renderMessageBubble(m) {
   const mine = m.sender_id === currentUser.uid;
   const isDeleted = m.deleted_for_all;
@@ -2898,7 +2930,6 @@ function renderMessageBubble(m) {
   const reactionsHTML = reactionKeys.length ? `<div class="msg-reactions">${reactionKeys.map(k => { const mineR = reactions[k].includes(currentUser.uid); return `<span class="react-pill ${mineR ? 'mine' : ''}" onclick="toggleReaction('${m.id}','${k}')">${k}<span class="count">${reactions[k].length}</span></span>`; }).join('')}</div>` : '';
   const editedHTML = m.edited_at && !isDeleted ? ` <span class="text-[10px] opacity-70">(${t('messages.edited')})</span>` : '';
 
-  // Always-visible kebab menu button — no hover dependency
   const menuBtn = isDeleted ? '' : `<button type="button" class="msg-menu-btn" onclick="openMsgMenu(event,'${m.id}')" aria-label="Message actions"><iconify-icon icon="material-symbols:more-vert" width="20"></iconify-icon></button>`;
 
   return `
@@ -2962,7 +2993,6 @@ function maybeShowDesktopNotification(total) {
   try { new Notification(t('messages.newMessageFrom', { name: activeOwnerProfile?.full_name || 'Owner' }), { body: c.last_message?.text || '', icon: 'shdr_logo Background Removed.png' }); } catch (_) {}
 }
 
-/* Global click: close menus when user clicks outside */
 document.addEventListener('click', (ev) => {
   if (emojiPickerOpen) {
     const picker = document.getElementById('emoji-picker');
