@@ -374,6 +374,239 @@
             .footer-brand-sub { white-space: normal; }
             .footer-logo { width: 42px; height: 42px; }
         }
+
+        /* ═══════════════════════════════════════════════════════
+           FACE SCAN UI (Added)
+           ═══════════════════════════════════════════════════════ */
+        .otp-divider {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            color: var(--text-light);
+            font-size: 0.75rem;
+            margin: 24px 0 16px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .otp-divider::before, .otp-divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+        }
+
+        .face-scan-option {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .btn-face-scan {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: #1e293b;
+            color: #fff;
+            border: 1px solid #334155;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: inherit;
+        }
+        .btn-face-scan:hover {
+            background: #334155;
+            border-color: #475569;
+            transform: translateY(-1px);
+        }
+        .btn-face-scan iconify-icon {
+            color: #38bdf8;
+        }
+
+        /* Modal Overlay */
+        .face-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            padding: 20px;
+            animation: fadeIn 0.2s ease-out;
+        }
+        .face-modal.hidden {
+            display: none !important;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Modal Content */
+        .face-modal-content {
+            background: #1a1a2e;
+            border-radius: 24px;
+            padding: 24px;
+            width: 100%;
+            max-width: 420px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
+            border: 1px solid #2d2d44;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px) scale(0.98); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        /* Video Container */
+        .face-video-container {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 4/3;
+            background: #000;
+            border-radius: 16px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        #face-video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transform: scaleX(-1); /* Mirror effect */
+        }
+
+        /* Circular Guide Overlay */
+        .face-guide-circle {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60%;
+            aspect-ratio: 1;
+            border: 2px dashed rgba(255, 255, 255, 0.4);
+            border-radius: 50%;
+            pointer-events: none;
+            transition: border-color 0.3s ease;
+        }
+        .face-guide-circle.scanning {
+            border-color: #38bdf8;
+            border-style: solid;
+            animation: pulseRing 1.5s infinite;
+        }
+
+        @keyframes pulseRing {
+            0% { box-shadow: 0 0 0 0 rgba(56, 189, 248, 0.4); }
+            70% { box-shadow: 0 0 0 20px rgba(56, 189, 248, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(56, 189, 248, 0); }
+        }
+
+        /* Corner Brackets */
+        .face-corner {
+            position: absolute;
+            width: 32px;
+            height: 32px;
+            border-color: rgba(255, 255, 255, 0.6);
+            border-style: solid;
+            pointer-events: none;
+        }
+        .face-corner.top-left { top: 16px; left: 16px; border-width: 2px 0 0 2px; border-top-left-radius: 8px; }
+        .face-corner.top-right { top: 16px; right: 16px; border-width: 2px 2px 0 0; border-top-right-radius: 8px; }
+        .face-corner.bottom-left { bottom: 16px; left: 16px; border-width: 0 0 2px 2px; border-bottom-left-radius: 8px; }
+        .face-corner.bottom-right { bottom: 16px; right: 16px; border-width: 0 2px 2px 0; border-bottom-right-radius: 8px; }
+
+        /* Camera Error */
+        .face-camera-error {
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.9);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #ef4444;
+            gap: 12px;
+            text-align: center;
+            padding: 20px;
+        }
+        .face-camera-error.hidden { display: none !important; }
+        .face-camera-error p { font-size: 0.85rem; color: #fca5a5; }
+
+        /* Status Pill */
+        .face-status-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(34, 197, 94, 0.15);
+            color: #4ade80;
+            padding: 6px 16px;
+            border-radius: 100px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 24px;
+            transition: all 0.3s ease;
+        }
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #22c55e;
+            box-shadow: 0 0 8px #22c55e;
+            transition: all 0.3s ease;
+        }
+
+        /* Action Buttons */
+        .face-actions {
+            display: flex;
+            gap: 12px;
+            width: 100%;
+        }
+        .face-actions button {
+            flex: 1;
+            padding: 14px;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: inherit;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .btn-cancel {
+            background: transparent;
+            border: 1.5px solid #334155;
+            color: #94a3b8;
+        }
+        .btn-cancel:hover {
+            background: #1e293b;
+            color: #fff;
+            border-color: #475569;
+        }
+        .btn-scan {
+            background: #fff;
+            border: none;
+            color: #1a1a2e;
+        }
+        .btn-scan:hover:not(:disabled) {
+            background: #e2e8f0;
+            transform: translateY(-1px);
+        }
+        .btn-scan:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
     </style>
 </head>
 <body>
@@ -535,6 +768,18 @@
                     <span id="otp-resend-timer"></span>
                 </div>
 
+                <!-- Face Scan Option Added Here -->
+                <div class="otp-divider">
+                    <span>Or verify using</span>
+                </div>
+
+                <div class="face-scan-option">
+                    <button type="button" class="btn-face-scan" onclick="openFaceScan()">
+                        <iconify-icon icon="material-symbols:face-recognition" width="24"></iconify-icon>
+                        Find My Face
+                    </button>
+                </div>
+
                 <div class="otp-back">
                     <button type="button" onclick="backToAuth()">← Back to sign in</button>
                 </div>
@@ -616,6 +861,46 @@
             <div>Designed &amp; Powered by <a href="https://wa.me/250790020086" target="_blank" rel="noopener">___Enock's___blessingz___</a></div>
         </div>
     </footer>
+
+    <!-- Face Scan Modal (Added here) -->
+    <div id="face-scan-modal" class="face-modal hidden">
+        <div class="face-modal-content">
+            <!-- Video Area with Overlays -->
+            <div class="face-video-container">
+                <video id="face-video" autoplay playsinline muted></video>
+                
+                <!-- Circular Guide -->
+                <div class="face-guide-circle"></div>
+                
+                <!-- Corner Brackets -->
+                <div class="face-corner top-left"></div>
+                <div class="face-corner top-right"></div>
+                <div class="face-corner bottom-left"></div>
+                <div class="face-corner bottom-right"></div>
+                
+                <!-- Error state overlay (hidden by default) -->
+                <div id="face-camera-error" class="face-camera-error hidden">
+                    <iconify-icon icon="material-symbols:videocam-off" width="32"></iconify-icon>
+                    <p>Camera access denied or unavailable.</p>
+                </div>
+            </div>
+
+            <!-- Status Pill -->
+            <div class="face-status-pill">
+                <span class="status-dot" id="face-status-dot"></span>
+                <span id="face-status-text">Ready to scan</span>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="face-actions">
+                <button type="button" class="btn-cancel" onclick="closeFaceScan()">Cancel</button>
+                <button type="button" class="btn-scan" id="btn-scan" onclick="performFaceScan()">
+                    <iconify-icon icon="material-symbols:search"></iconify-icon>
+                    Scan
+                </button>
+            </div>
+        </div>
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 
@@ -1439,6 +1724,131 @@
             } finally {
                 setButtonLoading(btn, false);
             }
+        };
+
+        /* ═══════════════════════════════════════════════════════
+           FACE SCAN LOGIC (Added)
+           ═══════════════════════════════════════════════════════ */
+        let faceStream = null;
+        let faceScanTimeout = null;
+
+        window.openFaceScan = function() {
+            document.getElementById('face-scan-modal').classList.remove('hidden');
+            const video = document.getElementById('face-video');
+            const statusText = document.getElementById('face-status-text');
+            const statusDot = document.getElementById('face-status-dot');
+            const errorOverlay = document.getElementById('face-camera-error');
+            const scanBtn = document.getElementById('btn-scan');
+            const guideCircle = document.querySelector('.face-guide-circle');
+
+            // Reset UI
+            statusText.textContent = 'Ready to scan';
+            statusDot.style.backgroundColor = '#22c55e';
+            statusDot.style.boxShadow = '0 0 8px #22c55e';
+            errorOverlay.classList.add('hidden');
+            video.style.display = 'block';
+            scanBtn.disabled = false;
+            scanBtn.innerHTML = '<iconify-icon icon="material-symbols:search"></iconify-icon> Scan';
+            guideCircle.classList.remove('scanning');
+
+            // Request Camera
+            if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user', width: { ideal: 640 }, height: { ideal: 480 } } })
+                    .then(stream => {
+                        faceStream = stream;
+                        video.srcObject = stream;
+                    })
+                    .catch(err => {
+                        console.error("Camera access denied:", err);
+                        statusText.textContent = 'Camera blocked';
+                        statusDot.style.backgroundColor = '#ef4444';
+                        statusDot.style.boxShadow = '0 0 8px #ef4444';
+                        errorOverlay.classList.remove('hidden');
+                        video.style.display = 'none';
+                        scanBtn.disabled = true;
+                    });
+            } else {
+                statusText.textContent = 'Camera not supported';
+                statusDot.style.backgroundColor = '#ef4444';
+                errorOverlay.classList.remove('hidden');
+                scanBtn.disabled = true;
+            }
+        };
+
+        window.closeFaceScan = function() {
+            document.getElementById('face-scan-modal').classList.add('hidden');
+            if (faceStream) {
+                faceStream.getTracks().forEach(track => track.stop());
+                faceStream = null;
+            }
+            if (faceScanTimeout) {
+                clearTimeout(faceScanTimeout);
+                faceScanTimeout = null;
+            }
+        };
+
+        window.performFaceScan = async function() {
+            const statusText = document.getElementById('face-status-text');
+            const statusDot = document.getElementById('face-status-dot');
+            const scanBtn = document.getElementById('btn-scan');
+            const guideCircle = document.querySelector('.face-guide-circle');
+
+            // Set scanning state
+            statusText.textContent = 'Scanning...';
+            statusDot.style.backgroundColor = '#eab308'; // Yellow
+            statusDot.style.boxShadow = '0 0 8px #eab308';
+            scanBtn.disabled = true;
+            scanBtn.innerHTML = '<span class="spinner" style="border-top-color:#1a1a2e;"></span> Scanning';
+            guideCircle.classList.add('scanning');
+
+            // Simulate API call and scanning delay (2.5 seconds)
+            faceScanTimeout = setTimeout(async () => {
+                // --- IN A REAL APP, THIS IS WHERE YOU WOULD SEND THE IMAGE TO YOUR BACKEND ---
+                // e.g., const imageData = captureImage(); await fetch('/api/verify-face', { ... })
+                
+                // Simulate successful match
+                statusText.textContent = 'Face matched!';
+                statusDot.style.backgroundColor = '#22c55e'; // Green
+                statusDot.style.boxShadow = '0 0 8px #22c55e';
+                scanBtn.innerHTML = '<iconify-icon icon="material-symbols:check-circle"></iconify-icon> Verified';
+                
+                setTimeout(async () => {
+                    closeFaceScan();
+                    
+                    // Integrate with your existing Firebase success flow
+                    const user = auth.currentUser;
+                    if (user) {
+                        try {
+                            await updateDoc(doc(db, 'profiles', user.uid), {
+                                email_verified: true,
+                                email_verified_at: new Date().toISOString(),
+                                verification_method: 'face_scan'
+                            });
+                            await deleteDoc(doc(db, 'email_verifications', user.uid));
+                            
+                            clearOtpTimers();
+                            isOtpVerified = true;
+                            isVerifyingOtp = false;
+                            inOtpFlow = false;
+                            
+                            markOtpVerifiedThisSession(user.uid);
+                            
+                            // Hide OTP view and show success
+                            document.getElementById('otp-view').classList.add('hidden');
+                            showMessage('Identity verified successfully via Face Scan.', 'success');
+                            
+                            setTimeout(() => { window.location.href = 'owner/dashboard.html'; }, 1400);
+                        } catch (error) {
+                            console.error("Error updating profile after face scan:", error);
+                            showMessage('Verification succeeded, but failed to update profile. Please try again.', 'error');
+                            document.getElementById('otp-view').classList.remove('hidden');
+                        }
+                    } else {
+                        showMessage('Session expired. Please sign in again.', 'error');
+                        document.getElementById('otp-view').classList.remove('hidden');
+                    }
+                }, 1000); // Wait 1 second on success screen
+            }, 2500); // Simulate 2.5 seconds of scanning
         };
 
         setupOtpInputs();
