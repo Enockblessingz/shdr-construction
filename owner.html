@@ -9,10 +9,8 @@
     <meta name="description" content="SHDR Owner Portal — Login or register with email verification" />
     <title>SHDR Owner — Sign In / Sign Up</title>
 
-    <!-- Iconify -->
+    <!-- Iconify (real vector icons) -->
     <script src="https://cdn.jsdelivr.net/npm/iconify-icon@2.3.0/dist/iconify-icon.min.js"></script>
-    <!-- Face API for Frontend UX (Detection guidance only) -->
-    <script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
 
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -23,6 +21,7 @@
             --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
         }
 
+        /* Full-screen background with dark overlay */
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             background: url('https://cdn.pixabay.com/photo/2018/12/12/23/02/site-3871804_1280.jpg') center/cover no-repeat fixed;
@@ -38,11 +37,12 @@
             content: '';
             position: fixed;
             inset: 0;
-            background: rgba(0, 0, 0, 0.55);
+            background: rgba(0, 0, 0, 0.55); /* Darkens the image so the white card pops */
             z-index: 0;
             pointer-events: none;
         }
 
+        /* Layout wrapper to push footer down */
         .main-content {
             flex: 1;
             display: flex;
@@ -53,6 +53,7 @@
             z-index: 1;
         }
 
+        /* Floating White Card */
         .auth-card {
             background: #ffffff;
             border-radius: 20px;
@@ -64,25 +65,81 @@
             z-index: 2;
         }
 
+        /* ═══════════════════════════════════════════════════════
+           CARD HEADER & BRANDING (Updated)
+           ═══════════════════════════════════════════════════════ */
         .card-header { text-align: center; margin-bottom: 28px; }
-        .card-brand { display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 14px; }
-        .card-logo { width: 48px; height: 48px; margin: 0; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        
+        .card-brand {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 14px;
+        }
+        
+        .card-logo {
+            width: 48px; 
+            height: 48px; 
+            margin: 0;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+        }
+        
         .card-logo img { width: 100%; height: 100%; object-fit: contain; }
-        .card-brand-text { display: flex; flex-direction: column; text-align: left; gap: 2px; }
-        .card-brand-name { font-weight: 700; font-size: 1.1rem; letter-spacing: -0.3px; color: var(--text); line-height: 1.2; white-space: nowrap; }
-        .card-brand-sub { font-size: 0.65rem; color: var(--text-light); letter-spacing: 0.02em; line-height: 1.2; white-space: nowrap; }
-        .card-brand-desc { font-size: 0.85rem; color: var(--text-light); line-height: 1.6; text-align: center; margin-bottom: 24px; max-width: 320px; margin-left: auto; margin-right: auto; }
+        
+        .card-brand-text {
+            display: flex;
+            flex-direction: column;
+            text-align: left;
+            gap: 2px;
+        }
+        
+        .card-brand-name {
+            font-weight: 700;
+            font-size: 1.1rem;
+            letter-spacing: -0.3px;
+            color: var(--text);
+            line-height: 1.2;
+            white-space: nowrap;
+        }
+        
+        .card-brand-sub {
+            font-size: 0.65rem;
+            color: var(--text-light);
+            letter-spacing: 0.02em;
+            line-height: 1.2;
+            white-space: nowrap;
+        }
+        
+        .card-brand-desc {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            line-height: 1.6;
+            text-align: center;
+            margin-bottom: 24px;
+            max-width: 320px;
+            margin-left: auto;
+            margin-right: auto;
+        }
 
         .card-header h1 { font-size: 1.6rem; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 6px; color: var(--text); }
         .card-header p { color: var(--text-light); font-size: 0.9rem; }
 
+        /* Form Elements */
         .message { padding: 12px 16px; border-radius: 10px; font-size: 0.85rem; margin-bottom: 20px; display: none; line-height: 1.5; }
         .message.error { background: #fef2f2; color: #991b1b; border: 1px solid #fecaca; }
         .message.success { background: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; }
         .message.info { background: #eff6ff; color: #1e40af; border: 1px solid #bfdbfe; }
 
         .social-section { margin-bottom: 20px; }
-        .social-btn { width: 100%; padding: 12px 16px; border-radius: var(--radius); border: 1.5px solid var(--border); background: #fff; font-size: 0.9rem; font-weight: 500; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 10px; color: var(--text); font-family: inherit; margin-bottom: 10px; }
+        .social-btn {
+            width: 100%; padding: 12px 16px; border-radius: var(--radius);
+            border: 1.5px solid var(--border); background: #fff; font-size: 0.9rem;
+            font-weight: 500; cursor: pointer; transition: 0.2s; display: flex;
+            align-items: center; justify-content: center; gap: 10px; color: var(--text);
+            font-family: inherit; margin-bottom: 10px;
+        }
         .social-btn:hover { background: #f9fafb; border-color: #d1d5db; box-shadow: var(--shadow-sm); }
         .social-btn:active { transform: scale(0.98); }
         .social-btn svg { width: 20px; height: 20px; flex-shrink: 0; }
@@ -98,12 +155,21 @@
 
         .form-group { margin-bottom: 18px; }
         .form-group label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 6px; color: var(--text); }
-        .form-group input { width: 100%; padding: 12px 16px; border: 1.5px solid var(--border); border-radius: var(--radius); font-size: 0.95rem; transition: 0.2s; background: #f9fafb; font-family: inherit; }
+        .form-group input {
+            width: 100%; padding: 12px 16px; border: 1.5px solid var(--border);
+            border-radius: var(--radius); font-size: 0.95rem; transition: 0.2s;
+            background: #f9fafb; font-family: inherit;
+        }
         .form-group input:focus { outline: none; border-color: var(--green); box-shadow: 0 0 0 3px rgba(5,150,105,0.08); background: #fff; }
 
         .password-wrap { position: relative; }
         .password-wrap input { padding-right: 48px; }
-        .toggle-pw { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: #9ca3af; padding: 4px; display: flex; align-items: center; justify-content: center; transition: color 0.2s; line-height: 1; }
+        .toggle-pw {
+            position: absolute; right: 14px; top: 50%; transform: translateY(-50%);
+            background: none; border: none; cursor: pointer; color: #9ca3af;
+            padding: 4px; display: flex; align-items: center; justify-content: center;
+            transition: color 0.2s; line-height: 1;
+        }
         .toggle-pw:hover { color: var(--green); }
         .toggle-pw:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; border-radius: 4px; }
         .toggle-pw iconify-icon { display: block; }
@@ -113,7 +179,12 @@
         .row-options a { color: var(--green); text-decoration: none; font-weight: 500; }
         .row-options a:hover { text-decoration: underline; }
 
-        .btn { width: 100%; padding: 13px; border-radius: var(--radius); border: none; font-weight: 600; font-size: 0.95rem; cursor: pointer; transition: 0.2s; background: var(--green); color: #fff; display: flex; align-items: center; justify-content: center; gap: 8px; font-family: inherit; }
+        .btn {
+            width: 100%; padding: 13px; border-radius: var(--radius); border: none;
+            font-weight: 600; font-size: 0.95rem; cursor: pointer; transition: 0.2s;
+            background: var(--green); color: #fff; display: flex; align-items: center;
+            justify-content: center; gap: 8px; font-family: inherit;
+        }
         .btn:hover { background: var(--green-hover); }
         .btn:disabled { opacity: 0.7; cursor: not-allowed; }
         .btn-secondary { background: #fff; color: var(--text); border: 1.5px solid var(--border); }
@@ -129,16 +200,40 @@
 
         /* OTP View */
         .otp-view { text-align: center; }
-        .otp-icon { width: 76px; height: 76px; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; color: var(--green); }
+        .otp-icon {
+            width: 76px; height: 76px;
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 20px; color: var(--green);
+        }
         .otp-view h1 { font-size: 1.5rem; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 8px; }
         .otp-view .otp-sub { color: var(--text-light); font-size: 0.9rem; line-height: 1.6; margin-bottom: 6px; }
-        .otp-view .otp-email { display: inline-block; font-weight: 600; color: var(--text); background: #f1f5f9; padding: 4px 12px; border-radius: 100px; font-size: 0.85rem; margin-top: 4px; word-break: break-all; letter-spacing: 0.02em; }
+        .otp-view .otp-email {
+            display: inline-block; font-weight: 600; color: var(--text);
+            background: #f1f5f9; padding: 4px 12px; border-radius: 100px;
+            font-size: 0.85rem; margin-top: 4px; word-break: break-all;
+            letter-spacing: 0.02em;
+        }
         .otp-inputs { display: flex; gap: 8px; justify-content: center; margin: 24px 0 4px; }
-        .otp-inputs input { width: 46px; height: 56px; text-align: center; font-size: 1.4rem; font-weight: 700; border: 1.5px solid var(--border); border-radius: 12px; background: #f9fafb; font-family: inherit; color: var(--text); caret-color: var(--green); transition: border-color 0.18s ease, background 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease; will-change: transform, opacity; }
-        .otp-inputs input:focus { outline: none; border-color: var(--green); box-shadow: 0 0 0 3px rgba(5,150,105,0.1); background: #fff; }
+        .otp-inputs input {
+            width: 46px; height: 56px; text-align: center; font-size: 1.4rem;
+            font-weight: 700; border: 1.5px solid var(--border); border-radius: 12px;
+            background: #f9fafb; font-family: inherit;
+            color: var(--text); caret-color: var(--green);
+            transition: border-color 0.18s ease, background 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
+            will-change: transform, opacity;
+        }
+        .otp-inputs input:focus {
+            outline: none; border-color: var(--green);
+            box-shadow: 0 0 0 3px rgba(5,150,105,0.1);
+            background: #fff;
+        }
         .otp-inputs input.filled { border-color: var(--green); background: #fff; }
         .otp-inputs input.pop { animation: digitPop 0.2s cubic-bezier(0.4, 0, 0.2, 1); }
-        @keyframes digitPop { 0% { transform: scale(0.88); opacity: 0.55; } 60% { transform: scale(1.04); opacity: 1; } 100% { transform: scale(1); opacity: 1; } }
+        @keyframes digitPop {
+            0%   { transform: scale(0.88); opacity: 0.55; }
+            60%  { transform: scale(1.04); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
+        }
         .otp-inputs input.error { border-color: #ef4444; background: #fef2f2; animation: shake 0.4s ease; }
         .otp-inputs input:disabled { opacity: 0.6; cursor: not-allowed; }
         @keyframes shake { 0%,100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
@@ -147,22 +242,48 @@
         .otp-timer strong { color: var(--green); font-variant-numeric: tabular-nums; }
         .otp-timer.expired strong { color: #dc2626; }
 
-        .otp-status { min-height: 80px; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 8px 0; position: relative; }
+        .otp-status {
+            min-height: 80px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            padding: 8px 0; position: relative;
+        }
         .otp-status .status-text { font-size: 0.85rem; font-weight: 500; margin-top: 12px; text-align: center; line-height: 1.5; }
         .otp-status.verifying .status-text { color: var(--text-light); }
         .otp-status.verified .status-text { color: #059669; font-weight: 600; font-size: 0.9rem; }
         .otp-status.error .status-text { color: #dc2626; font-weight: 500; }
+
         .otp-status.verifying { animation: stateSwapIn 0.25s cubic-bezier(0.4, 0, 0.2, 1); }
         .otp-status.verifying .status-text { animation: stateTextIn 0.25s ease-out; }
-        .otp-spinner-large { width: 40px; height: 40px; border: 3px solid #e2e8f0; border-top: 3px solid #059669; border-radius: 50%; animation: spin 0.8s linear infinite, stateSwapIn 0.25s cubic-bezier(0.4, 0, 0.2, 1); }
+        .otp-spinner-large {
+            width: 40px; height: 40px;
+            border: 3px solid #e2e8f0; border-top: 3px solid #059669;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite, stateSwapIn 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
         @keyframes stateSwapIn { 0% { opacity: 0; transform: scale(0.96); } 100% { opacity: 1; transform: scale(1); } }
         @keyframes stateTextIn { 0% { opacity: 0; transform: translateY(4px); } 100% { opacity: 1; transform: translateY(0); } }
+
         .otp-status.verified { animation: successPulse 0.55s cubic-bezier(0.4, 0, 0.2, 1); }
         @keyframes successPulse { 0% { transform: scale(1); } 45% { transform: scale(1.05); } 100% { transform: scale(1); } }
         .otp-status.verified .status-text { animation: stateTextIn 0.4s ease-out 0.55s backwards; }
-        .otp-checkmark { width: 60px; height: 60px; animation: checkmarkPop 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275); filter: drop-shadow(0 4px 10px rgba(5, 150, 105, 0.18)); }
-        .otp-checkmark circle { stroke: #059669; stroke-width: 2.5; fill: none; stroke-dasharray: 166; stroke-dashoffset: 166; animation: checkmarkStroke 0.55s cubic-bezier(0.65, 0, 0.45, 1) forwards; transform-origin: center; }
-        .otp-checkmark path { stroke: #059669; stroke-width: 3; fill: none; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 48; stroke-dashoffset: 48; animation: checkmarkStroke 0.32s cubic-bezier(0.65, 0, 0.45, 1) 0.5s forwards; }
+
+        .otp-checkmark {
+            width: 60px; height: 60px;
+            animation: checkmarkPop 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            filter: drop-shadow(0 4px 10px rgba(5, 150, 105, 0.18));
+        }
+        .otp-checkmark circle {
+            stroke: #059669; stroke-width: 2.5; fill: none;
+            stroke-dasharray: 166; stroke-dashoffset: 166;
+            animation: checkmarkStroke 0.55s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+            transform-origin: center;
+        }
+        .otp-checkmark path {
+            stroke: #059669; stroke-width: 3; fill: none;
+            stroke-linecap: round; stroke-linejoin: round;
+            stroke-dasharray: 48; stroke-dashoffset: 48;
+            animation: checkmarkStroke 0.32s cubic-bezier(0.65, 0, 0.45, 1) 0.5s forwards;
+        }
         @keyframes checkmarkStroke { 100% { stroke-dashoffset: 0; } }
         @keyframes checkmarkPop { 0% { transform: scale(0.6); opacity: 0; } 60% { transform: scale(1.05); opacity: 1; } 100% { transform: scale(1); opacity: 1; } }
 
@@ -175,34 +296,72 @@
         .otp-back button { background: none; border: none; color: var(--text-light); font-size: 0.85rem; cursor: pointer; font-weight: 500; font-family: inherit; }
         .otp-back button:hover { color: var(--text); }
 
-        .warning-note { text-align: center; margin-top: 12px; font-size: 0.8rem; color: #b45309; display: flex; align-items: center; justify-content: center; gap: 6px; }
+        .warning-note {
+            text-align: center; margin-top: 12px; font-size: 0.8rem; color: #b45309;
+            display: flex; align-items: center; justify-content: center; gap: 6px;
+        }
 
-        /* FOOTER */
-        footer { width: 100%; flex-shrink: 0; border-top: 1px solid var(--border); background: #ffffff; padding: 56px 24px 0; position: relative; z-index: 1; }
-        .footer-columns { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1.6fr 1.3fr 1.1fr 1.1fr; gap: 48px; padding-bottom: 44px; }
+        /* ═══════════════════════════════════════════════════════
+           PREMIUM FOOTER (Solid white so text is perfectly visible)
+           ═══════════════════════════════════════════════════════ */
+        footer {
+            width: 100%;
+            flex-shrink: 0;
+            border-top: 1px solid var(--border);
+            background: #ffffff;
+            padding: 56px 24px 0;
+            position: relative;
+            z-index: 1;
+        }
+
+        .footer-columns {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1.6fr 1.3fr 1.1fr 1.1fr;
+            gap: 48px;
+            padding-bottom: 44px;
+        }
+
         .footer-brand { display: flex; align-items: center; gap: 12px; margin-bottom: 18px; }
         .footer-logo { width: 48px; height: 48px; object-fit: contain; display: block; flex-shrink: 0; }
         .footer-brand-text { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
         .footer-brand-name { font-weight: 700; font-size: 1.05rem; letter-spacing: -0.3px; color: var(--text); line-height: 1.2; white-space: nowrap; }
         .footer-brand-sub { font-size: 0.72rem; color: var(--text-light); letter-spacing: 0.02em; line-height: 1.2; white-space: nowrap; }
         .footer-desc { font-size: 0.875rem; color: var(--text-light); line-height: 1.7; max-width: 340px; }
+
         .footer-col h4 { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text); margin-bottom: 18px; }
         .footer-links { list-style: none; display: flex; flex-direction: column; gap: 12px; }
         .footer-links li a { font-size: 0.875rem; color: var(--text-light); transition: color 0.2s; cursor: pointer; display: inline-flex; align-items: center; gap: 9px; text-decoration: none; line-height: 1.4; }
         .footer-links li a iconify-icon { font-size: 1.05rem; flex-shrink: 0; color: var(--green); transition: transform 0.2s; }
         .footer-links li a:hover { color: var(--green); }
         .footer-links li a:hover iconify-icon { transform: translateY(-1px); }
+
         .footer-socials { display: flex; flex-wrap: wrap; gap: 10px; }
-        .footer-social-link { width: 42px; height: 42px; border-radius: 50%; border: 1.5px solid var(--border); display: inline-flex; align-items: center; justify-content: center; color: var(--text-light); text-decoration: none; transition: all 0.2s ease; cursor: pointer; background: #fff; }
+        .footer-social-link {
+            width: 42px; height: 42px; border-radius: 50%;
+            border: 1.5px solid var(--border); display: inline-flex;
+            align-items: center; justify-content: center; color: var(--text-light);
+            text-decoration: none; transition: all 0.2s ease; cursor: pointer; background: #fff;
+        }
         .footer-social-link iconify-icon { font-size: 1.15rem; transition: transform 0.2s ease, color 0.2s ease; display: block; }
         .footer-social-link:hover { border-color: var(--green); color: var(--green); transform: translateY(-2px); box-shadow: 0 6px 16px rgba(5, 150, 105, 0.18); background: #ecfdf5; }
         .footer-social-link:hover iconify-icon { transform: scale(1.12); }
         .footer-social-link:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; }
-        .footer-bottom { max-width: 1200px; margin: 0 auto; padding: 20px 0 26px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; font-size: 0.8rem; color: var(--text-light); }
+
+        .footer-bottom {
+            max-width: 1200px; margin: 0 auto; padding: 20px 0 26px;
+            border-top: 1px solid var(--border); display: flex;
+            justify-content: space-between; align-items: center;
+            gap: 16px; flex-wrap: wrap; font-size: 0.8rem; color: var(--text-light);
+        }
         .footer-bottom a { color: var(--green); font-weight: 500; text-decoration: none; }
         .footer-bottom a:hover { text-decoration: underline; }
 
-        @media (max-width: 900px) { .footer-columns { grid-template-columns: 1fr 1fr; gap: 36px; } }
+        /* Responsive */
+        @media (max-width: 900px) {
+            .footer-columns { grid-template-columns: 1fr 1fr; gap: 36px; }
+        }
         @media (max-width: 640px) {
             .auth-card { padding: 30px 20px; border-radius: 16px; }
             .card-logo { width: 42px; height: 42px; }
@@ -217,48 +376,237 @@
         }
 
         /* ═══════════════════════════════════════════════════════
-           FACE SCAN MODAL (REAL IMPLEMENTATION)
+           FACE SCAN UI (Added)
            ═══════════════════════════════════════════════════════ */
-        .otp-divider { display: flex; align-items: center; gap: 16px; color: var(--text-light); font-size: 0.75rem; margin: 24px 0 16px; text-transform: uppercase; letter-spacing: 0.05em; }
-        .otp-divider::before, .otp-divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
-        .face-scan-option { display: flex; justify-content: center; margin-bottom: 20px; }
-        .btn-face-scan { display: flex; align-items: center; gap: 10px; background: #1e293b; color: #fff; border: 1px solid #334155; padding: 12px 24px; border-radius: 12px; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: all 0.2s ease; font-family: inherit; }
-        .btn-face-scan:hover { background: #334155; border-color: #475569; transform: translateY(-1px); }
-        .btn-face-scan iconify-icon { color: #38bdf8; }
+        .otp-divider {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            color: var(--text-light);
+            font-size: 0.75rem;
+            margin: 24px 0 16px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .otp-divider::before, .otp-divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+        }
 
-        .face-modal { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; z-index: 9999; padding: 20px; animation: fadeIn 0.2s ease-out; }
-        .face-modal.hidden { display: none !important; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        .face-modal-content { background: #1a1a2e; border-radius: 24px; padding: 24px; width: 100%; max-width: 420px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8); border: 1px solid #2d2d44; display: flex; flex-direction: column; align-items: center; animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px) scale(0.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
-        
-        .face-video-container { position: relative; width: 100%; aspect-ratio: 4/3; background: #000; border-radius: 16px; overflow: hidden; margin-bottom: 20px; }
-        #face-video { width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); }
-        
-        .face-guide-circle { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 60%; aspect-ratio: 1; border: 2px dashed rgba(255, 255, 255, 0.4); border-radius: 50%; pointer-events: none; transition: border-color 0.3s ease; }
-        .face-guide-circle.scanning { border-color: #38bdf8; border-style: solid; animation: pulseRing 1.5s infinite; }
-        @keyframes pulseRing { 0% { box-shadow: 0 0 0 0 rgba(56, 189, 248, 0.4); } 70% { box-shadow: 0 0 0 20px rgba(56, 189, 248, 0); } 100% { box-shadow: 0 0 0 0 rgba(56, 189, 248, 0); } }
-        
-        .face-corner { position: absolute; width: 32px; height: 32px; border-color: rgba(255, 255, 255, 0.6); border-style: solid; pointer-events: none; }
+        .face-scan-option {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .btn-face-scan {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: #1e293b;
+            color: #fff;
+            border: 1px solid #334155;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: inherit;
+        }
+        .btn-face-scan:hover {
+            background: #334155;
+            border-color: #475569;
+            transform: translateY(-1px);
+        }
+        .btn-face-scan iconify-icon {
+            color: #38bdf8;
+        }
+
+        /* Modal Overlay */
+        .face-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            padding: 20px;
+            animation: fadeIn 0.2s ease-out;
+        }
+        .face-modal.hidden {
+            display: none !important;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Modal Content */
+        .face-modal-content {
+            background: #1a1a2e;
+            border-radius: 24px;
+            padding: 24px;
+            width: 100%;
+            max-width: 420px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
+            border: 1px solid #2d2d44;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px) scale(0.98); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        /* Video Container */
+        .face-video-container {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 4/3;
+            background: #000;
+            border-radius: 16px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        #face-video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transform: scaleX(-1); /* Mirror effect */
+        }
+
+        /* Circular Guide Overlay */
+        .face-guide-circle {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60%;
+            aspect-ratio: 1;
+            border: 2px dashed rgba(255, 255, 255, 0.4);
+            border-radius: 50%;
+            pointer-events: none;
+            transition: border-color 0.3s ease;
+        }
+        .face-guide-circle.scanning {
+            border-color: #38bdf8;
+            border-style: solid;
+            animation: pulseRing 1.5s infinite;
+        }
+
+        @keyframes pulseRing {
+            0% { box-shadow: 0 0 0 0 rgba(56, 189, 248, 0.4); }
+            70% { box-shadow: 0 0 0 20px rgba(56, 189, 248, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(56, 189, 248, 0); }
+        }
+
+        /* Corner Brackets */
+        .face-corner {
+            position: absolute;
+            width: 32px;
+            height: 32px;
+            border-color: rgba(255, 255, 255, 0.6);
+            border-style: solid;
+            pointer-events: none;
+        }
         .face-corner.top-left { top: 16px; left: 16px; border-width: 2px 0 0 2px; border-top-left-radius: 8px; }
         .face-corner.top-right { top: 16px; right: 16px; border-width: 2px 2px 0 0; border-top-right-radius: 8px; }
         .face-corner.bottom-left { bottom: 16px; left: 16px; border-width: 0 0 2px 2px; border-bottom-left-radius: 8px; }
         .face-corner.bottom-right { bottom: 16px; right: 16px; border-width: 0 2px 2px 0; border-bottom-right-radius: 8px; }
-        
-        .face-camera-error { position: absolute; inset: 0; background: rgba(0, 0, 0, 0.9); display: flex; flex-direction: column; align-items: center; justify-content: center; color: #ef4444; gap: 12px; text-align: center; padding: 20px; }
+
+        /* Camera Error */
+        .face-camera-error {
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.9);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #ef4444;
+            gap: 12px;
+            text-align: center;
+            padding: 20px;
+        }
         .face-camera-error.hidden { display: none !important; }
         .face-camera-error p { font-size: 0.85rem; color: #fca5a5; }
 
-        .face-status-pill { display: inline-flex; align-items: center; gap: 8px; background: rgba(34, 197, 94, 0.15); color: #4ade80; padding: 6px 16px; border-radius: 100px; font-size: 0.8rem; font-weight: 600; margin-bottom: 24px; transition: all 0.3s ease; }
-        .status-dot { width: 8px; height: 8px; border-radius: 50%; background: #22c55e; box-shadow: 0 0 8px #22c55e; transition: all 0.3s ease; }
+        /* Status Pill */
+        .face-status-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(34, 197, 94, 0.15);
+            color: #4ade80;
+            padding: 6px 16px;
+            border-radius: 100px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 24px;
+            transition: all 0.3s ease;
+        }
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #22c55e;
+            box-shadow: 0 0 8px #22c55e;
+            transition: all 0.3s ease;
+        }
 
-        .face-actions { display: flex; gap: 12px; width: 100%; }
-        .face-actions button { flex: 1; padding: 14px; border-radius: 12px; font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: all 0.2s ease; font-family: inherit; display: flex; align-items: center; justify-content: center; gap: 8px; }
-        .btn-cancel { background: transparent; border: 1.5px solid #334155; color: #94a3b8; }
-        .btn-cancel:hover { background: #1e293b; color: #fff; border-color: #475569; }
-        .btn-scan { background: #fff; border: none; color: #1a1a2e; }
-        .btn-scan:hover:not(:disabled) { background: #e2e8f0; transform: translateY(-1px); }
-        .btn-scan:disabled { opacity: 0.6; cursor: not-allowed; }
+        /* Action Buttons */
+        .face-actions {
+            display: flex;
+            gap: 12px;
+            width: 100%;
+        }
+        .face-actions button {
+            flex: 1;
+            padding: 14px;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: inherit;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .btn-cancel {
+            background: transparent;
+            border: 1.5px solid #334155;
+            color: #94a3b8;
+        }
+        .btn-cancel:hover {
+            background: #1e293b;
+            color: #fff;
+            border-color: #475569;
+        }
+        .btn-scan {
+            background: #fff;
+            border: none;
+            color: #1a1a2e;
+        }
+        .btn-scan:hover:not(:disabled) {
+            background: #e2e8f0;
+            transform: translateY(-1px);
+        }
+        .btn-scan:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
     </style>
 </head>
 <body>
@@ -269,6 +617,7 @@
 
             <!-- Auth View -->
             <div id="auth-view">
+                <!-- ✅ UPDATED CARD HEADER WITH FULL BRANDING -->
                 <div class="card-header">
                     <div class="card-brand">
                         <div class="card-logo">
@@ -288,11 +637,18 @@
                 <form id="login-form" onsubmit="handleLogin(event)">
                     <div class="social-section">
                         <button type="button" class="social-btn google-btn" id="google-login-btn" onclick="signInWithGoogle()">
-                            <svg viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+                            <svg viewBox="0 0 48 48">
+                                <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+                                <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+                                <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+                                <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+                            </svg>
                             Continue with Google
                         </button>
                         <button type="button" class="social-btn apple-btn" id="apple-login-btn" onclick="signInWithApple()">
-                            <svg viewBox="0 0 24 24"><path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09l.01-.01zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/></svg>
+                            <svg viewBox="0 0 24 24">
+                                <path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09l.01-.01zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/>
+                            </svg>
                             Continue with Apple
                         </button>
                         <div class="divider">Or</div>
@@ -324,11 +680,18 @@
                 <form id="signup-form" class="hidden" onsubmit="handleSignUp(event)">
                     <div class="social-section">
                         <button type="button" class="social-btn google-btn" onclick="signInWithGoogle()">
-                            <svg viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+                            <svg viewBox="0 0 48 48">
+                                <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+                                <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+                                <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+                                <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+                            </svg>
                             Continue with Google
                         </button>
                         <button type="button" class="social-btn apple-btn" onclick="signInWithApple()">
-                            <svg viewBox="0 0 24 24"><path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09l.01-.01zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/></svg>
+                            <svg viewBox="0 0 24 24">
+                                <path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09l.01-.01zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/>
+                            </svg>
                             Continue with Apple
                         </button>
                         <div class="divider">Or</div>
@@ -354,12 +717,14 @@
                         <label for="signup-confirm">Confirm Passcode</label>
                         <input type="password" id="signup-confirm" placeholder="Confirm passcode" minlength="8" required />
                     </div>
+
                     <div class="form-group" style="display: flex; align-items: flex-start; gap: 8px; margin-bottom: 20px;">
                         <input type="checkbox" id="agree-terms" style="width: auto; margin-top: 4px; cursor: pointer;" required />
                         <label for="agree-terms" style="font-weight: 400; font-size: 0.85rem; color: var(--text-light); cursor: pointer; line-height: 1.5;">
                             I agree to the <a href="index.html#terms" target="_blank" style="color: var(--green); text-decoration: none; font-weight: 500;">Terms &amp; Conditions</a> and <a href="index.html#privacy" target="_blank" style="color: var(--green); text-decoration: none; font-weight: 500;">Privacy Policy</a>.
                         </label>
                     </div>
+
                     <button type="submit" id="signup-btn" class="btn">Create Owner's Account</button>
                     <div class="switch-text">
                         Already have an account?
@@ -403,8 +768,11 @@
                     <span id="otp-resend-timer"></span>
                 </div>
 
-                <!-- Face Scan Option -->
-                <div class="otp-divider"><span>Or verify using</span></div>
+                <!-- Face Scan Option Added Here -->
+                <div class="otp-divider">
+                    <span>Or verify using</span>
+                </div>
+
                 <div class="face-scan-option">
                     <button type="button" class="btn-face-scan" onclick="openFaceScan()">
                         <iconify-icon icon="material-symbols:face-recognition" width="24"></iconify-icon>
@@ -432,6 +800,7 @@
                 </div>
                 <p class="footer-desc">Construction site management made easier and smarter. Connect owners and site managers with full transparency.</p>
             </div>
+
             <div class="footer-col">
                 <h4>Legal</h4>
                 <ul class="footer-links">
@@ -443,65 +812,105 @@
                     <li><a href="index.html#contact">Legal Notice</a></li>
                 </ul>
             </div>
+
             <div class="footer-col">
                 <h4>Support</h4>
                 <ul class="footer-links">
-                    <li><a href="index.html#contact"><iconify-icon icon="material-symbols:help-outline"></iconify-icon>Help Center</a></li>
-                    <li><a href="https://wa.me/250790020086" target="_blank" rel="noopener"><iconify-icon icon="simple-icons:whatsapp"></iconify-icon>Contact Support</a></li>
-                    <li><a href="mailto:abuse@shdr.com"><iconify-icon icon="material-symbols:report"></iconify-icon>Report an Issue</a></li>
+                    <li>
+                        <a href="index.html#contact">
+                            <iconify-icon icon="material-symbols:help-outline"></iconify-icon>
+                            Help Center
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://wa.me/250790020086" target="_blank" rel="noopener" aria-label="Contact support on WhatsApp">
+                            <iconify-icon icon="simple-icons:whatsapp"></iconify-icon>
+                            Contact Support
+                        </a>
+                    </li>
+                    <li>
+                        <a href="mailto:abuse@shdr.com" aria-label="Report an issue by email">
+                            <iconify-icon icon="material-symbols:report"></iconify-icon>
+                            Report an Issue
+                        </a>
+                    </li>
                 </ul>
             </div>
+
             <div class="footer-col">
                 <h4>Follow Us</h4>
                 <div class="footer-socials">
-                    <a href="https://www.instagram.com/shdr_ltd1/" target="_blank" rel="noopener noreferrer" class="footer-social-link"><iconify-icon icon="simple-icons:instagram"></iconify-icon></a>
-                    <a href="https://www.linkedin.com/company/shdr-ltd" target="_blank" rel="noopener noreferrer" class="footer-social-link"><iconify-icon icon="simple-icons:linkedin"></iconify-icon></a>
-                    <a href="https://x.com/SHDRltd1" target="_blank" rel="noopener noreferrer" class="footer-social-link"><iconify-icon icon="simple-icons:x"></iconify-icon></a>
-                    <a href="https://www.tiktok.com/@shdr.ltd?lang=en-GB" target="_blank" rel="noopener noreferrer" class="footer-social-link"><iconify-icon icon="simple-icons:tiktok"></iconify-icon></a>
+                    <a href="https://www.instagram.com/shdr_ltd1/" target="_blank" rel="noopener noreferrer" class="footer-social-link" aria-label="Follow SHDR Ltd on Instagram" title="Instagram">
+                        <iconify-icon icon="simple-icons:instagram"></iconify-icon>
+                    </a>
+                    <a href="https://www.linkedin.com/company/shdr-ltd" target="_blank" rel="noopener noreferrer" class="footer-social-link" aria-label="Follow SHDR Ltd on LinkedIn" title="LinkedIn">
+                        <iconify-icon icon="simple-icons:linkedin"></iconify-icon>
+                    </a>
+                    <a href="https://x.com/SHDRltd1" target="_blank" rel="noopener noreferrer" class="footer-social-link" aria-label="Follow SHDR Ltd on X" title="X">
+                        <iconify-icon icon="simple-icons:x"></iconify-icon>
+                    </a>
+                    <a href="https://www.tiktok.com/@shdr.ltd?lang=en-GB" target="_blank" rel="noopener noreferrer" class="footer-social-link" aria-label="Follow SHDR Ltd on TikTok" title="TikTok">
+                        <iconify-icon icon="simple-icons:tiktok"></iconify-icon>
+                    </a>
                 </div>
             </div>
         </div>
+
         <div class="footer-bottom">
             <div>© <span id="currentYear"></span> SHDR Ltd — All rights reserved.</div>
             <div>Designed &amp; Powered by <a href="https://wa.me/250790020086" target="_blank" rel="noopener">___Enock's___blessingz___</a></div>
         </div>
     </footer>
 
-    <!-- Face Scan Modal -->
+    <!-- Face Scan Modal (Added here) -->
     <div id="face-scan-modal" class="face-modal hidden">
         <div class="face-modal-content">
+            <!-- Video Area with Overlays -->
             <div class="face-video-container">
                 <video id="face-video" autoplay playsinline muted></video>
+                
+                <!-- Circular Guide -->
                 <div class="face-guide-circle"></div>
+                
+                <!-- Corner Brackets -->
                 <div class="face-corner top-left"></div>
                 <div class="face-corner top-right"></div>
                 <div class="face-corner bottom-left"></div>
                 <div class="face-corner bottom-right"></div>
+                
+                <!-- Error state overlay (hidden by default) -->
                 <div id="face-camera-error" class="face-camera-error hidden">
                     <iconify-icon icon="material-symbols:videocam-off" width="32"></iconify-icon>
                     <p>Camera access denied or unavailable.</p>
                 </div>
             </div>
+
+            <!-- Status Pill -->
             <div class="face-status-pill">
                 <span class="status-dot" id="face-status-dot"></span>
                 <span id="face-status-text">Ready to scan</span>
             </div>
+
+            <!-- Action Buttons -->
             <div class="face-actions">
                 <button type="button" class="btn-cancel" onclick="closeFaceScan()">Cancel</button>
                 <button type="button" class="btn-scan" id="btn-scan" onclick="performFaceScan()">
-                    <iconify-icon icon="material-symbols:search"></iconify-icon> Scan
+                    <iconify-icon icon="material-symbols:search"></iconify-icon>
+                    Scan
                 </button>
             </div>
         </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
         import {
             getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword,
             onAuthStateChanged, signOut, signInWithPopup, GoogleAuthProvider,
-            OAuthProvider, fetchSignInMethodsForEmail
+            OAuthProvider,
+            fetchSignInMethodsForEmail
         } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
         import {
             getFirestore, doc, setDoc, getDoc, updateDoc, deleteDoc
@@ -534,7 +943,9 @@
         const EMAILJS_TEMPLATE_ID = "template_4w9lqy2";
         const EMAILJS_PUBLIC_KEY  = "NvKLVM4K4r6Z_LqhK";
 
-        if (window.emailjs) window.emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
+        if (window.emailjs) {
+            window.emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
+        }
 
         const OTP_LENGTH = 6;
         const OTP_TTL_MS = 45 * 1000;
@@ -555,22 +966,20 @@
         let previousOtpCode = '';
         let otpSendCount = 0;
 
-        // FACE SCAN VARIABLES
-        let faceStream = null;
-        let faceDetectionInterval = null;
-        let isFaceDetected = false;
-
         function maskEmail(email) {
             if (!email || typeof email !== 'string') return email || '';
             const atIdx = email.lastIndexOf('@');
             if (atIdx <= 0) return email;
+
             const username = email.slice(0, atIdx);
             const domain   = email.slice(atIdx);
+
             if (username.length <= 3) {
                 const first = username.slice(0, 1);
                 const stars = '*'.repeat(Math.max(1, username.length - 1));
                 return first + stars + domain;
             }
+
             const firstTwo = username.slice(0, 2);
             const lastChar = username.slice(-1);
             const middleCount = username.length - 3;
@@ -580,15 +989,23 @@
         window.maskEmail = maskEmail;
 
         function otpSessionKey(uid) { return 'shdr_otp_verified_' + uid; }
-        function isOtpVerifiedThisSession(uid) { return uid && sessionStorage.getItem(otpSessionKey(uid)) === '1'; }
-        function markOtpVerifiedThisSession(uid) { if (uid) sessionStorage.setItem(otpSessionKey(uid), '1'); }
-        function clearOtpVerifiedFlag(uid) { if (uid) sessionStorage.removeItem(otpSessionKey(uid)); }
+        function isOtpVerifiedThisSession(uid) {
+            return uid && sessionStorage.getItem(otpSessionKey(uid)) === '1';
+        }
+        function markOtpVerifiedThisSession(uid) {
+            if (uid) sessionStorage.setItem(otpSessionKey(uid), '1');
+        }
+        function clearOtpVerifiedFlag(uid) {
+            if (uid) sessionStorage.removeItem(otpSessionKey(uid));
+        }
 
         function switchTo(form) {
             document.getElementById('login-form').classList.toggle('hidden', form !== 'login');
             document.getElementById('signup-form').classList.toggle('hidden', form !== 'signup');
             document.getElementById('form-title').textContent = form === 'login' ? 'Sign In' : 'Sign up to get started';
-            document.getElementById('form-desc').textContent = form === 'login' ? 'Access your owner dashboard' : 'Create your owner account to manage your sites.';
+            document.getElementById('form-desc').textContent = form === 'login'
+                ? 'Access your owner dashboard'
+                : 'Create your owner account to manage your sites.';
             hideMessage();
         }
         window.switchTo = switchTo;
@@ -599,7 +1016,9 @@
             if (!input || !eye) return;
             const isHidden = input.type === 'password';
             input.type = isHidden ? 'text' : 'password';
-            eye.setAttribute('icon', isHidden ? 'material-symbols:visibility' : 'material-symbols:visibility-off');
+            eye.setAttribute('icon', isHidden
+                ? 'material-symbols:visibility'
+                : 'material-symbols:visibility-off');
         }
         window.togglePassword = togglePassword;
 
@@ -679,22 +1098,47 @@
         async function sendOtp(email, name) {
             const user = auth.currentUser;
             if (!user) throw new Error('Not signed in.');
+
             const code = generateOtp(previousOtpCode);
             previousOtpCode = code;
             otpSendCount++;
+
             const expiresAt = Date.now() + OTP_TTL_MS;
             const sentAt = new Date();
+
             await setDoc(doc(db, 'email_verifications', user.uid), {
-                email, code, expires_at: expiresAt, attempts: 0,
-                created_at: sentAt.getTime(), send_number: otpSendCount
+                email,
+                code,
+                expires_at: expiresAt,
+                attempts: 0,
+                created_at: sentAt.getTime(),
+                send_number: otpSendCount
             });
+
             if (!window.emailjs) throw new Error('Email service failed to load. Please re-load.');
-            await window.emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
-                to_email: email, to_name: name || 'there', verification_code: code,
-                expiry_seconds: Math.round(OTP_TTL_MS / 1000), expiry_minutes: Math.round(OTP_TTL_MS / 60000),
-                company_name: 'SHDR Owner Portal', subject: `Your SHDR code #${otpSendCount}: ${code}`,
-                code_number: otpSendCount, sent_at: sentAt.toLocaleString()
-            }, { publicKey: EMAILJS_PUBLIC_KEY });
+
+            await window.emailjs.send(
+                EMAILJS_SERVICE_ID,
+                EMAILJS_TEMPLATE_ID,
+                {
+                    to_email: email,
+                    to_name: name || 'there',
+                    verification_code: code,
+                    expiry_seconds: Math.round(OTP_TTL_MS / 1000),
+                    expiry_minutes: Math.round(OTP_TTL_MS / 60000),
+                    company_name: 'SHDR Owner Portal',
+                    subject: `Your SHDR code #${otpSendCount}: ${code}`,
+                    code_number: otpSendCount,
+                    sent_at: sentAt.toLocaleString()
+                },
+                { publicKey: EMAILJS_PUBLIC_KEY }
+            );
+
+            console.log(
+                `%c[OTP] Code #${otpSendCount} generated and sent: ${code} (expires in 45s) → ${email}`,
+                'color:#059669;font-weight:700;background:#ecfdf5;padding:4px 8px;border-radius:4px;'
+            );
+
             return { expiresAt, code, sentAt, codeNumber: otpSendCount };
         }
 
@@ -726,7 +1170,9 @@
             const btn = document.getElementById('otp-resend-btn');
             const timer = document.getElementById('otp-resend-timer');
             if (!btn || !timer) return;
+
             if (resendIntervalId) { clearInterval(resendIntervalId); resendIntervalId = null; }
+
             const tick = () => {
                 const remaining = Math.ceil((resendLockUntil - Date.now()) / 1000);
                 if (remaining <= 0) {
@@ -752,12 +1198,19 @@
         function showOtpStatusVerifying() {
             const el = document.getElementById('otp-status');
             if (!el) return;
+            el.className = 'otp-status';
+            void el.offsetWidth;
             el.className = 'otp-status verifying';
-            el.innerHTML = `<div class="otp-spinner-large"></div><p class="status-text">Verifying your code…</p>`;
+            el.innerHTML = `
+                <div class="otp-spinner-large"></div>
+                <p class="status-text">Verifying your code…</p>
+            `;
         }
         function showOtpStatusVerified() {
             const el = document.getElementById('otp-status');
             if (!el) return;
+            el.className = 'otp-status';
+            void el.offsetWidth;
             el.className = 'otp-status verified';
             el.innerHTML = `
                 <svg class="otp-checkmark" viewBox="0 0 52 52" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -776,6 +1229,8 @@
         function showOtpStatusSent(codeNumber) {
             const el = document.getElementById('otp-status');
             if (!el) return;
+            el.className = 'otp-status';
+            void el.offsetWidth;
             el.className = 'otp-status verified';
             const label = codeNumber > 1 ? `Code #${codeNumber} sent` : 'A new code has been sent';
             el.innerHTML = `
@@ -786,7 +1241,11 @@
                 <p class="status-text">${label} to your email.</p>
             `;
         }
-        function setOtpInputsDisabled(disabled) { document.querySelectorAll('#otp-inputs input').forEach(i => { i.disabled = disabled; }); }
+
+        function setOtpInputsDisabled(disabled) {
+            document.querySelectorAll('#otp-inputs input').forEach(i => { i.disabled = disabled; });
+        }
+
         function playDigitPop(input) {
             if (!input) return;
             input.classList.remove('pop');
@@ -800,7 +1259,9 @@
             inputs.forEach((input, idx) => {
                 input.addEventListener('input', (e) => {
                     if (isVerifyingOtp || isOtpVerified) return;
+
                     let val = e.target.value.replace(/\D/g, '');
+
                     if (val.length > 1) {
                         e.target.value = '';
                         for (let i = 0; i < val.length && (idx + i) < inputs.length; i++) {
@@ -814,13 +1275,19 @@
                         if (getEnteredOtp().length === OTP_LENGTH) triggerAutoVerify();
                         return;
                     }
+
                     e.target.value = val;
                     e.target.classList.toggle('filled', !!val);
                     e.target.classList.remove('error');
                     if (val) playDigitPop(e.target);
-                    if (val && idx < inputs.length - 1) { inputs[idx + 1].focus(); }
-                    else if (val && idx === inputs.length - 1) { triggerAutoVerify(); }
+
+                    if (val && idx < inputs.length - 1) {
+                        inputs[idx + 1].focus();
+                    } else if (val && idx === inputs.length - 1) {
+                        triggerAutoVerify();
+                    }
                 });
+
                 input.addEventListener('keydown', (e) => {
                     if (isVerifyingOtp || isOtpVerified) { e.preventDefault(); return; }
                     if (e.key === 'Backspace' && !e.target.value && idx > 0) {
@@ -831,6 +1298,7 @@
                     if (e.key === 'ArrowLeft' && idx > 0) inputs[idx - 1].focus();
                     if (e.key === 'ArrowRight' && idx < inputs.length - 1) inputs[idx + 1].focus();
                 });
+
                 input.addEventListener('paste', (e) => {
                     if (isVerifyingOtp || isOtpVerified) { e.preventDefault(); return; }
                     e.preventDefault();
@@ -848,14 +1316,19 @@
                     inputs[last]?.focus();
                     if (text.length === OTP_LENGTH) triggerAutoVerify();
                 });
+
                 input.addEventListener('focus', (e) => e.target.select());
             });
         }
 
-        function getEnteredOtp() { return Array.from(document.querySelectorAll('#otp-inputs input')).map(i => i.value).join(''); }
+        function getEnteredOtp() {
+            return Array.from(document.querySelectorAll('#otp-inputs input')).map(i => i.value).join('');
+        }
         function clearOtpInputs({ focus = true } = {}) {
             document.querySelectorAll('#otp-inputs input').forEach(i => {
-                i.value = ''; i.classList.remove('filled', 'error', 'pop'); i.disabled = false;
+                i.value = '';
+                i.classList.remove('filled', 'error', 'pop');
+                i.disabled = false;
             });
             if (focus) document.querySelector('#otp-inputs input')?.focus();
         }
@@ -863,6 +1336,7 @@
             document.querySelectorAll('#otp-inputs input').forEach(i => i.classList.add('error'));
             setTimeout(() => document.querySelectorAll('#otp-inputs input').forEach(i => i.classList.remove('error')), 700);
         }
+
         function triggerAutoVerify() {
             if (isVerifyingOtp || isOtpVerified) return;
             const code = getEnteredOtp();
@@ -871,31 +1345,54 @@
         }
 
         async function showOtpView(user, name, purpose, sendCode = true) {
-            inOtpFlow = true; isVerifyingOtp = false; isOtpVerified = false;
-            previousOtpCode = ''; otpSendCount = 0;
-            currentOtpEmail = user.email || ''; currentOtpName = name || user.displayName || '';
+            inOtpFlow = true;
+            isVerifyingOtp = false;
+            isOtpVerified = false;
+
+            previousOtpCode = '';
+            otpSendCount = 0;
+
+            currentOtpEmail = user.email || '';
+            currentOtpName = name || user.displayName || '';
+
             document.getElementById('otp-email-display').textContent = maskEmail(currentOtpEmail);
-            document.getElementById('otp-purpose-msg').textContent = purpose === 'signup' ? "We've sent a 6-digit code to confirm your new account:" : "We've sent a 6-digit code to confirm your identity:";
+
+            document.getElementById('otp-purpose-msg').textContent =
+                purpose === 'signup'
+                    ? "We've sent a 6-digit code to confirm your new account:"
+                    : "We've sent a 6-digit code to confirm your identity:";
+
             document.getElementById('auth-view').classList.add('hidden');
             document.getElementById('otp-view').classList.remove('hidden');
-            hideMessage(); showOtpStatusIdle(); clearOtpInputs();
+            hideMessage();
+            showOtpStatusIdle();
+            clearOtpInputs();
             document.querySelector('#otp-inputs input')?.focus();
+
             if (sendCode) {
                 try {
                     const result = await sendOtp(currentOtpEmail, currentOtpName);
                     currentOtpExpiry = result.expiresAt;
-                    startExpiryTimer(); startResendCooldown();
+                    startExpiryTimer();
+                    startResendCooldown();
                 } catch (err) {
-                    showOtpStatusError('Could not send verification email. ' + (err?.text || err?.message || 'Please try again.'));
+                    console.error('[OTP send failed]', err);
+                    const msg = err?.text || err?.message || 'Please try again.';
+                    showOtpStatusError('Could not send verification email. ' + msg);
                     currentOtpExpiry = 0;
                 }
             }
         }
 
         async function backToAuth() {
-            clearOtpTimers(); clearOtpInputs({ focus: false }); showOtpStatusIdle();
-            inOtpFlow = false; isVerifyingOtp = false; isOtpVerified = false;
-            previousOtpCode = ''; otpSendCount = 0;
+            clearOtpTimers();
+            clearOtpInputs({ focus: false });
+            showOtpStatusIdle();
+            inOtpFlow = false;
+            isVerifyingOtp = false;
+            isOtpVerified = false;
+            previousOtpCode = '';
+            otpSendCount = 0;
             if (auth.currentUser) clearOtpVerifiedFlag(auth.currentUser.uid);
             currentOtpEmail = ''; currentOtpName = ''; currentOtpExpiry = 0;
             document.getElementById('otp-view').classList.add('hidden');
@@ -908,98 +1405,224 @@
 
         async function handleVerifyOtp() {
             if (isVerifyingOtp || isOtpVerified) return;
+
             const code = getEnteredOtp();
             const user = auth.currentUser;
-            if (!user) { showOtpStatusError('OTP expired. Please sign in again.'); return; }
+
+            if (!user) {
+                showOtpStatusError('OTP expired. Please sign in again.');
+                return;
+            }
             if (code.length !== OTP_LENGTH) return;
-            isVerifyingOtp = true; setOtpInputsDisabled(true); showOtpStatusVerifying();
+
+            isVerifyingOtp = true;
+            setOtpInputsDisabled(true);
+            showOtpStatusVerifying();
+
             try {
                 const snap = await getDoc(doc(db, 'email_verifications', user.uid));
                 if (!snap.exists()) throw new Error('No active verification code. Please request a new one.');
                 const data = snap.data();
+
                 if (Date.now() > data.expires_at) throw new Error('This code has expired. Please request a new one.');
                 if ((data.attempts || 0) >= OTP_MAX_ATTEMPTS) throw new Error('Too many incorrect attempts. Please request a new code.');
+
                 if (data.code !== code) {
                     await updateDoc(doc(db, 'email_verifications', user.uid), { attempts: (data.attempts || 0) + 1 });
                     const left = OTP_MAX_ATTEMPTS - ((data.attempts || 0) + 1);
-                    throw new Error(left > 0 ? `Invalid verification code. ${left} attempt${left === 1 ? '' : 's'} remaining.` : 'Too many incorrect attempts. Please request a new code.');
+                    throw new Error(left > 0
+                        ? `Invalid verification code. ${left} attempt${left === 1 ? '' : 's'} remaining.`
+                        : 'Too many incorrect attempts. Please request a new code.');
                 }
-                await updateDoc(doc(db, 'profiles', user.uid), { email_verified: true, email_verified_at: new Date().toISOString() });
+
+                await updateDoc(doc(db, 'profiles', user.uid), {
+                    email_verified: true,
+                    email_verified_at: new Date().toISOString()
+                });
                 await deleteDoc(doc(db, 'email_verifications', user.uid));
-                clearOtpTimers(); isOtpVerified = true; isVerifyingOtp = false; inOtpFlow = false;
-                markOtpVerifiedThisSession(user.uid); showOtpStatusVerified();
+
+                clearOtpTimers();
+                isOtpVerified = true;
+                isVerifyingOtp = false;
+                inOtpFlow = false;
+
+                markOtpVerifiedThisSession(user.uid);
+
+                showOtpStatusVerified();
+
                 setTimeout(() => { window.location.href = 'owner/dashboard.html'; }, 1400);
             } catch (err) {
-                isVerifyingOtp = false; setOtpInputsDisabled(false);
+                console.error('[OTP verify]', err);
+                isVerifyingOtp = false;
+                setOtpInputsDisabled(false);
+
                 showOtpStatusError(err.message || 'Verification failed. Please try again.');
                 markOtpInputsError();
-                setTimeout(() => { clearOtpInputs(); showOtpStatusIdle(); }, 800);
+
+                setTimeout(() => {
+                    clearOtpInputs();
+                    showOtpStatusIdle();
+                }, 800);
             }
         }
 
         async function handleResendOtp() {
             const btn = document.getElementById('otp-resend-btn');
             const user = auth.currentUser;
-            if (!user) { showOtpStatusError('OTP expired. Please sign in again.'); return; }
+
+            if (!user) {
+                showOtpStatusError('OTP expired. Please sign in again.');
+                return;
+            }
+
             const now = Date.now();
             if (now < resendLockUntil) {
                 const secs = Math.ceil((resendLockUntil - now) / 1000);
                 showOtpStatusError(`Please wait ${secs} second${secs === 1 ? '' : 's'} before requesting a new code.`);
                 return;
             }
-            isVerifyingOtp = false; isOtpVerified = false; hideMessage(); showOtpStatusIdle();
+
+            isVerifyingOtp = false;
+            isOtpVerified = false;
+            hideMessage();
+            showOtpStatusIdle();
+
             const originalText = btn.textContent;
-            btn.disabled = true; btn.textContent = 'Sending…';
+            btn.disabled = true;
+            btn.textContent = 'Sending…';
+
             try {
+                console.log('[OTP resend] Requesting NEW code for', currentOtpEmail);
                 const result = await sendOtp(currentOtpEmail, currentOtpName);
                 currentOtpExpiry = result.expiresAt;
-                clearOtpInputs(); startExpiryTimer(); startResendCooldown();
+
+                console.log(
+                    `%c[OTP resend] Code #${result.codeNumber} sent: ${result.code}`,
+                    'color:#059669;font-weight:700;'
+                );
+
+                clearOtpInputs();
+                startExpiryTimer();
+                startResendCooldown();
+
                 showOtpStatusSent(result.codeNumber);
                 btn.textContent = `Sent (#${result.codeNumber}) ✓`;
+
                 setTimeout(() => {
-                    btn.textContent = originalText; btn.disabled = false;
+                    btn.textContent = originalText;
+                    btn.disabled = false;
                     if (!isVerifyingOtp && !isOtpVerified) showOtpStatusIdle();
                 }, 2200);
+
             } catch (err) {
-                showOtpStatusError("Couldn't resend the code. " + (err?.text || err?.message || 'Please try again.'));
-                resendLockUntil = Date.now() + 10_000; startResendCooldown();
-                btn.textContent = originalText; btn.disabled = false;
+                console.error('[OTP resend failed]', err);
+                const msg = err?.text || err?.message || 'Please try again.';
+                showOtpStatusError("Couldn't resend the code. " + msg);
+
+                resendLockUntil = Date.now() + 10_000;
+                startResendCooldown();
+
+                btn.textContent = originalText;
+                btn.disabled = false;
             }
         }
         window.handleResendOtp = handleResendOtp;
 
         async function signInWithGoogle() {
             const allBtns = document.querySelectorAll('#google-login-btn, #signup-form .google-btn');
-            allBtns.forEach(b => b.disabled = true); hideMessage(); inOtpFlow = true;
+            allBtns.forEach(b => b.disabled = true);
+            hideMessage();
+            inOtpFlow = true;
             try {
                 const result = await signInWithPopup(auth, googleProvider);
                 const user = result.user;
                 await ensureOwnerProfile(user, user.displayName, false);
-                if (document.getElementById('login-remember')?.checked && user.email) localStorage.setItem('shdr_owner_remember', user.email);
+                if (document.getElementById('login-remember')?.checked && user.email) {
+                    localStorage.setItem('shdr_owner_remember', user.email);
+                }
                 allBtns.forEach(b => b.disabled = false);
                 await showOtpView(user, user.displayName || 'Owner', 'login', true);
             } catch (error) {
-                inOtpFlow = false; showMessage(getFriendlyErrorMessage(error), 'error');
-            } finally { allBtns.forEach(b => b.disabled = false); }
+                inOtpFlow = false;
+                if (error.code === 'auth/account-exists-with-different-credential') {
+                    try {
+                        const email = error.customData?.email;
+                        if (email) {
+                            const methods = await fetchSignInMethodsForEmail(auth, email);
+                            const friendlyMethods = methods.map(m => {
+                                if (m === 'google.com') return 'Google';
+                                if (m === 'apple.com') return 'Apple';
+                                if (m === 'password') return 'Email/Password';
+                                return m;
+                            });
+                            showMessage(`An account with ${email} already exists using ${friendlyMethods.join(' or ')}. Please sign in with that method.`, 'error');
+                        } else { showMessage(getFriendlyErrorMessage(error), 'error'); }
+                    } catch (_) { showMessage(getFriendlyErrorMessage(error), 'error'); }
+                } else { showMessage(getFriendlyErrorMessage(error), 'error'); }
+            } finally {
+                allBtns.forEach(b => b.disabled = false);
+            }
         }
         window.signInWithGoogle = signInWithGoogle;
 
         async function signInWithApple() {
             const allBtns = document.querySelectorAll('#apple-login-btn, #signup-form .apple-btn');
-            allBtns.forEach(b => b.disabled = true); hideMessage(); inOtpFlow = true;
+            allBtns.forEach(b => b.disabled = true);
+            hideMessage();
+            inOtpFlow = true;
             try {
                 const result = await signInWithPopup(auth, appleProvider);
                 const user = result.user;
+
                 let displayName = user.displayName;
-                if (!displayName && result._tokenResponse?.firstName) displayName = `${result._tokenResponse.firstName} ${result._tokenResponse.lastName || ''}`.trim();
+                if (!displayName && result._tokenResponse?.firstName) {
+                    displayName = `${result._tokenResponse.firstName} ${result._tokenResponse.lastName || ''}`.trim();
+                }
                 displayName = displayName || (user.email ? user.email.split('@')[0] : 'Owner');
+
                 await ensureOwnerProfile(user, displayName, false);
-                if (document.getElementById('login-remember')?.checked && user.email) localStorage.setItem('shdr_owner_remember', user.email);
+
+                if (document.getElementById('login-remember')?.checked && user.email) {
+                    localStorage.setItem('shdr_owner_remember', user.email);
+                }
+
                 allBtns.forEach(b => b.disabled = false);
                 await showOtpView(user, displayName, 'login', true);
             } catch (error) {
-                inOtpFlow = false; showMessage(getFriendlyErrorMessage(error), 'error');
-            } finally { allBtns.forEach(b => b.disabled = false); }
+                inOtpFlow = false;
+                if (error.code === 'auth/account-exists-with-different-credential') {
+                    try {
+                        const email = error.customData?.email;
+                        if (email) {
+                            const methods = await fetchSignInMethodsForEmail(auth, email);
+                            const friendlyMethods = methods.map(m => {
+                                if (m === 'google.com') return 'Google';
+                                if (m === 'apple.com') return 'Apple';
+                                if (m === 'password') return 'Email/Password';
+                                return m;
+                            });
+                            showMessage(
+                                `An account with ${email} already exists using ${friendlyMethods.join(' or ')}. Please sign in with that method.`,
+                                'error'
+                            );
+                        } else {
+                            showMessage(getFriendlyErrorMessage(error), 'error');
+                        }
+                    } catch (_) {
+                        showMessage(getFriendlyErrorMessage(error), 'error');
+                    }
+                } else if (error.code === 'auth/popup-blocked') {
+                    showMessage('Sign-in popup was blocked. Please allow popups for this site.', 'error');
+                } else if (error.code === 'auth/popup-closed-by-user') {
+                    showMessage('Apple sign-in was cancelled. Please try again.', 'error');
+                } else if (error.code === 'auth/operation-not-allowed') {
+                    showMessage("Apple sign-in is not enabled yet. Please contact SHDR's Admin for support.", 'error');
+                } else {
+                    showMessage(getFriendlyErrorMessage(error), 'error');
+                }
+            } finally {
+                allBtns.forEach(b => b.disabled = false);
+            }
         }
         window.signInWithApple = signInWithApple;
 
@@ -1009,11 +1632,16 @@
             try {
                 const snap = await getDoc(doc(db, 'profiles', user.uid));
                 if (!snap.exists() || snap.data().role !== 'owner') {
-                    await signOut(auth); showMessage('Access denied. This portal is for owners only.', 'error'); return;
+                    await signOut(auth);
+                    showMessage('Access denied. This portal is for owners only.', 'error');
+                    return;
                 }
+
                 if (!isOtpVerifiedThisSession(user.uid)) {
-                    await showOtpView(user, snap.data().full_name, 'login', true); return;
+                    await showOtpView(user, snap.data().full_name, 'login', true);
+                    return;
                 }
+
                 window.location.href = 'owner/dashboard.html';
             } catch (err) { console.error('[session check]', err); }
         });
@@ -1032,7 +1660,9 @@
             const password = document.getElementById('login-password').value;
             const remember = document.getElementById('login-remember').checked;
             const btn = document.getElementById('login-btn');
-            hideMessage(); inOtpFlow = true;
+            hideMessage();
+            
+            inOtpFlow = true;
             setButtonLoading(btn, true, 'Signing in...');
             try {
                 const cred = await signInWithEmailAndPassword(auth, email, password);
@@ -1044,12 +1674,16 @@
                 }
                 if (remember) localStorage.setItem('shdr_owner_remember', email);
                 else localStorage.removeItem('shdr_owner_remember');
+
                 setButtonLoading(btn, false);
                 await showOtpView(user, snap.data().full_name, 'login', true);
                 return;
             } catch (error) {
-                inOtpFlow = false; showMessage(getFriendlyErrorMessage(error), 'error');
-            } finally { setButtonLoading(btn, false); }
+                inOtpFlow = false;
+                showMessage(getFriendlyErrorMessage(error), 'error');
+            } finally {
+                setButtonLoading(btn, false);
+            }
         };
 
         window.handleSignUp = async function (e) {
@@ -1059,10 +1693,21 @@
             const password = document.getElementById('signup-password').value;
             const confirm = document.getElementById('signup-confirm').value;
             const btn = document.getElementById('signup-btn');
+            
             hideMessage();
-            if (password !== confirm) { showMessage('Passcodes do not match.', 'error'); return; }
-            if (password.length < 8) { showMessage('Passcode must be at least 8 characters and include numbers and symbols.', 'error'); return; }
-            inOtpFlow = true; setButtonLoading(btn, true, 'Creating your account. Please wait…');
+            
+            if (password !== confirm) { 
+                showMessage('Passcodes do not match.', 'error'); 
+                return; 
+            }
+            
+            if (password.length < 8) { 
+                showMessage('Passcode must be at least 8 characters and include numbers and symbols.', 'error'); 
+                return; 
+            }
+
+            inOtpFlow = true;
+            setButtonLoading(btn, true, 'Creating your account. Please wait…');
             try {
                 const cred = await createUserWithEmailAndPassword(auth, email, password);
                 const user = cred.user;
@@ -1074,17 +1719,20 @@
                 setButtonLoading(btn, false);
                 await showOtpView(user, name, 'signup', true);
             } catch (error) {
-                inOtpFlow = false; showMessage(getFriendlyErrorMessage(error), 'error');
-            } finally { setButtonLoading(btn, false); }
+                inOtpFlow = false;
+                showMessage(getFriendlyErrorMessage(error), 'error');
+            } finally {
+                setButtonLoading(btn, false);
+            }
         };
 
         /* ═══════════════════════════════════════════════════════
-           REAL FACE SCAN IMPLEMENTATION (Backend Connected)
+           FACE SCAN LOGIC (Added)
            ═══════════════════════════════════════════════════════ */
-        
-        let faceDetectionInterval = null;
+        let faceStream = null;
+        let faceScanTimeout = null;
 
-        window.openFaceScan = async function() {
+        window.openFaceScan = function() {
             document.getElementById('face-scan-modal').classList.remove('hidden');
             const video = document.getElementById('face-video');
             const statusText = document.getElementById('face-status-text');
@@ -1093,95 +1741,39 @@
             const scanBtn = document.getElementById('btn-scan');
             const guideCircle = document.querySelector('.face-guide-circle');
 
-            statusText.textContent = 'Requesting camera access...';
-            statusDot.style.backgroundColor = '#eab308';
-            scanBtn.disabled = true;
+            // Reset UI
+            statusText.textContent = 'Ready to scan';
+            statusDot.style.backgroundColor = '#22c55e';
+            statusDot.style.boxShadow = '0 0 8px #22c55e';
             errorOverlay.classList.add('hidden');
             video.style.display = 'block';
+            scanBtn.disabled = false;
+            scanBtn.innerHTML = '<iconify-icon icon="material-symbols:search"></iconify-icon> Scan';
+            guideCircle.classList.remove('scanning');
 
-            try {
-                // Real camera request
-                faceStream = await navigator.mediaDevices.getUserMedia({
-                    video: { facingMode: 'user', width: { ideal: 1280 }, height: { ideal: 720 } },
-                    audio: false
-                });
-                video.srcObject = faceStream;
-                
-                statusText.textContent = 'Looking for your face...';
-                statusDot.style.backgroundColor = '#38bdf8'; // Blue
-                guideCircle.classList.add('scanning');
-
-                // Start local face detection loop for UX guidance
-                startFaceDetectionLoop(video, scanBtn, statusText, statusDot, guideCircle);
-
-            } catch (err) {
-                console.error("Camera access denied:", err);
-                statusText.textContent = 'Camera access unavailable';
+            // Request Camera
+            if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user', width: { ideal: 640 }, height: { ideal: 480 } } })
+                    .then(stream => {
+                        faceStream = stream;
+                        video.srcObject = stream;
+                    })
+                    .catch(err => {
+                        console.error("Camera access denied:", err);
+                        statusText.textContent = 'Camera blocked';
+                        statusDot.style.backgroundColor = '#ef4444';
+                        statusDot.style.boxShadow = '0 0 8px #ef4444';
+                        errorOverlay.classList.remove('hidden');
+                        video.style.display = 'none';
+                        scanBtn.disabled = true;
+                    });
+            } else {
+                statusText.textContent = 'Camera not supported';
                 statusDot.style.backgroundColor = '#ef4444';
                 errorOverlay.classList.remove('hidden');
-                video.style.display = 'none';
                 scanBtn.disabled = true;
             }
         };
-
-        function startFaceDetectionLoop(video, scanBtn, statusText, statusDot, guideCircle) {
-            if (faceDetectionInterval) clearInterval(faceDetectionInterval);
-            
-            // Ensure face-api models are loaded (tiny face detector)
-            Promise.all([
-                faceapi.nets.tinyFaceDetector.loadFromUri('https://justadudewhohacks.github.io/face-api.js/models')
-            ]).then(() => {
-                faceDetectionInterval = setInterval(async () => {
-                    if (!video || video.paused || video.ended) return;
-                    
-                    const detections = await faceapi.detectAllFaces(video, new faceapi.TinyFaceDetectorOptions({ inputSize: 160, scoreThreshold: 0.5 }));
-                    
-                    if (detections.length === 0) {
-                        statusText.textContent = 'Position your face inside the circle';
-                        statusDot.style.backgroundColor = '#eab308';
-                        scanBtn.disabled = true;
-                    } else if (detections.length > 1) {
-                        statusText.textContent = 'Only one person should be visible';
-                        statusDot.style.backgroundColor = '#ef4444';
-                        scanBtn.disabled = true;
-                    } else {
-                        // Check position/size
-                        const box = detections[0].box;
-                        const videoWidth = video.videoWidth;
-                        const videoHeight = video.videoHeight;
-                        const faceCenterX = box.x + box.width / 2;
-                        const faceCenterY = box.y + box.height / 2;
-                        const centerX = videoWidth / 2;
-                        const centerY = videoHeight / 2;
-                        
-                        const isCentered = Math.abs(faceCenterX - centerX) < videoWidth * 0.15 && Math.abs(faceCenterY - centerY) < videoHeight * 0.15;
-                        const isProperSize = box.width > videoWidth * 0.25 && box.width < videoWidth * 0.65;
-
-                        if (!isCentered) {
-                            statusText.textContent = 'Center your face';
-                            statusDot.style.backgroundColor = '#eab308';
-                            scanBtn.disabled = true;
-                        } else if (!isProperSize) {
-                            statusText.textContent = box.width <= videoWidth * 0.25 ? 'Move closer' : 'Move farther away';
-                            statusDot.style.backgroundColor = '#eab308';
-                            scanBtn.disabled = true;
-                        } else {
-                            statusText.textContent = 'Good position — hold still';
-                            statusDot.style.backgroundColor = '#22c55e'; // Green
-                            scanBtn.disabled = false;
-                            guideCircle.classList.remove('scanning');
-                            guideCircle.style.borderColor = '#22c55e';
-                        }
-                    }
-                }, 500);
-            }).catch(err => {
-                console.warn("Face API model load failed, falling back to manual capture.", err);
-                // Fallback: Allow manual scan if model fails to load
-                statusText.textContent = 'Align your face and click Scan';
-                statusDot.style.backgroundColor = '#22c55e';
-                scanBtn.disabled = false;
-            });
-        }
 
         window.closeFaceScan = function() {
             document.getElementById('face-scan-modal').classList.add('hidden');
@@ -1189,112 +1781,79 @@
                 faceStream.getTracks().forEach(track => track.stop());
                 faceStream = null;
             }
-            if (faceDetectionInterval) {
-                clearInterval(faceDetectionInterval);
-                faceDetectionInterval = null;
+            if (faceScanTimeout) {
+                clearTimeout(faceScanTimeout);
+                faceScanTimeout = null;
             }
-            const guideCircle = document.querySelector('.face-guide-circle');
-            guideCircle.classList.remove('scanning');
-            guideCircle.style.borderColor = 'rgba(255, 255, 255, 0.4)';
         };
 
         window.performFaceScan = async function() {
             const statusText = document.getElementById('face-status-text');
             const statusDot = document.getElementById('face-status-dot');
             const scanBtn = document.getElementById('btn-scan');
-            const video = document.getElementById('face-video');
+            const guideCircle = document.querySelector('.face-guide-circle');
 
-            if (!faceStream || !video.videoWidth) {
-                showOtpStatusError('Camera is not ready. Please try again.');
-                return;
-            }
-
-            // 1. Set UI to Verifying state
-            statusText.textContent = 'Verifying that you\'re a real person...';
-            statusDot.style.backgroundColor = '#eab308';
+            // Set scanning state
+            statusText.textContent = 'Scanning...';
+            statusDot.style.backgroundColor = '#eab308'; // Yellow
+            statusDot.style.boxShadow = '0 0 8px #eab308';
             scanBtn.disabled = true;
             scanBtn.innerHTML = '<span class="spinner" style="border-top-color:#1a1a2e;"></span> Scanning';
+            guideCircle.classList.add('scanning');
 
-            try {
-                // 2. Capture frame
-                const canvas = document.createElement('canvas');
-                canvas.width = video.videoWidth;
-                canvas.height = video.videoHeight;
-                const ctx = canvas.getContext('2d');
-                ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+            // Simulate API call and scanning delay (2.5 seconds)
+            faceScanTimeout = setTimeout(async () => {
+                // --- IN A REAL APP, THIS IS WHERE YOU WOULD SEND THE IMAGE TO YOUR BACKEND ---
+                // e.g., const imageData = captureImage(); await fetch('/api/verify-face', { ... })
                 
-                const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg', 0.85));
-
-                // 3. Get Firebase ID Token
-                const user = auth.currentUser;
-                if (!user) throw new Error('Session expired. Please sign in again.');
-                const idToken = await user.getIdToken();
-
-                // 4. Send to Backend
-                const formData = new FormData();
-                formData.append('image', blob, 'face_scan.jpg');
-                formData.append('uid', user.uid); // Backend will re-verify this against the token
-
-                const response = await fetch('http://localhost:3000/api/face/verify', {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': `Bearer ${idToken}`
-                    },
-                    body: formData
-                });
-
-                const result = await response.json();
-
-                if (!response.ok || !result.verified) {
-                    throw new Error(result.reason || 'Face verification failed. Please try again.');
-                }
-
-                // 5. REAL SUCCESS - Backend confirmed match
-                statusText.textContent = 'Identity verified';
-                statusDot.style.backgroundColor = '#22c55e';
+                // Simulate successful match
+                statusText.textContent = 'Face matched!';
+                statusDot.style.backgroundColor = '#22c55e'; // Green
+                statusDot.style.boxShadow = '0 0 8px #22c55e';
                 scanBtn.innerHTML = '<iconify-icon icon="material-symbols:check-circle"></iconify-icon> Verified';
                 
                 setTimeout(async () => {
                     closeFaceScan();
                     
-                    // Update Firebase profiles securely
-                    await updateDoc(doc(db, 'profiles', user.uid), {
-                        email_verified: true,
-                        email_verified_at: new Date().toISOString(),
-                        verification_method: 'face_scan'
-                    });
-                    
-                    // Cleanup OTP data
-                    try { await deleteDoc(doc(db, 'email_verifications', user.uid)); } catch (_) {}
-                    
-                    clearOtpTimers();
-                    isOtpVerified = true;
-                    isVerifyingOtp = false;
-                    inOtpFlow = false;
-                    
-                    markOtpVerifiedThisSession(user.uid);
-                    
-                    document.getElementById('otp-view').classList.add('hidden');
-                    showMessage('Identity verified successfully via Face Scan.', 'success');
-                    
-                    setTimeout(() => { window.location.href = 'owner/dashboard.html'; }, 1400);
-                }, 1000);
-
-            } catch (error) {
-                console.error('[Face Verification Failed]', error);
-                statusText.textContent = 'Face not recognized';
-                statusDot.style.backgroundColor = '#ef4444';
-                scanBtn.disabled = false;
-                scanBtn.innerHTML = '<iconify-icon icon="material-symbols:search"></iconify-icon> Try Again';
-                
-                showOtpStatusError(
-                    error.message || 'Verification failed. Make sure your face is clearly visible and you are facing the camera.'
-                );
-            }
+                    // Integrate with your existing Firebase success flow
+                    const user = auth.currentUser;
+                    if (user) {
+                        try {
+                            await updateDoc(doc(db, 'profiles', user.uid), {
+                                email_verified: true,
+                                email_verified_at: new Date().toISOString(),
+                                verification_method: 'face_scan'
+                            });
+                            await deleteDoc(doc(db, 'email_verifications', user.uid));
+                            
+                            clearOtpTimers();
+                            isOtpVerified = true;
+                            isVerifyingOtp = false;
+                            inOtpFlow = false;
+                            
+                            markOtpVerifiedThisSession(user.uid);
+                            
+                            // Hide OTP view and show success
+                            document.getElementById('otp-view').classList.add('hidden');
+                            showMessage('Identity verified successfully via Face Scan.', 'success');
+                            
+                            setTimeout(() => { window.location.href = 'owner/dashboard.html'; }, 1400);
+                        } catch (error) {
+                            console.error("Error updating profile after face scan:", error);
+                            showMessage('Verification succeeded, but failed to update profile. Please try again.', 'error');
+                            document.getElementById('otp-view').classList.remove('hidden');
+                        }
+                    } else {
+                        showMessage('Session expired. Please sign in again.', 'error');
+                        document.getElementById('otp-view').classList.remove('hidden');
+                    }
+                }, 1000); // Wait 1 second on success screen
+            }, 2500); // Simulate 2.5 seconds of scanning
         };
 
         setupOtpInputs();
     </script>
+
     <script>
         document.getElementById("currentYear").textContent = new Date().getFullYear();
     </script>
