@@ -44,6 +44,14 @@
         .btn-primary:disabled { opacity: 0.7; cursor: not-allowed; }
         .spinner { border: 3px solid #e2e8f0; border-top: 3px solid #059669; border-radius: 50%; width: 24px; height: 24px; animation: spin 0.8s linear infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
+        .mode-badge {
+            position: fixed; top: 12px; right: 12px;
+            padding: 4px 10px; border-radius: 100px;
+            font-size: 0.7rem; font-weight: 600;
+            background: #fef3c7; color: #92400e;
+            z-index: 9999;
+        }
+        .mode-badge.production { background: #d1fae5; color: #065f46; }
         @media (max-width: 768px) {
             .split-container { flex-direction: column; }
             .brand-panel { flex: 0 0 auto; padding: 40px 24px; min-height: auto; text-align: center; }
@@ -55,6 +63,7 @@
     </style>
 </head>
 <body>
+<div class="mode-badge" id="mode-badge">Loading…</div>
 <div class="split-container">
     <div class="brand-panel">
         <div class="brand-content">
@@ -75,8 +84,21 @@
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
     import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
+    import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
 
-    // ─── Firebase (identity only) ───────────────────────────────
+    // ─────────────────────────────────────────────────────────────
+    // CONFIG
+    // ─────────────────────────────────────────────────────────────
+    // Set to true once your Node.js backend is deployed and reachable.
+    // Set to false to use Firestore directly (works immediately, less secure).
+    const USE_BACKEND = false;
+
+    const API_BASE = (location.hostname === 'localhost' || location.hostname === '127.0.0.1')
+        ? 'http://localhost:3000'
+        : 'https://api.shdr.com';
+
+    const IMGBB_API_KEY = '6b1b5028aba07a31bf702efd9c0ef4fe';
+
     const firebaseConfig = {
         apiKey: "AIzaSyBVTLxC6nWpWL6a4BLI3xghdgUoR_cgGzw",
         authDomain: "shdr-construction.firebaseapp.com",
@@ -90,20 +112,29 @@
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
+    const db = getFirestore(app);
 
-    // ─── Backend base URL ───────────────────────────────────────
-    const API_BASE = (location.hostname === 'localhost' || location.hostname === '127.0.0.1')
-        ? 'http://localhost:3000'
-        : 'https://api.shdr.com';
+    // Show mode badge
+    const badge = document.getElementById('mode-badge');
+    if (USE_BACKEND) {
+        badge.textContent = '🔒 Secure Backend Mode';
+        badge.classList.add('production');
+    } else {
+        badge.textContent = '⚠️ Dev Mode (Firestore)';
+    }
 
-    // ─── State ──────────────────────────────────────────────────
+    // ─────────────────────────────────────────────────────────────
+    // State
+    // ─────────────────────────────────────────────────────────────
     let currentUser = null;
     let session = null;
     let currentState = 'loading';
 
     const container = document.getElementById('dynamic-content');
 
-    // ─── Helpers ────────────────────────────────────────────────
+    // ─────────────────────────────────────────────────────────────
+    // Helpers
+    // ─────────────────────────────────────────────────────────────
     function showError(msg) {
         const el = document.getElementById('error-msg');
         if (el) { el.textContent = msg; el.classList.remove('hidden'); }
@@ -132,17 +163,118 @@
         if (options.body && !(options.body instanceof FormData)) {
             headers['Content-Type'] = 'application/json';
         }
-        const res = await fetch(`${API_BASE}${path}`, Object.assign({}, options, { headers }));
+        let res;
+        try {
+            res = await fetch(`${API_BASE}${path}`, Object.assign({}, options, { headers }));
+        } catch (netErr) {
+            // Network error — backend not reachable
+            const e = new Error('Cannot reach the server. Please check your connection.');
+            e.code = 'NETWORK_ERROR';
+            throw e;
+        }
         const data = await res.json().catch(() => ({}));
         if (!res.ok) {
-            const err = new Error(data.message || 'Request failed.');
+            const err = new Error(data.message || `Request failed (${res.status}).`);
             err.code = data.code;
             throw err;
         }
         return data;
     }
 
-    // ─── Render dispatcher ──────────────────────────────────────
+    // ─────────────────────────────────────────────────────────────
+    // SESSION LOADERS (two modes)
+    // ─────────────────────────────────────────────────────────────
+
+    // Production: ask the backend
+    async function loadSessionFromBackend() {
+        const res = await authedFetch('/api/manager/session');
+        return res.data; // { role, user, site, next_step }
+    }
+
+    // Dev: build the same shape from Firestore (matches the original logic)
+    async function loadSessionFromFirestore(user) {
+        const profileSnap = await getDoc(doc(db, 'profiles', user.uid));
+        if (!profileSnap.exists()) {
+            return { role: 'unknown', site: null, next_step: 'no_profile' };
+        }
+        const profile = profileSnap.data();
+        if (profile.role !== 'manager') {
+            return { role: profile.role || 'unknown', site: null, next_step: 'wrong_role' };
+        }
+        const siteId = profile.assigned_site;
+        if (!siteId) {
+            return { role: 'manager', site: null, next_step: 'no_site' };
+        }
+        const siteSnap = await getDoc(doc(db, 'sites', siteId));
+        if (!siteSnap.exists()) {
+            return { role: 'manager', site: null, next_step: 'no_site' };
+        }
+        const site = { id: siteSnap.id, ...siteSnap.data() };
+
+        let next_step = 'ready';
+        if (!profile.site_confirmed) next_step = 'confirm_site';
+        else if (!profile.phone || !profile.image) next_step = 'setup_profile';
+
+        return {
+            role: 'manager',
+            user: {
+                uid: user.uid,
+                email: profile.email || user.email,
+                full_name: profile.full_name || user.displayName || '',
+                phone: profile.phone || '',
+                profile_image: profile.image || ''
+            },
+            site,
+            next_step
+        };
+    }
+
+    async function loadSession() {
+        if (USE_BACKEND) {
+            return await loadSessionFromBackend();
+        } else {
+            return await loadSessionFromFirestore(currentUser);
+        }
+    }
+
+    // ─────────────────────────────────────────────────────────────
+    // ACTION HANDLERS (two modes)
+    // ─────────────────────────────────────────────────────────────
+
+    async function confirmSiteAction() {
+        if (USE_BACKEND) {
+            await authedFetch('/api/manager/confirm-site', { method: 'POST' });
+        } else {
+            await updateDoc(doc(db, 'profiles', currentUser.uid), { site_confirmed: true });
+        }
+    }
+
+    async function saveProfileAction(phone, imageFile) {
+        if (USE_BACKEND) {
+            const formData = new FormData();
+            formData.append('phone', phone);
+            formData.append('image', imageFile);
+            await authedFetch('/api/manager/profile', { method: 'POST', body: formData });
+        } else {
+            // Upload to imgbb (dev only), then update Firestore
+            const formData = new FormData();
+            formData.append('image', imageFile);
+            const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
+                method: 'POST',
+                body: formData
+            });
+            const json = await res.json();
+            if (!json.success) throw new Error('Image upload failed. Please try again.');
+            await updateDoc(doc(db, 'profiles', currentUser.uid), {
+                phone,
+                image: json.data.url
+            });
+        }
+    }
+
+    // ─────────────────────────────────────────────────────────────
+    // Render
+    // ─────────────────────────────────────────────────────────────
     function render() {
         clearError();
         switch (currentState) {
@@ -206,13 +338,14 @@
         clearError();
         try {
             await signInWithEmailAndPassword(auth, email, password);
-            // onAuthStateChanged handles the rest
+            // onAuthStateChanged takes over
         } catch (err) {
             const msg =
                 err.code === 'auth/user-not-found'    ? 'No account found with this email.' :
                 err.code === 'auth/wrong-password'    ? 'Incorrect password.' :
                 err.code === 'auth/invalid-email'     ? 'Invalid email format.' :
                 err.code === 'auth/too-many-requests' ? 'Too many attempts. Please wait and try again.' :
+                err.code === 'auth/invalid-credential'? 'Incorrect email or passcode.' :
                 'Sign-in failed. Please try again.';
             showError(msg);
             setButtonLoading(btn, false);
@@ -231,9 +364,15 @@
         currentState = 'loading';
         render();
         try {
-            const res = await authedFetch('/api/manager/session');
-            session = res.data;
+            session = await loadSession();
 
+            // Handle role / site errors
+            if (session.next_step === 'no_profile') {
+                await signOut(auth);
+                currentState = 'login'; render();
+                showError('Manager profile not found. Contact your administrator.');
+                return;
+            }
             if (session.role !== 'manager') {
                 await signOut(auth);
                 currentState = 'login'; render();
@@ -259,10 +398,13 @@
                 setTimeout(() => { window.location.href = 'manager/dashboard.html'; }, 600);
             }
         } catch (err) {
-            console.error(err);
+            console.error('[session load]', err);
             await signOut(auth);
             currentState = 'login'; render();
-            showError(err.message || 'Failed to load your session. Please try again.');
+            const friendly =
+                err.code === 'NETWORK_ERROR' ? err.message :
+                err.message || 'Failed to load your session. Please try again.';
+            showError(friendly);
         }
     });
 
@@ -287,15 +429,16 @@
             const btn = document.getElementById('confirm-btn');
             setButtonLoading(btn, true);
             try {
-                await authedFetch('/api/manager/confirm-site', { method: 'POST' });
-                const res = await authedFetch('/api/manager/session');
-                session = res.data;
+                await confirmSiteAction();
+                // Refresh session to determine next step
+                session = await loadSession();
                 currentState = (session.next_step === 'setup_profile') ? 'setup-profile' : 'redirecting';
                 render();
                 if (currentState === 'redirecting') {
                     setTimeout(() => { window.location.href = 'manager/dashboard.html'; }, 600);
                 }
             } catch (err) {
+                console.error('[confirm-site]', err);
                 showError(err.message || 'Failed to confirm. Please try again.');
                 setButtonLoading(btn, false);
             }
@@ -349,15 +492,12 @@
             }
 
             try {
-                const formData = new FormData();
-                formData.append('phone', phone);
-                formData.append('image', imageFile);
-                await authedFetch('/api/manager/profile', { method: 'POST', body: formData });
-
+                await saveProfileAction(phone, imageFile);
                 currentState = 'redirecting';
                 render();
                 setTimeout(() => { window.location.href = 'manager/dashboard.html'; }, 600);
             } catch (err) {
+                console.error('[profile]', err);
                 showError(err.message || 'Could not save your profile. Please try again.');
                 setButtonLoading(btn, false);
             }
