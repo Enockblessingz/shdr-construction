@@ -1,518 +1,817 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#059669">
+    <link rel="icon" type="image/png" href="shdr_logo Background Removed.png">
+    <link rel="apple-touch-icon" href="shdr_logo Background Removed.png">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#059669" />
+    <meta name="description" content="SHDR Manager Portal — Sign in to access your assigned site" />
     <title>SHDR Manager — Sign In</title>
 
-    <link rel="icon" type="image/png" href="shdr_logo%20Background%20Removed.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="shdr_logo%20Background%20Removed.png">
-
-    <script src="https://cdn.tailwindcss.com/3.4.17"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Iconify -->
     <script src="https://cdn.jsdelivr.net/npm/iconify-icon@2.3.0/dist/iconify-icon.min.js"></script>
 
     <style>
-        * { font-family: 'Plus Jakarta Sans', sans-serif; }
-        body { background: #f8fafc; }
-        .split-container { display: flex; min-height: 100vh; }
-        .brand-panel {
-            flex: 0 0 42%;
-            background: linear-gradient(135deg, #064e3b 0%, #047857 100%);
-            position: relative; overflow: hidden;
-            display: flex; flex-direction: column;
-            align-items: center; justify-content: center;
-            padding: 40px; color: #fff; text-align: center;
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --green: #059669; --green-hover: #047857;
+            --text: #1a1a2e; --text-light: #6b7280;
+            --border: #e5e7eb; --radius: 12px;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
         }
-        .brand-panel::before {
-            content: ''; position: absolute; inset: 0;
-            background: url('https://cdn.pixabay.com/photo/2018/12/12/23/02/site-3871804_1280.jpg') center/cover no-repeat;
-            opacity: 0.15; z-index: 0;
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: url('https://cdn.pixabay.com/photo/2018/12/12/23/02/site-3871804_1280.jpg') center/cover no-repeat fixed;
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            -webkit-font-smoothing: antialiased;
+            position: relative;
         }
-        .brand-content { position: relative; z-index: 2; max-width: 360px; }
-        .brand-logo { width: 120px; height: 120px; display: flex; align-items: center; justify-content: center; margin: 0 auto 24px; }
-        .brand-logo img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 6px 18px rgba(0, 0, 0, 0.35)); }
-        .form-panel { flex: 1; display: flex; align-items: center; justify-content: center; padding: 32px; background: #fff; }
-        .card { width: 100%; max-width: 420px; }
-        .btn-primary {
-            background: #059669; color: white; font-weight: 600; border-radius: 0.75rem;
-            padding: 0.75rem 1.5rem; transition: background 0.2s; width: 100%;
-            display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.55);
+            z-index: 0;
+            pointer-events: none;
         }
-        .btn-primary:hover { background: #047857; }
-        .btn-primary:disabled { opacity: 0.7; cursor: not-allowed; }
-        .spinner { border: 3px solid #e2e8f0; border-top: 3px solid #059669; border-radius: 50%; width: 24px; height: 24px; animation: spin 0.8s linear infinite; }
+
+        .main-content {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .auth-card {
+            background: #ffffff;
+            border-radius: 20px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            padding: 40px;
+            width: 100%;
+            max-width: 440px;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* ═══════════════════════════════════════════════════════
+           CARD HEADER & BRANDING (matches owner page)
+           ═══════════════════════════════════════════════════════ */
+        .card-header { text-align: center; margin-bottom: 28px; }
+
+        .card-brand {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 14px;
+        }
+
+        .card-logo {
+            width: 48px;
+            height: 48px;
+            margin: 0;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .card-logo img { width: 100%; height: 100%; object-fit: contain; }
+
+        .card-brand-text {
+            display: flex;
+            flex-direction: column;
+            text-align: left;
+            gap: 2px;
+        }
+
+        .card-brand-name {
+            font-weight: 700;
+            font-size: 1.1rem;
+            letter-spacing: -0.3px;
+            color: var(--text);
+            line-height: 1.2;
+            white-space: nowrap;
+        }
+
+        .card-brand-sub {
+            font-size: 0.65rem;
+            color: var(--text-light);
+            letter-spacing: 0.02em;
+            line-height: 1.2;
+            white-space: nowrap;
+        }
+
+        .card-brand-desc {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            line-height: 1.6;
+            text-align: center;
+            margin-bottom: 24px;
+            max-width: 320px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .card-header h1 { font-size: 1.6rem; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 6px; color: var(--text); }
+        .card-header p { color: var(--text-light); font-size: 0.9rem; }
+
+        /* Form Elements */
+        .message { padding: 12px 16px; border-radius: 10px; font-size: 0.85rem; margin-bottom: 20px; display: none; line-height: 1.5; }
+        .message.error { background: #fef2f2; color: #991b1b; border: 1px solid #fecaca; }
+        .message.success { background: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; }
+        .message.info { background: #eff6ff; color: #1e40af; border: 1px solid #bfdbfe; }
+
+        .form-group { margin-bottom: 18px; }
+        .form-group label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 6px; color: var(--text); }
+        .form-group input {
+            width: 100%; padding: 12px 16px; border: 1.5px solid var(--border);
+            border-radius: var(--radius); font-size: 0.95rem; transition: 0.2s;
+            background: #f9fafb; font-family: inherit;
+        }
+        .form-group input:focus { outline: none; border-color: var(--green); box-shadow: 0 0 0 3px rgba(5,150,105,0.08); background: #fff; }
+
+        .btn {
+            width: 100%; padding: 13px; border-radius: var(--radius); border: none;
+            font-weight: 600; font-size: 0.95rem; cursor: pointer; transition: 0.2s;
+            background: var(--green); color: #fff; display: flex; align-items: center;
+            justify-content: center; gap: 8px; font-family: inherit;
+        }
+        .btn:hover { background: var(--green-hover); }
+        .btn:disabled { opacity: 0.7; cursor: not-allowed; }
+
+        .btn-secondary {
+            background: #fff; color: var(--text); border: 1.5px solid var(--border);
+            width: 100%; padding: 13px; border-radius: var(--radius);
+            font-weight: 600; font-size: 0.95rem; cursor: pointer; transition: 0.2s;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+            font-family: inherit; margin-top: 10px;
+        }
+        .btn-secondary:hover { background: #f9fafb; border-color: #d1d5db; }
+
+        .btn-danger-link {
+            background: none; border: none;
+            color: #dc2626; font-weight: 500; cursor: pointer;
+            font-size: 0.85rem; font-family: inherit;
+            width: 100%; padding: 12px; margin-top: 8px;
+            border-radius: var(--radius); transition: 0.2s;
+        }
+        .btn-danger-link:hover { background: #fef2f2; }
+
+        .spinner {
+            display: inline-block; width: 16px; height: 16px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-top: 2px solid #fff; border-radius: 50%;
+            animation: spin 0.6s linear infinite;
+        }
         @keyframes spin { to { transform: rotate(360deg); } }
-        .mode-badge {
-            position: fixed; top: 12px; right: 12px;
-            padding: 4px 10px; border-radius: 100px;
-            font-size: 0.7rem; font-weight: 600;
-            background: #fef3c7; color: #92400e;
-            z-index: 9999;
+
+        .hidden { display: none !important; }
+
+        /* Site confirmation card */
+        .site-preview {
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius);
+            overflow: hidden;
+            margin-bottom: 20px;
         }
-        .mode-badge.production { background: #d1fae5; color: #065f46; }
-        @media (max-width: 768px) {
-            .split-container { flex-direction: column; }
-            .brand-panel { flex: 0 0 auto; padding: 40px 24px; min-height: auto; text-align: center; }
-            .brand-panel h2 { font-size: 1.6rem; }
-            .brand-content { max-width: 100%; }
-            .brand-logo { width: 96px; height: 96px; }
-            .form-panel { padding: 24px; flex: 1; align-items: flex-start; }
+        .site-preview img {
+            width: 100%; height: 180px; object-fit: cover; display: block;
+        }
+        .site-preview-body { padding: 16px; }
+        .site-preview-body h3 {
+            font-size: 1rem; font-weight: 700; color: var(--text);
+            margin-bottom: 4px;
+        }
+        .site-preview-body p {
+            font-size: 0.85rem; color: var(--text-light);
+            line-height: 1.5;
+        }
+        .site-preview-body .budget {
+            color: var(--green); font-weight: 600; margin-top: 6px;
+            font-size: 0.85rem;
+        }
+
+        /* Redirecting state */
+        .redirecting {
+            text-align: center;
+            padding: 40px 0;
+        }
+        .redirecting .spinner {
+            width: 40px; height: 40px; border-width: 3px;
+            border: 3px solid #e2e8f0; border-top: 3px solid var(--green);
+            margin: 0 auto 16px;
+        }
+        .redirecting p { color: var(--text-light); font-size: 0.9rem; }
+
+        /* Loading state */
+        .loading-state {
+            text-align: center;
+            padding: 40px 0;
+        }
+        .loading-state .spinner {
+            width: 40px; height: 40px; border-width: 3px;
+            border: 3px solid #e2e8f0; border-top: 3px solid var(--green);
+            margin: 0 auto 16px;
+        }
+        .loading-state p { color: var(--text-light); font-size: 0.9rem; }
+
+        /* ═══════════════════════════════════════════════════════
+           PREMIUM FOOTER (matches owner page)
+           ═══════════════════════════════════════════════════════ */
+        footer {
+            width: 100%;
+            flex-shrink: 0;
+            border-top: 1px solid var(--border);
+            background: #ffffff;
+            padding: 56px 24px 0;
+            position: relative;
+            z-index: 1;
+        }
+
+        .footer-columns {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1.6fr 1.3fr 1.1fr 1.1fr;
+            gap: 48px;
+            padding-bottom: 44px;
+        }
+
+        .footer-brand { display: flex; align-items: center; gap: 12px; margin-bottom: 18px; }
+        .footer-logo { width: 48px; height: 48px; object-fit: contain; display: block; flex-shrink: 0; }
+        .footer-brand-text { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+        .footer-brand-name { font-weight: 700; font-size: 1.05rem; letter-spacing: -0.3px; color: var(--text); line-height: 1.2; white-space: nowrap; }
+        .footer-brand-sub { font-size: 0.72rem; color: var(--text-light); letter-spacing: 0.02em; line-height: 1.2; white-space: nowrap; }
+        .footer-desc { font-size: 0.875rem; color: var(--text-light); line-height: 1.7; max-width: 340px; }
+
+        .footer-col h4 { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text); margin-bottom: 18px; }
+        .footer-links { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+        .footer-links li a { font-size: 0.875rem; color: var(--text-light); transition: color 0.2s; cursor: pointer; display: inline-flex; align-items: center; gap: 9px; text-decoration: none; line-height: 1.4; }
+        .footer-links li a iconify-icon { font-size: 1.05rem; flex-shrink: 0; color: var(--green); transition: transform 0.2s; }
+        .footer-links li a:hover { color: var(--green); }
+        .footer-links li a:hover iconify-icon { transform: translateY(-1px); }
+
+        .footer-socials { display: flex; flex-wrap: wrap; gap: 10px; }
+        .footer-social-link {
+            width: 42px; height: 42px; border-radius: 50%;
+            border: 1.5px solid var(--border); display: inline-flex;
+            align-items: center; justify-content: center; color: var(--text-light);
+            text-decoration: none; transition: all 0.2s ease; cursor: pointer; background: #fff;
+        }
+        .footer-social-link iconify-icon { font-size: 1.15rem; transition: transform 0.2s ease, color 0.2s ease; display: block; }
+        .footer-social-link:hover { border-color: var(--green); color: var(--green); transform: translateY(-2px); box-shadow: 0 6px 16px rgba(5, 150, 105, 0.18); background: #ecfdf5; }
+        .footer-social-link:hover iconify-icon { transform: scale(1.12); }
+        .footer-social-link:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; }
+
+        .footer-bottom {
+            max-width: 1200px; margin: 0 auto; padding: 20px 0 26px;
+            border-top: 1px solid var(--border); display: flex;
+            justify-content: space-between; align-items: center;
+            gap: 16px; flex-wrap: wrap; font-size: 0.8rem; color: var(--text-light);
+        }
+        .footer-bottom a { color: var(--green); font-weight: 500; text-decoration: none; }
+        .footer-bottom a:hover { text-decoration: underline; }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .footer-columns { grid-template-columns: 1fr 1fr; gap: 36px; }
+        }
+        @media (max-width: 640px) {
+            .auth-card { padding: 30px 20px; border-radius: 16px; }
+            .card-logo { width: 42px; height: 42px; }
+            .card-header h1 { font-size: 1.4rem; }
+            footer { padding: 40px 20px 0; }
+            .footer-columns { grid-template-columns: 1fr; gap: 32px; padding-bottom: 32px; }
+            .footer-bottom { flex-direction: column; text-align: center; padding-bottom: 24px; }
+            .footer-brand-sub { white-space: normal; }
+            .footer-logo { width: 42px; height: 42px; }
         }
     </style>
 </head>
 <body>
-<div class="mode-badge" id="mode-badge">Loading…</div>
-<div class="split-container">
-    <div class="brand-panel">
-        <div class="brand-content">
-            <div class="brand-logo">
-                <img src="shdr_logo%20Background%20Removed.png" alt="SHDR Ltd."
-                     onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 120 120%22%3E%3Ctext x=%2250%25%22 y=%2254%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22white%22 font-family=%22Arial%22 font-weight=%22bold%22 font-size=%2248%22%3ESH%3C/text%3E%3C/svg%3E';">
+
+    <div class="main-content">
+        <div class="auth-card">
+            <div id="message" class="message"></div>
+
+            <!-- Branding Header (always visible) -->
+            <div class="card-header">
+                <div class="card-brand">
+                    <div class="card-logo">
+                        <img src="shdr_logo Background Removed.png" alt="SHDR" />
+                    </div>
+                    <div class="card-brand-text">
+                        <span class="card-brand-name">SHDR <span style="color:var(--green);">LTD</span></span>
+                        <span class="card-brand-sub">Sustainable Homes Design Rwanda Ltd</span>
+                    </div>
+                </div>
+                <p class="card-brand-desc">Manager portal — access your assigned construction site.</p>
             </div>
-            <h2 class="text-2xl font-bold mb-4">Manager Access</h2>
-            <p class="opacity-90">Your assigned construction site is waiting. Sign in to get started.</p>
+
+            <!-- Dynamic content (rendered by JS) -->
+            <div id="dynamic-content"></div>
         </div>
     </div>
 
-    <div class="form-panel">
-        <div class="card" id="dynamic-content"></div>
-    </div>
-</div>
+    <!-- Premium Footer -->
+    <footer>
+        <div class="footer-columns">
+            <div class="footer-col">
+                <div class="footer-brand">
+                    <img src="shdr_logo Background Removed.png" alt="SHDR Ltd logo" class="footer-logo">
+                    <div class="footer-brand-text">
+                        <span class="footer-brand-name">SHDR <span style="color:var(--green);">LTD</span></span>
+                        <span class="footer-brand-sub">Sustainable Homes Design Rwanda Ltd</span>
+                    </div>
+                </div>
+                <p class="footer-desc">Construction site management made easier and smarter. Connect owners and site managers with full transparency.</p>
+            </div>
 
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
-    import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
+            <div class="footer-col">
+                <h4>Legal</h4>
+                <ul class="footer-links">
+                    <li><a href="index.html#terms">Terms &amp; Conditions</a></li>
+                    <li><a href="index.html#privacy">Privacy Policy</a></li>
+                    <li><a href="index.html#cookies">Cookie Policy</a></li>
+                    <li><a href="index.html#acceptable-use">Acceptable Use</a></li>
+                    <li><a href="index.html#refund">Refund &amp; Cancellation</a></li>
+                    <li><a href="index.html#contact">Legal Notice</a></li>
+                </ul>
+            </div>
 
-    // ─────────────────────────────────────────────────────────────
-    // CONFIG
-    // ─────────────────────────────────────────────────────────────
-    // Set to true once your Node.js backend is deployed and reachable.
-    // Set to false to use Firestore directly (works immediately, less secure).
-    const USE_BACKEND = false;
+            <div class="footer-col">
+                <h4>Support</h4>
+                <ul class="footer-links">
+                    <li>
+                        <a href="index.html#contact">
+                            <iconify-icon icon="material-symbols:help-outline"></iconify-icon>
+                            Help Center
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://wa.me/250790020086" target="_blank" rel="noopener" aria-label="Contact support on WhatsApp">
+                            <iconify-icon icon="simple-icons:whatsapp"></iconify-icon>
+                            Contact Support
+                        </a>
+                    </li>
+                    <li>
+                        <a href="mailto:abuse@shdr.com" aria-label="Report an issue by email">
+                            <iconify-icon icon="material-symbols:report"></iconify-icon>
+                            Report an Issue
+                        </a>
+                    </li>
+                </ul>
+            </div>
 
-    const API_BASE = (location.hostname === 'localhost' || location.hostname === '127.0.0.1')
-        ? 'http://localhost:3000'
-        : 'https://api.shdr.com';
+            <div class="footer-col">
+                <h4>Follow Us</h4>
+                <div class="footer-socials">
+                    <a href="https://www.instagram.com/shdr_ltd1/" target="_blank" rel="noopener noreferrer" class="footer-social-link" aria-label="Instagram" title="Instagram">
+                        <iconify-icon icon="simple-icons:instagram"></iconify-icon>
+                    </a>
+                    <a href="https://www.linkedin.com/company/shdr-ltd" target="_blank" rel="noopener noreferrer" class="footer-social-link" aria-label="LinkedIn" title="LinkedIn">
+                        <iconify-icon icon="simple-icons:linkedin"></iconify-icon>
+                    </a>
+                    <a href="https://x.com/SHDRltd1" target="_blank" rel="noopener noreferrer" class="footer-social-link" aria-label="X" title="X">
+                        <iconify-icon icon="simple-icons:x"></iconify-icon>
+                    </a>
+                    <a href="https://www.tiktok.com/@shdr.ltd?lang=en-GB" target="_blank" rel="noopener noreferrer" class="footer-social-link" aria-label="TikTok" title="TikTok">
+                        <iconify-icon icon="simple-icons:tiktok"></iconify-icon>
+                    </a>
+                </div>
+            </div>
+        </div>
 
-    const IMGBB_API_KEY = '6b1b5028aba07a31bf702efd9c0ef4fe';
+        <div class="footer-bottom">
+            <div>© <span id="currentYear"></span> SHDR Ltd — All rights reserved.</div>
+            <div>Designed &amp; Powered by <a href="https://wa.me/250790020086" target="_blank" rel="noopener">___Enock's___blessingz___</a></div>
+        </div>
+    </footer>
 
-    const firebaseConfig = {
-        apiKey: "AIzaSyBVTLxC6nWpWL6a4BLI3xghdgUoR_cgGzw",
-        authDomain: "shdr-construction.firebaseapp.com",
-        databaseURL: "https://shdr-construction-default-rtdb.firebaseio.com",
-        projectId: "shdr-construction",
-        storageBucket: "shdr-construction.firebasestorage.app",
-        messagingSenderId: "418309267761",
-        appId: "1:418309267761:web:328922587ea18021e21010",
-        measurementId: "G-Y4KMGWDBH3"
-    };
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
+        import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
+        // ─────────────────────────────────────────────────────────────
+        // CONFIG
+        // ─────────────────────────────────────────────────────────────
+        // Set to true once your Node.js backend is deployed and reachable.
+        const USE_BACKEND = false;
 
-    // Show mode badge
-    const badge = document.getElementById('mode-badge');
-    if (USE_BACKEND) {
-        badge.textContent = '🔒 Secure Backend Mode';
-        badge.classList.add('production');
-    } else {
-        badge.textContent = '⚠️ Dev Mode (Firestore)';
-    }
+        const API_BASE = (location.hostname === 'localhost' || location.hostname === '127.0.0.1')
+            ? 'http://localhost:3000'
+            : 'https://api.shdr.com';
 
-    // ─────────────────────────────────────────────────────────────
-    // State
-    // ─────────────────────────────────────────────────────────────
-    let currentUser = null;
-    let session = null;
-    let currentState = 'loading';
+        const IMGBB_API_KEY = '6b1b5028aba07a31bf702efd9c0ef4fe';
 
-    const container = document.getElementById('dynamic-content');
-
-    // ─────────────────────────────────────────────────────────────
-    // Helpers
-    // ─────────────────────────────────────────────────────────────
-    function showError(msg) {
-        const el = document.getElementById('error-msg');
-        if (el) { el.textContent = msg; el.classList.remove('hidden'); }
-    }
-    function clearError() {
-        const el = document.getElementById('error-msg');
-        if (el) { el.classList.add('hidden'); el.textContent = ''; }
-    }
-    function setButtonLoading(btn, loading) {
-        if (!btn) return;
-        if (loading) {
-            btn.disabled = true;
-            btn.dataset.origHTML = btn.dataset.origHTML || btn.innerHTML;
-            btn.innerHTML = '<span class="spinner" style="width:1.2rem;height:1.2rem;border-width:2px;"></span> Loading...';
-        } else {
-            btn.disabled = false;
-            btn.innerHTML = btn.dataset.origHTML || 'Submit';
-        }
-    }
-    async function authedFetch(path, options = {}) {
-        if (!currentUser) throw new Error('Not signed in.');
-        const token = await currentUser.getIdToken();
-        const headers = Object.assign({}, options.headers || {}, {
-            'Authorization': `Bearer ${token}`
-        });
-        if (options.body && !(options.body instanceof FormData)) {
-            headers['Content-Type'] = 'application/json';
-        }
-        let res;
-        try {
-            res = await fetch(`${API_BASE}${path}`, Object.assign({}, options, { headers }));
-        } catch (netErr) {
-            // Network error — backend not reachable
-            const e = new Error('Cannot reach the server. Please check your connection.');
-            e.code = 'NETWORK_ERROR';
-            throw e;
-        }
-        const data = await res.json().catch(() => ({}));
-        if (!res.ok) {
-            const err = new Error(data.message || `Request failed (${res.status}).`);
-            err.code = data.code;
-            throw err;
-        }
-        return data;
-    }
-
-    // ─────────────────────────────────────────────────────────────
-    // SESSION LOADERS (two modes)
-    // ─────────────────────────────────────────────────────────────
-
-    // Production: ask the backend
-    async function loadSessionFromBackend() {
-        const res = await authedFetch('/api/manager/session');
-        return res.data; // { role, user, site, next_step }
-    }
-
-    // Dev: build the same shape from Firestore (matches the original logic)
-    async function loadSessionFromFirestore(user) {
-        const profileSnap = await getDoc(doc(db, 'profiles', user.uid));
-        if (!profileSnap.exists()) {
-            return { role: 'unknown', site: null, next_step: 'no_profile' };
-        }
-        const profile = profileSnap.data();
-        if (profile.role !== 'manager') {
-            return { role: profile.role || 'unknown', site: null, next_step: 'wrong_role' };
-        }
-        const siteId = profile.assigned_site;
-        if (!siteId) {
-            return { role: 'manager', site: null, next_step: 'no_site' };
-        }
-        const siteSnap = await getDoc(doc(db, 'sites', siteId));
-        if (!siteSnap.exists()) {
-            return { role: 'manager', site: null, next_step: 'no_site' };
-        }
-        const site = { id: siteSnap.id, ...siteSnap.data() };
-
-        let next_step = 'ready';
-        if (!profile.site_confirmed) next_step = 'confirm_site';
-        else if (!profile.phone || !profile.image) next_step = 'setup_profile';
-
-        return {
-            role: 'manager',
-            user: {
-                uid: user.uid,
-                email: profile.email || user.email,
-                full_name: profile.full_name || user.displayName || '',
-                phone: profile.phone || '',
-                profile_image: profile.image || ''
-            },
-            site,
-            next_step
+        const firebaseConfig = {
+            apiKey: "AIzaSyBVTLxC6nWpWL6a4BLI3xghdgUoR_cgGzw",
+            authDomain: "shdr-construction.firebaseapp.com",
+            databaseURL: "https://shdr-construction-default-rtdb.firebaseio.com",
+            projectId: "shdr-construction",
+            storageBucket: "shdr-construction.firebasestorage.app",
+            messagingSenderId: "418309267761",
+            appId: "1:418309267761:web:328922587ea18021e21010",
+            measurementId: "G-Y4KMGWDBH3"
         };
-    }
 
-    async function loadSession() {
-        if (USE_BACKEND) {
-            return await loadSessionFromBackend();
-        } else {
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // ─────────────────────────────────────────────────────────────
+        // State
+        // ─────────────────────────────────────────────────────────────
+        let currentUser = null;
+        let session = null; // { role, user, site, next_step }
+        let currentState = 'loading';
+
+        const container = document.getElementById('dynamic-content');
+
+        // ─────────────────────────────────────────────────────────────
+        // Helpers
+        // ─────────────────────────────────────────────────────────────
+        function showError(msg) {
+            const el = document.getElementById('message');
+            el.textContent = msg;
+            el.classList.remove('error','success','info');
+            el.classList.add('error');
+            el.style.display = 'block';
+        }
+        function showInfo(msg) {
+            const el = document.getElementById('message');
+            el.textContent = msg;
+            el.classList.remove('error','success','info');
+            el.classList.add('info');
+            el.style.display = 'block';
+        }
+        function clearError() {
+            const el = document.getElementById('message');
+            el.style.display = 'none';
+            el.textContent = '';
+        }
+        function setButtonLoading(btn, loading, label = 'Loading...') {
+            if (!btn) return;
+            if (loading) {
+                btn.disabled = true;
+                btn.dataset.origHTML = btn.dataset.origHTML || btn.innerHTML;
+                btn.innerHTML = `<span class="spinner"></span> ${label}`;
+            } else {
+                btn.disabled = false;
+                btn.innerHTML = btn.dataset.origHTML || 'Submit';
+            }
+        }
+        async function authedFetch(path, options = {}) {
+            if (!currentUser) throw new Error('Not signed in.');
+            const token = await currentUser.getIdToken();
+            const headers = Object.assign({}, options.headers || {}, {
+                'Authorization': `Bearer ${token}`
+            });
+            if (options.body && !(options.body instanceof FormData)) {
+                headers['Content-Type'] = 'application/json';
+            }
+            let res;
+            try {
+                res = await fetch(`${API_BASE}${path}`, Object.assign({}, options, { headers }));
+            } catch (netErr) {
+                const e = new Error('Cannot reach the server. Please check your connection.');
+                e.code = 'NETWORK_ERROR';
+                throw e;
+            }
+            const data = await res.json().catch(() => ({}));
+            if (!res.ok) {
+                const err = new Error(data.message || `Request failed (${res.status}).`);
+                err.code = data.code;
+                throw err;
+            }
+            return data;
+        }
+
+        // ─────────────────────────────────────────────────────────────
+        // Session loaders (two modes)
+        // ─────────────────────────────────────────────────────────────
+        async function loadSessionFromBackend() {
+            const res = await authedFetch('/api/manager/session');
+            return res.data;
+        }
+
+        async function loadSessionFromFirestore(user) {
+            const profileSnap = await getDoc(doc(db, 'profiles', user.uid));
+            if (!profileSnap.exists()) {
+                return { role: 'unknown', site: null, next_step: 'no_profile' };
+            }
+            const profile = profileSnap.data();
+            if (profile.role !== 'manager') {
+                return { role: profile.role || 'unknown', site: null, next_step: 'wrong_role' };
+            }
+            const siteId = profile.assigned_site;
+            if (!siteId) {
+                return { role: 'manager', site: null, next_step: 'no_site' };
+            }
+            const siteSnap = await getDoc(doc(db, 'sites', siteId));
+            if (!siteSnap.exists()) {
+                return { role: 'manager', site: null, next_step: 'no_site' };
+            }
+            const site = { id: siteSnap.id, ...siteSnap.data() };
+
+            let next_step = 'ready';
+            if (!profile.site_confirmed) next_step = 'confirm_site';
+            else if (!profile.phone || !profile.image) next_step = 'setup_profile';
+
+            return {
+                role: 'manager',
+                user: {
+                    uid: user.uid,
+                    email: profile.email || user.email,
+                    full_name: profile.full_name || user.displayName || '',
+                    phone: profile.phone || '',
+                    profile_image: profile.image || ''
+                },
+                site,
+                next_step
+            };
+        }
+
+        async function loadSession() {
+            if (USE_BACKEND) return await loadSessionFromBackend();
             return await loadSessionFromFirestore(currentUser);
         }
-    }
 
-    // ─────────────────────────────────────────────────────────────
-    // ACTION HANDLERS (two modes)
-    // ─────────────────────────────────────────────────────────────
-
-    async function confirmSiteAction() {
-        if (USE_BACKEND) {
-            await authedFetch('/api/manager/confirm-site', { method: 'POST' });
-        } else {
-            await updateDoc(doc(db, 'profiles', currentUser.uid), { site_confirmed: true });
-        }
-    }
-
-    async function saveProfileAction(phone, imageFile) {
-        if (USE_BACKEND) {
-            const formData = new FormData();
-            formData.append('phone', phone);
-            formData.append('image', imageFile);
-            await authedFetch('/api/manager/profile', { method: 'POST', body: formData });
-        } else {
-            // Upload to imgbb (dev only), then update Firestore
-            const formData = new FormData();
-            formData.append('image', imageFile);
-            const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
-                method: 'POST',
-                body: formData
-            });
-            const json = await res.json();
-            if (!json.success) throw new Error('Image upload failed. Please try again.');
-            await updateDoc(doc(db, 'profiles', currentUser.uid), {
-                phone,
-                image: json.data.url
-            });
-        }
-    }
-
-    // ─────────────────────────────────────────────────────────────
-    // Render
-    // ─────────────────────────────────────────────────────────────
-    function render() {
-        clearError();
-        switch (currentState) {
-            case 'loading':       renderLoading(); break;
-            case 'login':         renderLogin(); break;
-            case 'confirm-site':  renderSiteConfirmation(); break;
-            case 'setup-profile': renderProfileSetup(); break;
-            case 'redirecting':   renderRedirecting(); break;
-            default:              renderLogin();
-        }
-    }
-
-    function renderLoading() {
-        container.innerHTML = `
-            <div class="text-center py-12">
-                <div class="spinner mx-auto mb-4" style="width:2rem;height:2rem;border-width:3px;"></div>
-                <p class="text-slate-500 text-sm">Preparing your session...</p>
-            </div>`;
-    }
-
-    // ─── Login ──────────────────────────────────────────────────
-    function renderLogin() {
-        container.innerHTML = `
-            <div class="text-center mb-6">
-                <h1 class="text-2xl font-bold text-slate-900">Manager Sign In</h1>
-                <p class="text-slate-500 text-sm mt-2">Enter your credentials to access your site</p>
-            </div>
-            <div id="error-msg" class="hidden bg-red-50 text-red-700 p-3 rounded-lg text-sm mb-4"></div>
-            <form id="login-form" class="space-y-4">
-                <div>
-                    <label class="block text-sm font-medium text-slate-700 mb-1">Email</label>
-                    <input type="email" id="login-email" placeholder="manager@example.com" required autocomplete="email"
-                           class="w-full border border-slate-200 rounded-lg p-3 focus:ring-2 focus:ring-emerald-500 outline-none">
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-slate-700 mb-1">Passcode</label>
-                    <input type="password" id="login-password" placeholder="••••••••" required autocomplete="current-password"
-                           class="w-full border border-slate-200 rounded-lg p-3 focus:ring-2 focus:ring-emerald-500 outline-none">
-                </div>
-                <button type="submit" class="btn-primary">Sign In</button>
-            </form>
-            <p class="text-xs text-slate-500 text-center mt-6">
-                <span>
-                    Designed &amp; Powered by
-                    <a href="https://wa.me/250790020086" target="_blank" rel="noopener noreferrer"
-                       style="color:#059669; text-decoration:none;">
-                        <strong>___Enock's___blessingz___</strong>
-                    </a>
-                </span>
-            </p>
-        `;
-        document.getElementById('login-form').addEventListener('submit', handleLogin);
-    }
-
-    async function handleLogin(e) {
-        e.preventDefault();
-        const email = document.getElementById('login-email').value.trim();
-        const password = document.getElementById('login-password').value;
-        const btn = e.target.querySelector('button[type="submit"]');
-        setButtonLoading(btn, true);
-        clearError();
-        try {
-            await signInWithEmailAndPassword(auth, email, password);
-            // onAuthStateChanged takes over
-        } catch (err) {
-            const msg =
-                err.code === 'auth/user-not-found'    ? 'No account found with this email.' :
-                err.code === 'auth/wrong-password'    ? 'Incorrect password.' :
-                err.code === 'auth/invalid-email'     ? 'Invalid email format.' :
-                err.code === 'auth/too-many-requests' ? 'Too many attempts. Please wait and try again.' :
-                err.code === 'auth/invalid-credential'? 'Incorrect email or passcode.' :
-                'Sign-in failed. Please try again.';
-            showError(msg);
-            setButtonLoading(btn, false);
-        }
-    }
-
-    // ─── Auth state ─────────────────────────────────────────────
-    onAuthStateChanged(auth, async (user) => {
-        if (!user) {
-            currentUser = null; session = null;
-            currentState = 'login';
-            render();
-            return;
-        }
-        currentUser = user;
-        currentState = 'loading';
-        render();
-        try {
-            session = await loadSession();
-
-            // Handle role / site errors
-            if (session.next_step === 'no_profile') {
-                await signOut(auth);
-                currentState = 'login'; render();
-                showError('Manager profile not found. Contact your administrator.');
-                return;
+        // ─────────────────────────────────────────────────────────────
+        // Action handlers (two modes)
+        // ─────────────────────────────────────────────────────────────
+        async function confirmSiteAction() {
+            if (USE_BACKEND) {
+                await authedFetch('/api/manager/confirm-site', { method: 'POST' });
+            } else {
+                await updateDoc(doc(db, 'profiles', currentUser.uid), { site_confirmed: true });
             }
-            if (session.role !== 'manager') {
-                await signOut(auth);
-                currentState = 'login'; render();
-                showError('You are not registered as a manager.');
-                return;
-            }
-            if (!session.site) {
-                await signOut(auth);
-                currentState = 'login'; render();
-                showError('No site assigned to your account. Contact your administrator.');
-                return;
-            }
-
-            switch (session.next_step) {
-                case 'confirm_site':  currentState = 'confirm-site'; break;
-                case 'setup_profile': currentState = 'setup-profile'; break;
-                case 'ready':         currentState = 'redirecting'; break;
-                default:              currentState = 'confirm-site';
-            }
-            render();
-
-            if (currentState === 'redirecting') {
-                setTimeout(() => { window.location.href = 'manager/dashboard.html'; }, 600);
-            }
-        } catch (err) {
-            console.error('[session load]', err);
-            await signOut(auth);
-            currentState = 'login'; render();
-            const friendly =
-                err.code === 'NETWORK_ERROR' ? err.message :
-                err.message || 'Failed to load your session. Please try again.';
-            showError(friendly);
         }
-    });
 
-    // ─── Site confirmation ──────────────────────────────────────
-    function renderSiteConfirmation() {
-        const site = session.site;
-        container.innerHTML = `
-            <h1 class="text-xl font-bold text-slate-900 mb-4">Confirm Your Site</h1>
-            <div class="mb-6">
-                <img src="${(site.images && site.images[0]) || 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22200%22%3E%3Crect width=%22400%22 height=%22200%22 fill=%22%23e2e8f0%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%2394a3b8%22 font-size=%2220%22%3ENo Image%3C/text%3E%3C/svg%3E'}"
-                     class="w-full h-48 object-cover rounded-xl mb-4">
-                <h2 class="text-lg font-bold">${site.name}</h2>
-                <p class="text-slate-500">${site.location || 'No location'}</p>
-                <p class="text-sm text-slate-500 mt-1">Budget: ${(site.budget || 0).toLocaleString()} RWF</p>
-            </div>
-            <div id="error-msg" class="hidden bg-red-50 text-red-700 p-3 rounded-lg text-sm mb-4"></div>
-            <button id="confirm-btn" class="btn-primary mb-3">Yes, this is my site</button>
-            <button id="deny-btn" class="w-full py-3 text-red-600 hover:bg-red-50 rounded-xl text-sm">This is not my site</button>
-        `;
+        async function saveProfileAction(phone, imageFile) {
+            if (USE_BACKEND) {
+                const formData = new FormData();
+                formData.append('phone', phone);
+                formData.append('image', imageFile);
+                await authedFetch('/api/manager/profile', { method: 'POST', body: formData });
+            } else {
+                const formData = new FormData();
+                formData.append('image', imageFile);
+                const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
+                    method: 'POST',
+                    body: formData
+                });
+                const json = await res.json();
+                if (!json.success) throw new Error('Image upload failed. Please try again.');
+                await updateDoc(doc(db, 'profiles', currentUser.uid), {
+                    phone,
+                    image: json.data.url
+                });
+            }
+        }
 
-        document.getElementById('confirm-btn').addEventListener('click', async () => {
-            const btn = document.getElementById('confirm-btn');
-            setButtonLoading(btn, true);
+        // ─────────────────────────────────────────────────────────────
+        // Render dispatcher
+        // ─────────────────────────────────────────────────────────────
+        function render() {
+            clearError();
+            switch (currentState) {
+                case 'loading':       renderLoading(); break;
+                case 'login':         renderLogin(); break;
+                case 'confirm-site':  renderSiteConfirmation(); break;
+                case 'setup-profile': renderProfileSetup(); break;
+                case 'redirecting':   renderRedirecting(); break;
+                default:              renderLogin();
+            }
+        }
+
+        function renderLoading() {
+            container.innerHTML = `
+                <div class="loading-state">
+                    <div class="spinner"></div>
+                    <p>Preparing your session...</p>
+                </div>`;
+        }
+
+        // ─── Login ──────────────────────────────────────────────
+        function renderLogin() {
+            container.innerHTML = `
+                <h1 style="text-align:center; font-size:1.35rem; font-weight:700; letter-spacing:-0.4px; margin-bottom:6px; color:var(--text);">Manager Sign In</h1>
+                <p style="text-align:center; color:var(--text-light); font-size:0.9rem; margin-bottom:22px;">Enter your credentials to access your site</p>
+
+                <form id="login-form" novalidate>
+                    <div class="form-group">
+                        <label for="login-email">Email Address</label>
+                        <input type="email" id="login-email" placeholder="manager@example.com" required autocomplete="email" />
+                    </div>
+                    <div class="form-group">
+                        <label for="login-password">Passcode</label>
+                        <input type="password" id="login-password" placeholder="••••••••" required autocomplete="current-password" />
+                    </div>
+                    <button type="submit" id="login-btn" class="btn">Sign In</button>
+                </form>
+            `;
+            document.getElementById('login-form').addEventListener('submit', handleLogin);
+        }
+
+        async function handleLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('login-email').value.trim();
+            const password = document.getElementById('login-password').value;
+            const btn = document.getElementById('login-btn');
+            setButtonLoading(btn, true, 'Signing in...');
+            clearError();
             try {
-                await confirmSiteAction();
-                // Refresh session to determine next step
-                session = await loadSession();
-                currentState = (session.next_step === 'setup_profile') ? 'setup-profile' : 'redirecting';
+                await signInWithEmailAndPassword(auth, email, password);
+                // onAuthStateChanged handles the rest
+            } catch (err) {
+                const msg =
+                    err.code === 'auth/user-not-found'      ? 'No account found with this email.' :
+                    err.code === 'auth/wrong-password'      ? 'Incorrect password.' :
+                    err.code === 'auth/invalid-email'       ? 'Invalid email format.' :
+                    err.code === 'auth/too-many-requests'   ? 'Too many attempts. Please wait and try again.' :
+                    err.code === 'auth/invalid-credential'  ? 'Incorrect email or passcode.' :
+                    'Sign-in failed. Please try again.';
+                showError(msg);
+                setButtonLoading(btn, false);
+            }
+        }
+
+        // ─── Auth state ─────────────────────────────────────────
+        onAuthStateChanged(auth, async (user) => {
+            if (!user) {
+                currentUser = null; session = null;
+                currentState = 'login';
                 render();
+                return;
+            }
+            currentUser = user;
+            currentState = 'loading';
+            render();
+            try {
+                session = await loadSession();
+
+                if (session.next_step === 'no_profile') {
+                    await signOut(auth);
+                    currentState = 'login'; render();
+                    showError('Manager profile not found. Contact your administrator.');
+                    return;
+                }
+                if (session.role !== 'manager') {
+                    await signOut(auth);
+                    currentState = 'login'; render();
+                    showError('You are not registered as a manager.');
+                    return;
+                }
+                if (!session.site) {
+                    await signOut(auth);
+                    currentState = 'login'; render();
+                    showError('No site assigned to your account. Contact your administrator.');
+                    return;
+                }
+
+                switch (session.next_step) {
+                    case 'confirm_site':  currentState = 'confirm-site'; break;
+                    case 'setup_profile': currentState = 'setup-profile'; break;
+                    case 'ready':         currentState = 'redirecting'; break;
+                    default:              currentState = 'confirm-site';
+                }
+                render();
+
                 if (currentState === 'redirecting') {
-                    setTimeout(() => { window.location.href = 'manager/dashboard.html'; }, 600);
+                    setTimeout(() => { window.location.href = 'manager/dashboard.html'; }, 800);
                 }
             } catch (err) {
-                console.error('[confirm-site]', err);
-                showError(err.message || 'Failed to confirm. Please try again.');
-                setButtonLoading(btn, false);
-            }
-        });
-
-        document.getElementById('deny-btn').addEventListener('click', async () => {
-            if (confirm('If this site is incorrect, please contact your administrator. You will be signed out.')) {
+                console.error('[session load]', err);
                 await signOut(auth);
+                currentState = 'login'; render();
+                const friendly =
+                    err.code === 'NETWORK_ERROR' ? err.message :
+                    err.message || 'Failed to load your session. Please try again.';
+                showError(friendly);
             }
         });
-    }
 
-    // ─── Profile setup ──────────────────────────────────────────
-    function renderProfileSetup() {
-        container.innerHTML = `
-            <h1 class="text-xl font-bold text-slate-900 mb-4">Complete Your Profile</h1>
-            <p class="text-slate-500 mb-6">Please add your phone number and a profile photo. This step is required once.</p>
-            <div id="error-msg" class="hidden bg-red-50 text-red-700 p-3 rounded-lg text-sm mb-4"></div>
-            <form id="setup-form" class="space-y-4">
-                <div>
-                    <label class="block text-sm font-medium text-slate-700 mb-1">Phone Number</label>
-                    <input type="tel" id="phone" placeholder="e.g. +250 78x xxx xxx" required
-                           class="w-full border border-slate-200 rounded-lg p-3 focus:ring-2 focus:ring-emerald-500 outline-none">
+        // ─── Site confirmation ──────────────────────────────────
+        function renderSiteConfirmation() {
+            const site = session.site;
+            const img = (site.images && site.images[0]) ||
+                'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22180%22%3E%3Crect width=%22400%22 height=%22180%22 fill=%22%23e2e8f0%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%2394a3b8%22 font-size=%2220%22%3ENo Image%3C/text%3E%3C/svg%3E';
+
+            container.innerHTML = `
+                <h1 style="text-align:center; font-size:1.35rem; font-weight:700; letter-spacing:-0.4px; margin-bottom:6px; color:var(--text);">Confirm Your Site</h1>
+                <p style="text-align:center; color:var(--text-light); font-size:0.9rem; margin-bottom:22px;">Please confirm this is the site you have been assigned to.</p>
+
+                <div class="site-preview">
+                    <img src="${img}" alt="Site image" />
+                    <div class="site-preview-body">
+                        <h3>${site.name || 'Unnamed Site'}</h3>
+                        <p>${site.location || 'No location provided'}</p>
+                        <p class="budget">Budget: ${(site.budget || 0).toLocaleString()} RWF</p>
+                    </div>
                 </div>
-                <div>
-                    <label class="block text-sm font-medium text-slate-700 mb-1">Profile Image</label>
-                    <input type="file" id="image" accept="image/*" required
-                           class="w-full border border-slate-200 rounded-lg p-3 focus:ring-2 focus:ring-emerald-500 outline-none">
-                </div>
-                <button type="submit" class="btn-primary">Save &amp; Continue</button>
-            </form>
-        `;
 
-        document.getElementById('setup-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const phone = document.getElementById('phone').value.trim();
-            const imageFile = document.getElementById('image').files[0];
-            const btn = e.target.querySelector('button[type="submit"]');
-            setButtonLoading(btn, true);
-            clearError();
+                <button id="confirm-btn" class="btn">Yes, this is my site</button>
+                <button id="deny-btn" class="btn-danger-link">This is not my site</button>
+            `;
 
-            if (!phone || !imageFile) {
-                showError('Both fields are required.');
-                setButtonLoading(btn, false);
-                return;
-            }
-            if (imageFile.size > 5 * 1024 * 1024) {
-                showError('Image must be under 5 MB.');
-                setButtonLoading(btn, false);
-                return;
-            }
+            document.getElementById('confirm-btn').addEventListener('click', async () => {
+                const btn = document.getElementById('confirm-btn');
+                setButtonLoading(btn, true, 'Confirming...');
+                try {
+                    await confirmSiteAction();
+                    session = await loadSession();
+                    currentState = (session.next_step === 'setup_profile') ? 'setup-profile' : 'redirecting';
+                    render();
+                    if (currentState === 'redirecting') {
+                        setTimeout(() => { window.location.href = 'manager/dashboard.html'; }, 800);
+                    }
+                } catch (err) {
+                    console.error('[confirm-site]', err);
+                    showError(err.message || 'Failed to confirm. Please try again.');
+                    setButtonLoading(btn, false);
+                }
+            });
 
-            try {
-                await saveProfileAction(phone, imageFile);
-                currentState = 'redirecting';
-                render();
-                setTimeout(() => { window.location.href = 'manager/dashboard.html'; }, 600);
-            } catch (err) {
-                console.error('[profile]', err);
-                showError(err.message || 'Could not save your profile. Please try again.');
-                setButtonLoading(btn, false);
-            }
-        });
-    }
+            document.getElementById('deny-btn').addEventListener('click', async () => {
+                if (confirm('If this site is incorrect, please contact your administrator. You will be signed out.')) {
+                    await signOut(auth);
+                }
+            });
+        }
 
-    function renderRedirecting() {
-        container.innerHTML = `
-            <div class="text-center">
-                <div class="spinner mx-auto mb-4" style="width:2rem;height:2rem;border-width:3px;"></div>
-                <p class="text-slate-600">Redirecting to your dashboard...</p>
-            </div>`;
-    }
+        // ─── Profile setup ──────────────────────────────────────
+        function renderProfileSetup() {
+            container.innerHTML = `
+                <h1 style="text-align:center; font-size:1.35rem; font-weight:700; letter-spacing:-0.4px; margin-bottom:6px; color:var(--text);">Complete Your Profile</h1>
+                <p style="text-align:center; color:var(--text-light); font-size:0.9rem; margin-bottom:22px;">Add your phone number and a profile photo. This is required once.</p>
 
-    render();
-</script>
+                <form id="setup-form" novalidate>
+                    <div class="form-group">
+                        <label for="phone">Phone Number</label>
+                        <input type="tel" id="phone" placeholder="e.g. +250 78x xxx xxx" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="image">Profile Image</label>
+                        <input type="file" id="image" accept="image/*" required style="padding:10px 12px;" />
+                    </div>
+                    <button type="submit" id="setup-btn" class="btn">Save &amp; Continue</button>
+                </form>
+            `;
+
+            document.getElementById('setup-form').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const phone = document.getElementById('phone').value.trim();
+                const imageFile = document.getElementById('image').files[0];
+                const btn = document.getElementById('setup-btn');
+                setButtonLoading(btn, true, 'Saving...');
+                clearError();
+
+                if (!phone || !imageFile) {
+                    showError('Both fields are required.');
+                    setButtonLoading(btn, false);
+                    return;
+                }
+                if (imageFile.size > 5 * 1024 * 1024) {
+                    showError('Image must be under 5 MB.');
+                    setButtonLoading(btn, false);
+                    return;
+                }
+
+                try {
+                    await saveProfileAction(phone, imageFile);
+                    currentState = 'redirecting';
+                    render();
+                    setTimeout(() => { window.location.href = 'manager/dashboard.html'; }, 800);
+                } catch (err) {
+                    console.error('[profile]', err);
+                    showError(err.message || 'Could not save your profile. Please try again.');
+                    setButtonLoading(btn, false);
+                }
+            });
+        }
+
+        function renderRedirecting() {
+            container.innerHTML = `
+                <div class="redirecting">
+                    <div class="spinner"></div>
+                    <p>Redirecting to your dashboard...</p>
+                </div>`;
+        }
+
+        // Set year in footer
+        document.getElementById("currentYear").textContent = new Date().getFullYear();
+
+        render();
+    </script>
 </body>
 </html>
