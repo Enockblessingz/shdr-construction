@@ -76,9 +76,7 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
     import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
 
-    // ─────────────────────────────────────────────
-    // Firebase (identity only — no Firestore access from this page)
-    // ─────────────────────────────────────────────
+    // ─── Firebase (identity only) ───────────────────────────────
     const firebaseConfig = {
         apiKey: "AIzaSyBVTLxC6nWpWL6a4BLI3xghdgUoR_cgGzw",
         authDomain: "shdr-construction.firebaseapp.com",
@@ -93,25 +91,19 @@
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
 
-    // ─────────────────────────────────────────────
-    // Backend endpoint (change in production)
-    // ─────────────────────────────────────────────
+    // ─── Backend base URL ───────────────────────────────────────
     const API_BASE = (location.hostname === 'localhost' || location.hostname === '127.0.0.1')
         ? 'http://localhost:3000'
         : 'https://api.shdr.com';
 
-    // ─────────────────────────────────────────────
-    // State
-    // ─────────────────────────────────────────────
+    // ─── State ──────────────────────────────────────────────────
     let currentUser = null;
-    let session = null;       // { role, site, profile, requires }
+    let session = null;
     let currentState = 'loading';
 
     const container = document.getElementById('dynamic-content');
 
-    // ─────────────────────────────────────────────
-    // Helpers
-    // ─────────────────────────────────────────────
+    // ─── Helpers ────────────────────────────────────────────────
     function showError(msg) {
         const el = document.getElementById('error-msg');
         if (el) { el.textContent = msg; el.classList.remove('hidden'); }
@@ -150,9 +142,7 @@
         return data;
     }
 
-    // ─────────────────────────────────────────────
-    // Render
-    // ─────────────────────────────────────────────
+    // ─── Render dispatcher ──────────────────────────────────────
     function render() {
         clearError();
         switch (currentState) {
@@ -173,7 +163,7 @@
             </div>`;
     }
 
-    // ──── LOGIN ────
+    // ─── Login ──────────────────────────────────────────────────
     function renderLogin() {
         container.innerHTML = `
             <div class="text-center mb-6">
@@ -216,12 +206,12 @@
         clearError();
         try {
             await signInWithEmailAndPassword(auth, email, password);
-            // onAuthStateChanged will take over
+            // onAuthStateChanged handles the rest
         } catch (err) {
             const msg =
-                err.code === 'auth/user-not-found'  ? 'No account found with this email.' :
-                err.code === 'auth/wrong-password'  ? 'Incorrect password.' :
-                err.code === 'auth/invalid-email'   ? 'Invalid email format.' :
+                err.code === 'auth/user-not-found'    ? 'No account found with this email.' :
+                err.code === 'auth/wrong-password'    ? 'Incorrect password.' :
+                err.code === 'auth/invalid-email'     ? 'Invalid email format.' :
                 err.code === 'auth/too-many-requests' ? 'Too many attempts. Please wait and try again.' :
                 'Sign-in failed. Please try again.';
             showError(msg);
@@ -229,9 +219,7 @@
         }
     }
 
-    // ─────────────────────────────────────────────
-    // AUTH STATE — ask backend what to do
-    // ─────────────────────────────────────────────
+    // ─── Auth state ─────────────────────────────────────────────
     onAuthStateChanged(auth, async (user) => {
         if (!user) {
             currentUser = null; session = null;
@@ -243,11 +231,9 @@
         currentState = 'loading';
         render();
         try {
-            // Single trusted call: backend decides role, site, and next step.
             const res = await authedFetch('/api/manager/session');
             session = res.data;
 
-            // Backend enforces role — client just reacts to the response.
             if (session.role !== 'manager') {
                 await signOut(auth);
                 currentState = 'login'; render();
@@ -261,16 +247,15 @@
                 return;
             }
 
-            // Backend tells us which onboarding step is required next.
             switch (session.next_step) {
-                case 'confirm_site':   currentState = 'confirm-site'; break;
-                case 'setup_profile':  currentState = 'setup-profile'; break;
-                case 'ready':          currentState = 'redirecting'; break;
-                default:               currentState = 'confirm-site';
+                case 'confirm_site':  currentState = 'confirm-site'; break;
+                case 'setup_profile': currentState = 'setup-profile'; break;
+                case 'ready':         currentState = 'redirecting'; break;
+                default:              currentState = 'confirm-site';
             }
             render();
+
             if (currentState === 'redirecting') {
-                // Give the backend a fresh session cookie / token if needed, then go.
                 setTimeout(() => { window.location.href = 'manager/dashboard.html'; }, 600);
             }
         } catch (err) {
@@ -281,7 +266,7 @@
         }
     });
 
-    // ──── SITE CONFIRMATION ────
+    // ─── Site confirmation ──────────────────────────────────────
     function renderSiteConfirmation() {
         const site = session.site;
         container.innerHTML = `
@@ -303,11 +288,9 @@
             setButtonLoading(btn, true);
             try {
                 await authedFetch('/api/manager/confirm-site', { method: 'POST' });
-                // Re-fetch session for updated next_step
                 const res = await authedFetch('/api/manager/session');
                 session = res.data;
-                if (session.next_step === 'setup_profile') currentState = 'setup-profile';
-                else currentState = 'redirecting';
+                currentState = (session.next_step === 'setup_profile') ? 'setup-profile' : 'redirecting';
                 render();
                 if (currentState === 'redirecting') {
                     setTimeout(() => { window.location.href = 'manager/dashboard.html'; }, 600);
@@ -325,7 +308,7 @@
         });
     }
 
-    // ──── PROFILE SETUP ────
+    // ─── Profile setup ──────────────────────────────────────────
     function renderProfileSetup() {
         container.innerHTML = `
             <h1 class="text-xl font-bold text-slate-900 mb-4">Complete Your Profile</h1>
@@ -366,13 +349,11 @@
             }
 
             try {
-                // Send image to backend; the backend handles storage.
                 const formData = new FormData();
                 formData.append('phone', phone);
                 formData.append('image', imageFile);
                 await authedFetch('/api/manager/profile', { method: 'POST', body: formData });
 
-                // Session is now complete
                 currentState = 'redirecting';
                 render();
                 setTimeout(() => { window.location.href = 'manager/dashboard.html'; }, 600);
