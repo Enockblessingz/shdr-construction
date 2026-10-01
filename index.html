@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#1B4332">
-    <meta name="description" content="SHDR — Construction Site Management. Connect owners and site managers, track workers, materials, progress and finances.">
+    <meta name="theme-color" content="#059669">
+    <meta name="description" content="SHDR — Construction Site Management">
 
     <link rel="icon" type="image/png" href="shdr_logo%20Background%20Removed.png">
     <link rel="apple-touch-icon" sizes="180x180" href="shdr_logo%20Background%20Removed.png">
@@ -12,118 +12,51 @@
     <title>Sustainable Homes Design Rwanda Ltd — Construction Site Management</title>
 
     <script src="https://cdn.jsdelivr.net/npm/iconify-icon@2.3.0/dist/iconify-icon.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
 
     <style>
         :root {
-            /* ── Brand palette ── */
-            --green: #1B4332;
-            --green-mid: #2D6A4F;
-            --green-soft: #40916C;
-            --green-light: #F0FDF4;
-            --green-hover: #2D6A4F;
-            --accent: #B45309;
-            --accent-light: #FEF3C7;
-            --accent-bright: #F59E0B;
-
-            /* ── Neutrals ── */
-            --text: #111827;
+            --green: #059669;
+            --green-light: #ecfdf5;
+            --green-hover: #047857;
+            --text: #1a1a2e;
             --text-light: #6b7280;
             --bg: #ffffff;
             --bg-secondary: #f9fafb;
             --border: #e5e7eb;
-
-            /* ── Dark surfaces ── */
-            --ink: #071310;
-            --ink-2: #0d1f19;
-            --glass: rgba(255,255,255,0.07);
-            --glass-brd: rgba(255,255,255,0.14);
-
             --radius: 8px;
             --max-width: 1200px;
-            --nav-h: 64px;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
-        html { scroll-behavior: smooth; }
-
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', sans-serif;
-            background: var(--ink);
+            background: var(--bg);
             color: var(--text);
             line-height: 1.6;
             -webkit-font-smoothing: antialiased;
-            overflow-x: hidden;
         }
 
         a { text-decoration: none; color: inherit; }
 
-        img { max-width: 100%; }
-
         @media (prefers-reduced-motion: reduce) {
-            html { scroll-behavior: auto; }
             *, *::before, *::after {
                 animation-duration: 0.01ms !important;
-                animation-iteration-count: 1 !important;
                 transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
             }
         }
 
-        /* ═══════════════════════════════════════
-           LOADER
-           ═══════════════════════════════════════ */
-        .loader {
-            position: fixed; inset: 0; z-index: 9999;
-            background: radial-gradient(ellipse at 50% 40%, #0f2a20 0%, #071310 70%);
-            display: flex; align-items: center; justify-content: center;
-            transition: opacity .7s ease, visibility .7s ease;
-        }
-        .loader.hide { opacity: 0; visibility: hidden; pointer-events: none; }
-        .loader-inner { text-align: center; width: min(340px, 82vw); }
-        .loader-logo {
-            width: 66px; height: 66px; object-fit: contain; margin-bottom: 18px;
-            background: #fff; border-radius: 16px; padding: 8px;
-            box-shadow: 0 10px 40px rgba(0,0,0,.5);
-        }
-        .loader-title {
-            font-size: .82rem; font-weight: 700; letter-spacing: .34em;
-            color: #fff; text-transform: uppercase; margin-bottom: 6px;
-        }
-        .loader-sub { font-size: .8rem; color: rgba(255,255,255,.5); margin-bottom: 26px; }
-        .loader-bar {
-            height: 3px; width: 100%; background: rgba(255,255,255,.1);
-            border-radius: 3px; overflow: hidden;
-        }
-        .loader-bar-fill {
-            height: 100%; width: 0%;
-            background: linear-gradient(90deg, var(--green-soft), #6EE7B7, var(--accent-bright));
-            border-radius: 3px; transition: width .15s linear;
-        }
-        .loader-pct {
-            margin-top: 12px; font-size: .72rem; letter-spacing: .18em;
-            color: rgba(255,255,255,.45); font-variant-numeric: tabular-nums;
-        }
-
-        /* ═══════════════════════════════════════
-           NAVIGATION
-           ═══════════════════════════════════════ */
+        /* ─── Navigation ─── */
         nav {
             position: fixed;
             top: 0; left: 0; right: 0;
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
             z-index: 100;
-            height: var(--nav-h);
-            background: transparent;
-            border-bottom: 1px solid transparent;
-            transition: background .35s ease, height .35s ease, border-color .35s ease, box-shadow .35s ease;
-        }
-        nav.nav-solid, nav.menu-open {
-            height: 56px;
-            background: rgba(255,255,255,.88);
-            backdrop-filter: blur(18px) saturate(160%);
-            -webkit-backdrop-filter: blur(18px) saturate(160%);
-            border-bottom-color: var(--border);
-            box-shadow: 0 1px 24px rgba(0,0,0,.06);
+            height: 64px;
         }
         .nav-inner {
             max-width: var(--max-width);
@@ -139,52 +72,30 @@
             align-items: center;
             gap: 10px;
             font-weight: 700;
-            font-size: 1.2rem;
-            color: #fff;
+            font-size: 1.25rem;
+            color: var(--text);
             letter-spacing: -0.3px;
             cursor: pointer;
             user-select: none;
-            transition: color .3s ease;
         }
-        .logo-icon {
-            width: 38px; height: 38px; flex-shrink: 0;
-            display: flex; align-items: center; justify-content: center;
-            background: #fff; border-radius: 10px; padding: 3px;
-            box-shadow: 0 4px 18px rgba(0,0,0,.22);
-            transition: width .3s ease, height .3s ease;
-        }
-        nav.nav-solid .logo-icon, nav.menu-open .logo-icon { width: 32px; height: 32px; }
+        .logo-icon { width: 40px; height: 40px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
         .logo-icon img { width: 100%; height: 100%; object-fit: contain; display: block; }
-        .logo span { color: #6EE7B7; transition: color .3s ease; }
-        nav.nav-solid .logo, nav.menu-open .logo { color: var(--text); }
-        nav.nav-solid .logo span, nav.menu-open .logo span { color: var(--green); }
-
-        .nav-links { display: flex; align-items: center; gap: 26px; list-style: none; }
+        .logo span { color: var(--green); }
+        .nav-links { display: flex; align-items: center; gap: 28px; list-style: none; }
         .nav-links a {
-            color: rgba(255,255,255,.78);
-            font-size: .9rem;
+            color: var(--text-light);
+            font-size: 0.9rem;
             font-weight: 500;
-            transition: color .2s;
+            transition: color 0.2s;
             cursor: pointer;
-            position: relative;
         }
-        .nav-links a::after {
-            content: '';
-            position: absolute; left: 0; right: 100%; bottom: -5px;
-            height: 1.5px; background: var(--accent-bright);
-            transition: right .25s ease;
-        }
-        .nav-links a:hover { color: #fff; }
-        .nav-links a:hover::after { right: 0; }
-        nav.nav-solid .nav-links a, nav.menu-open .nav-links a { color: var(--text-light); }
-        nav.nav-solid .nav-links a:hover, nav.menu-open .nav-links a:hover { color: var(--green); }
-        nav.nav-solid .nav-links a::after, nav.menu-open .nav-links a::after { background: var(--green); }
+        .nav-links a:hover { color: var(--text); }
 
         .btn {
             padding: 8px 20px;
-            border-radius: 8px;
+            border-radius: 6px;
             font-size: 0.875rem;
-            font-weight: 600;
+            font-weight: 500;
             cursor: pointer;
             border: none;
             text-decoration: none;
@@ -198,706 +109,87 @@
         }
         .btn-outline { background: transparent; border: 1.5px solid var(--border); color: var(--text); }
         .btn-outline:hover { border-color: #9ca3af; }
-        .btn-primary {
-            background: var(--green); color: #fff;
-            box-shadow: 0 6px 20px rgba(27,67,50,.28);
-        }
-        .btn-primary:hover { background: var(--green-hover); transform: translateY(-1px); box-shadow: 0 10px 26px rgba(27,67,50,.34); }
+        .btn-primary { background: var(--green); color: #fff; }
+        .btn-primary:hover { background: var(--green-hover); }
 
-        .mobile-toggle {
-            display: none; background: none; border: none; cursor: pointer;
-            padding: 6px; z-index: 101;
-        }
-        .mobile-toggle span {
-            display: block; width: 22px; height: 2px; background: #fff; margin: 4px 0;
-            transition: transform .25s ease, background .3s ease, opacity .2s ease;
-            border-radius: 2px;
-        }
-        nav.nav-solid .mobile-toggle span, nav.menu-open .mobile-toggle span { background: var(--text); }
-        nav.menu-open .mobile-toggle span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
-        nav.menu-open .mobile-toggle span:nth-child(2) { opacity: 0; }
-        nav.menu-open .mobile-toggle span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
+        .mobile-toggle { display: none; background: none; border: none; cursor: pointer; padding: 4px; }
+        .mobile-toggle span { display: block; width: 22px; height: 2px; background: var(--text); margin: 4px 0; transition: 0.2s; }
 
-        /* ═══════════════════════════════════════
-           VIEW SWITCHING
-           ═══════════════════════════════════════ */
+        /* ─── View switching ─── */
         .view { display: none; }
         .view.active { display: block; }
 
-        /* ═══════════════════════════════════════
-           3D SCENE CONTAINER
-           ═══════════════════════════════════════ */
-        .scene-container {
-            position: fixed;
-            inset: 0;
-            z-index: 0;
-            pointer-events: none;
-            background: var(--ink);
-        }
-        .scene-container canvas {
-            display: block;
-            width: 100%;
-            height: 100%;
-        }
-        .scene-vignette {
-            position: absolute; inset: 0;
-            pointer-events: none;
-            background:
-                radial-gradient(ellipse at 50% 45%, rgba(0,0,0,0) 30%, rgba(4,12,9,.55) 100%),
-                linear-gradient(180deg, rgba(4,12,9,.45) 0%, rgba(4,12,9,0) 28%, rgba(4,12,9,0) 62%, rgba(4,12,9,.75) 100%);
-        }
-        .scene-fallback {
-            position: absolute; inset: 0; display: none;
-            background:
-                radial-gradient(ellipse at 70% 30%, rgba(45,106,79,.55) 0%, rgba(7,19,16,0) 60%),
-                linear-gradient(180deg, #071310 0%, #0d1f19 55%, #071310 100%);
-        }
-        .scene-fallback::after {
-            content: '';
-            position: absolute; left: 0; right: 0; bottom: 0; height: 46%;
-            background:
-                linear-gradient(90deg, transparent 0 6%, rgba(110,231,183,.10) 6% 6.6%, transparent 6.6% 12%),
-                repeating-linear-gradient(90deg, rgba(255,255,255,.05) 0 2px, transparent 2px 60px),
-                linear-gradient(180deg, transparent, rgba(0,0,0,.6));
-        }
-        .scene-fallback.show { display: block; }
-        .scene-container.no-webgl canvas { display: none; }
+        /* ─── Hero ─── */
+        .hero { position: relative; min-height: 100vh; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        .hero-bg { position: absolute; inset: 0; z-index: 0; }
+        .hero-bg img { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.55); }
+        .hero-bg::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.5) 50%, rgba(0,0,0,0.7) 100%); }
+        .hero-content { position: relative; z-index: 1; text-align: center; max-width: 700px; padding: 0 24px; }
+        .hero-content h1 { font-size: 3.2rem; font-weight: 700; line-height: 1.15; letter-spacing: -0.8px; color: #ffffff; margin-bottom: 20px; text-shadow: 0 2px 10px rgba(0,0,0,0.4); }
+        .hero-content h1 span { color: #34d399; }
+        .hero-content p { color: rgba(255,255,255,0.85); font-size: 1.1rem; max-width: 500px; margin: 0 auto 36px; line-height: 1.7; text-shadow: 0 1px 6px rgba(0,0,0,0.3); }
+        .hero-buttons { display: flex; gap: 14px; justify-content: center; }
+        .hero .btn-primary { background: var(--green); color: #fff; padding: 12px 28px; font-size: 0.95rem; border-radius: 8px; }
+        .hero .btn-primary:hover { background: var(--green-hover); }
+        .hero .btn-outline { background: rgba(255,255,255,0.1); border: 1.5px solid rgba(255,255,255,0.4); color: #fff; padding: 12px 28px; font-size: 0.95rem; border-radius: 8px; backdrop-filter: blur(4px); }
+        .hero .btn-outline:hover { background: rgba(255,255,255,0.2); border-color: rgba(255,255,255,0.6); }
 
-        /* ═══════════════════════════════════════
-           SCENE ZONE (hero + story)
-           ═══════════════════════════════════════ */
-        .scene-zone { position: relative; z-index: 1; }
-
-        /* ── HERO ── */
-        .hero-stage {
-            min-height: 100vh;
-            min-height: 100svh;
-            display: flex;
-            align-items: center;
-            padding: calc(var(--nav-h) + 40px) 24px 70px;
-            position: relative;
-        }
-        .hero-grid {
-            max-width: var(--max-width);
-            margin: 0 auto;
-            width: 100%;
-            display: grid;
-            grid-template-columns: 1.02fr 0.98fr;
-            gap: 56px;
-            align-items: center;
-        }
-        .hero-status {
-            display: inline-flex;
-            align-items: center;
-            gap: 9px;
-            font-size: .74rem;
-            font-weight: 600;
-            letter-spacing: .12em;
-            text-transform: uppercase;
-            color: #A7F3D0;
-            background: rgba(16,185,129,.10);
-            border: 1px solid rgba(110,231,183,.25);
-            padding: 6px 14px 6px 11px;
-            border-radius: 30px;
-            margin-bottom: 26px;
-            backdrop-filter: blur(8px);
-        }
-        .pulse-dot {
-            width: 7px; height: 7px; border-radius: 50%;
-            background: #34D399;
-            position: relative;
-            flex-shrink: 0;
-        }
-        .pulse-dot::after {
-            content: '';
-            position: absolute; inset: -4px;
-            border-radius: 50%;
-            border: 1px solid rgba(52,211,153,.7);
-            animation: pulseRing 2s ease-out infinite;
-        }
-        @keyframes pulseRing {
-            0% { transform: scale(.6); opacity: .9; }
-            100% { transform: scale(1.9); opacity: 0; }
-        }
-
-        .hero-content h1 {
-            font-size: clamp(2.3rem, 5vw, 3.6rem);
-            font-weight: 700;
-            line-height: 1.08;
-            letter-spacing: -1.6px;
-            color: #fff;
-            margin-bottom: 20px;
-        }
-        .hero-content h1 span {
-            background: linear-gradient(100deg, #6EE7B7 0%, #A7F3D0 45%, #FCD34D 100%);
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        .hero-content p {
-            color: rgba(255,255,255,.72);
-            font-size: 1.04rem;
-            max-width: 500px;
-            margin-bottom: 34px;
-            line-height: 1.72;
-        }
-        .hero-buttons { display: flex; gap: 14px; flex-wrap: wrap; }
-        .hero-buttons .btn { padding: 13px 28px; font-size: .95rem; border-radius: 10px; }
-        .hero-buttons .btn-primary {
-            background: linear-gradient(135deg, #2D6A4F, #1B4332);
-            box-shadow: 0 12px 34px rgba(45,106,79,.42);
-        }
-        .hero-buttons .btn-primary:hover { background: linear-gradient(135deg, #40916C, #2D6A4F); }
-        .hero-buttons .btn-outline {
-            background: rgba(255,255,255,.06);
-            border: 1.5px solid rgba(255,255,255,.28);
-            color: #fff;
-            backdrop-filter: blur(10px);
-        }
-        .hero-buttons .btn-outline:hover {
-            background: rgba(255,255,255,.14);
-            border-color: rgba(255,255,255,.5);
-        }
-        .hero-hint {
-            margin-top: 22px;
-            font-size: .74rem;
-            color: rgba(255,255,255,.38);
-            letter-spacing: .04em;
-        }
-
-        /* ── HUD floating cards ── */
-        .hud-stack {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 14px;
-        }
-        .hud-card {
-            background: rgba(255,255,255,.07);
-            border: 1px solid rgba(255,255,255,.14);
-            border-radius: 14px;
-            padding: 16px 16px 15px;
-            backdrop-filter: blur(16px) saturate(150%);
-            -webkit-backdrop-filter: blur(16px) saturate(150%);
-            box-shadow: 0 18px 46px rgba(0,0,0,.36), inset 0 1px 0 rgba(255,255,255,.10);
-            color: #fff;
-            transition: transform .35s cubic-bezier(.2,.8,.3,1), border-color .35s, box-shadow .35s;
-            will-change: transform;
-        }
-        .hud-card:hover {
-            transform: translateY(-5px);
-            border-color: rgba(110,231,183,.42);
-            box-shadow: 0 26px 56px rgba(0,0,0,.44), inset 0 1px 0 rgba(255,255,255,.16);
-        }
-        .hud-card:nth-child(1) { animation: floatA 7s ease-in-out infinite; }
-        .hud-card:nth-child(2) { animation: floatB 8.5s ease-in-out infinite .6s; }
-        .hud-card:nth-child(3) { animation: floatB 7.8s ease-in-out infinite .9s; }
-        .hud-card:nth-child(4) { animation: floatA 8.8s ease-in-out infinite .3s; }
-        @keyframes floatA { 0%,100% { translate: 0 0; } 50% { translate: 0 -7px; } }
-        @keyframes floatB { 0%,100% { translate: 0 0; } 50% { translate: 0 7px; } }
-
-        .hud-label {
-            font-size: .62rem; font-weight: 700; letter-spacing: .17em;
-            text-transform: uppercase; color: rgba(255,255,255,.5);
-            margin-bottom: 10px;
-        }
-        .hud-big {
-            font-size: 1.85rem; font-weight: 700; letter-spacing: -1px;
-            line-height: 1; margin-bottom: 4px;
-            font-variant-numeric: tabular-nums;
-        }
-        .hud-sub { font-size: .74rem; color: rgba(255,255,255,.55); }
-        .hud-value {
-            font-size: .78rem; font-weight: 700; color: #6EE7B7;
-            margin-top: 7px; font-variant-numeric: tabular-nums;
-        }
-        .hud-bar {
-            height: 5px; border-radius: 4px; background: rgba(255,255,255,.12);
-            overflow: hidden; margin: 9px 0 6px;
-        }
-        .hud-bar span {
-            display: block; height: 100%; border-radius: 4px;
-            background: linear-gradient(90deg, #34D399, #6EE7B7);
-            transform-origin: left center;
-            animation: barGrow 1.6s cubic-bezier(.2,.8,.3,1) both;
-        }
-        .hud-bar.amber span { background: linear-gradient(90deg, #B45309, #F59E0B); }
-        @keyframes barGrow { from { transform: scaleX(0); } to { transform: scaleX(1); } }
-        .hud-row {
-            display: grid;
-            grid-template-columns: 52px 1fr 36px;
-            align-items: center;
-            gap: 8px;
-            font-size: .72rem;
-            color: rgba(255,255,255,.7);
-            margin-bottom: 7px;
-        }
-        .hud-row .hud-bar { margin: 0; height: 4px; }
-        .hud-row b { font-weight: 600; text-align: right; color: rgba(255,255,255,.88); font-variant-numeric: tabular-nums; }
-        .hud-split {
-            display: flex; justify-content: space-between;
-            font-size: .7rem; color: rgba(255,255,255,.55); margin-top: 8px;
-        }
-        .hud-split .p { color: #6EE7B7; }
-        .hud-split .a { color: #FCA5A5; }
-
-        /* ── STORY STAGE ── */
-        .story-stage { position: relative; }
-        .story-step {
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            padding: 0 24px;
-            position: relative;
-        }
-        .story-step:nth-child(even) .story-card { margin-left: auto; }
-        .story-card {
-            max-width: 460px;
-            background: rgba(8,20,16,.42);
-            border: 1px solid rgba(255,255,255,.12);
-            border-left: 2px solid var(--accent-bright);
-            border-radius: 14px;
-            padding: 26px 28px;
-            backdrop-filter: blur(16px) saturate(140%);
-            -webkit-backdrop-filter: blur(16px) saturate(140%);
-            box-shadow: 0 24px 60px rgba(0,0,0,.4);
-            color: #fff;
-            transition: opacity .18s linear, transform .18s linear;
-            will-change: opacity, transform;
-        }
-        .story-num {
-            font-size: .68rem; font-weight: 700; letter-spacing: .22em;
-            color: var(--accent-bright); margin-bottom: 12px;
-        }
-        .story-card h2 {
-            font-size: clamp(1.5rem, 3.1vw, 2.1rem);
-            font-weight: 700; letter-spacing: -.7px;
-            line-height: 1.15; margin-bottom: 10px;
-        }
-        .story-card p { color: rgba(255,255,255,.66); font-size: .95rem; line-height: 1.7; }
-
-        /* ═══════════════════════════════════════
-           3D OBJECT INFO PANEL
-           ═══════════════════════════════════════ */
-        .object-panel {
-            position: fixed;
-            z-index: 60;
-            min-width: 216px;
-            max-width: 280px;
-            background: rgba(10,24,19,.82);
-            border: 1px solid rgba(110,231,183,.28);
-            border-radius: 14px;
-            padding: 15px 16px 14px;
-            backdrop-filter: blur(18px) saturate(160%);
-            -webkit-backdrop-filter: blur(18px) saturate(160%);
-            box-shadow: 0 24px 60px rgba(0,0,0,.55);
-            color: #fff;
-            opacity: 0;
-            visibility: hidden;
-            transform: translateY(8px) scale(.97);
-            transition: opacity .22s ease, transform .22s ease, visibility .22s;
-            pointer-events: auto;
-        }
-        .object-panel.show { opacity: 1; visibility: visible; transform: translateY(0) scale(1); }
-        .object-panel-title {
-            font-size: .64rem; font-weight: 700; letter-spacing: .18em;
-            text-transform: uppercase; color: #6EE7B7; margin-bottom: 11px;
-            display: flex; align-items: center; gap: 7px;
-        }
-        .object-panel-title::before {
-            content: ''; width: 5px; height: 5px; border-radius: 50%;
-            background: var(--accent-bright); box-shadow: 0 0 10px var(--accent-bright);
-            flex-shrink: 0;
-        }
-        .object-panel-row {
-            display: flex; justify-content: space-between; gap: 16px;
-            font-size: .79rem; padding: 5px 0;
-            border-bottom: 1px solid rgba(255,255,255,.07);
-        }
-        .object-panel-row:last-child { border-bottom: none; }
-        .object-panel-row span { color: rgba(255,255,255,.5); }
-        .object-panel-row b { font-weight: 600; color: #fff; font-variant-numeric: tabular-nums; }
-        .object-panel-close {
-            position: absolute; top: 9px; right: 10px;
-            background: none; border: none; color: rgba(255,255,255,.4);
-            font-size: 17px; line-height: 1; cursor: pointer; padding: 4px;
-            font-family: inherit;
-        }
-        .object-panel-close:hover { color: #fff; }
-        .object-panel-note {
-            margin-top: 10px; font-size: .63rem; color: rgba(255,255,255,.32);
-            letter-spacing: .04em;
-        }
-
-        /* ═══════════════════════════════════════
-           POST-SCENE (light sections)
-           ═══════════════════════════════════════ */
-        .post-scene { position: relative; z-index: 2; background: var(--bg); }
-
-        .section { padding: 88px 24px; }
+        /* ─── Sections ─── */
+        .section { padding: 80px 24px; }
         .section-alt { background: var(--bg-secondary); }
         .section-inner { max-width: var(--max-width); margin: 0 auto; }
-        .section-label {
-            font-size: 0.75rem; font-weight: 700; text-transform: uppercase;
-            letter-spacing: 0.14em; color: var(--accent); margin-bottom: 12px;
-        }
-        .section-title {
-            font-size: clamp(1.6rem, 3.4vw, 2.15rem);
-            font-weight: 700; letter-spacing: -0.7px; margin-bottom: 14px;
-            color: var(--green);
-        }
-        .section-desc { color: var(--text-light); max-width: 560px; margin-bottom: 52px; line-height: 1.72; }
+        .section-label { font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--green); margin-bottom: 12px; }
+        .section-title { font-size: 2rem; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 16px; }
+        .section-desc { color: var(--text-light); max-width: 520px; margin-bottom: 48px; line-height: 1.7; }
 
-        /* ── ACCOUNTS ── */
-        .accounts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 26px; }
-        .account-card {
-            position: relative;
-            background: linear-gradient(160deg, #ffffff 0%, #fbfdfc 100%);
-            border: 1px solid var(--border);
-            border-radius: 18px;
-            padding: 34px 32px 30px;
-            transition: transform .38s cubic-bezier(.2,.8,.3,1), box-shadow .38s, border-color .38s;
-            overflow: hidden;
-        }
-        .account-card::before {
-            content: '';
-            position: absolute; top: 0; left: 0; right: 0; height: 3px;
-            background: linear-gradient(90deg, var(--green), var(--green-soft), var(--accent-bright));
-            opacity: 0; transition: opacity .35s;
-        }
-        .account-card:hover {
-            transform: translateY(-7px);
-            box-shadow: 0 28px 60px rgba(27,67,50,.13);
-            border-color: rgba(45,106,79,.3);
-        }
-        .account-card:hover::before { opacity: 1; }
-        .account-card h3 {
-            font-size: 1.3rem; font-weight: 700; margin-bottom: 10px;
-            letter-spacing: -.4px; color: var(--green);
-        }
-        .account-card .role-badge {
-            display: inline-flex; align-items: center; gap: 6px;
-            padding: 5px 13px; border-radius: 20px;
-            font-size: 0.72rem; font-weight: 700; letter-spacing: .06em;
-            text-transform: uppercase; margin-bottom: 18px;
-        }
-        .badge-owner { background: var(--green-light); color: var(--green); border: 1px solid #bbf7d0; }
-        .badge-manager { background: var(--accent-light); color: var(--accent); border: 1px solid #fde68a; }
+        /* ─── Accounts ─── */
+        .accounts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+        .account-card { background: var(--bg); border: 1px solid var(--border); border-radius: 12px; padding: 32px; transition: box-shadow 0.3s; }
+        .account-card:hover { box-shadow: 0 8px 30px rgba(0,0,0,0.06); }
+        .account-card h3 { font-size: 1.3rem; font-weight: 600; margin-bottom: 8px; }
+        .account-card .role-badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 500; margin-bottom: 16px; }
+        .badge-owner { background: #ecfdf5; color: #059669; }
+        .badge-manager { background: #f0fdf4; color: #16a34a; }
         .account-card ul { list-style: none; margin-bottom: 24px; }
-        .account-card ul li {
-            padding: 7px 0; font-size: 0.9rem; color: var(--text-light);
-            display: flex; align-items: flex-start; gap: 11px; line-height: 1.55;
-        }
-        .account-card ul li::before {
-            content: ''; width: 6px; height: 6px; border-radius: 50%;
-            background: var(--green-soft); flex-shrink: 0; margin-top: 8px;
-        }
-        .note {
-            background: #fffbeb; border: 1px solid #fde68a; border-radius: 10px;
-            padding: 14px 16px; font-size: 0.85rem; color: #92400e;
-            display: flex; align-items: flex-start; gap: 9px; line-height: 1.6;
-        }
-        .image-row { display: grid; grid-template-columns: 1fr 1fr; gap: 26px; margin-top: 52px; }
-        .image-row img {
-            width: 100%; border-radius: 14px; object-fit: cover; aspect-ratio: 16/10;
-            display: block;
-        }
-        .image-caption { font-size: 0.85rem; color: var(--text-light); margin-top: 10px; }
+        .account-card ul li { padding: 6px 0; font-size: 0.9rem; color: var(--text-light); display: flex; align-items: center; gap: 10px; }
+        .account-card ul li::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--green); flex-shrink: 0; }
+        .note { background: #fffbeb; border: 1px solid #fde68a; border-radius: 8px; padding: 14px 16px; font-size: 0.85rem; color: #92400e; display: flex; align-items: flex-start; gap: 8px; }
+        .image-row { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 48px; }
+        .image-row img { width: 100%; border-radius: 10px; object-fit: cover; aspect-ratio: 16/10; }
+        .image-caption { font-size: 0.85rem; color: var(--text-light); margin-top: 8px; }
 
-        /* ── FEATURE ECOSYSTEM ── */
-        .ecosystem {
-            position: relative;
-            width: 100%;
-            height: 760px;
-            margin-top: 10px;
-        }
-        .eco-lines {
-            position: absolute; inset: 0; width: 100%; height: 100%;
-            pointer-events: none; overflow: visible;
-        }
-        .eco-lines line {
-            stroke: rgba(27,67,50,.11);
-            stroke-width: 1;
-            stroke-dasharray: 4 5;
-            transition: stroke .3s ease, stroke-width .3s ease;
-        }
-        .eco-lines line.hot { stroke: var(--accent-bright); stroke-width: 1.6; stroke-dasharray: none; }
+        /* ─── Features ─── */
+        .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+        .feature-item { padding: 24px; border: 1px solid var(--border); border-radius: 10px; transition: box-shadow 0.2s, transform 0.2s, border-color 0.2s; background: var(--bg); position: relative; }
+        .feature-item:hover { box-shadow: 0 6px 24px rgba(5,150,105,0.08); transform: translateY(-2px); border-color: #a7f3d0; }
+        .feature-item .icon { width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; margin-bottom: 16px; color: #059669; transition: transform 0.2s; }
+        .feature-item:hover .icon { transform: scale(1.08); }
+        .feature-item .icon iconify-icon { font-size: 1.75rem; line-height: 1; display: block; }
+        .feature-item h4 { font-weight: 600; margin-bottom: 6px; font-size: 0.95rem; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+        .feature-item p { font-size: 0.85rem; color: var(--text-light); line-height: 1.6; }
+        .badge-soon { display: inline-block; background: #fef3c7; color: #92400e; font-size: 0.65rem; font-weight: 700; padding: 2px 8px; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.5px; line-height: 1.5; }
+        .feature-item.coming-soon { background: linear-gradient(135deg, #fffbeb 0%, #ffffff 100%); border-color: #fde68a; }
+        .feature-item.coming-soon .icon { color: #b45309; }
 
-        .eco-core {
-            position: absolute; left: 50%; top: 50%;
-            transform: translate(-50%, -50%);
-            width: 186px; height: 186px;
-            border-radius: 50%;
-            display: flex; flex-direction: column;
-            align-items: center; justify-content: center;
-            background: radial-gradient(circle at 50% 40%, #ffffff 0%, #f0fdf4 65%, #dcfce7 100%);
-            border: 1px solid #bbf7d0;
-            box-shadow: 0 24px 70px rgba(27,67,50,.16), inset 0 1px 0 #fff;
-            z-index: 3;
-        }
-        .eco-core::before, .eco-core::after {
-            content: ''; position: absolute; border-radius: 50%;
-            border: 1px dashed rgba(45,106,79,.3);
-        }
-        .eco-core::before { inset: -18px; animation: spinSlow 26s linear infinite; }
-        .eco-core::after { inset: -36px; border-style: solid; border-color: rgba(45,106,79,.10); }
-        @keyframes spinSlow { to { transform: rotate(360deg); } }
-        .eco-core iconify-icon { font-size: 2.1rem; color: var(--green); margin-bottom: 8px; }
-        .eco-core-label {
-            font-size: .64rem; font-weight: 700; letter-spacing: .16em;
-            text-transform: uppercase; color: var(--green-soft);
-            text-align: center; padding: 0 12px; line-height: 1.4;
-        }
+        /* ─── CTA ─── */
+        .cta { text-align: center; padding: 80px 24px; }
+        .cta h2 { font-size: 2rem; font-weight: 700; margin-bottom: 12px; letter-spacing: -0.5px; }
+        .cta p { color: var(--text-light); margin-bottom: 28px; }
 
-        .eco-card {
-            position: absolute;
-            width: 162px;
-            transform: translate(-50%, -50%);
-            background: #fff;
-            border: 1px solid var(--border);
-            border-radius: 13px;
-            padding: 14px 14px 13px;
-            text-align: center;
-            z-index: 2;
-            transition: transform .32s cubic-bezier(.2,.8,.3,1), box-shadow .32s, border-color .32s, background .32s;
-            cursor: default;
-        }
-        .eco-card iconify-icon {
-            font-size: 1.35rem; color: var(--green);
-            display: block; margin-bottom: 8px;
-            transition: transform .32s cubic-bezier(.2,.8,.3,1), color .32s;
-        }
-        .eco-card h4 {
-            font-size: .82rem; font-weight: 700; color: var(--text);
-            margin-bottom: 3px; line-height: 1.25;
-        }
-        .eco-card p { font-size: .68rem; color: var(--text-light); line-height: 1.45; }
-        .eco-card .badge-soon {
-            display: inline-block; background: var(--accent-light); color: var(--accent);
-            font-size: .55rem; font-weight: 700; padding: 2px 7px;
-            border-radius: 20px; text-transform: uppercase;
-            letter-spacing: .5px; margin-top: 5px;
-        }
-        .eco-card:hover {
-            transform: translate(-50%, -50%) translateY(-8px) scale(1.05);
-            border-color: rgba(45,106,79,.42);
-            box-shadow: 0 20px 44px rgba(27,67,50,.17);
-            z-index: 5;
-        }
-        .eco-card:hover iconify-icon { transform: rotate(-10deg) scale(1.15); color: var(--accent); }
-
-        /* ── FLOW (How SHDR works) ── */
-        .flow { position: relative; padding: 26px 0 10px; }
-        .flow-track {
-            position: absolute; left: 5%; right: 5%; top: 50px;
-            height: 2px;
-            background: linear-gradient(90deg, rgba(27,67,50,.14), rgba(27,67,50,.24), rgba(27,67,50,.14));
-            border-radius: 2px;
-            overflow: hidden;
-        }
-        .flow-spark {
-            position: absolute; top: -3px; width: 8px; height: 8px; border-radius: 50%;
-            background: var(--accent-bright);
-            box-shadow: 0 0 14px 4px rgba(245,158,11,.6);
-            animation: sparkRun 4.2s linear infinite;
-        }
-        .flow-spark:nth-child(2) { animation-delay: 1.4s; }
-        .flow-spark:nth-child(3) { animation-delay: 2.8s; }
-        @keyframes sparkRun {
-            0% { left: -2%; opacity: 0; }
-            10% { opacity: 1; }
-            90% { opacity: 1; }
-            100% { left: 100%; opacity: 0; }
-        }
-        .flow-nodes {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 10px;
-            position: relative;
-            z-index: 2;
-        }
-        .flow-node { text-align: center; }
-        .flow-ico {
-            width: 52px; height: 52px; margin: 24px auto 14px;
-            border-radius: 15px;
-            background: #fff;
-            border: 1px solid var(--border);
-            display: flex; align-items: center; justify-content: center;
-            color: var(--green);
-            box-shadow: 0 8px 22px rgba(27,67,50,.09);
-            transition: transform .3s cubic-bezier(.2,.8,.3,1), border-color .3s, box-shadow .3s;
-        }
-        .flow-node:hover .flow-ico {
-            transform: translateY(-6px);
-            border-color: rgba(45,106,79,.45);
-            box-shadow: 0 16px 34px rgba(27,67,50,.18);
-        }
-        .flow-ico iconify-icon { font-size: 1.35rem; }
-        .flow-label {
-            font-size: .74rem; font-weight: 700; letter-spacing: .05em;
-            text-transform: uppercase; color: var(--text);
-        }
-        .flow-sub { font-size: .68rem; color: var(--text-light); margin-top: 3px; }
-
-        /* ── TIMELINE (Transparency) ── */
-        .transparency-grid {
-            display: grid; grid-template-columns: 0.9fr 1.1fr; gap: 64px; align-items: center;
-        }
-        .tl-wrap { position: relative; padding-left: 34px; }
-        .tl-line {
-            position: absolute; left: 9px; top: 8px; bottom: 8px; width: 2px;
-            background: linear-gradient(180deg, rgba(45,106,79,.35), rgba(45,106,79,.08));
-            border-radius: 2px;
-        }
-        .tl-pulse {
-            position: absolute; left: 6px; width: 8px; height: 8px; border-radius: 50%;
-            background: var(--accent-bright);
-            box-shadow: 0 0 14px 4px rgba(245,158,11,.55);
-            animation: tlRun 5s ease-in-out infinite;
-        }
-        @keyframes tlRun {
-            0% { top: 4px; opacity: 0; }
-            8% { opacity: 1; }
-            92% { opacity: 1; }
-            100% { top: calc(100% - 10px); opacity: 0; }
-        }
-        .tl-item {
-            position: relative; padding: 13px 0;
-            display: flex; align-items: baseline; gap: 18px;
-        }
-        .tl-item::before {
-            content: ''; position: absolute; left: -30px; top: 21px;
-            width: 8px; height: 8px; border-radius: 50%;
-            background: #fff; border: 2px solid var(--green-soft);
-        }
-        .tl-time {
-            font-size: .78rem; font-weight: 700; color: var(--green);
-            font-variant-numeric: tabular-nums; min-width: 50px;
-        }
-        .tl-text { font-size: .92rem; color: var(--text); }
-
-        /* ── SECURITY ── */
-        .security-section {
-            background: linear-gradient(160deg, #071310 0%, #0d2119 50%, #071310 100%);
-            color: #fff;
-            padding: 96px 24px;
-            position: relative;
-            overflow: hidden;
-        }
-        .security-section::before {
-            content: '';
-            position: absolute; left: 50%; top: 50%;
-            width: 700px; height: 700px; transform: translate(-50%,-50%);
-            background: radial-gradient(circle, rgba(45,106,79,.34) 0%, transparent 62%);
-            pointer-events: none;
-        }
-        .security-inner {
-            max-width: var(--max-width); margin: 0 auto;
-            position: relative; z-index: 1;
-            display: grid; grid-template-columns: 0.85fr 1.15fr; gap: 60px; align-items: center;
-        }
-        .security-shield {
-            position: relative; width: 240px; height: 240px; margin: 0 auto;
-            display: flex; align-items: center; justify-content: center;
-        }
-        .security-shield .ring {
-            position: absolute; border-radius: 50%;
-            border: 1px solid rgba(110,231,183,.22);
-        }
-        .security-shield .ring.r1 { inset: 0; animation: spinSlow 22s linear infinite; border-style: dashed; }
-        .security-shield .ring.r2 { inset: 28px; border-color: rgba(110,231,183,.16); }
-        .security-shield .ring.r3 { inset: 58px; border-style: dashed; animation: spinSlow 30s linear infinite reverse; }
-        .security-shield .shield-ico {
-            width: 96px; height: 96px; border-radius: 28px;
-            background: linear-gradient(150deg, rgba(45,106,79,.85), rgba(27,67,50,.9));
-            border: 1px solid rgba(110,231,183,.35);
-            display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 20px 60px rgba(16,185,129,.28), inset 0 1px 0 rgba(255,255,255,.14);
-        }
-        .security-shield .shield-ico iconify-icon { font-size: 2.6rem; color: #A7F3D0; }
-        .security-section .section-title { color: #fff; }
-        .security-section .section-desc { color: rgba(255,255,255,.6); }
-        .security-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-        .sec-item {
-            display: flex; align-items: center; gap: 12px;
-            padding: 15px 16px;
-            background: rgba(255,255,255,.05);
-            border: 1px solid rgba(255,255,255,.11);
-            border-radius: 12px;
-            font-size: .85rem; font-weight: 500;
-            backdrop-filter: blur(10px);
-            transition: border-color .3s, background .3s, transform .3s;
-        }
-        .sec-item:hover {
-            border-color: rgba(110,231,183,.4);
-            background: rgba(255,255,255,.09);
-            transform: translateY(-3px);
-        }
-        .sec-item iconify-icon { font-size: 1.15rem; color: #6EE7B7; flex-shrink: 0; }
-
-        /* ── CTA ── */
-        .cta-final {
-            position: relative;
-            background: linear-gradient(180deg, #071310 0%, #0a1b15 100%);
-            color: #fff;
-            padding: 120px 24px;
-            text-align: center;
-            overflow: hidden;
-        }
-        .cta-final::before {
-            content: '';
-            position: absolute; left: 50%; bottom: -30%;
-            width: 900px; height: 620px; transform: translateX(-50%);
-            background: radial-gradient(ellipse at 50% 100%, rgba(45,106,79,.5) 0%, transparent 68%);
-        }
-        .cta-inner { position: relative; z-index: 1; max-width: 680px; margin: 0 auto; }
-        .cta-final h2 {
-            font-size: clamp(1.8rem, 4.2vw, 2.8rem);
-            font-weight: 700; letter-spacing: -1.2px;
-            line-height: 1.1; margin-bottom: 18px;
-        }
-        .cta-final p {
-            color: rgba(255,255,255,.62); font-size: 1.02rem;
-            margin-bottom: 36px; line-height: 1.7;
-        }
-        .cta-final .hero-buttons { justify-content: center; }
-
-        /* ═══════════════════════════════════════
-           LEGAL VIEW (unchanged styling)
-           ═══════════════════════════════════════ */
-        #legal-view { position: relative; z-index: 2; background: var(--bg); }
-
-        .legal-page-header {
-            background: var(--bg-secondary);
-            border-bottom: 1px solid var(--border);
-            padding: 120px 24px 48px;
-        }
+        /* ─── Legal View ─── */
+        .legal-page-header { background: var(--bg-secondary); border-bottom: 1px solid var(--border); padding: 120px 24px 48px; }
         .legal-page-header-inner { max-width: var(--max-width); margin: 0 auto; }
-        .legal-page-header h1 { font-size: 2.5rem; font-weight: 700; letter-spacing: -0.8px; margin-bottom: 8px; color: var(--green); }
+        .legal-page-header h1 { font-size: 2.5rem; font-weight: 700; letter-spacing: -0.8px; margin-bottom: 8px; }
         .legal-page-header p { color: var(--text-light); max-width: 600px; font-size: 0.95rem; }
         .legal-page-header .meta { margin-top: 16px; font-size: 0.8rem; color: var(--text-light); display: flex; gap: 20px; flex-wrap: wrap; }
         .legal-page-header .meta span { display: inline-flex; align-items: center; gap: 6px; }
 
-        .legal-layout {
-            max-width: var(--max-width); margin: 0 auto;
-            padding: 48px 24px 80px;
-            display: grid; grid-template-columns: 240px 1fr; gap: 48px; align-items: start;
-        }
-        .legal-sidebar {
-            position: sticky; top: 88px;
-            border: 1px solid var(--border); border-radius: 12px;
-            padding: 20px; background: var(--bg);
-        }
-        .legal-sidebar h3 {
-            font-size: 0.7rem; font-weight: 700; text-transform: uppercase;
-            letter-spacing: 0.1em; color: var(--text-light); margin-bottom: 14px;
-        }
+        .legal-layout { max-width: var(--max-width); margin: 0 auto; padding: 48px 24px 80px; display: grid; grid-template-columns: 240px 1fr; gap: 48px; align-items: start; }
+
+        .legal-sidebar { position: sticky; top: 88px; border: 1px solid var(--border); border-radius: 12px; padding: 20px; background: var(--bg); }
+        .legal-sidebar h3 { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-light); margin-bottom: 14px; }
         .legal-sidebar ul { list-style: none; display: flex; flex-direction: column; gap: 2px; }
-        .legal-sidebar li a {
-            display: flex; align-items: center; gap: 10px;
-            padding: 9px 12px; border-radius: 6px;
-            font-size: 0.85rem; color: var(--text-light); font-weight: 500;
-            transition: all 0.15s; cursor: pointer;
-        }
+        .legal-sidebar li a { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-radius: 6px; font-size: 0.85rem; color: var(--text-light); font-weight: 500; transition: all 0.15s; cursor: pointer; }
         .legal-sidebar li a:hover { background: var(--bg-secondary); color: var(--text); }
         .legal-sidebar li a.active { background: var(--green-light); color: var(--green); font-weight: 600; }
         .legal-sidebar li a iconify-icon { font-size: 1rem; flex-shrink: 0; }
@@ -906,7 +198,7 @@
         .legal-section { display: none; animation: fadeIn 0.2s ease; }
         .legal-section.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
-        .legal-section > h2 { font-size: 1.75rem; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 6px; color: var(--green); }
+        .legal-section > h2 { font-size: 1.75rem; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 6px; }
         .legal-section > .section-sub { color: var(--text-light); font-size: 0.9rem; margin-bottom: 32px; padding-bottom: 24px; border-bottom: 1px solid var(--border); }
         .legal-section h3 { font-size: 1.05rem; font-weight: 700; margin-top: 32px; margin-bottom: 10px; color: var(--text); }
         .legal-section h3:first-of-type { margin-top: 0; }
@@ -914,72 +206,47 @@
         .legal-section ul { padding-left: 22px; margin-bottom: 16px; color: #374151; font-size: 0.95rem; line-height: 1.75; }
         .legal-section ul li { margin-bottom: 8px; }
         .legal-section ul li strong { color: var(--text); }
-        .legal-section code {
-            background: var(--bg-secondary); padding: 2px 6px; border-radius: 4px;
-            font-size: 0.85rem; color: var(--green-hover);
-            font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-        }
+        .legal-section code { background: var(--bg-secondary); padding: 2px 6px; border-radius: 4px; font-size: 0.85rem; color: var(--green-hover); font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
 
-        .callout {
-            border-radius: 10px; padding: 16px 20px; margin: 20px 0;
-            display: flex; gap: 12px; align-items: flex-start;
-            font-size: 0.9rem; line-height: 1.65;
-        }
+        .callout { border-radius: 10px; padding: 16px 20px; margin: 20px 0; display: flex; gap: 12px; align-items: flex-start; font-size: 0.9rem; line-height: 1.65; }
         .callout iconify-icon { flex-shrink: 0; font-size: 1.25rem; margin-top: 2px; }
         .callout-info { background: #eff6ff; border: 1px solid #bfdbfe; color: #1e3a8a; }
         .callout-info iconify-icon { color: #2563eb; }
         .callout-warn { background: #fffbeb; border: 1px solid #fde68a; color: #78350f; }
         .callout-warn iconify-icon { color: #d97706; }
         .callout-success { background: var(--green-light); border: 1px solid #a7f3d0; color: #065f46; }
-        .callout-success iconify-icon { color: var(--green-soft); }
+        .callout-success iconify-icon { color: var(--green); }
         .callout a { color: var(--green); font-weight: 600; }
 
-        .contact-card {
-            background: var(--bg-secondary); border: 1px solid var(--border);
-            border-radius: 12px; padding: 24px; margin: 20px 0;
-        }
-        .contact-card .row {
-            display: flex; gap: 16px; align-items: center;
-            padding: 14px 0; border-bottom: 1px solid var(--border);
-        }
+        .contact-card { background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 12px; padding: 24px; margin: 20px 0; }
+        .contact-card .row { display: flex; gap: 16px; align-items: center; padding: 14px 0; border-bottom: 1px solid var(--border); }
         .contact-card .row:last-child { border-bottom: none; }
-        .contact-card .row .ico {
-            width: 40px; height: 40px; display: flex; align-items: center;
-            justify-content: center; flex-shrink: 0; color: var(--green);
-        }
+        .contact-card .row .ico { width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; color: var(--green); }
         .contact-card .row .ico iconify-icon { font-size: 1.35rem; }
-        .contact-card .row .ico-logo {
-            width: 40px; height: 40px; display: flex; align-items: center;
-            justify-content: center; flex-shrink: 0; overflow: hidden;
-        }
+        .contact-card .row .ico-logo { width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; overflow: hidden; }
         .contact-card .row .ico-logo img { width: 100%; height: 100%; object-fit: contain; display: block; }
-        .contact-card .row .lbl {
-            font-size: 0.75rem; color: var(--text-light);
-            text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600;
-        }
+        .contact-card .row .lbl { font-size: 0.75rem; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; }
         .contact-card .row .val { font-size: 0.95rem; color: var(--text); font-weight: 500; }
         .contact-card .row .val a { color: var(--green); }
         .contact-card .row .val a:hover { text-decoration: underline; }
 
-        .section-actions {
-            margin-top: 40px; padding-top: 24px; border-top: 1px solid var(--border);
-            display: flex; gap: 12px; flex-wrap: wrap;
+        .section-actions { margin-top: 40px; padding-top: 24px; border-top: 1px solid var(--border); display: flex; gap: 12px; flex-wrap: wrap; }
+
+        /* ═══════════════════════════════════════════════════════
+           FOOTER
+           ═══════════════════════════════════════════════════════ */
+        footer { border-top: 1px solid var(--border); background: var(--bg); padding: 64px 24px 0; }
+
+        .footer-columns {
+            max-width: var(--max-width);
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1.6fr 1.3fr 1.1fr 1.1fr;
+            gap: 48px;
+            padding-bottom: 48px;
         }
 
-        /* ═══════════════════════════════════════
-           FOOTER
-           ═══════════════════════════════════════ */
-        footer {
-            position: relative; z-index: 2;
-            border-top: 1px solid var(--border);
-            background: var(--bg);
-            padding: 64px 24px 0;
-        }
-        .footer-columns {
-            max-width: var(--max-width); margin: 0 auto;
-            display: grid; grid-template-columns: 1.6fr 1.3fr 1.1fr 1.1fr;
-            gap: 48px; padding-bottom: 48px;
-        }
+        /* Brand column */
         .footer-brand { display: flex; align-items: center; gap: 12px; margin-bottom: 18px; }
         .footer-logo { width: 48px; height: 48px; object-fit: contain; display: block; flex-shrink: 0; }
         .footer-brand-text { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
@@ -987,88 +254,78 @@
         .footer-brand-sub { font-size: 0.72rem; color: var(--text-light); letter-spacing: 0.02em; line-height: 1.2; white-space: nowrap; }
         .footer-desc { font-size: 0.875rem; color: var(--text-light); line-height: 1.7; max-width: 340px; }
 
-        .footer-col h4 {
-            font-size: 0.75rem; font-weight: 700; text-transform: uppercase;
-            letter-spacing: 0.1em; color: var(--text); margin-bottom: 18px;
-        }
+        /* Link columns */
+        .footer-col h4 { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text); margin-bottom: 18px; }
         .footer-links { list-style: none; display: flex; flex-direction: column; gap: 12px; }
-        .footer-links li a {
-            font-size: 0.875rem; color: var(--text-light);
-            transition: color 0.2s; cursor: pointer;
-            display: inline-flex; align-items: center; gap: 9px;
-            text-decoration: none; line-height: 1.4;
-        }
-        .footer-links li a iconify-icon { font-size: 1.05rem; flex-shrink: 0; color: var(--green-soft); transition: transform 0.2s; }
+        .footer-links li a { font-size: 0.875rem; color: var(--text-light); transition: color 0.2s; cursor: pointer; display: inline-flex; align-items: center; gap: 9px; text-decoration: none; line-height: 1.4; }
+        .footer-links li a iconify-icon { font-size: 1.05rem; flex-shrink: 0; color: var(--green); transition: transform 0.2s; }
         .footer-links li a:hover { color: var(--green); }
         .footer-links li a:hover iconify-icon { transform: translateY(-1px); }
 
-        .footer-socials { display: flex; flex-wrap: wrap; gap: 10px; }
-        .footer-social-link {
-            width: 42px; height: 42px; border-radius: 50%;
-            border: 1.5px solid var(--border);
-            display: inline-flex; align-items: center; justify-content: center;
-            color: var(--text-light); text-decoration: none;
-            transition: all 0.2s ease; cursor: pointer; background: var(--bg);
+        /* ── Follow Us — 5 social icons ── */
+        .footer-socials {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
         }
-        .footer-social-link iconify-icon { font-size: 1.15rem; transition: transform 0.2s ease, color 0.2s ease; display: block; }
+        .footer-social-link {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            border: 1.5px solid var(--border);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-light);
+            text-decoration: none;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            background: var(--bg);
+        }
+        .footer-social-link iconify-icon {
+            font-size: 1.15rem;
+            transition: transform 0.2s ease, color 0.2s ease;
+            display: block;
+        }
         .footer-social-link:hover {
-            border-color: var(--green-soft); color: var(--green);
+            border-color: var(--green);
+            color: var(--green);
             transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(45,106,79,0.18);
+            box-shadow: 0 6px 16px rgba(5, 150, 105, 0.18);
             background: var(--green-light);
         }
-        .footer-social-link:hover iconify-icon { transform: scale(1.12); }
-        .footer-social-link:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; }
+        .footer-social-link:hover iconify-icon {
+            transform: scale(1.12);
+        }
+        .footer-social-link:focus-visible {
+            outline: 2px solid var(--green);
+            outline-offset: 2px;
+        }
 
+        /* Footer bottom */
         .footer-bottom {
-            max-width: var(--max-width); margin: 0 auto;
-            padding: 22px 0 28px; border-top: 1px solid var(--border);
-            display: flex; justify-content: space-between; align-items: center;
-            gap: 16px; flex-wrap: wrap;
-            font-size: 0.8rem; color: var(--text-light);
+            max-width: var(--max-width);
+            margin: 0 auto;
+            padding: 22px 0 28px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+            font-size: 0.8rem;
+            color: var(--text-light);
         }
         .footer-bottom a { color: var(--green); font-weight: 500; }
         .footer-bottom a:hover { text-decoration: underline; }
 
-        /* ═══════════════════════════════════════
-           RESPONSIVE
-           ═══════════════════════════════════════ */
-        @media (max-width: 1120px) {
-            .ecosystem {
-                height: auto;
-                display: grid;
-                grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
-                gap: 14px;
-            }
-            .eco-card {
-                position: static;
-                width: auto;
-                transform: none;
-                text-align: left;
-                display: flex;
-                gap: 12px;
-                align-items: flex-start;
-                padding: 16px;
-            }
-            .eco-card iconify-icon { margin-bottom: 0; font-size: 1.3rem; flex-shrink: 0; margin-top: 2px; }
-            .eco-card:hover { transform: translateY(-5px) scale(1); }
-            .eco-card > div { min-width: 0; }
-            .eco-lines, .eco-core { display: none; }
-        }
-
-        @media (max-width: 1024px) {
-            .hero-grid { grid-template-columns: 1fr; gap: 40px; }
-            .hero-content { max-width: 640px; }
-            .hud-stack { max-width: 560px; }
-            .story-card { max-width: 420px; }
-            .transparency-grid { grid-template-columns: 1fr; gap: 40px; }
-            .security-inner { grid-template-columns: 1fr; gap: 44px; }
-            .security-shield { width: 190px; height: 190px; }
-        }
-
+        /* ─── Responsive ─── */
         @media (max-width: 900px) {
+            .hero-content h1 { font-size: 2.2rem; }
             .accounts-grid { grid-template-columns: 1fr; }
+            .features-grid { grid-template-columns: 1fr 1fr; }
             .image-row { grid-template-columns: 1fr; }
+            .section-title { font-size: 1.6rem; }
             .footer-columns { grid-template-columns: 1fr 1fr; gap: 40px; }
             .legal-layout { grid-template-columns: 1fr; gap: 24px; }
             .legal-sidebar { position: static; padding: 14px; }
@@ -1077,51 +334,29 @@
             .legal-sidebar h3 { display: none; }
             .legal-page-header { padding-top: 100px; }
             .legal-page-header h1 { font-size: 1.85rem; }
-
-            .flow-nodes { grid-template-columns: repeat(2, 1fr); gap: 18px 10px; }
-            .flow-track { display: none; }
-            .flow-ico { margin-top: 0; }
-            .security-grid { grid-template-columns: 1fr; }
         }
 
-        @media (max-width: 760px) {
+        @media (max-width: 640px) {
             .nav-links {
                 position: fixed;
                 top: 0; right: -100%;
-                width: 82%;
-                max-width: 320px;
+                width: 80%;
+                max-width: 300px;
                 height: 100vh;
                 background: #fff;
                 flex-direction: column;
-                align-items: flex-start;
-                padding: 96px 30px 30px;
-                gap: 22px;
-                transition: right 0.32s cubic-bezier(.2,.8,.3,1);
-                box-shadow: -14px 0 44px rgba(0,0,0,0.14);
-                z-index: 99;
+                padding: 90px 28px 30px;
+                gap: 20px;
+                transition: right 0.3s;
+                box-shadow: -10px 0 30px rgba(0,0,0,0.1);
             }
             .nav-links.active { right: 0; }
-            .nav-links a { color: var(--text) !important; font-size: 1rem; }
-            .nav-links a::after { display: none; }
-            .mobile-toggle { display: block; }
-
-            .hero-stage { padding-top: calc(var(--nav-h) + 26px); }
-            .hero-content h1 { letter-spacing: -1px; }
-            .hud-stack { grid-template-columns: 1fr 1fr; gap: 10px; }
-            .hud-card { padding: 13px 13px 12px; }
-            .hud-big { font-size: 1.5rem; }
-
-            .story-step { min-height: 88vh; }
-            .story-card { max-width: 100%; padding: 22px 20px; }
-            .story-step:nth-child(even) .story-card { margin-left: 0; }
-
-            .section { padding: 66px 20px; }
-            .cta-final { padding: 84px 20px; }
-            .security-section { padding: 72px 20px; }
-            .hero-buttons { flex-direction: column; align-items: stretch; }
+            .mobile-toggle { display: block; z-index: 101; }
+            .features-grid { grid-template-columns: 1fr; }
+            .hero-buttons { flex-direction: column; width: 100%; }
             .hero-buttons .btn { width: 100%; }
-
-            .footer-columns { grid-template-columns: 1fr; gap: 34px; padding-bottom: 34px; }
+            .hero-content h1 { font-size: 1.8rem; }
+            .footer-columns { grid-template-columns: 1fr; gap: 32px; padding-bottom: 32px; }
             .footer-bottom { flex-direction: column; text-align: center; padding-bottom: 24px; }
             .footer-brand-sub { white-space: normal; }
             .footer-logo { width: 42px; height: 42px; }
@@ -1129,57 +364,12 @@
             .legal-section > h2 { font-size: 1.35rem; }
             .legal-section h3 { font-size: 1rem; }
         }
-
-        @media (max-width: 420px) {
-            .hud-stack { grid-template-columns: 1fr; }
-            .flow-nodes { grid-template-columns: 1fr; }
-        }
-
-        /* Focus visibility */
-        a:focus-visible, button:focus-visible, [tabindex]:focus-visible {
-            outline: 2px solid var(--accent-bright);
-            outline-offset: 3px;
-            border-radius: 4px;
-        }
-
-        /* Reduced motion: kill float/pulse animations */
-        @media (prefers-reduced-motion: reduce) {
-            .hud-card, .flow-spark, .tl-pulse, .pulse-dot::after,
-            .eco-core::before, .security-shield .ring { animation: none !important; }
-            .eco-core::before, .security-shield .ring.r1, .security-shield .ring.r3 { transform: none; }
-        }
     </style>
 </head>
 <body>
 
-    <!-- ═══════════════ 3D LOADING EXPERIENCE ═══════════════ -->
-    <div class="loader" id="loader" role="status" aria-live="polite" aria-label="Loading SHDR">
-        <div class="loader-inner">
-            <img src="shdr_logo%20Background%20Removed.png" alt="" class="loader-logo" aria-hidden="true">
-            <div class="loader-title">SHDR LTD</div>
-            <div class="loader-sub">Loading Construction Environment</div>
-            <div class="loader-bar"><div class="loader-bar-fill" id="loaderFill"></div></div>
-            <div class="loader-pct" id="loaderPct">0%</div>
-        </div>
-    </div>
-
-    <!-- ═══════════════ 3D SCENE ═══════════════ -->
-    <div class="scene-container" id="sceneContainer" aria-hidden="true">
-        <canvas id="sceneCanvas"></canvas>
-        <div class="scene-vignette"></div>
-        <div class="scene-fallback" id="sceneFallback"></div>
-    </div>
-
-    <!-- ═══════════════ 3D OBJECT INFO PANEL ═══════════════ -->
-    <div class="object-panel" id="objectPanel" role="dialog" aria-label="Site object details">
-        <button class="object-panel-close" id="objectPanelClose" aria-label="Close panel">&times;</button>
-        <div class="object-panel-title" id="objectPanelTitle"></div>
-        <div id="objectPanelRows"></div>
-        <div class="object-panel-note">Illustrative interface preview — sample data.</div>
-    </div>
-
     <!-- ═══════════════ Navigation ═══════════════ -->
-    <nav id="mainNav">
+    <nav>
         <div class="nav-inner">
             <a class="logo" onclick="showView('landing')" aria-label="SHDR Home">
                 <span class="logo-icon">
@@ -1194,7 +384,7 @@
                 <li><a onclick="redirectOwner()">Owner Dashboard</a></li>
                 <li><a onclick="redirectManager()">Manager Sign In</a></li>
             </ul>
-            <button class="mobile-toggle" id="mobileToggle" aria-label="Menu" aria-expanded="false" aria-controls="navLinks">
+            <button class="mobile-toggle" id="mobileToggle" aria-label="Menu">
                 <span></span><span></span><span></span>
             </button>
         </div>
@@ -1202,440 +392,115 @@
 
     <!-- ═══════════════ LANDING VIEW ═══════════════ -->
     <main id="landing-view" class="view active">
+        <section class="hero" id="home">
+            <div class="hero-bg">
+                <img src="https://cdn.pixabay.com/photo/2018/12/12/23/02/site-3871804_1280.jpg" alt="Construction site">
+            </div>
+            <div class="hero-content">
+                <h1>Construction site <span>Management</span> Made It Easier &amp; Smarter!</h1>
+                <p>Connect owners and site managers. Track materials, workers, and progress with full transparency.</p>
+                <div class="hero-buttons">
+                    <button class="btn btn-primary" onclick="redirectOwner()">
+                        <iconify-icon icon="material-symbols:dashboard"></iconify-icon>
+                        Owner Dashboard
+                    </button>
+                    <button class="btn btn-outline" onclick="redirectManager()">
+                        <iconify-icon icon="material-symbols:login"></iconify-icon>
+                        Manager Sign In
+                    </button>
+                </div>
+            </div>
+        </section>
 
-        <!-- ── SCENE ZONE ── -->
-        <div class="scene-zone" id="sceneZone">
+        <section class="section section-alt" id="accounts">
+            <div class="section-inner">
+                <div class="section-label">Account Types</div>
+                <div class="section-title">Two roles, one system</div>
+                <p class="section-desc">SHDR is built for two distinct users. Understand how each works before you begin.</p>
 
-            <!-- HERO -->
-            <section class="hero-stage" id="home">
-                <div class="hero-grid">
-                    <div class="hero-content">
-                        <div class="hero-status">
-                            <span class="pulse-dot"></span>
-                            Construction Operations Online
-                        </div>
-                        <h1>Build Smarter. <span>Manage Everything.</span></h1>
-                        <p>Connect owners and site managers, track workers, materials, progress and finances, and keep every construction project under control from one platform.</p>
-                        <div class="hero-buttons">
-                            <button class="btn btn-primary" onclick="redirectOwner()">
-                                <iconify-icon icon="material-symbols:rocket-launch-outline"></iconify-icon>
-                                Get Started
-                            </button>
-                            <button class="btn btn-outline" onclick="redirectManager()">
-                                <iconify-icon icon="material-symbols:login"></iconify-icon>
-                                Manager Sign In
-                            </button>
-                        </div>
-                        <div class="hero-hint">Click any structure on the site to explore &middot; Move your mouse to look around</div>
+                <div class="accounts-grid">
+                    <div class="account-card">
+                        <span class="role-badge badge-owner">Owner / Admin</span>
+                        <h3>Full project control</h3>
+                        <ul>
+                            <li>Sign Up for your own account directly</li>
+                            <li>Create and manage multiple sites</li>
+                            <li>Assign managers to specific projects</li>
+                            <li>Receive complete reports for approval</li>
+                            <li>Grant and revoke access anytime</li>
+                        </ul>
+                        <button class="btn btn-primary" style="width:100%;" onclick="redirectOwner()">
+                            Go to Owner Dashboard
+                            <iconify-icon icon="material-symbols:arrow-forward"></iconify-icon>
+                        </button>
                     </div>
-
-                    <!-- Floating command-center cards -->
-                    <div class="hud-stack" aria-hidden="true">
-                        <div class="hud-card">
-                            <div class="hud-label">Site Progress</div>
-                            <div class="hud-bar"><span style="width:78%"></span></div>
-                            <div class="hud-value">78%</div>
-                            <div class="hud-sub">Kigali Residence</div>
+                    <div class="account-card">
+                        <span class="role-badge badge-manager">Site Manager</span>
+                        <h3>On-site recording</h3>
+                        <ul>
+                            <li>Access granted by owner only</li>
+                            <li>Cannot self-register — invitation required</li>
+                            <li>Record materials, workers, progress</li>
+                            <li>Submit daily updates and reports</li>
+                            <li>Sign in only — no account creation</li>
+                        </ul>
+                        <div class="note">
+                            <iconify-icon icon="material-symbols:warning" style="font-size:1.1rem;flex-shrink:0;margin-top:2px;"></iconify-icon>
+                            <span>Managers sign in only. Your credentials are provided by the project owner.</span>
                         </div>
-
-                        <div class="hud-card">
-                            <div class="hud-label">Workforce</div>
-                            <div class="hud-big">48</div>
-                            <div class="hud-sub">Active Workers</div>
-                            <div class="hud-split">
-                                <span class="p">42 Present</span>
-                                <span class="a">6 Absent</span>
-                            </div>
-                        </div>
-
-                        <div class="hud-card">
-                            <div class="hud-label">Materials</div>
-                            <div class="hud-row"><span>Cement</span><div class="hud-bar"><span style="width:82%"></span></div><b>82%</b></div>
-                            <div class="hud-row"><span>Steel</span><div class="hud-bar"><span style="width:64%"></span></div><b>64%</b></div>
-                            <div class="hud-row"><span>Sand</span><div class="hud-bar"><span style="width:91%"></span></div><b>91%</b></div>
-                        </div>
-
-                        <div class="hud-card">
-                            <div class="hud-label">Project Budget</div>
-                            <div class="hud-big">RWF 84.6M</div>
-                            <div class="hud-sub">Spent RWF 61.2M</div>
-                            <div class="hud-bar amber"><span style="width:72.3%"></span></div>
-                            <div class="hud-value">72.3%</div>
-                        </div>
+                        <button class="btn btn-outline" style="margin-top:14px; width:100%; border-color:var(--green); color:var(--green);" onclick="redirectManager()">
+                            Sign In as Manager
+                            <iconify-icon icon="material-symbols:arrow-forward"></iconify-icon>
+                        </button>
                     </div>
                 </div>
-            </section>
 
-            <!-- SCROLL STORYTELLING -->
-            <section class="story-stage" aria-label="How SHDR sees your site">
-                <div class="story-step">
-                    <div class="story-card">
-                        <div class="story-num">01 / 05</div>
-                        <h2>See the whole site.</h2>
-                        <p>Every structure, every crane, every material stack — one live digital view of the entire construction environment.</p>
-                    </div>
-                </div>
-                <div class="story-step">
-                    <div class="story-card">
-                        <div class="story-num">02 / 05</div>
-                        <h2>Know who is working.</h2>
-                        <p>Attendance, daily rates and payroll are recorded on site and visible to the owner instantly.</p>
-                    </div>
-                </div>
-                <div class="story-step">
-                    <div class="story-card">
-                        <div class="story-num">03 / 05</div>
-                        <h2>Track every material.</h2>
-                        <p>Cement, steel, sand, fittings — receipts, usage and stock levels are logged as they happen.</p>
-                    </div>
-                </div>
-                <div class="story-step">
-                    <div class="story-card">
-                        <div class="story-num">04 / 05</div>
-                        <h2>Measure real progress.</h2>
-                        <p>Milestones, percentages and photo updates replace guesswork with an accurate picture of the build.</p>
-                    </div>
-                </div>
-                <div class="story-step">
-                    <div class="story-card">
-                        <div class="story-num">05 / 05</div>
-                        <h2>Turn site activity into decisions.</h2>
-                        <p>Daily records become reports, and reports become confident decisions — without a single phone call.</p>
-                    </div>
-                </div>
-            </section>
-
-        </div><!-- /scene-zone -->
-
-        <!-- ── POST-SCENE ── -->
-        <div class="post-scene">
-
-            <!-- ACCOUNTS -->
-            <section class="section section-alt" id="accounts">
-                <div class="section-inner">
-                    <div class="section-label">Account Types</div>
-                    <div class="section-title">Two roles, one system</div>
-                    <p class="section-desc">SHDR is built for two distinct users. Understand how each works before you begin.</p>
-
-                    <div class="accounts-grid">
-                        <div class="account-card">
-                            <span class="role-badge badge-owner">
-                                <iconify-icon icon="material-symbols:admin-panel-settings-outline"></iconify-icon>
-                                Owner / Admin
-                            </span>
-                            <h3>Full Project Control</h3>
-                            <ul>
-                                <li>Sign Up for your own account directly</li>
-                                <li>Create and manage multiple sites</li>
-                                <li>Assign managers to specific projects</li>
-                                <li>Receive complete reports for approval</li>
-                                <li>Grant and revoke access anytime</li>
-                            </ul>
-                            <button class="btn btn-primary" style="width:100%;" onclick="redirectOwner()">
-                                Open Owner Dashboard
-                                <iconify-icon icon="material-symbols:arrow-forward"></iconify-icon>
-                            </button>
-                        </div>
-
-                        <div class="account-card">
-                            <span class="role-badge badge-manager">
-                                <iconify-icon icon="material-symbols:engineering-outline"></iconify-icon>
-                                Site Manager
-                            </span>
-                            <h3>Manage From The Site</h3>
-                            <ul>
-                                <li>Access granted by owner only</li>
-                                <li>Cannot self-register — invitation required</li>
-                                <li>Record materials, workers, progress</li>
-                                <li>Submit daily updates and reports</li>
-                                <li>Sign in only — no account creation</li>
-                            </ul>
-                            <div class="note">
-                                <iconify-icon icon="material-symbols:warning" style="font-size:1.1rem;flex-shrink:0;margin-top:2px;"></iconify-icon>
-                                <span>Managers sign in only. Your credentials are provided by the project owner.</span>
-                            </div>
-                            <button class="btn btn-outline" style="margin-top:14px; width:100%; border-color:var(--green); color:var(--green);" onclick="redirectManager()">
-                                Manager Sign In
-                                <iconify-icon icon="material-symbols:arrow-forward"></iconify-icon>
-                            </button>
-                        </div>
-                    </div>
-
-                    <div class="image-row">
-                        <div>
-                            <img src="https://media.istockphoto.com/id/2187596750/photo/construction-worker-shaking-hands-with-foreman.jpg?s=2048x2048&w=is&k=20&c=Dgy4yOzJOwL21_oHIKW6woC242dMSY4KpDfz6YOfM0Y=" alt="Owner and manager collaboration" loading="lazy">
-                            <p class="image-caption">Seamless collaboration between owners and site managers</p>
-                        </div>
-                        <div>
-                            <img src="https://cdn.pixabay.com/photo/2016/02/01/21/15/excavator-1174428_1280.jpg" alt="Construction machinery" loading="lazy">
-                            <p class="image-caption">Full visibility over equipment and site operations</p>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- FEATURES / ECOSYSTEM -->
-            <section class="section" id="features">
-                <div class="section-inner">
-                    <div class="section-label">Features</div>
-                    <div class="section-title">Everything is tracked</div>
-                    <p class="section-desc">All site data recorded by managers, visible to owners in real time. Hover any module to see how it connects to the SHDR core.</p>
-
-                    <div class="ecosystem" id="ecosystem">
-                        <svg class="eco-lines" id="ecoLines" aria-hidden="true" preserveAspectRatio="none"></svg>
-
-                        <div class="eco-core" id="ecoCore" aria-hidden="true">
-                            <iconify-icon icon="material-symbols:domain"></iconify-icon>
-                            <div class="eco-core-label" id="ecoCoreLabel">SHDR CORE</div>
-                        </div>
-
-                        <div class="eco-card" data-label="MATERIALS">
-                            <iconify-icon icon="material-symbols:package-2-outline"></iconify-icon>
-                            <div>
-                                <h4>Materials</h4>
-                                <p>Quantities &amp; alerts</p>
-                            </div>
-                        </div>
-                        <div class="eco-card" data-label="STOCK CONTROL">
-                            <iconify-icon icon="material-symbols:inventory-2-outline"></iconify-icon>
-                            <div>
-                                <h4>Stock Control</h4>
-                                <p>Receipts &amp; history</p>
-                            </div>
-                        </div>
-                        <div class="eco-card" data-label="WORKERS">
-                            <iconify-icon icon="material-symbols:engineering-outline"></iconify-icon>
-                            <div>
-                                <h4>Workers</h4>
-                                <p>Attendance &amp; payroll</p>
-                            </div>
-                        </div>
-                        <div class="eco-card" data-label="PROGRESS">
-                            <iconify-icon icon="material-symbols:trending-up"></iconify-icon>
-                            <div>
-                                <h4>Progress</h4>
-                                <p>Milestones &amp; photos</p>
-                            </div>
-                        </div>
-                        <div class="eco-card" data-label="FINANCES">
-                            <iconify-icon icon="material-symbols:account-balance-wallet-outline"></iconify-icon>
-                            <div>
-                                <h4>Finances</h4>
-                                <p>Budget &amp; overruns</p>
-                            </div>
-                        </div>
-                        <div class="eco-card" data-label="REPORTS">
-                            <iconify-icon icon="material-symbols:description-outline"></iconify-icon>
-                            <div>
-                                <h4>Reports</h4>
-                                <p>Auto-generated</p>
-                            </div>
-                        </div>
-                        <div class="eco-card" data-label="MULTI-SITE">
-                            <iconify-icon icon="material-symbols:apartment"></iconify-icon>
-                            <div>
-                                <h4>Multi-Site</h4>
-                                <p>Unlimited sites</p>
-                            </div>
-                        </div>
-                        <div class="eco-card" data-label="SITE GALLERY">
-                            <iconify-icon icon="material-symbols:photo-library-outline"></iconify-icon>
-                            <div>
-                                <h4>Site Gallery</h4>
-                                <p>Photo records</p>
-                            </div>
-                        </div>
-                        <div class="eco-card" data-label="MANAGER TEAM">
-                            <iconify-icon icon="material-symbols:group-outline"></iconify-icon>
-                            <div>
-                                <h4>Manager Team</h4>
-                                <p>Invite &amp; assign</p>
-                            </div>
-                        </div>
-                        <div class="eco-card" data-label="ALERTS">
-                            <iconify-icon icon="material-symbols:notifications-active-outline"></iconify-icon>
-                            <div>
-                                <h4>Alerts</h4>
-                                <p>Low stock &amp; more</p>
-                            </div>
-                        </div>
-                        <div class="eco-card" data-label="SETTINGS &amp; SECURITY">
-                            <iconify-icon icon="material-symbols:settings-outline"></iconify-icon>
-                            <div>
-                                <h4>Settings &amp; Security</h4>
-                                <p>Profile &amp; passcode</p>
-                            </div>
-                        </div>
-                        <div class="eco-card" data-label="OFFICE HUB">
-                            <iconify-icon icon="material-symbols:business-center-outline"></iconify-icon>
-                            <div>
-                                <h4>Office Hub</h4>
-                                <p>Permits &amp; approvals</p>
-                                <span class="badge-soon">Coming Soon!</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- HOW SHDR WORKS -->
-            <section class="section section-alt">
-                <div class="section-inner">
-                    <div class="section-label">Workflow</div>
-                    <div class="section-title">How SHDR works</div>
-                    <p class="section-desc">From the owner's first instruction to the final report — every stage flows through one connected system.</p>
-
-                    <div class="flow">
-                        <div class="flow-track">
-                            <span class="flow-spark"></span>
-                            <span class="flow-spark"></span>
-                            <span class="flow-spark"></span>
-                        </div>
-                        <div class="flow-nodes">
-                            <div class="flow-node">
-                                <div class="flow-ico"><iconify-icon icon="material-symbols:person-outline"></iconify-icon></div>
-                                <div class="flow-label">Owner</div>
-                                <div class="flow-sub">Sets the project</div>
-                            </div>
-                            <div class="flow-node">
-                                <div class="flow-ico"><iconify-icon icon="material-symbols:location-on-outline"></iconify-icon></div>
-                                <div class="flow-label">Site</div>
-                                <div class="flow-sub">Created &amp; assigned</div>
-                            </div>
-                            <div class="flow-node">
-                                <div class="flow-ico"><iconify-icon icon="material-symbols:engineering-outline"></iconify-icon></div>
-                                <div class="flow-label">Manager</div>
-                                <div class="flow-sub">Runs the ground</div>
-                            </div>
-                            <div class="flow-node">
-                                <div class="flow-ico"><iconify-icon icon="material-symbols:edit-note"></iconify-icon></div>
-                                <div class="flow-label">Daily Records</div>
-                                <div class="flow-sub">Logged on site</div>
-                            </div>
-                            <div class="flow-node">
-                                <div class="flow-ico"><iconify-icon icon="material-symbols:bolt"></iconify-icon></div>
-                                <div class="flow-label">Real-Time Data</div>
-                                <div class="flow-sub">Synced instantly</div>
-                            </div>
-                            <div class="flow-node">
-                                <div class="flow-ico"><iconify-icon icon="material-symbols:description-outline"></iconify-icon></div>
-                                <div class="flow-label">Reports</div>
-                                <div class="flow-sub">Generated for you</div>
-                            </div>
-                            <div class="flow-node">
-                                <div class="flow-ico"><iconify-icon icon="material-symbols:insights"></iconify-icon></div>
-                                <div class="flow-label">Decisions</div>
-                                <div class="flow-sub">Made with clarity</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- TRANSPARENCY -->
-            <section class="section">
-                <div class="section-inner">
-                    <div class="transparency-grid">
-                        <div>
-                            <div class="section-label">Transparency</div>
-                            <div class="section-title">Everything is tracked.</div>
-                            <p class="section-desc" style="margin-bottom:0;">All site data recorded by managers, visible to owners in real time. Nothing gets lost between the site and the office.</p>
-                        </div>
-
-                        <div class="tl-wrap">
-                            <div class="tl-line"></div>
-                            <div class="tl-pulse"></div>
-                            <div class="tl-item">
-                                <span class="tl-time">08:15</span>
-                                <span class="tl-text">Material Received</span>
-                            </div>
-                            <div class="tl-item">
-                                <span class="tl-time">09:30</span>
-                                <span class="tl-text">Workers Checked In</span>
-                            </div>
-                            <div class="tl-item">
-                                <span class="tl-time">11:45</span>
-                                <span class="tl-text">Progress Updated</span>
-                            </div>
-                            <div class="tl-item">
-                                <span class="tl-time">14:20</span>
-                                <span class="tl-text">Material Used</span>
-                            </div>
-                            <div class="tl-item">
-                                <span class="tl-time">16:30</span>
-                                <span class="tl-text">Daily Report Submitted</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- SECURITY -->
-            <section class="security-section">
-                <div class="security-inner">
-                    <div class="security-shield" aria-hidden="true">
-                        <span class="ring r1"></span>
-                        <span class="ring r2"></span>
-                        <span class="ring r3"></span>
-                        <div class="shield-ico">
-                            <iconify-icon icon="material-symbols:shield-lock-outline"></iconify-icon>
-                        </div>
-                    </div>
-
+                <div class="image-row">
                     <div>
-                        <div class="section-label" style="color:#6EE7B7;">Security</div>
-                        <div class="section-title">Built on controlled access.</div>
-                        <p class="section-desc">Security features already supported by the SHDR platform — nothing more, nothing less.</p>
-
-                        <div class="security-grid">
-                            <div class="sec-item">
-                                <iconify-icon icon="material-symbols:password"></iconify-icon>
-                                Secure Authentication
-                            </div>
-                            <div class="sec-item">
-                                <iconify-icon icon="material-symbols:admin-panel-settings-outline"></iconify-icon>
-                                Role-Based Access
-                            </div>
-                            <div class="sec-item">
-                                <iconify-icon icon="material-symbols:history"></iconify-icon>
-                                Activity Tracking
-                            </div>
-                            <div class="sec-item">
-                                <iconify-icon icon="material-symbols:lock-outline"></iconify-icon>
-                                Data Protection
-                            </div>
-                            <div class="sec-item">
-                                <iconify-icon icon="material-symbols:fact-check-outline"></iconify-icon>
-                                Audit History
-                            </div>
-                            <div class="sec-item">
-                                <iconify-icon icon="material-symbols:key-outline"></iconify-icon>
-                                Owner / Manager Permissions
-                            </div>
-                        </div>
+                        <img src="https://media.istockphoto.com/id/2187596750/photo/construction-worker-shaking-hands-with-foreman.jpg?s=2048x2048&w=is&k=20&c=Dgy4yOzJOwL21_oHIKW6woC242dMSY4KpDfz6YOfM0Y=" alt="Owner and manager collaboration" loading="lazy">
+                        <p class="image-caption">Seamless collaboration between owners and site managers</p>
+                    </div>
+                    <div>
+                        <img src="https://cdn.pixabay.com/photo/2016/02/01/21/15/excavator-1174428_1280.jpg" alt="Construction machinery" loading="lazy">
+                        <p class="image-caption">Full visibility over equipment and site operations</p>
                     </div>
                 </div>
-            </section>
+            </div>
+        </section>
 
-            <!-- FINAL CTA -->
-            <section class="cta-final">
-                <div class="cta-inner">
-                    <h2>Your Construction Site.<br>One Clear View.</h2>
-                    <p>Bring workers, materials, progress, finances and reporting together in one management platform.</p>
-                    <div class="hero-buttons">
-                        <button class="btn btn-primary" onclick="redirectOwner()">
-                            <iconify-icon icon="material-symbols:person-add"></iconify-icon>
-                            Create Owner Account
-                        </button>
-                        <button class="btn btn-outline" onclick="redirectManager()">
-                            <iconify-icon icon="material-symbols:login"></iconify-icon>
-                            Manager Sign In
-                        </button>
-                    </div>
+        <section class="section" id="features">
+            <div class="section-inner">
+                <div class="section-label">Features</div>
+                <div class="section-title">Everything is tracked</div>
+                <p class="section-desc">All site data recorded by managers, visible to owners in real time.</p>
+
+                <div class="features-grid">
+                    <div class="feature-item"><div class="icon"><iconify-icon icon="material-symbols:package-2-outline"></iconify-icon></div><h4>Materials</h4><p>Track cement, steel, wood, electrical, plumbing — with quantities and alerts.</p></div>
+                    <div class="feature-item"><div class="icon"><iconify-icon icon="material-symbols:inventory-2-outline"></iconify-icon></div><h4>Stock Control</h4><p>Receive stock, low-stock alerts, and complete transaction history per site.</p></div>
+                    <div class="feature-item"><div class="icon"><iconify-icon icon="material-symbols:engineering-outline"></iconify-icon></div><h4>Workers</h4><p>Attendance, daily rates, and payroll calculated automatically.</p></div>
+                    <div class="feature-item"><div class="icon"><iconify-icon icon="material-symbols:trending-up"></iconify-icon></div><h4>Progress</h4><p>Milestone timeline with percentage tracking and photo updates.</p></div>
+                    <div class="feature-item"><div class="icon"><iconify-icon icon="material-symbols:account-balance-wallet-outline"></iconify-icon></div><h4>Finances</h4><p>Live budget tracking, cost breakdown, and overrun alerts for every site.</p></div>
+                    <div class="feature-item"><div class="icon"><iconify-icon icon="material-symbols:description-outline"></iconify-icon></div><h4>Reports</h4><p>Auto-generated reports with full breakdown for owner approval.</p></div>
+                    <div class="feature-item"><div class="icon"><iconify-icon icon="material-symbols:apartment"></iconify-icon></div><h4>Multi-Site</h4><p>Manage unlimited construction sites from one dashboard — switch instantly.</p></div>
+                    <div class="feature-item"><div class="icon"><iconify-icon icon="material-symbols:photo-library-outline"></iconify-icon></div><h4>Site Gallery</h4><p>Upload site photos with descriptions — full-screen viewer for progress updates.</p></div>
+                    <div class="feature-item"><div class="icon"><iconify-icon icon="material-symbols:group-outline"></iconify-icon></div><h4>Manager Team</h4><p>Invite managers, assign them to specific sites, and monitor activity securely.</p></div>
+                    <div class="feature-item"><div class="icon"><iconify-icon icon="material-symbols:notifications-active-outline"></iconify-icon></div><h4>Alerts</h4><p>Low stock, milestone completions, report submissions — stay tuned!</p></div>
+                    <div class="feature-item"><div class="icon"><iconify-icon icon="material-symbols:settings-outline"></iconify-icon></div><h4>Settings &amp; Security</h4><p>Update profile, change passcode, and customize your account preferences.</p></div>
+                    <div class="feature-item coming-soon"><div class="icon"><iconify-icon icon="material-symbols:business-center-outline"></iconify-icon></div><h4>Office Hub <span class="badge-soon">Coming Soon!</span></h4><p>Document workflow, permits, certifications, and approval center — launching soon.</p></div>
                 </div>
-            </section>
+            </div>
+        </section>
 
-        </div><!-- /post-scene -->
+        <section class="cta section-alt">
+            <div class="section-inner">
+                <h2>Ready to bring clarity to your project?</h2>
+                <p>Start managing your construction site with transparency.</p>
+                <button class="btn btn-primary" onclick="redirectOwner()">
+                    <iconify-icon icon="material-symbols:person-add"></iconify-icon>
+                    Create Owner's Account
+                </button>
+            </div>
+        </section>
     </main>
 
     <!-- ═══════════════ LEGAL VIEW ═══════════════ -->
@@ -2022,6 +887,7 @@
     <!-- ═══════════════ Premium Footer ═══════════════ -->
     <footer>
         <div class="footer-columns">
+            <!-- Brand column -->
             <div class="footer-col">
                 <div class="footer-brand">
                     <img src="shdr_logo%20Background%20Removed.png" alt="SHDR Ltd logo" class="footer-logo">
@@ -2033,6 +899,7 @@
                 <p class="footer-desc">Construction site management made easier and smarter. Connect owners and site managers with full transparency.</p>
             </div>
 
+            <!-- Legal column -->
             <div class="footer-col">
                 <h4>Legal</h4>
                 <ul class="footer-links">
@@ -2045,6 +912,7 @@
                 </ul>
             </div>
 
+            <!-- Support column -->
             <div class="footer-col">
                 <h4>Support</h4>
                 <ul class="footer-links">
@@ -2069,6 +937,7 @@
                 </ul>
             </div>
 
+            <!-- Follow Us — exactly 5 platforms -->
             <div class="footer-col">
                 <h4>Follow Us</h4>
                 <div class="footer-socials">
@@ -2095,1047 +964,73 @@
     </footer>
 
     <script>
-    /* ══════════════════════════════════════════════════════════
-       CORE APP LOGIC (existing behaviour — preserved)
-       ══════════════════════════════════════════════════════════ */
-    document.getElementById("currentYear").textContent = new Date().getFullYear();
+        document.getElementById("currentYear").textContent = new Date().getFullYear();
 
-    let currentView = 'landing';
+        function showView(viewName, anchorId) {
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
 
-    function showView(viewName, anchorId) {
-        document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-        currentView = viewName;
-
-        const sceneContainer = document.getElementById('sceneContainer');
-        const nav = document.getElementById('mainNav');
-
-        if (viewName === 'legal') {
-            document.getElementById('legal-view').classList.add('active');
-            if (sceneContainer) sceneContainer.style.display = 'none';
-            nav.classList.add('nav-solid');
-            if (anchorId) {
-                const navLink = document.querySelector(`#legalNav a[onclick*="${anchorId}"]`);
-                showLegalSection(anchorId, navLink);
-            }
-            history.replaceState(null, '', '#' + (anchorId || 'terms'));
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        } else {
-            document.getElementById('landing-view').classList.add('active');
-            if (sceneContainer) sceneContainer.style.display = '';
-            history.replaceState(null, '', window.location.pathname);
-            if (anchorId) {
-                setTimeout(() => {
-                    const target = document.getElementById(anchorId);
-                    if (target) {
-                        const offset = 64;
-                        const top = target.getBoundingClientRect().top + window.scrollY - offset;
-                        window.scrollTo({ top, behavior: 'smooth' });
-                    }
-                }, 50);
-            } else {
+            if (viewName === 'legal') {
+                document.getElementById('legal-view').classList.add('active');
+                if (anchorId) {
+                    const navLink = document.querySelector(`#legalNav a[onclick*="${anchorId}"]`);
+                    showLegalSection(anchorId, navLink);
+                }
+                history.replaceState(null, '', '#' + (anchorId || 'terms'));
                 window.scrollTo({ top: 0, behavior: 'smooth' });
+            } else {
+                document.getElementById('landing-view').classList.add('active');
+                history.replaceState(null, '', window.location.pathname);
+                if (anchorId) {
+                    setTimeout(() => {
+                        const target = document.getElementById(anchorId);
+                        if (target) {
+                            const offset = 64;
+                            const top = target.getBoundingClientRect().top + window.scrollY - offset;
+                            window.scrollTo({ top, behavior: 'smooth' });
+                        }
+                    }, 50);
+                } else {
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
             }
+
+            const toggle = document.getElementById('mobileToggle');
+            const navLinks = document.getElementById('navLinks');
+            toggle.classList.remove('active');
+            navLinks.classList.remove('active');
         }
+        window.showView = showView;
+
+        function showLegalSection(sectionId, navEl) {
+            document.querySelectorAll('.legal-section').forEach(s => s.classList.remove('active'));
+            const target = document.getElementById(sectionId);
+            if (target) target.classList.add('active');
+
+            document.querySelectorAll('#legalNav a').forEach(a => a.classList.remove('active'));
+            if (navEl) navEl.classList.add('active');
+
+            history.replaceState(null, '', '#' + sectionId);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        window.showLegalSection = showLegalSection;
 
         const toggle = document.getElementById('mobileToggle');
         const navLinks = document.getElementById('navLinks');
-        toggle.classList.remove('active');
-        nav.classList.remove('menu-open');
-        toggle.setAttribute('aria-expanded', 'false');
-        navLinks.classList.remove('active');
-    }
-    window.showView = showView;
-
-    function showLegalSection(sectionId, navEl) {
-        document.querySelectorAll('.legal-section').forEach(s => s.classList.remove('active'));
-        const target = document.getElementById(sectionId);
-        if (target) target.classList.add('active');
-
-        document.querySelectorAll('#legalNav a').forEach(a => a.classList.remove('active'));
-        if (navEl) navEl.classList.add('active');
-
-        history.replaceState(null, '', '#' + sectionId);
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-    window.showLegalSection = showLegalSection;
-
-    const mobileToggleEl = document.getElementById('mobileToggle');
-    const navLinksEl = document.getElementById('navLinks');
-    const mainNavEl = document.getElementById('mainNav');
-
-    mobileToggleEl.addEventListener('click', () => {
-        const open = !navLinksEl.classList.contains('active');
-        mobileToggleEl.classList.toggle('active', open);
-        navLinksEl.classList.toggle('active', open);
-        mainNavEl.classList.toggle('menu-open', open);
-        mobileToggleEl.setAttribute('aria-expanded', open ? 'true' : 'false');
-    });
-
-    function redirectOwner() { window.location.href = 'owner.html'; }
-    function redirectManager() { window.location.href = 'manager.html'; }
-    window.redirectOwner = redirectOwner;
-    window.redirectManager = redirectManager;
-
-    window.addEventListener('load', () => {
-        const validSections = ['terms', 'privacy', 'cookies', 'acceptable-use', 'refund', 'contact'];
-        const hash = window.location.hash.replace('#', '');
-        if (validSections.includes(hash)) {
-            showView('legal', hash);
-        }
-    });
-
-    /* ══════════════════════════════════════════════════════════
-       LOADER
-       ══════════════════════════════════════════════════════════ */
-    (function () {
-        const loader = document.getElementById('loader');
-        const fill = document.getElementById('loaderFill');
-        const pct = document.getElementById('loaderPct');
-        if (!loader) return;
-
-        const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        if (reduced) {
-            loader.classList.add('hide');
-            return;
-        }
-
-        const start = performance.now();
-        const DURATION = 1350;
-
-        function tick() {
-            const elapsed = performance.now() - start;
-            const p = Math.min(100, (elapsed / DURATION) * 100);
-            fill.style.width = p + '%';
-            pct.textContent = Math.round(p) + '%';
-            if (p < 100) {
-                requestAnimationFrame(tick);
-            } else {
-                setTimeout(() => loader.classList.add('hide'), 240);
-            }
-        }
-        requestAnimationFrame(tick);
-
-        // Hard safety net
-        setTimeout(() => loader.classList.add('hide'), 4200);
-    })();
-
-    /* ══════════════════════════════════════════════════════════
-       FEATURE ECOSYSTEM LAYOUT
-       ══════════════════════════════════════════════════════════ */
-    (function () {
-        const eco = document.getElementById('ecosystem');
-        if (!eco) return;
-
-        const cards = Array.from(eco.querySelectorAll('.eco-card'));
-        const svg = document.getElementById('ecoLines');
-        const coreLabel = document.getElementById('ecoCoreLabel');
-
-        function layout() {
-            const w = eco.clientWidth;
-            const h = eco.clientHeight;
-
-            if (w < 1120 || h < 300) {
-                cards.forEach(c => { c.style.left = ''; c.style.top = ''; });
-                if (svg) svg.innerHTML = '';
-                return;
-            }
-
-            const cx = w / 2, cy = h / 2;
-            const Rx = w * 0.385;
-            const Ry = h * 0.395;
-            let lines = '';
-
-            cards.forEach((card, i) => {
-                const a = (i / cards.length) * Math.PI * 2 - Math.PI / 2;
-                const x = cx + Math.cos(a) * Rx;
-                const y = cy + Math.sin(a) * Ry;
-                card.style.left = x + 'px';
-                card.style.top = y + 'px';
-                lines += `<line x1="${cx.toFixed(1)}" y1="${cy.toFixed(1)}" x2="${x.toFixed(1)}" y2="${y.toFixed(1)}" />`;
-            });
-
-            if (svg) {
-                svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
-                svg.innerHTML = lines;
-            }
-        }
-
-        cards.forEach((card, i) => {
-            card.addEventListener('mouseenter', () => {
-                const line = svg && svg.querySelectorAll('line')[i];
-                if (line) line.classList.add('hot');
-                if (coreLabel) coreLabel.textContent = card.dataset.label || 'SHDR CORE';
-            });
-            card.addEventListener('mouseleave', () => {
-                const line = svg && svg.querySelectorAll('line')[i];
-                if (line) line.classList.remove('hot');
-                if (coreLabel) coreLabel.textContent = 'SHDR CORE';
-            });
+        toggle.addEventListener('click', () => {
+            toggle.classList.toggle('active');
+            navLinks.classList.toggle('active');
         });
 
-        let rAF;
-        function scheduleLayout() {
-            cancelAnimationFrame(rAF);
-            rAF = requestAnimationFrame(layout);
-        }
-
-        if (document.readyState === 'complete') scheduleLayout();
-        else window.addEventListener('load', scheduleLayout);
-        window.addEventListener('resize', () => {
-            clearTimeout(eco._t);
-            eco._t = setTimeout(scheduleLayout, 180);
-        });
-    })();
-
-    /* ══════════════════════════════════════════════════════════
-       3D CONSTRUCTION SCENE
-       ══════════════════════════════════════════════════════════ */
-    (function () {
-        'use strict';
-
-        const container = document.getElementById('sceneContainer');
-        const canvas = document.getElementById('sceneCanvas');
-        if (!container || !canvas) return;
-
-        const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        const mqMobile = window.matchMedia('(max-width: 820px)');
-
-        function webglAvailable() {
-            try {
-                const c = document.createElement('canvas');
-                return !!(window.WebGLRenderingContext &&
-                    (c.getContext('webgl') || c.getContext('experimental-webgl')));
-            } catch (e) { return false; }
-        }
-
-        /* ── Fallback path ── */
-        if (typeof THREE === 'undefined' || !webglAvailable()) {
-            container.classList.add('no-webgl');
-            const fb = document.getElementById('sceneFallback');
-            if (fb) fb.classList.add('show');
-            return;
-        }
-
-        const isMobile = mqMobile.matches;
-
-        /* ─────────────── Renderer / Scene / Camera ─────────────── */
-        const scene = new THREE.Scene();
-        scene.background = new THREE.Color(0x071310);
-        scene.fog = new THREE.Fog(0x071310, 70, 210);
-
-        const camera = new THREE.PerspectiveCamera(46, 1, 0.5, 700);
-        camera.position.set(26, 14, 32);
-
-        const renderer = new THREE.WebGLRenderer({
-            canvas,
-            antialias: !isMobile,
-            powerPreference: 'high-performance',
-            alpha: false
-        });
-        renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, isMobile ? 1.5 : 2));
-        renderer.setClearColor(0x071310, 1);
-        renderer.shadowMap.enabled = !isMobile;
-        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-
-        /* ─────────────── Lighting ─────────────── */
-        const hemi = new THREE.HemisphereLight(0x9fd8c0, 0x0a1a14, 0.62);
-        scene.add(hemi);
-
-        const keyLight = new THREE.DirectionalLight(0xffe9c9, 1.25);
-        keyLight.position.set(34, 48, 22);
-        if (!isMobile) {
-            keyLight.castShadow = true;
-            keyLight.shadow.mapSize.width = 1024;
-            keyLight.shadow.mapSize.height = 1024;
-            keyLight.shadow.camera.left = -48;
-            keyLight.shadow.camera.right = 48;
-            keyLight.shadow.camera.top = 48;
-            keyLight.shadow.camera.bottom = -48;
-            keyLight.shadow.camera.near = 1;
-            keyLight.shadow.camera.far = 160;
-            keyLight.shadow.bias = -0.0009;
-        }
-        scene.add(keyLight);
-
-        const rimLight = new THREE.DirectionalLight(0x6ee7b7, 0.42);
-        rimLight.position.set(-34, 22, -28);
-        scene.add(rimLight);
-
-        const fillLight = new THREE.DirectionalLight(0xf59e0b, 0.22);
-        fillLight.position.set(-10, 8, 30);
-        scene.add(fillLight);
-
-        /* ─────────────── Shared geometry & materials ─────────────── */
-        const G = {
-            box: new THREE.BoxGeometry(1, 1, 1),
-            cyl: new THREE.CylinderGeometry(1, 1, 1, 10),
-            sph: new THREE.SphereGeometry(1, 10, 8),
-            cone: new THREE.ConeGeometry(1, 1, 14),
-            plane: new THREE.PlaneGeometry(1, 1)
-        };
-        const BOX_EDGES = new THREE.EdgesGeometry(G.box);
-
-        function mkMat(color, rough, metal, emissive) {
-            const m = new THREE.MeshStandardMaterial({
-                color: color,
-                roughness: rough === undefined ? 0.88 : rough,
-                metalness: metal || 0
-            });
-            if (emissive) {
-                m.emissive = new THREE.Color(emissive);
-                m.emissiveIntensity = 0.35;
-            }
-            return m;
-        }
-
-        const M = {
-            ground: mkMat(0x16241d, 1),
-            pad: mkMat(0x25352c, 1),
-            concrete: mkMat(0x9aa3a0, 0.92),
-            concreteDark: mkMat(0x6f7a76, 0.95),
-            steel: mkMat(0xc2cbcf, 0.42, 0.7),
-            steelDark: mkMat(0x6d787d, 0.55, 0.6),
-            amber: mkMat(0xB45309, 0.55, 0.2),
-            amberBright: mkMat(0xF59E0B, 0.5, 0.25, 0x3a1f00),
-            hiVis: mkMat(0xE8B33A, 0.72, 0.04),
-            skin: mkMat(0xC98A5E, 0.88),
-            wood: mkMat(0x8a6a44, 0.95),
-            sand: mkMat(0xb9a271, 1),
-            cement: mkMat(0xada89e, 0.98),
-            rod: mkMat(0x8d949a, 0.4, 0.85),
-            green: mkMat(0x2D6A4F, 0.82),
-            dark: mkMat(0x2a3236, 0.8, 0.3)
-        };
-
-        /* ─────────────── Build helpers ─────────────── */
-        function addBox(parent, material, w, h, d, x, y, z, noShadow) {
-            const m = new THREE.Mesh(G.box, material);
-            m.scale.set(w, h, d);
-            m.position.set(x, y, z);
-            if (!noShadow) {
-                m.castShadow = !isMobile;
-                m.receiveShadow = !isMobile;
-            }
-            parent.add(m);
-            return m;
-        }
-
-        function addCyl(parent, material, r, h, x, y, z) {
-            const m = new THREE.Mesh(G.cyl, material);
-            m.scale.set(r, h, r);
-            m.position.set(x, y, z);
-            m.castShadow = !isMobile;
-            m.receiveShadow = !isMobile;
-            parent.add(m);
-            return m;
-        }
-
-        const edgeMat = new THREE.LineBasicMaterial({
-            color: 0x6ee7b7,
-            transparent: true,
-            opacity: 0.16
-        });
-        function addEdges(parent, w, h, d, x, y, z) {
-            const e = new THREE.LineSegments(BOX_EDGES, edgeMat);
-            e.scale.set(w, h, d);
-            e.position.set(x, y, z);
-            parent.add(e);
-            return e;
-        }
-
-        const tempV = new THREE.Vector3();
-        const tempUp = new THREE.Vector3(0, 1, 0);
-        function addCable(parent, x1, y1, z1, x2, y2, z2) {
-            const dx = x2 - x1, dy = y2 - y1, dz = z2 - z1;
-            const len = Math.sqrt(dx * dx + dy * dy + dz * dz);
-            const m = new THREE.Mesh(G.cyl, M.dark);
-            m.scale.set(0.045, len, 0.045);
-            m.position.set((x1 + x2) / 2, (y1 + y2) / 2, (z1 + z2) / 2);
-            tempV.set(dx, dy, dz).normalize();
-            m.quaternion.setFromUnitVectors(tempUp, tempV);
-            parent.add(m);
-            return m;
-        }
-
-        /* ─────────────── Site root ─────────────── */
-        const site = new THREE.Group();
-        scene.add(site);
-
-        /* Ground */
-        const ground = new THREE.Mesh(new THREE.PlaneGeometry(520, 520), M.ground);
-        ground.rotation.x = -Math.PI / 2;
-        ground.receiveShadow = !isMobile;
-        site.add(ground);
-
-        const pad = new THREE.Mesh(new THREE.PlaneGeometry(100, 84), M.pad);
-        pad.rotation.x = -Math.PI / 2;
-        pad.position.y = 0.02;
-        pad.receiveShadow = !isMobile;
-        site.add(pad);
-
-        const grid = new THREE.GridHelper(100, 25, 0x2f4a3c, 0x1d2f26);
-        grid.position.y = 0.05;
-        if (grid.material) {
-            grid.material.transparent = true;
-            grid.material.opacity = 0.28;
-        }
-        site.add(grid);
-
-        /* ─────────────── MAIN BUILDING ─────────────── */
-        const building = new THREE.Group();
-        site.add(building);
-
-        const COLS_X = [-7.5, -2.5, 2.5, 7.5];
-        const COLS_Z = [-5.5, 0, 5.5];
-
-        // Foundation
-        addBox(building, M.concreteDark, 18, 0.8, 14, 0, 0.4, 0);
-        addEdges(building, 18, 0.8, 14, 0, 0.4, 0);
-
-        // Level 0 columns
-        for (let i = 0; i < COLS_X.length; i++) {
-            for (let j = 0; j < COLS_Z.length; j++) {
-                addBox(building, M.concrete, 0.62, 3.2, 0.62, COLS_X[i], 2.4, COLS_Z[j]);
-            }
-        }
-
-        // Level 1 slab
-        addBox(building, M.concrete, 17, 0.45, 13, 0, 4.22, 0);
-        addEdges(building, 17, 0.45, 13, 0, 4.22, 0);
-
-        // Level 1 columns
-        for (let i = 0; i < COLS_X.length; i++) {
-            for (let j = 0; j < COLS_Z.length; j++) {
-                addBox(building, M.concrete, 0.62, 3.2, 0.62, COLS_X[i], 6.05, COLS_Z[j]);
-            }
-        }
-
-        // Level 2 partial slab (back half only)
-        addBox(building, M.concrete, 17, 0.45, 6.5, 0, 7.85, -3.2);
-        addEdges(building, 17, 0.45, 6.5, 0, 7.85, -3.2);
-
-        // Level 2 partial columns
-        for (let i = 0; i < COLS_X.length; i++) {
-            addBox(building, M.concrete, 0.62, 3.2, 0.62, COLS_X[i], 9.67, -5.5);
-        }
-        addBox(building, M.concrete, 0.62, 3.2, 0.62, -7.5, 9.67, 0);
-        addBox(building, M.concrete, 0.62, 3.2, 0.62, 7.5, 9.67, 0);
-
-        // Scaffolding on front face
-        const scaffold = new THREE.Group();
-        building.add(scaffold);
-        const scafCount = isMobile ? 5 : 7;
-        for (let i = 0; i < scafCount; i++) {
-            const x = -9 + (i * (18 / (scafCount - 1)));
-            addBox(scaffold, M.steelDark, 0.1, 8, 0.1, x, 4.4, 7.2, true);
-        }
-        for (let l = 0; l < 4; l++) {
-            addBox(scaffold, M.steelDark, 18, 0.08, 0.08, 0, 1.5 + l * 2.4, 7.2, true);
-        }
-        for (let l = 0; l < 3; l++) {
-            addBox(scaffold, M.wood, 18, 0.12, 1.2, 0, 2.7 + l * 2.4, 7.2, true);
-        }
-
-        /* ─────────────── TOWER CRANE ─────────────── */
-        const crane = new THREE.Group();
-        crane.position.set(15, 0, -6);
-        site.add(crane);
-
-        const MAST_H = 30;
-        const LEG = 0.78;
-
-        addBox(crane, M.steelDark, 3, 1, 3, 0, 0.5, 0);
-
-        // 4 legs
-        const legPositions = [[-1, -1], [1, -1], [1, 1], [-1, 1]];
-        for (let i = 0; i < 4; i++) {
-            addBox(crane, M.steel, 0.18, MAST_H, 0.18,
-                legPositions[i][0] * LEG, MAST_H / 2 + 1, legPositions[i][1] * LEG);
-        }
-
-        // Horizontal ties
-        const tieStep = isMobile ? 8 : 6;
-        for (let y = 4; y < MAST_H; y += tieStep) {
-            addBox(crane, M.steel, 1.7, 0.09, 0.09, 0, y, -LEG, true);
-            addBox(crane, M.steel, 1.7, 0.09, 0.09, 0, y, LEG, true);
-            addBox(crane, M.steel, 0.09, 0.09, 1.7, -LEG, y, 0, true);
-            addBox(crane, M.steel, 0.09, 0.09, 1.7, LEG, y, 0, true);
-        }
-
-        const JY = MAST_H + 1;
-
-        // Jib (extends toward -X, over the building)
-        addBox(crane, M.steel, 30, 0.55, 0.7, -13, JY, 0);
-        addBox(crane, M.steel, 0.4, 1.0, 0.4, -28, JY, 0);
-        // Counter-jib + counterweight
-        addBox(crane, M.steel, 8, 0.5, 0.6, 5, JY, 0);
-        addBox(crane, M.concreteDark, 7, 1.2, 2.3, 6.4, JY, 0);
-        // Operator cab
-        addBox(crane, M.amberBright, 1.8, 1.9, 1.8, 1.6, JY - 1.7, 0);
-        // Apex tower
-        addBox(crane, M.steel, 0.4, 4.2, 0.4, 0, JY + 2.1, 0);
-
-        // Cables
-        const APEX_Y = JY + 4.2;
-        addCable(crane, 0, APEX_Y, 0, -28, JY, 0);
-        addCable(crane, 0, APEX_Y, 0, 9.5, JY, 0);
-
-        // Trolley + hoist
-        const trolleyX = isMobile ? -12 : -14;
-        addBox(crane, M.amber, 1.1, 0.4, 1.1, trolleyX, JY - 0.5, 0, true);
-        addCable(crane, trolleyX, JY - 0.7, 0, trolleyX, JY - 13, 0);
-        addBox(crane, M.amberBright, 0.5, 0.5, 0.5, trolleyX, JY - 13.3, 0);
-
-        /* ─────────────── MATERIAL STOCKYARD ─────────────── */
-        const matArea = new THREE.Group();
-        matArea.position.set(16, 0, 12);
-        site.add(matArea);
-
-        // Cement pallets (3 x 3 stack)
-        const cementRows = isMobile ? 2 : 3;
-        for (let i = 0; i < 3; i++) {
-            for (let j = 0; j < cementRows; j++) {
-                addBox(matArea, M.cement, 1.6, 0.45, 1.0, i * 1.75, 0.25 + j * 0.5, 0);
-            }
-        }
-
-        // Steel rods
-        const rodCount = isMobile ? 4 : 6;
-        for (let i = 0; i < rodCount; i++) {
-            const r = addCyl(matArea, M.rod, 0.085, 7, -2.2, 0.16 + i * 0.18, 3.4);
-            r.rotation.z = Math.PI / 2;
-        }
-
-        // Sand pile
-        const sandPile = new THREE.Mesh(G.cone, M.sand);
-        sandPile.scale.set(3.1, 2.5, 3.1);
-        sandPile.position.set(3.6, 1.25, 4.4);
-        sandPile.castShadow = !isMobile;
-        sandPile.receiveShadow = !isMobile;
-        matArea.add(sandPile);
-
-        // Timber crate
-        addBox(matArea, M.wood, 2.4, 1.1, 1.6, -2.5, 0.55, -3);
-
-        /* ─────────────── WORKFORCE ─────────────── */
-        const crew = new THREE.Group();
-        crew.position.set(-17, 0, 10);
-        site.add(crew);
-
-        function makeWorker(x, z, rot) {
-            const g = new THREE.Group();
-            g.position.set(x, 0, z);
-            g.rotation.y = rot;
-
-            addBox(g, M.dark, 0.22, 0.8, 0.22, -0.13, 0.4, 0);
-            addBox(g, M.dark, 0.22, 0.8, 0.22, 0.13, 0.4, 0);
-            addBox(g, M.hiVis, 0.55, 0.75, 0.34, 0, 1.18, 0);
-            addBox(g, M.hiVis, 0.14, 0.6, 0.14, -0.34, 1.2, 0);
-            addBox(g, M.hiVis, 0.14, 0.6, 0.14, 0.34, 1.2, 0);
-
-            const head = new THREE.Mesh(G.sph, M.skin);
-            head.scale.setScalar(0.17);
-            head.position.set(0, 1.72, 0);
-            head.castShadow = !isMobile;
-            g.add(head);
-
-            const helmet = new THREE.Mesh(G.sph, M.amberBright);
-            helmet.scale.set(0.215, 0.16, 0.215);
-            helmet.position.set(0, 1.83, 0);
-            helmet.castShadow = !isMobile;
-            g.add(helmet);
-
-            crew.add(g);
-            return g;
-        }
-
-        const workerCount = isMobile ? 4 : 8;
-        for (let i = 0; i < workerCount; i++) {
-            const a = (i / workerCount) * Math.PI * 2;
-            makeWorker(Math.cos(a) * 3.4, Math.sin(a) * 3.0, -a);
-        }
-
-        /* ─────────────── TRUCK ─────────────── */
-        const truck = new THREE.Group();
-        truck.position.set(-3, 0, 19);
-        truck.rotation.y = -0.34;
-        site.add(truck);
-
-        addBox(truck, M.green, 5.5, 1.1, 2.4, -1.5, 1.5, 0);
-        addBox(truck, M.steelDark, 2.2, 1.9, 2.4, 2.6, 1.75, 0);
-        addBox(truck, M.amberBright, 5.6, 0.25, 2.5, -1.5, 2.12, 0);
-
-        const wheelPositions = [[-3.2, -1.2], [-3.2, 1.2], [1.4, -1.2], [1.4, 1.2], [2.6, -1.2], [2.6, 1.2]];
-        for (let i = 0; i < wheelPositions.length; i++) {
-            const w = addCyl(truck, M.dark, 0.55, 0.35, wheelPositions[i][0], 0.55, wheelPositions[i][1]);
-            w.rotation.x = Math.PI / 2;
-        }
-
-        /* ─────────────── SITE CONTAINERS ─────────────── */
-        const containers = new THREE.Group();
-        containers.position.set(-23, 0, -12);
-        site.add(containers);
-        addBox(containers, M.green, 6, 2.6, 2.5, 0, 1.3, 0);
-        addEdges(containers, 6, 2.6, 2.5, 0, 1.3, 0);
-        addBox(containers, M.amber, 6, 2.6, 2.5, 6.4, 1.3, 0);
-
-        /* ─────────────── SAFETY BARRIERS ─────────────── */
-        const barrierCount = isMobile ? 5 : 8;
-        for (let i = 0; i < barrierCount; i++) {
-            addBox(site, M.amberBright, 1.7, 0.9, 0.2,
-                -26 + i * (52 / (barrierCount - 1)), 0.45, 28, true);
-        }
-
-        /* ─────────────── INTERACTIVE REGISTRY ─────────────── */
-        const INTERACTIVE = [
-            {
-                key: 'building',
-                obj: building,
-                data: {
-                    title: 'MAIN BUILDING',
-                    rows: [
-                        ['Progress', '78%'],
-                        ['Workers', '24'],
-                        ['Materials', '82%'],
-                        ['Status', 'Active']
-                    ]
-                }
-            },
-            {
-                key: 'crane',
-                obj: crane,
-                data: {
-                    title: 'EQUIPMENT',
-                    rows: [
-                        ['Type', 'Tower Crane'],
-                        ['Status', 'Operational'],
-                        ['Last Inspection', 'Today']
-                    ]
-                }
-            },
-            {
-                key: 'workers',
-                obj: crew,
-                data: {
-                    title: 'WORKFORCE',
-                    rows: [
-                        ['Active', '48'],
-                        ['Present', '42'],
-                        ['Absent', '6']
-                    ]
-                }
-            },
-            {
-                key: 'materials',
-                obj: matArea,
-                data: {
-                    title: 'MATERIAL STOCK',
-                    rows: [
-                        ['Cement', '82%'],
-                        ['Steel', '64%'],
-                        ['Sand', '91%']
-                    ]
-                }
-            }
-        ];
-
-        const pickables = [];
-        INTERACTIVE.forEach(function (item) {
-            item.obj.traverse(function (o) {
-                if (o.isMesh) {
-                    o.userData.ikey = item.key;
-                    pickables.push(o);
-                }
-            });
-        });
-
-        /* Selection outline */
-        const selMat = new THREE.LineBasicMaterial({ color: 0xF59E0B, transparent: true, opacity: 0.95 });
-        const selectionBox = new THREE.LineSegments(BOX_EDGES, selMat);
-        selectionBox.visible = false;
-        scene.add(selectionBox);
-
-        const tmpBox = new THREE.Box3();
-        const tmpSize = new THREE.Vector3();
-        const tmpCenter = new THREE.Vector3();
-
-        function showSelection(key) {
-            const item = INTERACTIVE.find(function (i) { return i.key === key; });
-            if (!item) {
-                selectionBox.visible = false;
-                return;
-            }
-            tmpBox.setFromObject(item.obj);
-            tmpBox.getSize(tmpSize);
-            tmpBox.getCenter(tmpCenter);
-            selectionBox.position.copy(tmpCenter);
-            selectionBox.scale.copy(tmpSize).multiplyScalar(1.04);
-            selectionBox.visible = true;
-        }
-
-        /* ─────────────── Raycasting ─────────────── */
-        const raycaster = new THREE.Raycaster();
-        const ndc = new THREE.Vector2();
-
-        function pick(clientX, clientY) {
-            const rect = canvas.getBoundingClientRect();
-            if (!rect.width || !rect.height) return null;
-            ndc.x = ((clientX - rect.left) / rect.width) * 2 - 1;
-            ndc.y = -((clientY - rect.top) / rect.height) * 2 + 1;
-            raycaster.setFromCamera(ndc, camera);
-            const hits = raycaster.intersectObjects(pickables, false);
-            return hits.length ? hits[0].object.userData.ikey : null;
-        }
-
-        /* ─────────────── Info panel ─────────────── */
-        const panel = document.getElementById('objectPanel');
-        const panelTitle = document.getElementById('objectPanelTitle');
-        const panelRows = document.getElementById('objectPanelRows');
-        const panelClose = document.getElementById('objectPanelClose');
-
-        function openPanel(key, x, y) {
-            const item = INTERACTIVE.find(function (i) { return i.key === key; });
-            if (!item || !panel) return;
-
-            panelTitle.textContent = item.data.title;
-            panelRows.innerHTML = item.data.rows.map(function (r) {
-                return '<div class="object-panel-row"><span>' + r[0] + '</span><b>' + r[1] + '</b></div>';
-            }).join('');
-
-            const pw = 270;
-            const ph = 200;
-            let px = x + 18;
-            let py = y - 30;
-            if (px + pw > window.innerWidth - 16) px = x - pw - 18;
-            if (px < 16) px = 16;
-            if (py + ph > window.innerHeight - 16) py = window.innerHeight - ph - 16;
-            if (py < 76) py = 76;
-
-            panel.style.left = px + 'px';
-            panel.style.top = py + 'px';
-            panel.classList.add('show');
-            showSelection(key);
-        }
-
-        function closePanel() {
-            if (panel) panel.classList.remove('show');
-            selectionBox.visible = false;
-        }
-
-        if (panelClose) panelClose.addEventListener('click', closePanel);
-
-        /* ─────────────── Camera keyframes ─────────────── */
-        const HERO_A = { pos: [26, 14, 32], tgt: [0, 7, 0] };
-        const HERO_B = { pos: [31, 17, 38], tgt: [0, 7, 0] };
-        const SCENE_CAM = [
-            { pos: [44, 30, 52], tgt: [0, 6, 0] },     // 1 See the whole site
-            { pos: [-6, 5, 26], tgt: [-17, 1.5, 10] }, // 2 Know who is working
-            { pos: [27, 5, 23], tgt: [16, 1.5, 12] },  // 3 Track every material
-            { pos: [17, 17, 25], tgt: [0, 11, 0] },    // 4 Measure real progress
-            { pos: [50, 38, 64], tgt: [0, 6, 0] }      // 5 Turn activity into decisions
-        ];
-        const FINAL_CAM = { pos: [58, 44, 74], tgt: [0, 6, 0] };
-
-        let cameraKeys = [
-            { at: 0, pos: HERO_A.pos, tgt: HERO_A.tgt },
-            { at: 1, pos: FINAL_CAM.pos, tgt: FINAL_CAM.tgt }
-        ];
-
-        const zoneEl = document.getElementById('sceneZone');
-        const storySteps = Array.prototype.slice.call(document.querySelectorAll('.story-step'));
-
-        let zoneTopAbs = 0;
-        let maxScrollCached = 1;
-        let scrollProgress = 0;
-        let sceneVisible = false;
-
-        function clamp(v, a, b) { return v < a ? a : (v > b ? b : v); }
-
-        function computeKeys() {
-            if (!zoneEl) return;
-            const vh = window.innerHeight;
-            zoneTopAbs = zoneEl.getBoundingClientRect().top + window.scrollY;
-            maxScrollCached = Math.max(1, zoneEl.offsetHeight - vh);
-
-            const keys = [];
-            keys.push({ at: 0, pos: HERO_A.pos, tgt: HERO_A.tgt });
-            keys.push({ at: 0.14, pos: HERO_B.pos, tgt: HERO_B.tgt });
-
-            storySteps.forEach(function (el, i) {
-                const r = el.getBoundingClientRect();
-                const centerAbs = r.top + window.scrollY + r.height / 2;
-                const at = clamp((centerAbs - vh / 2 - zoneTopAbs) / maxScrollCached, 0, 1);
-                const cam = SCENE_CAM[i] || FINAL_CAM;
-                keys.push({ at: at, pos: cam.pos, tgt: cam.tgt });
-            });
-
-            keys.push({ at: 1, pos: FINAL_CAM.pos, tgt: FINAL_CAM.tgt });
-
-            for (let i = 1; i < keys.length; i++) {
-                if (keys[i].at <= keys[i - 1].at) keys[i].at = keys[i - 1].at + 0.004;
-            }
-            cameraKeys = keys;
-        }
-
-        const _sample = { px: 0, py: 0, pz: 0, tx: 0, ty: 0, tz: 0 };
-        function sampleKeys(p) {
-            const K = cameraKeys;
-            if (p <= K[0].at) {
-                _sample.px = K[0].pos[0]; _sample.py = K[0].pos[1]; _sample.pz = K[0].pos[2];
-                _sample.tx = K[0].tgt[0]; _sample.ty = K[0].tgt[1]; _sample.tz = K[0].tgt[2];
-                return _sample;
-            }
-            const last = K[K.length - 1];
-            if (p >= last.at) {
-                _sample.px = last.pos[0]; _sample.py = last.pos[1]; _sample.pz = last.pos[2];
-                _sample.tx = last.tgt[0]; _sample.ty = last.tgt[1]; _sample.tz = last.tgt[2];
-                return _sample;
-            }
-            for (let i = 0; i < K.length - 1; i++) {
-                if (p >= K[i].at && p <= K[i + 1].at) {
-                    const span = Math.max(0.0001, K[i + 1].at - K[i].at);
-                    let t = (p - K[i].at) / span;
-                    t = t * t * (3 - 2 * t); // smoothstep
-                    _sample.px = K[i].pos[0] + (K[i + 1].pos[0] - K[i].pos[0]) * t;
-                    _sample.py = K[i].pos[1] + (K[i + 1].pos[1] - K[i].pos[1]) * t;
-                    _sample.pz = K[i].pos[2] + (K[i + 1].pos[2] - K[i].pos[2]) * t;
-                    _sample.tx = K[i].tgt[0] + (K[i + 1].tgt[0] - K[i].tgt[0]) * t;
-                    _sample.ty = K[i].tgt[1] + (K[i + 1].tgt[1] - K[i].tgt[1]) * t;
-                    _sample.tz = K[i].tgt[2] + (K[i + 1].tgt[2] - K[i].tgt[2]) * t;
-                    return _sample;
-                }
-            }
-            return _sample;
-        }
-
-        /* ─────────────── Pointer tracking ─────────────── */
-        const pointer = { x: 0, y: 0, tx: 0, ty: 0 };
-
-        window.addEventListener('pointermove', function (e) {
-            pointer.tx = (e.clientX / window.innerWidth) * 2 - 1;
-            pointer.ty = (e.clientY / window.innerHeight) * 2 - 1;
-        }, { passive: true });
-
-        /* ─────────────── Camera update ─────────────── */
-        const desiredPos = new THREE.Vector3();
-        const desiredTgt = new THREE.Vector3();
-        const camLookAt = new THREE.Vector3(0, 7, 0);
-
-        const MOUSE_STRENGTH = isMobile ? 0 : 3.4;
-
-        function updateCamera(dt) {
-            pointer.x += (pointer.tx - pointer.x) * Math.min(1, dt * 3.2);
-            pointer.y += (pointer.ty - pointer.y) * Math.min(1, dt * 3.2);
-
-            sampleKeys(scrollProgress);
-
-            const mx = pointer.x * MOUSE_STRENGTH;
-            const my = pointer.y * (MOUSE_STRENGTH * 0.6);
-
-            desiredPos.set(_sample.px + mx, _sample.py - my, _sample.pz);
-            desiredTgt.set(_sample.tx + mx * 0.32, _sample.ty - my * 0.32, _sample.tz);
-
-            const k = 1 - Math.pow(0.0016, Math.min(dt, 0.05));
-            camera.position.lerp(desiredPos, k);
-            camLookAt.lerp(desiredTgt, k);
-            camera.lookAt(camLookAt);
-        }
-
-        /* ─────────────── Scene motion ─────────────── */
-        function updateMotion(t) {
-            if (prefersReduced) return;
-            crane.rotation.y = Math.sin(t * 0.13) * 0.17;
-            for (let i = 0; i < crew.children.length; i++) {
-                const w = crew.children[i];
-                w.position.y = Math.sin(t * 1.6 + i * 1.3) * 0.022;
-            }
-        }
-
-        /* ─────────────── Scroll state ─────────────── */
-        let lastStoryUpdate = 0;
-
-        function onScroll() {
-            if (!zoneEl) return;
-            const vh = window.innerHeight;
-            const sc = window.scrollY;
-
-            scrollProgress = clamp(sc / maxScrollCached, 0, 1);
-
-            const zoneBottom = zoneTopAbs + zoneEl.offsetHeight;
-            const fadeStart = zoneBottom - vh * 0.95;
-            let op = 1;
-            if (sc > fadeStart) {
-                op = clamp(1 - (sc - fadeStart) / (vh * 0.75), 0, 1);
-            }
-            if (sc + vh < zoneTopAbs) op = 0;
-
-            container.style.opacity = op.toFixed(3);
-            sceneVisible = op > 0.02 && !document.hidden && currentView === 'landing';
-
-            /* nav solid state */
-            const nav = document.getElementById('mainNav');
-            if (nav && currentView === 'landing') {
-                nav.classList.toggle('nav-solid', sc > zoneBottom - 90);
-            }
-
-            /* story card fades */
-            const now = performance.now();
-            if (now - lastStoryUpdate > 32) {
-                lastStoryUpdate = now;
-                const mid = sc + vh / 2;
-                for (let i = 0; i < storySteps.length; i++) {
-                    const el = storySteps[i];
-                    const card = el.firstElementChild;
-                    if (!card) continue;
-                    const r = el.getBoundingClientRect();
-                    const c = r.top + sc + r.height / 2;
-                    const d = Math.abs(c - mid);
-                    const o = clamp(1 - (d - vh * 0.12) / (vh * 0.46), 0, 1);
-                    card.style.opacity = o.toFixed(3);
-                    card.style.transform = 'translateY(' + ((1 - o) * 26).toFixed(1) + 'px)';
-                }
-            }
-        }
-
-        /* ─────────────── Resize ─────────────── */
-        let resizeT;
-        function resize() {
-            const w = window.innerWidth;
-            const h = window.innerHeight;
-            camera.aspect = w / h;
-            camera.updateProjectionMatrix();
-            renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, isMobile ? 1.5 : 2));
-            renderer.setSize(w, h, false);
-            computeKeys();
-            onScroll();
-        }
-
-        window.addEventListener('resize', function () {
-            clearTimeout(resizeT);
-            resizeT = setTimeout(resize, 150);
-        });
-
-        window.addEventListener('orientationchange', function () {
-            clearTimeout(resizeT);
-            resizeT = setTimeout(resize, 260);
-        });
-
-        /* ─────────────── Click / hover interaction ─────────────── */
-        document.addEventListener('click', function (e) {
-            if (!sceneVisible || currentView !== 'landing') return;
-            const t = e.target;
-            if (t && t.closest &&
-                t.closest('a, button, .hud-card, .story-card, .object-panel, nav, footer, input, textarea, select')) {
-                return;
-            }
-            const key = pick(e.clientX, e.clientY);
-            if (key) {
-                openPanel(key, e.clientX, e.clientY);
-            } else {
-                closePanel();
+        function redirectOwner() { window.location.href = 'owner.html'; }
+        function redirectManager() { window.location.href = 'manager.html'; }
+
+        window.addEventListener('load', () => {
+            const validSections = ['terms', 'privacy', 'cookies', 'acceptable-use', 'refund', 'contact'];
+            const hash = window.location.hash.replace('#', '');
+            if (validSections.includes(hash)) {
+                showView('legal', hash);
             }
         });
-
-        let lastHoverCheck = 0;
-        document.addEventListener('pointermove', function (e) {
-            if (!sceneVisible || currentView !== 'landing' || isMobile) return;
-            const now = performance.now();
-            if (now - lastHoverCheck < 110) return;
-            lastHoverCheck = now;
-
-            const t = e.target;
-            if (t && t.closest &&
-                t.closest('a, button, .hud-card, .story-card, .object-panel, nav, footer')) {
-                canvas.style.cursor = '';
-                return;
-            }
-            const key = pick(e.clientX, e.clientY);
-            canvas.style.cursor = key ? 'pointer' : '';
-            if (key) showSelection(key);
-            else if (!panel || !panel.classList.contains('show')) selectionBox.visible = false;
-        }, { passive: true });
-
-        /* ─────────────── Render loop ─────────────── */
-        let lastTime = performance.now();
-        let startedAt = lastTime;
-
-        function frame(now) {
-            requestAnimationFrame(frame);
-            const dt = Math.min((now - lastTime) / 1000, 0.05);
-            lastTime = now;
-
-            if (!sceneVisible) return;
-
-            updateCamera(dt);
-            if (!prefersReduced) updateMotion((now - startedAt) / 1000);
-
-            renderer.render(scene, camera);
-        }
-
-        /* ─────────────── Boot ─────────────── */
-        function boot() {
-            resize();
-            computeKeys();
-            onScroll();
-
-            if (prefersReduced) {
-                // Static, simplified experience: render one calm frame.
-                camera.position.set(HERO_A.pos[0], HERO_A.pos[1], HERO_A.pos[2]);
-                camLookAt.set(HERO_A.tgt[0], HERO_A.tgt[1], HERO_A.tgt[2]);
-                camera.lookAt(camLookAt);
-                renderer.render(scene, camera);
-                sceneVisible = true;
-                // Still allow a single re-render when visible toggles
-                window.addEventListener('scroll', function () {
-                    onScroll();
-                    if (sceneVisible) renderer.render(scene, camera);
-                }, { passive: true });
-                return;
-            }
-
-            requestAnimationFrame(frame);
-        }
-
-        if (document.readyState === 'complete' || document.readyState === 'interactive') {
-            setTimeout(boot, 0);
-        } else {
-            window.addEventListener('DOMContentLoaded', boot);
-        }
-
-        window.addEventListener('scroll', onScroll, { passive: true });
-        document.addEventListener('visibilitychange', onScroll);
-
-        /* Expose a refresh hook so showView() can resync after view changes */
-        window.__shdrSceneRefresh = function () {
-            setTimeout(function () {
-                computeKeys();
-                onScroll();
-            }, 60);
-        };
-    })();
-
-    /* ══════════════════════════════════════════════════════════
-       PATCH showView to resync 3D scene after view changes
-       ══════════════════════════════════════════════════════════ */
-    (function () {
-        const originalShowView = window.showView;
-        window.showView = function (viewName, anchorId) {
-            originalShowView(viewName, anchorId);
-            if (typeof window.__shdrSceneRefresh === 'function') {
-                window.__shdrSceneRefresh();
-            }
-            if (viewName === 'landing') {
-                const nav = document.getElementById('mainNav');
-                if (nav) setTimeout(function () {
-                    const zone = document.getElementById('sceneZone');
-                    if (zone) {
-                        const bottom = zone.getBoundingClientRect().top + window.scrollY + zone.offsetHeight;
-                        nav.classList.toggle('nav-solid', window.scrollY > bottom - 90);
-                    }
-                }, 80);
-            }
-        };
-    })();
     </script>
 </body>
 </html>
