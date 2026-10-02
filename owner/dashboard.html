@@ -209,15 +209,6 @@ tbody tr:hover{background:#f1f5f9}
 .msg-star{position:absolute;top:-4px;right:-4px;width:18px;height:18px;background:#fbbf24;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;box-shadow:0 1px 3px rgba(0,0,0,.2)}
 .msg-bubble-row.mine .msg-star{left:-4px;right:auto}
 
-/* NEW: recording bar */
-#recording-bar{display:flex;align-items:center;gap:10px;background:#fef2f2;border:1px solid #fecaca;border-radius:12px;padding:8px 12px;margin-bottom:8px;font-size:13px;color:#991b1b}
-#recording-bar .rec-dot{width:10px;height:10px;border-radius:50%;background:#dc2626;animation:pulseDot 1.2s ease-in-out infinite}
-@keyframes pulseDot{0%,100%{opacity:1}50%{opacity:.35}}
-#recording-bar .rec-time{font-family:monospace;font-weight:600}
-#recording-bar button{padding:5px 12px;border-radius:8px;font-size:12px;font-weight:500;cursor:pointer;border:1px solid transparent}
-#recording-bar .rec-cancel{background:#fff;color:#991b1b;border-color:#fecaca}
-#recording-bar .rec-send{background:#059669;color:#fff}
-
 /* NEW: load-older spinner */
 .load-older{display:flex;justify-content:center;padding:10px}
 .load-older .spinner{width:20px;height:20px;border-width:2px}
@@ -411,10 +402,9 @@ tbody tr:hover{background:#f1f5f9}
       copy:"Copy",forward:"Forward",star:"Star",unstar:"Unstar",
       pinMessage:"Pin message",unpinMessage:"Unpin message",pinnedMessage:"Pinned",
       copied:"Message copied",markUnread:"Mark as unread",conversationInfo:"Conversation Info",
-      voiceMessage:"Voice message",recording:"Recording",
       loadOlder:"Loading older messages...",noOlder:"No older messages",
       conversationPinned:"Message pinned",conversationUnpinned:"Message unpinned",
-      forwardedBy:"Forwarded"
+      forwardedBy:"Forwarded",unsupportedMessage:"Unsupported message type"
       },
       dashboard:{title:"Dashboard",totalSites:"Total Sites",totalWorkers:"Total Workers",welcome:"Welcome back, {name}",goodMorning:"Good Morning, {name}",goodAfternoon:"Good Afternoon, {name}",goodEvening:"Good Evening, {name}",overview:"Here's your construction site overview",noSites:"No sites",noWorkers:"No workers assigned",noData:"No data",spentOnMaterials:"Spent on Materials",recentProgress:"Recent Progress",selectSite:"Select a site",endDate:"End"},
       sites:{title:"Your Sites",addSite:"Add Site",editSite:"Edit Site",siteName:"Site Name",location:"Location",client:"Client",startDate:"Start Date",endDate:"End Date",budget:"Budget",status:"Status",markFinished:"Mark Finished",noSites:"No sites yet",district:"District",sector:"Sector",saveSite:"Save Site",deleteSite:"Delete Site"},
@@ -468,10 +458,9 @@ tbody tr:hover{background:#f1f5f9}
       copy:"Koporora",forward:"Ohereza",star:"Shyiraho itara",unstar:"Kuraho itara",
       pinMessage:"Shyira ubutumwa hejuru",unpinMessage:"Kura ubutumwa hejuru",pinnedMessage:"Byashyizwe hejuru",
       copied:"Ubutumwa bwakoporowe",markUnread:"Menyekanisha nk'utarasoma",conversationInfo:"Amakuru y'ikiganiro",
-      voiceMessage:"Ubutumwa bw'ijwi",recording:"Turimo gufata amajwi",
       loadOlder:"Turashakisha ubutumwa bwa kera...",noOlder:"Nta butumwa bwa kera",
       conversationPinned:"Ubutumwa bwashyizwe hejuru",conversationUnpinned:"Ubutumwa bwakuwe hejuru",
-      forwardedBy:"Byoherejwe"
+      forwardedBy:"Byoherejwe",unsupportedMessage:"Ubwoko bw'ubutumwa butashyigikiwe"
       },
       dashboard:{title:"Imbonerahamwe",totalSites:"Imibare y'ibibanza",totalWorkers:"Imibare y'abakozi",welcome:"Murakaza neza, {name}",goodMorning:"Mwaramutse, {name}",goodAfternoon:"Mwiriwe, {name}",goodEvening:"Mu mugoroba, {name}",overview:"Dore ikibazo cy'umurimo wawe",noSites:"Nta bibanza",noWorkers:"Nta bakozi bagenwe",noData:"Nta makuru",spentOnMaterials:"Amafaranga yakoreshejwe ku bikoresho",recentProgress:"Ibitekerezo bishya",selectSite:"Hitamo igibanza",endDate:"Iherezo"},
       sites:{title:"Ibibanza byawe",addSite:"Ongeraho igibanza",editSite:"Hindura igibanza",siteName:"Izina",location:"Aho biherereye",client:"Umukiriya",startDate:"Itariki yo gutangira",endDate:"Itariki yo kurangira",budget:"Ingengo y'imari",status:"Imiterere",markFinished:"Rangiza",noSites:"Nta bibanza birahari",district:"Akarere",sector:"Umurenge",saveSite:"Bika",deleteSite:"Siba"},
@@ -490,7 +479,7 @@ tbody tr:hover{background:#f1f5f9}
     fr: {
       common:{comingSoon:"Bientôt disponible",save:"Enregistrer",cancel:"Annuler",add:"Ajouter",delete:"Supprimer",edit:"Modifier",close:"Fermer",export:"Exporter",loading:"Chargement...",error:"Erreur",search:"Rechercher",view:"Voir",copy:"Copier",areYouSure:"Êtes-vous sûr ?",cannotUndo:"Irréversible",savedSuccessfully:"Enregistré",updatedSuccessfully:"Mis à jour",deletedSuccessfully:"Supprimé",somethingWentWrong:"Erreur",requiredField:"Champ requis",invalidValue:"Valeur invalide",noDataAvailable:"Aucune donnée",noChange:"Aucun changement",accessDenied:"Refusé",confirmDelete:"Confirmer"},
       navigation:{dashboard:"Tableau de bord",sites:"Sites",materials:"Matériaux",stock:"Stock",workers:"Ouvriers",progress:"Progrès",reports:"Rapports",finances:"Finances",managers:"Gestionnaires",invitations:"Invitations",messages:"Messages",gallery:"Galerie",officeHub:"Bureau",settings:"Paramètres",notifications:"Notifications",logout:"Déconnexion",ownerPanel:"Panneau du propriétaire"},
-      messages:{title:"Messages",searchPlaceholder:"Rechercher...",noManagers:"Aucun gestionnaire.",noSearchResults:"Aucun résultat.",selectConversation:"Sélectionnez un gestionnaire",emptyThread:"Aucun message. Dites bonjour 👋",inputPlaceholder:"Tapez un message...",send:"Envoyer",online:"En ligne",offline:"Hors ligne",lastSeen:"Vu",unread:"Non lu",you:"Vous",site:"Site",back:"Retour",yesterday:"Hier",today:"AUJOURD'HUI",notAuthorized:"Non autorisé.",sentTo:"Conversation avec {name}",attach:"Joindre image",emoji:"Emoji",share:"Partager",shareMaterial:"Partager Matériau",shareWorker:"Partager Ouvrier",shareReport:"Partager Rapport",cancelReply:"Annuler réponse",replyingTo:"Réponse à {name}",reply:"Répondre",react:"Réagir",deleteForMe:"Supprimer pour moi",deleteForEveryone:"Supprimer pour tous",edited:"modifié",deleted:"Ce message a été supprimé",statusSent:"Envoyé",statusDelivered:"Livré",statusRead:"Lu",isTyping:"{name} écrit...",severalTyping:"plusieurs personnes écrivent...",searchInConversation:"Rechercher",noSearchResults:"Aucun résultat",pinConversation:"Épingler",unpinConversation:"Désépingler",muteConversation:"Sourdine",unmuteConversation:"Réactiver",archiveConversation:"Archiver",unarchiveConversation:"Désarchiver",uploading:"Envoi {name}...",fileTooLarge:"Trop volumineux (max 10 Mo)",fileTypeNotAllowed:"Images uniquement (JPG, PNG, GIF, WEBP)",newMessageFrom:"Nouveau message de {name}",edit:"Modifier le message", delete:"Supprimer le message",editMessage:"Modifier",saveEdit:"Enregistrer",editWindowExpired:"Modifiable dans les 15 minutes",deleteWindowExpired:"Suppression pour tous dans les 15 minutes",copy:"Copier",forward:"Transférer",star:"Marquer",unstar:"Démarquer",pinMessage:"Épingler le message",unpinMessage:"Désépingler le message",pinnedMessage:"Épinglé",copied:"Message copié",markUnread:"Marquer comme non lu",conversationInfo:"Informations",voiceMessage:"Message vocal",recording:"Enregistrement",loadOlder:"Chargement des anciens messages...",noOlder:"Pas d'anciens messages",conversationPinned:"Message épinglé",conversationUnpinned:"Message désépinglé",forwardedBy:"Transféré"},
+      messages:{title:"Messages",searchPlaceholder:"Rechercher...",noManagers:"Aucun gestionnaire.",noSearchResults:"Aucun résultat.",selectConversation:"Sélectionnez un gestionnaire",emptyThread:"Aucun message. Dites bonjour 👋",inputPlaceholder:"Tapez un message...",send:"Envoyer",online:"En ligne",offline:"Hors ligne",lastSeen:"Vu",unread:"Non lu",you:"Vous",site:"Site",back:"Retour",yesterday:"Hier",today:"AUJOURD'HUI",notAuthorized:"Non autorisé.",sentTo:"Conversation avec {name}",attach:"Joindre image",emoji:"Emoji",share:"Partager",shareMaterial:"Partager Matériau",shareWorker:"Partager Ouvrier",shareReport:"Partager Rapport",cancelReply:"Annuler réponse",replyingTo:"Réponse à {name}",reply:"Répondre",react:"Réagir",deleteForMe:"Supprimer pour moi",deleteForEveryone:"Supprimer pour tous",edited:"modifié",deleted:"Ce message a été supprimé",statusSent:"Envoyé",statusDelivered:"Livré",statusRead:"Lu",isTyping:"{name} écrit...",severalTyping:"plusieurs personnes écrivent...",searchInConversation:"Rechercher",noSearchResults:"Aucun résultat",pinConversation:"Épingler",unpinConversation:"Désépingler",muteConversation:"Sourdine",unmuteConversation:"Réactiver",archiveConversation:"Archiver",unarchiveConversation:"Désarchiver",uploading:"Envoi {name}...",fileTooLarge:"Trop volumineux (max 10 Mo)",fileTypeNotAllowed:"Images uniquement (JPG, PNG, GIF, WEBP)",newMessageFrom:"Nouveau message de {name}",edit:"Modifier le message", delete:"Supprimer le message",editMessage:"Modifier",saveEdit:"Enregistrer",editWindowExpired:"Modifiable dans les 15 minutes",deleteWindowExpired:"Suppression pour tous dans les 15 minutes",copy:"Copier",forward:"Transférer",star:"Marquer",unstar:"Démarquer",pinMessage:"Épingler le message",unpinMessage:"Désépingler le message",pinnedMessage:"Épinglé",copied:"Message copié",markUnread:"Marquer comme non lu",conversationInfo:"Informations",loadOlder:"Chargement des anciens messages...",noOlder:"Pas d'anciens messages",conversationPinned:"Message épinglé",conversationUnpinned:"Message désépinglé",forwardedBy:"Transféré",unsupportedMessage:"Type de message non pris en charge"},
       dashboard:{title:"Tableau de bord",totalSites:"Sites",totalWorkers:"Ouvriers",welcome:"Bienvenue, {name}",goodMorning:"Bonjour, {name}",goodAfternoon:"Bon après-midi, {name}",goodEvening:"Bonsoir, {name}",overview:"Aperçu",noSites:"Aucun site",noWorkers:"Aucun ouvrier",noData:"Aucune donnée",spentOnMaterials:"Dépensé",recentProgress:"Progrès récents",selectSite:"Sélectionner",endDate:"Fin"},
       sites:{title:"Vos sites",addSite:"Ajouter",editSite:"Modifier",siteName:"Nom",location:"Emplacement",client:"Client",startDate:"Début",endDate:"Fin",budget:"Budget",status:"Statut",markFinished:"Marquer",noSites:"Aucun site",district:"District",sector:"Secteur",saveSite:"Enregistrer",deleteSite:"Supprimer"},
       materials:{title:"Matériaux",requisitions:"Réquisitions",reqNumber:"N°",site:"Site",requestedBy:"Demandé par",requestDate:"Date demande",requiredDate:"Date requise",priority:"Priorité",status:"Statut",actions:"Actions",pending:"En attente",urgent:"Urgent",approved:"Approuvé",rejected:"Rejeté",partiallySupplied:"Partiel",suppliedStatus:"Fourni",normal:"Normal",view:"Voir",approve:"Approuver",reject:"Rejeter",supply:"Fournir",noRequisitions:"Aucune réquisition.",requested:"Demandé",supplied:"Fourni",remaining:"Restant",available:"Disponible",material:"Matériau",unit:"Unité",notes:"Notes",quantityUsed:"Qté",unitCost:"Coût",totalAmount:"Total",availableStock:"Disponible",rejectionReason:"Motif",noMaterials:"Aucun matériau."},
@@ -3154,7 +3143,7 @@ tbody tr:hover{background:#f1f5f9}
   };
 
   // =================================================================
-  // ============== MESSAGING ENGINE v3 — HARDENED =============
+  // ============== MESSAGING ENGINE v3 — HARDENED (NO VOICE) =============
   // =================================================================
   const CONVERSATIONS = 'conversations';
   const EDIT_WINDOW_MS   = 15 * 60 * 1000;
@@ -3187,11 +3176,6 @@ tbody tr:hover{background:#f1f5f9}
   let _hasMoreOlder       = true;
   let _loadingOlder       = false;
   let _notifAudio         = null;
-  let _pendingMediaRecorder = null;
-  let _pendingAudioBlob     = null;
-  let _recordingSeconds     = 0;
-  let _recordingTimer       = null;
-  let _audioChunks          = [];
 
   // ── Helpers ─────────────────────────────────────────────
   function isSafeAttachmentUrl(url) {
@@ -3377,7 +3361,6 @@ tbody tr:hover{background:#f1f5f9}
     _loadingOlder = true;
     const scroller = document.getElementById('message-scroll');
     const prevHeight = scroller?.scrollHeight || 0;
-    // show spinner
     const spinnerHost = document.getElementById('load-older-host');
     if (spinnerHost) spinnerHost.innerHTML = `<div class="load-older"><div class="spinner"></div></div>`;
     try {
@@ -3436,7 +3419,6 @@ tbody tr:hover{background:#f1f5f9}
     return cid;
   }
 
-  // ── Bug 2 fix: only write what actually changed ─────────
   async function markConversationRead(cid) {
     const conv = conversationsData.find(c => c.id === cid);
     const unread = (conv?.unread && conv.unread[currentUser.uid]) || 0;
@@ -3542,12 +3524,11 @@ tbody tr:hover{background:#f1f5f9}
   function updateComposerButtons() {
     const ta = document.getElementById('message-input');
     const send = document.getElementById('message-send-btn');
-    const mic = document.getElementById('composer-mic-btn');
-    if (!ta || !send || !mic) return;
+    if (!ta || !send) return;
     const hasText = (ta.value || '').trim().length > 0;
-    const hasAttach = !!pendingAttachment || !!window._pendingSharedRecord || !!_pendingAudioBlob;
-    if (hasText || hasAttach) { send.classList.remove('hidden'); mic.classList.add('hidden'); }
-    else { send.classList.add('hidden'); mic.classList.remove('hidden'); }
+    const hasAttach = !!pendingAttachment || !!window._pendingSharedRecord;
+    if (hasText || hasAttach) send.classList.remove('opacity-60');
+    else send.classList.add('opacity-60');
   }
 
   window.sendMessage = async () => {
@@ -3649,7 +3630,6 @@ tbody tr:hover{background:#f1f5f9}
       : (managersData.find(mm => mm.id === m.sender_id)?.full_name || 'Manager');
     const body = m.type === 'attachment' ? `📎 ${m.attachment?.name || 'file'}`
       : m.type === 'shared_record' ? `📋 ${m.shared_record?.title || 'record'}`
-      : m.type === 'voice' ? '🎤 Voice message'
       : (m.text || '');
     replyingTo = { id: mid, sender_name: senderName, text: body.slice(0, 120) };
     renderComposerReplyPreview();
@@ -3671,7 +3651,7 @@ tbody tr:hover{background:#f1f5f9}
     catch (err) { showToast(t('alerts.somethingWentWrong'), 'error'); }
   };
 
-  // ── Message menu (extended) ─────────────────────────────
+  // ── Message menu ────────────────────────────────────────
   window.openMsgMenu = function (ev, mid) {
     if (ev?.stopPropagation) ev.stopPropagation();
     closeReactionPicker(); closeMsgMenu();
@@ -3810,7 +3790,6 @@ tbody tr:hover{background:#f1f5f9}
       };
       const previewText = src.attachment ? `📎 ${src.attachment.name}`
         : src.shared_record ? `📋 ${src.shared_record.title}`
-        : src.type === 'voice' ? '🎤 Voice message'
         : (src.text || '').slice(0, 200);
       const batch = writeBatch(db);
       batch.set(doc(collection(db, CONVERSATIONS, targetCid, 'messages')), payload);
@@ -4025,99 +4004,6 @@ tbody tr:hover{background:#f1f5f9}
   };
   function formatRWF(v){return toNumber(v).toLocaleString('en-RW',{minimumFractionDigits:0,maximumFractionDigits:0})+' RWF';}
 
-  // ── Voice recording ─────────────────────────────────────
-  window.startVoiceRecording = async function () {
-    if (_pendingMediaRecorder) return;
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      const mime = ['audio/webm;codecs=opus', 'audio/webm', 'audio/mp4', ''].find(m => !m || MediaRecorder.isTypeSupported(m)) || '';
-      _pendingMediaRecorder = new MediaRecorder(stream, mime ? { mimeType: mime } : undefined);
-      _audioChunks = [];
-      _pendingMediaRecorder.ondataavailable = (e) => { if (e.data.size) _audioChunks.push(e.data); };
-      _pendingMediaRecorder.onstop = () => {
-        stream.getTracks().forEach(t => t.stop());
-        _pendingAudioBlob = new Blob(_audioChunks, { type: _pendingMediaRecorder.mimeType || 'audio/webm' });
-        updateComposerButtons();
-        renderComposerAttachment();
-      };
-      _pendingMediaRecorder.start();
-      _recordingSeconds = 0;
-      _recordingTimer = setInterval(() => { _recordingSeconds++; updateRecordingUI(); }, 1000);
-      updateRecordingUI();
-      renderRecordingBar();
-    } catch (e) {
-      console.error(e);
-      showToast('Microphone access denied', 'error');
-    }
-  };
-
-  function updateRecordingUI() {
-    const bar = document.getElementById('recording-bar');
-    if (!bar) return;
-    const timeEl = bar.querySelector('.rec-time');
-    if (timeEl) timeEl.textContent = `${String(Math.floor(_recordingSeconds/60)).padStart(2,'0')}:${String(_recordingSeconds%60).padStart(2,'0')}`;
-  }
-
-  window.cancelVoiceRecording = function () {
-    try { _pendingMediaRecorder?.stop(); } catch (_) {}
-    clearInterval(_recordingTimer);
-    _pendingMediaRecorder = null; _pendingAudioBlob = null; _audioChunks = []; _recordingSeconds = 0;
-    renderRecordingBar();
-    renderComposerAttachment();
-    updateComposerButtons();
-    showToast('Recording discarded', 'info');
-  };
-
-  window.sendVoiceMessage = async function () {
-    if (!_pendingAudioBlob || !activeConversationId || !activeManagerId) return;
-    const blob = _pendingAudioBlob;
-    const dur = _recordingSeconds;
-    _pendingAudioBlob = null; _pendingMediaRecorder = null; clearInterval(_recordingTimer);
-    _audioChunks = []; _recordingSeconds = 0;
-    renderRecordingBar();
-    try {
-      const file = new File([blob], `voice-${Date.now()}.webm`, { type: blob.type });
-      // imgbb cannot host audio reliably. Configure object storage (Firebase Storage / S3 / Cloudinary)
-      // and swap this block. For now, attempt upload and surface a clear error if it fails.
-      const formData = new FormData();
-      formData.append('image', file);
-      const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, { method: 'POST', body: formData });
-      const json = await res.json();
-      if (!json.success) throw new Error('Voice hosting not configured. Add object storage to enable voice messages.');
-      const url = json.data.url;
-      const now = new Date().toISOString();
-      const payload = {
-        sender_id: currentUser.uid, sender_role: 'owner', text: '',
-        type: 'voice',
-        attachment: { url, name: file.name, size: file.size, mime: file.type, duration: dur },
-        created_at: now, sent_at: now, delivered_at: null, read_at: null,
-        reactions: {}, edited_at: null, deleted_for_all: false, deleted_for: []
-      };
-      const batch = writeBatch(db);
-      batch.set(doc(collection(db, CONVERSATIONS, activeConversationId, 'messages')), payload);
-      batch.update(doc(db, CONVERSATIONS, activeConversationId), {
-        last_message: { text: '🎤 Voice message', sender_id: currentUser.uid, created_at: now },
-        updated_at: now, [`unread.${activeManagerId}`]: increment(1)
-      });
-      await batch.commit();
-      showToast('Voice message sent', 'success');
-    } catch (e) {
-      console.error(e);
-      showToast(e.message || 'Voice send failed.', 'error');
-    }
-  };
-
-  function renderRecordingBar() {
-    const bar = document.getElementById('recording-bar');
-    if (!bar) return;
-    if (_pendingMediaRecorder || _pendingAudioBlob) {
-      bar.classList.remove('hidden');
-      updateRecordingUI();
-    } else {
-      bar.classList.add('hidden');
-    }
-  }
-
   // ── Conversation Info panel ─────────────────────────────
   window.openConversationInfo = function () {
     if (!activeManagerId) return;
@@ -4125,7 +4011,7 @@ tbody tr:hover{background:#f1f5f9}
     if (!mgr) return;
     const siteName = getManagerSiteName(mgr);
     const media = messagesCache.filter(m => m.attachment && m.attachment.mime?.startsWith('image/'));
-    const docs  = messagesCache.filter(m => m.attachment && !m.attachment.mime?.startsWith('image/') && !m.attachment.mime?.startsWith('audio/') && !m.attachment.mime?.startsWith('video/'));
+    const docs  = messagesCache.filter(m => m.attachment && !m.attachment.mime?.startsWith('image/') && !m.attachment.mime?.startsWith('video/'));
     const starred = messagesCache.filter(m => (m.starred || []).includes(currentUser.uid));
     const pinnedMsg = messagesCache.find(m => m.id === _pinnedMsgId);
 
@@ -4322,20 +4208,13 @@ tbody tr:hover{background:#f1f5f9}
         <div id="msg-search-results" class="mt-2 max-h-[240px] overflow-y-auto"></div>
       </div>
       <div id="message-scroll" class="flex-1 overflow-y-auto p-4 bg-slate-50">
-        <div id="load-older-host">${_hasMoreOlder ? '' : ''}</div>
+        <div id="load-older-host"></div>
         ${bubbles || `<div class="h-full flex flex-col items-center justify-center text-center"><iconify-icon icon="material-symbols:waving-hand" class="text-4xl text-slate-300 mb-2"></iconify-icon><p class="text-sm text-slate-400">${t('messages.emptyThread')}</p></div>`}
       </div>
       <div id="typing-indicator" class="px-4 py-1 text-xs text-emerald-700 hidden"><span class="italic"></span></div>
       <div class="p-3 border-t bg-white relative">
         <div id="composer-reply" class="hidden"></div>
         <div id="composer-attachment" class="hidden"></div>
-        <div id="recording-bar" class="${(_pendingMediaRecorder || _pendingAudioBlob) ? '' : 'hidden'}">
-          <span class="rec-dot"></span>
-          <span>${t('messages.recording') || 'Recording'}</span>
-          <span class="rec-time">00:00</span>
-          <button type="button" class="rec-cancel" onclick="cancelVoiceRecording()">Cancel</button>
-          <button type="button" class="rec-send ml-auto" onclick="sendVoiceMessage()">Send</button>
-        </div>
         <div id="emoji-picker" class="emoji-picker"></div>
         <div class="flex items-end gap-2">
           <div class="composer-toolbar">
@@ -4344,9 +4223,6 @@ tbody tr:hover{background:#f1f5f9}
             <button type="button" onclick="openSharePicker()" title="${t('messages.share')}"><iconify-icon icon="material-symbols:add-link" width="22"></iconify-icon></button>
           </div>
           <textarea id="message-input" rows="1" onkeydown="handleMessageKeydown(event)" oninput="onComposerInput();saveDraftSoon();" placeholder="${t('messages.inputPlaceholder')}" class="flex-1 resize-none border rounded-xl px-3 py-2 text-sm max-h-32 focus:outline-none focus:border-emerald-600"></textarea>
-          <button id="composer-mic-btn" type="button" onclick="(function(){ if(_pendingMediaRecorder) cancelVoiceRecording(); else startVoiceRecording(); })()" title="Voice message" class="bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl px-3 py-2.5">
-            <iconify-icon icon="material-symbols:mic" width="18"></iconify-icon>
-          </button>
           <button id="message-send-btn" type="button" onclick="sendMessage()" class="bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl px-4 py-2.5 flex items-center gap-1 disabled:opacity-60">
             <iconify-icon icon="material-symbols:send" width="18"></iconify-icon>
             <span class="hidden sm:inline text-sm">${t('messages.send')}</span>
@@ -4454,14 +4330,6 @@ tbody tr:hover{background:#f1f5f9}
           bodyHTML += `<a href="${escapeHTML(a.url)}" target="_blank" rel="noopener" class="attach-file"><iconify-icon icon="material-symbols:description" width="18"></iconify-icon><span class="truncate">${escapeHTML(a.name)}</span><iconify-icon icon="material-symbols:download" width="16" class="ml-auto"></iconify-icon></a>`;
         }
       }
-      if (m.type === 'voice' && m.attachment && isSafeAttachmentUrl(m.attachment.url)) {
-        const dur = m.attachment.duration ? `${Math.floor(m.attachment.duration/60)}:${String(m.attachment.duration%60).padStart(2,'0')}` : '';
-        bodyHTML += `<div class="flex items-center gap-2" style="min-width:200px">
-          <iconify-icon icon="material-symbols:graphic-eq" width="20" class="opacity-80"></iconify-icon>
-          <audio controls src="${escapeHTML(m.attachment.url)}" style="height:32px;max-width:220px"></audio>
-          ${dur ? `<span class="text-[10px] opacity-70">${dur}</span>` : ''}
-        </div>`;
-      }
       if (m.type === 'shared_record' && m.shared_record) {
         const s = m.shared_record;
         const lineRows = (s.lines || []).map(line => {
@@ -4470,6 +4338,10 @@ tbody tr:hover{background:#f1f5f9}
           return `<div class="sc-row"><span class="text-slate-500">${escapeHTML(label)}</span><span class="font-medium">${escapeHTML(value)}</span></div>`;
         }).join('');
         bodyHTML += `<div class="shared-card"><div class="sc-title">${escapeHTML(s.title)}</div><div class="font-semibold text-slate-800 mb-1">${escapeHTML(s.subtitle)}</div>${lineRows}</div>`;
+      }
+      if (m.type === 'voice') {
+        // Legacy voice messages from earlier versions — safe fallback so the thread doesn't crash
+        bodyHTML += `<p class="msg-deleted">${t('messages.unsupportedMessage') || 'Unsupported message type'}</p>`;
       }
       if (m.text) bodyHTML += `<p class="whitespace-pre-wrap">${escapeHTML(m.text)}</p>`;
     }
