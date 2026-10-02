@@ -124,7 +124,7 @@ tbody tr:hover{background:#f1f5f9}
   box-shadow:0 12px 32px rgba(0,0,0,.18);
   padding:4px;z-index:9000;
   display:flex;flex-direction:column;
-  min-width:170px;
+  min-width:190px;
 }
 .msg-action-menu button{
   display:flex;align-items:center;gap:10px;
@@ -193,6 +193,34 @@ tbody tr:hover{background:#f1f5f9}
 .attach-preview{max-width:220px;border-radius:8px;overflow:hidden;margin-bottom:4px;background:#000}
 .attach-preview img{display:block;width:100%;max-height:200px;object-fit:cover;cursor:pointer}
 .attach-file{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.15);border-radius:8px;padding:6px 8px;margin-bottom:4px;font-size:12px;color:inherit;text-decoration:none}
+
+/* NEW: date separator */
+.date-separator{display:flex;justify-content:center;margin:14px 0 10px}
+.date-separator span{background:rgba(255,255,255,.9);color:#64748b;font-size:10px;font-weight:700;letter-spacing:.08em;padding:5px 14px;border-radius:999px;box-shadow:0 1px 3px rgba(0,0,0,.06);text-transform:uppercase}
+
+/* NEW: pinned banner */
+.pinned-banner{background:#fffbeb;border-bottom:1px solid #fde68a;padding:8px 12px;display:flex;align-items:center;gap:8px;font-size:12px;cursor:pointer;transition:background .15s}
+.pinned-banner:hover{background:#fef3c7}
+.pinned-banner .pb-text{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#78350f;font-weight:500}
+.pinned-banner .pb-close{color:#b45309;padding:2px;border-radius:4px}
+.pinned-banner .pb-close:hover{background:rgba(180,83,9,.1)}
+
+/* NEW: star indicator on bubble */
+.msg-star{position:absolute;top:-4px;right:-4px;width:18px;height:18px;background:#fbbf24;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.msg-bubble-row.mine .msg-star{left:-4px;right:auto}
+
+/* NEW: recording bar */
+#recording-bar{display:flex;align-items:center;gap:10px;background:#fef2f2;border:1px solid #fecaca;border-radius:12px;padding:8px 12px;margin-bottom:8px;font-size:13px;color:#991b1b}
+#recording-bar .rec-dot{width:10px;height:10px;border-radius:50%;background:#dc2626;animation:pulseDot 1.2s ease-in-out infinite}
+@keyframes pulseDot{0%,100%{opacity:1}50%{opacity:.35}}
+#recording-bar .rec-time{font-family:monospace;font-weight:600}
+#recording-bar button{padding:5px 12px;border-radius:8px;font-size:12px;font-weight:500;cursor:pointer;border:1px solid transparent}
+#recording-bar .rec-cancel{background:#fff;color:#991b1b;border-color:#fecaca}
+#recording-bar .rec-send{background:#059669;color:#fff}
+
+/* NEW: load-older spinner */
+.load-older{display:flex;justify-content:center;padding:10px}
+.load-older .spinner{width:20px;height:20px;border-width:2px}
 
 .material-symbols-outlined{
   font-family:'Material Symbols Outlined',sans-serif !important;
@@ -369,7 +397,7 @@ tbody tr:hover{background:#f1f5f9}
     en: {
       common:{comingSoon:"Coming Soon",save:"Save",cancel:"Cancel",add:"Add",delete:"Delete",edit:"Edit",close:"Close",export:"Export",loading:"Loading...",error:"Error",search:"Search",view:"View",copy:"Copy",areYouSure:"Are you sure?",cannotUndo:"This action cannot be undone",savedSuccessfully:"Saved successfully",updatedSuccessfully:"Updated successfully",deletedSuccessfully:"Deleted successfully",somethingWentWrong:"Something went wrong",requiredField:"Required field",invalidValue:"Invalid value",noDataAvailable:"No data available",noChange:"No change",accessDenied:"Access denied",subscriptionRequired:"Subscription required",sessionExpired:"Session expired",confirmDelete:"Confirm Delete"},
       navigation:{dashboard:"Dashboard",sites:"Sites",materials:"Materials",stock:"Stock",workers:"Workers",progress:"Progress",reports:"Reports",finances:"Finances",managers:"Managers",invitations:"Invitations",messages:"Messages",gallery:"Gallery",officeHub:"Office Hub",settings:"Settings",notifications:"Notifications",logout:"Sign Out",ownerPanel:"Owner's Panel"},
-      messages:{title:"Messages",searchPlaceholder:"Search managers...",noManagers:"No managers assigned to your sites yet.",noSearchResults:"No managers match your search.",selectConversation:"Select a manager to start a private conversation",emptyThread:"No messages yet. Say hello 👋",inputPlaceholder:"Type a message...",send:"Send",online:"Online",offline:"Offline",lastSeen:"Last seen",unread:"Unread",you:"You",site:"Site",back:"Back",yesterday:"Yesterday",notAuthorized:"You are not authorized to view this conversation.",sentTo:"Conversation with {name}",
+      messages:{title:"Messages",searchPlaceholder:"Search managers...",noManagers:"No managers assigned to your sites yet.",noSearchResults:"No managers match your search.",selectConversation:"Select a manager to start a private conversation",emptyThread:"No messages yet. Say hello 👋",inputPlaceholder:"Type a message...",send:"Send",online:"Online",offline:"Offline",lastSeen:"Last seen",unread:"Unread",you:"You",site:"Site",back:"Back",yesterday:"Yesterday",today:"TODAY",notAuthorized:"You are not authorized to view this conversation.",sentTo:"Conversation with {name}",
       attach:"Attach image",emoji:"Emoji",share:"Share SHDR record",shareMaterial:"Share Material",shareWorker:"Share Worker",shareReport:"Share Report",cancelReply:"Cancel reply",replyingTo:"Replying to {name}",
       reply:"Reply",react:"React",deleteForMe:"Delete for me",deleteForEveryone:"Delete for everyone",edited:"edited",deleted:"This message was deleted",
       statusSent:"Sent",statusDelivered:"Delivered",statusRead:"Read",
@@ -379,7 +407,15 @@ tbody tr:hover{background:#f1f5f9}
       uploading:"Uploading {name}...",fileTooLarge:"File is too large (max 10 MB)",fileTypeNotAllowed:"Only images can be sent right now (JPG, PNG, GIF, WEBP)",
       newMessageFrom:"New message from {name}",
       edit:"Edit Message", delete:"Delete Message",
-      editMessage:"Edit message",saveEdit:"Save changes",editWindowExpired:"You can only edit within 15 minutes",deleteWindowExpired:"Delete for everyone is only available for 15 minutes"},
+      editMessage:"Edit message",saveEdit:"Save changes",editWindowExpired:"You can only edit within 15 minutes",deleteWindowExpired:"Delete for everyone is only available for 15 minutes",
+      copy:"Copy",forward:"Forward",star:"Star",unstar:"Unstar",
+      pinMessage:"Pin message",unpinMessage:"Unpin message",pinnedMessage:"Pinned",
+      copied:"Message copied",markUnread:"Mark as unread",conversationInfo:"Conversation Info",
+      voiceMessage:"Voice message",recording:"Recording",
+      loadOlder:"Loading older messages...",noOlder:"No older messages",
+      conversationPinned:"Message pinned",conversationUnpinned:"Message unpinned",
+      forwardedBy:"Forwarded"
+      },
       dashboard:{title:"Dashboard",totalSites:"Total Sites",totalWorkers:"Total Workers",welcome:"Welcome back, {name}",goodMorning:"Good Morning, {name}",goodAfternoon:"Good Afternoon, {name}",goodEvening:"Good Evening, {name}",overview:"Here's your construction site overview",noSites:"No sites",noWorkers:"No workers assigned",noData:"No data",spentOnMaterials:"Spent on Materials",recentProgress:"Recent Progress",selectSite:"Select a site",endDate:"End"},
       sites:{title:"Your Sites",addSite:"Add Site",editSite:"Edit Site",siteName:"Site Name",location:"Location",client:"Client",startDate:"Start Date",endDate:"End Date",budget:"Budget",status:"Status",markFinished:"Mark Finished",noSites:"No sites yet",district:"District",sector:"Sector",saveSite:"Save Site",deleteSite:"Delete Site"},
       materials:{title:"Materials",requisitions:"Requisitions",reqNumber:"Req. ID",site:"Site",requestedBy:"Requested By",requestDate:"Date Requested",requiredDate:"Required Date",priority:"Priority",status:"Status",actions:"Actions",pending:"Pending",urgent:"Urgent",approved:"Approved",rejected:"Rejected",partiallySupplied:"Partially Supplied",suppliedStatus:"Supplied",normal:"Normal",view:"View",approve:"Approve",reject:"Reject",supply:"Supply",noRequisitions:"No requisitions found.",requested:"Requested",supplied:"Supplied",remaining:"Remaining",available:"Available",material:"Material",unit:"Unit",notes:"Notes",quantityUsed:"Qty Used",unitCost:"Unit Cost",totalAmount:"Total Amount",availableStock:"Available Stock",rejectionReason:"Rejection Reason",noMaterials:"No materials recorded for this site."},
@@ -389,45 +425,25 @@ tbody tr:hover{background:#f1f5f9}
       reports:{title:"Generate Reports",general:"General",payroll:"Worker Payroll",stockReport:"Stock",selectSite:"Select Site",allSites:"All Sites",department:"Department",allDepartments:"All Departments",startDate:"Start Date",endDate:"End Date",exportCSV:"Export CSV",printPDF:"Print / PDF",noAttendance:"No attendance records found.",info:"Please ensure managers have recorded attendance for the workers.",searchWorker:"Search worker...",position:"Position",allPositions:"All Positions",paymentStatus:"Payment Status",paid:"Paid",unpaid:"Unpaid",allPayments:"All (Unpaid)",totalWorkers:"Total Workers",workerDays:"Worker-Days",totalPayroll:"Total Payroll",avgDaily:"Avg. Daily Labor Cost",worker:"Worker",daysWorked:"Days Worked",dailyRate:"Daily Rate",totalPayable:"Total Payable",total:"Total",labels:{period:"Period"}},
       finances:{title:"Finances",info:"Site Info",overview:"Financial Overview",budget:"Budget",totalSpent:"Total Spent",materialsCost:"Materials Cost",workersCost:"Workers Cost",remaining:"Remaining",dailyAvg:"Daily average",monthlyAvg:"Monthly average",addBudget:"Add Budget",newBudget:"New Budget Amount",updateBudget:"Update Budget",exceeded:"Budget exceeded!",costControl:"Cost control needed."},
       managers:{
-        title:"Managers",
-        subtitle:"Manage the people responsible for your assigned sites.",
-        info:"Managers assigned to your sites. The list updates automatically.",
-        inviteManager:"Invite Manager",
-        assignSite:"Assign to Site",
-        reassign:"Reassign",
-        email:"Email",
-        password:"Password",
-        invite:"Invite Manager",
-        noManagers:"No managers invited yet.",
-        remove:"Remove",
-        assignedSite:"Assigned site",
+        title:"Managers",subtitle:"Manage the people responsible for your assigned sites.",info:"Managers assigned to your sites. The list updates automatically.",
+        inviteManager:"Invite Manager",assignSite:"Assign to Site",reassign:"Reassign",email:"Email",password:"Password",invite:"Invite Manager",
+        noManagers:"No managers invited yet.",remove:"Remove",assignedSite:"Assigned site",
         total:"Total Managers",active:"Active",pending:"Pending",pendingInvites:"Pending Invitations",unassigned:"Unassigned",
         filterAll:"All",
         colManager:"Manager",colContact:"Contact",colRole:"Role",colSites:"Assigned Sites",colStatus:"Status",colActions:"Actions",
         inviteIntro:"Invite a manager to access and manage selected sites.",
         personalMessage:"Personal message (optional)",
         inviteFootnote:"The manager will receive an invitation with instructions to create or access their account.",
-        sendInvite:"Send Invitation",
-        inviteSent:"Invitation sent successfully.",
-        inviteSentTitle:"Invitation Sent",
-        wasInvitedAs:"has been invited as a Site Manager.",
-        expires:"Expires",
-        shareLink:"Share this secure link with the invited manager:",
-        viewInvitations:"View Invitations",
-        invalidSite:"Invalid site.",
-        alreadyMember:"This person is already a member.",
+        sendInvite:"Send Invitation",inviteSent:"Invitation sent successfully.",inviteSentTitle:"Invitation Sent",
+        wasInvitedAs:"has been invited as a Site Manager.",expires:"Expires",
+        shareLink:"Share this secure link with the invited manager:",viewInvitations:"View Invitations",
+        invalidSite:"Invalid site.",alreadyMember:"This person is already a member.",
         duplicateInvite:"This manager already has a pending invitation.",
         otherOrg:"This user already belongs to another organization.",
-        details:"Manager Details",
-        assignmentHistory:"Assignment History",
-        present:"present",
-        invitationsTitle:"Manager Invitations",
-        invitedOn:"Invited",
-        invitedBy:"Invited by",
-        noInvitations:"No invitations yet.",
-        invitationDetails:"Invitation Details",
-        resend:"Resend",
-        revoke:"Revoke",
+        details:"Manager Details",assignmentHistory:"Assignment History",present:"present",
+        invitationsTitle:"Manager Invitations",invitedOn:"Invited",invitedBy:"Invited by",
+        noInvitations:"No invitations yet.",invitationDetails:"Invitation Details",
+        resend:"Resend",revoke:"Revoke",
         tab_all:"All",tab_pending:"Pending",tab_accepted:"Accepted",tab_expired:"Expired",tab_revoked:"Revoked"
       },
       gallery:{title:"Site Gallery",selectSite:"Select Site",allSites:"All Sites",viewImage:"View Image",noImages:"No gallery images",close:"Close",description:"Description"},
@@ -438,7 +454,7 @@ tbody tr:hover{background:#f1f5f9}
     rw: {
       common:{comingSoon:"Biraza",save:"Bika",cancel:"Hagarika",add:"Ongeraho",delete:"Siba",edit:"Hindura",close:"Funga",export:"Sohora",loading:"Birimo gutegura...",error:"Ikibazo",search:"Shakisha",view:"Reba",copy:"Koporora",areYouSure:"Urabyemeza?",cannotUndo:"Ibi ntibishobora guhindurwa",savedSuccessfully:"Byabitswe neza",updatedSuccessfully:"Byavuguruwe neza",deletedSuccessfully:"Byasibwe neza",somethingWentWrong:"Hari ikitagenze neza",requiredField:"Ibi birakenewe",invalidValue:"Agaciro katariyo",noDataAvailable:"Nta makuru aboneka",noChange:"Nta mpinduka",accessDenied:"Ntabwo ureherewe",confirmDelete:"Emeza gusiba"},
       navigation:{dashboard:"Imbonerahamwe",sites:"Ibibanza",materials:"Ibikoresho",stock:"Imbuganyuro",workers:"Abakozi",progress:"Ibitekerezo",reports:"Raporo",finances:"Imari",managers:"Abayobozi",invitations:"Ubutumire",messages:"Ubutumwa",gallery:"Amafoto",officeHub:"Office Hub",settings:"Igenamiterere",notifications:"Imenyesha",logout:"Sohoka",ownerPanel:"Ipaneli ya nyir'ubwite"},
-      messages:{title:"Ubutumwa",searchPlaceholder:"Shakisha abayobozi...",noManagers:"Nta bayobozi bagenwe ku bibanza byawe.",noSearchResults:"Nta muyobozi uhuza n'ubushakashatsi.",selectConversation:"Hitamo umuyobozi gutangira ikiganiro bwite",emptyThread:"Nta butumwa burahari. Vuga muraho 👋",inputPlaceholder:"Andika ubutumwa...",send:"Ohereza",online:"Kuri interineti",offline:"Nta murongo",lastSeen:"Byagarutse",unread:"Ntibisomwe",you:"Wowe",site:"Igibanza",back:"Subira",yesterday:"Ejo hashize",notAuthorized:"Ntabwo ureherewe kureba iki kiganiro.",sentTo:"Ikiganiro na {name}",
+      messages:{title:"Ubutumwa",searchPlaceholder:"Shakisha abayobozi...",noManagers:"Nta bayobozi bagenwe ku bibanza byawe.",noSearchResults:"Nta muyobozi uhuza n'ubushakashatsi.",selectConversation:"Hitamo umuyobozi gutangira ikiganiro bwite",emptyThread:"Nta butumwa burahari. Vuga muraho 👋",inputPlaceholder:"Andika ubutumwa...",send:"Ohereza",online:"Kuri interineti",offline:"Nta murongo",lastSeen:"Byagarutse",unread:"Ntibisomwe",you:"Wowe",site:"Igibanza",back:"Subira",yesterday:"Ejo hashize",today:"UYU MUNSI",notAuthorized:"Ntabwo ureherewe kureba iki kiganiro.",sentTo:"Ikiganiro na {name}",
       attach:"Ohereza ifoto",emoji:"Emoji",share:"Sangiza inyandiko",shareMaterial:"Sangiza Ibikoresho",shareWorker:"Sangiza Umukozi",shareReport:"Sangiza Raporo",cancelReply:"Hagarika gusubiza",replyingTo:"Gusubiza {name}",
       reply:"Subiza",react:"Tangiza",deleteForMe:"Siba kuri njye",deleteForEveryone:"Siba kuri bose",edited:"byahinduwe",deleted:"Ubu butumwa bwasibwe",
       statusSent:"Byoherejwe",statusDelivered:"Byageze",statusRead:"Byasomwe",
@@ -448,7 +464,15 @@ tbody tr:hover{background:#f1f5f9}
       uploading:"Turaohereza {name}...",fileTooLarge:"Dosiye ni nini cyane (max 10 MB)",fileTypeNotAllowed:"Ifoto gusa (JPG, PNG, GIF, WEBP)",
       newMessageFrom:"Ubutumwa bushya buturutse {name}",
       edit:"Hindura Ubutumwa", delete:"Siba Ubutumwa",
-      editMessage:"Hindura ubutumwa",saveEdit:"Bika",editWindowExpired:"Ushobora guhindura gusa mu minota 15",deleteWindowExpired:"Gusiba kuri bose bishoboka gusa mu minota 15"},
+      editMessage:"Hindura ubutumwa",saveEdit:"Bika",editWindowExpired:"Ushobora guhindura gusa mu minota 15",deleteWindowExpired:"Gusiba kuri bose bishoboka gusa mu minota 15",
+      copy:"Koporora",forward:"Ohereza",star:"Shyiraho itara",unstar:"Kuraho itara",
+      pinMessage:"Shyira ubutumwa hejuru",unpinMessage:"Kura ubutumwa hejuru",pinnedMessage:"Byashyizwe hejuru",
+      copied:"Ubutumwa bwakoporowe",markUnread:"Menyekanisha nk'utarasoma",conversationInfo:"Amakuru y'ikiganiro",
+      voiceMessage:"Ubutumwa bw'ijwi",recording:"Turimo gufata amajwi",
+      loadOlder:"Turashakisha ubutumwa bwa kera...",noOlder:"Nta butumwa bwa kera",
+      conversationPinned:"Ubutumwa bwashyizwe hejuru",conversationUnpinned:"Ubutumwa bwakuwe hejuru",
+      forwardedBy:"Byoherejwe"
+      },
       dashboard:{title:"Imbonerahamwe",totalSites:"Imibare y'ibibanza",totalWorkers:"Imibare y'abakozi",welcome:"Murakaza neza, {name}",goodMorning:"Mwaramutse, {name}",goodAfternoon:"Mwiriwe, {name}",goodEvening:"Mu mugoroba, {name}",overview:"Dore ikibazo cy'umurimo wawe",noSites:"Nta bibanza",noWorkers:"Nta bakozi bagenwe",noData:"Nta makuru",spentOnMaterials:"Amafaranga yakoreshejwe ku bikoresho",recentProgress:"Ibitekerezo bishya",selectSite:"Hitamo igibanza",endDate:"Iherezo"},
       sites:{title:"Ibibanza byawe",addSite:"Ongeraho igibanza",editSite:"Hindura igibanza",siteName:"Izina",location:"Aho biherereye",client:"Umukiriya",startDate:"Itariki yo gutangira",endDate:"Itariki yo kurangira",budget:"Ingengo y'imari",status:"Imiterere",markFinished:"Rangiza",noSites:"Nta bibanza birahari",district:"Akarere",sector:"Umurenge",saveSite:"Bika",deleteSite:"Siba"},
       materials:{title:"Ibikoresho",requisitions:"Ubusabe",reqNumber:"Nomero",site:"Igibanza",requestedBy:"Wasabye",requestDate:"Itariki yo Gusaba",requiredDate:"Itariki Ikenewe",priority:"Ubwihutirwa",status:"Imiterere",actions:"Ibikorwa",pending:"Bitegereje",urgent:"Byihutirwa",approved:"Byemewe",rejected:"Byanze",partiallySupplied:"Igice",suppliedStatus:"Byatanzwe",normal:"Bisanzwe",view:"Reba",approve:"Emeza",reject:"Anza",supply:"Tanga",noRequisitions:"Nta busabe.",requested:"Basabwe",supplied:"Byatanzwe",remaining:"Bisigaye",available:"Biboneka",material:"Ibikoresho",unit:"Igice",notes:"Ibisobanuro",quantityUsed:"Umubare",unitCost:"Igiciro",totalAmount:"Amafaranga",availableStock:"Biboneka",rejectionReason:"Impamvu",noMaterials:"Nta bikoresho."},
@@ -457,48 +481,7 @@ tbody tr:hover{background:#f1f5f9}
       progress:{title:"Imirimo",addTask:"Ongeraho umurimo",task:"Umurimo",start:"Tangira",end:"Rangira",status:"Imiterere",pending:"Bitegereje",completed:"Byarangiye",noTasks:"Nta mirimo.",addTaskModal:"Ongeraho umurimo",taskName:"Izina",selectSite:"Hitamo igibanza",periodNumber:"Umubare",days:"Iminsi",weeks:"Ibyumweru",saveTask:"Bika",editTask:"Hindura"},
       reports:{title:"Raporo",general:"Rusange",payroll:"Umushahara",stockReport:"Imbuganyuro",selectSite:"Hitamo Igibanza",allSites:"Ibibanza Byose",department:"Ishami",allDepartments:"Amashami Yose",startDate:"Itariki yo gutangira",endDate:"Itariki yo kurangira",exportCSV:"Sohora CSV",printPDF:"Capa / PDF",noAttendance:"Nta makuru.",info:"Nyamuneka menya neza.",searchWorker:"Shakisha umukozi...",position:"Umwanya",allPositions:"Imiryango Yose",paymentStatus:"Imiterere y'ubwishyu",paid:"Byishyuwe",unpaid:"Bitishyuwe",allPayments:"Byose",totalWorkers:"Abakozi Bose",workerDays:"Iminsi",totalPayroll:"Umushahara Wose",avgDaily:"Igiciro cy'umunsi",worker:"Umukozi",daysWorked:"Iminsi",dailyRate:"Umushahara",totalPayable:"Amafaranga",total:"Igiteranyo",labels:{period:"Igihe"}},
       finances:{title:"Imari",info:"Amakuru",overview:"Imbonerahamwe",budget:"Ingengo",totalSpent:"Yakoreshejwe",materialsCost:"Ibikoresho",workersCost:"Abakozi",remaining:"Isigazwa",dailyAvg:"Buri munsi",monthlyAvg:"Buri kwezi",addBudget:"Ongeraho",newBudget:"Nshya",updateBudget:"Vugurura",exceeded:"Yarengwe!",costControl:"Birakenewe."},
-      managers:{
-        title:"Abayobozi",
-        subtitle:"Genzura abantu bashinzwe ibibanza byawe.",
-        info:"Abayobozi bagenzwe.",
-        inviteManager:"Tumira umuyobozi",
-        assignSite:"Mwize ku gibanza",
-        reassign:"Ongera umwize",
-        email:"Email",
-        password:"Ijambobanga",
-        invite:"Tumira",
-        noManagers:"Nta bayobozi.",
-        remove:"Kuraho",
-        assignedSite:"Igibanza",
-        total:"Abayobozi bose",active:"Bakora",pending:"Bategereje",pendingInvites:"Ubutumire butegereje",unassigned:"Nta gibanza",
-        filterAll:"Byose",
-        colManager:"Umuyobozi",colContact:"Ihuza",colRole:"Uruhare",colSites:"Ibibanza",colStatus:"Imiterere",colActions:"Ibikorwa",
-        inviteIntro:"Tumira umuyobozi kugira ngo abashe gucunga ibibanza byatoranyijwe.",
-        personalMessage:"Ubutumwa bwite (bidategetswe)",
-        inviteFootnote:"Umuyobozi azabona ubutumire bufite amabwiriza yo gukora cyangwa kwinjira muri konti ye.",
-        sendInvite:"Ohereza ubutumire",
-        inviteSent:"Ubutumire bwoherejwe neza.",
-        inviteSentTitle:"Ubutumire Bwoherejwe",
-        wasInvitedAs:"yatumiwe nk'Umuyobozi w'Igibanza.",
-        expires:"Birangira",
-        shareLink:"Sangiza iyi link y'umutekano n'umuyobozi watumiwe:",
-        viewInvitations:"Reba Ubutumire",
-        invalidSite:"Igibanza kitarimo.",
-        alreadyMember:"Uyu muntu asanzwe ari umunyamuryango.",
-        duplicateInvite:"Uyu muyobozi asanzwe afite ubutumire butegereje.",
-        otherOrg:"Uyu ukoresha asanzwe ari mu rundi rubuga.",
-        details:"Ibisobanuro by'Umuyobozi",
-        assignmentHistory:"Amateka y'Igenamiterere",
-        present:"ubu",
-        invitationsTitle:"Ubutumire bw'Abayobozi",
-        invitedOn:"Yatumiwe",
-        invitedBy:"Yatumiwe na",
-        noInvitations:"Nta butumire.",
-        invitationDetails:"Ibisobanuro by'Ubutumire",
-        resend:"Ongera wohereze",
-        revoke:"Hagarika",
-        tab_all:"Byose",tab_pending:"Bitegereje",tab_accepted:"Byemejwe",tab_expired:"Byarangiye",tab_revoked:"Byahagaritswe"
-      },
+      managers:{title:"Abayobozi",subtitle:"Genzura abantu bashinzwe ibibanza byawe.",info:"Abayobozi bagenzwe.",inviteManager:"Tumira umuyobozi",assignSite:"Mwize ku gibanza",reassign:"Ongera umwize",email:"Email",password:"Ijambobanga",invite:"Tumira",noManagers:"Nta bayobozi.",remove:"Kuraho",assignedSite:"Igibanza",total:"Abayobozi bose",active:"Bakora",pending:"Bategereje",pendingInvites:"Ubutumire butegereje",unassigned:"Nta gibanza",filterAll:"Byose",colManager:"Umuyobozi",colContact:"Ihuza",colRole:"Uruhare",colSites:"Ibibanza",colStatus:"Imiterere",colActions:"Ibikorwa",inviteIntro:"Tumira umuyobozi kugira ngo abashe gucunga ibibanza byatoranyijwe.",personalMessage:"Ubutumwa bwite (bidategetswe)",inviteFootnote:"Umuyobozi azabona ubutumire bufite amabwiriza yo gukora cyangwa kwinjira muri konti ye.",sendInvite:"Ohereza ubutumire",inviteSent:"Ubutumire bwoherejwe neza.",inviteSentTitle:"Ubutumire Bwoherejwe",wasInvitedAs:"yatumiwe nk'Umuyobozi w'Igibanza.",expires:"Birangira",shareLink:"Sangiza iyi link y'umutekano n'umuyobozi watumiwe:",viewInvitations:"Reba Ubutumire",invalidSite:"Igibanza kitarimo.",alreadyMember:"Uyu muntu asanzwe ari umunyamuryango.",duplicateInvite:"Uyu muyobozi asanzwe afite ubutumire butegereje.",otherOrg:"Uyu ukoresha asanzwe ari mu rundi rubuga.",details:"Ibisobanuro by'Umuyobozi",assignmentHistory:"Amateka y'Igenamiterere",present:"ubu",invitationsTitle:"Ubutumire bw'Abayobozi",invitedOn:"Yatumiwe",invitedBy:"Yatumiwe na",noInvitations:"Nta butumire.",invitationDetails:"Ibisobanuro by'Ubutumire",resend:"Ongera wohereze",revoke:"Hagarika",tab_all:"Byose",tab_pending:"Bitegereje",tab_accepted:"Byemejwe",tab_expired:"Byarangiye",tab_revoked:"Byahagaritswe"},
       gallery:{title:"Amafoto",selectSite:"Hitamo Igibanza",allSites:"Byose",viewImage:"Reba",noImages:"Nta mafoto",close:"Funga",description:"Ibisobanuro"},
       settings:{title:"Igenamiterere",profile:"Umwirondoro",account:"Kontu",security:"Umutekano",preferences:"Amahitamo",profileInfo:"Amakuru bwite",fullName:"Amazina",phone:"Telefoni",email:"Email",saveChanges:"Bika",accountInfo:"Kontu",accountName:"Izina",role:"Umwanya",accountStatus:"Imiterere",active:"Bikora",memberSince:"Kuva",changePasscode:"Hindura passcode",currentPasscode:"Risanzwe",newPasscode:"Rishya",confirmPasscode:"Emeza",changePass:"Hindura",prefs:"Amahitamo",language:"Ururimi",currency:"Ifaranga",dateFormat:"Itariki",notifications:"Imenyesha",savePrefs:"Bika",changePhoto:"Hindura ifoto",removePhoto:"Kuraho"},
       alerts:{savedSuccessfully:"Byabitswe",updatedSuccessfully:"Byavuguruwe",deletedSuccessfully:"Byasibwe",somethingWentWrong:"Hari ikitagenze neza",areYouSure:"Urabyemeza?",cannotUndo:"Ntibishobora",requiredField:"Birakenewe",invalidValue:"Agaciro katariyo",noDataAvailable:"Nta makuru"},
@@ -507,17 +490,7 @@ tbody tr:hover{background:#f1f5f9}
     fr: {
       common:{comingSoon:"Bientôt disponible",save:"Enregistrer",cancel:"Annuler",add:"Ajouter",delete:"Supprimer",edit:"Modifier",close:"Fermer",export:"Exporter",loading:"Chargement...",error:"Erreur",search:"Rechercher",view:"Voir",copy:"Copier",areYouSure:"Êtes-vous sûr ?",cannotUndo:"Irréversible",savedSuccessfully:"Enregistré",updatedSuccessfully:"Mis à jour",deletedSuccessfully:"Supprimé",somethingWentWrong:"Erreur",requiredField:"Champ requis",invalidValue:"Valeur invalide",noDataAvailable:"Aucune donnée",noChange:"Aucun changement",accessDenied:"Refusé",confirmDelete:"Confirmer"},
       navigation:{dashboard:"Tableau de bord",sites:"Sites",materials:"Matériaux",stock:"Stock",workers:"Ouvriers",progress:"Progrès",reports:"Rapports",finances:"Finances",managers:"Gestionnaires",invitations:"Invitations",messages:"Messages",gallery:"Galerie",officeHub:"Bureau",settings:"Paramètres",notifications:"Notifications",logout:"Déconnexion",ownerPanel:"Panneau du propriétaire"},
-      messages:{title:"Messages",searchPlaceholder:"Rechercher...",noManagers:"Aucun gestionnaire.",noSearchResults:"Aucun résultat.",selectConversation:"Sélectionnez un gestionnaire",emptyThread:"Aucun message. Dites bonjour 👋",inputPlaceholder:"Tapez un message...",send:"Envoyer",online:"En ligne",offline:"Hors ligne",lastSeen:"Vu",unread:"Non lu",you:"Vous",site:"Site",back:"Retour",yesterday:"Hier",notAuthorized:"Non autorisé.",sentTo:"Conversation avec {name}",
-      attach:"Joindre image",emoji:"Emoji",share:"Partager",shareMaterial:"Partager Matériau",shareWorker:"Partager Ouvrier",shareReport:"Partager Rapport",cancelReply:"Annuler réponse",replyingTo:"Réponse à {name}",
-      reply:"Répondre",react:"Réagir",deleteForMe:"Supprimer pour moi",deleteForEveryone:"Supprimer pour tous",edited:"modifié",deleted:"Ce message a été supprimé",
-      statusSent:"Envoyé",statusDelivered:"Livré",statusRead:"Lu",
-      isTyping:"{name} écrit...",severalTyping:"plusieurs personnes écrivent...",
-      searchInConversation:"Rechercher",noSearchResults:"Aucun résultat",
-      pinConversation:"Épingler",unpinConversation:"Désépingler",muteConversation:"Sourdine",unmuteConversation:"Réactiver",archiveConversation:"Archiver",unarchiveConversation:"Désarchiver",
-      uploading:"Envoi {name}...",fileTooLarge:"Trop volumineux (max 10 Mo)",fileTypeNotAllowed:"Images uniquement (JPG, PNG, GIF, WEBP)",
-      newMessageFrom:"Nouveau message de {name}",
-      edit:"Modifier le message", delete:"Supprimer le message",
-      editMessage:"Modifier",saveEdit:"Enregistrer",editWindowExpired:"Modifiable dans les 15 minutes",deleteWindowExpired:"Suppression pour tous dans les 15 minutes"},
+      messages:{title:"Messages",searchPlaceholder:"Rechercher...",noManagers:"Aucun gestionnaire.",noSearchResults:"Aucun résultat.",selectConversation:"Sélectionnez un gestionnaire",emptyThread:"Aucun message. Dites bonjour 👋",inputPlaceholder:"Tapez un message...",send:"Envoyer",online:"En ligne",offline:"Hors ligne",lastSeen:"Vu",unread:"Non lu",you:"Vous",site:"Site",back:"Retour",yesterday:"Hier",today:"AUJOURD'HUI",notAuthorized:"Non autorisé.",sentTo:"Conversation avec {name}",attach:"Joindre image",emoji:"Emoji",share:"Partager",shareMaterial:"Partager Matériau",shareWorker:"Partager Ouvrier",shareReport:"Partager Rapport",cancelReply:"Annuler réponse",replyingTo:"Réponse à {name}",reply:"Répondre",react:"Réagir",deleteForMe:"Supprimer pour moi",deleteForEveryone:"Supprimer pour tous",edited:"modifié",deleted:"Ce message a été supprimé",statusSent:"Envoyé",statusDelivered:"Livré",statusRead:"Lu",isTyping:"{name} écrit...",severalTyping:"plusieurs personnes écrivent...",searchInConversation:"Rechercher",noSearchResults:"Aucun résultat",pinConversation:"Épingler",unpinConversation:"Désépingler",muteConversation:"Sourdine",unmuteConversation:"Réactiver",archiveConversation:"Archiver",unarchiveConversation:"Désarchiver",uploading:"Envoi {name}...",fileTooLarge:"Trop volumineux (max 10 Mo)",fileTypeNotAllowed:"Images uniquement (JPG, PNG, GIF, WEBP)",newMessageFrom:"Nouveau message de {name}",edit:"Modifier le message", delete:"Supprimer le message",editMessage:"Modifier",saveEdit:"Enregistrer",editWindowExpired:"Modifiable dans les 15 minutes",deleteWindowExpired:"Suppression pour tous dans les 15 minutes",copy:"Copier",forward:"Transférer",star:"Marquer",unstar:"Démarquer",pinMessage:"Épingler le message",unpinMessage:"Désépingler le message",pinnedMessage:"Épinglé",copied:"Message copié",markUnread:"Marquer comme non lu",conversationInfo:"Informations",voiceMessage:"Message vocal",recording:"Enregistrement",loadOlder:"Chargement des anciens messages...",noOlder:"Pas d'anciens messages",conversationPinned:"Message épinglé",conversationUnpinned:"Message désépinglé",forwardedBy:"Transféré"},
       dashboard:{title:"Tableau de bord",totalSites:"Sites",totalWorkers:"Ouvriers",welcome:"Bienvenue, {name}",goodMorning:"Bonjour, {name}",goodAfternoon:"Bon après-midi, {name}",goodEvening:"Bonsoir, {name}",overview:"Aperçu",noSites:"Aucun site",noWorkers:"Aucun ouvrier",noData:"Aucune donnée",spentOnMaterials:"Dépensé",recentProgress:"Progrès récents",selectSite:"Sélectionner",endDate:"Fin"},
       sites:{title:"Vos sites",addSite:"Ajouter",editSite:"Modifier",siteName:"Nom",location:"Emplacement",client:"Client",startDate:"Début",endDate:"Fin",budget:"Budget",status:"Statut",markFinished:"Marquer",noSites:"Aucun site",district:"District",sector:"Secteur",saveSite:"Enregistrer",deleteSite:"Supprimer"},
       materials:{title:"Matériaux",requisitions:"Réquisitions",reqNumber:"N°",site:"Site",requestedBy:"Demandé par",requestDate:"Date demande",requiredDate:"Date requise",priority:"Priorité",status:"Statut",actions:"Actions",pending:"En attente",urgent:"Urgent",approved:"Approuvé",rejected:"Rejeté",partiallySupplied:"Partiel",suppliedStatus:"Fourni",normal:"Normal",view:"Voir",approve:"Approuver",reject:"Rejeter",supply:"Fournir",noRequisitions:"Aucune réquisition.",requested:"Demandé",supplied:"Fourni",remaining:"Restant",available:"Disponible",material:"Matériau",unit:"Unité",notes:"Notes",quantityUsed:"Qté",unitCost:"Coût",totalAmount:"Total",availableStock:"Disponible",rejectionReason:"Motif",noMaterials:"Aucun matériau."},
@@ -526,48 +499,7 @@ tbody tr:hover{background:#f1f5f9}
       progress:{title:"Tâches",addTask:"Ajouter",task:"Tâche",start:"Début",end:"Fin",status:"Statut",pending:"En attente",completed:"Terminé",noTasks:"Aucune tâche.",addTaskModal:"Ajouter",taskName:"Nom",selectSite:"Site",periodNumber:"Période",days:"Jours",weeks:"Semaines",saveTask:"Enregistrer",editTask:"Modifier"},
       reports:{title:"Rapports",general:"Général",payroll:"Paie",stockReport:"Stock",selectSite:"Site",allSites:"Tous",department:"Département",allDepartments:"Tous",startDate:"Début",endDate:"Fin",exportCSV:"CSV",printPDF:"PDF",noAttendance:"Aucune présence.",info:"Vérifiez la présence.",searchWorker:"Rechercher...",position:"Poste",allPositions:"Tous",paymentStatus:"Paiement",paid:"Payé",unpaid:"Non payé",allPayments:"Tous",totalWorkers:"Ouvriers",workerDays:"Jours",totalPayroll:"Paie",avgDaily:"Moyenne",worker:"Ouvrier",daysWorked:"Jours",dailyRate:"Taux",totalPayable:"Total",total:"Total",labels:{period:"Période"}},
       finances:{title:"Finances",info:"Info",overview:"Aperçu",budget:"Budget",totalSpent:"Dépensé",materialsCost:"Matériaux",workersCost:"Ouvriers",remaining:"Restant",dailyAvg:"Moyenne jour",monthlyAvg:"Moyenne mois",addBudget:"Ajouter",newBudget:"Nouveau",updateBudget:"Mettre à jour",exceeded:"Dépassé!",costControl:"Contrôle requis."},
-      managers:{
-        title:"Gestionnaires",
-        subtitle:"Gérez les personnes responsables de vos sites assignés.",
-        info:"Gestionnaires assignés.",
-        inviteManager:"Inviter un gestionnaire",
-        assignSite:"Assigner à un site",
-        reassign:"Réassigner",
-        email:"E-mail",
-        password:"Mot de passe",
-        invite:"Inviter",
-        noManagers:"Aucun.",
-        remove:"Retirer",
-        assignedSite:"Site",
-        total:"Total gestionnaires",active:"Actifs",pending:"En attente",pendingInvites:"Invitations en attente",unassigned:"Non assignés",
-        filterAll:"Tous",
-        colManager:"Gestionnaire",colContact:"Contact",colRole:"Rôle",colSites:"Sites assignés",colStatus:"Statut",colActions:"Actions",
-        inviteIntro:"Invitez un gestionnaire à accéder et gérer les sites sélectionnés.",
-        personalMessage:"Message personnel (facultatif)",
-        inviteFootnote:"Le gestionnaire recevra une invitation avec des instructions pour créer ou accéder à son compte.",
-        sendInvite:"Envoyer l'invitation",
-        inviteSent:"Invitation envoyée.",
-        inviteSentTitle:"Invitation Envoyée",
-        wasInvitedAs:"a été invité en tant que gestionnaire de site.",
-        expires:"Expire",
-        shareLink:"Partagez ce lien sécurisé avec le gestionnaire invité :",
-        viewInvitations:"Voir les invitations",
-        invalidSite:"Site invalide.",
-        alreadyMember:"Cette personne est déjà membre.",
-        duplicateInvite:"Ce gestionnaire a déjà une invitation en attente.",
-        otherOrg:"Cet utilisateur appartient déjà à une autre organisation.",
-        details:"Détails du gestionnaire",
-        assignmentHistory:"Historique des affectations",
-        present:"actuel",
-        invitationsTitle:"Invitations de gestionnaires",
-        invitedOn:"Invité",
-        invitedBy:"Invité par",
-        noInvitations:"Aucune invitation.",
-        invitationDetails:"Détails de l'invitation",
-        resend:"Renvoyer",
-        revoke:"Révoquer",
-        tab_all:"Tout",tab_pending:"En attente",tab_accepted:"Accepté",tab_expired:"Expiré",tab_revoked:"Révoqué"
-      },
+      managers:{title:"Gestionnaires",subtitle:"Gérez les personnes responsables de vos sites assignés.",info:"Gestionnaires assignés.",inviteManager:"Inviter un gestionnaire",assignSite:"Assigner à un site",reassign:"Réassigner",email:"E-mail",password:"Mot de passe",invite:"Inviter",noManagers:"Aucun.",remove:"Retirer",assignedSite:"Site",total:"Total gestionnaires",active:"Actifs",pending:"En attente",pendingInvites:"Invitations en attente",unassigned:"Non assignés",filterAll:"Tous",colManager:"Gestionnaire",colContact:"Contact",colRole:"Rôle",colSites:"Sites assignés",colStatus:"Statut",colActions:"Actions",inviteIntro:"Invitez un gestionnaire à accéder et gérer les sites sélectionnés.",personalMessage:"Message personnel (facultatif)",inviteFootnote:"Le gestionnaire recevra une invitation avec des instructions pour créer ou accéder à son compte.",sendInvite:"Envoyer l'invitation",inviteSent:"Invitation envoyée.",inviteSentTitle:"Invitation Envoyée",wasInvitedAs:"a été invité en tant que gestionnaire de site.",expires:"Expire",shareLink:"Partagez ce lien sécurisé avec le gestionnaire invité :",viewInvitations:"Voir les invitations",invalidSite:"Site invalide.",alreadyMember:"Cette personne est déjà membre.",duplicateInvite:"Ce gestionnaire a déjà une invitation en attente.",otherOrg:"Cet utilisateur appartient déjà à une autre organisation.",details:"Détails du gestionnaire",assignmentHistory:"Historique des affectations",present:"actuel",invitationsTitle:"Invitations de gestionnaires",invitedOn:"Invité",invitedBy:"Invité par",noInvitations:"Aucune invitation.",invitationDetails:"Détails de l'invitation",resend:"Renvoyer",revoke:"Révoquer",tab_all:"Tout",tab_pending:"En attente",tab_accepted:"Accepté",tab_expired:"Expiré",tab_revoked:"Révoqué"},
       gallery:{title:"Galerie",selectSite:"Site",allSites:"Tous",viewImage:"Voir",noImages:"Aucune image",close:"Fermer",description:"Description"},
       settings:{title:"Paramètres",profile:"Profil",account:"Compte",security:"Sécurité",preferences:"Préférences",profileInfo:"Profil",fullName:"Nom",phone:"Téléphone",email:"E-mail",saveChanges:"Enregistrer",accountInfo:"Compte",accountName:"Nom",role:"Rôle",accountStatus:"Statut",active:"Actif",memberSince:"Depuis",changePasscode:"Changer code",currentPasscode:"Actuel",newPasscode:"Nouveau",confirmPasscode:"Confirmer",changePass:"Changer",prefs:"Préférences",language:"Langue",currency:"Devise",dateFormat:"Format",notifications:"Notifications",savePrefs:"Enregistrer",changePhoto:"Changer",removePhoto:"Supprimer"},
       alerts:{savedSuccessfully:"Enregistré",updatedSuccessfully:"Mis à jour",deletedSuccessfully:"Supprimé",somethingWentWrong:"Erreur",areYouSure:"Sûr ?",cannotUndo:"Irréversible",requiredField:"Requis",invalidValue:"Invalide",noDataAvailable:"Aucune donnée"},
@@ -614,7 +546,7 @@ tbody tr:hover{background:#f1f5f9}
   import {
     getFirestore, collection, query, where, onSnapshot, addDoc,
     updateDoc, deleteDoc, doc, getDoc, setDoc, getDocs, writeBatch, orderBy,
-    increment, limit
+    increment, limit, startAfter
   } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
   import {
     getDatabase, ref as rtdbRef, onValue as rtdbOnValue,
@@ -751,7 +683,6 @@ tbody tr:hover{background:#f1f5f9}
     toast._hideTimer = setTimeout(() => { toast.classList.remove('show'); }, 5000);
   }
 
-  // QA-001: Greeting auto-refresh while on dashboard
   setInterval(() => {
     if (currentSection !== 'dashboard') return;
     const el = document.getElementById('greeting-h1');
@@ -793,31 +724,23 @@ tbody tr:hover{background:#f1f5f9}
         let snap = await getDoc(profileRef);
         let profile = snap.exists() ? snap.data() : null;
 
-        // ── CASE 1: New user → create profile + organization
         if (!snap.exists()) {
           const orgRef = doc(collection(db, 'organizations'));
           const orgId = orgRef.id;
           await setDoc(orgRef, {
-            name: getCompanyDetails().name,
-            owner_id: user.uid,
-            created_at: new Date().toISOString(),
-            updated_at: new Date().toISOString(),
+            name: getCompanyDetails().name, owner_id: user.uid,
+            created_at: new Date().toISOString(), updated_at: new Date().toISOString(),
             settings: { default_role: 'manager' }
           });
           await setDoc(profileRef, {
-            email: user.email,
-            full_name: user.displayName || 'Owner',
-            role: 'owner',
-            phone: '',
-            organization_id: orgId,
-            organization_status: 'active',
-            created_at: new Date().toISOString()
+            email: user.email, full_name: user.displayName || 'Owner',
+            role: 'owner', phone: '', organization_id: orgId,
+            organization_status: 'active', created_at: new Date().toISOString()
           });
           snap = await getDoc(profileRef);
           profile = snap.data();
         }
 
-        // ── CASE 2: Existing profile but missing organization_id → bootstrap org + link
         if (snap.exists() && !profile.organization_id) {
           let orgId = null;
           try {
@@ -829,10 +752,8 @@ tbody tr:hover{background:#f1f5f9}
             const orgRef = doc(collection(db, 'organizations'));
             orgId = orgRef.id;
             await setDoc(orgRef, {
-              name: getCompanyDetails().name,
-              owner_id: user.uid,
-              created_at: new Date().toISOString(),
-              updated_at: new Date().toISOString(),
+              name: getCompanyDetails().name, owner_id: user.uid,
+              created_at: new Date().toISOString(), updated_at: new Date().toISOString(),
               settings: { default_role: 'manager' }
             });
           }
@@ -848,7 +769,6 @@ tbody tr:hover{background:#f1f5f9}
           showToast('Organization configured successfully.', 'success');
         }
 
-        // ── Safety guard
         if (!profile || !profile.organization_id) {
           showError('Organization is not configured for this account. Please contact support.');
           return;
@@ -858,7 +778,6 @@ tbody tr:hover{background:#f1f5f9}
         currentOrganizationId = profile.organization_id;
         updateProfileUI(ownerProfile);
 
-        // QA-005: Auto-migrate legacy data on first owner login
         await autoMigrateOrganization(currentOrganizationId);
 
         onSnapshot(profileRef, (s) => {
@@ -872,7 +791,7 @@ tbody tr:hover{background:#f1f5f9}
 
         attachListeners();
         attachInvitationsListener();
-        updateInvitationsBadge();   // QA-006
+        updateInvitationsBadge();
         attachMessagingListeners();
         showSection('dashboard');
       } catch (err) {
@@ -882,7 +801,6 @@ tbody tr:hover{background:#f1f5f9}
     });
   });
 
-  // QA-005: Idempotent migration of legacy sites/managers to the current organization
   async function autoMigrateOrganization(orgId) {
     if (!orgId || !currentUser) return;
     try {
@@ -921,9 +839,7 @@ tbody tr:hover{background:#f1f5f9}
       }
 
       if (taggedSites) console.info(`[migration] tagged ${taggedSites} sites`);
-    } catch (e) {
-      console.warn('[migration] failed:', e);
-    }
+    } catch (e) { console.warn('[migration] failed:', e); }
   }
 
   function updateProfileUI(profile) {
@@ -2530,32 +2446,23 @@ tbody tr:hover{background:#f1f5f9}
     orgManagers.forEach(m => {
       const sName = siteNameById(m.assigned_site);
       rows.push({
-        kind: 'manager',
-        id: m.id,
-        name: m.full_name || m.email || 'Manager',
-        email: m.email || '',
-        role: m.role || 'manager',
+        kind: 'manager', id: m.id, name: m.full_name || m.email || 'Manager',
+        email: m.email || '', role: m.role || 'manager',
         siteName: m.assigned_site ? (sName || 'Assignment needs review') : t('managers.unassigned'),
         siteId: m.assigned_site || null,
         status: (m.organization_status || m.status || 'active'),
-        invitation: null,
-        photo: m.profile_picture || ''
+        invitation: null, photo: m.profile_picture || ''
       });
     });
     pendingOnly.forEach(inv => {
       if (orgManagers.some(m => (m.email || '').toLowerCase() === (inv.email || '').toLowerCase())) return;
       const sName = siteNameById(inv.assigned_site_id);
       rows.push({
-        kind: 'invitation',
-        id: inv.id,
-        name: inv.full_name || inv.email,
-        email: inv.email,
-        role: inv.role || 'manager',
+        kind: 'invitation', id: inv.id, name: inv.full_name || inv.email,
+        email: inv.email, role: inv.role || 'manager',
         siteName: inv.assigned_site_id ? (sName || 'Assignment needs review') : t('managers.unassigned'),
         siteId: inv.assigned_site_id || null,
-        status: 'pending',
-        invitation: inv,
-        photo: ''
+        status: 'pending', invitation: inv, photo: ''
       });
     });
 
@@ -2715,7 +2622,6 @@ tbody tr:hover{background:#f1f5f9}
       const existingMember = managersData.find(m => (m.email || '').toLowerCase() === email);
       if (existingMember) { showToast(t('managers.alreadyMember'), 'error'); return; }
 
-      // QA-009: Transactional duplicate check (fresh read, not stale snapshot)
       const dupSnap = await getDocs(query(
         collection(db, 'manager_invitations'),
         where('organization_id', '==', currentOrganizationId),
@@ -2733,7 +2639,7 @@ tbody tr:hover{background:#f1f5f9}
             return;
           }
         }
-      } catch (_) { /* rules may deny; fail open */ }
+      } catch (_) {}
 
       const rawToken = _generateToken();
       const tokenHash = await _sha256Hex(rawToken);
@@ -2767,7 +2673,6 @@ tbody tr:hover{background:#f1f5f9}
       closeModal();
       showToast(t('managers.inviteSent'), 'success');
 
-      // QA-007: Cancel success modal if user navigated away
       const inviteSnapshot = { section: currentSection };
       setTimeout(() => {
         if (currentSection !== inviteSnapshot.section) return;
@@ -2791,7 +2696,6 @@ tbody tr:hover{background:#f1f5f9}
     finally { setButtonLoading(btn, false); }
   };
 
-  // =============== ASSIGNMENT + REMOVAL + DETAILS ===============
   window.openAssignSiteModal = (managerId) => {
     const mgr = managersData.find(m => m.id === managerId);
     if (!mgr) return;
@@ -2822,7 +2726,6 @@ tbody tr:hover{background:#f1f5f9}
       if (!newSite || newSite.organization_id !== currentOrganizationId) { showToast(t('common.accessDenied'), 'error'); return; }
 
       const prevSiteId = mgr.assigned_site || null;
-      // QA-008: same-site guard
       if (prevSiteId === newSiteId) {
         closeModal();
         showToast(t('common.noChange') || 'No change', 'info');
@@ -2926,7 +2829,6 @@ tbody tr:hover{background:#f1f5f9}
     } catch (err) { console.error(err); showToast(t('alerts.somethingWentWrong'), 'error'); }
   };
 
-  // =============== INVITATIONS DASHBOARD ===============
   function renderInvitations(container) {
     const orgInvites = invitationsData;
     const filtered = orgInvites.filter(i => _invTab === 'all' ? true : i.status === _invTab);
@@ -3246,17 +3148,19 @@ tbody tr:hover{background:#f1f5f9}
         await rtdbSet(rtdbRef(rtdb, `presence/${currentUser.uid}`), { online: false, last_changed: Date.now() });
       }
     } catch (_) {}
+    if (_invitationsUnsub) { try { _invitationsUnsub(); } catch(_){} _invitationsUnsub = null; }
     await signOut(auth);
     window.location.href = 'https://shdr-construction.vercel.app/index.html';
   };
 
   // =================================================================
-  // ============== MESSAGING ENGINE v3 (Owner ↔ Manager) ============
+  // ============== MESSAGING ENGINE v3 — HARDENED =============
   // =================================================================
   const CONVERSATIONS = 'conversations';
   const EDIT_WINDOW_MS   = 15 * 60 * 1000;
   const MAX_FILE_BYTES   = 10 * 1024 * 1024;
   const ALLOWED_MIME     = ['image/jpeg','image/png','image/gif','image/webp'];
+  const PAGE_SIZE        = 50;
   const EMOJI_SET = ['😀','😃','😄','😁','😆','😅','😂','🤣','😊','😇','🙂','🙃','😉','😌','😍','🥰','😘','😗','😙','😚','😋','😛','😝','😜','🤪','🤨','🧐','🤓','😎','🤩','🥳','😏','😒','😞','😔','😟','😕','🙁','☹️','😣','😖','😫','😩','🥺','😢','😭','😤','😠','😡','🤬','🤯','😳','🥵','🥶','😱','😨','😰','😥','😓','🤗','🤔','🤭','🤫','🤥','😶','😐','😑','😬','🙄','😯','😦','😧','😮','😲','🥱','😴','🤤','😪','😵','🤐','🥴','🤢','🤮','🤧','😷','🤒','🤕','🤑','🤠','😈','👿','👹','👺','🤡','💩','👻','💀','☠️','👽','👾','🤖','🎃','😺','😸','😹','😻','😼','😽','🙀','😿','😾','👍','👎','👌','✌️','🤞','🤟','🤘','🤙','👈','👉','👆','👇','☝️','✋','🤚','🖐️','🖖','👋','🤝','🙏','✍️','💪','🦾','🦿','🦵','🦶','👂','🦻','👃','🧠','🦷','👀','👁️','👅','👄','❤️','🧡','💛','💚','💙','💜','🖤','🤍','🤎','💔','❣️','💕','💞','💓','💗','💖','💘','💝','💟','☮️','✨','⭐','🌟','💫','⚡','🔥','💥','💢','💨','💦','💤','🎉','🎊','🎁','🏆','🥇','🥈','🥉','⚽','🏀','🏈','⚾','🎾','🏐','🏉','🎱','🏓','🏸','🥊','🥋','⛳','🛹','🛼','🛷','⛸️','🥌','🎿','⛷️','🏂','🏋️','🤼','🤸','⛹️','🤾','🏌️','🏇','🧘','🏄','🏊','🤽','🚣','🧗','🚵','🚴','🏅','🎖️','🏵️','🎗️','🎫','🎟️','🎪','🤹','🎭','🩰','🎨','🎬','🎤','🎧','🎼','🎹','🥁','🎷','🎺','🎸','🪕','🎻','🎲','♟️','🎯','🎳','🎮','🎰','🧩'];
 
   let conversationsData   = [];
@@ -3276,6 +3180,61 @@ tbody tr:hover{background:#f1f5f9}
   let searchPanelOpen     = false;
   let currentSearchQuery  = '';
   let _lastRenderedCid    = null;
+  let _lastNotified       = 0;
+  let _starredCache       = new Set();
+  let _pinnedMsgId        = null;
+  let _oldestCursor       = null;
+  let _hasMoreOlder       = true;
+  let _loadingOlder       = false;
+  let _notifAudio         = null;
+  let _pendingMediaRecorder = null;
+  let _pendingAudioBlob     = null;
+  let _recordingSeconds     = 0;
+  let _recordingTimer       = null;
+  let _audioChunks          = [];
+
+  // ── Helpers ─────────────────────────────────────────────
+  function isSafeAttachmentUrl(url) {
+    if (typeof url !== 'string') return false;
+    if (!url.startsWith('https://')) return false;
+    try {
+      const u = new URL(url);
+      if (u.protocol !== 'https:') return false;
+      const allowed = ['i.ibb.co', 'ibb.co', 'firebasestorage.googleapis.com', 'storage.googleapis.com', 'cdn.shdr.com'];
+      return allowed.some(h => u.hostname === h || u.hostname.endsWith('.' + h));
+    } catch { return false; }
+  }
+
+  function ensureNotifAudio() {
+    if (_notifAudio) return _notifAudio;
+    _notifAudio = new Audio('data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA=');
+    _notifAudio.volume = 0.35;
+    return _notifAudio;
+  }
+  function playNotifSound() {
+    try {
+      const a = ensureNotifAudio();
+      a.currentTime = 0;
+      a.play().catch(() => {});
+    } catch (_) {}
+  }
+
+  function scrollDateLabel(ts) {
+    const d = new Date(ts);
+    const now = new Date();
+    const same = (a, b) => a.toDateString() === b.toDateString();
+    if (same(d, now)) return t('messages.today') || 'TODAY';
+    const yest = new Date(now); yest.setDate(yest.getDate() - 1);
+    if (same(d, yest)) return t('messages.yesterday') || 'YESTERDAY';
+    return d.toLocaleDateString(
+      currentLanguage === 'rw' ? 'rw-RW' : currentLanguage === 'fr' ? 'fr-FR' : 'en-GB',
+      { day: 'numeric', month: 'long', year: 'numeric' }
+    ).toUpperCase();
+  }
+  function dayKey(ts) {
+    const d = new Date(ts);
+    return `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
+  }
 
   function buildConversationId(ownerId, managerId) {
     return `owner_${ownerId}_manager_${managerId}`;
@@ -3319,9 +3278,17 @@ tbody tr:hover{background:#f1f5f9}
     return `${(bytes / Math.pow(k, i)).toFixed(1)} ${sizes[i]}`;
   }
   function initialsOf(name) { return String(name || '?').trim().charAt(0).toUpperCase() || '?'; }
-  function getDraft(cid) { try { return localStorage.getItem(`shdr_draft_${cid}`) || ''; } catch { return ''; } }
-  function setDraft(cid, text) { try { if (text && text.trim()) localStorage.setItem(`shdr_draft_${cid}`, text); else localStorage.removeItem(`shdr_draft_${cid}`); } catch {} }
 
+  function _draftKey(cid) { return `shdr_draft_${currentUser?.uid || 'anon'}_${cid}`; }
+  function getDraft(cid) { try { return localStorage.getItem(_draftKey(cid)) || ''; } catch { return ''; } }
+  function setDraft(cid, text) {
+    try {
+      if (text && text.trim()) localStorage.setItem(_draftKey(cid), text);
+      else localStorage.removeItem(_draftKey(cid));
+    } catch {}
+  }
+
+  // ── Presence ────────────────────────────────────────────
   function initPresence() {
     if (!currentUser) return;
     try { rtdb = rtdb || getDatabase(app); } catch (e) { console.warn('RTDB init failed:', e); return; }
@@ -3329,7 +3296,9 @@ tbody tr:hover{background:#f1f5f9}
     const connectedUnsub = rtdbOnValue(connectedRef, (snap) => {
       if (snap.val() === false) return;
       const myPresence = rtdbRef(rtdb, `presence/${currentUser.uid}`);
-      onDisconnect(myPresence).set({ online: false, last_changed: Date.now() }).then(() => rtdbSet(myPresence, { online: true, last_changed: Date.now() })).catch(err => console.warn('presence set failed:', err));
+      onDisconnect(myPresence).set({ online: false, last_changed: Date.now() })
+        .then(() => rtdbSet(myPresence, { online: true, last_changed: Date.now() }))
+        .catch(err => console.warn('presence set failed:', err));
     });
     chatUnsubs.push(connectedUnsub);
     chatUnsubs.push(rtdbOnValue(rtdbRef(rtdb, 'presence'), (snap) => {
@@ -3346,6 +3315,7 @@ tbody tr:hover{background:#f1f5f9}
     startTyping(activeConversationId);
     clearTimeout(_typingTimer);
     _typingTimer = setTimeout(() => stopTyping(activeConversationId), 3000);
+    updateComposerButtons();
   }
   function subscribeToTyping(cid) {
     if (typingUnsub) { try { typingUnsub(); } catch (_) {} typingUnsub = null; }
@@ -3355,7 +3325,9 @@ tbody tr:hover{background:#f1f5f9}
       const val = snap.val() || {};
       const now = Date.now();
       typingMap = {};
-      Object.entries(val).forEach(([uid, ts]) => { if (uid !== currentUser.uid && now - ts < 5000) typingMap[uid] = ts; });
+      Object.entries(val).forEach(([uid, ts]) => {
+        if (uid !== currentUser.uid && now - ts < 5000) typingMap[uid] = ts;
+      });
       renderTypingIndicator();
     }, err => console.warn('typing listener:', err));
   }
@@ -3377,12 +3349,18 @@ tbody tr:hover{background:#f1f5f9}
     initPresence();
   }
 
+  // ── Messages subscription with pagination ───────────────
   function subscribeToMessages(cid) {
     if (messageUnsub) { try { messageUnsub(); } catch (_) {} messageUnsub = null; }
-    messagesCache = [];
-    const msgQ = query(collection(db, CONVERSATIONS, cid, 'messages'), orderBy('created_at', 'asc'), limit(500));
-    messageUnsub = onSnapshot(msgQ, (snap) => {
-      messagesCache = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    messagesCache = []; _oldestCursor = null; _hasMoreOlder = true;
+    const base = collection(db, CONVERSATIONS, cid, 'messages');
+    const liveQ = query(base, orderBy('created_at', 'desc'), limit(PAGE_SIZE));
+    messageUnsub = onSnapshot(liveQ, (snap) => {
+      const liveIds = new Set(snap.docs.map(d => d.id));
+      const older = messagesCache.filter(m => !liveIds.has(m.id));
+      const fresh = snap.docs.map(d => ({ id: d.id, ...d.data() })).reverse();
+      messagesCache = [...older, ...fresh];
+      if (snap.docs.length) _oldestCursor = snap.docs[snap.docs.length - 1];
       renderMessagesThread();
       markConversationRead(cid);
       markConversationDelivered(cid);
@@ -3390,6 +3368,41 @@ tbody tr:hover{background:#f1f5f9}
       console.error('[messages] snapshot error:', err);
       showToast(t('messages.notAuthorized'), 'error');
       closeManagerConversation();
+    });
+    setTimeout(bindScrollForOlder, 100);
+  }
+
+  async function loadOlderMessages() {
+    if (!_hasMoreOlder || _loadingOlder || !_oldestCursor || !activeConversationId) return;
+    _loadingOlder = true;
+    const scroller = document.getElementById('message-scroll');
+    const prevHeight = scroller?.scrollHeight || 0;
+    // show spinner
+    const spinnerHost = document.getElementById('load-older-host');
+    if (spinnerHost) spinnerHost.innerHTML = `<div class="load-older"><div class="spinner"></div></div>`;
+    try {
+      const base = collection(db, CONVERSATIONS, activeConversationId, 'messages');
+      const q = query(base, orderBy('created_at', 'desc'), startAfter(_oldestCursor), limit(PAGE_SIZE));
+      const snap = await getDocs(q);
+      if (snap.empty) { _hasMoreOlder = false; return; }
+      const older = snap.docs.map(d => ({ id: d.id, ...d.data() })).reverse();
+      _oldestCursor = snap.docs[snap.docs.length - 1];
+      const existing = new Set(messagesCache.map(m => m.id));
+      messagesCache = [...older.filter(m => !existing.has(m.id)), ...messagesCache];
+      renderMessagesThread();
+      requestAnimationFrame(() => {
+        if (scroller) scroller.scrollTop = scroller.scrollHeight - prevHeight;
+      });
+    } catch (e) { console.error('[pagination]', e); }
+    finally { _loadingOlder = false; }
+  }
+
+  function bindScrollForOlder() {
+    const s = document.getElementById('message-scroll');
+    if (!s || s.dataset.pagBound === '1') return;
+    s.dataset.pagBound = '1';
+    s.addEventListener('scroll', () => {
+      if (s.scrollTop < 80) loadOlderMessages();
     });
   }
 
@@ -3401,31 +3414,58 @@ tbody tr:hover{background:#f1f5f9}
     let snap;
     try { snap = await getDoc(ref); } catch (e) { throw new Error(t('messages.notAuthorized')); }
     if (!snap.exists()) {
-      const payload = { type: 'owner_manager', owner_id: currentUser.uid, manager_id: managerId, organization_id: currentOrganizationId, participants: [currentUser.uid, managerId], created_at: new Date().toISOString(), updated_at: new Date().toISOString(), last_message: null, unread: { [currentUser.uid]: 0, [managerId]: 0 }, user_settings: { [currentUser.uid]: { pinned: false, muted: false, archived: false }, [managerId]: { pinned: false, muted: false, archived: false } } };
+      const payload = {
+        type: 'owner_manager',
+        owner_id: currentUser.uid,
+        manager_id: managerId,
+        organization_id: currentOrganizationId,
+        participants: [currentUser.uid, managerId],
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+        last_message: null,
+        pinned_message_id: null,
+        unread: { [currentUser.uid]: 0, [managerId]: 0 },
+        user_settings: {
+          [currentUser.uid]: { pinned: false, muted: false, archived: false },
+          [managerId]:      { pinned: false, muted: false, archived: false }
+        }
+      };
       try { await setDoc(ref, payload); }
       catch (err) { const again = await getDoc(ref); if (!again.exists()) throw err; }
     }
     return cid;
   }
 
+  // ── Bug 2 fix: only write what actually changed ─────────
   async function markConversationRead(cid) {
     const conv = conversationsData.find(c => c.id === cid);
     const unread = (conv?.unread && conv.unread[currentUser.uid]) || 0;
-    if (!unread) return;
-    try { await updateDoc(doc(db, CONVERSATIONS, cid), { [`unread.${currentUser.uid}`]: 0, [`last_read.${currentUser.uid}`]: new Date().toISOString() }); } catch (err) { console.warn('mark read failed:', err); }
+    const unreadDocs = messagesCache.filter(m => m.sender_id !== currentUser.uid && !m.read_at);
+    const needsConvUpdate = unread > 0;
+    if (!needsConvUpdate && !unreadDocs.length) return;
     const now = new Date().toISOString();
-    const batch = writeBatch(db);
-    let touched = 0;
-    messagesCache.forEach(m => { if (m.sender_id === currentUser.uid) return; if (m.read_at) return; batch.update(doc(db, CONVERSATIONS, cid, 'messages', m.id), { read_at: now }); touched++; });
-    if (touched) { try { await batch.commit(); } catch (e) { console.warn('read batch:', e); } }
+    if (needsConvUpdate) {
+      try {
+        await updateDoc(doc(db, CONVERSATIONS, cid), {
+          [`unread.${currentUser.uid}`]: 0,
+          [`last_read.${currentUser.uid}`]: now
+        });
+      } catch (err) { console.warn('mark read failed:', err); }
+    }
+    if (unreadDocs.length) {
+      const batch = writeBatch(db);
+      unreadDocs.forEach(m => batch.update(doc(db, CONVERSATIONS, cid, 'messages', m.id), { read_at: now }));
+      try { await batch.commit(); } catch (e) { console.warn('read batch:', e); }
+    }
   }
 
   async function markConversationDelivered(cid) {
+    const undelivered = messagesCache.filter(m => m.sender_id !== currentUser.uid && !m.delivered_at);
+    if (!undelivered.length) return;
     const now = new Date().toISOString();
     const batch = writeBatch(db);
-    let touched = 0;
-    messagesCache.forEach(m => { if (m.sender_id === currentUser.uid) return; if (m.delivered_at) return; batch.update(doc(db, CONVERSATIONS, cid, 'messages', m.id), { delivered_at: now }); touched++; });
-    if (touched) { try { await batch.commit(); } catch (e) { console.warn('delivered batch:', e); } }
+    undelivered.forEach(m => batch.update(doc(db, CONVERSATIONS, cid, 'messages', m.id), { delivered_at: now }));
+    try { await batch.commit(); } catch (e) { console.warn('delivered batch:', e); }
   }
 
   async function updateUserSetting(cid, patch) {
@@ -3438,6 +3478,14 @@ tbody tr:hover{background:#f1f5f9}
   window.togglePin = async (cid) => { const c = conversationsData.find(x => x.id === cid); const cur = c?.user_settings?.[currentUser.uid]?.pinned || false; await updateUserSetting(cid, { pinned: !cur }); };
   window.toggleMute = async (cid) => { const c = conversationsData.find(x => x.id === cid); const cur = c?.user_settings?.[currentUser.uid]?.muted || false; await updateUserSetting(cid, { muted: !cur }); };
   window.toggleArchive = async (cid) => { const c = conversationsData.find(x => x.id === cid); const cur = c?.user_settings?.[currentUser.uid]?.archived || false; await updateUserSetting(cid, { archived: !cur }); };
+
+  window.markConversationUnread = async function (cid) {
+    try {
+      await updateDoc(doc(db, CONVERSATIONS, cid), { [`unread.${currentUser.uid}`]: 1 });
+      if (activeConversationId === cid) closeManagerConversation();
+      showToast(t('messages.markUnread') || 'Marked as unread', 'success');
+    } catch (e) { showToast(t('alerts.somethingWentWrong'), 'error'); }
+  };
 
   window.openManagerConversation = async (managerId) => {
     const manager = getMessagingManagers().find(m => m.id === managerId);
@@ -3473,6 +3521,9 @@ tbody tr:hover{background:#f1f5f9}
     currentSearchQuery = '';
     searchPanelOpen = false;
     _lastRenderedCid = null;
+    _pinnedMsgId = null;
+    _oldestCursor = null;
+    _hasMoreOlder = true;
     document.querySelector('.messages-shell')?.classList.remove('thread-open');
     renderMessagesThread();
     renderMessagesDirectory();
@@ -3486,6 +3537,18 @@ tbody tr:hover{background:#f1f5f9}
     const el = document.getElementById('manager-search');
     if (el) { el.focus(); el.setSelectionRange(el.value.length, el.value.length); }
   };
+
+  // ── Composer helpers ────────────────────────────────────
+  function updateComposerButtons() {
+    const ta = document.getElementById('message-input');
+    const send = document.getElementById('message-send-btn');
+    const mic = document.getElementById('composer-mic-btn');
+    if (!ta || !send || !mic) return;
+    const hasText = (ta.value || '').trim().length > 0;
+    const hasAttach = !!pendingAttachment || !!window._pendingSharedRecord || !!_pendingAudioBlob;
+    if (hasText || hasAttach) { send.classList.remove('hidden'); mic.classList.add('hidden'); }
+    else { send.classList.add('hidden'); mic.classList.remove('hidden'); }
+  }
 
   window.sendMessage = async () => {
     const input = document.getElementById('message-input');
@@ -3581,8 +3644,13 @@ tbody tr:hover{background:#f1f5f9}
   window.startReply = (mid) => {
     const m = messagesCache.find(x => x.id === mid);
     if (!m || m.deleted_for_all) return;
-    const senderName = m.sender_id === currentUser.uid ? (ownerProfile?.full_name || 'You') : (managersData.find(mm => mm.id === m.sender_id)?.full_name || 'Manager');
-    const body = m.type === 'attachment' ? `📎 ${m.attachment?.name || 'file'}` : m.type === 'shared_record' ? `📋 ${m.shared_record?.title || 'record'}` : (m.text || '');
+    const senderName = m.sender_id === currentUser.uid
+      ? (ownerProfile?.full_name || 'You')
+      : (managersData.find(mm => mm.id === m.sender_id)?.full_name || 'Manager');
+    const body = m.type === 'attachment' ? `📎 ${m.attachment?.name || 'file'}`
+      : m.type === 'shared_record' ? `📋 ${m.shared_record?.title || 'record'}`
+      : m.type === 'voice' ? '🎤 Voice message'
+      : (m.text || '');
     replyingTo = { id: mid, sender_name: senderName, text: body.slice(0, 120) };
     renderComposerReplyPreview();
     document.getElementById('message-input')?.focus();
@@ -3603,34 +3671,44 @@ tbody tr:hover{background:#f1f5f9}
     catch (err) { showToast(t('alerts.somethingWentWrong'), 'error'); }
   };
 
+  // ── Message menu (extended) ─────────────────────────────
   window.openMsgMenu = function (ev, mid) {
-    if (ev && ev.stopPropagation) ev.stopPropagation();
-    closeReactionPicker();
-    closeMsgMenu();
+    if (ev?.stopPropagation) ev.stopPropagation();
+    closeReactionPicker(); closeMsgMenu();
     const m = messagesCache.find(x => x.id === mid);
-    if (!m) return;
+    if (!m || m.deleted_for_all) return;
     const mine = m.sender_id === currentUser.uid;
-    const isDeleted = m.deleted_for_all;
-    if (isDeleted) return;
     const age = Date.now() - new Date(m.created_at).getTime();
     const canEdit = mine && m.type === 'text' && age <= EDIT_WINDOW_MS;
     const canDeleteAll = mine && age <= EDIT_WINDOW_MS;
+    const starred = _starredCache.has(mid);
+    const isPinned = _pinnedMsgId === mid;
+
     const items = [
-      { key: 'react', icon: 'material-symbols:sentiment-satisfied-outline', label: t('messages.react'), cls: '' },
-      { key: 'reply', icon: 'material-symbols:reply', label: t('messages.reply'), cls: '' }
+      { key: 'reply',   icon: 'material-symbols:reply',                       label: t('messages.reply') },
+      { key: 'react',   icon: 'material-symbols:sentiment-satisfied-outline', label: t('messages.react') },
+      { key: 'copy',    icon: 'material-symbols:content-copy-outline',        label: t('messages.copy') },
+      { key: 'forward', icon: 'material-symbols:forward-to-inbox',            label: t('messages.forward') },
+      { key: 'star',    icon: starred ? 'material-symbols:star' : 'material-symbols:star-outline',
+        label: starred ? t('messages.unstar') : t('messages.star') },
+      { key: 'pin',     icon: isPinned ? 'material-symbols:keep-off-outline' : 'material-symbols:keep-outline',
+        label: isPinned ? t('messages.unpinMessage') : t('messages.pinMessage') }
     ];
-    if (canEdit) items.push({ key: 'edit', icon: 'material-symbols:edit', label: t('messages.edit'), cls: '' });
+    if (canEdit) items.push({ key: 'edit', icon: 'material-symbols:edit', label: t('messages.edit') });
     items.push({ key: 'delete', icon: 'material-symbols:delete-outline', label: t('messages.delete'), cls: 'danger' });
+
     const menu = document.createElement('div');
-    menu.className = 'msg-action-menu';
-    menu.id = 'msg-action-menu';
+    menu.className = 'msg-action-menu'; menu.id = 'msg-action-menu';
     menu.addEventListener('click', (e) => e.stopPropagation());
-    menu.innerHTML = items.map(it => `<button type="button" data-action="${it.key}" data-mid="${mid}" class="${it.cls}"><span class="menu-icon"><iconify-icon icon="${it.icon}" width="18"></iconify-icon></span><span>${it.label}</span></button>`).join('');
+    menu.innerHTML = items.map(it =>
+      `<button type="button" data-action="${it.key}" data-mid="${mid}" class="${it.cls || ''}"><span class="menu-icon"><iconify-icon icon="${it.icon}" width="18"></iconify-icon></span><span>${it.label}</span></button>`
+    ).join('');
     document.body.appendChild(menu);
+
     const anchor = ev?.currentTarget || ev?.target;
-    let rect;
-    if (anchor && anchor.getBoundingClientRect) rect = anchor.getBoundingClientRect();
-    else { const msgEl = document.getElementById('msg-' + mid); rect = msgEl ? msgEl.getBoundingClientRect() : { left: 40, right: 240, top: 200, bottom: 240 }; }
+    const rect = anchor?.getBoundingClientRect?.() ||
+      (document.getElementById('msg-' + mid)?.getBoundingClientRect()) ||
+      { left: 40, right: 240, top: 200, bottom: 240 };
     const mw = menu.offsetWidth, mh = menu.offsetHeight;
     let left = mine ? (rect.right - mw) : rect.left;
     let top = rect.bottom + 6;
@@ -3638,15 +3716,18 @@ tbody tr:hover{background:#f1f5f9}
     if (left < 8) left = 8;
     if (left + mw > window.innerWidth - 8) left = window.innerWidth - mw - 8;
     if (top < 8) top = 8;
-    menu.style.left = left + 'px';
-    menu.style.top = top + 'px';
+    menu.style.left = left + 'px'; menu.style.top = top + 'px';
+
     menu.querySelectorAll('button[data-action]').forEach(btn => {
       btn.addEventListener('click', () => {
-        const action = btn.dataset.action;
-        const msgId = btn.dataset.mid;
+        const action = btn.dataset.action, msgId = btn.dataset.mid;
         closeMsgMenu();
         if (action === 'react') openReactionPickerFixed(msgId);
         else if (action === 'reply') startReply(msgId);
+        else if (action === 'copy') copyMessage(msgId);
+        else if (action === 'forward') openForwardPicker(msgId);
+        else if (action === 'star') toggleStarMessage(msgId);
+        else if (action === 'pin') togglePinMessage(msgId);
         else if (action === 'edit') startEdit(msgId);
         else if (action === 'delete') openDeleteMenu(msgId, { stopPropagation: () => {} });
       });
@@ -3654,13 +3735,100 @@ tbody tr:hover{background:#f1f5f9}
   };
   window.closeMsgMenu = function () { document.getElementById('msg-action-menu')?.remove(); };
 
+  window.copyMessage = async function (mid) {
+    const m = messagesCache.find(x => x.id === mid);
+    if (!m) return;
+    const text = m.text || m.attachment?.name || m.shared_record?.title || '';
+    if (!text) { showToast('Nothing to copy.', 'info'); return; }
+    try {
+      if (navigator.clipboard?.writeText) await navigator.clipboard.writeText(text);
+      else {
+        const ta = document.createElement('textarea');
+        ta.value = text; document.body.appendChild(ta); ta.select();
+        document.execCommand('copy'); ta.remove();
+      }
+      showToast(t('messages.copied') || 'Message copied', 'success');
+    } catch (_) { showToast('Copy failed.', 'error'); }
+  };
+
+  window.toggleStarMessage = async function (mid) {
+    if (!activeConversationId) return;
+    try {
+      const m = messagesCache.find(x => x.id === mid);
+      const wasStarred = _starredCache.has(mid);
+      const list = wasStarred
+        ? (m?.starred || []).filter(u => u !== currentUser.uid)
+        : Array.from(new Set([...(m?.starred || []), currentUser.uid]));
+      await updateDoc(doc(db, CONVERSATIONS, activeConversationId, 'messages', mid), { starred: list });
+      if (wasStarred) _starredCache.delete(mid); else _starredCache.add(mid);
+      renderMessagesThread();
+    } catch (e) { showToast('Could not star message.', 'error'); }
+  };
+
+  window.togglePinMessage = async function (mid) {
+    if (!activeConversationId) return;
+    try {
+      const isPinned = _pinnedMsgId === mid;
+      await updateDoc(doc(db, CONVERSATIONS, activeConversationId), { pinned_message_id: isPinned ? null : mid });
+      _pinnedMsgId = isPinned ? null : mid;
+      renderMessagesThread();
+      showToast(isPinned ? (t('messages.conversationUnpinned') || 'Message unpinned') : (t('messages.conversationPinned') || 'Message pinned'), 'success');
+    } catch (e) { showToast('Could not pin message.', 'error'); }
+  };
+
+  window.openForwardPicker = function (mid) {
+    const mgrs = getMessagingManagers();
+    if (!mgrs.length) { showToast('No other contacts available.', 'info'); return; }
+    const rows = mgrs.map(m => `
+      <button type="button" onclick="forwardToManager('${mid}','${m.id}')"
+        class="w-full text-left px-3 py-2 rounded-lg hover:bg-slate-50 border-b flex items-center gap-3">
+        <div class="w-9 h-9 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold">
+          ${escapeHTML((m.full_name || m.email || '?').charAt(0).toUpperCase())}
+        </div>
+        <div class="flex-1 min-w-0">
+          <p class="font-medium text-sm truncate">${escapeHTML(m.full_name || m.email)}</p>
+          <p class="text-xs text-slate-500 truncate">${escapeHTML(getManagerSiteName(m))}</p>
+        </div>
+      </button>`).join('');
+    openModal(t('messages.forward') || 'Forward message', `<div class="max-h-[60vh] overflow-y-auto">${rows}</div>`);
+  };
+
+  window.forwardToManager = async function (mid, managerId) {
+    closeModal();
+    const src = messagesCache.find(x => x.id === mid);
+    if (!src) return;
+    try {
+      const targetCid = await ensureConversation(managerId);
+      const now = new Date().toISOString();
+      const payload = {
+        sender_id: currentUser.uid, sender_role: 'owner',
+        text: src.text || '', type: src.type,
+        attachment: src.attachment || null, shared_record: src.shared_record || null,
+        forwarded: true,
+        created_at: now, sent_at: now, delivered_at: null, read_at: null,
+        reactions: {}, edited_at: null, deleted_for_all: false, deleted_for: []
+      };
+      const previewText = src.attachment ? `📎 ${src.attachment.name}`
+        : src.shared_record ? `📋 ${src.shared_record.title}`
+        : src.type === 'voice' ? '🎤 Voice message'
+        : (src.text || '').slice(0, 200);
+      const batch = writeBatch(db);
+      batch.set(doc(collection(db, CONVERSATIONS, targetCid, 'messages')), payload);
+      batch.update(doc(db, CONVERSATIONS, targetCid), {
+        last_message: { text: previewText, sender_id: currentUser.uid, created_at: now },
+        updated_at: now, [`unread.${managerId}`]: increment(1)
+      });
+      await batch.commit();
+      showToast('Message forwarded', 'success');
+    } catch (e) { console.error(e); showToast('Forward failed.', 'error'); }
+  };
+
   window.openReactionPickerFixed = function (mid) {
     closeReactionPicker();
     const msgEl = document.getElementById('msg-' + mid);
     const rect = msgEl ? msgEl.getBoundingClientRect() : { left: 40, right: 240, top: 200, bottom: 240 };
     const picker = document.createElement('div');
-    picker.className = 'reaction-picker-floating';
-    picker.id = 'reaction-picker-floating';
+    picker.className = 'reaction-picker-floating'; picker.id = 'reaction-picker-floating';
     picker.addEventListener('click', (e) => e.stopPropagation());
     picker.innerHTML = ['👍','❤️','😂','😮','😢','🙏'].map(e => `<button type="button" data-emoji="${e}">${e}</button>`).join('');
     document.body.appendChild(picker);
@@ -3670,8 +3838,7 @@ tbody tr:hover{background:#f1f5f9}
     if (top < 8) top = rect.bottom + 6;
     if (left < 8) left = 8;
     if (left + pw > window.innerWidth - 8) left = window.innerWidth - pw - 8;
-    picker.style.left = left + 'px';
-    picker.style.top = top + 'px';
+    picker.style.left = left + 'px'; picker.style.top = top + 'px';
     picker.querySelectorAll('button[data-emoji]').forEach(btn => {
       btn.addEventListener('click', () => { toggleReaction(mid, btn.dataset.emoji); closeReactionPicker(); });
     });
@@ -3684,7 +3851,6 @@ tbody tr:hover{background:#f1f5f9}
     if (m.type !== 'text') { showToast(t('messages.editWindowExpired'), 'error'); return; }
     const age = Date.now() - new Date(m.created_at).getTime();
     if (age > EDIT_WINDOW_MS) { showToast(t('messages.editWindowExpired'), 'error'); return; }
-    
     openModal(t('messages.edit'), `<form onsubmit="submitEdit(event, '${mid}')" class="space-y-4">
       <div class="flex items-center gap-2 text-emerald-700 mb-2">
         <iconify-icon icon="material-symbols:edit" width="24"></iconify-icon>
@@ -3693,8 +3859,10 @@ tbody tr:hover{background:#f1f5f9}
       <textarea id="edit-input" rows="4" class="w-full border rounded-lg p-3 text-sm">${escapeHTML(m.text || '')}</textarea>
       <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-xl font-semibold">${t('messages.saveEdit')}</button>
     </form>`);
-    
-    setTimeout(() => { const inp = document.getElementById('edit-input'); if (inp) { inp.focus(); inp.selectionStart = inp.selectionEnd = inp.value.length; } }, 80);
+    setTimeout(() => {
+      const inp = document.getElementById('edit-input');
+      if (inp) { inp.focus(); inp.selectionStart = inp.selectionEnd = inp.value.length; }
+    }, 80);
   };
   window.submitEdit = async (e, mid) => {
     e.preventDefault();
@@ -3716,7 +3884,6 @@ tbody tr:hover{background:#f1f5f9}
     const mine = m.sender_id === currentUser.uid;
     const age = Date.now() - new Date(m.created_at).getTime();
     const canDeleteAll = mine && age <= EDIT_WINDOW_MS;
-    
     openModal(t('messages.delete'), `<div class="space-y-3">
       <div class="flex items-center gap-2 text-red-600 mb-4">
         <iconify-icon icon="material-symbols:delete-outline" width="24"></iconify-icon>
@@ -3783,16 +3950,22 @@ tbody tr:hover{background:#f1f5f9}
     if (!resultsEl) return;
     if (!searchPanelOpen || !currentSearchQuery) { resultsEl.innerHTML = ''; return; }
     const results = getSearchResults();
-    resultsEl.innerHTML = results.length ? results.map(r => `<div class="msg-search-result" onclick="closeSearchAndScroll('${r.m.id}')"><div class="text-slate-700 truncate">${escapeHTML((r.m.text || r.m.attachment?.name || r.m.shared_record?.title || '').slice(0, 120))}</div><div class="text-[10px] text-slate-400">${escapeHTML(formatChatTime(r.m.created_at))}</div></div>`).join('') : `<p class="text-xs text-slate-400 p-2">${t('messages.noSearchResults')}</p>`;
+    resultsEl.innerHTML = results.length
+      ? results.map(r => `<div class="msg-search-result" onclick="closeSearchAndScroll('${r.m.id}')"><div class="text-slate-700 truncate">${escapeHTML((r.m.text || r.m.attachment?.name || r.m.shared_record?.title || '').slice(0, 120))}</div><div class="text-[10px] text-slate-400">${escapeHTML(formatChatTime(r.m.created_at))}</div></div>`).join('')
+      : `<p class="text-xs text-slate-400 p-2">${t('messages.noSearchResults')}</p>`;
   }
   window.closeSearchAndScroll = (mid) => {
     if (searchPanelOpen) { searchPanelOpen = false; renderSearchPanel(); }
     setTimeout(() => scrollToMessage(mid), 60);
   };
 
-  /* ====== SHDR shared records ====== */
+  // ── Shared records ──────────────────────────────────────
   window.openSharePicker = () => {
-    openModal('📎 ' + t('messages.share'), `<div class="space-y-3"><button onclick="shareMaterialPicker()" class="w-full text-left px-4 py-3 rounded-xl border hover:bg-slate-50 flex items-center gap-3"><iconify-icon icon="material-symbols:package-2-outline" width="20" class="text-emerald-600"></iconify-icon><span class="font-medium">${t('messages.shareMaterial')}</span></button><button onclick="shareWorkerPicker()" class="w-full text-left px-4 py-3 rounded-xl border hover:bg-slate-50 flex items-center gap-3"><iconify-icon icon="material-symbols:engineering-outline" width="20" class="text-blue-600"></iconify-icon><span class="font-medium">${t('messages.shareWorker')}</span></button><button onclick="shareReportPicker()" class="w-full text-left px-4 py-3 rounded-xl border hover:bg-slate-50 flex items-center gap-3"><iconify-icon icon="material-symbols:description-outline" width="20" class="text-amber-600"></iconify-icon><span class="font-medium">${t('messages.shareReport')}</span></button></div>`);
+    openModal('📎 ' + t('messages.share'), `<div class="space-y-3">
+      <button onclick="shareMaterialPicker()" class="w-full text-left px-4 py-3 rounded-xl border hover:bg-slate-50 flex items-center gap-3"><iconify-icon icon="material-symbols:package-2-outline" width="20" class="text-emerald-600"></iconify-icon><span class="font-medium">${t('messages.shareMaterial')}</span></button>
+      <button onclick="shareWorkerPicker()" class="w-full text-left px-4 py-3 rounded-xl border hover:bg-slate-50 flex items-center gap-3"><iconify-icon icon="material-symbols:engineering-outline" width="20" class="text-blue-600"></iconify-icon><span class="font-medium">${t('messages.shareWorker')}</span></button>
+      <button onclick="shareReportPicker()" class="w-full text-left px-4 py-3 rounded-xl border hover:bg-slate-50 flex items-center gap-3"><iconify-icon icon="material-symbols:description-outline" width="20" class="text-amber-600"></iconify-icon><span class="font-medium">${t('messages.shareReport')}</span></button>
+    </div>`);
   };
   window.shareMaterialPicker = () => {
     const items = stockData.slice(0, 30);
@@ -3805,7 +3978,7 @@ tbody tr:hover{background:#f1f5f9}
     const unit = s.unit || 'units'; const uc = toNumber(s.unit_cost); const qty = toNumber(s.quantity);
     const site = sitesData.find(x => x.id === s.site_id);
     window._pendingSharedRecord = {
-      kind: 'material', title: `🧱 ${t('messages.shareMaterial')}`, subtitle: escapeHTML(s.material_name || ''),
+      kind: 'material', title: `🧱 ${t('messages.shareMaterial')}`, subtitle: s.material_name || '',
       lines: [
         { label: t('materials.quantityUsed'), value: `${qty} ${unit}` },
         { label: t('materials.unitCost'), value: formatRWF(uc) },
@@ -3826,9 +3999,9 @@ tbody tr:hover{background:#f1f5f9}
     const attendance = attendanceData.filter(a => a.worker_id === w.id);
     const days = attendance.length; const rate = toNumber(w.salary); const payable = days * rate;
     window._pendingSharedRecord = {
-      kind: 'worker', title: `👷 ${t('messages.shareWorker')}`, subtitle: escapeHTML(w.name || ''),
+      kind: 'worker', title: `👷 ${t('messages.shareWorker')}`, subtitle: w.name || '',
       lines: [
-        { label: t('workers.position'), value: escapeHTML(w.role || '—') },
+        { label: t('workers.position'), value: w.role || '—' },
         { label: t('workers.attendanceLogs'), value: `${days}` },
         { label: t('reports.totalPayable'), value: formatRWF(payable) }
       ]
@@ -3852,6 +4025,182 @@ tbody tr:hover{background:#f1f5f9}
   };
   function formatRWF(v){return toNumber(v).toLocaleString('en-RW',{minimumFractionDigits:0,maximumFractionDigits:0})+' RWF';}
 
+  // ── Voice recording ─────────────────────────────────────
+  window.startVoiceRecording = async function () {
+    if (_pendingMediaRecorder) return;
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const mime = ['audio/webm;codecs=opus', 'audio/webm', 'audio/mp4', ''].find(m => !m || MediaRecorder.isTypeSupported(m)) || '';
+      _pendingMediaRecorder = new MediaRecorder(stream, mime ? { mimeType: mime } : undefined);
+      _audioChunks = [];
+      _pendingMediaRecorder.ondataavailable = (e) => { if (e.data.size) _audioChunks.push(e.data); };
+      _pendingMediaRecorder.onstop = () => {
+        stream.getTracks().forEach(t => t.stop());
+        _pendingAudioBlob = new Blob(_audioChunks, { type: _pendingMediaRecorder.mimeType || 'audio/webm' });
+        updateComposerButtons();
+        renderComposerAttachment();
+      };
+      _pendingMediaRecorder.start();
+      _recordingSeconds = 0;
+      _recordingTimer = setInterval(() => { _recordingSeconds++; updateRecordingUI(); }, 1000);
+      updateRecordingUI();
+      renderRecordingBar();
+    } catch (e) {
+      console.error(e);
+      showToast('Microphone access denied', 'error');
+    }
+  };
+
+  function updateRecordingUI() {
+    const bar = document.getElementById('recording-bar');
+    if (!bar) return;
+    const timeEl = bar.querySelector('.rec-time');
+    if (timeEl) timeEl.textContent = `${String(Math.floor(_recordingSeconds/60)).padStart(2,'0')}:${String(_recordingSeconds%60).padStart(2,'0')}`;
+  }
+
+  window.cancelVoiceRecording = function () {
+    try { _pendingMediaRecorder?.stop(); } catch (_) {}
+    clearInterval(_recordingTimer);
+    _pendingMediaRecorder = null; _pendingAudioBlob = null; _audioChunks = []; _recordingSeconds = 0;
+    renderRecordingBar();
+    renderComposerAttachment();
+    updateComposerButtons();
+    showToast('Recording discarded', 'info');
+  };
+
+  window.sendVoiceMessage = async function () {
+    if (!_pendingAudioBlob || !activeConversationId || !activeManagerId) return;
+    const blob = _pendingAudioBlob;
+    const dur = _recordingSeconds;
+    _pendingAudioBlob = null; _pendingMediaRecorder = null; clearInterval(_recordingTimer);
+    _audioChunks = []; _recordingSeconds = 0;
+    renderRecordingBar();
+    try {
+      const file = new File([blob], `voice-${Date.now()}.webm`, { type: blob.type });
+      // imgbb cannot host audio reliably. Configure object storage (Firebase Storage / S3 / Cloudinary)
+      // and swap this block. For now, attempt upload and surface a clear error if it fails.
+      const formData = new FormData();
+      formData.append('image', file);
+      const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, { method: 'POST', body: formData });
+      const json = await res.json();
+      if (!json.success) throw new Error('Voice hosting not configured. Add object storage to enable voice messages.');
+      const url = json.data.url;
+      const now = new Date().toISOString();
+      const payload = {
+        sender_id: currentUser.uid, sender_role: 'owner', text: '',
+        type: 'voice',
+        attachment: { url, name: file.name, size: file.size, mime: file.type, duration: dur },
+        created_at: now, sent_at: now, delivered_at: null, read_at: null,
+        reactions: {}, edited_at: null, deleted_for_all: false, deleted_for: []
+      };
+      const batch = writeBatch(db);
+      batch.set(doc(collection(db, CONVERSATIONS, activeConversationId, 'messages')), payload);
+      batch.update(doc(db, CONVERSATIONS, activeConversationId), {
+        last_message: { text: '🎤 Voice message', sender_id: currentUser.uid, created_at: now },
+        updated_at: now, [`unread.${activeManagerId}`]: increment(1)
+      });
+      await batch.commit();
+      showToast('Voice message sent', 'success');
+    } catch (e) {
+      console.error(e);
+      showToast(e.message || 'Voice send failed.', 'error');
+    }
+  };
+
+  function renderRecordingBar() {
+    const bar = document.getElementById('recording-bar');
+    if (!bar) return;
+    if (_pendingMediaRecorder || _pendingAudioBlob) {
+      bar.classList.remove('hidden');
+      updateRecordingUI();
+    } else {
+      bar.classList.add('hidden');
+    }
+  }
+
+  // ── Conversation Info panel ─────────────────────────────
+  window.openConversationInfo = function () {
+    if (!activeManagerId) return;
+    const mgr = managersData.find(m => m.id === activeManagerId);
+    if (!mgr) return;
+    const siteName = getManagerSiteName(mgr);
+    const media = messagesCache.filter(m => m.attachment && m.attachment.mime?.startsWith('image/'));
+    const docs  = messagesCache.filter(m => m.attachment && !m.attachment.mime?.startsWith('image/') && !m.attachment.mime?.startsWith('audio/') && !m.attachment.mime?.startsWith('video/'));
+    const starred = messagesCache.filter(m => (m.starred || []).includes(currentUser.uid));
+    const pinnedMsg = messagesCache.find(m => m.id === _pinnedMsgId);
+
+    openModal(t('messages.conversationInfo') || 'Conversation Info', `
+      <div class="flex items-center gap-3 mb-4">
+        <div class="w-14 h-14 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-xl">
+          ${escapeHTML((mgr.full_name || mgr.email || '?').charAt(0).toUpperCase())}
+        </div>
+        <div class="flex-1 min-w-0">
+          <p class="font-bold text-base truncate">${escapeHTML(mgr.full_name || mgr.email)}</p>
+          <p class="text-xs text-slate-500 truncate">${escapeHTML(mgr.email || '')}</p>
+          <p class="text-xs text-emerald-700 mt-0.5">${escapeHTML(siteName)}</p>
+        </div>
+      </div>
+      <div class="bg-slate-50 rounded-xl p-3 text-xs space-y-1 mb-3">
+        <p><strong>Role:</strong> ${escapeHTML(mgr.role || 'manager')}</p>
+        <p><strong>Phone:</strong> ${escapeHTML(mgr.phone || '—')}</p>
+        <p><strong>Status:</strong> ${escapeHTML(mgr.organization_status || mgr.status || 'active')}</p>
+      </div>
+      ${pinnedMsg ? `<div class="mb-3 text-xs bg-amber-50 border border-amber-200 rounded-lg p-2">
+        📌 <strong>${t('messages.pinnedMessage')}:</strong> ${escapeHTML((pinnedMsg.text || '').slice(0, 100))}
+      </div>` : ''}
+      <div class="flex gap-2 border-b pb-2 mb-3 text-sm">
+        <button class="tab-active px-3 py-1.5 rounded-lg" onclick="switchInfoTab('media',this)">Media (${media.length})</button>
+        <button class="tab-inactive px-3 py-1.5 rounded-lg" onclick="switchInfoTab('docs',this)">Docs (${docs.length})</button>
+        <button class="tab-inactive px-3 py-1.5 rounded-lg" onclick="switchInfoTab('star',this)">Starred (${starred.length})</button>
+      </div>
+      <div id="info-tab-content" class="max-h-[40vh] overflow-y-auto">
+        <div class="grid grid-cols-3 gap-2">
+          ${media.slice(0, 12).map(m => `
+            <div class="aspect-square rounded-lg overflow-hidden bg-slate-100 cursor-pointer"
+                 onclick="openAttachmentLightbox('${escapeHTML(m.attachment.url)}')">
+              <img src="${escapeHTML(m.attachment.url)}" class="w-full h-full object-cover" onerror="this.parentElement.innerHTML='⚠️'">
+            </div>`).join('')}
+        </div>
+        ${media.length === 0 ? '<p class="text-xs text-slate-400 text-center py-4">No media yet</p>' : ''}
+      </div>
+    `);
+
+    window._infoData = { media, docs, starred };
+  };
+
+  window.switchInfoTab = function (tab, btn) {
+    document.querySelectorAll('#modal-body .tab-active, #modal-body .tab-inactive').forEach(b => {
+      b.classList.remove('tab-active'); b.classList.add('tab-inactive');
+    });
+    btn.classList.remove('tab-inactive'); btn.classList.add('tab-active');
+    const host = document.getElementById('info-tab-content');
+    if (!host) return;
+    const { media = [], docs = [], starred = [] } = window._infoData || {};
+    if (tab === 'media') {
+      host.innerHTML = `<div class="grid grid-cols-3 gap-2">${media.map(m => `
+        <div class="aspect-square rounded-lg overflow-hidden bg-slate-100 cursor-pointer"
+             onclick="openAttachmentLightbox('${escapeHTML(m.attachment.url)}')">
+          <img src="${escapeHTML(m.attachment.url)}" class="w-full h-full object-cover">
+        </div>`).join('')}</div>${media.length === 0 ? '<p class="text-xs text-slate-400 text-center py-4">No media yet</p>' : ''}`;
+    } else if (tab === 'docs') {
+      host.innerHTML = docs.map(m => `
+        <a href="${escapeHTML(m.attachment.url)}" target="_blank" rel="noopener"
+           class="flex items-center gap-2 p-2 hover:bg-slate-50 rounded-lg">
+          <iconify-icon icon="material-symbols:description" width="20" class="text-emerald-600"></iconify-icon>
+          <span class="text-xs truncate flex-1">${escapeHTML(m.attachment.name)}</span>
+          <span class="text-[10px] text-slate-400">${formatBytes(m.attachment.size || 0)}</span>
+        </a>`).join('') || '<p class="text-xs text-slate-400 text-center py-4">No documents yet</p>';
+    } else {
+      host.innerHTML = starred.map(m => `
+        <div class="p-2 hover:bg-slate-50 rounded-lg cursor-pointer text-xs"
+             onclick="closeModal();scrollToMessage('${m.id}')">
+          <iconify-icon icon="material-symbols:star" width="14" class="text-amber-500"></iconify-icon>
+          <span class="ml-1">${escapeHTML((m.text || m.attachment?.name || '').slice(0, 80))}</span>
+        </div>`).join('') || '<p class="text-xs text-slate-400 text-center py-4">No starred messages</p>';
+    }
+  };
+
+  // ── Messages view ──────────────────────────────────────
   window.renderMessages = function (container) {
     container.innerHTML = `<h2 class="text-xl sm:text-2xl font-bold mb-4 flex items-center gap-2"><iconify-icon icon="material-symbols:forum" class="text-emerald-600"></iconify-icon>${t('messages.title')}</h2><div class="bg-white rounded-2xl border shadow-sm overflow-hidden messages-shell"><div id="messages-directory" class="messages-directory"></div><div id="messages-thread" class="messages-thread"></div></div>`;
     renderMessagesDirectory();
@@ -3866,7 +4215,12 @@ tbody tr:hover{background:#f1f5f9}
     const q = managerSearchQuery.trim().toLowerCase();
     const decorate = managers.map(m => {
       const conv = getConversationForManager(m.id);
-      return { manager: m, conv, unread: (conv?.unread && conv.unread[currentUser.uid]) || 0, lastAt: conv?.last_message?.created_at || conv?.updated_at || null, lastText: conv?.last_message?.text || '' };
+      return {
+        manager: m, conv,
+        unread: (conv?.unread && conv.unread[currentUser.uid]) || 0,
+        lastAt: conv?.last_message?.created_at || conv?.updated_at || null,
+        lastText: conv?.last_message?.text || ''
+      };
     }).filter(row => {
       if (!q) return true;
       const name = (row.manager.full_name || '').toLowerCase();
@@ -3918,31 +4272,70 @@ tbody tr:hover{background:#f1f5f9}
     const searchWasFocused = document.activeElement?.id === 'msg-search-input';
     const scrollerBefore = document.getElementById('message-scroll');
     const wasAtBottom = scrollerBefore ? (scrollerBefore.scrollHeight - scrollerBefore.scrollTop - scrollerBefore.clientHeight) < 80 : true;
+
     const mgr = managersData.find(m => m.id === activeManagerId);
     const name = mgr?.full_name || mgr?.email || 'Manager';
     const photo = mgr?.profile_picture || '';
     const siteName = getManagerSiteName(mgr || {});
     const online = !!presenceMap[activeManagerId]?.online;
     const lastSeenTs = presenceMap[activeManagerId]?.last_changed;
-    const presenceLabel = online ? t('messages.online') : (lastSeenTs ? `${t('messages.lastSeen')} ${new Date(lastSeenTs).toLocaleString()}` : t('messages.offline'));
-    const bubbles = messagesCache.filter(m => !(m.deleted_for && m.deleted_for.includes(currentUser.uid))).map(m => renderMessageBubble(m)).join('');
+    const presenceLabel = online ? t('messages.online')
+      : (lastSeenTs ? `${t('messages.lastSeen')} ${new Date(lastSeenTs).toLocaleString()}` : t('messages.offline'));
+
+    // ── Build bubbles with date separators + starred cache ──
+    _starredCache = new Set();
+    const visibleMessages = messagesCache.filter(m => !(m.deleted_for && m.deleted_for.includes(currentUser.uid)));
+    const activeConv = conversationsData.find(c => c.id === activeConversationId);
+    _pinnedMsgId = activeConv?.pinned_message_id || null;
+    let lastDay = null;
+    let bubbles = '';
+    for (const m of visibleMessages) {
+      if (Array.isArray(m.starred) && m.starred.includes(currentUser.uid)) _starredCache.add(m.id);
+      const dk = dayKey(m.created_at);
+      if (dk !== lastDay) {
+        bubbles += `<div class="date-separator"><span>${escapeHTML(scrollDateLabel(m.created_at))}</span></div>`;
+        lastDay = dk;
+      }
+      bubbles += renderMessageBubble(m);
+    }
+    const pinnedMsg = _pinnedMsgId ? visibleMessages.find(m => m.id === _pinnedMsgId) : null;
+
     el.innerHTML = `
       <div class="flex items-center gap-3 p-3 border-b bg-white">
         <button type="button" onclick="closeManagerConversation()" class="md:hidden text-slate-500 hover:text-slate-800 p-1" aria-label="${t('messages.back')}"><iconify-icon icon="material-symbols:arrow-back" width="22"></iconify-icon></button>
         <div class="relative flex-shrink-0">${photo ? `<img src="${escapeHTML(photo)}" class="w-10 h-10 rounded-full object-cover" alt="">` : `<div class="w-10 h-10 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold">${escapeHTML(initialsOf(name))}</div>`}<span class="presence-dot ${online ? 'presence-online' : 'presence-offline'}"></span></div>
         <div class="min-w-0 flex-1"><p class="font-semibold text-sm text-slate-900 truncate">${escapeHTML(name)}</p><p class="text-[11px] text-slate-500 truncate">${t('messages.site')}: ${escapeHTML(siteName)} · <span class="${online ? 'text-green-600' : 'text-slate-400'}">${escapeHTML(presenceLabel)}</span></p></div>
         <button type="button" onclick="toggleSearchPanel()" class="text-slate-500 hover:text-emerald-700 p-2 rounded-lg hover:bg-slate-100" title="${t('messages.searchInConversation')}"><iconify-icon icon="material-symbols:search" width="20"></iconify-icon></button>
+        <button type="button" onclick="openConversationInfo()" class="text-slate-500 hover:text-emerald-700 p-2 rounded-lg hover:bg-slate-100"><iconify-icon icon="material-symbols:info-outline" width="20"></iconify-icon></button>
         <button type="button" onclick="openChatMenu()" class="text-slate-500 hover:text-emerald-700 p-2 rounded-lg hover:bg-slate-100"><iconify-icon icon="material-symbols:more-vert" width="22"></iconify-icon></button>
       </div>
+      ${pinnedMsg ? `
+        <div class="pinned-banner" onclick="scrollToMessage('${pinnedMsg.id}')">
+          <iconify-icon icon="material-symbols:keep" width="14" class="text-amber-700"></iconify-icon>
+          <span class="pb-text">${escapeHTML((pinnedMsg.text || pinnedMsg.attachment?.name || 'Pinned message').slice(0, 90))}</span>
+          <button onclick="event.stopPropagation();togglePinMessage('${pinnedMsg.id}')" class="pb-close">
+            <iconify-icon icon="material-symbols:close" width="14"></iconify-icon>
+          </button>
+        </div>` : ''}
       <div id="msg-search-panel" class="msg-search-panel ${searchPanelOpen ? 'open' : ''}">
         <div class="flex items-center gap-2"><input type="text" id="msg-search-input" value="${escapeHTML(currentSearchQuery)}" oninput="onSearchInput(event)" placeholder="${t('messages.searchInConversation')}" class="flex-1 border rounded-lg py-2 px-3 text-sm"><button type="button" onclick="toggleSearchPanel()" class="text-slate-500 p-2"><iconify-icon icon="material-symbols:close" width="18"></iconify-icon></button></div>
         <div id="msg-search-results" class="mt-2 max-h-[240px] overflow-y-auto"></div>
       </div>
-      <div id="message-scroll" class="flex-1 overflow-y-auto p-4 bg-slate-50">${bubbles || `<div class="h-full flex flex-col items-center justify-center text-center"><iconify-icon icon="material-symbols:waving-hand" class="text-4xl text-slate-300 mb-2"></iconify-icon><p class="text-sm text-slate-400">${t('messages.emptyThread')}</p></div>`}</div>
+      <div id="message-scroll" class="flex-1 overflow-y-auto p-4 bg-slate-50">
+        <div id="load-older-host">${_hasMoreOlder ? '' : ''}</div>
+        ${bubbles || `<div class="h-full flex flex-col items-center justify-center text-center"><iconify-icon icon="material-symbols:waving-hand" class="text-4xl text-slate-300 mb-2"></iconify-icon><p class="text-sm text-slate-400">${t('messages.emptyThread')}</p></div>`}
+      </div>
       <div id="typing-indicator" class="px-4 py-1 text-xs text-emerald-700 hidden"><span class="italic"></span></div>
       <div class="p-3 border-t bg-white relative">
         <div id="composer-reply" class="hidden"></div>
         <div id="composer-attachment" class="hidden"></div>
+        <div id="recording-bar" class="${(_pendingMediaRecorder || _pendingAudioBlob) ? '' : 'hidden'}">
+          <span class="rec-dot"></span>
+          <span>${t('messages.recording') || 'Recording'}</span>
+          <span class="rec-time">00:00</span>
+          <button type="button" class="rec-cancel" onclick="cancelVoiceRecording()">Cancel</button>
+          <button type="button" class="rec-send ml-auto" onclick="sendVoiceMessage()">Send</button>
+        </div>
         <div id="emoji-picker" class="emoji-picker"></div>
         <div class="flex items-end gap-2">
           <div class="composer-toolbar">
@@ -3951,23 +4344,43 @@ tbody tr:hover{background:#f1f5f9}
             <button type="button" onclick="openSharePicker()" title="${t('messages.share')}"><iconify-icon icon="material-symbols:add-link" width="22"></iconify-icon></button>
           </div>
           <textarea id="message-input" rows="1" onkeydown="handleMessageKeydown(event)" oninput="onComposerInput();saveDraftSoon();" placeholder="${t('messages.inputPlaceholder')}" class="flex-1 resize-none border rounded-xl px-3 py-2 text-sm max-h-32 focus:outline-none focus:border-emerald-600"></textarea>
-          <button id="message-send-btn" type="button" onclick="sendMessage()" class="bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl px-4 py-2.5 flex items-center gap-1 disabled:opacity-60"><iconify-icon icon="material-symbols:send" width="18"></iconify-icon><span class="hidden sm:inline text-sm">${t('messages.send')}</span></button>
+          <button id="composer-mic-btn" type="button" onclick="(function(){ if(_pendingMediaRecorder) cancelVoiceRecording(); else startVoiceRecording(); })()" title="Voice message" class="bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl px-3 py-2.5">
+            <iconify-icon icon="material-symbols:mic" width="18"></iconify-icon>
+          </button>
+          <button id="message-send-btn" type="button" onclick="sendMessage()" class="bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl px-4 py-2.5 flex items-center gap-1 disabled:opacity-60">
+            <iconify-icon icon="material-symbols:send" width="18"></iconify-icon>
+            <span class="hidden sm:inline text-sm">${t('messages.send')}</span>
+          </button>
         </div>
       </div>`;
+
     const inp = document.getElementById('message-input');
-    if (inp) { inp.value = prevInput || getDraft(activeConversationId) || ''; if (wasFocused || (isFirstRender && !searchWasFocused)) inp.focus(); }
+    if (inp) {
+      inp.value = prevInput || getDraft(activeConversationId) || '';
+      if (wasFocused || (isFirstRender && !searchWasFocused)) inp.focus();
+    }
     const sInp = document.getElementById('msg-search-input');
-    if (sInp) { sInp.value = currentSearchQuery || prevSearch; if (searchWasFocused) { sInp.focus(); sInp.setSelectionRange(sInp.value.length, sInp.value.length); } }
+    if (sInp) {
+      sInp.value = currentSearchQuery || prevSearch;
+      if (searchWasFocused) { sInp.focus(); sInp.setSelectionRange(sInp.value.length, sInp.value.length); }
+    }
     renderComposerReplyPreview();
     renderComposerAttachment();
     renderEmojiPicker();
     renderTypingIndicator();
     renderSearchPanel();
+    updateComposerButtons();
     const scroller = document.getElementById('message-scroll');
     if (scroller && wasAtBottom) scroller.scrollTop = scroller.scrollHeight;
+    bindScrollForOlder();
   }
 
-  function saveDraftSoon() { if (!activeConversationId) return; const inp = document.getElementById('message-input'); if (!inp) return; setDraft(activeConversationId, inp.value); }
+  function saveDraftSoon() {
+    if (!activeConversationId) return;
+    const inp = document.getElementById('message-input');
+    if (!inp) return;
+    setDraft(activeConversationId, inp.value);
+  }
   function renderTypingIndicator() {
     const el = document.getElementById('typing-indicator');
     if (!el) return;
@@ -3975,7 +4388,9 @@ tbody tr:hover{background:#f1f5f9}
     if (!names.length) { el.classList.add('hidden'); return; }
     el.classList.remove('hidden');
     const mgr = managersData.find(m => m.id === activeManagerId);
-    const label = names.length === 1 ? t('messages.isTyping', { name: mgr?.full_name || 'Manager' }) : t('messages.severalTyping');
+    const label = names.length === 1
+      ? t('messages.isTyping', { name: mgr?.full_name || 'Manager' })
+      : t('messages.severalTyping');
     el.querySelector('span').textContent = label;
   }
   function renderComposerReplyPreview() {
@@ -3994,10 +4409,12 @@ tbody tr:hover{background:#f1f5f9}
     if (pendingAttachment) {
       const f = pendingAttachment;
       el.innerHTML = `<div class="composer-attachment"><iconify-icon icon="material-symbols:attach-file" width="16" class="text-emerald-600"></iconify-icon><span class="truncate">${escapeHTML(f.name)}</span><span class="text-slate-400">${formatBytes(f.size)}</span><button type="button" class="ml-auto text-slate-500" onclick="clearPendingAttachment()"><iconify-icon icon="material-symbols:close" width="16"></iconify-icon></button></div>`;
+      updateComposerButtons();
       return;
     }
     const s = window._pendingSharedRecord;
     el.innerHTML = `<div class="composer-attachment"><iconify-icon icon="material-symbols:add-link" width="16" class="text-emerald-600"></iconify-icon><span class="truncate">${escapeHTML(s.title)} — ${escapeHTML(s.subtitle)}</span><button type="button" class="ml-auto text-slate-500" onclick="window._pendingSharedRecord=null;renderComposerAttachment();"><iconify-icon icon="material-symbols:close" width="16"></iconify-icon></button></div>`;
+    updateComposerButtons();
   }
   function renderEmojiPicker() {
     const el = document.getElementById('emoji-picker');
@@ -4020,12 +4437,30 @@ tbody tr:hover{background:#f1f5f9}
     }
     const reply = m.reply_preview ? `<div class="msg-reply-quote" onclick="scrollToMessage('${m.reply_to}')"><div class="rq-name">${escapeHTML(m.reply_preview.sender_name)}</div><span class="rq-text">${escapeHTML(m.reply_preview.text)}</span></div>` : '';
     let bodyHTML = '';
-    if (isDeleted) { bodyHTML = `<p class="msg-deleted">${t('messages.deleted')}</p>`; }
-    else {
+    if (isDeleted) {
+      bodyHTML = `<p class="msg-deleted">${t('messages.deleted')}</p>`;
+    } else {
+      if (m.forwarded) bodyHTML += `<div class="text-[10px] italic opacity-70 mb-1"><iconify-icon icon="material-symbols:forward" width="11"></iconify-icon> ${t('messages.forwardedBy') || 'Forwarded'}</div>`;
       if (m.type === 'attachment' && m.attachment) {
         const a = m.attachment;
-        if (a.mime?.startsWith('image/')) { bodyHTML += `<div class="attach-preview"><img src="${escapeHTML(a.url)}" onclick="openAttachmentLightbox('${escapeHTML(a.url)}')" alt=""></div>`; }
-        else { bodyHTML += `<a href="${escapeHTML(a.url)}" target="_blank" rel="noopener" class="attach-file"><iconify-icon icon="material-symbols:description" width="18"></iconify-icon><span class="truncate">${escapeHTML(a.name)}</span><iconify-icon icon="material-symbols:download" width="16" class="ml-auto"></iconify-icon></a>`; }
+        const safe = isSafeAttachmentUrl(a.url);
+        if (!safe) {
+          bodyHTML += `<div class="attach-file" style="opacity:.6">⚠️ Attachment blocked</div>`;
+        } else if (a.mime?.startsWith('image/')) {
+          bodyHTML += `<div class="attach-preview"><img src="${escapeHTML(a.url)}" onclick="openAttachmentLightbox('${escapeHTML(a.url)}')" alt=""></div>`;
+        } else if (a.mime?.startsWith('video/')) {
+          bodyHTML += `<video controls class="attach-preview" style="width:100%;max-width:280px;border-radius:8px" src="${escapeHTML(a.url)}"></video>`;
+        } else {
+          bodyHTML += `<a href="${escapeHTML(a.url)}" target="_blank" rel="noopener" class="attach-file"><iconify-icon icon="material-symbols:description" width="18"></iconify-icon><span class="truncate">${escapeHTML(a.name)}</span><iconify-icon icon="material-symbols:download" width="16" class="ml-auto"></iconify-icon></a>`;
+        }
+      }
+      if (m.type === 'voice' && m.attachment && isSafeAttachmentUrl(m.attachment.url)) {
+        const dur = m.attachment.duration ? `${Math.floor(m.attachment.duration/60)}:${String(m.attachment.duration%60).padStart(2,'0')}` : '';
+        bodyHTML += `<div class="flex items-center gap-2" style="min-width:200px">
+          <iconify-icon icon="material-symbols:graphic-eq" width="20" class="opacity-80"></iconify-icon>
+          <audio controls src="${escapeHTML(m.attachment.url)}" style="height:32px;max-width:220px"></audio>
+          ${dur ? `<span class="text-[10px] opacity-70">${dur}</span>` : ''}
+        </div>`;
       }
       if (m.type === 'shared_record' && m.shared_record) {
         const s = m.shared_record;
@@ -4040,17 +4475,26 @@ tbody tr:hover{background:#f1f5f9}
     }
     const reactions = m.reactions || {};
     const reactionKeys = Object.keys(reactions).filter(k => Array.isArray(reactions[k]) && reactions[k].length);
-    const reactionsHTML = reactionKeys.length ? `<div class="msg-reactions">${reactionKeys.map(k => { const mineR = reactions[k].includes(currentUser.uid); return `<span class="react-pill ${mineR ? 'mine' : ''}" onclick="toggleReaction('${m.id}','${k}')">${k}<span class="count">${reactions[k].length}</span></span>`; }).join('')}</div>` : '';
+    const reactionsHTML = reactionKeys.length ? `<div class="msg-reactions">${reactionKeys.map(k => {
+      const mineR = reactions[k].includes(currentUser.uid);
+      return `<span class="react-pill ${mineR ? 'mine' : ''}" onclick="toggleReaction('${m.id}','${k}')">${k}<span class="count">${reactions[k].length}</span></span>`;
+    }).join('')}</div>` : '';
     const editedHTML = m.edited_at && !isDeleted ? ` <span class="text-[10px] opacity-70">(${t('messages.edited')})</span>` : '';
     const menuBtn = isDeleted ? '' : `<button type="button" class="msg-menu-btn" onclick="openMsgMenu(event,'${m.id}')" aria-label="Message actions"><iconify-icon icon="material-symbols:more-vert" width="20"></iconify-icon></button>`;
-    return `<div class="flex ${mine ? 'justify-end' : 'justify-start'} mb-3" id="msg-${m.id}"><div class="msg-bubble-row ${mine ? 'mine' : ''}">${mine ? menuBtn : ''}<div class="msg-bubble-col"><div class="px-3.5 py-2 rounded-2xl text-sm break-words shadow-sm ${mine ? 'bg-emerald-600 text-white rounded-br-md' : 'bg-white border border-slate-200 text-slate-800 rounded-bl-md'}">${reply}${bodyHTML}<div class="text-[10px] mt-1 ${mine ? 'text-emerald-100' : 'text-slate-400'} text-right flex items-center gap-1 justify-end">${editedHTML}<span>${escapeHTML(formatChatTime(m.created_at))}</span>${tickHTML}</div></div>${reactionsHTML}</div>${mine ? '' : menuBtn}</div></div>`;
+    const star = _starredCache.has(m.id) && !isDeleted ? `<span class="msg-star">★</span>` : '';
+    return `<div class="flex ${mine ? 'justify-end' : 'justify-start'} mb-3" id="msg-${m.id}"><div class="msg-bubble-row ${mine ? 'mine' : ''}">${mine ? menuBtn : ''}<div class="msg-bubble-col">${star}<div class="px-3.5 py-2 rounded-2xl text-sm break-words shadow-sm ${mine ? 'bg-emerald-600 text-white rounded-br-md' : 'bg-white border border-slate-200 text-slate-800 rounded-bl-md'}">${reply}${bodyHTML}<div class="text-[10px] mt-1 ${mine ? 'text-emerald-100' : 'text-slate-400'} text-right flex items-center gap-1 justify-end">${editedHTML}<span>${escapeHTML(formatChatTime(m.created_at))}</span>${tickHTML}</div></div>${reactionsHTML}</div>${mine ? '' : menuBtn}</div></div>`;
   }
 
   window.openAttachmentLightbox = function (url) {
+    if (!isSafeAttachmentUrl(url)) { showToast('Blocked: unsafe attachment link.', 'error'); return; }
     const v = document.createElement('div');
     v.className = 'fixed inset-0 z-[9999] bg-black/85 flex items-center justify-center p-4';
     v.onclick = () => v.remove();
-    v.innerHTML = `<img src="${escapeHTML(url)}" class="max-w-full max-h-[85vh] object-contain rounded-xl" onclick="event.stopPropagation()">`;
+    const img = document.createElement('img');
+    img.src = url;
+    img.className = 'max-w-full max-h-[85vh] object-contain rounded-xl';
+    img.onclick = (e) => e.stopPropagation();
+    v.appendChild(img);
     document.body.appendChild(v);
   };
 
@@ -4058,31 +4502,43 @@ tbody tr:hover{background:#f1f5f9}
     if (!activeConversationId) return;
     const c = conversationsData.find(x => x.id === activeConversationId);
     const s = c?.user_settings?.[currentUser.uid] || {};
-    openModal('⚙️ ' + t('messages.title'), `<div class="space-y-2"><button onclick="togglePin('${activeConversationId}');closeModal();" class="w-full text-left px-4 py-3 rounded-xl border hover:bg-slate-50 flex items-center gap-3"><iconify-icon icon="material-symbols:push-pin" width="20" class="text-emerald-600"></iconify-icon><span class="font-medium">${s.pinned ? t('messages.unpinConversation') : t('messages.pinConversation')}</span></button><button onclick="toggleMute('${activeConversationId}');closeModal();" class="w-full text-left px-4 py-3 rounded-xl border hover:bg-slate-50 flex items-center gap-3"><iconify-icon icon="material-symbols:notifications-off-outline" width="20" class="text-blue-600"></iconify-icon><span class="font-medium">${s.muted ? t('messages.unmuteConversation') : t('messages.muteConversation')}</span></button><button onclick="toggleArchive('${activeConversationId}');closeModal();" class="w-full text-left px-4 py-3 rounded-xl border hover:bg-slate-50 flex items-center gap-3"><iconify-icon icon="material-symbols:archive-outline" width="20" class="text-amber-600"></iconify-icon><span class="font-medium">${s.archived ? t('messages.unarchiveConversation') : t('messages.archiveConversation')}</span></button></div>`);
+    openModal('⚙️ ' + t('messages.title'), `<div class="space-y-2">
+      <button onclick="togglePin('${activeConversationId}');closeModal();" class="w-full text-left px-4 py-3 rounded-xl border hover:bg-slate-50 flex items-center gap-3"><iconify-icon icon="material-symbols:push-pin" width="20" class="text-emerald-600"></iconify-icon><span class="font-medium">${s.pinned ? t('messages.unpinConversation') : t('messages.pinConversation')}</span></button>
+      <button onclick="toggleMute('${activeConversationId}');closeModal();" class="w-full text-left px-4 py-3 rounded-xl border hover:bg-slate-50 flex items-center gap-3"><iconify-icon icon="material-symbols:notifications-off-outline" width="20" class="text-blue-600"></iconify-icon><span class="font-medium">${s.muted ? t('messages.unmuteConversation') : t('messages.muteConversation')}</span></button>
+      <button onclick="toggleArchive('${activeConversationId}');closeModal();" class="w-full text-left px-4 py-3 rounded-xl border hover:bg-slate-50 flex items-center gap-3"><iconify-icon icon="material-symbols:archive-outline" width="20" class="text-amber-600"></iconify-icon><span class="font-medium">${s.archived ? t('messages.unarchiveConversation') : t('messages.archiveConversation')}</span></button>
+      <button onclick="markConversationUnread('${activeConversationId}');closeModal();" class="w-full text-left px-4 py-3 rounded-xl border hover:bg-slate-50 flex items-center gap-3"><iconify-icon icon="material-symbols:mark-email-unread-outline" width="20" class="text-purple-600"></iconify-icon><span class="font-medium">${t('messages.markUnread') || 'Mark as unread'}</span></button>
+    </div>`);
   };
 
   function updateMessagesBadge() {
     if (!currentUser) return;
     const total = conversationsData.reduce((sum, c) => sum + ((c.unread && c.unread[currentUser.uid]) || 0), 0);
     const badge = document.getElementById('messages-nav-badge');
-    if (!badge) return;
-    if (total > 0) { badge.textContent = total > 99 ? '99+' : String(total); badge.classList.remove('hidden'); }
-    else badge.classList.add('hidden');
-    maybeShowDesktopNotification(total);
+    if (badge) {
+      if (total > 0) { badge.textContent = total > 99 ? '99+' : String(total); badge.classList.remove('hidden'); }
+      else badge.classList.add('hidden');
+    }
+    if (total === 0) { _lastNotified = 0; return; }
+    if (total > _lastNotified) {
+      playNotifSound();
+      maybeShowDesktopNotification(total);
+    }
+    _lastNotified = total;
   }
-  let _lastNotified = 0;
+
   function maybeShowDesktopNotification(total) {
     if (!('Notification' in window)) return;
     if (Notification.permission !== 'granted') return;
-    if (total <= _lastNotified) { _lastNotified = total; return; }
-    _lastNotified = total;
     const c = conversationsData.find(x => x.unread && x.unread[currentUser.uid] > 0);
     if (!c) return;
     const s = c.user_settings?.[currentUser.uid] || {};
     if (s.muted) return;
     try {
       const mgr = managersData.find(mm => mm.id === c.manager_id);
-      new Notification(t('messages.newMessageFrom', { name: mgr?.full_name || 'Manager' }), { body: c.last_message?.text || '', icon: 'shdr_logo Background Removed.png' });
+      const n = new Notification(t('messages.newMessageFrom', { name: mgr?.full_name || 'Manager' }), {
+        body: c.last_message?.text || '', icon: 'shdr_logo Background Removed.png', tag: c.id
+      });
+      n.onclick = () => { window.focus(); openManagerConversation(c.manager_id); n.close(); };
     } catch (_) {}
   }
 
