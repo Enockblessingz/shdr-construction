@@ -89,6 +89,7 @@ tbody tr:hover{background:#f1f5f9}
 .presence-online{background:#22c55e}
 .presence-offline{background:#cbd5e1}
 #messages-nav-badge{background:#ef4444;color:#fff;font-size:10px;font-weight:700;padding:1px 6px;border-radius:999px;margin-left:auto}
+#invitations-nav-badge{background:#ef4444;color:#fff;font-size:10px;font-weight:700;padding:1px 6px;border-radius:999px;margin-left:auto}
 @media (max-width:767px){
   .messages-shell{grid-template-columns:1fr;height:calc(100vh - 200px)}
   .messages-shell.thread-open .messages-directory{display:none}
@@ -193,37 +194,19 @@ tbody tr:hover{background:#f1f5f9}
 .attach-preview img{display:block;width:100%;max-height:200px;object-fit:cover;cursor:pointer}
 .attach-file{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.15);border-radius:8px;padding:6px 8px;margin-bottom:4px;font-size:12px;color:inherit;text-decoration:none}
 
-/* ===== Material Symbols — real font-based icons ===== */
 .material-symbols-outlined{
   font-family:'Material Symbols Outlined',sans-serif !important;
-  font-weight:normal;
-  font-style:normal;
-  font-size:20px;
-  line-height:1;
-  letter-spacing:normal;
-  text-transform:none;
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  white-space:nowrap;
-  word-wrap:normal;
-  direction:ltr;
-  -webkit-font-feature-settings:'liga';
+  font-weight:normal;font-style:normal;font-size:20px;line-height:1;
+  letter-spacing:normal;text-transform:none;display:inline-flex;
+  align-items:center;justify-content:center;white-space:nowrap;
+  word-wrap:normal;direction:ltr;-webkit-font-feature-settings:'liga';
   -webkit-font-smoothing:antialiased;
   font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24;
 }
-.material-symbols-outlined.filled{
-  font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24;
-}
+.material-symbols-outlined.filled{font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24;}
 </style>
 
 <script>
-/* ============================================================
-   iconify-icon shim → Material Symbols font
-   Keeps every existing <iconify-icon icon="material-symbols:xxx" />
-   tag working, but renders it as a real font glyph instead of
-   loading the iconify JS bundle.
-   ============================================================ */
 (function(){
   class IconifyIconShim extends HTMLElement {
     static get observedAttributes(){ return ['icon','width','height','class','style']; }
@@ -232,24 +215,19 @@ tbody tr:hover{background:#f1f5f9}
     _render(){
       if (this._rendered) return;
       this._rendered = true;
-
       const raw = this.getAttribute('icon') || '';
       let name = raw.replace(/^material-symbols:/, '');
       name = name.replace(/-outline$/, '');
       name = name.replace(/-/g, '_');
-
       const w = parseInt(this.getAttribute('width') || '20', 10);
       const h = parseInt(this.getAttribute('height') || String(w), 10);
       const size = Math.max(w, h) || 20;
       const extraClass = this.getAttribute('class') || '';
       const extraStyle = this.getAttribute('style') || '';
-
       this.innerHTML = `<span class="material-symbols-outlined ${extraClass}" style="font-size:${size}px;width:${w||size}px;height:${h||size}px;${extraStyle}">${name}</span>`;
     }
   }
-  if (!customElements.get('iconify-icon')) {
-    customElements.define('iconify-icon', IconifyIconShim);
-  }
+  if (!customElements.get('iconify-icon')) customElements.define('iconify-icon', IconifyIconShim);
 })();
 </script>
 </head>
@@ -297,6 +275,10 @@ tbody tr:hover{background:#f1f5f9}
     </a>
     <a href="#" onclick="showSection('managers')" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg text-slate-600 hover:bg-slate-50 transition-colors" data-section="managers">
       <iconify-icon icon="material-symbols:group-outline" width="20" height="20"></iconify-icon> <span data-i18n="navigation.managers">Managers</span>
+    </a>
+    <a href="#" onclick="showSection('invitations')" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg text-slate-600 hover:bg-slate-50 transition-colors" data-section="invitations">
+      <iconify-icon icon="material-symbols:mail-outline" width="20" height="20"></iconify-icon> <span data-i18n="navigation.invitations">Invitations</span>
+      <span id="invitations-nav-badge" class="hidden">0</span>
     </a>
     <a href="#" onclick="showSection('messages')" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-lg text-slate-600 hover:bg-slate-50 transition-colors" data-section="messages">
       <iconify-icon icon="material-symbols:forum-outline" width="20" height="20"></iconify-icon> <span data-i18n="navigation.messages">Messages</span>
@@ -362,7 +344,7 @@ tbody tr:hover{background:#f1f5f9}
     <a href="#" onclick="showSection('dashboard')" class="active" data-section="dashboard"><iconify-icon icon="material-symbols:dashboard-outline"></iconify-icon> <span data-i18n="navigation.dashboard">Home</span></a>
     <a href="#" onclick="showSection('sites')" data-section="sites"><iconify-icon icon="material-symbols:construction-outline"></iconify-icon> <span data-i18n="navigation.sites">Sites</span></a>
     <a href="#" onclick="showSection('workers')" data-section="workers"><iconify-icon icon="material-symbols:engineering-outline"></iconify-icon> <span data-i18n="navigation.workers">Workers</span></a>
-    <a href="#" onclick="showSection('reports')" data-section="reports"><iconify-icon icon="material-symbols:description-outline"></iconify-icon> <span data-i18n="navigation.reports">Reports</span></a>
+    <a href="#" onclick="showSection('managers')" data-section="managers"><iconify-icon icon="material-symbols:group-outline"></iconify-icon> <span data-i18n="navigation.managers">Managers</span></a>
     <a href="#" onclick="showSection('messages')" data-section="messages"><iconify-icon icon="material-symbols:forum-outline"></iconify-icon> <span data-i18n="navigation.messages">Messages</span></a>
     <a href="#" onclick="showSection('settings')" data-section="settings"><iconify-icon icon="material-symbols:settings-outline"></iconify-icon> <span data-i18n="navigation.settings">Settings</span></a>
   </div>
@@ -385,8 +367,8 @@ tbody tr:hover{background:#f1f5f9}
   // =================================================================
   const translations = {
     en: {
-      common:{comingSoon:"Coming Soon",save:"Save",cancel:"Cancel",add:"Add",delete:"Delete",edit:"Edit",close:"Close",export:"Export",loading:"Loading...",error:"Error",search:"Search",view:"View",areYouSure:"Are you sure?",cannotUndo:"This action cannot be undone",savedSuccessfully:"Saved successfully",updatedSuccessfully:"Updated successfully",deletedSuccessfully:"Deleted successfully",somethingWentWrong:"Something went wrong",requiredField:"Required field",invalidValue:"Invalid value",noDataAvailable:"No data available",accessDenied:"Access denied",subscriptionRequired:"Subscription required",sessionExpired:"Session expired",confirmDelete:"Confirm Delete"},
-      navigation:{dashboard:"Dashboard",sites:"Sites",materials:"Materials",stock:"Stock",workers:"Workers",progress:"Progress",reports:"Reports",finances:"Finances",managers:"Managers",messages:"Messages",gallery:"Gallery",officeHub:"Office Hub",settings:"Settings",notifications:"Notifications",logout:"Sign Out",ownerPanel:"Owner's Panel"},
+      common:{comingSoon:"Coming Soon",save:"Save",cancel:"Cancel",add:"Add",delete:"Delete",edit:"Edit",close:"Close",export:"Export",loading:"Loading...",error:"Error",search:"Search",view:"View",copy:"Copy",areYouSure:"Are you sure?",cannotUndo:"This action cannot be undone",savedSuccessfully:"Saved successfully",updatedSuccessfully:"Updated successfully",deletedSuccessfully:"Deleted successfully",somethingWentWrong:"Something went wrong",requiredField:"Required field",invalidValue:"Invalid value",noDataAvailable:"No data available",accessDenied:"Access denied",subscriptionRequired:"Subscription required",sessionExpired:"Session expired",confirmDelete:"Confirm Delete"},
+      navigation:{dashboard:"Dashboard",sites:"Sites",materials:"Materials",stock:"Stock",workers:"Workers",progress:"Progress",reports:"Reports",finances:"Finances",managers:"Managers",invitations:"Invitations",messages:"Messages",gallery:"Gallery",officeHub:"Office Hub",settings:"Settings",notifications:"Notifications",logout:"Sign Out",ownerPanel:"Owner's Panel"},
       messages:{title:"Messages",searchPlaceholder:"Search managers...",noManagers:"No managers assigned to your sites yet.",noSearchResults:"No managers match your search.",selectConversation:"Select a manager to start a private conversation",emptyThread:"No messages yet. Say hello 👋",inputPlaceholder:"Type a message...",send:"Send",online:"Online",offline:"Offline",lastSeen:"Last seen",unread:"Unread",you:"You",site:"Site",back:"Back",yesterday:"Yesterday",notAuthorized:"You are not authorized to view this conversation.",sentTo:"Conversation with {name}",
       attach:"Attach image",emoji:"Emoji",share:"Share SHDR record",shareMaterial:"Share Material",shareWorker:"Share Worker",shareReport:"Share Report",cancelReply:"Cancel reply",replyingTo:"Replying to {name}",
       reply:"Reply",react:"React",deleteForMe:"Delete for me",deleteForEveryone:"Delete for everyone",edited:"edited",deleted:"This message was deleted",
@@ -406,15 +388,56 @@ tbody tr:hover{background:#f1f5f9}
       progress:{title:"Progress Tasks",addTask:"Add Task",task:"Task",start:"Start",end:"End",status:"Status",pending:"Pending",completed:"Completed",noTasks:"No tasks yet.",addTaskModal:"Add Progress Task",taskName:"Task name",selectSite:"Select site",periodNumber:"Period number",days:"Days",weeks:"Weeks",saveTask:"Save Task",editTask:"Edit Progress Task"},
       reports:{title:"Generate Reports",general:"General",payroll:"Worker Payroll",stockReport:"Stock",selectSite:"Select Site",allSites:"All Sites",department:"Department",allDepartments:"All Departments",startDate:"Start Date",endDate:"End Date",exportCSV:"Export CSV",printPDF:"Print / PDF",noAttendance:"No attendance records found.",info:"Please ensure managers have recorded attendance for the workers.",searchWorker:"Search worker...",position:"Position",allPositions:"All Positions",paymentStatus:"Payment Status",paid:"Paid",unpaid:"Unpaid",allPayments:"All (Unpaid)",totalWorkers:"Total Workers",workerDays:"Worker-Days",totalPayroll:"Total Payroll",avgDaily:"Avg. Daily Labor Cost",worker:"Worker",daysWorked:"Days Worked",dailyRate:"Daily Rate",totalPayable:"Total Payable",total:"Total"},
       finances:{title:"Finances",info:"Site Info",overview:"Financial Overview",budget:"Budget",totalSpent:"Total Spent",materialsCost:"Materials Cost",workersCost:"Workers Cost",remaining:"Remaining",dailyAvg:"Daily average",monthlyAvg:"Monthly average",addBudget:"Add Budget",newBudget:"New Budget Amount",updateBudget:"Update Budget",exceeded:"Budget exceeded!",costControl:"Cost control needed."},
-      managers:{title:"Site Managers",info:"Managers assigned to your sites. The list updates automatically.",inviteManager:"Invite Manager",assignSite:"Assign to Site",email:"Email",password:"Password",invite:"Invite Manager",noManagers:"No managers invited yet.",remove:"Remove",assignedSite:"Assigned site"},
+      managers:{
+        title:"Managers",
+        subtitle:"Manage the people responsible for your assigned sites.",
+        info:"Managers assigned to your sites. The list updates automatically.",
+        inviteManager:"Invite Manager",
+        assignSite:"Assign to Site",
+        reassign:"Reassign",
+        email:"Email",
+        password:"Password",
+        invite:"Invite Manager",
+        noManagers:"No managers invited yet.",
+        remove:"Remove",
+        assignedSite:"Assigned site",
+        total:"Total Managers",active:"Active",pending:"Pending",pendingInvites:"Pending Invitations",unassigned:"Unassigned",
+        filterAll:"All",
+        colManager:"Manager",colContact:"Contact",colRole:"Role",colSites:"Assigned Sites",colStatus:"Status",colActions:"Actions",
+        inviteIntro:"Invite a manager to access and manage selected sites.",
+        personalMessage:"Personal message (optional)",
+        inviteFootnote:"The manager will receive an invitation with instructions to create or access their account.",
+        sendInvite:"Send Invitation",
+        inviteSent:"Invitation sent successfully.",
+        inviteSentTitle:"Invitation Sent",
+        wasInvitedAs:"has been invited as a Site Manager.",
+        expires:"Expires",
+        shareLink:"Share this secure link with the invited manager:",
+        viewInvitations:"View Invitations",
+        invalidSite:"Invalid site.",
+        alreadyMember:"This person is already a member.",
+        duplicateInvite:"This manager already has a pending invitation.",
+        otherOrg:"This user already belongs to another organization.",
+        details:"Manager Details",
+        assignmentHistory:"Assignment History",
+        present:"present",
+        invitationsTitle:"Manager Invitations",
+        invitedOn:"Invited",
+        invitedBy:"Invited by",
+        noInvitations:"No invitations yet.",
+        invitationDetails:"Invitation Details",
+        resend:"Resend",
+        revoke:"Revoke",
+        tab_all:"All",tab_pending:"Pending",tab_accepted:"Accepted",tab_expired:"Expired",tab_revoked:"Revoked"
+      },
       gallery:{title:"Site Gallery",selectSite:"Select Site",allSites:"All Sites",viewImage:"View Image",noImages:"No gallery images",close:"Close",description:"Description"},
       settings:{title:"Settings",profile:"Profile",account:"Account",security:"Security",preferences:"Preferences",profileInfo:"Profile Information",fullName:"Full Name",phone:"Phone Number",email:"Email Address",saveChanges:"Save Changes",accountInfo:"Account Information",accountName:"Account Name",role:"Role",accountStatus:"Account Status",active:"Active",memberSince:"Member Since",changePasscode:"Change Passcode",currentPasscode:"Current Passcode",newPasscode:"New Passcode",confirmPasscode:"Confirm New Passcode",changePass:"Change Passcode",prefs:"Preferences",language:"Language",currency:"Currency",dateFormat:"Date Format",notifications:"Enable Notifications",savePrefs:"Save Preferences",changePhoto:"Change Photo",removePhoto:"Erase Photo"},
       alerts:{savedSuccessfully:"Saved successfully",updatedSuccessfully:"Updated successfully",deletedSuccessfully:"Deleted successfully",somethingWentWrong:"Something went wrong",areYouSure:"Are you sure?",cannotUndo:"This action cannot be undone",requiredField:"Required field",invalidValue:"Invalid value",noDataAvailable:"No data available"},
       status:{active:"Active",completed:"Completed",pending:"Pending",cancelled:"Cancelled",notStarted:"Not Started",inProgress:"In Progress",finished:"Finished"}
     },
     rw: {
-      common:{comingSoon:"Biraza",save:"Bika",cancel:"Hagarika",add:"Ongeraho",delete:"Siba",edit:"Hindura",close:"Funga",export:"Sohora",loading:"Birimo gutegura...",error:"Ikibazo",search:"Shakisha",view:"Reba",areYouSure:"Urabyemeza?",cannotUndo:"Ibi ntibishobora guhindurwa",savedSuccessfully:"Byabitswe neza",updatedSuccessfully:"Byavuguruwe neza",deletedSuccessfully:"Byasibwe neza",somethingWentWrong:"Hari ikitagenze neza",requiredField:"Ibi birakenewe",invalidValue:"Agaciro katariyo",noDataAvailable:"Nta makuru aboneka",accessDenied:"Ntabwo ureherewe",confirmDelete:"Emeza gusiba"},
-      navigation:{dashboard:"Imbonerahamwe",sites:"Ibibanza",materials:"Ibikoresho",stock:"Imbuganyuro",workers:"Abakozi",progress:"Ibitekerezo",reports:"Raporo",finances:"Imari",managers:"Abayobozi",messages:"Ubutumwa",gallery:"Amafoto",officeHub:"Office Hub",settings:"Igenamiterere",notifications:"Imenyesha",logout:"Sohoka",ownerPanel:"Ipaneli ya nyir'ubwite"},
+      common:{comingSoon:"Biraza",save:"Bika",cancel:"Hagarika",add:"Ongeraho",delete:"Siba",edit:"Hindura",close:"Funga",export:"Sohora",loading:"Birimo gutegura...",error:"Ikibazo",search:"Shakisha",view:"Reba",copy:"Koporora",areYouSure:"Urabyemeza?",cannotUndo:"Ibi ntibishobora guhindurwa",savedSuccessfully:"Byabitswe neza",updatedSuccessfully:"Byavuguruwe neza",deletedSuccessfully:"Byasibwe neza",somethingWentWrong:"Hari ikitagenze neza",requiredField:"Ibi birakenewe",invalidValue:"Agaciro katariyo",noDataAvailable:"Nta makuru aboneka",accessDenied:"Ntabwo ureherewe",confirmDelete:"Emeza gusiba"},
+      navigation:{dashboard:"Imbonerahamwe",sites:"Ibibanza",materials:"Ibikoresho",stock:"Imbuganyuro",workers:"Abakozi",progress:"Ibitekerezo",reports:"Raporo",finances:"Imari",managers:"Abayobozi",invitations:"Ubutumire",messages:"Ubutumwa",gallery:"Amafoto",officeHub:"Office Hub",settings:"Igenamiterere",notifications:"Imenyesha",logout:"Sohoka",ownerPanel:"Ipaneli ya nyir'ubwite"},
       messages:{title:"Ubutumwa",searchPlaceholder:"Shakisha abayobozi...",noManagers:"Nta bayobozi bagenwe ku bibanza byawe.",noSearchResults:"Nta muyobozi uhuza n'ubushakashatsi.",selectConversation:"Hitamo umuyobozi gutangira ikiganiro bwite",emptyThread:"Nta butumwa burahari. Vuga muraho 👋",inputPlaceholder:"Andika ubutumwa...",send:"Ohereza",online:"Kuri interineti",offline:"Nta murongo",lastSeen:"Byagarutse",unread:"Ntibisomwe",you:"Wowe",site:"Igibanza",back:"Subira",yesterday:"Ejo hashize",notAuthorized:"Ntabwo ureherewe kureba iki kiganiro.",sentTo:"Ikiganiro na {name}",
       attach:"Ohereza ifoto",emoji:"Emoji",share:"Sangiza inyandiko",shareMaterial:"Sangiza Ibikoresho",shareWorker:"Sangiza Umukozi",shareReport:"Sangiza Raporo",cancelReply:"Hagarika gusubiza",replyingTo:"Gusubiza {name}",
       reply:"Subiza",react:"Tangiza",deleteForMe:"Siba kuri njye",deleteForEveryone:"Siba kuri bose",edited:"byahinduwe",deleted:"Ubu butumwa bwasibwe",
@@ -434,15 +457,56 @@ tbody tr:hover{background:#f1f5f9}
       progress:{title:"Imirimo",addTask:"Ongeraho umurimo",task:"Umurimo",start:"Tangira",end:"Rangira",status:"Imiterere",pending:"Bitegereje",completed:"Byarangiye",noTasks:"Nta mirimo.",addTaskModal:"Ongeraho umurimo",taskName:"Izina",selectSite:"Hitamo igibanza",periodNumber:"Umubare",days:"Iminsi",weeks:"Ibyumweru",saveTask:"Bika",editTask:"Hindura"},
       reports:{title:"Raporo",general:"Rusange",payroll:"Umushahara",stockReport:"Imbuganyuro",selectSite:"Hitamo Igibanza",allSites:"Ibibanza Byose",department:"Ishami",allDepartments:"Amashami Yose",startDate:"Itariki yo gutangira",endDate:"Itariki yo kurangira",exportCSV:"Sohora CSV",printPDF:"Capa / PDF",noAttendance:"Nta makuru.",info:"Nyamuneka menya neza.",searchWorker:"Shakisha umukozi...",position:"Umwanya",allPositions:"Imiryango Yose",paymentStatus:"Imiterere y'ubwishyu",paid:"Byishyuwe",unpaid:"Bitishyuwe",allPayments:"Byose",totalWorkers:"Abakozi Bose",workerDays:"Iminsi",totalPayroll:"Umushahara Wose",avgDaily:"Igiciro cy'umunsi",worker:"Umukozi",daysWorked:"Iminsi",dailyRate:"Umushahara",totalPayable:"Amafaranga",total:"Igiteranyo"},
       finances:{title:"Imari",info:"Amakuru",overview:"Imbonerahamwe",budget:"Ingengo",totalSpent:"Yakoreshejwe",materialsCost:"Ibikoresho",workersCost:"Abakozi",remaining:"Isigazwa",dailyAvg:"Buri munsi",monthlyAvg:"Buri kwezi",addBudget:"Ongeraho",newBudget:"Nshya",updateBudget:"Vugurura",exceeded:"Yarengwe!",costControl:"Birakenewe."},
-      managers:{title:"Abayobozi",info:"Abayobozi bagenzwe.",inviteManager:"Tumira",assignSite:"Mwize",email:"Email",password:"Ijambobanga",invite:"Tumira",noManagers:"Nta bayobozi.",remove:"Kuraho",assignedSite:"Igibanza"},
+      managers:{
+        title:"Abayobozi",
+        subtitle:"Genzura abantu bashinzwe ibibanza byawe.",
+        info:"Abayobozi bagenzwe.",
+        inviteManager:"Tumira umuyobozi",
+        assignSite:"Mwize ku gibanza",
+        reassign:"Ongera umwize",
+        email:"Email",
+        password:"Ijambobanga",
+        invite:"Tumira",
+        noManagers:"Nta bayobozi.",
+        remove:"Kuraho",
+        assignedSite:"Igibanza",
+        total:"Abayobozi bose",active:"Bakora",pending:"Bategereje",pendingInvites:"Ubutumire butegereje",unassigned:"Nta gibanza",
+        filterAll:"Byose",
+        colManager:"Umuyobozi",colContact:"Ihuza",colRole:"Uruhare",colSites:"Ibibanza",colStatus:"Imiterere",colActions:"Ibikorwa",
+        inviteIntro:"Tumira umuyobozi kugira ngo abashe gucunga ibibanza byatoranyijwe.",
+        personalMessage:"Ubutumwa bwite (bidategetswe)",
+        inviteFootnote:"Umuyobozi azabona ubutumire bufite amabwiriza yo gukora cyangwa kwinjira muri konti ye.",
+        sendInvite:"Ohereza ubutumire",
+        inviteSent:"Ubutumire bwoherejwe neza.",
+        inviteSentTitle:"Ubutumire Bwoherejwe",
+        wasInvitedAs:"yatumiwe nk'Umuyobozi w'Igibanza.",
+        expires:"Birangira",
+        shareLink:"Sangiza iyi link y'umutekano n'umuyobozi watumiwe:",
+        viewInvitations:"Reba Ubutumire",
+        invalidSite:"Igibanza kitarimo.",
+        alreadyMember:"Uyu muntu asanzwe ari umunyamuryango.",
+        duplicateInvite:"Uyu muyobozi asanzwe afite ubutumire butegereje.",
+        otherOrg:"Uyu ukoresha asanzwe ari mu rundi rubuga.",
+        details:"Ibisobanuro by'Umuyobozi",
+        assignmentHistory:"Amateka y'Igenamiterere",
+        present:"ubu",
+        invitationsTitle:"Ubutumire bw'Abayobozi",
+        invitedOn:"Yatumiwe",
+        invitedBy:"Yatumiwe na",
+        noInvitations:"Nta butumire.",
+        invitationDetails:"Ibisobanuro by'Ubutumire",
+        resend:"Ongera wohereze",
+        revoke:"Hagarika",
+        tab_all:"Byose",tab_pending:"Bitegereje",tab_accepted:"Byemejwe",tab_expired:"Byarangiye",tab_revoked:"Byahagaritswe"
+      },
       gallery:{title:"Amafoto",selectSite:"Hitamo Igibanza",allSites:"Byose",viewImage:"Reba",noImages:"Nta mafoto",close:"Funga",description:"Ibisobanuro"},
       settings:{title:"Igenamiterere",profile:"Umwirondoro",account:"Kontu",security:"Umutekano",preferences:"Amahitamo",profileInfo:"Amakuru bwite",fullName:"Amazina",phone:"Telefoni",email:"Email",saveChanges:"Bika",accountInfo:"Kontu",accountName:"Izina",role:"Umwanya",accountStatus:"Imiterere",active:"Bikora",memberSince:"Kuva",changePasscode:"Hindura passcode",currentPasscode:"Risanzwe",newPasscode:"Rishya",confirmPasscode:"Emeza",changePass:"Hindura",prefs:"Amahitamo",language:"Ururimi",currency:"Ifaranga",dateFormat:"Itariki",notifications:"Imenyesha",savePrefs:"Bika",changePhoto:"Hindura ifoto",removePhoto:"Kuraho"},
       alerts:{savedSuccessfully:"Byabitswe",updatedSuccessfully:"Byavuguruwe",deletedSuccessfully:"Byasibwe",somethingWentWrong:"Hari ikitagenze neza",areYouSure:"Urabyemeza?",cannotUndo:"Ntibishobora",requiredField:"Birakenewe",invalidValue:"Agaciro katariyo",noDataAvailable:"Nta makuru"},
       status:{active:"Bikora",completed:"Byarangiye",pending:"Bitegereje",cancelled:"Byahagaritswe",notStarted:"Ntibitangira",inProgress:"Bikorwa",finished:"Byarangiye"}
     },
     fr: {
-      common:{comingSoon:"Bientôt disponible",save:"Enregistrer",cancel:"Annuler",add:"Ajouter",delete:"Supprimer",edit:"Modifier",close:"Fermer",export:"Exporter",loading:"Chargement...",error:"Erreur",search:"Rechercher",view:"Voir",areYouSure:"Êtes-vous sûr ?",cannotUndo:"Irréversible",savedSuccessfully:"Enregistré",updatedSuccessfully:"Mis à jour",deletedSuccessfully:"Supprimé",somethingWentWrong:"Erreur",requiredField:"Champ requis",invalidValue:"Valeur invalide",noDataAvailable:"Aucune donnée",accessDenied:"Refusé",confirmDelete:"Confirmer"},
-      navigation:{dashboard:"Tableau de bord",sites:"Sites",materials:"Matériaux",stock:"Stock",workers:"Ouvriers",progress:"Progrès",reports:"Rapports",finances:"Finances",managers:"Gestionnaires",messages:"Messages",gallery:"Galerie",officeHub:"Bureau",settings:"Paramètres",notifications:"Notifications",logout:"Déconnexion",ownerPanel:"Panneau du propriétaire"},
+      common:{comingSoon:"Bientôt disponible",save:"Enregistrer",cancel:"Annuler",add:"Ajouter",delete:"Supprimer",edit:"Modifier",close:"Fermer",export:"Exporter",loading:"Chargement...",error:"Erreur",search:"Rechercher",view:"Voir",copy:"Copier",areYouSure:"Êtes-vous sûr ?",cannotUndo:"Irréversible",savedSuccessfully:"Enregistré",updatedSuccessfully:"Mis à jour",deletedSuccessfully:"Supprimé",somethingWentWrong:"Erreur",requiredField:"Champ requis",invalidValue:"Valeur invalide",noDataAvailable:"Aucune donnée",accessDenied:"Refusé",confirmDelete:"Confirmer"},
+      navigation:{dashboard:"Tableau de bord",sites:"Sites",materials:"Matériaux",stock:"Stock",workers:"Ouvriers",progress:"Progrès",reports:"Rapports",finances:"Finances",managers:"Gestionnaires",invitations:"Invitations",messages:"Messages",gallery:"Galerie",officeHub:"Bureau",settings:"Paramètres",notifications:"Notifications",logout:"Déconnexion",ownerPanel:"Panneau du propriétaire"},
       messages:{title:"Messages",searchPlaceholder:"Rechercher...",noManagers:"Aucun gestionnaire.",noSearchResults:"Aucun résultat.",selectConversation:"Sélectionnez un gestionnaire",emptyThread:"Aucun message. Dites bonjour 👋",inputPlaceholder:"Tapez un message...",send:"Envoyer",online:"En ligne",offline:"Hors ligne",lastSeen:"Vu",unread:"Non lu",you:"Vous",site:"Site",back:"Retour",yesterday:"Hier",notAuthorized:"Non autorisé.",sentTo:"Conversation avec {name}",
       attach:"Joindre image",emoji:"Emoji",share:"Partager",shareMaterial:"Partager Matériau",shareWorker:"Partager Ouvrier",shareReport:"Partager Rapport",cancelReply:"Annuler réponse",replyingTo:"Réponse à {name}",
       reply:"Répondre",react:"Réagir",deleteForMe:"Supprimer pour moi",deleteForEveryone:"Supprimer pour tous",edited:"modifié",deleted:"Ce message a été supprimé",
@@ -462,7 +526,48 @@ tbody tr:hover{background:#f1f5f9}
       progress:{title:"Tâches",addTask:"Ajouter",task:"Tâche",start:"Début",end:"Fin",status:"Statut",pending:"En attente",completed:"Terminé",noTasks:"Aucune tâche.",addTaskModal:"Ajouter",taskName:"Nom",selectSite:"Site",periodNumber:"Période",days:"Jours",weeks:"Semaines",saveTask:"Enregistrer",editTask:"Modifier"},
       reports:{title:"Rapports",general:"Général",payroll:"Paie",stockReport:"Stock",selectSite:"Site",allSites:"Tous",department:"Département",allDepartments:"Tous",startDate:"Début",endDate:"Fin",exportCSV:"CSV",printPDF:"PDF",noAttendance:"Aucune présence.",info:"Vérifiez la présence.",searchWorker:"Rechercher...",position:"Poste",allPositions:"Tous",paymentStatus:"Paiement",paid:"Payé",unpaid:"Non payé",allPayments:"Tous",totalWorkers:"Ouvriers",workerDays:"Jours",totalPayroll:"Paie",avgDaily:"Moyenne",worker:"Ouvrier",daysWorked:"Jours",dailyRate:"Taux",totalPayable:"Total",total:"Total"},
       finances:{title:"Finances",info:"Info",overview:"Aperçu",budget:"Budget",totalSpent:"Dépensé",materialsCost:"Matériaux",workersCost:"Ouvriers",remaining:"Restant",dailyAvg:"Moyenne jour",monthlyAvg:"Moyenne mois",addBudget:"Ajouter",newBudget:"Nouveau",updateBudget:"Mettre à jour",exceeded:"Dépassé!",costControl:"Contrôle requis."},
-      managers:{title:"Gestionnaires",info:"Gestionnaires assignés.",inviteManager:"Inviter",assignSite:"Assigner",email:"E-mail",password:"Mot de passe",invite:"Inviter",noManagers:"Aucun.",remove:"Retirer",assignedSite:"Site"},
+      managers:{
+        title:"Gestionnaires",
+        subtitle:"Gérez les personnes responsables de vos sites assignés.",
+        info:"Gestionnaires assignés.",
+        inviteManager:"Inviter un gestionnaire",
+        assignSite:"Assigner à un site",
+        reassign:"Réassigner",
+        email:"E-mail",
+        password:"Mot de passe",
+        invite:"Inviter",
+        noManagers:"Aucun.",
+        remove:"Retirer",
+        assignedSite:"Site",
+        total:"Total gestionnaires",active:"Actifs",pending:"En attente",pendingInvites:"Invitations en attente",unassigned:"Non assignés",
+        filterAll:"Tous",
+        colManager:"Gestionnaire",colContact:"Contact",colRole:"Rôle",colSites:"Sites assignés",colStatus:"Statut",colActions:"Actions",
+        inviteIntro:"Invitez un gestionnaire à accéder et gérer les sites sélectionnés.",
+        personalMessage:"Message personnel (facultatif)",
+        inviteFootnote:"Le gestionnaire recevra une invitation avec des instructions pour créer ou accéder à son compte.",
+        sendInvite:"Envoyer l'invitation",
+        inviteSent:"Invitation envoyée.",
+        inviteSentTitle:"Invitation Envoyée",
+        wasInvitedAs:"a été invité en tant que gestionnaire de site.",
+        expires:"Expire",
+        shareLink:"Partagez ce lien sécurisé avec le gestionnaire invité :",
+        viewInvitations:"Voir les invitations",
+        invalidSite:"Site invalide.",
+        alreadyMember:"Cette personne est déjà membre.",
+        duplicateInvite:"Ce gestionnaire a déjà une invitation en attente.",
+        otherOrg:"Cet utilisateur appartient déjà à une autre organisation.",
+        details:"Détails du gestionnaire",
+        assignmentHistory:"Historique des affectations",
+        present:"actuel",
+        invitationsTitle:"Invitations de gestionnaires",
+        invitedOn:"Invité",
+        invitedBy:"Invité par",
+        noInvitations:"Aucune invitation.",
+        invitationDetails:"Détails de l'invitation",
+        resend:"Renvoyer",
+        revoke:"Révoquer",
+        tab_all:"Tout",tab_pending:"En attente",tab_accepted:"Accepté",tab_expired:"Expiré",tab_revoked:"Révoqué"
+      },
       gallery:{title:"Galerie",selectSite:"Site",allSites:"Tous",viewImage:"Voir",noImages:"Aucune image",close:"Fermer",description:"Description"},
       settings:{title:"Paramètres",profile:"Profil",account:"Compte",security:"Sécurité",preferences:"Préférences",profileInfo:"Profil",fullName:"Nom",phone:"Téléphone",email:"E-mail",saveChanges:"Enregistrer",accountInfo:"Compte",accountName:"Nom",role:"Rôle",accountStatus:"Statut",active:"Actif",memberSince:"Depuis",changePasscode:"Changer code",currentPasscode:"Actuel",newPasscode:"Nouveau",confirmPasscode:"Confirmer",changePass:"Changer",prefs:"Préférences",language:"Langue",currency:"Devise",dateFormat:"Format",notifications:"Notifications",savePrefs:"Enregistrer",changePhoto:"Changer",removePhoto:"Supprimer"},
       alerts:{savedSuccessfully:"Enregistré",updatedSuccessfully:"Mis à jour",deletedSuccessfully:"Supprimé",somethingWentWrong:"Erreur",areYouSure:"Sûr ?",cannotUndo:"Irréversible",requiredField:"Requis",invalidValue:"Invalide",noDataAvailable:"Aucune donnée"},
@@ -589,17 +694,23 @@ tbody tr:hover{background:#f1f5f9}
   // =================================================================
   let currentUser = null;
   let ownerProfile = null;
+  let currentOrganizationId = null;
   let sitesData = [], materialsData = [], workersData = [], progressTasks = [], expensesData = [], managersData = [], assignedWorkersData = [], galleryData = [], attendanceData = [];
   let stockData = [], stockTransactions = [];
   let ownerRequisitionsData = [], ownerRequisitionItemsData = [], ownerRequisitionHistoryData = [];
+  let invitationsData = [], assignmentsData = [];
   let materialsTab = 'materials';
   let unsubscribeSnapshots = [];
+  let _invitationsUnsub = null;
   let searchTimeout = null;
   let currentSection = 'dashboard';
   let reportType = 'general';
   let settingsTab = 'profile';
   let hasUnsavedChanges = false;
   let _profilePhotoFile = null;
+  let _invTab = 'all';
+  let _managerSearchQ = '';
+  let _managerStatusFilter = 'all';
 
   function toNumber(v){ const n = parseFloat(v); return isNaN(n) ? 0 : n; }
   function showError(msg) { const el = document.getElementById('global-error'); el.classList.remove('hidden'); el.querySelector('div').textContent = msg; }
@@ -666,20 +777,47 @@ tbody tr:hover{background:#f1f5f9}
       currentUser = user;
       try {
         const profileRef = doc(db, 'profiles', user.uid);
-        const snap = await getDoc(profileRef);
+        let snap = await getDoc(profileRef);
+        let orgId;
         if (!snap.exists()) {
-          await setDoc(profileRef, { email: user.email, full_name: user.displayName || 'Owner', role: 'owner', phone: '', created_at: new Date().toISOString() });
+          // Bootstrap: create organization for the new owner
+          const orgRef = doc(collection(db, 'organizations'));
+          orgId = orgRef.id;
+          await setDoc(orgRef, {
+            name: getCompanyDetails().name,
+            owner_id: user.uid,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+            settings: { default_role: 'manager' }
+          });
+          await setDoc(profileRef, {
+            email: user.email,
+            full_name: user.displayName || 'Owner',
+            role: 'owner',
+            phone: '',
+            organization_id: orgId,
+            organization_status: 'active',
+            created_at: new Date().toISOString()
+          });
+          snap = await getDoc(profileRef);
         }
-        ownerProfile = snap.data() || { full_name: 'Owner', email: user.email };
+        ownerProfile = snap.data() || {};
+        currentOrganizationId = ownerProfile.organization_id || null;
+        if (!currentOrganizationId) {
+          showError('Organization is not configured for this account. Please contact support.');
+          return;
+        }
         updateProfileUI(ownerProfile);
         onSnapshot(profileRef, (s) => {
           if (s.exists()) {
             ownerProfile = s.data();
+            currentOrganizationId = ownerProfile.organization_id || currentOrganizationId;
             updateProfileUI(ownerProfile);
             if (currentSection === 'settings') populateSettingsForms();
           }
         }, err => console.warn('profile snapshot error:', err));
         attachListeners();
+        attachInvitationsListener();
         attachMessagingListeners();
         showSection('dashboard');
       } catch (err) { console.error(err); showError(t('alerts.somethingWentWrong')); }
@@ -705,11 +843,18 @@ tbody tr:hover{background:#f1f5f9}
     }));
   }
 
+  // =================================================================
+  // ORGANIZATION-SCOPED LISTENERS
+  // =================================================================
   function attachListeners() {
     unsubscribeSnapshots.forEach(fn => { try { fn(); } catch(_){} });
     unsubscribeSnapshots = [];
-    if (!currentUser) return;
-    const sitesQ = query(collection(db, 'sites'), where('owner_id', '==', currentUser.uid));
+    if (!currentUser || !currentOrganizationId) return;
+
+    const sitesQ = query(
+      collection(db, 'sites'),
+      where('organization_id', '==', currentOrganizationId)
+    );
     attachSnapshot(sitesQ, (snap) => {
       sitesData = snap.docs.map(d => ({ id: d.id, ...d.data() }));
       reloadRelated();
@@ -722,15 +867,37 @@ tbody tr:hover{background:#f1f5f9}
       const fn = unsubscribeSnapshots.pop();
       try { fn(); } catch(_){}
     }
+    const orgId = currentOrganizationId;
+    if (!orgId) return;
+
     const siteIds = sitesData.map(s => s.id);
     if (selectedMatSite && !siteIds.includes(selectedMatSite)) selectedMatSite = null;
     if (selectedWorkerViewSite && !siteIds.includes(selectedWorkerViewSite)) selectedWorkerViewSite = null;
     if (selectedGallerySite && !siteIds.includes(selectedGallerySite)) selectedGallerySite = null;
     if (selectedFinanceSite && !siteIds.includes(selectedFinanceSite)) selectedFinanceSite = null;
+
+    // Organization-scoped managers (NOT just role==manager globally)
+    attachSnapshot(
+      query(collection(db, 'profiles'),
+        where('organization_id', '==', orgId),
+        where('role', '==', 'manager')),
+      snap => { managersData = snap.docs.map(d => ({ id: d.id, ...d.data() })); refreshCurrentSection(); if (currentSection === 'messages') renderMessagesDirectory(); },
+      'managers'
+    );
+
+    // Assignment history
+    attachSnapshot(
+      query(collection(db, 'manager_site_assignments'),
+        where('organization_id', '==', orgId)),
+      snap => { assignmentsData = snap.docs.map(d => ({ id: d.id, ...d.data() })); refreshCurrentSection(); },
+      'assignments'
+    );
+
     if (!siteIds.length) {
-      materialsData = []; workersData = []; progressTasks = []; expensesData = []; managersData = []; assignedWorkersData = []; galleryData = []; attendanceData = []; stockData = []; stockTransactions = []; ownerRequisitionsData = []; ownerRequisitionItemsData = []; ownerRequisitionHistoryData = [];
+      materialsData = []; workersData = []; progressTasks = []; expensesData = []; assignedWorkersData = []; galleryData = []; attendanceData = []; stockData = []; stockTransactions = []; ownerRequisitionsData = []; ownerRequisitionItemsData = []; ownerRequisitionHistoryData = [];
       return;
     }
+
     attachSnapshot(query(collection(db, 'materials'), where('site_id', 'in', siteIds)),
       snap => { materialsData = snap.docs.map(d => ({ id: d.id, ...d.data() })); refreshCurrentSection(); }, 'materials');
     attachSnapshot(query(collection(db, 'worker_positions'), where('site_id', 'in', siteIds)),
@@ -739,8 +906,6 @@ tbody tr:hover{background:#f1f5f9}
       snap => { progressTasks = snap.docs.map(d => ({ id: d.id, ...d.data() })); refreshCurrentSection(); }, 'progress tasks');
     attachSnapshot(query(collection(db, 'expenses'), where('site_id', 'in', siteIds)),
       snap => { expensesData = snap.docs.map(d => ({ id: d.id, ...d.data() })); refreshCurrentSection(); }, 'expenses');
-    attachSnapshot(query(collection(db, 'profiles'), where('role', '==', 'manager')),
-      snap => { managersData = snap.docs.map(d => ({ id: d.id, ...d.data() })); refreshCurrentSection(); if (currentSection === 'messages') renderMessagesDirectory(); }, 'managers');
     attachSnapshot(query(collection(db, 'site_workers'), where('site_id', 'in', siteIds)),
       snap => { assignedWorkersData = snap.docs.map(d => ({ id: d.id, ...d.data() })); refreshCurrentSection(); }, 'assigned workers');
     attachSnapshot(query(collection(db, 'gallery'), where('site_id', 'in', siteIds)),
@@ -757,6 +922,28 @@ tbody tr:hover{background:#f1f5f9}
       snap => { ownerRequisitionItemsData = snap.docs.map(d => ({ id: d.id, ...d.data() })); refreshCurrentSection(); }, 'requisition items');
     attachSnapshot(query(collection(db, 'requisition_history'), where('site_id', 'in', siteIds), orderBy('timestamp', 'desc')),
       snap => { ownerRequisitionHistoryData = snap.docs.map(d => ({ id: d.id, ...d.data() })); refreshCurrentSection(); }, 'requisition history');
+  }
+
+  function attachInvitationsListener() {
+    if (_invitationsUnsub) { try { _invitationsUnsub(); } catch(_){} _invitationsUnsub = null; }
+    if (!currentOrganizationId) return;
+    const q = query(
+      collection(db, 'manager_invitations'),
+      where('organization_id', '==', currentOrganizationId)
+    );
+    _invitationsUnsub = onSnapshot(q, (snap) => {
+      invitationsData = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      updateInvitationsBadge();
+      if (currentSection === 'managers' || currentSection === 'invitations') refreshCurrentSection();
+    }, err => console.warn('[invitations]', err));
+  }
+
+  function updateInvitationsBadge() {
+    const badge = document.getElementById('invitations-nav-badge');
+    if (!badge) return;
+    const pending = invitationsData.filter(i => i.status === 'pending').length;
+    if (pending > 0) { badge.textContent = pending > 99 ? '99+' : String(pending); badge.classList.remove('hidden'); }
+    else badge.classList.add('hidden');
   }
 
   function refreshCurrentSection() {
@@ -816,6 +1003,7 @@ tbody tr:hover{background:#f1f5f9}
       case 'reports': renderReports(container); break;
       case 'finances': renderFinances(container); break;
       case 'managers': renderManagers(container); break;
+      case 'invitations': renderInvitations(container); break;
       case 'messages': renderMessages(container); break;
       case 'gallery': renderGallery(container); break;
       case 'settings': renderSettings(container); break;
@@ -859,6 +1047,21 @@ tbody tr:hover{background:#f1f5f9}
     return json.data.url;
   }
 
+  // =============== AUDIT LOG ===============
+  async function addAuditLog({ action, target_type, target_id, meta }) {
+    if (!currentOrganizationId || !currentUser) return;
+    try {
+      await addDoc(collection(db, 'audit_logs'), {
+        organization_id: currentOrganizationId,
+        actor_id: currentUser.uid,
+        actor_name: ownerProfile?.full_name || 'Owner',
+        action, target_type, target_id,
+        meta: meta || {},
+        created_at: new Date().toISOString()
+      });
+    } catch (e) { console.warn('audit log failed', e); }
+  }
+
   // =============== DASHBOARD ===============
   function renderDashboard(container) {
     const totalSites = sitesData.length;
@@ -881,16 +1084,12 @@ tbody tr:hover{background:#f1f5f9}
     const rawName = currentUser?.displayName || document.getElementById('user-name')?.textContent || currentUser?.email?.split('@')[0] || 'SITE OWNER';
     const displayName = getDashboardName(rawName).toUpperCase();
 
-    // Time-based greeting: 00:00–11:59 Morning · 12:00–16:59 Afternoon · 17:00–23:59 Evening
+    // Time-of-day greeting (00:00–11:59 Morning · 12:00–16:59 Afternoon · 17:00–23:59 Evening)
     const hour = new Date().getHours();
     let greetingKey;
-    if (hour >= 0 && hour < 12) {
-      greetingKey = 'dashboard.goodMorning';
-    } else if (hour >= 12 && hour < 17) {
-      greetingKey = 'dashboard.goodAfternoon';
-    } else {
-      greetingKey = 'dashboard.goodEvening';
-    }
+    if (hour >= 0 && hour < 12) greetingKey = 'dashboard.goodMorning';
+    else if (hour >= 12 && hour < 17) greetingKey = 'dashboard.goodAfternoon';
+    else greetingKey = 'dashboard.goodEvening';
 
     container.innerHTML = `
       <div class="bg-white rounded-2xl overflow-hidden shadow-sm mb-4 sm:mb-6">
@@ -1123,7 +1322,12 @@ tbody tr:hover{background:#f1f5f9}
       const files = document.getElementById('site-images').files;
       const imageUrls = [];
       for (let i = 0; i < Math.min(files.length, 5); i++) imageUrls.push(await uploadImageToImgbb(files[i]));
-      await addDoc(collection(db, 'sites'), { owner_id: currentUser.uid, name, location, district, sector, client_name, budget, start_date, end_date, images: imageUrls, status: 'active', manager_name: '' });
+      await addDoc(collection(db, 'sites'), {
+        owner_id: currentUser.uid,
+        organization_id: currentOrganizationId,
+        name, location, district, sector, client_name, budget, start_date, end_date,
+        images: imageUrls, status: 'active', manager_name: ''
+      });
       closeModal();
       showToast(t('alerts.savedSuccessfully'), 'success');
     } catch (err) { console.error(err); showToast(t('alerts.somethingWentWrong'), 'error'); }
@@ -2143,39 +2347,583 @@ tbody tr:hover{background:#f1f5f9}
     finally { setButtonLoading(btn, false); }
   };
 
-  // =============== MANAGERS ===============
-  function renderManagers(container) {
-    container.innerHTML = `<h2 class="text-xl sm:text-2xl font-bold mb-4 flex items-center gap-2"><iconify-icon icon="material-symbols:group" class="text-emerald-600"></iconify-icon>${t('managers.title')}</h2><div class="bg-white rounded-2xl border p-4 max-w-2xl"><p class="text-slate-600 text-sm mb-3">${t('managers.info')}</p><button onclick="openInviteManagerModal()" class="px-3 py-2 bg-emerald-600 text-white rounded-xl mb-4 text-sm flex items-center gap-2"><iconify-icon icon="material-symbols:person-add"></iconify-icon>${t('managers.inviteManager')}</button><div class="space-y-2">${managersData.map(m => { const siteName = m.assigned_site ? (sitesData.find(s => s.id === m.assigned_site)?.name || 'Unknown') : t('common.noDataAvailable'); return `<div class="flex justify-between p-3 bg-slate-50 rounded-lg"><div><p class="font-medium text-sm">${m.full_name || m.email}</p><p class="text-xs text-slate-500">${m.email}</p><p class="text-xs text-slate-500">${t('workers.phone')}: ${m.phone || '—'}</p><p class="text-xs text-slate-500">${t('managers.assignedSite')}: ${siteName}</p></div><button onclick="removeManager('${m.id}')" class="text-red-500 text-sm flex items-center gap-1"><iconify-icon icon="material-symbols:person-remove" width="16"></iconify-icon>${t('managers.remove')}</button></div>`; }).join('') || `<p class="text-slate-400 text-sm">${t('managers.noManagers')}</p>`}</div></div>`;
+  // =================================================================
+  // ============== MANAGERS (Organization-Scoped) ============
+  // =================================================================
+  function siteNameById(id) {
+    if (!id) return null;
+    const s = sitesData.find(x => x.id === id);
+    return s ? s.name : null;
   }
+
+  function statCard(label, value, icon, tone) {
+    const toneMap = { emerald: 'bg-emerald-50 text-emerald-700', green: 'bg-green-50 text-green-700', amber: 'bg-amber-50 text-amber-700', rose: 'bg-rose-50 text-rose-700' };
+    return `<div class="bg-white rounded-2xl border p-4 shadow-sm">
+      <div class="flex items-center justify-between">
+        <p class="text-xs font-medium text-slate-500 uppercase tracking-wide">${label}</p>
+        <div class="w-8 h-8 rounded-lg flex items-center justify-center ${toneMap[tone] || toneMap.emerald}">
+          <iconify-icon icon="${icon}" width="18"></iconify-icon>
+        </div>
+      </div>
+      <p class="text-2xl font-bold text-slate-800 mt-2">${value}</p>
+    </div>`;
+  }
+
+  function renderManagers(container) {
+    const orgManagers = managersData.filter(m => m.organization_id === currentOrganizationId);
+    const activeCount = orgManagers.filter(m => (m.organization_status || m.status) === 'active').length;
+    const pendingInvites = invitationsData.filter(i => i.status === 'pending').length;
+    const assignedCount = orgManagers.filter(m => m.assigned_site).length;
+    const unassignedCount = orgManagers.length - assignedCount;
+
+    container.innerHTML = `
+      <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 mb-6">
+        <div>
+          <h2 class="text-xl sm:text-2xl font-bold flex items-center gap-2">
+            <iconify-icon icon="material-symbols:group" class="text-emerald-600"></iconify-icon>${t('managers.title')}
+          </h2>
+          <p class="text-sm text-slate-500 mt-1">${t('managers.subtitle')}</p>
+        </div>
+        <button onclick="openInviteManagerModal()" class="px-4 py-2.5 bg-emerald-600 text-white rounded-xl hover:bg-emerald-700 text-sm font-medium flex items-center gap-2 shadow-sm">
+          <iconify-icon icon="material-symbols:person-add"></iconify-icon>${t('managers.inviteManager')}
+        </button>
+      </div>
+
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+        ${statCard(t('managers.total'), orgManagers.length, 'material-symbols:group', 'emerald')}
+        ${statCard(t('managers.active'), activeCount, 'material-symbols:check-circle', 'green')}
+        ${statCard(t('managers.pendingInvites'), pendingInvites, 'material-symbols:mail', 'amber')}
+        ${statCard(t('managers.unassigned'), unassignedCount, 'material-symbols:location-off', 'rose')}
+      </div>
+
+      <div class="bg-white rounded-2xl border shadow-sm overflow-hidden">
+        <div class="p-4 border-b bg-slate-50 flex flex-wrap items-center gap-3">
+          <div class="relative flex-1 min-w-[220px]">
+            <input id="manager-search-input" type="text" placeholder="${t('messages.searchPlaceholder')}"
+              oninput="filterManagersTable(this.value)"
+              class="w-full border rounded-lg py-2 pl-9 pr-3 text-sm focus:outline-none focus:border-emerald-600">
+            <iconify-icon icon="material-symbols:search" width="16" class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></iconify-icon>
+          </div>
+          <select id="manager-status-filter" onchange="filterManagersTable()" class="border rounded-lg py-2 px-3 text-sm">
+            <option value="all">${t('managers.filterAll')}</option>
+            <option value="active">${t('managers.active')}</option>
+            <option value="pending">${t('managers.pending')}</option>
+            <option value="unassigned">${t('managers.unassigned')}</option>
+          </select>
+        </div>
+        <div id="managers-table-host"></div>
+      </div>
+    `;
+    renderManagersTable();
+  }
+
+  window.filterManagersTable = (v) => {
+    if (typeof v === 'string') _managerSearchQ = v.toLowerCase();
+    const sel = document.getElementById('manager-status-filter');
+    if (sel) _managerStatusFilter = sel.value;
+    renderManagersTable();
+  };
+
+  function renderManagersTable() {
+    const host = document.getElementById('managers-table-host');
+    if (!host) return;
+
+    const orgManagers = managersData.filter(m => m.organization_id === currentOrganizationId);
+    const pendingOnly = invitationsData.filter(i => i.status === 'pending');
+
+    let rows = [];
+    orgManagers.forEach(m => {
+      const sName = siteNameById(m.assigned_site);
+      rows.push({
+        kind: 'manager',
+        id: m.id,
+        name: m.full_name || m.email || 'Manager',
+        email: m.email || '',
+        role: m.role || 'manager',
+        siteName: m.assigned_site ? (sName || 'Assignment needs review') : t('managers.unassigned'),
+        siteId: m.assigned_site || null,
+        status: (m.organization_status || m.status || 'active'),
+        invitation: null,
+        photo: m.profile_picture || ''
+      });
+    });
+    pendingOnly.forEach(inv => {
+      if (orgManagers.some(m => (m.email || '').toLowerCase() === (inv.email || '').toLowerCase())) return;
+      const sName = siteNameById(inv.assigned_site_id);
+      rows.push({
+        kind: 'invitation',
+        id: inv.id,
+        name: inv.full_name || inv.email,
+        email: inv.email,
+        role: inv.role || 'manager',
+        siteName: inv.assigned_site_id ? (sName || 'Assignment needs review') : t('managers.unassigned'),
+        siteId: inv.assigned_site_id || null,
+        status: 'pending',
+        invitation: inv,
+        photo: ''
+      });
+    });
+
+    if (_managerSearchQ) {
+      rows = rows.filter(r =>
+        (r.name || '').toLowerCase().includes(_managerSearchQ) ||
+        (r.email || '').toLowerCase().includes(_managerSearchQ) ||
+        (r.siteName || '').toLowerCase().includes(_managerSearchQ)
+      );
+    }
+    if (_managerStatusFilter === 'active') rows = rows.filter(r => r.status === 'active');
+    if (_managerStatusFilter === 'pending') rows = rows.filter(r => r.status === 'pending');
+    if (_managerStatusFilter === 'unassigned') rows = rows.filter(r => !r.siteId);
+
+    if (!rows.length) {
+      host.innerHTML = `<div class="p-8 text-center text-slate-500 text-sm">${t('managers.noManagers')}</div>`;
+      return;
+    }
+
+    const statusBadge = (st) => {
+      const map = {
+        active: 'bg-emerald-100 text-emerald-700',
+        pending: 'bg-amber-100 text-amber-700',
+        suspended: 'bg-slate-200 text-slate-700',
+        removed: 'bg-rose-100 text-rose-700'
+      };
+      const label = st === 'active' ? t('managers.active') : st === 'pending' ? t('managers.pending') : st;
+      return `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-semibold ${map[st] || map.active}">● ${label}</span>`;
+    };
+
+    host.innerHTML = `
+      <div class="hidden md:block overflow-x-auto">
+        <table class="w-full text-sm">
+          <thead class="bg-white text-xs uppercase text-slate-500 border-b">
+            <tr>
+              <th class="px-4 py-3 text-left">${t('managers.colManager')}</th>
+              <th class="px-4 py-3 text-left">${t('managers.colContact')}</th>
+              <th class="px-4 py-3 text-left">${t('managers.colRole')}</th>
+              <th class="px-4 py-3 text-left">${t('managers.colSites')}</th>
+              <th class="px-4 py-3 text-left">${t('managers.colStatus')}</th>
+              <th class="px-4 py-3 text-right">${t('managers.colActions')}</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rows.map(r => `
+              <tr class="border-b hover:bg-slate-50">
+                <td class="px-4 py-3">
+                  <div class="flex items-center gap-3">
+                    ${r.photo ? `<img src="${escapeHTML(r.photo)}" class="w-9 h-9 rounded-full object-cover">` :
+                      `<div class="w-9 h-9 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-sm">${escapeHTML((r.name || '?').charAt(0).toUpperCase())}</div>`}
+                    <span class="font-medium text-slate-800">${escapeHTML(r.name)}</span>
+                  </div>
+                </td>
+                <td class="px-4 py-3 text-slate-600">${escapeHTML(r.email || '—')}</td>
+                <td class="px-4 py-3 text-slate-600 capitalize">${escapeHTML(r.role)}</td>
+                <td class="px-4 py-3 text-slate-600">${escapeHTML(r.siteName)}</td>
+                <td class="px-4 py-3">${statusBadge(r.status)}</td>
+                <td class="px-4 py-3 text-right">
+                  ${r.kind === 'manager' ? `
+                    <button onclick="viewManagerDetails('${r.id}')" class="text-xs text-emerald-700 bg-emerald-50 hover:bg-emerald-100 px-2.5 py-1 rounded-lg mr-1">${t('common.view')}</button>
+                    <button onclick="openAssignSiteModal('${r.id}')" class="text-xs text-slate-700 bg-slate-100 hover:bg-slate-200 px-2.5 py-1 rounded-lg mr-1">${r.siteId ? t('managers.reassign') : t('managers.assignSite')}</button>
+                    <button onclick="removeManager('${r.id}')" class="text-xs text-rose-600 bg-rose-50 hover:bg-rose-100 px-2.5 py-1 rounded-lg">${t('managers.remove')}</button>
+                  ` : `
+                    <button onclick="viewInvitationDetails('${r.id}')" class="text-xs text-emerald-700 bg-emerald-50 hover:bg-emerald-100 px-2.5 py-1 rounded-lg mr-1">${t('common.view')}</button>
+                    <button onclick="resendInvitation('${r.id}')" class="text-xs text-slate-700 bg-slate-100 hover:bg-slate-200 px-2.5 py-1 rounded-lg mr-1">${t('managers.resend')}</button>
+                    <button onclick="revokeInvitation('${r.id}')" class="text-xs text-rose-600 bg-rose-50 hover:bg-rose-100 px-2.5 py-1 rounded-lg">${t('managers.revoke')}</button>
+                  `}
+                </td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      </div>
+
+      <div class="md:hidden divide-y">
+        ${rows.map(r => `
+          <div class="p-4">
+            <div class="flex items-start gap-3">
+              ${r.photo ? `<img src="${escapeHTML(r.photo)}" class="w-11 h-11 rounded-full object-cover">` :
+                `<div class="w-11 h-11 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold">${escapeHTML((r.name || '?').charAt(0).toUpperCase())}</div>`}
+              <div class="flex-1 min-w-0">
+                <p class="font-semibold text-slate-900 truncate">${escapeHTML(r.name)}</p>
+                <p class="text-xs text-slate-500 truncate">${escapeHTML(r.email || '—')}</p>
+                <p class="text-xs text-slate-600 capitalize mt-1">${escapeHTML(r.role)}</p>
+                <p class="text-xs text-slate-700 mt-1">${escapeHTML(r.siteName)}</p>
+                <div class="mt-2">${statusBadge(r.status)}</div>
+              </div>
+            </div>
+            <div class="mt-3 flex gap-2 flex-wrap">
+              ${r.kind === 'manager' ? `
+                <button onclick="viewManagerDetails('${r.id}')" class="text-xs bg-emerald-50 text-emerald-700 px-3 py-1.5 rounded-lg">${t('common.view')}</button>
+                <button onclick="openAssignSiteModal('${r.id}')" class="text-xs bg-slate-100 text-slate-700 px-3 py-1.5 rounded-lg">${r.siteId ? t('managers.reassign') : t('managers.assignSite')}</button>
+                <button onclick="removeManager('${r.id}')" class="text-xs bg-rose-50 text-rose-600 px-3 py-1.5 rounded-lg">${t('managers.remove')}</button>
+              ` : `
+                <button onclick="viewInvitationDetails('${r.id}')" class="text-xs bg-emerald-50 text-emerald-700 px-3 py-1.5 rounded-lg">${t('common.view')}</button>
+                <button onclick="resendInvitation('${r.id}')" class="text-xs bg-slate-100 text-slate-700 px-3 py-1.5 rounded-lg">${t('managers.resend')}</button>
+                <button onclick="revokeInvitation('${r.id}')" class="text-xs bg-rose-50 text-rose-600 px-3 py-1.5 rounded-lg">${t('managers.revoke')}</button>
+              `}
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    `;
+  }
+
+  // =============== INVITATION ENGINE ===============
+  async function _sha256Hex(str) {
+    const buf = new TextEncoder().encode(str);
+    const digest = await crypto.subtle.digest('SHA-256', buf);
+    return Array.from(new Uint8Array(digest)).map(b => b.toString(16).padStart(2, '0')).join('');
+  }
+  function _generateToken() {
+    const bytes = new Uint8Array(32);
+    crypto.getRandomValues(bytes);
+    return Array.from(bytes).map(b => b.toString(16).padStart(2, '0')).join('');
+  }
+
   window.openInviteManagerModal = () => {
     const siteOptions = sitesData.map(s => `<option value="${s.id}">${s.name}</option>`).join('');
-    openModal(t('managers.inviteManager'), `<form onsubmit="handleInviteManager(event)" class="space-y-4"><div><label class="block text-sm font-medium mb-1">${t('managers.assignSite')}</label><select id="manager-site" class="w-full border rounded-lg p-3" required><option value="">${t('dashboard.selectSite')}</option>${siteOptions}</select></div><input class="w-full border rounded-lg p-3" type="email" placeholder="${t('managers.email')}" id="manager-email" required><input class="w-full border rounded-lg p-3" type="password" placeholder="${t('managers.password')}" id="manager-password" required minlength="6"><button type="submit" class="w-full bg-emerald-600 text-white py-3 rounded-xl">${t('managers.invite')}</button></form>`);
+    openModal(t('managers.inviteManager'), `
+      <form id="invite-form" onsubmit="handleInviteManager(event)" class="space-y-4">
+        <p class="text-sm text-slate-500">${t('managers.inviteIntro')}</p>
+        <input class="w-full border rounded-lg p-3 text-sm" required placeholder="${t('settings.fullName')}" id="inv-name">
+        <input class="w-full border rounded-lg p-3 text-sm" required type="email" placeholder="${t('managers.email')}" id="inv-email">
+        <input class="w-full border rounded-lg p-3 text-sm" required type="tel" placeholder="${t('settings.phone')}" id="inv-phone">
+        <select class="w-full border rounded-lg p-3 text-sm" required id="inv-site">
+          <option value="">${t('dashboard.selectSite')}</option>
+          ${siteOptions}
+        </select>
+        <textarea class="w-full border rounded-lg p-3 text-sm" rows="3" placeholder="${t('managers.personalMessage')}" id="inv-message"></textarea>
+        <p class="text-xs text-slate-500">${t('managers.inviteFootnote')}</p>
+        <div class="flex gap-3 justify-end">
+          <button type="button" onclick="closeModal()" class="px-4 py-2.5 rounded-xl border text-sm">${t('common.cancel')}</button>
+          <button type="submit" class="px-4 py-2.5 rounded-xl bg-emerald-600 text-white text-sm font-medium">${t('managers.sendInvite')}</button>
+        </div>
+      </form>
+    `);
   };
+
   window.handleInviteManager = async (e) => {
     e.preventDefault();
     const btn = getFormSubmitBtn(e.target);
     setButtonLoading(btn, true);
     try {
-      const email = document.getElementById('manager-email').value.trim();
-      const password = document.getElementById('manager-password').value;
-      const siteId = document.getElementById('manager-site').value;
-      if (!email || !password || !siteId) { showAlert('alerts.requiredField'); return; }
-      if (password.length < 6) { showAlert('alerts.invalidValue'); return; }
-      if (managersData.some(m => m.email === email)) { showAlert('alerts.invalidValue'); return; }
-      const apiKey = firebaseConfig.apiKey;
-      const response = await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${apiKey}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email, password, returnSecureToken: false }) });
-      const data = await response.json();
-      if (!response.ok) throw new Error((data.error?.message || 'Registration failed').replace('EMAIL_EXISTS', 'Email already in use.').replace('WEAK_PASSWORD', 'Password is too weak.'));
-      await setDoc(doc(db, 'profiles', data.localId), { email, full_name: email.split('@')[0], role: 'manager', assigned_site: siteId, phone: '', status: 'active' });
-      showToast(t('alerts.savedSuccessfully'), 'success');
+      const fullName = document.getElementById('inv-name').value.trim();
+      const email = document.getElementById('inv-email').value.trim().toLowerCase();
+      const phone = document.getElementById('inv-phone').value.trim();
+      const assignedSiteId = document.getElementById('inv-site').value;
+      const message = document.getElementById('inv-message').value.trim();
+      if (!fullName || !email || !phone || !assignedSiteId) { showAlert('alerts.requiredField'); return; }
+
+      const site = sitesData.find(s => s.id === assignedSiteId);
+      if (!site || site.organization_id !== currentOrganizationId) {
+        showToast(t('managers.invalidSite'), 'error'); return;
+      }
+
+      const existingMember = managersData.find(m => (m.email || '').toLowerCase() === email);
+      if (existingMember) { showToast(t('managers.alreadyMember'), 'error'); return; }
+      const existingInvite = invitationsData.find(i => (i.email || '').toLowerCase() === email && i.status === 'pending');
+      if (existingInvite) { showToast(t('managers.duplicateInvite'), 'error'); return; }
+
+      const cross = await getDocs(query(collection(db, 'profiles'), where('email', '==', email)));
+      if (!cross.empty) {
+        const p = cross.docs[0].data();
+        if (p.organization_id && p.organization_id !== currentOrganizationId) {
+          showToast(t('managers.otherOrg'), 'error');
+          return;
+        }
+      }
+
+      const rawToken = _generateToken();
+      const tokenHash = await _sha256Hex(rawToken);
+      const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
+
+      const invRef = await addDoc(collection(db, 'manager_invitations'), {
+        organization_id: currentOrganizationId,
+        invited_by: currentUser.uid,
+        invited_by_name: ownerProfile.full_name || 'Owner',
+        email, full_name: fullName, phone,
+        role: 'manager',
+        assigned_site_id: assignedSiteId,
+        message: message || '',
+        token_hash: tokenHash,
+        status: 'pending',
+        expires_at: expiresAt,
+        accepted_at: null,
+        accepted_by_uid: null,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      });
+
+      await addAuditLog({
+        action: 'manager_invited',
+        target_type: 'manager_invitation',
+        target_id: invRef.id,
+        meta: { email, full_name: fullName, assigned_site_id: assignedSiteId }
+      });
+
+      const acceptUrl = `${location.origin}/accept-invite.html?token=${rawToken}&inv=${invRef.id}`;
       closeModal();
-    } catch (err) { console.error(err); showToast(err.message || t('alerts.somethingWentWrong'), 'error'); }
+      showToast(t('managers.inviteSent'), 'success');
+      setTimeout(() => {
+        openModal(t('managers.inviteSentTitle'), `
+          <div class="space-y-3">
+            <p class="text-sm">${escapeHTML(email)} ${t('managers.wasInvitedAs')}</p>
+            <div class="bg-slate-50 rounded-lg p-3 text-sm">
+              <p><strong>${t('materials.site')}:</strong> ${escapeHTML(site.name)}</p>
+              <p><strong>${t('managers.expires')}:</strong> ${escapeHTML(formatDate(expiresAt))}</p>
+            </div>
+            <p class="text-xs text-slate-500">${t('managers.shareLink')}</p>
+            <div class="flex gap-2">
+              <input id="invite-link-input" readonly value="${escapeHTML(acceptUrl)}" class="flex-1 text-xs border rounded-lg p-2">
+              <button onclick="navigator.clipboard.writeText(document.getElementById('invite-link-input').value);showToast('Copied','success');" class="px-3 py-2 bg-emerald-600 text-white rounded-lg text-xs">${t('common.copy')}</button>
+            </div>
+            <button onclick="closeModal();showSection('invitations');" class="w-full bg-slate-800 text-white py-2.5 rounded-xl text-sm">${t('managers.viewInvitations')}</button>
+          </div>
+        `);
+      }, 350);
+    } catch (err) { console.error(err); showToast(t('alerts.somethingWentWrong'), 'error'); }
     finally { setButtonLoading(btn, false); }
   };
+
+  // =============== ASSIGNMENT + REMOVAL + DETAILS ===============
+  window.openAssignSiteModal = (managerId) => {
+    const mgr = managersData.find(m => m.id === managerId);
+    if (!mgr) return;
+    const siteOptions = sitesData
+      .filter(s => s.organization_id === currentOrganizationId)
+      .map(s => `<option value="${s.id}" ${s.id === mgr.assigned_site ? 'selected' : ''}>${s.name}</option>`).join('');
+    openModal(t('managers.assignSite'), `
+      <form onsubmit="handleAssignSite(event, '${managerId}')" class="space-y-4">
+        <p class="text-sm text-slate-600">${escapeHTML(mgr.full_name || mgr.email)}</p>
+        <select id="asg-site" class="w-full border rounded-lg p-3 text-sm" required>
+          <option value="">${t('dashboard.selectSite')}</option>
+          ${siteOptions}
+        </select>
+        <button type="submit" class="w-full bg-emerald-600 text-white py-3 rounded-xl">${t('common.save')}</button>
+      </form>
+    `);
+  };
+
+  window.handleAssignSite = async (e, managerId) => {
+    e.preventDefault();
+    const btn = getFormSubmitBtn(e.target);
+    setButtonLoading(btn, true);
+    try {
+      const newSiteId = document.getElementById('asg-site').value;
+      const mgr = managersData.find(m => m.id === managerId);
+      if (!mgr || mgr.organization_id !== currentOrganizationId) { showToast(t('common.accessDenied'), 'error'); return; }
+      const newSite = sitesData.find(s => s.id === newSiteId);
+      if (!newSite || newSite.organization_id !== currentOrganizationId) { showToast(t('common.accessDenied'), 'error'); return; }
+
+      const prevSiteId = mgr.assigned_site || null;
+      const now = new Date().toISOString();
+
+      if (prevSiteId) {
+        const prevActive = assignmentsData.find(a => a.manager_id === managerId && a.site_id === prevSiteId && a.status === 'active');
+        if (prevActive) {
+          await updateDoc(doc(db, 'manager_site_assignments', prevActive.id), {
+            status: 'ended', unassigned_at: now
+          });
+        }
+      }
+
+      await addDoc(collection(db, 'manager_site_assignments'), {
+        organization_id: currentOrganizationId,
+        manager_id: managerId,
+        site_id: newSiteId,
+        assigned_by: currentUser.uid,
+        assigned_at: now,
+        unassigned_at: null,
+        status: 'active'
+      });
+
+      await updateDoc(doc(db, 'profiles', managerId), {
+        assigned_site: newSiteId,
+        updated_at: now
+      });
+
+      await addAuditLog({
+        action: prevSiteId ? 'manager_reassigned' : 'manager_assigned',
+        target_type: 'manager',
+        target_id: managerId,
+        meta: { previous_site_id: prevSiteId, new_site_id: newSiteId }
+      });
+
+      closeModal();
+      showToast(t('alerts.updatedSuccessfully'), 'success');
+    } catch (err) { console.error(err); showToast(t('alerts.somethingWentWrong'), 'error'); }
+    finally { setButtonLoading(btn, false); }
+  };
+
+  window.viewManagerDetails = (id) => {
+    const m = managersData.find(x => x.id === id && x.organization_id === currentOrganizationId);
+    if (!m) return;
+    const sName = siteNameById(m.assigned_site) || t('managers.unassigned');
+    const history = assignmentsData.filter(a => a.manager_id === id).sort((a,b) => new Date(b.assigned_at) - new Date(a.assigned_at));
+    openModal(t('managers.details'), `
+      <div class="space-y-4">
+        <div class="flex items-center gap-3">
+          <div class="w-14 h-14 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-lg">
+            ${escapeHTML((m.full_name || '?').charAt(0).toUpperCase())}
+          </div>
+          <div>
+            <h3 class="font-bold text-lg">${escapeHTML(m.full_name || '—')}</h3>
+            <p class="text-sm text-slate-500">${escapeHTML(m.email || '')}</p>
+          </div>
+        </div>
+        <div class="bg-slate-50 rounded-xl p-3 text-sm space-y-1">
+          <p><strong>${t('managers.colRole')}:</strong> ${escapeHTML(m.role || 'manager')}</p>
+          <p><strong>${t('settings.phone')}:</strong> ${escapeHTML(m.phone || '—')}</p>
+          <p><strong>${t('managers.colSites')}:</strong> ${escapeHTML(sName)}</p>
+          <p><strong>${t('managers.colStatus')}:</strong> ${escapeHTML(m.organization_status || m.status || 'active')}</p>
+        </div>
+        <div>
+          <h4 class="font-semibold text-sm mb-2">${t('managers.assignmentHistory')}</h4>
+          <div class="space-y-1 max-h-48 overflow-y-auto">
+            ${history.length ? history.map(h => {
+              const sn = siteNameById(h.site_id) || '—';
+              return `<div class="text-xs border-b pb-1 flex justify-between">
+                <span>${escapeHTML(sn)}</span>
+                <span class="text-slate-500">${escapeHTML(formatDate(h.assigned_at))} → ${h.unassigned_at ? escapeHTML(formatDate(h.unassigned_at)) : t('managers.present')}</span>
+              </div>`;
+            }).join('') : `<p class="text-xs text-slate-400">${t('common.noDataAvailable')}</p>`}
+          </div>
+        </div>
+      </div>
+    `);
+  };
+
   window.removeManager = async (uid) => {
     if (!confirm(t('alerts.areYouSure'))) return;
-    try { await deleteDoc(doc(db, 'profiles', uid)); showToast(t('alerts.deletedSuccessfully'), 'success'); }
-    catch (err) { console.error(err); showToast(t('alerts.somethingWentWrong'), 'error'); }
+    const mgr = managersData.find(m => m.id === uid);
+    if (!mgr || mgr.organization_id !== currentOrganizationId) { showToast(t('common.accessDenied'), 'error'); return; }
+    try {
+      await updateDoc(doc(db, 'profiles', uid), {
+        organization_status: 'removed',
+        status: 'inactive',
+        updated_at: new Date().toISOString()
+      });
+      const active = assignmentsData.filter(a => a.manager_id === uid && a.status === 'active');
+      for (const a of active) {
+        await updateDoc(doc(db, 'manager_site_assignments', a.id), {
+          status: 'ended', unassigned_at: new Date().toISOString()
+        });
+      }
+      await addAuditLog({ action: 'manager_removed', target_type: 'manager', target_id: uid, meta: {} });
+      showToast(t('alerts.deletedSuccessfully'), 'success');
+    } catch (err) { console.error(err); showToast(t('alerts.somethingWentWrong'), 'error'); }
+  };
+
+  // =============== INVITATIONS DASHBOARD ===============
+  function renderInvitations(container) {
+    const orgInvites = invitationsData;
+    const filtered = orgInvites.filter(i => _invTab === 'all' ? true : i.status === _invTab);
+    const counts = {
+      all: orgInvites.length,
+      pending: orgInvites.filter(i => i.status === 'pending').length,
+      accepted: orgInvites.filter(i => i.status === 'accepted').length,
+      expired: orgInvites.filter(i => i.status === 'expired').length,
+      revoked: orgInvites.filter(i => i.status === 'revoked').length,
+    };
+    container.innerHTML = `
+      <h2 class="text-xl sm:text-2xl font-bold mb-6 flex items-center gap-2">
+        <iconify-icon icon="material-symbols:mail" class="text-emerald-600"></iconify-icon>
+        ${t('managers.invitationsTitle')}
+      </h2>
+      <div class="flex gap-2 p-1 bg-slate-200/60 rounded-xl mb-6 overflow-x-auto max-w-2xl">
+        ${['all','pending','accepted','expired','revoked'].map(tb => `
+          <button onclick="setInvTab('${tb}')" class="px-4 py-2 rounded-lg text-sm font-semibold whitespace-nowrap transition ${_invTab === tb ? 'tab-active' : 'tab-inactive'}">
+            ${t('managers.tab_' + tb)} (${counts[tb]})
+          </button>
+        `).join('')}
+      </div>
+      <div class="bg-white rounded-2xl border shadow-sm overflow-hidden">
+        ${filtered.length ? filtered.map(inv => {
+          const siteName = siteNameById(inv.assigned_site_id) || t('managers.unassigned');
+          const badge = {
+            pending: 'bg-amber-100 text-amber-700',
+            accepted: 'bg-emerald-100 text-emerald-700',
+            expired: 'bg-slate-200 text-slate-700',
+            revoked: 'bg-rose-100 text-rose-700'
+          }[inv.status] || 'bg-slate-100 text-slate-700';
+          return `
+            <div class="p-4 border-b flex flex-col sm:flex-row sm:items-center gap-3">
+              <div class="flex-1 min-w-0">
+                <p class="font-medium text-sm">${escapeHTML(inv.email)}</p>
+                <p class="text-xs text-slate-500">${escapeHTML(inv.full_name || '')} · ${escapeHTML(siteName)}</p>
+                <p class="text-xs text-slate-400 mt-1">
+                  ${t('managers.invitedOn')}: ${escapeHTML(formatDate(inv.created_at))} ·
+                  ${t('managers.expires')}: ${escapeHTML(formatDate(inv.expires_at))}
+                </p>
+              </div>
+              <span class="px-2.5 py-1 rounded-full text-[11px] font-semibold ${badge}">${inv.status}</span>
+              <div class="flex gap-2">
+                ${inv.status === 'pending' ? `
+                  <button onclick="resendInvitation('${inv.id}')" class="text-xs bg-slate-100 text-slate-700 px-3 py-1.5 rounded-lg">${t('managers.resend')}</button>
+                  <button onclick="revokeInvitation('${inv.id}')" class="text-xs bg-rose-50 text-rose-600 px-3 py-1.5 rounded-lg">${t('managers.revoke')}</button>
+                ` : ''}
+              </div>
+            </div>
+          `;
+        }).join('') : `<div class="p-8 text-center text-slate-500 text-sm">${t('managers.noInvitations')}</div>`}
+      </div>
+    `;
+  }
+
+  window.setInvTab = (tb) => { _invTab = tb; showSection('invitations'); };
+
+  window.resendInvitation = async (invId) => {
+    const inv = invitationsData.find(i => i.id === invId);
+    if (!inv || inv.organization_id !== currentOrganizationId) return;
+    try {
+      const rawToken = _generateToken();
+      const tokenHash = await _sha256Hex(rawToken);
+      const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
+      await updateDoc(doc(db, 'manager_invitations', invId), {
+        token_hash: tokenHash,
+        expires_at: expiresAt,
+        status: 'pending',
+        updated_at: new Date().toISOString()
+      });
+      await addAuditLog({ action: 'invitation_resent', target_type: 'manager_invitation', target_id: invId, meta: { email: inv.email } });
+      const acceptUrl = `${location.origin}/accept-invite.html?token=${rawToken}&inv=${invId}`;
+      openModal(t('managers.inviteSentTitle'), `
+        <p class="text-sm mb-3">${escapeHTML(inv.email)}</p>
+        <div class="flex gap-2">
+          <input id="resend-link-input" readonly value="${escapeHTML(acceptUrl)}" class="flex-1 text-xs border rounded-lg p-2">
+          <button onclick="navigator.clipboard.writeText(document.getElementById('resend-link-input').value);showToast('Copied','success');" class="px-3 py-2 bg-emerald-600 text-white rounded-lg text-xs">${t('common.copy')}</button>
+        </div>
+      `);
+    } catch (err) { console.error(err); showToast(t('alerts.somethingWentWrong'), 'error'); }
+  };
+
+  window.revokeInvitation = async (invId) => {
+    if (!confirm(t('alerts.areYouSure'))) return;
+    const inv = invitationsData.find(i => i.id === invId);
+    if (!inv || inv.organization_id !== currentOrganizationId) return;
+    try {
+      await updateDoc(doc(db, 'manager_invitations', invId), {
+        status: 'revoked', updated_at: new Date().toISOString()
+      });
+      await addAuditLog({ action: 'invitation_revoked', target_type: 'manager_invitation', target_id: invId, meta: { email: inv.email } });
+      showToast(t('alerts.updatedSuccessfully'), 'success');
+    } catch (err) { console.error(err); showToast(t('alerts.somethingWentWrong'), 'error'); }
+  };
+
+  window.viewInvitationDetails = (invId) => {
+    const inv = invitationsData.find(i => i.id === invId);
+    if (!inv) return;
+    const siteName = siteNameById(inv.assigned_site_id) || t('managers.unassigned');
+    openModal(t('managers.invitationDetails'), `
+      <div class="space-y-2 text-sm">
+        <p><strong>${t('managers.email')}:</strong> ${escapeHTML(inv.email)}</p>
+        <p><strong>${t('settings.fullName')}:</strong> ${escapeHTML(inv.full_name || '—')}</p>
+        <p><strong>${t('settings.phone')}:</strong> ${escapeHTML(inv.phone || '—')}</p>
+        <p><strong>${t('materials.site')}:</strong> ${escapeHTML(siteName)}</p>
+        <p><strong>${t('managers.invitedBy')}:</strong> ${escapeHTML(inv.invited_by_name || '—')}</p>
+        <p><strong>${t('managers.invitedOn')}:</strong> ${escapeHTML(formatDate(inv.created_at))}</p>
+        <p><strong>${t('managers.expires')}:</strong> ${escapeHTML(formatDate(inv.expires_at))}</p>
+        <p><strong>${t('managers.colStatus')}:</strong> ${escapeHTML(inv.status)}</p>
+      </div>
+    `);
   };
 
   // =============== GALLERY ===============
@@ -2423,6 +3171,7 @@ tbody tr:hover{background:#f1f5f9}
     const mySiteIds = new Set(sitesData.map(s => s.id));
     const withHistory = new Set(conversationsData.map(c => c.manager_id));
     return managersData.filter(m => {
+      if (m.organization_id !== currentOrganizationId) return false;
       if (m.status && m.status !== 'active') return false;
       const assignedToMySite = m.assigned_site && mySiteIds.has(m.assigned_site);
       return assignedToMySite || withHistory.has(m.id);
@@ -2537,7 +3286,7 @@ tbody tr:hover{background:#f1f5f9}
     let snap;
     try { snap = await getDoc(ref); } catch (e) { throw new Error(t('messages.notAuthorized')); }
     if (!snap.exists()) {
-      const payload = { type: 'owner_manager', owner_id: currentUser.uid, manager_id: managerId, participants: [currentUser.uid, managerId], created_at: new Date().toISOString(), updated_at: new Date().toISOString(), last_message: null, unread: { [currentUser.uid]: 0, [managerId]: 0 }, user_settings: { [currentUser.uid]: { pinned: false, muted: false, archived: false }, [managerId]: { pinned: false, muted: false, archived: false } } };
+      const payload = { type: 'owner_manager', owner_id: currentUser.uid, manager_id: managerId, organization_id: currentOrganizationId, participants: [currentUser.uid, managerId], created_at: new Date().toISOString(), updated_at: new Date().toISOString(), last_message: null, unread: { [currentUser.uid]: 0, [managerId]: 0 }, user_settings: { [currentUser.uid]: { pinned: false, muted: false, archived: false }, [managerId]: { pinned: false, muted: false, archived: false } } };
       try { await setDoc(ref, payload); }
       catch (err) { const again = await getDoc(ref); if (!again.exists()) throw err; }
     }
