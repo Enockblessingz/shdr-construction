@@ -367,7 +367,7 @@ tbody tr:hover{background:#f1f5f9}
   // =================================================================
   const translations = {
     en: {
-      common:{comingSoon:"Coming Soon",save:"Save",cancel:"Cancel",add:"Add",delete:"Delete",edit:"Edit",close:"Close",export:"Export",loading:"Loading...",error:"Error",search:"Search",view:"View",copy:"Copy",areYouSure:"Are you sure?",cannotUndo:"This action cannot be undone",savedSuccessfully:"Saved successfully",updatedSuccessfully:"Updated successfully",deletedSuccessfully:"Deleted successfully",somethingWentWrong:"Something went wrong",requiredField:"Required field",invalidValue:"Invalid value",noDataAvailable:"No data available",accessDenied:"Access denied",subscriptionRequired:"Subscription required",sessionExpired:"Session expired",confirmDelete:"Confirm Delete"},
+      common:{comingSoon:"Coming Soon",save:"Save",cancel:"Cancel",add:"Add",delete:"Delete",edit:"Edit",close:"Close",export:"Export",loading:"Loading...",error:"Error",search:"Search",view:"View",copy:"Copy",areYouSure:"Are you sure?",cannotUndo:"This action cannot be undone",savedSuccessfully:"Saved successfully",updatedSuccessfully:"Updated successfully",deletedSuccessfully:"Deleted successfully",somethingWentWrong:"Something went wrong",requiredField:"Required field",invalidValue:"Invalid value",noDataAvailable:"No data available",noChange:"No change",accessDenied:"Access denied",subscriptionRequired:"Subscription required",sessionExpired:"Session expired",confirmDelete:"Confirm Delete"},
       navigation:{dashboard:"Dashboard",sites:"Sites",materials:"Materials",stock:"Stock",workers:"Workers",progress:"Progress",reports:"Reports",finances:"Finances",managers:"Managers",invitations:"Invitations",messages:"Messages",gallery:"Gallery",officeHub:"Office Hub",settings:"Settings",notifications:"Notifications",logout:"Sign Out",ownerPanel:"Owner's Panel"},
       messages:{title:"Messages",searchPlaceholder:"Search managers...",noManagers:"No managers assigned to your sites yet.",noSearchResults:"No managers match your search.",selectConversation:"Select a manager to start a private conversation",emptyThread:"No messages yet. Say hello 👋",inputPlaceholder:"Type a message...",send:"Send",online:"Online",offline:"Offline",lastSeen:"Last seen",unread:"Unread",you:"You",site:"Site",back:"Back",yesterday:"Yesterday",notAuthorized:"You are not authorized to view this conversation.",sentTo:"Conversation with {name}",
       attach:"Attach image",emoji:"Emoji",share:"Share SHDR record",shareMaterial:"Share Material",shareWorker:"Share Worker",shareReport:"Share Report",cancelReply:"Cancel reply",replyingTo:"Replying to {name}",
@@ -384,9 +384,9 @@ tbody tr:hover{background:#f1f5f9}
       sites:{title:"Your Sites",addSite:"Add Site",editSite:"Edit Site",siteName:"Site Name",location:"Location",client:"Client",startDate:"Start Date",endDate:"End Date",budget:"Budget",status:"Status",markFinished:"Mark Finished",noSites:"No sites yet",district:"District",sector:"Sector",saveSite:"Save Site",deleteSite:"Delete Site"},
       materials:{title:"Materials",requisitions:"Requisitions",reqNumber:"Req. ID",site:"Site",requestedBy:"Requested By",requestDate:"Date Requested",requiredDate:"Required Date",priority:"Priority",status:"Status",actions:"Actions",pending:"Pending",urgent:"Urgent",approved:"Approved",rejected:"Rejected",partiallySupplied:"Partially Supplied",suppliedStatus:"Supplied",normal:"Normal",view:"View",approve:"Approve",reject:"Reject",supply:"Supply",noRequisitions:"No requisitions found.",requested:"Requested",supplied:"Supplied",remaining:"Remaining",available:"Available",material:"Material",unit:"Unit",notes:"Notes",quantityUsed:"Qty Used",unitCost:"Unit Cost",totalAmount:"Total Amount",availableStock:"Available Stock",rejectionReason:"Rejection Reason",noMaterials:"No materials recorded for this site."},
       stock:{title:"Stock Overview",noStock:"No stock records found.",info:"Managers will add stock when they receive materials at sites.",material:"Material",quantity:"Quantity",unitCost:"Unit Cost",value:"Value",status:"Status",updated:"Updated",min:"Min",normal:"Normal",low:"Low Stock",out:"Out of Stock",recentTransactions:"Recent Stock Transactions",date:"Date",site:"Site",type:"Type",qty:"Qty",notes:"Notes"},
-      workers:{title:"Workers",addWorker:"Add Position",role:"Role",site:"Site",salaryType:"Salary Type",estCost:"Est. Cost",actions:"Actions",noPositions:"No positions defined.",actualWorkers:"Actual Workers Assigned by Managers",search:"Search by name...",noAssigned:"No workers assigned by managers for this site.",fullName:"Full Name",phone:"Phone Number",salary:"Salary",update:"Update Worker",viewDetails:"Worker Details",position:"Role",addPosition:"Add Worker Position",roleName:"Role name",allSites:"All Sites",daily:"Daily",monthly:"Monthly",estimatedCost:"Estimated salary/cost",savePosition:"Save Position",updatePosition:"Update Position"},
+      workers:{title:"Workers",addWorker:"Add Position",role:"Role",site:"Site",salaryType:"Salary Type",estCost:"Est. Cost",actions:"Actions",noPositions:"No positions defined.",actualWorkers:"Actual Workers Assigned by Managers",search:"Search by name...",noAssigned:"No workers assigned by managers for this site.",fullName:"Full Name",phone:"Phone Number",salary:"Salary",update:"Update Worker",viewDetails:"Worker Details",position:"Role",addPosition:"Add Worker Position",roleName:"Role name",allSites:"All Sites",daily:"Daily",monthly:"Monthly",estimatedCost:"Estimated salary/cost",savePosition:"Save Position",updatePosition:"Update Position",attendanceLogs:"Attendance Logs"},
       progress:{title:"Progress Tasks",addTask:"Add Task",task:"Task",start:"Start",end:"End",status:"Status",pending:"Pending",completed:"Completed",noTasks:"No tasks yet.",addTaskModal:"Add Progress Task",taskName:"Task name",selectSite:"Select site",periodNumber:"Period number",days:"Days",weeks:"Weeks",saveTask:"Save Task",editTask:"Edit Progress Task"},
-      reports:{title:"Generate Reports",general:"General",payroll:"Worker Payroll",stockReport:"Stock",selectSite:"Select Site",allSites:"All Sites",department:"Department",allDepartments:"All Departments",startDate:"Start Date",endDate:"End Date",exportCSV:"Export CSV",printPDF:"Print / PDF",noAttendance:"No attendance records found.",info:"Please ensure managers have recorded attendance for the workers.",searchWorker:"Search worker...",position:"Position",allPositions:"All Positions",paymentStatus:"Payment Status",paid:"Paid",unpaid:"Unpaid",allPayments:"All (Unpaid)",totalWorkers:"Total Workers",workerDays:"Worker-Days",totalPayroll:"Total Payroll",avgDaily:"Avg. Daily Labor Cost",worker:"Worker",daysWorked:"Days Worked",dailyRate:"Daily Rate",totalPayable:"Total Payable",total:"Total"},
+      reports:{title:"Generate Reports",general:"General",payroll:"Worker Payroll",stockReport:"Stock",selectSite:"Select Site",allSites:"All Sites",department:"Department",allDepartments:"All Departments",startDate:"Start Date",endDate:"End Date",exportCSV:"Export CSV",printPDF:"Print / PDF",noAttendance:"No attendance records found.",info:"Please ensure managers have recorded attendance for the workers.",searchWorker:"Search worker...",position:"Position",allPositions:"All Positions",paymentStatus:"Payment Status",paid:"Paid",unpaid:"Unpaid",allPayments:"All (Unpaid)",totalWorkers:"Total Workers",workerDays:"Worker-Days",totalPayroll:"Total Payroll",avgDaily:"Avg. Daily Labor Cost",worker:"Worker",daysWorked:"Days Worked",dailyRate:"Daily Rate",totalPayable:"Total Payable",total:"Total",labels:{period:"Period"}},
       finances:{title:"Finances",info:"Site Info",overview:"Financial Overview",budget:"Budget",totalSpent:"Total Spent",materialsCost:"Materials Cost",workersCost:"Workers Cost",remaining:"Remaining",dailyAvg:"Daily average",monthlyAvg:"Monthly average",addBudget:"Add Budget",newBudget:"New Budget Amount",updateBudget:"Update Budget",exceeded:"Budget exceeded!",costControl:"Cost control needed."},
       managers:{
         title:"Managers",
@@ -436,7 +436,7 @@ tbody tr:hover{background:#f1f5f9}
       status:{active:"Active",completed:"Completed",pending:"Pending",cancelled:"Cancelled",notStarted:"Not Started",inProgress:"In Progress",finished:"Finished"}
     },
     rw: {
-      common:{comingSoon:"Biraza",save:"Bika",cancel:"Hagarika",add:"Ongeraho",delete:"Siba",edit:"Hindura",close:"Funga",export:"Sohora",loading:"Birimo gutegura...",error:"Ikibazo",search:"Shakisha",view:"Reba",copy:"Koporora",areYouSure:"Urabyemeza?",cannotUndo:"Ibi ntibishobora guhindurwa",savedSuccessfully:"Byabitswe neza",updatedSuccessfully:"Byavuguruwe neza",deletedSuccessfully:"Byasibwe neza",somethingWentWrong:"Hari ikitagenze neza",requiredField:"Ibi birakenewe",invalidValue:"Agaciro katariyo",noDataAvailable:"Nta makuru aboneka",accessDenied:"Ntabwo ureherewe",confirmDelete:"Emeza gusiba"},
+      common:{comingSoon:"Biraza",save:"Bika",cancel:"Hagarika",add:"Ongeraho",delete:"Siba",edit:"Hindura",close:"Funga",export:"Sohora",loading:"Birimo gutegura...",error:"Ikibazo",search:"Shakisha",view:"Reba",copy:"Koporora",areYouSure:"Urabyemeza?",cannotUndo:"Ibi ntibishobora guhindurwa",savedSuccessfully:"Byabitswe neza",updatedSuccessfully:"Byavuguruwe neza",deletedSuccessfully:"Byasibwe neza",somethingWentWrong:"Hari ikitagenze neza",requiredField:"Ibi birakenewe",invalidValue:"Agaciro katariyo",noDataAvailable:"Nta makuru aboneka",noChange:"Nta mpinduka",accessDenied:"Ntabwo ureherewe",confirmDelete:"Emeza gusiba"},
       navigation:{dashboard:"Imbonerahamwe",sites:"Ibibanza",materials:"Ibikoresho",stock:"Imbuganyuro",workers:"Abakozi",progress:"Ibitekerezo",reports:"Raporo",finances:"Imari",managers:"Abayobozi",invitations:"Ubutumire",messages:"Ubutumwa",gallery:"Amafoto",officeHub:"Office Hub",settings:"Igenamiterere",notifications:"Imenyesha",logout:"Sohoka",ownerPanel:"Ipaneli ya nyir'ubwite"},
       messages:{title:"Ubutumwa",searchPlaceholder:"Shakisha abayobozi...",noManagers:"Nta bayobozi bagenwe ku bibanza byawe.",noSearchResults:"Nta muyobozi uhuza n'ubushakashatsi.",selectConversation:"Hitamo umuyobozi gutangira ikiganiro bwite",emptyThread:"Nta butumwa burahari. Vuga muraho 👋",inputPlaceholder:"Andika ubutumwa...",send:"Ohereza",online:"Kuri interineti",offline:"Nta murongo",lastSeen:"Byagarutse",unread:"Ntibisomwe",you:"Wowe",site:"Igibanza",back:"Subira",yesterday:"Ejo hashize",notAuthorized:"Ntabwo ureherewe kureba iki kiganiro.",sentTo:"Ikiganiro na {name}",
       attach:"Ohereza ifoto",emoji:"Emoji",share:"Sangiza inyandiko",shareMaterial:"Sangiza Ibikoresho",shareWorker:"Sangiza Umukozi",shareReport:"Sangiza Raporo",cancelReply:"Hagarika gusubiza",replyingTo:"Gusubiza {name}",
@@ -453,9 +453,9 @@ tbody tr:hover{background:#f1f5f9}
       sites:{title:"Ibibanza byawe",addSite:"Ongeraho igibanza",editSite:"Hindura igibanza",siteName:"Izina",location:"Aho biherereye",client:"Umukiriya",startDate:"Itariki yo gutangira",endDate:"Itariki yo kurangira",budget:"Ingengo y'imari",status:"Imiterere",markFinished:"Rangiza",noSites:"Nta bibanza birahari",district:"Akarere",sector:"Umurenge",saveSite:"Bika",deleteSite:"Siba"},
       materials:{title:"Ibikoresho",requisitions:"Ubusabe",reqNumber:"Nomero",site:"Igibanza",requestedBy:"Wasabye",requestDate:"Itariki yo Gusaba",requiredDate:"Itariki Ikenewe",priority:"Ubwihutirwa",status:"Imiterere",actions:"Ibikorwa",pending:"Bitegereje",urgent:"Byihutirwa",approved:"Byemewe",rejected:"Byanze",partiallySupplied:"Igice",suppliedStatus:"Byatanzwe",normal:"Bisanzwe",view:"Reba",approve:"Emeza",reject:"Anza",supply:"Tanga",noRequisitions:"Nta busabe.",requested:"Basabwe",supplied:"Byatanzwe",remaining:"Bisigaye",available:"Biboneka",material:"Ibikoresho",unit:"Igice",notes:"Ibisobanuro",quantityUsed:"Umubare",unitCost:"Igiciro",totalAmount:"Amafaranga",availableStock:"Biboneka",rejectionReason:"Impamvu",noMaterials:"Nta bikoresho."},
       stock:{title:"Imbuganyuro",noStock:"Nta mbuganyuro iboneka.",info:"Abayobozi bazongeraho ibikoresho iyo bibonye.",material:"Ibikoresho",quantity:"Umubare",unitCost:"Igiciro",value:"Agaciro",status:"Imiterere",updated:"Byavuguruwe",min:"Ubugabanyiro",normal:"Bisanzwe",low:"Bike",out:"Byashaje",recentTransactions:"Ibikorwa bishya",date:"Itariki",site:"Igibanza",type:"Ubwoko",qty:"Umubare",notes:"Ibisobanuro"},
-      workers:{title:"Abakozi",addWorker:"Ongeraho umwanya",role:"Umwanya",site:"Igibanza",salaryType:"Ubwoko bw'umushahara",estCost:"Igiciro gike",actions:"Ibikorwa",noPositions:"Nta mwanya.",actualWorkers:"Abakozi bagenzwe n'abayobozi",search:"Shakisha izina...",noAssigned:"Nta bakozi.",fullName:"Amazina",phone:"Telefoni",salary:"Umushahara",update:"Vugurura",viewDetails:"Ibisobanuro",position:"Umwanya",addPosition:"Ongeraho umwanya",roleName:"Izina ry'umwanya",allSites:"Ibibanza byose",daily:"Buri munsi",monthly:"Buri kwezi",estimatedCost:"Umushahara uganijwe",savePosition:"Bika",updatePosition:"Vugurura"},
+      workers:{title:"Abakozi",addWorker:"Ongeraho umwanya",role:"Umwanya",site:"Igibanza",salaryType:"Ubwoko bw'umushahara",estCost:"Igiciro gike",actions:"Ibikorwa",noPositions:"Nta mwanya.",actualWorkers:"Abakozi bagenzwe n'abayobozi",search:"Shakisha izina...",noAssigned:"Nta bakozi.",fullName:"Amazina",phone:"Telefoni",salary:"Umushahara",update:"Vugurura",viewDetails:"Ibisobanuro",position:"Umwanya",addPosition:"Ongeraho umwanya",roleName:"Izina ry'umwanya",allSites:"Ibibanza byose",daily:"Buri munsi",monthly:"Buri kwezi",estimatedCost:"Umushahara uganijwe",savePosition:"Bika",updatePosition:"Vugurura",attendanceLogs:"Inyandiko z'Ubwitabire"},
       progress:{title:"Imirimo",addTask:"Ongeraho umurimo",task:"Umurimo",start:"Tangira",end:"Rangira",status:"Imiterere",pending:"Bitegereje",completed:"Byarangiye",noTasks:"Nta mirimo.",addTaskModal:"Ongeraho umurimo",taskName:"Izina",selectSite:"Hitamo igibanza",periodNumber:"Umubare",days:"Iminsi",weeks:"Ibyumweru",saveTask:"Bika",editTask:"Hindura"},
-      reports:{title:"Raporo",general:"Rusange",payroll:"Umushahara",stockReport:"Imbuganyuro",selectSite:"Hitamo Igibanza",allSites:"Ibibanza Byose",department:"Ishami",allDepartments:"Amashami Yose",startDate:"Itariki yo gutangira",endDate:"Itariki yo kurangira",exportCSV:"Sohora CSV",printPDF:"Capa / PDF",noAttendance:"Nta makuru.",info:"Nyamuneka menya neza.",searchWorker:"Shakisha umukozi...",position:"Umwanya",allPositions:"Imiryango Yose",paymentStatus:"Imiterere y'ubwishyu",paid:"Byishyuwe",unpaid:"Bitishyuwe",allPayments:"Byose",totalWorkers:"Abakozi Bose",workerDays:"Iminsi",totalPayroll:"Umushahara Wose",avgDaily:"Igiciro cy'umunsi",worker:"Umukozi",daysWorked:"Iminsi",dailyRate:"Umushahara",totalPayable:"Amafaranga",total:"Igiteranyo"},
+      reports:{title:"Raporo",general:"Rusange",payroll:"Umushahara",stockReport:"Imbuganyuro",selectSite:"Hitamo Igibanza",allSites:"Ibibanza Byose",department:"Ishami",allDepartments:"Amashami Yose",startDate:"Itariki yo gutangira",endDate:"Itariki yo kurangira",exportCSV:"Sohora CSV",printPDF:"Capa / PDF",noAttendance:"Nta makuru.",info:"Nyamuneka menya neza.",searchWorker:"Shakisha umukozi...",position:"Umwanya",allPositions:"Imiryango Yose",paymentStatus:"Imiterere y'ubwishyu",paid:"Byishyuwe",unpaid:"Bitishyuwe",allPayments:"Byose",totalWorkers:"Abakozi Bose",workerDays:"Iminsi",totalPayroll:"Umushahara Wose",avgDaily:"Igiciro cy'umunsi",worker:"Umukozi",daysWorked:"Iminsi",dailyRate:"Umushahara",totalPayable:"Amafaranga",total:"Igiteranyo",labels:{period:"Igihe"}},
       finances:{title:"Imari",info:"Amakuru",overview:"Imbonerahamwe",budget:"Ingengo",totalSpent:"Yakoreshejwe",materialsCost:"Ibikoresho",workersCost:"Abakozi",remaining:"Isigazwa",dailyAvg:"Buri munsi",monthlyAvg:"Buri kwezi",addBudget:"Ongeraho",newBudget:"Nshya",updateBudget:"Vugurura",exceeded:"Yarengwe!",costControl:"Birakenewe."},
       managers:{
         title:"Abayobozi",
@@ -505,7 +505,7 @@ tbody tr:hover{background:#f1f5f9}
       status:{active:"Bikora",completed:"Byarangiye",pending:"Bitegereje",cancelled:"Byahagaritswe",notStarted:"Ntibitangira",inProgress:"Bikorwa",finished:"Byarangiye"}
     },
     fr: {
-      common:{comingSoon:"Bientôt disponible",save:"Enregistrer",cancel:"Annuler",add:"Ajouter",delete:"Supprimer",edit:"Modifier",close:"Fermer",export:"Exporter",loading:"Chargement...",error:"Erreur",search:"Rechercher",view:"Voir",copy:"Copier",areYouSure:"Êtes-vous sûr ?",cannotUndo:"Irréversible",savedSuccessfully:"Enregistré",updatedSuccessfully:"Mis à jour",deletedSuccessfully:"Supprimé",somethingWentWrong:"Erreur",requiredField:"Champ requis",invalidValue:"Valeur invalide",noDataAvailable:"Aucune donnée",accessDenied:"Refusé",confirmDelete:"Confirmer"},
+      common:{comingSoon:"Bientôt disponible",save:"Enregistrer",cancel:"Annuler",add:"Ajouter",delete:"Supprimer",edit:"Modifier",close:"Fermer",export:"Exporter",loading:"Chargement...",error:"Erreur",search:"Rechercher",view:"Voir",copy:"Copier",areYouSure:"Êtes-vous sûr ?",cannotUndo:"Irréversible",savedSuccessfully:"Enregistré",updatedSuccessfully:"Mis à jour",deletedSuccessfully:"Supprimé",somethingWentWrong:"Erreur",requiredField:"Champ requis",invalidValue:"Valeur invalide",noDataAvailable:"Aucune donnée",noChange:"Aucun changement",accessDenied:"Refusé",confirmDelete:"Confirmer"},
       navigation:{dashboard:"Tableau de bord",sites:"Sites",materials:"Matériaux",stock:"Stock",workers:"Ouvriers",progress:"Progrès",reports:"Rapports",finances:"Finances",managers:"Gestionnaires",invitations:"Invitations",messages:"Messages",gallery:"Galerie",officeHub:"Bureau",settings:"Paramètres",notifications:"Notifications",logout:"Déconnexion",ownerPanel:"Panneau du propriétaire"},
       messages:{title:"Messages",searchPlaceholder:"Rechercher...",noManagers:"Aucun gestionnaire.",noSearchResults:"Aucun résultat.",selectConversation:"Sélectionnez un gestionnaire",emptyThread:"Aucun message. Dites bonjour 👋",inputPlaceholder:"Tapez un message...",send:"Envoyer",online:"En ligne",offline:"Hors ligne",lastSeen:"Vu",unread:"Non lu",you:"Vous",site:"Site",back:"Retour",yesterday:"Hier",notAuthorized:"Non autorisé.",sentTo:"Conversation avec {name}",
       attach:"Joindre image",emoji:"Emoji",share:"Partager",shareMaterial:"Partager Matériau",shareWorker:"Partager Ouvrier",shareReport:"Partager Rapport",cancelReply:"Annuler réponse",replyingTo:"Réponse à {name}",
@@ -522,9 +522,9 @@ tbody tr:hover{background:#f1f5f9}
       sites:{title:"Vos sites",addSite:"Ajouter",editSite:"Modifier",siteName:"Nom",location:"Emplacement",client:"Client",startDate:"Début",endDate:"Fin",budget:"Budget",status:"Statut",markFinished:"Marquer",noSites:"Aucun site",district:"District",sector:"Secteur",saveSite:"Enregistrer",deleteSite:"Supprimer"},
       materials:{title:"Matériaux",requisitions:"Réquisitions",reqNumber:"N°",site:"Site",requestedBy:"Demandé par",requestDate:"Date demande",requiredDate:"Date requise",priority:"Priorité",status:"Statut",actions:"Actions",pending:"En attente",urgent:"Urgent",approved:"Approuvé",rejected:"Rejeté",partiallySupplied:"Partiel",suppliedStatus:"Fourni",normal:"Normal",view:"Voir",approve:"Approuver",reject:"Rejeter",supply:"Fournir",noRequisitions:"Aucune réquisition.",requested:"Demandé",supplied:"Fourni",remaining:"Restant",available:"Disponible",material:"Matériau",unit:"Unité",notes:"Notes",quantityUsed:"Qté",unitCost:"Coût",totalAmount:"Total",availableStock:"Disponible",rejectionReason:"Motif",noMaterials:"Aucun matériau."},
       stock:{title:"Stock",noStock:"Aucun stock.",info:"Les gestionnaires ajouteront du stock.",material:"Matériau",quantity:"Quantité",unitCost:"Coût",value:"Valeur",status:"Statut",updated:"Mis à jour",min:"Min",normal:"Normal",low:"Faible",out:"Épuisé",recentTransactions:"Transactions",date:"Date",site:"Site",type:"Type",qty:"Qté",notes:"Notes"},
-      workers:{title:"Ouvriers",addWorker:"Ajouter",role:"Rôle",site:"Site",salaryType:"Type salaire",estCost:"Coût",actions:"Actions",noPositions:"Aucun poste.",actualWorkers:"Ouvriers assignés",search:"Rechercher...",noAssigned:"Aucun ouvrier.",fullName:"Nom",phone:"Téléphone",salary:"Salaire",update:"Mettre à jour",viewDetails:"Détails",position:"Rôle",addPosition:"Ajouter poste",roleName:"Nom du rôle",allSites:"Tous",daily:"Journalier",monthly:"Mensuel",estimatedCost:"Salaire",savePosition:"Enregistrer",updatePosition:"Mettre à jour"},
+      workers:{title:"Ouvriers",addWorker:"Ajouter",role:"Rôle",site:"Site",salaryType:"Type salaire",estCost:"Coût",actions:"Actions",noPositions:"Aucun poste.",actualWorkers:"Ouvriers assignés",search:"Rechercher...",noAssigned:"Aucun ouvrier.",fullName:"Nom",phone:"Téléphone",salary:"Salaire",update:"Mettre à jour",viewDetails:"Détails",position:"Rôle",addPosition:"Ajouter poste",roleName:"Nom du rôle",allSites:"Tous",daily:"Journalier",monthly:"Mensuel",estimatedCost:"Salaire",savePosition:"Enregistrer",updatePosition:"Mettre à jour",attendanceLogs:"Feuilles de présence"},
       progress:{title:"Tâches",addTask:"Ajouter",task:"Tâche",start:"Début",end:"Fin",status:"Statut",pending:"En attente",completed:"Terminé",noTasks:"Aucune tâche.",addTaskModal:"Ajouter",taskName:"Nom",selectSite:"Site",periodNumber:"Période",days:"Jours",weeks:"Semaines",saveTask:"Enregistrer",editTask:"Modifier"},
-      reports:{title:"Rapports",general:"Général",payroll:"Paie",stockReport:"Stock",selectSite:"Site",allSites:"Tous",department:"Département",allDepartments:"Tous",startDate:"Début",endDate:"Fin",exportCSV:"CSV",printPDF:"PDF",noAttendance:"Aucune présence.",info:"Vérifiez la présence.",searchWorker:"Rechercher...",position:"Poste",allPositions:"Tous",paymentStatus:"Paiement",paid:"Payé",unpaid:"Non payé",allPayments:"Tous",totalWorkers:"Ouvriers",workerDays:"Jours",totalPayroll:"Paie",avgDaily:"Moyenne",worker:"Ouvrier",daysWorked:"Jours",dailyRate:"Taux",totalPayable:"Total",total:"Total"},
+      reports:{title:"Rapports",general:"Général",payroll:"Paie",stockReport:"Stock",selectSite:"Site",allSites:"Tous",department:"Département",allDepartments:"Tous",startDate:"Début",endDate:"Fin",exportCSV:"CSV",printPDF:"PDF",noAttendance:"Aucune présence.",info:"Vérifiez la présence.",searchWorker:"Rechercher...",position:"Poste",allPositions:"Tous",paymentStatus:"Paiement",paid:"Payé",unpaid:"Non payé",allPayments:"Tous",totalWorkers:"Ouvriers",workerDays:"Jours",totalPayroll:"Paie",avgDaily:"Moyenne",worker:"Ouvrier",daysWorked:"Jours",dailyRate:"Taux",totalPayable:"Total",total:"Total",labels:{period:"Période"}},
       finances:{title:"Finances",info:"Info",overview:"Aperçu",budget:"Budget",totalSpent:"Dépensé",materialsCost:"Matériaux",workersCost:"Ouvriers",remaining:"Restant",dailyAvg:"Moyenne jour",monthlyAvg:"Moyenne mois",addBudget:"Ajouter",newBudget:"Nouveau",updateBudget:"Mettre à jour",exceeded:"Dépassé!",costControl:"Contrôle requis."},
       managers:{
         title:"Gestionnaires",
@@ -751,6 +751,19 @@ tbody tr:hover{background:#f1f5f9}
     toast._hideTimer = setTimeout(() => { toast.classList.remove('show'); }, 5000);
   }
 
+  // QA-001: Greeting auto-refresh while on dashboard
+  setInterval(() => {
+    if (currentSection !== 'dashboard') return;
+    const el = document.getElementById('greeting-h1');
+    if (!el) return;
+    const h = new Date().getHours();
+    const k = h >= 0 && h < 12 ? 'dashboard.goodMorning'
+            : h >= 12 && h < 17 ? 'dashboard.goodAfternoon'
+            : 'dashboard.goodEvening';
+    const newText = t(k, { name: el.dataset.name || '' });
+    if (el.textContent !== newText) el.textContent = newText;
+  }, 60000);
+
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
       const overlay = document.getElementById('modal-overlay');
@@ -778,11 +791,12 @@ tbody tr:hover{background:#f1f5f9}
       try {
         const profileRef = doc(db, 'profiles', user.uid);
         let snap = await getDoc(profileRef);
-        let orgId;
+        let profile = snap.exists() ? snap.data() : null;
+
+        // ── CASE 1: New user → create profile + organization
         if (!snap.exists()) {
-          // Bootstrap: create organization for the new owner
           const orgRef = doc(collection(db, 'organizations'));
-          orgId = orgRef.id;
+          const orgId = orgRef.id;
           await setDoc(orgRef, {
             name: getCompanyDetails().name,
             owner_id: user.uid,
@@ -800,14 +814,53 @@ tbody tr:hover{background:#f1f5f9}
             created_at: new Date().toISOString()
           });
           snap = await getDoc(profileRef);
+          profile = snap.data();
         }
-        ownerProfile = snap.data() || {};
-        currentOrganizationId = ownerProfile.organization_id || null;
-        if (!currentOrganizationId) {
+
+        // ── CASE 2: Existing profile but missing organization_id → bootstrap org + link
+        if (snap.exists() && !profile.organization_id) {
+          let orgId = null;
+          try {
+            const ownedOrgs = await getDocs(query(collection(db, 'organizations'), where('owner_id', '==', user.uid)));
+            if (!ownedOrgs.empty) orgId = ownedOrgs.docs[0].id;
+          } catch (e) { console.warn('org lookup failed:', e); }
+
+          if (!orgId) {
+            const orgRef = doc(collection(db, 'organizations'));
+            orgId = orgRef.id;
+            await setDoc(orgRef, {
+              name: getCompanyDetails().name,
+              owner_id: user.uid,
+              created_at: new Date().toISOString(),
+              updated_at: new Date().toISOString(),
+              settings: { default_role: 'manager' }
+            });
+          }
+
+          await updateDoc(profileRef, {
+            organization_id: orgId,
+            organization_status: profile.organization_status || 'active',
+            role: profile.role || 'owner',
+            updated_at: new Date().toISOString()
+          });
+          snap = await getDoc(profileRef);
+          profile = snap.data();
+          showToast('Organization configured successfully.', 'success');
+        }
+
+        // ── Safety guard
+        if (!profile || !profile.organization_id) {
           showError('Organization is not configured for this account. Please contact support.');
           return;
         }
+
+        ownerProfile = profile;
+        currentOrganizationId = profile.organization_id;
         updateProfileUI(ownerProfile);
+
+        // QA-005: Auto-migrate legacy data on first owner login
+        await autoMigrateOrganization(currentOrganizationId);
+
         onSnapshot(profileRef, (s) => {
           if (s.exists()) {
             ownerProfile = s.data();
@@ -816,13 +869,62 @@ tbody tr:hover{background:#f1f5f9}
             if (currentSection === 'settings') populateSettingsForms();
           }
         }, err => console.warn('profile snapshot error:', err));
+
         attachListeners();
         attachInvitationsListener();
+        updateInvitationsBadge();   // QA-006
         attachMessagingListeners();
         showSection('dashboard');
-      } catch (err) { console.error(err); showError(t('alerts.somethingWentWrong')); }
+      } catch (err) {
+        console.error('Auth bootstrap error:', err);
+        showError('Failed to initialize your account. Please try again or contact support.');
+      }
     });
   });
+
+  // QA-005: Idempotent migration of legacy sites/managers to the current organization
+  async function autoMigrateOrganization(orgId) {
+    if (!orgId || !currentUser) return;
+    try {
+      const sitesSnap = await getDocs(query(collection(db, 'sites'), where('owner_id', '==', currentUser.uid)));
+      const batch = writeBatch(db);
+      let taggedSites = 0;
+      sitesSnap.docs.forEach(d => {
+        if (!d.data().organization_id) { batch.update(d.ref, { organization_id: orgId }); taggedSites++; }
+      });
+      if (taggedSites) await batch.commit();
+
+      const nameMap = {};
+      sitesSnap.docs.forEach(d => {
+        const n = (d.data().name || '').trim().toLowerCase();
+        if (n) nameMap[n] = d.id;
+      });
+
+      let mgrSnap;
+      try { mgrSnap = await getDocs(collection(db, 'profiles')); } catch(e) { mgrSnap = null; }
+      if (mgrSnap) {
+        const batch2 = writeBatch(db);
+        let taggedMgrs = 0;
+        for (const docSnap of mgrSnap.docs) {
+          const p = docSnap.data();
+          if (p.role !== 'manager') continue;
+          if (p.organization_id) continue;
+          const raw = (p.assigned_site || '').trim();
+          const matchedId = raw ? nameMap[raw.toLowerCase()] : null;
+          const patch = { organization_id: orgId };
+          if (matchedId) patch.assigned_site = matchedId;
+          else if (raw) patch.assigned_site = null;
+          batch2.update(docSnap.ref, patch);
+          taggedMgrs++;
+        }
+        if (taggedMgrs) await batch2.commit();
+      }
+
+      if (taggedSites) console.info(`[migration] tagged ${taggedSites} sites`);
+    } catch (e) {
+      console.warn('[migration] failed:', e);
+    }
+  }
 
   function updateProfileUI(profile) {
     if (!profile) return;
@@ -843,9 +945,6 @@ tbody tr:hover{background:#f1f5f9}
     }));
   }
 
-  // =================================================================
-  // ORGANIZATION-SCOPED LISTENERS
-  // =================================================================
   function attachListeners() {
     unsubscribeSnapshots.forEach(fn => { try { fn(); } catch(_){} });
     unsubscribeSnapshots = [];
@@ -876,7 +975,6 @@ tbody tr:hover{background:#f1f5f9}
     if (selectedGallerySite && !siteIds.includes(selectedGallerySite)) selectedGallerySite = null;
     if (selectedFinanceSite && !siteIds.includes(selectedFinanceSite)) selectedFinanceSite = null;
 
-    // Organization-scoped managers (NOT just role==manager globally)
     attachSnapshot(
       query(collection(db, 'profiles'),
         where('organization_id', '==', orgId),
@@ -885,7 +983,6 @@ tbody tr:hover{background:#f1f5f9}
       'managers'
     );
 
-    // Assignment history
     attachSnapshot(
       query(collection(db, 'manager_site_assignments'),
         where('organization_id', '==', orgId)),
@@ -1047,7 +1144,6 @@ tbody tr:hover{background:#f1f5f9}
     return json.data.url;
   }
 
-  // =============== AUDIT LOG ===============
   async function addAuditLog({ action, target_type, target_id, meta }) {
     if (!currentOrganizationId || !currentUser) return;
     try {
@@ -1084,7 +1180,6 @@ tbody tr:hover{background:#f1f5f9}
     const rawName = currentUser?.displayName || document.getElementById('user-name')?.textContent || currentUser?.email?.split('@')[0] || 'SITE OWNER';
     const displayName = getDashboardName(rawName).toUpperCase();
 
-    // Time-of-day greeting (00:00–11:59 Morning · 12:00–16:59 Afternoon · 17:00–23:59 Evening)
     const hour = new Date().getHours();
     let greetingKey;
     if (hour >= 0 && hour < 12) greetingKey = 'dashboard.goodMorning';
@@ -1096,7 +1191,7 @@ tbody tr:hover{background:#f1f5f9}
         <div class="relative h-40 sm:h-64 bg-cover bg-center" style="background-image: url('https://cdn.pixabay.com/photo/2018/12/12/23/02/site-3871804_1280.jpg');">
           <div class="absolute inset-0 bg-gradient-to-r from-emerald-900/80 to-emerald-800/40 flex items-center p-4 sm:p-6">
             <div>
-              <h1 class="text-2xl sm:text-4xl font-bold text-white">${t(greetingKey, { name: displayName })}</h1>
+              <h1 id="greeting-h1" data-name="${escapeHTML(displayName)}" class="text-2xl sm:text-4xl font-bold text-white">${t(greetingKey, { name: displayName })}</h1>
               <p class="text-emerald-100 mt-2 text-sm sm:text-base">${t('dashboard.overview')}</p>
             </div>
           </div>
@@ -2399,16 +2494,16 @@ tbody tr:hover{background:#f1f5f9}
       <div class="bg-white rounded-2xl border shadow-sm overflow-hidden">
         <div class="p-4 border-b bg-slate-50 flex flex-wrap items-center gap-3">
           <div class="relative flex-1 min-w-[220px]">
-            <input id="manager-search-input" type="text" placeholder="${t('messages.searchPlaceholder')}"
+            <input id="manager-search-input" type="text" value="${escapeHTML(_managerSearchQ)}" placeholder="${t('messages.searchPlaceholder')}"
               oninput="filterManagersTable(this.value)"
               class="w-full border rounded-lg py-2 pl-9 pr-3 text-sm focus:outline-none focus:border-emerald-600">
             <iconify-icon icon="material-symbols:search" width="16" class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></iconify-icon>
           </div>
           <select id="manager-status-filter" onchange="filterManagersTable()" class="border rounded-lg py-2 px-3 text-sm">
-            <option value="all">${t('managers.filterAll')}</option>
-            <option value="active">${t('managers.active')}</option>
-            <option value="pending">${t('managers.pending')}</option>
-            <option value="unassigned">${t('managers.unassigned')}</option>
+            <option value="all"        ${_managerStatusFilter === 'all'        ? 'selected' : ''}>${t('managers.filterAll')}</option>
+            <option value="active"     ${_managerStatusFilter === 'active'     ? 'selected' : ''}>${t('managers.active')}</option>
+            <option value="pending"    ${_managerStatusFilter === 'pending'    ? 'selected' : ''}>${t('managers.pending')}</option>
+            <option value="unassigned" ${_managerStatusFilter === 'unassigned' ? 'selected' : ''}>${t('managers.unassigned')}</option>
           </select>
         </div>
         <div id="managers-table-host"></div>
@@ -2619,17 +2714,26 @@ tbody tr:hover{background:#f1f5f9}
 
       const existingMember = managersData.find(m => (m.email || '').toLowerCase() === email);
       if (existingMember) { showToast(t('managers.alreadyMember'), 'error'); return; }
-      const existingInvite = invitationsData.find(i => (i.email || '').toLowerCase() === email && i.status === 'pending');
-      if (existingInvite) { showToast(t('managers.duplicateInvite'), 'error'); return; }
 
-      const cross = await getDocs(query(collection(db, 'profiles'), where('email', '==', email)));
-      if (!cross.empty) {
-        const p = cross.docs[0].data();
-        if (p.organization_id && p.organization_id !== currentOrganizationId) {
-          showToast(t('managers.otherOrg'), 'error');
-          return;
+      // QA-009: Transactional duplicate check (fresh read, not stale snapshot)
+      const dupSnap = await getDocs(query(
+        collection(db, 'manager_invitations'),
+        where('organization_id', '==', currentOrganizationId),
+        where('email', '==', email),
+        where('status', '==', 'pending')
+      ));
+      if (!dupSnap.empty) { showToast(t('managers.duplicateInvite'), 'error'); return; }
+
+      try {
+        const cross = await getDocs(query(collection(db, 'profiles'), where('email', '==', email)));
+        if (!cross.empty) {
+          const p = cross.docs[0].data();
+          if (p.organization_id && p.organization_id !== currentOrganizationId) {
+            showToast(t('managers.otherOrg'), 'error');
+            return;
+          }
         }
-      }
+      } catch (_) { /* rules may deny; fail open */ }
 
       const rawToken = _generateToken();
       const tokenHash = await _sha256Hex(rawToken);
@@ -2662,7 +2766,11 @@ tbody tr:hover{background:#f1f5f9}
       const acceptUrl = `${location.origin}/accept-invite.html?token=${rawToken}&inv=${invRef.id}`;
       closeModal();
       showToast(t('managers.inviteSent'), 'success');
+
+      // QA-007: Cancel success modal if user navigated away
+      const inviteSnapshot = { section: currentSection };
       setTimeout(() => {
+        if (currentSection !== inviteSnapshot.section) return;
         openModal(t('managers.inviteSentTitle'), `
           <div class="space-y-3">
             <p class="text-sm">${escapeHTML(email)} ${t('managers.wasInvitedAs')}</p>
@@ -2714,6 +2822,12 @@ tbody tr:hover{background:#f1f5f9}
       if (!newSite || newSite.organization_id !== currentOrganizationId) { showToast(t('common.accessDenied'), 'error'); return; }
 
       const prevSiteId = mgr.assigned_site || null;
+      // QA-008: same-site guard
+      if (prevSiteId === newSiteId) {
+        closeModal();
+        showToast(t('common.noChange') || 'No change', 'info');
+        return;
+      }
       const now = new Date().toISOString();
 
       if (prevSiteId) {
@@ -3172,7 +3286,8 @@ tbody tr:hover{background:#f1f5f9}
     const withHistory = new Set(conversationsData.map(c => c.manager_id));
     return managersData.filter(m => {
       if (m.organization_id !== currentOrganizationId) return false;
-      if (m.status && m.status !== 'active') return false;
+      const st = m.organization_status || m.status || 'active';
+      if (st !== 'active') return false;
       const assignedToMySite = m.assigned_site && mySiteIds.has(m.assigned_site);
       return assignedToMySite || withHistory.has(m.id);
     });
