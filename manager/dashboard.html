@@ -10,6 +10,7 @@
 <script src="https://cdn.tailwindcss.com/3.4.17"></script>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,300..700,0..1,-50..200&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,400,0,0" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/iconify-icon@2.3.0/dist/iconify-icon.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
@@ -94,6 +95,31 @@ body{background:#f8fafc}
 .img-preview-wrap img{max-width:100%;max-height:220px;border-radius:12px;object-fit:cover;border:1px solid #e2e8f0}
 .img-preview-wrap .remove-img-btn{position:absolute;top:6px;right:6px;background:rgba(220,38,38,.9);color:#fff;border:none;border-radius:50%;width:30px;height:30px;display:flex;align-items:center;justify-content:center;cursor:pointer}
 @media (max-width:640px){.usage-material-grid{grid-template-columns:repeat(auto-fill,minmax(100px,1fr))}.usage-material-grid .mat-card{padding:8px 4px;min-height:70px}}
+
+/* ===== PASSWORD SHOW/HIDE TOGGLE ===== */
+.password-field{position:relative;width:100%}
+.password-field input{width:100%;padding-right:52px}
+.password-toggle{
+  position:absolute;top:50%;right:4px;transform:translateY(-50%);
+  width:44px;height:44px;
+  display:inline-flex;align-items:center;justify-content:center;
+  border:0;background:transparent;border-radius:10px;
+  color:#6b7280;cursor:pointer;padding:0;margin:0;z-index:2;
+  transition:color .2s ease,background-color .2s ease;
+  -webkit-tap-highlight-color:transparent;
+}
+.password-toggle:hover{color:#059669;background:rgba(5,150,105,.08)}
+.password-toggle:focus-visible{outline:2px solid #059669;outline-offset:1px}
+.password-toggle .material-symbols-rounded{
+  font-family:'Material Symbols Rounded',sans-serif !important;
+  font-weight:normal;font-style:normal;font-size:22px;line-height:1;
+  letter-spacing:normal;text-transform:none;display:inline-block;
+  white-space:nowrap;word-wrap:normal;direction:ltr;
+  font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24;
+  -webkit-font-feature-settings:'liga';
+  -webkit-font-smoothing:antialiased;
+  pointer-events:none;user-select:none;
+}
 
 /* ===== MESSAGING ===== */
 .messages-shell{display:grid;grid-template-columns:320px 1fr;height:calc(100vh - 240px);min-height:440px;position:relative;overflow:hidden}
@@ -1958,10 +1984,78 @@ window.deleteGalleryItem=async function(id){
 function renderSettings(container){
   container.innerHTML=`<h2 class="text-xl sm:text-2xl font-bold mb-6 flex items-center gap-2"><iconify-icon icon="material-symbols:settings" class="text-emerald-600"></iconify-icon>${t('settings.title')}</h2><div class="flex flex-wrap gap-2 mb-6 p-1 bg-slate-200/60 rounded-xl"><button class="settings-tab-btn px-4 py-2 rounded-lg text-sm font-semibold transition ${settingsTab==='profile'?'active':''} flex items-center gap-2" onclick="switchSettingsTab('profile')"><iconify-icon icon="material-symbols:person-outline" width="18"></iconify-icon> ${t('settings.profile')}</button><button class="settings-tab-btn px-4 py-2 rounded-lg text-sm font-semibold transition ${settingsTab==='account'?'active':''} flex items-center gap-2" onclick="switchSettingsTab('account')"><iconify-icon icon="material-symbols:account-box-outline" width="18"></iconify-icon> ${t('settings.account')}</button><button class="settings-tab-btn px-4 py-2 rounded-lg text-sm font-semibold transition ${settingsTab==='security'?'active':''} flex items-center gap-2" onclick="switchSettingsTab('security')"><iconify-icon icon="material-symbols:lock-outline" width="18"></iconify-icon> ${t('settings.security')}</button><button class="settings-tab-btn px-4 py-2 rounded-lg text-sm font-semibold transition ${settingsTab==='preferences'?'active':''} flex items-center gap-2" onclick="switchSettingsTab('preferences')"><iconify-icon icon="material-symbols:tune" width="18"></iconify-icon> ${t('settings.preferences')}</button></div><div class="settings-sections"><div id="settings-profile" class="settings-section ${settingsTab==='profile'?'active':''}">${renderProfileSection()}</div><div id="settings-account" class="settings-section ${settingsTab==='account'?'active':''}">${renderAccountSection()}</div><div id="settings-security" class="settings-section ${settingsTab==='security'?'active':''}">${renderSecuritySection()}</div><div id="settings-preferences" class="settings-section ${settingsTab==='preferences'?'active':''}">${renderPreferencesSection()}</div></div>`;
   populateSettingsForms();attachSettingsChangeListeners();
+  if (settingsTab === 'security') bindPasswordToggles();
 }
 function renderProfileSection(){const p=managerProfile||{};const photo=p.profile_picture||PLACEHOLDER_IMG;return `<div class="settings-card"><h3><iconify-icon icon="material-symbols:person-outline" class="text-emerald-600"></iconify-icon> ${t('settings.profileInfo')}</h3><form id="profile-form" onsubmit="handleProfileSave(event)"><div class="field-group text-center"><div class="profile-avatar-wrapper"><img id="settings-profile-photo-img" src="${photo}"><label class="change-photo-btn"><iconify-icon icon="material-symbols:photo-camera" width="20"></iconify-icon><input type="file" id="settings-profile-photo-input" accept="image/*" style="display:none;" onchange="previewProfilePhoto(event)"></label></div><button type="button" id="settings-remove-photo-btn" class="remove-photo-btn mt-2" onclick="removeProfilePhoto()">${t('settings.removePhoto')}</button></div><div class="field-group"><label>${t('settings.fullName')}</label><input type="text" id="settings-full-name" value="${p.full_name||''}"></div><div class="field-group"><label>${t('settings.phone')}</label><input type="tel" id="settings-phone" value="${p.phone||''}"></div><div class="field-group"><label>${t('settings.email')}</label><input type="email" id="settings-email" value="${p.email||''}"></div><button type="submit" class="save-btn">${t('settings.saveProfile')}</button></form></div>`}
 function renderAccountSection(){const p=managerProfile||{};return `<div class="settings-card"><h3><iconify-icon icon="material-symbols:account-box-outline" class="text-emerald-600"></iconify-icon> ${t('settings.accountInfo')}</h3><div class="field-group"><label>${t('settings.accountName')}</label><div class="readonly-field">${p.full_name||'N/A'}</div></div><div class="field-group"><label>${t('settings.role')}</label><div class="readonly-field">${p.role||'Manager'}</div></div><div class="field-group"><label>${t('settings.email')}</label><div class="readonly-field">${p.email||'N/A'}</div></div><div class="field-group"><label>${t('settings.phone')}</label><div class="readonly-field">${p.phone||'N/A'}</div></div><div class="field-group"><label>${t('settings.memberSince')}</label><div class="readonly-field">${formatDate(p.created_at)}</div></div></div>`}
-function renderSecuritySection(){return `<div class="settings-card"><h3><iconify-icon icon="material-symbols:lock-outline" class="text-emerald-600"></iconify-icon> ${t('settings.changePassword')}</h3><form id="security-form" onsubmit="handlePasswordChange(event)"><div class="field-group"><label>${t('settings.currentPassword')}</label><input type="password" id="current-password" required></div><div class="field-group"><label>${t('settings.newPassword')}</label><input type="password" id="new-password" required minlength="6"></div><div class="field-group"><label>${t('settings.confirmPassword')}</label><input type="password" id="confirm-password" required></div><button type="submit" class="save-btn">${t('settings.changePassBtn')}</button></form></div>`}
+
+/* ============ SECURITY SECTION — Passcode Show/Hide toggles ============ */
+function renderSecuritySection(){
+  return `<div class="settings-card">
+    <h3><iconify-icon icon="material-symbols:lock-outline" class="text-emerald-600"></iconify-icon> ${t('settings.changePassword')}</h3>
+    <form id="security-form" onsubmit="handlePasswordChange(event)">
+
+      <div class="field-group">
+        <label for="current-password">${t('settings.currentPassword')}</label>
+        <div class="password-field">
+          <input type="password" id="current-password" required autocomplete="current-password" aria-label="${t('settings.currentPassword')}">
+          <button type="button" class="password-toggle" data-target="current-password" aria-label="Show current password" title="Show current password">
+            <span class="material-symbols-rounded" aria-hidden="true">visibility</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="field-group">
+        <label for="new-password">${t('settings.newPassword')}</label>
+        <div class="password-field">
+          <input type="password" id="new-password" required minlength="6" autocomplete="new-password" aria-label="${t('settings.newPassword')}">
+          <button type="button" class="password-toggle" data-target="new-password" aria-label="Show new password" title="Show new password">
+            <span class="material-symbols-rounded" aria-hidden="true">visibility</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="field-group">
+        <label for="confirm-password">${t('settings.confirmPassword')}</label>
+        <div class="password-field">
+          <input type="password" id="confirm-password" required autocomplete="new-password" aria-label="${t('settings.confirmPassword')}">
+          <button type="button" class="password-toggle" data-target="confirm-password" aria-label="Show confirm password" title="Show confirm password">
+            <span class="material-symbols-rounded" aria-hidden="true">visibility</span>
+          </button>
+        </div>
+      </div>
+
+      <button type="submit" class="save-btn">${t('settings.changePassBtn')}</button>
+    </form>
+  </div>`;
+}
+
+/* ============ PASSWORD TOGGLE BINDING ============ */
+function bindPasswordToggles() {
+  document.querySelectorAll('.password-toggle').forEach(btn => {
+    if (btn.dataset.bound === '1') return; // prevent duplicate listeners
+    btn.dataset.bound = '1';
+
+    const icon = btn.querySelector('.material-symbols-rounded');
+    const inputId = btn.getAttribute('data-target');
+    const input = document.getElementById(inputId);
+    if (!input || !icon) return;
+
+    btn.addEventListener('click', () => {
+      const isHidden = input.type === 'password';
+      input.type = isHidden ? 'text' : 'password';
+      icon.textContent = isHidden ? 'visibility_off' : 'visibility';
+      const action = isHidden ? 'Hide' : 'Show';
+      const fieldName = input.getAttribute('aria-label') || 'password';
+      btn.setAttribute('aria-label', `${action} ${fieldName}`);
+      btn.setAttribute('title', `${action} ${fieldName}`);
+      if (document.activeElement === btn) {
+        try { input.focus({ preventScroll: true }); } catch (_) {}
+      }
+    });
+  });
+}
+
 function renderPreferencesSection(){
   const p=managerProfile||{},pr=p.preferences||{};
   const notifGranted = ('Notification' in window && Notification.permission === 'granted');
@@ -1977,6 +2071,7 @@ window.switchSettingsTab=function(tab){
   document.querySelectorAll('.settings-section').forEach(el=>el.classList.remove('active'));
   document.getElementById(`settings-${tab}`)?.classList.add('active');
   populateSettingsForms();attachSettingsChangeListeners();
+  if (tab === 'security') bindPasswordToggles();
 };
 window.previewProfilePhoto=function(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{const img=document.getElementById('settings-profile-photo-img');if(img)img.src=ev.target.result;_profilePhotoFile=f;hasUnsavedChanges=true};r.readAsDataURL(f)};
 window.removeProfilePhoto=function(){if(!confirm(t('common.areYouSure')))return;const img=document.getElementById('settings-profile-photo-img');if(img)img.src=PLACEHOLDER_IMG;_profilePhotoFile=null;const inp=document.getElementById('settings-profile-photo-input');if(inp)inp.value='';hasUnsavedChanges=true};
@@ -2008,7 +2103,19 @@ window.handlePasswordChange=async function(e){
     const cred=EmailAuthProvider.credential(currentUser.email,cur);
     await reauthenticateWithCredential(currentUser,cred);
     await updatePassword(currentUser,np);
-    e.target.reset();showToast(t('common.updatedSuccessfully'),'success');
+    e.target.reset();
+    // Reset password toggles back to hidden + icon state after successful change
+    document.querySelectorAll('.password-toggle').forEach(btn=>{
+      const inputId = btn.getAttribute('data-target');
+      const input = document.getElementById(inputId);
+      const icon = btn.querySelector('.material-symbols-rounded');
+      if (input && input.type === 'text') input.type = 'password';
+      if (icon) icon.textContent = 'visibility';
+      const fieldName = input?.getAttribute('aria-label') || 'password';
+      btn.setAttribute('aria-label', `Show ${fieldName}`);
+      btn.setAttribute('title', `Show ${fieldName}`);
+    });
+    showToast(t('common.updatedSuccessfully'),'success');
   }catch(err){showToast(err.message||t('common.somethingWentWrong'),'error')}
   finally{setButtonLoading(btn,false)}
 };
