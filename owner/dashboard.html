@@ -12,7 +12,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<!-- Real Iconify library (loads any icon set on demand) -->
 <script src="https://code.iconify.design/iconify-icon/2.3.0/iconify-icon.min.js"></script>
 <style>
 .language-switcher{display:flex;align-items:center;background-color:rgba(30,86,160,.1);border:1px solid rgba(30,86,160,.2);border-radius:50px;padding:4px;box-shadow:0 2px 4px rgba(0,0,0,.05)}
@@ -170,6 +169,20 @@ tbody tr:hover{background:#f1f5f9}
 .composer-toolbar button{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#64748b;background:transparent;border:none;cursor:pointer}
 .composer-toolbar button:hover{background:#f1f5f9;color:#059669}
 .composer-toolbar button.active{background:#ecfdf5;color:#059669}
+
+/* ── Send button — explicit enabled/disabled styling (no Tailwind disabled: variants) ── */
+#message-send-btn {
+    background: #059669;
+    color: #ffffff;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+}
+#message-send-btn:hover:not(:disabled) { background: #047857; }
+#message-send-btn:disabled {
+    background: #e2e8f0;
+    color: #94a3b8;
+    cursor: not-allowed;
+}
 
 .emoji-picker{position:absolute;bottom:60px;left:12px;right:12px;max-width:340px;background:#fff;border:1px solid #e5e7eb;border-radius:14px;box-shadow:0 12px 32px rgba(0,0,0,.12);padding:10px;z-index:20;display:none}
 .emoji-picker.open{display:block}
@@ -3261,12 +3274,16 @@ tbody tr:hover{background:#f1f5f9}
   function stopTyping(cid) { if (!rtdb || !cid) return; rtdbSet(rtdbRef(rtdb, `typing/${cid}/${currentUser.uid}`), null).catch(() => {}); }
   let _typingTimer = null;
   function onComposerInput() {
+    // Update the Send button FIRST so it works even if the conversation state was cleared
+    updateComposerButtons();
     if (!activeConversationId) return;
     startTyping(activeConversationId);
     clearTimeout(_typingTimer);
     _typingTimer = setTimeout(() => stopTyping(activeConversationId), 3000);
-    updateComposerButtons();
   }
+  // Expose to inline handlers (required — inline oninput cannot see module scope)
+  window.onComposerInput = onComposerInput;
+
   function subscribeToTyping(cid) {
     if (typingUnsub) { try { typingUnsub(); } catch (_) {} typingUnsub = null; }
     typingMap = {};
@@ -4184,12 +4201,12 @@ tbody tr:hover{background:#f1f5f9}
         <div id="emoji-picker" class="emoji-picker"></div>
         <div class="flex items-end gap-2">
           <div class="composer-toolbar">
-            <button type="button" onclick="toggleEmojiPicker()" title="${t('messages.emoji')}" class="${emojiPickerOpen ? 'active' : ''}"><iconify-icon icon="material-symbols:emoji-emotions-outline" width="22"></iconify-icon></button>
+            <button type="button" onclick="toggleEmojiPicker()" title="${t('messages.emoji')}" class="${emojiPickerOpen ? 'active' : ''}"><iconify-icon icon="material-symbols:emoji-emotions" width="22"></iconify-icon></button>
             <button type="button" onclick="pickAttachment()" title="${t('messages.attach')}"><iconify-icon icon="material-symbols:attach-file" width="22"></iconify-icon></button>
             <button type="button" onclick="openSharePicker()" title="${t('messages.share')}"><iconify-icon icon="material-symbols:add-link" width="22"></iconify-icon></button>
           </div>
           <textarea id="message-input" rows="1" onkeydown="handleMessageKeydown(event)" oninput="onComposerInput();saveDraftSoon();" placeholder="${t('messages.inputPlaceholder')}" class="flex-1 resize-none border rounded-xl px-3 py-2 text-sm max-h-32 focus:outline-none focus:border-emerald-600"></textarea>
-          <button id="message-send-btn" type="button" onclick="sendMessage()" class="rounded-xl px-4 py-2.5 flex items-center gap-1 transition-colors bg-emerald-600 hover:bg-emerald-700 text-white disabled:bg-slate-200 disabled:text-slate-400 disabled:cursor-not-allowed disabled:hover:bg-slate-200">
+          <button id="message-send-btn" type="button" onclick="sendMessage()" class="rounded-xl px-4 py-2.5 flex items-center gap-1">
             <iconify-icon icon="material-symbols:send" width="18"></iconify-icon>
             <span class="hidden sm:inline text-sm">${t('messages.send')}</span>
           </button>
@@ -4223,6 +4240,9 @@ tbody tr:hover{background:#f1f5f9}
     if (!inp) return;
     setDraft(activeConversationId, inp.value);
   }
+  // Expose to inline handlers
+  window.saveDraftSoon = saveDraftSoon;
+
   function renderTypingIndicator() {
     const el = document.getElementById('typing-indicator');
     if (!el) return;
