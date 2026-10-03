@@ -1978,6 +1978,7 @@ window.deleteGalleryItem=async function(id){
   try{await deleteDoc(doc(db,'gallery',id));showToast(t('common.deletedSuccessfully'),'success')}catch(err){showToast(t('common.somethingWentWrong'),'error')}
 };
 
+
 // ============================================================
 // SETTINGS
 // ============================================================
@@ -1989,26 +1990,26 @@ function renderSettings(container){
 function renderProfileSection(){const p=managerProfile||{};const photo=p.profile_picture||PLACEHOLDER_IMG;return `<div class="settings-card"><h3><iconify-icon icon="material-symbols:person-outline" class="text-emerald-600"></iconify-icon> ${t('settings.profileInfo')}</h3><form id="profile-form" onsubmit="handleProfileSave(event)"><div class="field-group text-center"><div class="profile-avatar-wrapper"><img id="settings-profile-photo-img" src="${photo}"><label class="change-photo-btn"><iconify-icon icon="material-symbols:photo-camera" width="20"></iconify-icon><input type="file" id="settings-profile-photo-input" accept="image/*" style="display:none;" onchange="previewProfilePhoto(event)"></label></div><button type="button" id="settings-remove-photo-btn" class="remove-photo-btn mt-2" onclick="removeProfilePhoto()">${t('settings.removePhoto')}</button></div><div class="field-group"><label>${t('settings.fullName')}</label><input type="text" id="settings-full-name" value="${p.full_name||''}"></div><div class="field-group"><label>${t('settings.phone')}</label><input type="tel" id="settings-phone" value="${p.phone||''}"></div><div class="field-group"><label>${t('settings.email')}</label><input type="email" id="settings-email" value="${p.email||''}"></div><button type="submit" class="save-btn">${t('settings.saveProfile')}</button></form></div>`}
 function renderAccountSection(){const p=managerProfile||{};return `<div class="settings-card"><h3><iconify-icon icon="material-symbols:account-box-outline" class="text-emerald-600"></iconify-icon> ${t('settings.accountInfo')}</h3><div class="field-group"><label>${t('settings.accountName')}</label><div class="readonly-field">${p.full_name||'N/A'}</div></div><div class="field-group"><label>${t('settings.role')}</label><div class="readonly-field">${p.role||'Manager'}</div></div><div class="field-group"><label>${t('settings.email')}</label><div class="readonly-field">${p.email||'N/A'}</div></div><div class="field-group"><label>${t('settings.phone')}</label><div class="readonly-field">${p.phone||'N/A'}</div></div><div class="field-group"><label>${t('settings.memberSince')}</label><div class="readonly-field">${formatDate(p.created_at)}</div></div></div>`}
 
-/* ============ SECURITY SECTION — Passcode Show/Hide toggles ============ */
+/* ============ SECURITY SECTION — Passcode Show/Hide toggles with placeholders ============ */
 function renderSecuritySection(){
   return `<div class="settings-card">
-    <h3><iconify-icon icon="material-symbols:lock-outline" class="text-emerald-600"></iconify-icon> ${t('settings.changePasscode')}</h3>
-    <form id="security-form" onsubmit="handlePasscodeChange(event)">
+    <h3><iconify-icon icon="material-symbols:lock-outline" class="text-emerald-600"></iconify-icon> ${t('settings.changePassword')}</h3>
+    <form id="security-form" onsubmit="handlePasswordChange(event)">
 
       <div class="field-group">
-        <label for="current-password">${t('settings.currentPasscode')}</label>
+        <label for="current-passcode">${t('settings.currentPassword')}</label>
         <div class="password-field">
-          <input type="password" id="current-password" placeholder="Enter your current passcode" required autocomplete="current-password" aria-label="${t('settings.currentPasscode')}">
-          <button type="button" class="password-toggle" data-target="current-password" aria-label="Show current passcode" title="Show current passcode">
+          <input type="password" id="current-password" placeholder="Enter your current passcode" required autocomplete="current-password" aria-label="${t('settings.currentPassword')}">
+          <button type="button" class="password-toggle" data-target="current-password" aria-label="Show current password" title="Show current password">
             <span class="material-symbols-rounded" aria-hidden="true">visibility</span>
           </button>
         </div>
       </div>
 
       <div class="field-group">
-        <label for="new-password">${t('settings.newPasscode')}</label>
+        <label for="new-password">${t('settings.newPassword')}</label>
         <div class="password-field">
-          <input type="password" id="new-password" placeholder="Enter your new passcode" required minlength="6" autocomplete="new-password" aria-label="${t('settings.newPasscode')}">
+          <input type="password" id="new-password" placeholder="Enter your new passcode" required minlength="6" autocomplete="new-password" aria-label="${t('settings.newPassword')}">
           <button type="button" class="password-toggle" data-target="new-password" aria-label="Show new passcode" title="Show new passcode">
             <span class="material-symbols-rounded" aria-hidden="true">visibility</span>
           </button>
@@ -2016,9 +2017,9 @@ function renderSecuritySection(){
       </div>
 
       <div class="field-group">
-        <label for="confirm-password">${t('settings.confirmPasscode')}</label>
+        <label for="confirm-password">${t('settings.confirmPassword')}</label>
         <div class="password-field">
-          <input type="password" id="confirm-password" placeholder="Confirm your new passcode" required autocomplete="new-password" aria-label="${t('settings.confirmPasscode')}">
+          <input type="password" id="confirm-password" placeholder="Confirm your new passcode" required autocomplete="new-password" aria-label="${t('settings.confirmPassword')}">
           <button type="button" class="password-toggle" data-target="confirm-password" aria-label="Show confirm passcode" title="Show confirm passcode">
             <span class="material-symbols-rounded" aria-hidden="true">visibility</span>
           </button>
@@ -2030,7 +2031,7 @@ function renderSecuritySection(){
   </div>`;
 }
 
-/* ============ PASSCODE TOGGLE BINDING ============ */
+/* ============ PASSWORD TOGGLE BINDING ============ */
 function bindPasswordToggles() {
   document.querySelectorAll('.password-toggle').forEach(btn => {
     if (btn.dataset.bound === '1') return; // prevent duplicate listeners
@@ -2046,7 +2047,7 @@ function bindPasswordToggles() {
       input.type = isHidden ? 'text' : 'password';
       icon.textContent = isHidden ? 'visibility_off' : 'visibility';
       const action = isHidden ? 'Hide' : 'Show';
-      const fieldName = input.getAttribute('aria-label') || 'passcode';
+      const fieldName = input.getAttribute('aria-label') || 'password';
       btn.setAttribute('aria-label', `${action} ${fieldName}`);
       btn.setAttribute('title', `${action} ${fieldName}`);
       if (document.activeElement === btn) {
@@ -2091,27 +2092,27 @@ window.handleProfileSave=async function(e){
   }catch(err){showToast(err.message||t('common.somethingWentWrong'),'error')}
   finally{setButtonLoading(btn,false)}
 };
-window.handlePasscodeChange=async function(e){
+window.handlePasswordChange=async function(e){
   e.preventDefault();
   const btn=e.target.querySelector('.save-btn');setButtonLoading(btn,true);
   try{
     const cur=document.getElementById('current-password').value;
     const np=document.getElementById('new-password').value;
     const cp=document.getElementById('confirm-password').value;
-    if(np!==cp){showToast('Passcodes do not match.','error');setButtonLoading(btn,false);return}
-    if(np.length<6){showToast('Passcode must be at least 6 characters.','error');setButtonLoading(btn,false);return}
+    if(np!==cp){showToast('Passwords do not match.','error');setButtonLoading(btn,false);return}
+    if(np.length<6){showToast('Password must be at least 6 characters.','error');setButtonLoading(btn,false);return}
     const cred=EmailAuthProvider.credential(currentUser.email,cur);
     await reauthenticateWithCredential(currentUser,cred);
     await updatePassword(currentUser,np);
     e.target.reset();
-    // Reset passcode toggles back to hidden + icon state after successful change
+    // Reset password toggles back to hidden + icon state after successful change
     document.querySelectorAll('.password-toggle').forEach(btn=>{
       const inputId = btn.getAttribute('data-target');
       const input = document.getElementById(inputId);
       const icon = btn.querySelector('.material-symbols-rounded');
       if (input && input.type === 'text') input.type = 'password';
       if (icon) icon.textContent = 'visibility';
-      const fieldName = input?.getAttribute('aria-label') || 'passcode';
+      const fieldName = input?.getAttribute('aria-label') || 'password';
       btn.setAttribute('aria-label', `Show ${fieldName}`);
       btn.setAttribute('title', `Show ${fieldName}`);
     });
@@ -2119,8 +2120,6 @@ window.handlePasscodeChange=async function(e){
   }catch(err){showToast(err.message||t('common.somethingWentWrong'),'error')}
   finally{setButtonLoading(btn,false)}
 };
-// Backward-compatible alias — keeps any older inline references working
-window.handlePasswordChange = window.handlePasscodeChange;
 window.handlePreferencesSave=async function(e){
   e.preventDefault();
   const btn=e.target.querySelector('.save-btn');setButtonLoading(btn,true);
@@ -2132,7 +2131,6 @@ window.handlePreferencesSave=async function(e){
   }catch(err){showToast(err.message||t('common.somethingWentWrong'),'error')}
   finally{setButtonLoading(btn,false)}
 };
-
 // ============================================================
 // NAVIGATION
 // ============================================================
