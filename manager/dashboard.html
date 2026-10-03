@@ -1156,7 +1156,7 @@ window.openAddMaterialModal=function(){
   const siteName=site?site.name:'Unknown Site';
   const today=getTodayISO();
   const cardsHtml=siteStock.map(item=>{const name=cleanName(item.material_name||'Unknown');const unit=getStockUnit(item);const icon=getMaterialIcon(name);return `<div class="mat-card" data-stock-id="${item.id}" onclick="toggleUsageMaterialCard('${item.id}')"><div class="mat-icon">${icon}</div><div class="mat-name">${name}</div><div class="mat-unit">${unit}</div><div class="check-indicator">✓</div></div>`}).join('');
-  openModal('📦 '+t('materials.batchMaterialUsage'),`
+  openModal(''+t('materials.batchMaterialUsage'),`
     <form id="usage-batch-form" onsubmit="submitUsageBatch(event)" class="space-y-5">
       <div class="usage-header flex flex-wrap items-center justify-between gap-3">
         <div class="flex items-center gap-2"><label class="font-semibold text-sm">${t('materials.dateUsed')}</label><input type="date" id="usage-date" value="${today}" required class="border rounded-lg px-3 py-2 text-sm" /></div>
@@ -1379,7 +1379,7 @@ window.editWorker=function(id){
   const w=siteWorkersData.find(x=>x.id===id);if(!w)return;
   _workerEditPhotoFile=null;
   const cur=w.image||'';
-  openModal('✏️ '+t('common.edit'),`
+  openModal(''+t('common.edit'),`
     <form onsubmit="handleEditWorker(event,'${id}')" class="space-y-4">
       <input class="w-full border rounded-lg p-3" id="ew-name" value="${w.name}" required>
       <input class="w-full border rounded-lg p-3" id="ew-role" value="${w.role||''}" required>
@@ -1521,7 +1521,7 @@ window.openUsagePhotoLightbox=function(url){
 };
 window.editMaterial=function(id){
   const m=getMaterialById(id);if(!m)return;
-  openModal('✏️ '+t('common.edit'),`
+  openModal(''+t('common.edit'),`
     <form onsubmit="handleEditMaterial(event,'${id}')" class="space-y-4">
       <div><label class="block text-sm font-medium mb-1">${t('materials.materialName')}</label><input class="w-full border rounded-lg p-3 bg-slate-50" value="${m.name||''}" disabled></div>
       <div><label class="block text-sm font-medium mb-1">${t('materials.quantityUsed')}</label><input type="number" step="0.01" min="0" class="w-full border rounded-lg p-3" id="em-qty" value="${toNumber(m.quantity_used)}"></div>
@@ -1679,7 +1679,7 @@ window.openNewRequisitionModal=function(){
   const items=stockData.filter(s=>s.site_id===currentSiteId);
   if(!items.length){showToast('No stock at this site.','error');return}
   const rows=items.map(s=>`<tr class="border-b"><td class="p-2 text-sm">${s.material_name}</td><td class="p-2 text-sm text-slate-500">${s.unit||'units'}</td><td class="p-2"><input type="number" class="req-qty w-24 border rounded p-1 text-sm" data-name="${s.material_name}" data-unit="${s.unit||'units'}" min="0" value="0"/></td></tr>`).join('');
-  openModal('📝 '+t('materials.createRequisition'),`
+  openModal(' '+t('materials.createRequisition'),`
     <form onsubmit="handleCreateRequisition(event)" class="space-y-4">
       <div><label class="block text-sm font-medium mb-1">${t('materials.requiredDate')} *</label><input type="date" id="req-date" class="w-full border rounded-lg p-2.5" required></div>
       <div><label class="block text-sm font-medium mb-1">${t('materials.priority')}</label><select id="req-priority" class="w-full border rounded-lg p-2.5"><option value="Normal">${t('materials.normal')}</option><option value="Urgent">${t('materials.urgent')}</option></select></div>
@@ -1802,7 +1802,7 @@ window.handleAddStock=async function(e){
 };
 window.editStockItem=function(id){
   const s=getStockById(id);if(!s)return;
-  openModal('✏️ '+t('stock.editStock'),`
+  openModal(''+t('stock.editStock'),`
     <form onsubmit="handleEditStock(event,'${id}')" class="space-y-4">
       <div><label class="block text-sm font-medium mb-1">${t('materials.materialName')}</label><input class="w-full border rounded-lg p-3 bg-slate-50" value="${s.material_name}" disabled></div>
       <div><label class="block text-sm font-medium mb-1">${t('stock.quantity')} *</label><input class="w-full border rounded-lg p-3" type="number" step="0.01" min="0" id="edit-stock-qty" value="${toNumber(s.quantity)}" required></div>
@@ -1964,7 +1964,7 @@ window.openGalleryImage=function(idx){
 };
 window.editGalleryItem=function(id){
   const item=galleryData.find(g=>g.id===id);if(!item)return;
-  openModal('✏️ '+t('common.edit'),`<form onsubmit="handleEditGallery(event,'${id}')" class="space-y-4"><input type="text" id="eg-desc" value="${item.description||''}" class="w-full border rounded-lg p-3" placeholder="${t('gallery.description')}"><button type="submit" class="w-full bg-emerald-600 text-white py-3 rounded-xl">${t('common.save')}</button></form>`);
+  openModal(''+t('common.edit'),`<form onsubmit="handleEditGallery(event,'${id}')" class="space-y-4"><input type="text" id="eg-desc" value="${item.description||''}" class="w-full border rounded-lg p-3" placeholder="${t('gallery.description')}"><button type="submit" class="w-full bg-emerald-600 text-white py-3 rounded-xl">${t('common.save')}</button></form>`);
 };
 window.handleEditGallery=async function(e,id){
   e.preventDefault();
@@ -1989,26 +1989,26 @@ function renderSettings(container){
 function renderProfileSection(){const p=managerProfile||{};const photo=p.profile_picture||PLACEHOLDER_IMG;return `<div class="settings-card"><h3><iconify-icon icon="material-symbols:person-outline" class="text-emerald-600"></iconify-icon> ${t('settings.profileInfo')}</h3><form id="profile-form" onsubmit="handleProfileSave(event)"><div class="field-group text-center"><div class="profile-avatar-wrapper"><img id="settings-profile-photo-img" src="${photo}"><label class="change-photo-btn"><iconify-icon icon="material-symbols:photo-camera" width="20"></iconify-icon><input type="file" id="settings-profile-photo-input" accept="image/*" style="display:none;" onchange="previewProfilePhoto(event)"></label></div><button type="button" id="settings-remove-photo-btn" class="remove-photo-btn mt-2" onclick="removeProfilePhoto()">${t('settings.removePhoto')}</button></div><div class="field-group"><label>${t('settings.fullName')}</label><input type="text" id="settings-full-name" value="${p.full_name||''}"></div><div class="field-group"><label>${t('settings.phone')}</label><input type="tel" id="settings-phone" value="${p.phone||''}"></div><div class="field-group"><label>${t('settings.email')}</label><input type="email" id="settings-email" value="${p.email||''}"></div><button type="submit" class="save-btn">${t('settings.saveProfile')}</button></form></div>`}
 function renderAccountSection(){const p=managerProfile||{};return `<div class="settings-card"><h3><iconify-icon icon="material-symbols:account-box-outline" class="text-emerald-600"></iconify-icon> ${t('settings.accountInfo')}</h3><div class="field-group"><label>${t('settings.accountName')}</label><div class="readonly-field">${p.full_name||'N/A'}</div></div><div class="field-group"><label>${t('settings.role')}</label><div class="readonly-field">${p.role||'Manager'}</div></div><div class="field-group"><label>${t('settings.email')}</label><div class="readonly-field">${p.email||'N/A'}</div></div><div class="field-group"><label>${t('settings.phone')}</label><div class="readonly-field">${p.phone||'N/A'}</div></div><div class="field-group"><label>${t('settings.memberSince')}</label><div class="readonly-field">${formatDate(p.created_at)}</div></div></div>`}
 
-/* ============ SECURITY SECTION — Passcode Show/Hide toggles with placeholders ============ */
+/* ============ SECURITY SECTION — Passcode Show/Hide toggles ============ */
 function renderSecuritySection(){
   return `<div class="settings-card">
-    <h3><iconify-icon icon="material-symbols:lock-outline" class="text-emerald-600"></iconify-icon> ${t('settings.changePassword')}</h3>
-    <form id="security-form" onsubmit="handlePasswordChange(event)">
+    <h3><iconify-icon icon="material-symbols:lock-outline" class="text-emerald-600"></iconify-icon> ${t('settings.changePasscode')}</h3>
+    <form id="security-form" onsubmit="handlePasscodeChange(event)">
 
       <div class="field-group">
-        <label for="current-passcode">${t('settings.currentPassword')}</label>
+        <label for="current-password">${t('settings.currentPasscode')}</label>
         <div class="password-field">
-          <input type="password" id="current-password" placeholder="Enter your current passcode" required autocomplete="current-password" aria-label="${t('settings.currentPassword')}">
-          <button type="button" class="password-toggle" data-target="current-password" aria-label="Show current password" title="Show current password">
+          <input type="password" id="current-password" placeholder="Enter your current passcode" required autocomplete="current-password" aria-label="${t('settings.currentPasscode')}">
+          <button type="button" class="password-toggle" data-target="current-password" aria-label="Show current passcode" title="Show current passcode">
             <span class="material-symbols-rounded" aria-hidden="true">visibility</span>
           </button>
         </div>
       </div>
 
       <div class="field-group">
-        <label for="new-password">${t('settings.newPassword')}</label>
+        <label for="new-password">${t('settings.newPasscode')}</label>
         <div class="password-field">
-          <input type="password" id="new-password" placeholder="Enter your new passcode" required minlength="6" autocomplete="new-password" aria-label="${t('settings.newPassword')}">
+          <input type="password" id="new-password" placeholder="Enter your new passcode" required minlength="6" autocomplete="new-password" aria-label="${t('settings.newPasscode')}">
           <button type="button" class="password-toggle" data-target="new-password" aria-label="Show new passcode" title="Show new passcode">
             <span class="material-symbols-rounded" aria-hidden="true">visibility</span>
           </button>
@@ -2016,9 +2016,9 @@ function renderSecuritySection(){
       </div>
 
       <div class="field-group">
-        <label for="confirm-password">${t('settings.confirmPassword')}</label>
+        <label for="confirm-password">${t('settings.confirmPasscode')}</label>
         <div class="password-field">
-          <input type="password" id="confirm-password" placeholder="Confirm your new passcode" required autocomplete="new-password" aria-label="${t('settings.confirmPassword')}">
+          <input type="password" id="confirm-password" placeholder="Confirm your new passcode" required autocomplete="new-password" aria-label="${t('settings.confirmPasscode')}">
           <button type="button" class="password-toggle" data-target="confirm-password" aria-label="Show confirm passcode" title="Show confirm passcode">
             <span class="material-symbols-rounded" aria-hidden="true">visibility</span>
           </button>
@@ -2030,7 +2030,7 @@ function renderSecuritySection(){
   </div>`;
 }
 
-/* ============ PASSWORD TOGGLE BINDING ============ */
+/* ============ PASSCODE TOGGLE BINDING ============ */
 function bindPasswordToggles() {
   document.querySelectorAll('.password-toggle').forEach(btn => {
     if (btn.dataset.bound === '1') return; // prevent duplicate listeners
@@ -2046,7 +2046,7 @@ function bindPasswordToggles() {
       input.type = isHidden ? 'text' : 'password';
       icon.textContent = isHidden ? 'visibility_off' : 'visibility';
       const action = isHidden ? 'Hide' : 'Show';
-      const fieldName = input.getAttribute('aria-label') || 'password';
+      const fieldName = input.getAttribute('aria-label') || 'passcode';
       btn.setAttribute('aria-label', `${action} ${fieldName}`);
       btn.setAttribute('title', `${action} ${fieldName}`);
       if (document.activeElement === btn) {
@@ -2091,27 +2091,27 @@ window.handleProfileSave=async function(e){
   }catch(err){showToast(err.message||t('common.somethingWentWrong'),'error')}
   finally{setButtonLoading(btn,false)}
 };
-window.handlePasswordChange=async function(e){
+window.handlePasscodeChange=async function(e){
   e.preventDefault();
   const btn=e.target.querySelector('.save-btn');setButtonLoading(btn,true);
   try{
     const cur=document.getElementById('current-password').value;
     const np=document.getElementById('new-password').value;
     const cp=document.getElementById('confirm-password').value;
-    if(np!==cp){showToast('Passwords do not match.','error');setButtonLoading(btn,false);return}
-    if(np.length<6){showToast('Password must be at least 6 characters.','error');setButtonLoading(btn,false);return}
+    if(np!==cp){showToast('Passcodes do not match.','error');setButtonLoading(btn,false);return}
+    if(np.length<6){showToast('Passcode must be at least 6 characters.','error');setButtonLoading(btn,false);return}
     const cred=EmailAuthProvider.credential(currentUser.email,cur);
     await reauthenticateWithCredential(currentUser,cred);
     await updatePassword(currentUser,np);
     e.target.reset();
-    // Reset password toggles back to hidden + icon state after successful change
+    // Reset passcode toggles back to hidden + icon state after successful change
     document.querySelectorAll('.password-toggle').forEach(btn=>{
       const inputId = btn.getAttribute('data-target');
       const input = document.getElementById(inputId);
       const icon = btn.querySelector('.material-symbols-rounded');
       if (input && input.type === 'text') input.type = 'password';
       if (icon) icon.textContent = 'visibility';
-      const fieldName = input?.getAttribute('aria-label') || 'password';
+      const fieldName = input?.getAttribute('aria-label') || 'passcode';
       btn.setAttribute('aria-label', `Show ${fieldName}`);
       btn.setAttribute('title', `Show ${fieldName}`);
     });
@@ -2119,6 +2119,8 @@ window.handlePasswordChange=async function(e){
   }catch(err){showToast(err.message||t('common.somethingWentWrong'),'error')}
   finally{setButtonLoading(btn,false)}
 };
+// Backward-compatible alias — keeps any older inline references working
+window.handlePasswordChange = window.handlePasscodeChange;
 window.handlePreferencesSave=async function(e){
   e.preventDefault();
   const btn=e.target.querySelector('.save-btn');setButtonLoading(btn,true);
