@@ -78,10 +78,13 @@ tbody tr:hover{background:#f1f5f9}
 .toast.error{border-left:4px solid #ef4444}
 .toast.info{border-left:4px solid #3b82f6}
 
-/* ===== MESSAGING v3 ===== */
-.messages-shell{display:grid;grid-template-columns:340px 1fr;height:calc(100vh - 240px);min-height:440px}
+/* ===== MESSAGING v4 ===== */
+.messages-shell{display:grid;grid-template-columns:340px 1fr;height:calc(100vh - 240px);min-height:440px;position:relative;overflow:hidden}
+.messages-shell.info-open{grid-template-columns:340px 1fr 360px}
 .messages-directory{border-right:1px solid #e5e7eb;display:flex;flex-direction:column;min-height:0}
 .messages-thread{display:flex;flex-direction:column;min-height:0;background:#f8fafc}
+.messages-info-panel{border-left:1px solid #e5e7eb;background:#fff;display:flex;flex-direction:column;min-height:0;overflow:hidden}
+.messages-info-panel.hidden{display:none}
 .msg-row{transition:background .15s;cursor:pointer}
 .msg-row:hover{background:#f1f5f9}
 .msg-row.active{background:#ecfdf5;border-left:3px solid #059669}
@@ -90,10 +93,13 @@ tbody tr:hover{background:#f1f5f9}
 .presence-offline{background:#cbd5e1}
 #messages-nav-badge{background:#ef4444;color:#fff;font-size:10px;font-weight:700;padding:1px 6px;border-radius:999px;margin-left:auto}
 #invitations-nav-badge{background:#ef4444;color:#fff;font-size:10px;font-weight:700;padding:1px 6px;border-radius:999px;margin-left:auto}
-@media (max-width:767px){
+@media (max-width:1023px){
   .messages-shell{grid-template-columns:1fr;height:calc(100vh - 200px)}
+  .messages-shell.info-open{grid-template-columns:1fr}
   .messages-shell.thread-open .messages-directory{display:none}
   .messages-shell:not(.thread-open) .messages-thread{display:none}
+  .messages-shell:not(.thread-open) .messages-info-panel{display:none}
+  .messages-info-panel{position:fixed;inset:0;z-index:60;border-left:none}
 }
 
 .msg-tick{font-size:11px;letter-spacing:-2px;display:inline-block;line-height:1}
@@ -118,13 +124,16 @@ tbody tr:hover{background:#f1f5f9}
 .msg-menu-btn:hover,.msg-menu-btn:active{background:#ecfdf5;color:#059669;border-color:#059669}
 .msg-menu-btn iconify-icon{font-size:20px}
 
+.msg-star-badge{position:absolute;top:4px;right:4px;color:#f59e0b;font-size:14px}
+.msg-pin-badge{position:absolute;top:4px;left:4px;color:#059669;font-size:14px}
+
 .msg-action-menu{
   position:fixed;
   background:#fff;border:1px solid #e5e7eb;border-radius:12px;
   box-shadow:0 12px 32px rgba(0,0,0,.18);
   padding:4px;z-index:9000;
   display:flex;flex-direction:column;
-  min-width:170px;
+  min-width:200px;max-height:70vh;overflow-y:auto;
 }
 .msg-action-menu button{
   display:flex;align-items:center;gap:10px;
@@ -135,6 +144,7 @@ tbody tr:hover{background:#f1f5f9}
 .msg-action-menu button:hover{background:#f1f5f9;color:#059669}
 .msg-action-menu button.danger:hover{background:#fef2f2;color:#dc2626}
 .msg-action-menu .menu-icon{width:18px;display:inline-flex;justify-content:center}
+.msg-action-menu .menu-divider{height:1px;background:#e5e7eb;margin:4px 8px}
 
 .reaction-picker-floating{
   position:fixed;
@@ -154,6 +164,7 @@ tbody tr:hover{background:#f1f5f9}
 .msg-reply-quote{border-left:3px solid #059669;background:rgba(5,150,105,.08);border-radius:6px;padding:4px 8px;margin-bottom:5px;font-size:11px;color:#334155;cursor:pointer}
 .msg-reply-quote .rq-name{font-weight:600;color:#059669}
 .msg-reply-quote .rq-text{opacity:.85;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:220px;display:block}
+.msg-forwarded-label{font-size:10px;font-style:italic;opacity:.85;margin-bottom:3px;display:flex;align-items:center;gap:4px}
 
 .msg-reactions{display:flex;gap:3px;flex-wrap:wrap;margin-top:5px}
 .msg-reactions .react-pill{background:#fff;border:1px solid #e5e7eb;border-radius:999px;padding:2px 8px;font-size:12px;display:inline-flex;gap:3px;align-items:center;cursor:pointer;line-height:1.4;transition:all .15s}
@@ -169,8 +180,8 @@ tbody tr:hover{background:#f1f5f9}
 .composer-toolbar button{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#64748b;background:transparent;border:none;cursor:pointer}
 .composer-toolbar button:hover{background:#f1f5f9;color:#059669}
 .composer-toolbar button.active{background:#ecfdf5;color:#059669}
+.composer-toolbar button:disabled{opacity:.5;cursor:not-allowed}
 
-/* Send button – explicit disabled styling */
 #message-send-btn{transition:opacity .15s ease, background-color .15s ease}
 #message-send-btn:disabled{opacity:.5;cursor:not-allowed;background-color:#94a3b8}
 #message-send-btn:disabled:hover{background-color:#94a3b8}
@@ -183,12 +194,14 @@ tbody tr:hover{background:#f1f5f9}
 
 .composer-reply{display:flex;align-items:center;gap:8px;border-left:3px solid #059669;background:rgba(5,150,105,.06);padding:6px 10px;border-radius:6px;margin-bottom:6px;font-size:12px}
 .composer-reply .close-x{margin-left:auto;color:#64748b;padding:2px;background:none;border:none;cursor:pointer}
+.composer-edit{display:flex;align-items:center;gap:8px;border-left:3px solid #f59e0b;background:rgba(245,158,11,.06);padding:6px 10px;border-radius:6px;margin-bottom:6px;font-size:12px}
+.composer-edit .close-x{margin-left:auto;color:#64748b;padding:2px;background:none;border:none;cursor:pointer}
 
 .composer-attachment{display:flex;align-items:center;gap:8px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:6px 10px;margin-bottom:6px;font-size:12px}
 
 .msg-search-panel{background:#fff;border-bottom:1px solid #e5e7eb;padding:8px 12px;display:none}
 .msg-search-panel.open{display:block}
-.msg-search-result{padding:6px 10px;border-radius:8px;cursor:pointer;font-size:12px}
+.msg-search-result{padding:6px 10px;border-radius:8px;cursor:pointer;font-size:12px;border-bottom:1px solid #f1f5f9}
 .msg-search-result:hover{background:#f1f5f9}
 
 .shared-card{background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:10px;font-size:12px;max-width:280px}
@@ -198,6 +211,44 @@ tbody tr:hover{background:#f1f5f9}
 .attach-preview{max-width:220px;border-radius:8px;overflow:hidden;margin-bottom:4px;background:#000}
 .attach-preview img{display:block;width:100%;max-height:200px;object-fit:cover;cursor:pointer}
 .attach-file{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.15);border-radius:8px;padding:6px 8px;margin-bottom:4px;font-size:12px;color:inherit;text-decoration:none}
+
+/* Conversation Info Panel */
+.info-header{padding:14px 16px;border-bottom:1px solid #e5e7eb;display:flex;align-items:center;gap:10px;background:#fff;flex-shrink:0}
+.info-header h3{font-weight:700;font-size:15px;flex:1}
+.info-header button{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:transparent;border:none;cursor:pointer;color:#64748b}
+.info-header button:hover{background:#f1f5f9;color:#059669}
+.info-scroll{flex:1;overflow-y:auto;padding:16px}
+.info-hero{text-align:center;padding:12px 0 20px}
+.info-hero .avatar{width:96px;height:96px;border-radius:50%;margin:0 auto 12px;overflow:hidden;background:#ecfdf5;color:#059669;display:flex;align-items:center;justify-content:center;font-size:36px;font-weight:800;position:relative}
+.info-hero .avatar img{width:100%;height:100%;object-fit:cover}
+.info-hero .name{font-weight:700;font-size:18px;color:#0f172a}
+.info-hero .email{font-size:12px;color:#64748b;margin-top:2px}
+.info-hero .org{font-size:12px;color:#059669;font-weight:600;margin-top:4px}
+.info-hero .presence{font-size:12px;margin-top:6px}
+.info-section{background:#f8fafc;border-radius:12px;padding:12px;margin-bottom:12px}
+.info-section h4{font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}
+.info-row{display:flex;justify-content:space-between;padding:6px 0;font-size:13px;gap:10px}
+.info-row .label{color:#64748b}
+.info-row .value{color:#0f172a;font-weight:500;text-align:right;word-break:break-word;max-width:60%}
+.info-action{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:10px;background:#fff;border:1px solid #e5e7eb;cursor:pointer;font-size:13px;font-weight:500;color:#334155;width:100%;text-align:left;margin-bottom:6px}
+.info-action:hover{background:#f8fafc}
+.info-action iconify-icon{color:#059669}
+.info-tabs{display:flex;gap:4px;background:#f1f5f9;border-radius:10px;padding:4px;margin-bottom:12px}
+.info-tabs button{flex:1;padding:7px 8px;border-radius:8px;font-size:12px;font-weight:600;color:#64748b;background:transparent;border:none;cursor:pointer}
+.info-tabs button.active{background:#059669;color:#fff}
+.media-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin-bottom:8px}
+.media-grid .media-cell{aspect-ratio:1;border-radius:8px;overflow:hidden;background:#f1f5f9;cursor:pointer}
+.media-grid .media-cell img{width:100%;height:100%;object-fit:cover;display:block}
+.file-row{display:flex;align-items:center;gap:10px;padding:8px 10px;background:#fff;border:1px solid #e5e7eb;border-radius:10px;margin-bottom:6px;font-size:12px}
+.file-row .file-icon{width:36px;height:36px;border-radius:8px;background:#ecfdf5;color:#059669;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.file-row .file-info{flex:1;min-width:0}
+.file-row .file-name{font-weight:600;color:#0f172a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.file-row .file-size{color:#64748b;font-size:11px}
+.file-row a{color:#059669;text-decoration:none;font-weight:600}
+.info-empty{text-align:center;color:#94a3b8;font-size:12px;padding:20px 8px}
+
+.info-backdrop{display:none}
+@media (max-width:1023px){.info-backdrop{display:none}}
 
 .material-symbols-outlined{
   font-family:'Material Symbols Outlined',sans-serif !important;
@@ -372,7 +423,7 @@ tbody tr:hover{background:#f1f5f9}
   // =================================================================
   const translations = {
     en: {
-      common:{comingSoon:"Coming Soon",save:"Save",cancel:"Cancel",add:"Add",delete:"Delete",edit:"Edit",close:"Close",export:"Export",loading:"Loading...",error:"Error",search:"Search",view:"View",copy:"Copy",areYouSure:"Are you sure?",cannotUndo:"This action cannot be undone",savedSuccessfully:"Saved successfully",updatedSuccessfully:"Updated successfully",deletedSuccessfully:"Deleted successfully",somethingWentWrong:"Something went wrong",requiredField:"Required field",invalidValue:"Invalid value",noDataAvailable:"No data available",noChange:"No change",accessDenied:"Access denied",subscriptionRequired:"Subscription required",sessionExpired:"Session expired",confirmDelete:"Confirm Delete"},
+      common:{comingSoon:"Coming Soon",save:"Save",cancel:"Cancel",add:"Add",delete:"Delete",edit:"Edit",close:"Close",export:"Export",loading:"Loading...",error:"Error",search:"Search",view:"View",copy:"Copy",areYouSure:"Are you sure?",cannotUndo:"This action cannot be undone",savedSuccessfully:"Saved successfully",updatedSuccessfully:"Updated successfully",deletedSuccessfully:"Deleted successfully",somethingWentWrong:"Something went wrong",requiredField:"Required field",invalidValue:"Invalid value",noDataAvailable:"No data available",noChange:"No change",accessDenied:"Access denied",subscriptionRequired:"Subscription required",sessionExpired:"Session expired",confirmDelete:"Confirm Delete",done:"Done",viewAll:"View all",unknown:"Unknown"},
       navigation:{dashboard:"Dashboard",sites:"Sites",materials:"Materials",stock:"Stock",workers:"Workers",progress:"Progress",reports:"Reports",finances:"Finances",managers:"Managers",invitations:"Invitations",messages:"Messages",gallery:"Gallery",officeHub:"Office Hub",settings:"Settings",notifications:"Notifications",logout:"Sign Out",ownerPanel:"Owner's Panel"},
       messages:{title:"Messages",searchPlaceholder:"Search managers...",noManagers:"No managers assigned to your sites yet.",noManagersFound:"No managers match your search.",noSearchResults:"No messages match your search",selectConversation:"Select a manager to start a private conversation",emptyThread:"No messages yet. Say hello 👋",inputPlaceholder:"Type a message...",send:"Send",online:"Online",offline:"Offline",lastSeen:"Last seen",unread:"Unread",you:"You",site:"Site",back:"Back",yesterday:"Yesterday",notAuthorized:"You are not authorized to view this conversation.",sentTo:"Conversation with {name}",
       attach:"Attach image",emoji:"Emoji",share:"Share SHDR record",shareMaterial:"Share Material",shareWorker:"Share Worker",shareReport:"Share Report",cancelReply:"Cancel reply",replyingTo:"Replying to {name}",
@@ -380,11 +431,34 @@ tbody tr:hover{background:#f1f5f9}
       statusSent:"Sent",statusDelivered:"Delivered",statusRead:"Read",
       isTyping:"{name} is typing...",severalTyping:"several people are typing...",
       searchInConversation:"Search in conversation",
-      pinConversation:"Pin",unpinConversation:"Unpin",muteConversation:"Mute",unmuteConversation:"Unmute",archiveConversation:"Archive",unarchiveConversation:"Unarchive",
+      pinConversation:"Pin conversation",unpinConversation:"Unpin conversation",muteConversation:"Mute notifications",unmuteConversation:"Unmute notifications",archiveConversation:"Archive conversation",unarchiveConversation:"Unarchive conversation",
+      markUnread:"Mark as unread",markRead:"Mark as read",
       uploading:"Uploading {name}...",fileTooLarge:"File is too large (max 10 MB)",fileTypeNotAllowed:"Only images can be sent right now (JPG, PNG, GIF, WEBP)",
       newMessageFrom:"New message from {name}",
       edit:"Edit Message", delete:"Delete Message",
-      editMessage:"Edit message",saveEdit:"Save changes",editWindowExpired:"You can only edit within 15 minutes",deleteWindowExpired:"Delete for everyone is only available for 15 minutes"},
+      editMessage:"Edit message",saveEdit:"Save changes",editWindowExpired:"You can only edit within 15 minutes",deleteWindowExpired:"Delete for everyone is only available for 15 minutes",
+      copy:"Copy message",star:"Star message",unstar:"Unstar message",pinMessage:"Pin message",unpinMessage:"Unpin message",forward:"Forward message",forwardTo:"Forward to...",forwarded:"Forwarded",forwardedFrom:"Forwarded from {name}",noForwardTargets:"No other conversations to forward to.",
+      copied:"Copied",copyFailed:"Could not copy",
+      conversationInfo:"Conversation Info",
+      contact:"Contact",email:"Email",phone:"Phone",role:"Role",organization:"Organization",assignedSite:"Assigned site",
+      conversationDetails:"Conversation",started:"Started",messagesCount:"Messages",mediaCount:"Media",filesCount:"Files",
+      settings:"Settings",notifications:"Notifications",pin:"Pin",
+      sharedMedia:"Shared Media",sharedFiles:"Shared Files",sharedLinks:"Shared Links",starredMessages:"Starred Messages",docs:"Docs",starred:"Starred",media:"Media",
+      newConversation:"New conversation",selectManager:"Select a manager",startConversation:"Start conversation",
+      youStarred:"You starred this message",alreadyStarred:"Already starred",
+      more:"More",clearConversation:"Clear conversation",deleteConfirm:"Delete this conversation for you? This cannot be undone.",
+      conversationCleared:"Conversation cleared",
+      memberSince:"Member since",
+      messageInfo:"Message info",
+      image:"Image",file:"File",
+      muteToastMuted:"Notifications muted",muteToastUnmuted:"Notifications unmuted",
+      pinToastPinned:"Conversation pinned",pinToastUnpinned:"Conversation unpinned",
+      archiveToastArchived:"Conversation archived",archiveToastUnarchived:"Conversation unarchived",
+      unreadToast:"Marked as unread",
+      starredToast:"Message starred",unstarredToast:"Message unstarred",
+      pinnedMessageToast:"Message pinned",unpinnedMessageToast:"Message unpinned",
+      forwardSuccess:"Message forwarded",forwardFailed:"Could not forward message",
+      profilePhoto:"Profile photo",today:"Today"},
       dashboard:{title:"Dashboard",totalSites:"Total Sites",totalWorkers:"Total Workers",welcome:"Welcome back, {name}",goodMorning:"Good Morning, {name}",goodAfternoon:"Good Afternoon, {name}",goodEvening:"Good Evening, {name}",overview:"Here's your construction site overview",noSites:"No sites",noWorkers:"No workers assigned",noData:"No data",spentOnMaterials:"Spent on Materials",recentProgress:"Recent Progress",selectSite:"Select a site",endDate:"End"},
       sites:{title:"Your Sites",addSite:"Add Site",editSite:"Edit Site",siteName:"Site Name",location:"Location",client:"Client",startDate:"Start Date",endDate:"End Date",budget:"Budget",status:"Status",markFinished:"Mark Finished",noSites:"No sites yet",district:"District",sector:"Sector",saveSite:"Save Site",deleteSite:"Delete Site"},
       materials:{title:"Materials",requisitions:"Requisitions",reqNumber:"Req. ID",site:"Site",requestedBy:"Requested By",requestDate:"Date Requested",requiredDate:"Required Date",priority:"Priority",status:"Status",actions:"Actions",pending:"Pending",urgent:"Urgent",approved:"Approved",rejected:"Rejected",partiallySupplied:"Partially Supplied",suppliedStatus:"Supplied",normal:"Normal",view:"View",approve:"Approve",reject:"Reject",supply:"Supply",noRequisitions:"No requisitions found.",requested:"Requested",supplied:"Supplied",remaining:"Remaining",available:"Available",material:"Material",unit:"Unit",notes:"Notes",quantityUsed:"Qty Used",unitCost:"Unit Cost",totalAmount:"Total Amount",availableStock:"Available Stock",rejectionReason:"Rejection Reason",noMaterials:"No materials recorded for this site."},
@@ -394,54 +468,15 @@ tbody tr:hover{background:#f1f5f9}
       reports:{title:"Generate Reports",general:"General",payroll:"Worker Payroll",stockReport:"Stock",selectSite:"Select Site",allSites:"All Sites",department:"Department",allDepartments:"All Departments",startDate:"Start Date",endDate:"End Date",exportCSV:"Export CSV",printPDF:"Print / PDF",noAttendance:"No attendance records found.",info:"Please ensure managers have recorded attendance for the workers.",searchWorker:"Search worker...",position:"Position",allPositions:"All Positions",paymentStatus:"Payment Status",paid:"Paid",unpaid:"Unpaid",allPayments:"All (Unpaid)",totalWorkers:"Total Workers",workerDays:"Worker-Days",totalPayroll:"Total Payroll",avgDaily:"Avg. Daily Labor Cost",worker:"Worker",daysWorked:"Days Worked",dailyRate:"Daily Rate",totalPayable:"Total Payable",total:"Total",labels:{period:"Period"}},
       finances:{title:"Finances",info:"Site Info",overview:"Financial Overview",budget:"Budget",totalSpent:"Total Spent",materialsCost:"Materials Cost",workersCost:"Workers Cost",remaining:"Remaining",dailyAvg:"Daily average",monthlyAvg:"Monthly average",addBudget:"Add Budget",newBudget:"New Budget Amount",updateBudget:"Update Budget",exceeded:"Budget exceeded!",costControl:"Cost control needed."},
       managers:{
-        title:"Managers",
-        subtitle:"Manage the people responsible for your assigned sites.",
-        info:"Managers assigned to your sites. The list updates automatically.",
-        inviteManager:"Invite Manager",
-        assignSite:"Assign to Site",
-        reassign:"Reassign",
-        email:"Email",
-        password:"Password",
-        invite:"Invite Manager",
-        noManagers:"No managers invited yet.",
-        remove:"Remove",
-        assignedSite:"Assigned site",
-        total:"Total Managers",active:"Active",pending:"Pending",pendingInvites:"Pending Invitations",unassigned:"Unassigned",
-        filterAll:"All",
-        colManager:"Manager",colContact:"Contact",colRole:"Role",colSites:"Assigned Sites",colStatus:"Status",colActions:"Actions",
-        inviteIntro:"Invite a manager to access and manage selected sites.",
-        personalMessage:"Personal message (optional)",
-        inviteFootnote:"The manager will receive an invitation with instructions to create or access their account.",
-        sendInvite:"Send Invitation",
-        inviteSent:"Invitation sent successfully.",
-        inviteSentTitle:"Invitation Sent",
-        wasInvitedAs:"has been invited as a Site Manager.",
-        expires:"Expires",
-        shareLink:"Share this secure link with the invited manager:",
-        viewInvitations:"View Invitations",
-        invalidSite:"Invalid site.",
-        alreadyMember:"This person is already a member.",
-        duplicateInvite:"This manager already has a pending invitation.",
-        otherOrg:"This user already belongs to another organization.",
-        details:"Manager Details",
-        assignmentHistory:"Assignment History",
-        present:"present",
-        invitationsTitle:"Manager Invitations",
-        invitedOn:"Invited",
-        invitedBy:"Invited by",
-        noInvitations:"No invitations yet.",
-        invitationDetails:"Invitation Details",
-        resend:"Resend",
-        revoke:"Revoke",
-        tab_all:"All",tab_pending:"Pending",tab_accepted:"Accepted",tab_expired:"Expired",tab_revoked:"Revoked"
-      },
+        title:"Managers",subtitle:"Manage the people responsible for your assigned sites.",info:"Managers assigned to your sites. The list updates automatically.",inviteManager:"Invite Manager",assignSite:"Assign to Site",reassign:"Reassign",email:"Email",password:"Password",invite:"Invite Manager",noManagers:"No managers invited yet.",remove:"Remove",assignedSite:"Assigned site",total:"Total Managers",active:"Active",pending:"Pending",pendingInvites:"Pending Invitations",unassigned:"Unassigned",filterAll:"All",colManager:"Manager",colContact:"Contact",colRole:"Role",colSites:"Assigned Sites",colStatus:"Status",colActions:"Actions",
+        inviteIntro:"Invite a manager to access and manage selected sites.",personalMessage:"Personal message (optional)",inviteFootnote:"The manager will receive an invitation with instructions to create or access their account.",sendInvite:"Send Invitation",inviteSent:"Invitation sent successfully.",inviteSentTitle:"Invitation Sent",wasInvitedAs:"has been invited as a Site Manager.",expires:"Expires",shareLink:"Share this secure link with the invited manager:",viewInvitations:"View Invitations",invalidSite:"Invalid site.",alreadyMember:"This person is already a member.",duplicateInvite:"This manager already has a pending invitation.",otherOrg:"This user already belongs to another organization.",details:"Manager Details",assignmentHistory:"Assignment History",present:"present",invitationsTitle:"Manager Invitations",invitedOn:"Invited",invitedBy:"Invited by",noInvitations:"No invitations yet.",invitationDetails:"Invitation Details",resend:"Resend",revoke:"Revoke",tab_all:"All",tab_pending:"Pending",tab_accepted:"Accepted",tab_expired:"Expired",tab_revoked:"Revoked"},
       gallery:{title:"Site Gallery",selectSite:"Select Site",allSites:"All Sites",viewImage:"View Image",noImages:"No gallery images",close:"Close",description:"Description"},
       settings:{title:"Settings",profile:"Profile",account:"Account",security:"Security",preferences:"Preferences",profileInfo:"Profile Information",fullName:"Full Name",phone:"Phone Number",email:"Email Address",saveChanges:"Save Changes",accountInfo:"Account Information",accountName:"Account Name",role:"Role",accountStatus:"Account Status",active:"Active",memberSince:"Member Since",changePasscode:"Change Passcode",currentPasscode:"Current Passcode",newPasscode:"New Passcode",confirmPasscode:"Confirm New Passcode",changePass:"Change Passcode",prefs:"Preferences",language:"Language",currency:"Currency",dateFormat:"Date Format",notifications:"Enable Notifications",savePrefs:"Save Preferences",changePhoto:"Change Photo",removePhoto:"Erase Photo"},
       alerts:{savedSuccessfully:"Saved successfully",updatedSuccessfully:"Updated successfully",deletedSuccessfully:"Deleted successfully",somethingWentWrong:"Something went wrong",areYouSure:"Are you sure?",cannotUndo:"This action cannot be undone",requiredField:"Required field",invalidValue:"Invalid value",noDataAvailable:"No data available"},
       status:{active:"Active",completed:"Completed",pending:"Pending",cancelled:"Cancelled",notStarted:"Not Started",inProgress:"In Progress",finished:"Finished"}
     },
     rw: {
-      common:{comingSoon:"Biraza",save:"Bika",cancel:"Hagarika",add:"Ongeraho",delete:"Siba",edit:"Hindura",close:"Funga",export:"Sohora",loading:"Birimo gutegura...",error:"Ikibazo",search:"Shakisha",view:"Reba",copy:"Koporora",areYouSure:"Urabyemeza?",cannotUndo:"Ibi ntibishobora guhindurwa",savedSuccessfully:"Byabitswe neza",updatedSuccessfully:"Byavuguruwe neza",deletedSuccessfully:"Byasibwe neza",somethingWentWrong:"Hari ikitagenze neza",requiredField:"Ibi birakenewe",invalidValue:"Agaciro katariyo",noDataAvailable:"Nta makuru aboneka",noChange:"Nta mpinduka",accessDenied:"Ntabwo ureherewe",confirmDelete:"Emeza gusiba"},
+      common:{comingSoon:"Biraza",save:"Bika",cancel:"Hagarika",add:"Ongeraho",delete:"Siba",edit:"Hindura",close:"Funga",export:"Sohora",loading:"Birimo gutegura...",error:"Ikibazo",search:"Shakisha",view:"Reba",copy:"Koporora",areYouSure:"Urabyemeza?",cannotUndo:"Ibi ntibishobora guhindurwa",savedSuccessfully:"Byabitswe neza",updatedSuccessfully:"Byavuguruwe neza",deletedSuccessfully:"Byasibwe neza",somethingWentWrong:"Hari ikitagenze neza",requiredField:"Ibi birakenewe",invalidValue:"Agaciro katariyo",noDataAvailable:"Nta makuru aboneka",noChange:"Nta mpinduka",accessDenied:"Ntabwo ureherewe",confirmDelete:"Emeza gusiba",done:"Byarangiye",viewAll:"Reba byose",unknown:"Ntibizwi"},
       navigation:{dashboard:"Imbonerahamwe",sites:"Ibibanza",materials:"Ibikoresho",stock:"Imbuganyuro",workers:"Abakozi",progress:"Ibitekerezo",reports:"Raporo",finances:"Imari",managers:"Abayobozi",invitations:"Ubutumire",messages:"Ubutumwa",gallery:"Amafoto",officeHub:"Office Hub",settings:"Igenamiterere",notifications:"Imenyesha",logout:"Sohoka",ownerPanel:"Ipaneli ya nyir'ubwite"},
       messages:{title:"Ubutumwa",searchPlaceholder:"Shakisha abayobozi...",noManagers:"Nta bayobozi bagenwe ku bibanza byawe.",noManagersFound:"Nta muyobozi uhuza n'ubushakashatsi.",noSearchResults:"Nta butumwa buhuye n'ubushakashatsi",selectConversation:"Hitamo umuyobozi gutangira ikiganiro bwite",emptyThread:"Nta butumwa burahari. Vuga muraho 👋",inputPlaceholder:"Andika ubutumwa...",send:"Ohereza",online:"Kuri interineti",offline:"Nta murongo",lastSeen:"Byagarutse",unread:"Ntibisomwe",you:"Wowe",site:"Igibanza",back:"Subira",yesterday:"Ejo hashize",notAuthorized:"Ntabwo ureherewe kureba iki kiganiro.",sentTo:"Ikiganiro na {name}",
       attach:"Ohereza ifoto",emoji:"Emoji",share:"Sangiza inyandiko",shareMaterial:"Sangiza Ibikoresho",shareWorker:"Sangiza Umukozi",shareReport:"Sangiza Raporo",cancelReply:"Hagarika gusubiza",replyingTo:"Gusubiza {name}",
@@ -450,10 +485,33 @@ tbody tr:hover{background:#f1f5f9}
       isTyping:"{name} arandika...",severalTyping:"abantu bakoresha...",
       searchInConversation:"Shakisha mu kiganiro",
       pinConversation:"Shyira hejuru",unpinConversation:"Kura hejuru",muteConversation:"Nyereza",unmuteConversation:"Kumurura",archiveConversation:"Bika",unarchiveConversation:"Kuraho",
+      markUnread:"Menyekanisha nk'itabisomwe",markRead:"Menyekanisha nk'ibisomwe",
       uploading:"Turaohereza {name}...",fileTooLarge:"Dosiye ni nini cyane (max 10 MB)",fileTypeNotAllowed:"Ifoto gusa (JPG, PNG, GIF, WEBP)",
       newMessageFrom:"Ubutumwa bushya buturutse {name}",
       edit:"Hindura Ubutumwa", delete:"Siba Ubutumwa",
-      editMessage:"Hindura ubutumwa",saveEdit:"Bika",editWindowExpired:"Ushobora guhindura gusa mu minota 15",deleteWindowExpired:"Gusiba kuri bose bishoboka gusa mu minota 15"},
+      editMessage:"Hindura ubutumwa",saveEdit:"Bika",editWindowExpired:"Ushobora guhindura gusa mu minota 15",deleteWindowExpired:"Gusiba kuri bose bishoboka gusa mu minota 15",
+      copy:"Koporora ubutumwa",star:"Shyiraho inyenyeri",unstar:"Kuraho inyenyeri",pinMessage:"Shyira ubutumwa hejuru",unpinMessage:"Kura ubutumwa hejuru",forward:"Ohereza ubutumwa",forwardTo:"Ohereza kuri...",forwarded:"Byoherejwe",forwardedFrom:"Byoherejwe na {name}",noForwardTargets:"Nta bindi biganiro byo koherezaho.",
+      copied:"Byakoporowe",copyFailed:"Ntibyakoporowe",
+      conversationInfo:"Amakuru y'Ikiganiro",
+      contact:"Ihuza",email:"Email",phone:"Telefone",role:"Uruhare",organization:"Umuryango",assignedSite:"Igibanza",
+      conversationDetails:"Ikiganiro",started:"Byatangiye",messagesCount:"Ubutumwa",mediaCount:"Amafoto",filesCount:"Dosiye",
+      settings:"Igenamiterere",notifications:"Imenyesha",pin:"Shyira hejuru",
+      sharedMedia:"Amafoto asangiwe",sharedFiles:"Dosiye zisangiwe",sharedLinks:"Links zisangiwe",starredMessages:"Ubutumwa bw'inyenyeri",docs:"Dosiye",starred:"Inyenyeri",media:"Amafoto",
+      newConversation:"Ikiganiro gishya",selectManager:"Hitamo umuyobozi",startConversation:"Tangira ikiganiro",
+      youStarred:"Washyizeho inyenyeri",alreadyStarred:"Usanzwe ufite inyenyeri",
+      more:"Byinshi",clearConversation:"Siba ikiganiro",deleteConfirm:"Gusiba iki kiganiro kuri wowe? Ntibishobora guhindurwa.",
+      conversationCleared:"Ikiganiro cyasibwe",
+      memberSince:"Umunyamuryango kuva",
+      messageInfo:"Amakuru y'ubutumwa",
+      image:"Ifoto",file:"Dosiye",
+      muteToastMuted:"Imenyesha yahagaritswe",muteToastUnmuted:"Imenyesha yagarutse",
+      pinToastPinned:"Ikiganiro kiri hejuru",pinToastUnpinned:"Ikiganiro ntikiri hejuru",
+      archiveToastArchived:"Ikiganiro cyabitswe",archiveToastUnarchived:"Ikiganiro cyakuwe mu bubiko",
+      unreadToast:"Byamenyekanishijwe nk'itabisomwe",
+      starredToast:"Ubutumwa bwahawe inyenyeri",unstarredToast:"Inyenyeri yakuwe ku butumwa",
+      pinnedMessageToast:"Ubutumwa bwashyizwe hejuru",unpinnedMessageToast:"Ubutumwa bwakuwe hejuru",
+      forwardSuccess:"Ubutumwa bwoherejwe",forwardFailed:"Ntibyashobotse kohereza",
+      profilePhoto:"Ifoto y'umwirondoro",today:"Uyu munsi"},
       dashboard:{title:"Imbonerahamwe",totalSites:"Imibare y'ibibanza",totalWorkers:"Imibare y'abakozi",welcome:"Murakaza neza, {name}",goodMorning:"Mwaramutse, {name}",goodAfternoon:"Mwiriwe, {name}",goodEvening:"Mu mugoroba, {name}",overview:"Dore ikibazo cy'umurimo wawe",noSites:"Nta bibanza",noWorkers:"Nta bakozi bagenwe",noData:"Nta makuru",spentOnMaterials:"Amafaranga yakoreshejwe ku bikoresho",recentProgress:"Ibitekerezo bishya",selectSite:"Hitamo igibanza",endDate:"Iherezo"},
       sites:{title:"Ibibanza byawe",addSite:"Ongeraho igibanza",editSite:"Hindura igibanza",siteName:"Izina",location:"Aho biherereye",client:"Umukiriya",startDate:"Itariki yo gutangira",endDate:"Itariki yo kurangira",budget:"Ingengo y'imari",status:"Imiterere",markFinished:"Rangiza",noSites:"Nta bibanza birahari",district:"Akarere",sector:"Umurenge",saveSite:"Bika",deleteSite:"Siba"},
       materials:{title:"Ibikoresho",requisitions:"Ubusabe",reqNumber:"Nomero",site:"Igibanza",requestedBy:"Wasabye",requestDate:"Itariki yo Gusaba",requiredDate:"Itariki Ikenewe",priority:"Ubwihutirwa",status:"Imiterere",actions:"Ibikorwa",pending:"Bitegereje",urgent:"Byihutirwa",approved:"Byemewe",rejected:"Byanze",partiallySupplied:"Igice",suppliedStatus:"Byatanzwe",normal:"Bisanzwe",view:"Reba",approve:"Emeza",reject:"Anza",supply:"Tanga",noRequisitions:"Nta busabe.",requested:"Basabwe",supplied:"Byatanzwe",remaining:"Bisigaye",available:"Biboneka",material:"Ibikoresho",unit:"Igice",notes:"Ibisobanuro",quantityUsed:"Umubare",unitCost:"Igiciro",totalAmount:"Amafaranga",availableStock:"Biboneka",rejectionReason:"Impamvu",noMaterials:"Nta bikoresho."},
@@ -462,55 +520,14 @@ tbody tr:hover{background:#f1f5f9}
       progress:{title:"Imirimo",addTask:"Ongeraho umurimo",task:"Umurimo",start:"Tangira",end:"Rangira",status:"Imiterere",pending:"Bitegereje",completed:"Byarangiye",noTasks:"Nta mirimo.",addTaskModal:"Ongeraho umurimo",taskName:"Izina",selectSite:"Hitamo igibanza",periodNumber:"Umubare",days:"Iminsi",weeks:"Ibyumweru",saveTask:"Bika",editTask:"Hindura"},
       reports:{title:"Raporo",general:"Rusange",payroll:"Umushahara",stockReport:"Imbuganyuro",selectSite:"Hitamo Igibanza",allSites:"Ibibanza Byose",department:"Ishami",allDepartments:"Amashami Yose",startDate:"Itariki yo gutangira",endDate:"Itariki yo kurangira",exportCSV:"Sohora CSV",printPDF:"Capa / PDF",noAttendance:"Nta makuru.",info:"Nyamuneka menya neza.",searchWorker:"Shakisha umukozi...",position:"Umwanya",allPositions:"Imiryango Yose",paymentStatus:"Imiterere y'ubwishyu",paid:"Byishyuwe",unpaid:"Bitishyuwe",allPayments:"Byose",totalWorkers:"Abakozi Bose",workerDays:"Iminsi",totalPayroll:"Umushahara Wose",avgDaily:"Igiciro cy'umunsi",worker:"Umukozi",daysWorked:"Iminsi",dailyRate:"Umushahara",totalPayable:"Amafaranga",total:"Igiteranyo",labels:{period:"Igihe"}},
       finances:{title:"Imari",info:"Amakuru",overview:"Imbonerahamwe",budget:"Ingengo",totalSpent:"Yakoreshejwe",materialsCost:"Ibikoresho",workersCost:"Abakozi",remaining:"Isigazwa",dailyAvg:"Buri munsi",monthlyAvg:"Buri kwezi",addBudget:"Ongeraho",newBudget:"Nshya",updateBudget:"Vugurura",exceeded:"Yarengwe!",costControl:"Birakenewe."},
-      managers:{
-        title:"Abayobozi",
-        subtitle:"Genzura abantu bashinzwe ibibanza byawe.",
-        info:"Abayobozi bagenzwe.",
-        inviteManager:"Tumira umuyobozi",
-        assignSite:"Mwize ku gibanza",
-        reassign:"Ongera umwize",
-        email:"Email",
-        password:"Ijambobanga",
-        invite:"Tumira",
-        noManagers:"Nta bayobozi.",
-        remove:"Kuraho",
-        assignedSite:"Igibanza",
-        total:"Abayobozi bose",active:"Bakora",pending:"Bategereje",pendingInvites:"Ubutumire butegereje",unassigned:"Nta gibanza",
-        filterAll:"Byose",
-        colManager:"Umuyobozi",colContact:"Ihuza",colRole:"Uruhare",colSites:"Ibibanza",colStatus:"Imiterere",colActions:"Ibikorwa",
-        inviteIntro:"Tumira umuyobozi kugira ngo abashe gucunga ibibanza byatoranyijwe.",
-        personalMessage:"Ubutumwa bwite (bidategetswe)",
-        inviteFootnote:"Umuyobozi azabona ubutumire bufite amabwiriza yo gukora cyangwa kwinjira muri konti ye.",
-        sendInvite:"Ohereza ubutumire",
-        inviteSent:"Ubutumire bwoherejwe neza.",
-        inviteSentTitle:"Ubutumire Bwoherejwe",
-        wasInvitedAs:"yatumiwe nk'Umuyobozi w'Igibanza.",
-        expires:"Birangira",
-        shareLink:"Sangiza iyi link y'umutekano n'umuyobozi watumiwe:",
-        viewInvitations:"Reba Ubutumire",
-        invalidSite:"Igibanza kitarimo.",
-        alreadyMember:"Uyu muntu asanzwe ari umunyamuryango.",
-        duplicateInvite:"Uyu muyobozi asanzwe afite ubutumire butegereje.",
-        otherOrg:"Uyu ukoresha asanzwe ari mu rundi rubuga.",
-        details:"Ibisobanuro by'Umuyobozi",
-        assignmentHistory:"Amateka y'Igenamiterere",
-        present:"ubu",
-        invitationsTitle:"Ubutumire bw'Abayobozi",
-        invitedOn:"Yatumiwe",
-        invitedBy:"Yatumiwe na",
-        noInvitations:"Nta butumire.",
-        invitationDetails:"Ibisobanuro by'Ubutumire",
-        resend:"Ongera wohereze",
-        revoke:"Hagarika",
-        tab_all:"Byose",tab_pending:"Bitegereje",tab_accepted:"Byemejwe",tab_expired:"Byarangiye",tab_revoked:"Byahagaritswe"
-      },
+      managers:{title:"Abayobozi",subtitle:"Genzura abantu bashinzwe ibibanza byawe.",info:"Abayobozi bagenzwe.",inviteManager:"Tumira umuyobozi",assignSite:"Mwize ku gibanza",reassign:"Ongera umwize",email:"Email",password:"Ijambobanga",invite:"Tumira",noManagers:"Nta bayobozi.",remove:"Kuraho",assignedSite:"Igibanza",total:"Abayobozi bose",active:"Bakora",pending:"Bategereje",pendingInvites:"Ubutumire butegereje",unassigned:"Nta gibanza",filterAll:"Byose",colManager:"Umuyobozi",colContact:"Ihuza",colRole:"Uruhare",colSites:"Ibibanza",colStatus:"Imiterere",colActions:"Ibikorwa",inviteIntro:"Tumira umuyobozi kugira ngo abashe gucunga ibibanza byatoranyijwe.",personalMessage:"Ubutumwa bwite (bidategetswe)",inviteFootnote:"Umuyobozi azabona ubutumire bufite amabwiriza yo gukora cyangwa kwinjira muri konti ye.",sendInvite:"Ohereza ubutumire",inviteSent:"Ubutumire bwoherejwe neza.",inviteSentTitle:"Ubutumire Bwoherejwe",wasInvitedAs:"yatumiwe nk'Umuyobozi w'Igibanza.",expires:"Birangira",shareLink:"Sangiza iyi link y'umutekano n'umuyobozi watumiwe:",viewInvitations:"Reba Ubutumire",invalidSite:"Igibanza kitarimo.",alreadyMember:"Uyu muntu asanzwe ari umunyamuryango.",duplicateInvite:"Uyu muyobozi asanzwe afite ubutumire butegereje.",otherOrg:"Uyu ukoresha asanzwe ari mu rundi rubuga.",details:"Ibisobanuro by'Umuyobozi",assignmentHistory:"Amateka y'Igenamiterere",present:"ubu",invitationsTitle:"Ubutumire bw'Abayobozi",invitedOn:"Yatumiwe",invitedBy:"Yatumiwe na",noInvitations:"Nta butumire.",invitationDetails:"Ibisobanuro by'Ubutumire",resend:"Ongera wohereze",revoke:"Hagarika",tab_all:"Byose",tab_pending:"Bitegereje",tab_accepted:"Byemejwe",tab_expired:"Byarangiye",tab_revoked:"Byahagaritswe"},
       gallery:{title:"Amafoto",selectSite:"Hitamo Igibanza",allSites:"Byose",viewImage:"Reba",noImages:"Nta mafoto",close:"Funga",description:"Ibisobanuro"},
       settings:{title:"Igenamiterere",profile:"Umwirondoro",account:"Kontu",security:"Umutekano",preferences:"Amahitamo",profileInfo:"Amakuru bwite",fullName:"Amazina",phone:"Telefoni",email:"Email",saveChanges:"Bika",accountInfo:"Kontu",accountName:"Izina",role:"Umwanya",accountStatus:"Imiterere",active:"Bikora",memberSince:"Kuva",changePasscode:"Hindura passcode",currentPasscode:"Risanzwe",newPasscode:"Rishya",confirmPasscode:"Emeza",changePass:"Hindura",prefs:"Amahitamo",language:"Ururimi",currency:"Ifaranga",dateFormat:"Itariki",notifications:"Imenyesha",savePrefs:"Bika",changePhoto:"Hindura ifoto",removePhoto:"Kuraho"},
       alerts:{savedSuccessfully:"Byabitswe",updatedSuccessfully:"Byavuguruwe",deletedSuccessfully:"Byasibwe",somethingWentWrong:"Hari ikitagenze neza",areYouSure:"Urabyemeza?",cannotUndo:"Ntibishobora",requiredField:"Birakenewe",invalidValue:"Agaciro katariyo",noDataAvailable:"Nta makuru"},
       status:{active:"Bikora",completed:"Byarangiye",pending:"Bitegereje",cancelled:"Byahagaritswe",notStarted:"Ntibitangira",inProgress:"Bikorwa",finished:"Byarangiye"}
     },
     fr: {
-      common:{comingSoon:"Bientôt disponible",save:"Enregistrer",cancel:"Annuler",add:"Ajouter",delete:"Supprimer",edit:"Modifier",close:"Fermer",export:"Exporter",loading:"Chargement...",error:"Erreur",search:"Rechercher",view:"Voir",copy:"Copier",areYouSure:"Êtes-vous sûr ?",cannotUndo:"Irréversible",savedSuccessfully:"Enregistré",updatedSuccessfully:"Mis à jour",deletedSuccessfully:"Supprimé",somethingWentWrong:"Erreur",requiredField:"Champ requis",invalidValue:"Valeur invalide",noDataAvailable:"Aucune donnée",noChange:"Aucun changement",accessDenied:"Refusé",confirmDelete:"Confirmer"},
+      common:{comingSoon:"Bientôt disponible",save:"Enregistrer",cancel:"Annuler",add:"Ajouter",delete:"Supprimer",edit:"Modifier",close:"Fermer",export:"Exporter",loading:"Chargement...",error:"Erreur",search:"Rechercher",view:"Voir",copy:"Copier",areYouSure:"Êtes-vous sûr ?",cannotUndo:"Irréversible",savedSuccessfully:"Enregistré",updatedSuccessfully:"Mis à jour",deletedSuccessfully:"Supprimé",somethingWentWrong:"Erreur",requiredField:"Champ requis",invalidValue:"Valeur invalide",noDataAvailable:"Aucune donnée",noChange:"Aucun changement",accessDenied:"Refusé",confirmDelete:"Confirmer",done:"Terminé",viewAll:"Voir tout",unknown:"Inconnu"},
       navigation:{dashboard:"Tableau de bord",sites:"Sites",materials:"Matériaux",stock:"Stock",workers:"Ouvriers",progress:"Progrès",reports:"Rapports",finances:"Finances",managers:"Gestionnaires",invitations:"Invitations",messages:"Messages",gallery:"Galerie",officeHub:"Bureau",settings:"Paramètres",notifications:"Notifications",logout:"Déconnexion",ownerPanel:"Panneau du propriétaire"},
       messages:{title:"Messages",searchPlaceholder:"Rechercher...",noManagers:"Aucun gestionnaire.",noManagersFound:"Aucun gestionnaire ne correspond.",noSearchResults:"Aucun message ne correspond",selectConversation:"Sélectionnez un gestionnaire",emptyThread:"Aucun message. Dites bonjour 👋",inputPlaceholder:"Tapez un message...",send:"Envoyer",online:"En ligne",offline:"Hors ligne",lastSeen:"Vu",unread:"Non lu",you:"Vous",site:"Site",back:"Retour",yesterday:"Hier",notAuthorized:"Non autorisé.",sentTo:"Conversation avec {name}",
       attach:"Joindre image",emoji:"Emoji",share:"Partager",shareMaterial:"Partager Matériau",shareWorker:"Partager Ouvrier",shareReport:"Partager Rapport",cancelReply:"Annuler réponse",replyingTo:"Réponse à {name}",
@@ -519,10 +536,33 @@ tbody tr:hover{background:#f1f5f9}
       isTyping:"{name} écrit...",severalTyping:"plusieurs personnes écrivent...",
       searchInConversation:"Rechercher",
       pinConversation:"Épingler",unpinConversation:"Désépingler",muteConversation:"Sourdine",unmuteConversation:"Réactiver",archiveConversation:"Archiver",unarchiveConversation:"Désarchiver",
+      markUnread:"Marquer comme non lu",markRead:"Marquer comme lu",
       uploading:"Envoi {name}...",fileTooLarge:"Trop volumineux (max 10 Mo)",fileTypeNotAllowed:"Images uniquement (JPG, PNG, GIF, WEBP)",
       newMessageFrom:"Nouveau message de {name}",
       edit:"Modifier le message", delete:"Supprimer le message",
-      editMessage:"Modifier",saveEdit:"Enregistrer",editWindowExpired:"Modifiable dans les 15 minutes",deleteWindowExpired:"Suppression pour tous dans les 15 minutes"},
+      editMessage:"Modifier",saveEdit:"Enregistrer",editWindowExpired:"Modifiable dans les 15 minutes",deleteWindowExpired:"Suppression pour tous dans les 15 minutes",
+      copy:"Copier le message",star:"Étoile",unstar:"Retirer l'étoile",pinMessage:"Épingler le message",unpinMessage:"Désépingler le message",forward:"Transférer",forwardTo:"Transférer vers...",forwarded:"Transféré",forwardedFrom:"Transféré de {name}",noForwardTargets:"Aucune autre conversation.",
+      copied:"Copié",copyFailed:"Impossible de copier",
+      conversationInfo:"Infos de conversation",
+      contact:"Contact",email:"E-mail",phone:"Téléphone",role:"Rôle",organization:"Organisation",assignedSite:"Site assigné",
+      conversationDetails:"Conversation",started:"Démarrée",messagesCount:"Messages",mediaCount:"Médias",filesCount:"Fichiers",
+      settings:"Paramètres",notifications:"Notifications",pin:"Épingler",
+      sharedMedia:"Médias partagés",sharedFiles:"Fichiers partagés",sharedLinks:"Liens partagés",starredMessages:"Messages étoilés",docs:"Docs",starred:"Étoilés",media:"Médias",
+      newConversation:"Nouvelle conversation",selectManager:"Sélectionner un gestionnaire",startConversation:"Démarrer",
+      youStarred:"Vous avez étoilé",alreadyStarred:"Déjà étoilé",
+      more:"Plus",clearConversation:"Effacer la conversation",deleteConfirm:"Supprimer cette conversation ? Irréversible.",
+      conversationCleared:"Conversation effacée",
+      memberSince:"Membre depuis",
+      messageInfo:"Info message",
+      image:"Image",file:"Fichier",
+      muteToastMuted:"Notifications coupées",muteToastUnmuted:"Notifications réactivées",
+      pinToastPinned:"Conversation épinglée",pinToastUnpinned:"Conversation désépinglée",
+      archiveToastArchived:"Conversation archivée",archiveToastUnarchived:"Conversation désarchivée",
+      unreadToast:"Marquée comme non lue",
+      starredToast:"Message étoilé",unstarredToast:"Étoile retirée",
+      pinnedMessageToast:"Message épinglé",unpinnedMessageToast:"Message désépinglé",
+      forwardSuccess:"Message transféré",forwardFailed:"Échec du transfert",
+      profilePhoto:"Photo de profil",today:"Aujourd'hui"},
       dashboard:{title:"Tableau de bord",totalSites:"Sites",totalWorkers:"Ouvriers",welcome:"Bienvenue, {name}",goodMorning:"Bonjour, {name}",goodAfternoon:"Bon après-midi, {name}",goodEvening:"Bonsoir, {name}",overview:"Aperçu",noSites:"Aucun site",noWorkers:"Aucun ouvrier",noData:"Aucune donnée",spentOnMaterials:"Dépensé",recentProgress:"Progrès récents",selectSite:"Sélectionner",endDate:"Fin"},
       sites:{title:"Vos sites",addSite:"Ajouter",editSite:"Modifier",siteName:"Nom",location:"Emplacement",client:"Client",startDate:"Début",endDate:"Fin",budget:"Budget",status:"Statut",markFinished:"Marquer",noSites:"Aucun site",district:"District",sector:"Secteur",saveSite:"Enregistrer",deleteSite:"Supprimer"},
       materials:{title:"Matériaux",requisitions:"Réquisitions",reqNumber:"N°",site:"Site",requestedBy:"Demandé par",requestDate:"Date demande",requiredDate:"Date requise",priority:"Priorité",status:"Statut",actions:"Actions",pending:"En attente",urgent:"Urgent",approved:"Approuvé",rejected:"Rejeté",partiallySupplied:"Partiel",suppliedStatus:"Fourni",normal:"Normal",view:"Voir",approve:"Approuver",reject:"Rejeter",supply:"Fournir",noRequisitions:"Aucune réquisition.",requested:"Demandé",supplied:"Fourni",remaining:"Restant",available:"Disponible",material:"Matériau",unit:"Unité",notes:"Notes",quantityUsed:"Qté",unitCost:"Coût",totalAmount:"Total",availableStock:"Disponible",rejectionReason:"Motif",noMaterials:"Aucun matériau."},
@@ -531,48 +571,7 @@ tbody tr:hover{background:#f1f5f9}
       progress:{title:"Tâches",addTask:"Ajouter",task:"Tâche",start:"Début",end:"Fin",status:"Statut",pending:"En attente",completed:"Terminé",noTasks:"Aucune tâche.",addTaskModal:"Ajouter",taskName:"Nom",selectSite:"Site",periodNumber:"Période",days:"Jours",weeks:"Semaines",saveTask:"Enregistrer",editTask:"Modifier"},
       reports:{title:"Rapports",general:"Général",payroll:"Paie",stockReport:"Stock",selectSite:"Site",allSites:"Tous",department:"Département",allDepartments:"Tous",startDate:"Début",endDate:"Fin",exportCSV:"CSV",printPDF:"PDF",noAttendance:"Aucune présence.",info:"Vérifiez la présence.",searchWorker:"Rechercher...",position:"Poste",allPositions:"Tous",paymentStatus:"Paiement",paid:"Payé",unpaid:"Non payé",allPayments:"Tous",totalWorkers:"Ouvriers",workerDays:"Jours",totalPayroll:"Paie",avgDaily:"Moyenne",worker:"Ouvrier",daysWorked:"Jours",dailyRate:"Taux",totalPayable:"Total",total:"Total",labels:{period:"Période"}},
       finances:{title:"Finances",info:"Info",overview:"Aperçu",budget:"Budget",totalSpent:"Dépensé",materialsCost:"Matériaux",workersCost:"Ouvriers",remaining:"Restant",dailyAvg:"Moyenne jour",monthlyAvg:"Moyenne mois",addBudget:"Ajouter",newBudget:"Nouveau",updateBudget:"Mettre à jour",exceeded:"Dépassé!",costControl:"Contrôle requis."},
-      managers:{
-        title:"Gestionnaires",
-        subtitle:"Gérez les personnes responsables de vos sites assignés.",
-        info:"Gestionnaires assignés.",
-        inviteManager:"Inviter un gestionnaire",
-        assignSite:"Assigner à un site",
-        reassign:"Réassigner",
-        email:"E-mail",
-        password:"Mot de passe",
-        invite:"Inviter",
-        noManagers:"Aucun.",
-        remove:"Retirer",
-        assignedSite:"Site",
-        total:"Total gestionnaires",active:"Actifs",pending:"En attente",pendingInvites:"Invitations en attente",unassigned:"Non assignés",
-        filterAll:"Tous",
-        colManager:"Gestionnaire",colContact:"Contact",colRole:"Rôle",colSites:"Sites assignés",colStatus:"Statut",colActions:"Actions",
-        inviteIntro:"Invitez un gestionnaire à accéder et gérer les sites sélectionnés.",
-        personalMessage:"Message personnel (facultatif)",
-        inviteFootnote:"Le gestionnaire recevra une invitation avec des instructions pour créer ou accéder à son compte.",
-        sendInvite:"Envoyer l'invitation",
-        inviteSent:"Invitation envoyée.",
-        inviteSentTitle:"Invitation Envoyée",
-        wasInvitedAs:"a été invité en tant que gestionnaire de site.",
-        expires:"Expire",
-        shareLink:"Partagez ce lien sécurisé avec le gestionnaire invité :",
-        viewInvitations:"Voir les invitations",
-        invalidSite:"Site invalide.",
-        alreadyMember:"Cette personne est déjà membre.",
-        duplicateInvite:"Ce gestionnaire a déjà une invitation en attente.",
-        otherOrg:"Cet utilisateur appartient déjà à une autre organisation.",
-        details:"Détails du gestionnaire",
-        assignmentHistory:"Historique des affectations",
-        present:"actuel",
-        invitationsTitle:"Invitations de gestionnaires",
-        invitedOn:"Invité",
-        invitedBy:"Invité par",
-        noInvitations:"Aucune invitation.",
-        invitationDetails:"Détails de l'invitation",
-        resend:"Renvoyer",
-        revoke:"Révoquer",
-        tab_all:"Tout",tab_pending:"En attente",tab_accepted:"Accepté",tab_expired:"Expiré",tab_revoked:"Révoqué"
-      },
+      managers:{title:"Gestionnaires",subtitle:"Gérez les personnes responsables de vos sites assignés.",info:"Gestionnaires assignés.",inviteManager:"Inviter un gestionnaire",assignSite:"Assigner à un site",reassign:"Réassigner",email:"E-mail",password:"Mot de passe",invite:"Inviter",noManagers:"Aucun.",remove:"Retirer",assignedSite:"Site",total:"Total gestionnaires",active:"Actifs",pending:"En attente",pendingInvites:"Invitations en attente",unassigned:"Non assignés",filterAll:"Tous",colManager:"Gestionnaire",colContact:"Contact",colRole:"Rôle",colSites:"Sites assignés",colStatus:"Statut",colActions:"Actions",inviteIntro:"Invitez un gestionnaire à accéder et gérer les sites sélectionnés.",personalMessage:"Message personnel (facultatif)",inviteFootnote:"Le gestionnaire recevra une invitation avec des instructions pour créer ou accéder à son compte.",sendInvite:"Envoyer l'invitation",inviteSent:"Invitation envoyée.",inviteSentTitle:"Invitation Envoyée",wasInvitedAs:"a été invité en tant que gestionnaire de site.",expires:"Expire",shareLink:"Partagez ce lien sécurisé avec le gestionnaire invité :",viewInvitations:"Voir les invitations",invalidSite:"Site invalide.",alreadyMember:"Cette personne est déjà membre.",duplicateInvite:"Ce gestionnaire a déjà une invitation en attente.",otherOrg:"Cet utilisateur appartient déjà à une autre organisation.",details:"Détails du gestionnaire",assignmentHistory:"Historique des affectations",present:"actuel",invitationsTitle:"Invitations de gestionnaires",invitedOn:"Invité",invitedBy:"Invité par",noInvitations:"Aucune invitation.",invitationDetails:"Détails de l'invitation",resend:"Renvoyer",revoke:"Révoquer",tab_all:"Tout",tab_pending:"En attente",tab_accepted:"Accepté",tab_expired:"Expiré",tab_revoked:"Révoqué"},
       gallery:{title:"Galerie",selectSite:"Site",allSites:"Tous",viewImage:"Voir",noImages:"Aucune image",close:"Fermer",description:"Description"},
       settings:{title:"Paramètres",profile:"Profil",account:"Compte",security:"Sécurité",preferences:"Préférences",profileInfo:"Profil",fullName:"Nom",phone:"Téléphone",email:"E-mail",saveChanges:"Enregistrer",accountInfo:"Compte",accountName:"Nom",role:"Rôle",accountStatus:"Statut",active:"Actif",memberSince:"Depuis",changePasscode:"Changer code",currentPasscode:"Actuel",newPasscode:"Nouveau",confirmPasscode:"Confirmer",changePass:"Changer",prefs:"Préférences",language:"Langue",currency:"Devise",dateFormat:"Format",notifications:"Notifications",savePrefs:"Enregistrer",changePhoto:"Changer",removePhoto:"Supprimer"},
       alerts:{savedSuccessfully:"Enregistré",updatedSuccessfully:"Mis à jour",deletedSuccessfully:"Supprimé",somethingWentWrong:"Erreur",areYouSure:"Sûr ?",cannotUndo:"Irréversible",requiredField:"Requis",invalidValue:"Invalide",noDataAvailable:"Aucune donnée"},
@@ -755,10 +754,8 @@ tbody tr:hover{background:#f1f5f9}
     clearTimeout(toast._hideTimer);
     toast._hideTimer = setTimeout(() => { toast.classList.remove('show'); }, 5000);
   }
-  // Expose for inline HTML handlers
   window.showToast = showToast;
 
-  // QA-001: Greeting auto-refresh while on dashboard
   setInterval(() => {
     if (currentSection !== 'dashboard') return;
     const el = document.getElementById('greeting-h1');
@@ -779,6 +776,7 @@ tbody tr:hover{background:#f1f5f9}
       if (lb) closeGalleryImage();
       if (typeof closeMsgMenu === 'function') closeMsgMenu();
       if (typeof closeReactionPicker === 'function') closeReactionPicker();
+      if (convInfoOpen) closeConversationInfo();
     }
   });
 
@@ -800,31 +798,23 @@ tbody tr:hover{background:#f1f5f9}
         let snap = await getDoc(profileRef);
         let profile = snap.exists() ? snap.data() : null;
 
-        // ── CASE 1: New user → create profile + organization
         if (!snap.exists()) {
           const orgRef = doc(collection(db, 'organizations'));
           const orgId = orgRef.id;
           await setDoc(orgRef, {
-            name: getCompanyDetails().name,
-            owner_id: user.uid,
-            created_at: new Date().toISOString(),
-            updated_at: new Date().toISOString(),
+            name: getCompanyDetails().name, owner_id: user.uid,
+            created_at: new Date().toISOString(), updated_at: new Date().toISOString(),
             settings: { default_role: 'manager' }
           });
           await setDoc(profileRef, {
-            email: user.email,
-            full_name: user.displayName || 'Owner',
-            role: 'owner',
-            phone: '',
-            organization_id: orgId,
-            organization_status: 'active',
-            created_at: new Date().toISOString()
+            email: user.email, full_name: user.displayName || 'Owner',
+            role: 'owner', phone: '', organization_id: orgId,
+            organization_status: 'active', created_at: new Date().toISOString()
           });
           snap = await getDoc(profileRef);
           profile = snap.data();
         }
 
-        // ── CASE 2: Existing profile but missing organization_id → bootstrap org + link
         if (snap.exists() && !profile.organization_id) {
           let orgId = null;
           try {
@@ -836,26 +826,21 @@ tbody tr:hover{background:#f1f5f9}
             const orgRef = doc(collection(db, 'organizations'));
             orgId = orgRef.id;
             await setDoc(orgRef, {
-              name: getCompanyDetails().name,
-              owner_id: user.uid,
-              created_at: new Date().toISOString(),
-              updated_at: new Date().toISOString(),
+              name: getCompanyDetails().name, owner_id: user.uid,
+              created_at: new Date().toISOString(), updated_at: new Date().toISOString(),
               settings: { default_role: 'manager' }
             });
           }
-
           await updateDoc(profileRef, {
             organization_id: orgId,
             organization_status: profile.organization_status || 'active',
-            role: profile.role || 'owner',
-            updated_at: new Date().toISOString()
+            role: profile.role || 'owner', updated_at: new Date().toISOString()
           });
           snap = await getDoc(profileRef);
           profile = snap.data();
           showToast('Organization configured successfully.', 'success');
         }
 
-        // ── Safety guard
         if (!profile || !profile.organization_id) {
           showError('Organization is not configured for this account. Please contact support.');
           return;
@@ -865,7 +850,6 @@ tbody tr:hover{background:#f1f5f9}
         currentOrganizationId = profile.organization_id;
         updateProfileUI(ownerProfile);
 
-        // QA-005: Auto-migrate legacy data on first owner login
         await autoMigrateOrganization(currentOrganizationId);
 
         onSnapshot(profileRef, (s) => {
@@ -879,7 +863,7 @@ tbody tr:hover{background:#f1f5f9}
 
         attachListeners();
         attachInvitationsListener();
-        updateInvitationsBadge();   // QA-006
+        updateInvitationsBadge();
         attachMessagingListeners();
         showSection('dashboard');
       } catch (err) {
@@ -889,7 +873,6 @@ tbody tr:hover{background:#f1f5f9}
     });
   });
 
-  // QA-005: Idempotent migration of legacy sites/managers to the current organization
   async function autoMigrateOrganization(orgId) {
     if (!orgId || !currentUser) return;
     try {
@@ -957,10 +940,7 @@ tbody tr:hover{background:#f1f5f9}
     unsubscribeSnapshots = [];
     if (!currentUser || !currentOrganizationId) return;
 
-    const sitesQ = query(
-      collection(db, 'sites'),
-      where('organization_id', '==', currentOrganizationId)
-    );
+    const sitesQ = query(collection(db, 'sites'), where('organization_id', '==', currentOrganizationId));
     attachSnapshot(sitesQ, (snap) => {
       sitesData = snap.docs.map(d => ({ id: d.id, ...d.data() }));
       reloadRelated();
@@ -983,16 +963,13 @@ tbody tr:hover{background:#f1f5f9}
     if (selectedFinanceSite && !siteIds.includes(selectedFinanceSite)) selectedFinanceSite = null;
 
     attachSnapshot(
-      query(collection(db, 'profiles'),
-        where('organization_id', '==', orgId),
-        where('role', '==', 'manager')),
+      query(collection(db, 'profiles'), where('organization_id', '==', orgId), where('role', '==', 'manager')),
       snap => { managersData = snap.docs.map(d => ({ id: d.id, ...d.data() })); refreshCurrentSection(); if (currentSection === 'messages') renderMessagesDirectory(); },
       'managers'
     );
 
     attachSnapshot(
-      query(collection(db, 'manager_site_assignments'),
-        where('organization_id', '==', orgId)),
+      query(collection(db, 'manager_site_assignments'), where('organization_id', '==', orgId)),
       snap => { assignmentsData = snap.docs.map(d => ({ id: d.id, ...d.data() })); refreshCurrentSection(); },
       'assignments'
     );
@@ -1031,10 +1008,7 @@ tbody tr:hover{background:#f1f5f9}
   function attachInvitationsListener() {
     if (_invitationsUnsub) { try { _invitationsUnsub(); } catch(_){} _invitationsUnsub = null; }
     if (!currentOrganizationId) return;
-    const q = query(
-      collection(db, 'manager_invitations'),
-      where('organization_id', '==', currentOrganizationId)
-    );
+    const q = query(collection(db, 'manager_invitations'), where('organization_id', '==', currentOrganizationId));
     _invitationsUnsub = onSnapshot(q, (snap) => {
       invitationsData = snap.docs.map(d => ({ id: d.id, ...d.data() }));
       updateInvitationsBadge();
@@ -1121,6 +1095,10 @@ tbody tr:hover{background:#f1f5f9}
       if (!confirm(t('alerts.areYouSure'))) return;
       hasUnsavedChanges = false;
     }
+    if (currentSection === 'messages' && section !== 'messages') {
+      // close info panel when navigating away
+      convInfoOpen = false;
+    }
     currentSection = section;
     clearError();
     document.getElementById('page-title').textContent = t(`navigation.${section}`);
@@ -1158,8 +1136,7 @@ tbody tr:hover{background:#f1f5f9}
         organization_id: currentOrganizationId,
         actor_id: currentUser.uid,
         actor_name: ownerProfile?.full_name || 'Owner',
-        action, target_type, target_id,
-        meta: meta || {},
+        action, target_type, target_id, meta: meta || {},
         created_at: new Date().toISOString()
       });
     } catch (e) { console.warn('audit log failed', e); }
@@ -1425,8 +1402,7 @@ tbody tr:hover{background:#f1f5f9}
       const imageUrls = [];
       for (let i = 0; i < Math.min(files.length, 5); i++) imageUrls.push(await uploadImageToImgbb(files[i]));
       await addDoc(collection(db, 'sites'), {
-        owner_id: currentUser.uid,
-        organization_id: currentOrganizationId,
+        owner_id: currentUser.uid, organization_id: currentOrganizationId,
         name, location, district, sector, client_name, budget, start_date, end_date,
         images: imageUrls, status: 'active', manager_name: ''
       });
@@ -2466,7 +2442,7 @@ tbody tr:hover{background:#f1f5f9}
   };
 
   // =================================================================
-  // ============== MANAGERS (Organization-Scoped) ============
+  // ============== MANAGERS ============
   // =================================================================
   function siteNameById(id) {
     if (!id) return null;
@@ -2553,32 +2529,25 @@ tbody tr:hover{background:#f1f5f9}
     orgManagers.forEach(m => {
       const sName = siteNameById(m.assigned_site);
       rows.push({
-        kind: 'manager',
-        id: m.id,
-        name: m.full_name || m.email || 'Manager',
-        email: m.email || '',
+        kind: 'manager', id: m.id,
+        name: m.full_name || m.email || 'Manager', email: m.email || '',
         role: m.role || 'manager',
         siteName: m.assigned_site ? (sName || 'Assignment needs review') : t('managers.unassigned'),
         siteId: m.assigned_site || null,
         status: (m.organization_status || m.status || 'active'),
-        invitation: null,
-        photo: m.profile_picture || ''
+        invitation: null, photo: m.profile_picture || ''
       });
     });
     pendingOnly.forEach(inv => {
       if (orgManagers.some(m => (m.email || '').toLowerCase() === (inv.email || '').toLowerCase())) return;
       const sName = siteNameById(inv.assigned_site_id);
       rows.push({
-        kind: 'invitation',
-        id: inv.id,
-        name: inv.full_name || inv.email,
-        email: inv.email,
+        kind: 'invitation', id: inv.id,
+        name: inv.full_name || inv.email, email: inv.email,
         role: inv.role || 'manager',
         siteName: inv.assigned_site_id ? (sName || 'Assignment needs review') : t('managers.unassigned'),
-        siteId: inv.assigned_site_id || null,
-        status: 'pending',
-        invitation: inv,
-        photo: ''
+        siteId: inv.assigned_site_id || null, status: 'pending',
+        invitation: inv, photo: ''
       });
     });
 
@@ -2738,7 +2707,6 @@ tbody tr:hover{background:#f1f5f9}
       const existingMember = managersData.find(m => (m.email || '').toLowerCase() === email);
       if (existingMember) { showToast(t('managers.alreadyMember'), 'error'); return; }
 
-      // QA-009: Transactional duplicate check (fresh read, not stale snapshot)
       const dupSnap = await getDocs(query(
         collection(db, 'manager_invitations'),
         where('organization_id', '==', currentOrganizationId),
@@ -2756,7 +2724,7 @@ tbody tr:hover{background:#f1f5f9}
             return;
           }
         }
-      } catch (_) { /* rules may deny; fail open */ }
+      } catch (_) { }
 
       const rawToken = _generateToken();
       const tokenHash = await _sha256Hex(rawToken);
@@ -2780,9 +2748,7 @@ tbody tr:hover{background:#f1f5f9}
       });
 
       await addAuditLog({
-        action: 'manager_invited',
-        target_type: 'manager_invitation',
-        target_id: invRef.id,
+        action: 'manager_invited', target_type: 'manager_invitation', target_id: invRef.id,
         meta: { email, full_name: fullName, assigned_site_id: assignedSiteId }
       });
 
@@ -2790,7 +2756,6 @@ tbody tr:hover{background:#f1f5f9}
       closeModal();
       showToast(t('managers.inviteSent'), 'success');
 
-      // QA-007: Cancel success modal if user navigated away
       const inviteSnapshot = { section: currentSection };
       setTimeout(() => {
         if (currentSection !== inviteSnapshot.section) return;
@@ -2814,7 +2779,6 @@ tbody tr:hover{background:#f1f5f9}
     finally { setButtonLoading(btn, false); }
   };
 
-  // =============== ASSIGNMENT + REMOVAL + DETAILS ===============
   window.openAssignSiteModal = (managerId) => {
     const mgr = managersData.find(m => m.id === managerId);
     if (!mgr) return;
@@ -2845,7 +2809,6 @@ tbody tr:hover{background:#f1f5f9}
       if (!newSite || newSite.organization_id !== currentOrganizationId) { showToast(t('common.accessDenied'), 'error'); return; }
 
       const prevSiteId = mgr.assigned_site || null;
-      // QA-008: same-site guard
       if (prevSiteId === newSiteId) {
         closeModal();
         showToast(t('common.noChange') || 'No change', 'info');
@@ -2856,31 +2819,22 @@ tbody tr:hover{background:#f1f5f9}
       if (prevSiteId) {
         const prevActive = assignmentsData.find(a => a.manager_id === managerId && a.site_id === prevSiteId && a.status === 'active');
         if (prevActive) {
-          await updateDoc(doc(db, 'manager_site_assignments', prevActive.id), {
-            status: 'ended', unassigned_at: now
-          });
+          await updateDoc(doc(db, 'manager_site_assignments', prevActive.id), { status: 'ended', unassigned_at: now });
         }
       }
 
       await addDoc(collection(db, 'manager_site_assignments'), {
         organization_id: currentOrganizationId,
-        manager_id: managerId,
-        site_id: newSiteId,
-        assigned_by: currentUser.uid,
-        assigned_at: now,
-        unassigned_at: null,
-        status: 'active'
+        manager_id: managerId, site_id: newSiteId,
+        assigned_by: currentUser.uid, assigned_at: now,
+        unassigned_at: null, status: 'active'
       });
 
-      await updateDoc(doc(db, 'profiles', managerId), {
-        assigned_site: newSiteId,
-        updated_at: now
-      });
+      await updateDoc(doc(db, 'profiles', managerId), { assigned_site: newSiteId, updated_at: now });
 
       await addAuditLog({
         action: prevSiteId ? 'manager_reassigned' : 'manager_assigned',
-        target_type: 'manager',
-        target_id: managerId,
+        target_type: 'manager', target_id: managerId,
         meta: { previous_site_id: prevSiteId, new_site_id: newSiteId }
       });
 
@@ -2934,8 +2888,7 @@ tbody tr:hover{background:#f1f5f9}
     if (!mgr || mgr.organization_id !== currentOrganizationId) { showToast(t('common.accessDenied'), 'error'); return; }
     try {
       await updateDoc(doc(db, 'profiles', uid), {
-        organization_status: 'removed',
-        status: 'inactive',
+        organization_status: 'removed', status: 'inactive',
         updated_at: new Date().toISOString()
       });
       const active = assignmentsData.filter(a => a.manager_id === uid && a.status === 'active');
@@ -3015,10 +2968,8 @@ tbody tr:hover{background:#f1f5f9}
       const tokenHash = await _sha256Hex(rawToken);
       const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
       await updateDoc(doc(db, 'manager_invitations', invId), {
-        token_hash: tokenHash,
-        expires_at: expiresAt,
-        status: 'pending',
-        updated_at: new Date().toISOString()
+        token_hash: tokenHash, expires_at: expiresAt,
+        status: 'pending', updated_at: new Date().toISOString()
       });
       await addAuditLog({ action: 'invitation_resent', target_type: 'manager_invitation', target_id: invId, meta: { email: inv.email } });
       const acceptUrl = `${location.origin}/accept-invite.html?token=${rawToken}&inv=${invId}`;
@@ -3274,7 +3225,7 @@ tbody tr:hover{background:#f1f5f9}
   };
 
   // =================================================================
-  // ============== MESSAGING ENGINE v3 (Owner ↔ Manager) ============
+  // ============== MESSAGING ENGINE v4 (Full WhatsApp-style) ==========
   // =================================================================
   const CONVERSATIONS = 'conversations';
   const EDIT_WINDOW_MS   = 15 * 60 * 1000;
@@ -3294,12 +3245,16 @@ tbody tr:hover{background:#f1f5f9}
   let managerSearchQuery  = '';
   let rtdb                = null;
   let replyingTo          = null;
+  let editingMessage      = null;
   let pendingAttachment   = null;
   let emojiPickerOpen     = false;
   let searchPanelOpen     = false;
   let currentSearchQuery  = '';
   let _lastRenderedCid    = null;
   let _sendingInProgress  = false;
+  let convInfoOpen        = false;
+  let convInfoTab         = 'media'; // media | docs | starred
+  let _convInfoBoundCid   = null;
 
   function buildConversationId(ownerId, managerId) {
     return `owner_${ownerId}_manager_${managerId}`;
@@ -3345,11 +3300,12 @@ tbody tr:hover{background:#f1f5f9}
   function initialsOf(name) { return String(name || '?').trim().charAt(0).toUpperCase() || '?'; }
   function getDraft(cid) { try { return localStorage.getItem(`shdr_draft_${cid}`) || ''; } catch { return ''; } }
   function setDraft(cid, text) { try { if (text && text.trim()) localStorage.setItem(`shdr_draft_${cid}`, text); else localStorage.removeItem(`shdr_draft_${cid}`); } catch {} }
+  function isOwnMessage(m) { return m && m.sender_id === currentUser.uid; }
+  function isSafeAttachmentUrl(url) {
+    if (!url || typeof url !== 'string') return false;
+    try { const u = new URL(url); return u.protocol === 'https:'; } catch { return false; }
+  }
 
-  /* ============ SEND BUTTON STATE MANAGEMENT ============ */
-  // Central source of truth for the Send button enabled/disabled state.
-  // Called from: textarea oninput, emoji insert, attachment pick/clear,
-  // shared-record pick/clear, conversation open, and sendMessage finally.
   function updateSendButtonState() {
     const btn = document.getElementById('message-send-btn');
     const input = document.getElementById('message-input');
@@ -3423,6 +3379,7 @@ tbody tr:hover{background:#f1f5f9}
         if (activeConversationId && !conversationsData.some(c => c.id === activeConversationId)) closeManagerConversation();
         renderMessagesDirectory();
         renderMessagesThread();
+        if (convInfoOpen) renderConversationInfo();
       }
     }, err => console.error('[conversations] snapshot error:', err)));
     initPresence();
@@ -3435,6 +3392,7 @@ tbody tr:hover{background:#f1f5f9}
     messageUnsub = onSnapshot(msgQ, (snap) => {
       messagesCache = snap.docs.map(d => ({ id: d.id, ...d.data() }));
       renderMessagesThread();
+      if (convInfoOpen) renderConversationInfo();
       markConversationRead(cid);
       markConversationDelivered(cid);
     }, err => {
@@ -3486,9 +3444,45 @@ tbody tr:hover{background:#f1f5f9}
       await updateDoc(doc(db, CONVERSATIONS, cid), data);
     } catch (err) { showToast(t('alerts.somethingWentWrong'), 'error'); }
   }
-  window.togglePin = async (cid) => { const c = conversationsData.find(x => x.id === cid); const cur = c?.user_settings?.[currentUser.uid]?.pinned || false; await updateUserSetting(cid, { pinned: !cur }); };
-  window.toggleMute = async (cid) => { const c = conversationsData.find(x => x.id === cid); const cur = c?.user_settings?.[currentUser.uid]?.muted || false; await updateUserSetting(cid, { muted: !cur }); };
-  window.toggleArchive = async (cid) => { const c = conversationsData.find(x => x.id === cid); const cur = c?.user_settings?.[currentUser.uid]?.archived || false; await updateUserSetting(cid, { archived: !cur }); };
+
+  window.togglePin = async (cid) => {
+    const c = conversationsData.find(x => x.id === cid);
+    const cur = c?.user_settings?.[currentUser.uid]?.pinned || false;
+    await updateUserSetting(cid, { pinned: !cur });
+    showToast(!cur ? t('messages.pinToastPinned') : t('messages.pinToastUnpinned'), 'success');
+  };
+  window.toggleMute = async (cid) => {
+    const c = conversationsData.find(x => x.id === cid);
+    const cur = c?.user_settings?.[currentUser.uid]?.muted || false;
+    await updateUserSetting(cid, { muted: !cur });
+    showToast(!cur ? t('messages.muteToastMuted') : t('messages.muteToastUnmuted'), 'success');
+  };
+  window.toggleArchive = async (cid) => {
+    const c = conversationsData.find(x => x.id === cid);
+    const cur = c?.user_settings?.[currentUser.uid]?.archived || false;
+    await updateUserSetting(cid, { archived: !cur });
+    showToast(!cur ? t('messages.archiveToastArchived') : t('messages.archiveToastUnarchived'), 'success');
+  };
+  window.markConversationUnread = async (cid) => {
+    if (!cid) return;
+    try {
+      await updateDoc(doc(db, CONVERSATIONS, cid), { [`unread.${currentUser.uid}`]: 1 });
+      showToast(t('messages.unreadToast'), 'success');
+    } catch (err) { showToast(t('alerts.somethingWentWrong'), 'error'); }
+  };
+  window.clearConversationForMe = async (cid) => {
+    if (!confirm(t('messages.deleteConfirm'))) return;
+    try {
+      const batch = writeBatch(db);
+      messagesCache.forEach(m => {
+        const df = Array.from(new Set([...(m.deleted_for || []), currentUser.uid]));
+        batch.update(doc(db, CONVERSATIONS, cid, 'messages', m.id), { deleted_for: df });
+      });
+      await batch.commit();
+      showToast(t('messages.conversationCleared'), 'success');
+      closeModal();
+    } catch (err) { console.error(err); showToast(t('alerts.somethingWentWrong'), 'error'); }
+  };
 
   window.openManagerConversation = async (managerId) => {
     const manager = getMessagingManagers().find(m => m.id === managerId);
@@ -3522,13 +3516,17 @@ tbody tr:hover{background:#f1f5f9}
     activeConversationId = null;
     messagesCache = [];
     replyingTo = null;
+    editingMessage = null;
     pendingAttachment = null;
     typingMap = {};
     currentSearchQuery = '';
     searchPanelOpen = false;
     _lastRenderedCid = null;
     _sendingInProgress = false;
+    convInfoOpen = false;
+    _convInfoBoundCid = null;
     document.querySelector('.messages-shell')?.classList.remove('thread-open');
+    document.querySelector('.messages-shell')?.classList.remove('info-open');
     renderMessagesThread();
     renderMessagesDirectory();
     closeMsgMenu();
@@ -3545,6 +3543,8 @@ tbody tr:hover{background:#f1f5f9}
   window.sendMessage = async () => {
     const input = document.getElementById('message-input');
     if (!input || !activeConversationId || !activeManagerId) return;
+    // If editing, delegate to saveEdit
+    if (editingMessage) { return saveEdit(); }
     const text = (input.value || '').trim();
     const hasAttachment = !!pendingAttachment;
     const hasShared = !!window._pendingSharedRecord;
@@ -3579,6 +3579,7 @@ tbody tr:hover{background:#f1f5f9}
         reply_to: reply?.id || null,
         reply_preview: reply ? { sender_name: reply.sender_name, text: reply.text } : null,
         reactions: {}, edited_at: null, deleted_for_all: false, deleted_for: [],
+        starred_by: [], pinned_by: [],
         created_at: now, sent_at: now, delivered_at: null, read_at: null
       };
       const previewText = attachment ? `📎 ${attachment.name}` : shared ? `📋 ${shared.title}` : text.slice(0, 200);
@@ -3601,7 +3602,6 @@ tbody tr:hover{background:#f1f5f9}
       showToast(err.message || t('alerts.somethingWentWrong'), 'error');
     } finally {
       _sendingInProgress = false;
-      // Recompute the correct state based on the current composer contents
       updateSendButtonState();
     }
   };
@@ -3624,10 +3624,7 @@ tbody tr:hover{background:#f1f5f9}
     };
     inp.click();
   };
-  function clearPendingAttachment() {
-    pendingAttachment = null;
-    renderComposerAttachment();
-  }
+  function clearPendingAttachment() { pendingAttachment = null; renderComposerAttachment(); }
   window.clearPendingAttachment = clearPendingAttachment;
 
   window.toggleEmojiPicker = () => { emojiPickerOpen = !emojiPickerOpen; renderEmojiPicker(); };
@@ -3669,6 +3666,54 @@ tbody tr:hover{background:#f1f5f9}
     catch (err) { showToast(t('alerts.somethingWentWrong'), 'error'); }
   };
 
+  window.copyMessage = async (mid) => {
+    const m = messagesCache.find(x => x.id === mid);
+    if (!m) return;
+    const text = m.text || '';
+    if (!text) { showToast(t('messages.copyFailed'), 'error'); return; }
+    try {
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(text);
+      } else {
+        const ta = document.createElement('textarea');
+        ta.value = text; ta.style.position='fixed'; ta.style.opacity='0';
+        document.body.appendChild(ta); ta.select();
+        document.execCommand('copy'); ta.remove();
+      }
+      showToast(t('messages.copied'), 'success');
+    } catch (e) {
+      showToast(t('messages.copyFailed'), 'error');
+    }
+  };
+
+  window.starMessage = async (mid, nextVal) => {
+    if (!activeConversationId) return;
+    const m = messagesCache.find(x => x.id === mid);
+    if (!m) return;
+    try {
+      const current = Array.isArray(m.starred_by) ? m.starred_by : [];
+      const next = nextVal
+        ? Array.from(new Set([...current, currentUser.uid]))
+        : current.filter(u => u !== currentUser.uid);
+      await updateDoc(doc(db, CONVERSATIONS, activeConversationId, 'messages', mid), { starred_by: next });
+      showToast(nextVal ? t('messages.starredToast') : t('messages.unstarredToast'), 'success');
+    } catch (err) { showToast(t('alerts.somethingWentWrong'), 'error'); }
+  };
+
+  window.pinMessage = async (mid, nextVal) => {
+    if (!activeConversationId) return;
+    const m = messagesCache.find(x => x.id === mid);
+    if (!m) return;
+    try {
+      const current = Array.isArray(m.pinned_by) ? m.pinned_by : [];
+      const next = nextVal
+        ? Array.from(new Set([...current, currentUser.uid]))
+        : current.filter(u => u !== currentUser.uid);
+      await updateDoc(doc(db, CONVERSATIONS, activeConversationId, 'messages', mid), { pinned_by: next });
+      showToast(nextVal ? t('messages.pinnedMessageToast') : t('messages.unpinnedMessageToast'), 'success');
+    } catch (err) { showToast(t('alerts.somethingWentWrong'), 'error'); }
+  };
+
   window.openMsgMenu = function (ev, mid) {
     if (ev && ev.stopPropagation) ev.stopPropagation();
     closeReactionPicker();
@@ -3680,10 +3725,17 @@ tbody tr:hover{background:#f1f5f9}
     if (isDeleted) return;
     const age = Date.now() - new Date(m.created_at).getTime();
     const canEdit = mine && m.type === 'text' && age <= EDIT_WINDOW_MS;
+    const canDeleteAll = mine && age <= EDIT_WINDOW_MS;
+    const isStarred = Array.isArray(m.starred_by) && m.starred_by.includes(currentUser.uid);
+    const isPinned = Array.isArray(m.pinned_by) && m.pinned_by.includes(currentUser.uid);
     const items = [
       { key: 'react', icon: 'material-symbols:sentiment-satisfied-outline', label: t('messages.react'), cls: '' },
       { key: 'reply', icon: 'material-symbols:reply', label: t('messages.reply'), cls: '' }
     ];
+    if (m.type === 'text' && m.text) items.push({ key: 'copy', icon: 'material-symbols:content-copy-outline', label: t('messages.copy'), cls: '' });
+    items.push({ key: 'forward', icon: 'material-symbols:forward', label: t('messages.forward'), cls: '' });
+    items.push({ key: 'star', icon: isStarred ? 'material-symbols:star' : 'material-symbols:star-outline', label: isStarred ? t('messages.unstar') : t('messages.star'), cls: '' });
+    items.push({ key: 'pinmsg', icon: isPinned ? 'material-symbols:push-pin' : 'material-symbols:push-pin-outline', label: isPinned ? t('messages.unpinMessage') : t('messages.pinMessage'), cls: '' });
     if (canEdit) items.push({ key: 'edit', icon: 'material-symbols:edit', label: t('messages.edit'), cls: '' });
     items.push({ key: 'delete', icon: 'material-symbols:delete-outline', label: t('messages.delete'), cls: 'danger' });
     const menu = document.createElement('div');
@@ -3712,7 +3764,11 @@ tbody tr:hover{background:#f1f5f9}
         closeMsgMenu();
         if (action === 'react') openReactionPickerFixed(msgId);
         else if (action === 'reply') startReply(msgId);
+        else if (action === 'copy') copyMessage(msgId);
         else if (action === 'edit') startEdit(msgId);
+        else if (action === 'forward') openForwardPicker(msgId);
+        else if (action === 'star') starMessage(msgId, !isStarred);
+        else if (action === 'pinmsg') pinMessage(msgId, !isPinned);
         else if (action === 'delete') openDeleteMenu(msgId, { stopPropagation: () => {} });
       });
     });
@@ -3749,29 +3805,39 @@ tbody tr:hover{background:#f1f5f9}
     if (m.type !== 'text') { showToast(t('messages.editWindowExpired'), 'error'); return; }
     const age = Date.now() - new Date(m.created_at).getTime();
     if (age > EDIT_WINDOW_MS) { showToast(t('messages.editWindowExpired'), 'error'); return; }
-
-    openModal(t('messages.edit'), `<form onsubmit="submitEdit(event, '${mid}')" class="space-y-4">
-      <div class="flex items-center gap-2 text-emerald-700 mb-2">
-        <iconify-icon icon="material-symbols:edit" width="24"></iconify-icon>
-        <span class="font-bold text-lg">${t('messages.edit')}</span>
-      </div>
-      <textarea id="edit-input" rows="4" class="w-full border rounded-lg p-3 text-sm">${escapeHTML(m.text || '')}</textarea>
-      <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-xl font-semibold">${t('messages.saveEdit')}</button>
-    </form>`);
-
-    setTimeout(() => { const inp = document.getElementById('edit-input'); if (inp) { inp.focus(); inp.selectionStart = inp.selectionEnd = inp.value.length; } }, 80);
+    // Put the current text into composer, mark editing
+    editingMessage = { id: mid };
+    const inp = document.getElementById('message-input');
+    if (inp) { inp.value = m.text || ''; inp.focus(); }
+    renderComposerEditPreview();
+    updateSendButtonState();
+    setTimeout(() => { const i = document.getElementById('message-input'); if (i) i.setSelectionRange(i.value.length, i.value.length); }, 20);
   };
-  window.submitEdit = async (e, mid) => {
-    e.preventDefault();
-    const btn = getFormSubmitBtn(e.target);
-    setButtonLoading(btn, true);
+
+  window.cancelEdit = () => {
+    editingMessage = null;
+    const inp = document.getElementById('message-input');
+    if (inp) inp.value = '';
+    setDraft(activeConversationId, '');
+    renderComposerEditPreview();
+    updateSendButtonState();
+  };
+
+  window.saveEdit = async () => {
+    if (!editingMessage) return;
+    const inp = document.getElementById('message-input');
+    if (!inp) return;
+    const newText = (inp.value || '').trim();
+    if (!newText) { showToast(t('alerts.requiredField'), 'error'); return; }
+    const btn = document.getElementById('message-send-btn');
+    _sendingInProgress = true; if (btn) btn.disabled = true;
     try {
-      const text = (document.getElementById('edit-input').value || '').trim();
-      if (!text) { showToast(t('alerts.requiredField'), 'error'); return; }
-      await updateDoc(doc(db, CONVERSATIONS, activeConversationId, 'messages', mid), { text, edited_at: new Date().toISOString() });
-      closeModal();
+      await updateDoc(doc(db, CONVERSATIONS, activeConversationId, 'messages', editingMessage.id), { text: newText, edited_at: new Date().toISOString() });
+      editingMessage = null;
+      inp.value = ''; setDraft(activeConversationId, '');
+      renderComposerEditPreview();
     } catch (err) { showToast(t('alerts.somethingWentWrong'), 'error'); }
-    finally { setButtonLoading(btn, false); }
+    finally { _sendingInProgress = false; updateSendButtonState(); }
   };
 
   window.openDeleteMenu = (mid, ev) => {
@@ -3810,6 +3876,63 @@ tbody tr:hover{background:#f1f5f9}
         await updateDoc(mRef, { deleted_for_all: true, text: '', attachment: null, shared_record: null });
       }
     } catch (err) { showToast(t('alerts.somethingWentWrong'), 'error'); }
+  };
+
+  // ====== FORWARD ======
+  window.openForwardPicker = (mid) => {
+    const m = messagesCache.find(x => x.id === mid);
+    if (!m) return;
+    const candidates = getMessagingManagers().filter(mgr => mgr.id !== activeManagerId);
+    if (!candidates.length) { showToast(t('messages.noForwardTargets'), 'error'); return; }
+    const rows = candidates.map(mgr => {
+      const nm = mgr.full_name || mgr.email || 'Manager';
+      const site = getManagerSiteName(mgr);
+      return `<button onclick="forwardToManager('${mid}','${mgr.id}')" class="w-full text-left px-3 py-2.5 rounded-xl border hover:bg-slate-50 flex items-center gap-3 mb-1.5">
+        <div class="w-9 h-9 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-sm">${escapeHTML(initialsOf(nm))}</div>
+        <div class="min-w-0 flex-1"><div class="font-semibold text-sm truncate">${escapeHTML(nm)}</div><div class="text-xs text-slate-500 truncate">${escapeHTML(site)}</div></div>
+        <iconify-icon icon="material-symbols:arrow-forward" width="18" class="text-emerald-600"></iconify-icon>
+      </button>`;
+    }).join('');
+    openModal(t('messages.forwardTo'), `<div class="max-h-[60vh] overflow-y-auto">${rows}</div>`);
+  };
+
+  window.forwardToManager = async (mid, targetManagerId) => {
+    const m = messagesCache.find(x => x.id === mid);
+    if (!m) return;
+    try {
+      const targetCid = await ensureConversation(targetManagerId);
+      const now = new Date().toISOString();
+      const senderName = m.sender_id === currentUser.uid ? (ownerProfile?.full_name || 'You') : (managersData.find(mm => mm.id === m.sender_id)?.full_name || 'Manager');
+      const forwardPreview = m.type === 'attachment' ? `📎 ${m.attachment?.name || 'file'}` : m.type === 'shared_record' ? `📋 ${m.shared_record?.title || 'record'}` : (m.text || '');
+      const msgRef = doc(collection(db, CONVERSATIONS, targetCid, 'messages'));
+      const payload = {
+        sender_id: currentUser.uid, sender_role: 'owner',
+        text: m.text || '',
+        type: m.type || 'text',
+        attachment: m.attachment || null,
+        shared_record: m.shared_record || null,
+        reply_to: null, reply_preview: null,
+        forwarded_from: { sender_name: senderName, original_created_at: m.created_at },
+        reactions: {}, edited_at: null, deleted_for_all: false, deleted_for: [],
+        starred_by: [], pinned_by: [],
+        created_at: now, sent_at: now, delivered_at: null, read_at: null
+      };
+      const batch = writeBatch(db);
+      batch.set(msgRef, payload);
+      const targetMgr = managersData.find(mm => mm.id === targetManagerId);
+      const previewText = `↪️ ${forwardPreview.slice(0, 180)}`;
+      batch.update(doc(db, CONVERSATIONS, targetCid), {
+        last_message: { text: previewText, sender_id: currentUser.uid, created_at: now },
+        updated_at: now,
+        [`unread.${targetManagerId}`]: increment(1)
+      });
+      await batch.commit();
+      closeModal();
+      showToast(t('messages.forwardSuccess'), 'success');
+    } catch (err) {
+      console.error(err);
+      showToast(t('messages.forwardFailed'), 'error');
+    }
   };
 
   window.scrollToMessage = (mid) => {
@@ -3919,9 +4042,10 @@ tbody tr:hover{background:#f1f5f9}
 
   // ================= Messages section renderer =================
   function renderMessages(container) {
-    container.innerHTML = `<h2 class="text-xl sm:text-2xl font-bold mb-4 flex items-center gap-2"><iconify-icon icon="material-symbols:forum" class="text-emerald-600"></iconify-icon>${t('messages.title')}</h2><div class="bg-white rounded-2xl border shadow-sm overflow-hidden messages-shell"><div id="messages-directory" class="messages-directory"></div><div id="messages-thread" class="messages-thread"></div></div>`;
+    container.innerHTML = `<h2 class="text-xl sm:text-2xl font-bold mb-4 flex items-center gap-2"><iconify-icon icon="material-symbols:forum" class="text-emerald-600"></iconify-icon>${t('messages.title')}</h2><div class="bg-white rounded-2xl border shadow-sm overflow-hidden messages-shell ${convInfoOpen ? 'info-open' : ''}"><div id="messages-directory" class="messages-directory"></div><div id="messages-thread" class="messages-thread"></div><div id="messages-info-panel" class="messages-info-panel ${convInfoOpen ? '' : 'hidden'}"></div></div>`;
     renderMessagesDirectory();
     renderMessagesThread();
+    if (convInfoOpen) renderConversationInfo();
     updateMessagesBadge();
   }
   window.renderMessages = renderMessages;
@@ -3941,6 +4065,9 @@ tbody tr:hover{background:#f1f5f9}
       const site = getManagerSiteName(row.manager).toLowerCase();
       return name.includes(q) || email.includes(q) || site.includes(q);
     }).sort((a, b) => {
+      const ap = a.conv?.user_settings?.[currentUser.uid]?.pinned ? 1 : 0;
+      const bp = b.conv?.user_settings?.[currentUser.uid]?.pinned ? 1 : 0;
+      if (ap !== bp) return bp - ap;
       if (a.unread !== b.unread) return b.unread - a.unread;
       if (a.lastAt && b.lastAt) return new Date(b.lastAt) - new Date(a.lastAt);
       if (a.lastAt) return -1;
@@ -3954,6 +4081,8 @@ tbody tr:hover{background:#f1f5f9}
       const online = !!presenceMap[m.id]?.online;
       const siteName = getManagerSiteName(m);
       const isActive = activeManagerId === m.id;
+      const isPinned = row.conv?.user_settings?.[currentUser.uid]?.pinned;
+      const isMuted = row.conv?.user_settings?.[currentUser.uid]?.muted;
       const preview = row.lastText ? `${row.conv?.last_message?.sender_id === currentUser.uid ? t('messages.you') + ': ' : ''}${escapeHTML(row.lastText)}` : `<span class="italic text-slate-400">${t('messages.emptyThread')}</span>`;
       return `<button type="button" onclick="openManagerConversation('${m.id}')" class="msg-row ${isActive ? 'active' : ''} w-full text-left px-3 py-3 border-b border-slate-100 flex gap-3 items-start">
         <div class="relative flex-shrink-0">
@@ -3961,14 +4090,36 @@ tbody tr:hover{background:#f1f5f9}
           <span class="presence-dot ${online ? 'presence-online' : 'presence-offline'}"></span>
         </div>
         <div class="flex-1 min-w-0">
-          <div class="flex items-center justify-between gap-2"><p class="font-semibold text-sm text-slate-900 truncate">${escapeHTML(name)}</p><span class="text-[10px] text-slate-400 flex-shrink-0">${row.lastAt ? escapeHTML(formatChatTime(row.lastAt)) : ''}</span></div>
+          <div class="flex items-center justify-between gap-2">
+            <p class="font-semibold text-sm text-slate-900 truncate flex items-center gap-1">${isPinned ? '<iconify-icon icon="material-symbols:push-pin" width="12" class="text-emerald-600"></iconify-icon>' : ''}${isMuted ? '<iconify-icon icon="material-symbols:notifications-off" width="12" class="text-slate-400"></iconify-icon>' : ''}<span class="truncate">${escapeHTML(name)}</span></p>
+            <span class="text-[10px] text-slate-400 flex-shrink-0">${row.lastAt ? escapeHTML(formatChatTime(row.lastAt)) : ''}</span>
+          </div>
           <p class="text-[11px] text-emerald-700 truncate mt-0.5"><iconify-icon icon="material-symbols:location-on" width="11"></iconify-icon> ${escapeHTML(siteName)}</p>
           <div class="flex items-center justify-between gap-2 mt-0.5"><p class="text-xs text-slate-500 truncate">${preview}</p>${row.unread > 0 ? `<span class="flex-shrink-0 bg-emerald-600 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">${row.unread > 99 ? '99+' : row.unread}</span>` : ''}</div>
         </div>
       </button>`;
     }).join('');
-    el.innerHTML = `<div class="p-3 border-b bg-white"><div class="relative"><input id="manager-search" type="text" value="${escapeHTML(managerSearchQuery)}" oninput="filterManagerDirectory(event)" placeholder="${t('messages.searchPlaceholder')}" class="w-full border rounded-lg py-2 pl-9 pr-3 text-sm"><iconify-icon icon="material-symbols:search" width="16" class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></iconify-icon></div></div><div class="flex-1 overflow-y-auto">${rowsHtml || `<p class="p-4 text-sm text-slate-400">${q ? t('messages.noManagersFound') : t('messages.noManagers')}</p>`}</div>`;
+    el.innerHTML = `<div class="p-3 border-b bg-white space-y-2">
+      <button onclick="openNewConversationModal()" class="w-full flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-sm py-2.5 rounded-xl"><iconify-icon icon="material-symbols:edit-square" width="18"></iconify-icon>${t('messages.newConversation')}</button>
+      <div class="relative"><input id="manager-search" type="text" value="${escapeHTML(managerSearchQuery)}" oninput="filterManagerDirectory(event)" placeholder="${t('messages.searchPlaceholder')}" class="w-full border rounded-lg py-2 pl-9 pr-3 text-sm"><iconify-icon icon="material-symbols:search" width="16" class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></iconify-icon></div>
+    </div><div class="flex-1 overflow-y-auto">${rowsHtml || `<p class="p-4 text-sm text-slate-400">${q ? t('messages.noManagersFound') : t('messages.noManagers')}</p>`}</div>`;
   }
+
+  window.openNewConversationModal = () => {
+    const candidates = getMessagingManagers();
+    if (!candidates.length) { showToast(t('messages.noManagers'), 'error'); return; }
+    const rows = candidates.map(mgr => {
+      const nm = mgr.full_name || mgr.email || 'Manager';
+      const site = getManagerSiteName(mgr);
+      const conv = getConversationForManager(mgr.id);
+      const sub = conv?.last_message?.text ? conv.last_message.text.slice(0, 60) : site;
+      return `<button onclick="closeModal();openManagerConversation('${mgr.id}');" class="w-full text-left px-3 py-2.5 rounded-xl border hover:bg-slate-50 flex items-center gap-3 mb-1.5">
+        <div class="w-9 h-9 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-sm">${escapeHTML(initialsOf(nm))}</div>
+        <div class="min-w-0 flex-1"><div class="font-semibold text-sm truncate">${escapeHTML(nm)}</div><div class="text-xs text-slate-500 truncate">${escapeHTML(sub)}</div></div>
+      </button>`;
+    }).join('');
+    openModal(t('messages.selectManager'), `<div class="max-h-[60vh] overflow-y-auto">${rows}</div>`);
+  };
 
   function renderMessagesThread() {
     const el = document.getElementById('messages-thread');
@@ -3990,30 +4141,38 @@ tbody tr:hover{background:#f1f5f9}
     const photo = mgr?.profile_picture || '';
     const siteName = getManagerSiteName(mgr || {});
     const online = !!presenceMap[activeManagerId]?.online;
-    const lastSeenTs = presenceMap[activeManagerId]?.last_changed;
-    const presenceLabel = online ? t('messages.online') : (lastSeenTs ? `${t('messages.lastSeen')} ${new Date(lastSeenTs).toLocaleString()}` : t('messages.offline'));
-    const bubbles = messagesCache.filter(m => !(m.deleted_for && m.deleted_for.includes(currentUser.uid))).map(m => renderMessageBubble(m)).join('');
+    const lastSeenTs = presenceMap[activeManagerId]?.last_seen || presenceMap[activeManagerId]?.last_changed;
+    const presenceLabel = online ? t('messages.online') : (lastSeenTs ? `${t('messages.lastSeen')} ${formatChatTime(lastSeenTs)}` : t('messages.offline'));
+    const visibleMessages = messagesCache.filter(m => !(m.deleted_for && m.deleted_for.includes(currentUser.uid)));
+    const pinnedMsgs = visibleMessages.filter(m => Array.isArray(m.pinned_by) && m.pinned_by.includes(currentUser.uid));
+    const bubbles = visibleMessages.map(m => renderMessageBubble(m)).join('');
+    const pinnedBanner = pinnedMsgs.length ? `<div class="px-3 py-2 bg-amber-50 border-b border-amber-200 flex items-center gap-2 text-xs text-amber-800"><iconify-icon icon="material-symbols:push-pin" width="14"></iconify-icon><span class="font-semibold">${pinnedMsgs.length} ${t('messages.pinMessage').toLowerCase()}</span><button onclick="scrollToMessage('${pinnedMsgs[pinnedMsgs.length-1].id}')" class="ml-auto text-amber-700 hover:underline">${t('common.view')}</button></div>` : '';
     el.innerHTML = `
       <div class="flex items-center gap-3 p-3 border-b bg-white">
         <button type="button" onclick="closeManagerConversation()" class="md:hidden text-slate-500 hover:text-slate-800 p-1" aria-label="${t('messages.back')}"><iconify-icon icon="material-symbols:arrow-back" width="22"></iconify-icon></button>
-        <div class="relative flex-shrink-0">${photo ? `<img src="${escapeHTML(photo)}" class="w-10 h-10 rounded-full object-cover" alt="">` : `<div class="w-10 h-10 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold">${escapeHTML(initialsOf(name))}</div>`}<span class="presence-dot ${online ? 'presence-online' : 'presence-offline'}"></span></div>
-        <div class="min-w-0 flex-1"><p class="font-semibold text-sm text-slate-900 truncate">${escapeHTML(name)}</p><p class="text-[11px] text-slate-500 truncate">${t('messages.site')}: ${escapeHTML(siteName)} · <span class="${online ? 'text-green-600' : 'text-slate-400'}">${escapeHTML(presenceLabel)}</span></p></div>
-        <button type="button" onclick="toggleSearchPanel()" class="text-slate-500 hover:text-emerald-700 p-2 rounded-lg hover:bg-slate-100" title="${t('messages.searchInConversation')}"><iconify-icon icon="material-symbols:search" width="20"></iconify-icon></button>
-        <button type="button" onclick="openChatMenu()" class="text-slate-500 hover:text-emerald-700 p-2 rounded-lg hover:bg-slate-100"><iconify-icon icon="material-symbols:more-vert" width="22"></iconify-icon></button>
+        <button type="button" onclick="openConversationInfo()" class="flex items-center gap-3 flex-1 min-w-0 text-left hover:bg-slate-50 rounded-lg p-1 -m-1" title="${t('messages.conversationInfo')}">
+          <div class="relative flex-shrink-0">${photo ? `<img src="${escapeHTML(photo)}" class="w-10 h-10 rounded-full object-cover" alt="">` : `<div class="w-10 h-10 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold">${escapeHTML(initialsOf(name))}</div>`}<span class="presence-dot ${online ? 'presence-online' : 'presence-offline'}"></span></div>
+          <div class="min-w-0 flex-1"><p class="font-semibold text-sm text-slate-900 truncate">${escapeHTML(name)}</p><p class="text-[11px] text-slate-500 truncate">${t('messages.site')}: ${escapeHTML(siteName)} · <span class="${online ? 'text-green-600' : 'text-slate-400'}">${escapeHTML(presenceLabel)}</span></p></div>
+        </button>
+        <button type="button" onclick="toggleSearchPanel()" class="text-slate-500 hover:text-emerald-700 p-2 rounded-lg hover:bg-slate-100" title="${t('messages.searchInConversation')}" aria-label="${t('messages.searchInConversation')}"><iconify-icon icon="material-symbols:search" width="20"></iconify-icon></button>
+        <button type="button" onclick="openConversationInfo()" class="text-slate-500 hover:text-emerald-700 p-2 rounded-lg hover:bg-slate-100" title="${t('messages.conversationInfo')}" aria-label="${t('messages.conversationInfo')}"><iconify-icon icon="material-symbols:info" width="20"></iconify-icon></button>
+        <button type="button" onclick="openChatMenu()" class="text-slate-500 hover:text-emerald-700 p-2 rounded-lg hover:bg-slate-100" aria-label="${t('messages.more')}"><iconify-icon icon="material-symbols:more-vert" width="22"></iconify-icon></button>
       </div>
+      ${pinnedBanner}
       <div id="msg-search-panel" class="msg-search-panel ${searchPanelOpen ? 'open' : ''}">
-        <div class="flex items-center gap-2"><input type="text" id="msg-search-input" value="${escapeHTML(currentSearchQuery)}" oninput="onSearchInput(event)" placeholder="${t('messages.searchInConversation')}" class="flex-1 border rounded-lg py-2 px-3 text-sm"><button type="button" onclick="toggleSearchPanel()" class="text-slate-500 p-2"><iconify-icon icon="material-symbols:close" width="18"></iconify-icon></button></div>
+        <div class="flex items-center gap-2"><input type="text" id="msg-search-input" value="${escapeHTML(currentSearchQuery)}" oninput="onSearchInput(event)" placeholder="${t('messages.searchInConversation')}" class="flex-1 border rounded-lg py-2 px-3 text-sm"><button type="button" onclick="toggleSearchPanel()" class="text-slate-500 p-2" aria-label="${t('common.close')}"><iconify-icon icon="material-symbols:close" width="18"></iconify-icon></button></div>
         <div id="msg-search-results" class="mt-2 max-h-[240px] overflow-y-auto"></div>
       </div>
       <div id="message-scroll" class="flex-1 overflow-y-auto p-4 bg-slate-50">${bubbles || `<div class="h-full flex flex-col items-center justify-center text-center"><iconify-icon icon="material-symbols:waving-hand" class="text-4xl text-slate-300 mb-2"></iconify-icon><p class="text-sm text-slate-400">${t('messages.emptyThread')}</p></div>`}</div>
       <div id="typing-indicator" class="px-4 py-1 text-xs text-emerald-700 hidden"><span class="italic"></span></div>
       <div class="p-3 border-t bg-white relative">
         <div id="composer-reply" class="hidden"></div>
+        <div id="composer-edit" class="hidden"></div>
         <div id="composer-attachment" class="hidden"></div>
         <div id="emoji-picker" class="emoji-picker"></div>
         <div class="flex items-end gap-2">
           <div class="composer-toolbar">
-            <button type="button" onclick="toggleEmojiPicker()" title="${t('messages.emoji')}" class="${emojiPickerOpen ? 'active' : ''}" aria-label="${t('messages.emoji')}"><iconify-icon icon="material-symbols:emoji-emotions-outline" width="22"></iconify-icon></button>
+            <button type="button" onclick="toggleEmojiPicker()" title="${t('messages.emoji')}" aria-label="${t('messages.emoji')}" class="${emojiPickerOpen ? 'active' : ''}"><iconify-icon icon="material-symbols:emoji-emotions-outline" width="22"></iconify-icon></button>
             <button type="button" onclick="pickAttachment()" title="${t('messages.attach')}" aria-label="${t('messages.attach')}"><iconify-icon icon="material-symbols:attach-file" width="22"></iconify-icon></button>
             <button type="button" onclick="openSharePicker()" title="${t('messages.share')}" aria-label="${t('messages.share')}"><iconify-icon icon="material-symbols:add-link" width="22"></iconify-icon></button>
           </div>
@@ -4026,17 +4185,17 @@ tbody tr:hover{background:#f1f5f9}
       </div>`;
     const inp = document.getElementById('message-input');
     if (inp) {
-      inp.value = prevInput || getDraft(activeConversationId) || '';
+      inp.value = editingMessage ? inp.value : (prevInput || getDraft(activeConversationId) || '');
       if (wasFocused || (isFirstRender && !searchWasFocused)) inp.focus();
     }
     const sInp = document.getElementById('msg-search-input');
     if (sInp) { sInp.value = currentSearchQuery || prevSearch; if (searchWasFocused) { sInp.focus(); sInp.setSelectionRange(sInp.value.length, sInp.value.length); } }
     renderComposerReplyPreview();
+    renderComposerEditPreview();
     renderComposerAttachment();
     renderEmojiPicker();
     renderTypingIndicator();
     renderSearchPanel();
-    // Ensure send button state is accurate after every render
     updateSendButtonState();
     const scroller = document.getElementById('message-scroll');
     if (scroller && wasAtBottom) scroller.scrollTop = scroller.scrollHeight;
@@ -4057,7 +4216,14 @@ tbody tr:hover{background:#f1f5f9}
     if (!el) return;
     if (!replyingTo) { el.classList.add('hidden'); el.innerHTML = ''; return; }
     el.classList.remove('hidden');
-    el.innerHTML = `<div class="composer-reply"><iconify-icon icon="material-symbols:reply" width="16" class="text-emerald-600"></iconify-icon><div class="min-w-0"><div class="font-semibold text-emerald-700 text-[11px]">${escapeHTML(replyingTo.sender_name)}</div><div class="text-slate-600 truncate text-[11px]">${escapeHTML(replyingTo.text)}</div></div><button type="button" class="close-x" onclick="cancelReply()"><iconify-icon icon="material-symbols:close" width="16"></iconify-icon></button></div>`;
+    el.innerHTML = `<div class="composer-reply"><iconify-icon icon="material-symbols:reply" width="16" class="text-emerald-600"></iconify-icon><div class="min-w-0"><div class="font-semibold text-emerald-700 text-[11px]">${escapeHTML(replyingTo.sender_name)}</div><div class="text-slate-600 truncate text-[11px]">${escapeHTML(replyingTo.text)}</div></div><button type="button" class="close-x" onclick="cancelReply()" aria-label="${t('messages.cancelReply')}"><iconify-icon icon="material-symbols:close" width="16"></iconify-icon></button></div>`;
+  }
+  function renderComposerEditPreview() {
+    const el = document.getElementById('composer-edit');
+    if (!el) return;
+    if (!editingMessage) { el.classList.add('hidden'); el.innerHTML = ''; return; }
+    el.classList.remove('hidden');
+    el.innerHTML = `<div class="composer-edit"><iconify-icon icon="material-symbols:edit" width="16" class="text-amber-600"></iconify-icon><div class="min-w-0"><div class="font-semibold text-amber-700 text-[11px]">${t('messages.editMessage')}</div><div class="text-slate-600 truncate text-[11px]">${escapeHTML((messagesCache.find(x=>x.id===editingMessage.id)?.text || '').slice(0,120))}</div></div><button type="button" class="close-x" onclick="cancelEdit()" aria-label="${t('common.cancel')}"><iconify-icon icon="material-symbols:close" width="16"></iconify-icon></button></div>`;
   }
   function renderComposerAttachment() {
     const el = document.getElementById('composer-attachment');
@@ -4070,10 +4236,10 @@ tbody tr:hover{background:#f1f5f9}
         el.classList.remove('hidden');
         if (pendingAttachment) {
           const f = pendingAttachment;
-          el.innerHTML = `<div class="composer-attachment"><iconify-icon icon="material-symbols:attach-file" width="16" class="text-emerald-600"></iconify-icon><span class="truncate">${escapeHTML(f.name)}</span><span class="text-slate-400">${formatBytes(f.size)}</span><button type="button" class="ml-auto text-slate-500" onclick="clearPendingAttachment()"><iconify-icon icon="material-symbols:close" width="16"></iconify-icon></button></div>`;
+          el.innerHTML = `<div class="composer-attachment"><iconify-icon icon="material-symbols:attach-file" width="16" class="text-emerald-600"></iconify-icon><span class="truncate">${escapeHTML(f.name)}</span><span class="text-slate-400">${formatBytes(f.size)}</span><button type="button" class="ml-auto text-slate-500" onclick="clearPendingAttachment()" aria-label="${t('common.cancel')}"><iconify-icon icon="material-symbols:close" width="16"></iconify-icon></button></div>`;
         } else {
           const s = window._pendingSharedRecord;
-          el.innerHTML = `<div class="composer-attachment"><iconify-icon icon="material-symbols:add-link" width="16" class="text-emerald-600"></iconify-icon><span class="truncate">${escapeHTML(s.title)} — ${escapeHTML(s.subtitle)}</span><button type="button" class="ml-auto text-slate-500" onclick="window._pendingSharedRecord=null;renderComposerAttachment();"><iconify-icon icon="material-symbols:close" width="16"></iconify-icon></button></div>`;
+          el.innerHTML = `<div class="composer-attachment"><iconify-icon icon="material-symbols:add-link" width="16" class="text-emerald-600"></iconify-icon><span class="truncate">${escapeHTML(s.title)} — ${escapeHTML(s.subtitle)}</span><button type="button" class="ml-auto text-slate-500" onclick="window._pendingSharedRecord=null;renderComposerAttachment();" aria-label="${t('common.cancel')}"><iconify-icon icon="material-symbols:close" width="16"></iconify-icon></button></div>`;
         }
       }
     }
@@ -4086,7 +4252,6 @@ tbody tr:hover{background:#f1f5f9}
     if (!el) return;
     el.classList.toggle('open', emojiPickerOpen);
     if (!emojiPickerOpen) return;
-    // Re-render if the grid is missing (e.g., element was recreated by innerHTML update)
     const grid = el.querySelector('.emoji-grid');
     if (!grid) {
       el.innerHTML = `<div class="emoji-grid">${EMOJI_SET.map(e => `<button type="button" onclick="insertEmoji('${e}')">${e}</button>`).join('')}</div>`;
@@ -4103,10 +4268,11 @@ tbody tr:hover{background:#f1f5f9}
       else tickHTML = `<span class="msg-tick sent">✓</span>`;
     }
     const reply = m.reply_preview ? `<div class="msg-reply-quote" onclick="scrollToMessage('${m.reply_to}')"><div class="rq-name">${escapeHTML(m.reply_preview.sender_name)}</div><span class="rq-text">${escapeHTML(m.reply_preview.text)}</span></div>` : '';
+    const fwd = m.forwarded_from ? `<div class="msg-forwarded-label"><iconify-icon icon="material-symbols:forward" width="12"></iconify-icon>${t('messages.forwardedFrom', { name: escapeHTML(m.forwarded_from.sender_name || '') })}</div>` : '';
     let bodyHTML = '';
     if (isDeleted) { bodyHTML = `<p class="msg-deleted">${t('messages.deleted')}</p>`; }
     else {
-      if (m.type === 'attachment' && m.attachment) {
+      if (m.type === 'attachment' && m.attachment && isSafeAttachmentUrl(m.attachment.url)) {
         const a = m.attachment;
         if (a.mime?.startsWith('image/')) { bodyHTML += `<div class="attach-preview"><img src="${escapeHTML(a.url)}" onclick="openAttachmentLightbox('${escapeHTML(a.url)}')" alt=""></div>`; }
         else { bodyHTML += `<a href="${escapeHTML(a.url)}" target="_blank" rel="noopener" class="attach-file"><iconify-icon icon="material-symbols:description" width="18"></iconify-icon><span class="truncate">${escapeHTML(a.name)}</span><iconify-icon icon="material-symbols:download" width="16" class="ml-auto"></iconify-icon></a>`; }
@@ -4126,11 +4292,16 @@ tbody tr:hover{background:#f1f5f9}
     const reactionKeys = Object.keys(reactions).filter(k => Array.isArray(reactions[k]) && reactions[k].length);
     const reactionsHTML = reactionKeys.length ? `<div class="msg-reactions">${reactionKeys.map(k => { const mineR = reactions[k].includes(currentUser.uid); return `<span class="react-pill ${mineR ? 'mine' : ''}" onclick="toggleReaction('${m.id}','${k}')">${k}<span class="count">${reactions[k].length}</span></span>`; }).join('')}</div>` : '';
     const editedHTML = m.edited_at && !isDeleted ? ` <span class="text-[10px] opacity-70">(${t('messages.edited')})</span>` : '';
-    const menuBtn = isDeleted ? '' : `<button type="button" class="msg-menu-btn" onclick="openMsgMenu(event,'${m.id}')" aria-label="Message actions"><iconify-icon icon="material-symbols:more-vert" width="20"></iconify-icon></button>`;
-    return `<div class="flex ${mine ? 'justify-end' : 'justify-start'} mb-3" id="msg-${m.id}"><div class="msg-bubble-row ${mine ? 'mine' : ''}">${mine ? menuBtn : ''}<div class="msg-bubble-col"><div class="px-3.5 py-2 rounded-2xl text-sm break-words shadow-sm ${mine ? 'bg-emerald-600 text-white rounded-br-md' : 'bg-white border border-slate-200 text-slate-800 rounded-bl-md'}">${reply}${bodyHTML}<div class="text-[10px] mt-1 ${mine ? 'text-emerald-100' : 'text-slate-400'} text-right flex items-center gap-1 justify-end">${editedHTML}<span>${escapeHTML(formatChatTime(m.created_at))}</span>${tickHTML}</div></div>${reactionsHTML}</div>${mine ? '' : menuBtn}</div></div>`;
+    const menuBtn = isDeleted ? '' : `<button type="button" class="msg-menu-btn" onclick="openMsgMenu(event,'${m.id}')" aria-label="${t('messages.more')}"><iconify-icon icon="material-symbols:more-vert" width="20"></iconify-icon></button>`;
+    const isStarred = Array.isArray(m.starred_by) && m.starred_by.includes(currentUser.uid);
+    const isPinned = Array.isArray(m.pinned_by) && m.pinned_by.includes(currentUser.uid);
+    const starBadge = isStarred ? `<span class="msg-star-badge"><iconify-icon icon="material-symbols:star" class="filled" width="14"></iconify-icon></span>` : '';
+    const pinBadge = isPinned ? `<span class="msg-pin-badge"><iconify-icon icon="material-symbols:push-pin" width="14"></iconify-icon></span>` : '';
+    return `<div class="flex ${mine ? 'justify-end' : 'justify-start'} mb-3" id="msg-${m.id}"><div class="msg-bubble-row ${mine ? 'mine' : ''}">${mine ? menuBtn : ''}<div class="msg-bubble-col" style="position:relative">${starBadge}${pinBadge}<div class="px-3.5 py-2 rounded-2xl text-sm break-words shadow-sm ${mine ? 'bg-emerald-600 text-white rounded-br-md' : 'bg-white border border-slate-200 text-slate-800 rounded-bl-md'}">${fwd}${reply}${bodyHTML}<div class="text-[10px] mt-1 ${mine ? 'text-emerald-100' : 'text-slate-400'} text-right flex items-center gap-1 justify-end">${editedHTML}<span>${escapeHTML(formatChatTime(m.created_at))}</span>${tickHTML}</div></div>${reactionsHTML}</div>${mine ? '' : menuBtn}</div></div>`;
   }
 
   window.openAttachmentLightbox = function (url) {
+    if (!isSafeAttachmentUrl(url)) { showToast(t('common.invalidValue'), 'error'); return; }
     const v = document.createElement('div');
     v.className = 'fixed inset-0 z-[9999] bg-black/85 flex items-center justify-center p-4';
     v.onclick = () => v.remove();
@@ -4142,8 +4313,159 @@ tbody tr:hover{background:#f1f5f9}
     if (!activeConversationId) return;
     const c = conversationsData.find(x => x.id === activeConversationId);
     const s = c?.user_settings?.[currentUser.uid] || {};
-    openModal('⚙️ ' + t('messages.title'), `<div class="space-y-2"><button onclick="togglePin('${activeConversationId}');closeModal();" class="w-full text-left px-4 py-3 rounded-xl border hover:bg-slate-50 flex items-center gap-3"><iconify-icon icon="material-symbols:push-pin" width="20" class="text-emerald-600"></iconify-icon><span class="font-medium">${s.pinned ? t('messages.unpinConversation') : t('messages.pinConversation')}</span></button><button onclick="toggleMute('${activeConversationId}');closeModal();" class="w-full text-left px-4 py-3 rounded-xl border hover:bg-slate-50 flex items-center gap-3"><iconify-icon icon="material-symbols:notifications-off-outline" width="20" class="text-blue-600"></iconify-icon><span class="font-medium">${s.muted ? t('messages.unmuteConversation') : t('messages.muteConversation')}</span></button><button onclick="toggleArchive('${activeConversationId}');closeModal();" class="w-full text-left px-4 py-3 rounded-xl border hover:bg-slate-50 flex items-center gap-3"><iconify-icon icon="material-symbols:archive-outline" width="20" class="text-amber-600"></iconify-icon><span class="font-medium">${s.archived ? t('messages.unarchiveConversation') : t('messages.archiveConversation')}</span></button></div>`);
+    openModal('⚙️ ' + t('messages.more'), `<div class="space-y-2">
+      <button onclick="closeModal();toggleSearchPanel();" class="w-full text-left px-4 py-3 rounded-xl border hover:bg-slate-50 flex items-center gap-3"><iconify-icon icon="material-symbols:search" width="20" class="text-slate-600"></iconify-icon><span class="font-medium">${t('messages.searchInConversation')}</span></button>
+      <button onclick="closeModal();openConversationInfo();" class="w-full text-left px-4 py-3 rounded-xl border hover:bg-slate-50 flex items-center gap-3"><iconify-icon icon="material-symbols:info" width="20" class="text-emerald-600"></iconify-icon><span class="font-medium">${t('messages.conversationInfo')}</span></button>
+      <button onclick="toggleMute('${activeConversationId}');closeModal();" class="w-full text-left px-4 py-3 rounded-xl border hover:bg-slate-50 flex items-center gap-3"><iconify-icon icon="material-symbols:notifications-off-outline" width="20" class="text-blue-600"></iconify-icon><span class="font-medium">${s.muted ? t('messages.unmuteConversation') : t('messages.muteConversation')}</span></button>
+      <button onclick="togglePin('${activeConversationId}');closeModal();" class="w-full text-left px-4 py-3 rounded-xl border hover:bg-slate-50 flex items-center gap-3"><iconify-icon icon="material-symbols:push-pin" width="20" class="text-emerald-600"></iconify-icon><span class="font-medium">${s.pinned ? t('messages.unpinConversation') : t('messages.pinConversation')}</span></button>
+      <button onclick="toggleArchive('${activeConversationId}');closeModal();" class="w-full text-left px-4 py-3 rounded-xl border hover:bg-slate-50 flex items-center gap-3"><iconify-icon icon="material-symbols:archive-outline" width="20" class="text-amber-600"></iconify-icon><span class="font-medium">${s.archived ? t('messages.unarchiveConversation') : t('messages.archiveConversation')}</span></button>
+      <button onclick="markConversationUnread('${activeConversationId}');closeModal();" class="w-full text-left px-4 py-3 rounded-xl border hover:bg-slate-50 flex items-center gap-3"><iconify-icon icon="material-symbols:mark-email-unread" width="20" class="text-indigo-600"></iconify-icon><span class="font-medium">${t('messages.markUnread')}</span></button>
+      <button onclick="closeModal();clearConversationForMe('${activeConversationId}');" class="w-full text-left px-4 py-3 rounded-xl border hover:bg-red-50 flex items-center gap-3"><iconify-icon icon="material-symbols:delete-outline" width="20" class="text-red-500"></iconify-icon><span class="font-medium text-red-600">${t('messages.clearConversation')}</span></button>
+    </div>`);
   };
+
+  // ====== CONVERSATION INFO PANEL ======
+  window.openConversationInfo = () => {
+    if (!activeConversationId || !activeManagerId) return;
+    convInfoOpen = true;
+    convInfoTab = 'media';
+    document.querySelector('.messages-shell')?.classList.add('info-open');
+    const panel = document.getElementById('messages-info-panel');
+    if (panel) panel.classList.remove('hidden');
+    _convInfoBoundCid = activeConversationId;
+    renderConversationInfo();
+  };
+
+  window.closeConversationInfo = () => {
+    convInfoOpen = false;
+    _convInfoBoundCid = null;
+    document.querySelector('.messages-shell')?.classList.remove('info-open');
+    const panel = document.getElementById('messages-info-panel');
+    if (panel) panel.classList.add('hidden');
+  };
+
+  window.setConvInfoTab = (tab) => { convInfoTab = tab; renderConversationInfo(); };
+
+  window.viewAllSharedMedia = () => { convInfoTab = 'media'; renderConversationInfo(); };
+  window.viewAllSharedFiles = () => { convInfoTab = 'docs'; renderConversationInfo(); };
+
+  function buildConversationInfoData() {
+    if (!activeManagerId) return null;
+    const mgr = managersData.find(m => m.id === activeManagerId);
+    if (!mgr) return null;
+    const conv = conversationsData.find(c => c.id === activeConversationId);
+    const visible = messagesCache.filter(m => !(m.deleted_for && m.deleted_for.includes(currentUser.uid)));
+    const media = visible.filter(m => m.type === 'attachment' && m.attachment?.mime?.startsWith('image/') && isSafeAttachmentUrl(m.attachment.url));
+    const files = visible.filter(m => m.type === 'attachment' && m.attachment && !m.attachment.mime?.startsWith('image/') && isSafeAttachmentUrl(m.attachment.url));
+    const starred = visible.filter(m => Array.isArray(m.starred_by) && m.starred_by.includes(currentUser.uid));
+    const online = !!presenceMap[activeManagerId]?.online;
+    const lastSeenTs = presenceMap[activeManagerId]?.last_seen || presenceMap[activeManagerId]?.last_changed;
+    const userSettings = conv?.user_settings?.[currentUser.uid] || {};
+    const orgName = getCompanyDetails().name;
+    return { mgr, conv, visible, media, files, starred, online, lastSeenTs, userSettings, orgName };
+  }
+
+  function renderConversationInfo() {
+    const el = document.getElementById('messages-info-panel');
+    if (!el) return;
+    const data = buildConversationInfoData();
+    if (!data) { el.innerHTML = ''; return; }
+    const { mgr, conv, media, files, starred, online, lastSeenTs, userSettings, orgName } = data;
+    const name = mgr.full_name || mgr.email || 'Manager';
+    const photo = mgr.profile_picture || '';
+    const siteName = getManagerSiteName(mgr);
+    const presenceLabel = online ? t('messages.online') : (lastSeenTs ? `${t('messages.lastSeen')} ${formatChatTime(lastSeenTs)}` : t('messages.offline'));
+
+    const previewMedia = media.slice(-6).reverse();
+    const previewFiles = files.slice(-3).reverse();
+
+    let contentHtml = '';
+    if (convInfoTab === 'media') {
+      if (!media.length) contentHtml = `<div class="info-empty">${t('common.noDataAvailable')}</div>`;
+      else {
+        contentHtml = `<div class="media-grid">${previewMedia.map(m => `<div class="media-cell" onclick="openAttachmentLightbox('${escapeHTML(m.attachment.url)}')"><img src="${escapeHTML(m.attachment.url)}" alt=""></div>`).join('')}</div>`;
+      }
+    } else if (convInfoTab === 'docs') {
+      if (!files.length) contentHtml = `<div class="info-empty">${t('common.noDataAvailable')}</div>`;
+      else {
+        contentHtml = previewFiles.map(m => {
+          const a = m.attachment;
+          const fileIcon = (a.mime && a.mime.includes('pdf')) ? 'picture_as_pdf' : (a.mime && (a.mime.includes('sheet') || a.mime.includes('excel'))) ? 'table_chart' : 'description';
+          return `<div class="file-row"><div class="file-icon"><iconify-icon icon="material-symbols:${fileIcon}" width="20"></iconify-icon></div><div class="file-info"><div class="file-name">${escapeHTML(a.name || 'file')}</div><div class="file-size">${formatBytes(a.size || 0)}</div></div><a href="${escapeHTML(a.url)}" target="_blank" rel="noopener" onclick="event.stopPropagation()"><iconify-icon icon="material-symbols:download" width="18"></iconify-icon></a></div>`;
+        }).join('');
+      }
+    } else if (convInfoTab === 'starred') {
+      if (!starred.length) contentHtml = `<div class="info-empty">${t('common.noDataAvailable')}</div>`;
+      else {
+        contentHtml = starred.slice(-6).reverse().map(m => `<div class="file-row" onclick="scrollToMessage('${m.id}');closeConversationInfo();" style="cursor:pointer"><div class="file-icon"><iconify-icon icon="material-symbols:star" class="filled" width="20"></iconify-icon></div><div class="file-info"><div class="file-name">${escapeHTML((m.text || (m.attachment && m.attachment.name) || m.shared_record?.title || '').slice(0, 60) || '—')}</div><div class="file-size">${escapeHTML(formatChatTime(m.created_at))}</div></div></div>`).join('');
+      }
+    }
+
+    const convStartedAt = conv?.created_at ? formatDate(conv.created_at) : '—';
+    const msgCount = (messagesCache || []).filter(m => !(m.deleted_for && m.deleted_for.includes(currentUser.uid))).length;
+
+    el.innerHTML = `
+      <div class="info-header">
+        <button type="button" onclick="closeConversationInfo()" class="lg:hidden" aria-label="${t('messages.back')}"><iconify-icon icon="material-symbols:arrow-back" width="20"></iconify-icon></button>
+        <h3>${t('messages.conversationInfo')}</h3>
+        <button type="button" onclick="closeConversationInfo()" aria-label="${t('common.close')}"><iconify-icon icon="material-symbols:close" width="20"></iconify-icon></button>
+      </div>
+      <div class="info-scroll">
+        <div class="info-hero">
+          <div class="avatar">${photo ? `<img src="${escapeHTML(photo)}" alt="${escapeHTML(name)}">` : escapeHTML(initialsOf(name))}</div>
+          <div class="name">${escapeHTML(name)}</div>
+          ${mgr.email ? `<div class="email">${escapeHTML(mgr.email)}</div>` : ''}
+          <div class="org">${escapeHTML(orgName)}</div>
+          <div class="presence ${online ? 'text-green-600' : 'text-slate-500'}">${escapeHTML(presenceLabel)}</div>
+        </div>
+
+        <div class="info-section">
+          <h4>${t('messages.contact')}</h4>
+          <div class="info-row"><span class="label">${t('messages.email')}</span><span class="value">${escapeHTML(mgr.email || '—')}</span></div>
+          <div class="info-row"><span class="label">${t('messages.phone')}</span><span class="value">${escapeHTML(mgr.phone || '—')}</span></div>
+          <div class="info-row"><span class="label">${t('messages.role')}</span><span class="value">${escapeHTML(mgr.role || 'manager')}</span></div>
+          <div class="info-row"><span class="label">${t('messages.assignedSite')}</span><span class="value">${escapeHTML(siteName)}</span></div>
+        </div>
+
+        <div class="info-section">
+          <h4>${t('messages.conversationDetails')}</h4>
+          <div class="info-row"><span class="label">${t('messages.started')}</span><span class="value">${escapeHTML(convStartedAt)}</span></div>
+          <div class="info-row"><span class="label">${t('messages.messagesCount')}</span><span class="value">${msgCount}</span></div>
+          <div class="info-row"><span class="label">${t('messages.mediaCount')}</span><span class="value">${media.length}</span></div>
+          <div class="info-row"><span class="label">${t('messages.filesCount')}</span><span class="value">${files.length}</span></div>
+        </div>
+
+        <div class="info-section">
+          <h4>${t('messages.settings')}</h4>
+          <button class="info-action" onclick="toggleMute('${activeConversationId}')">
+            <iconify-icon icon="material-symbols:notifications-off-outline" width="20"></iconify-icon>
+            <span class="flex-1">${userSettings.muted ? t('messages.unmuteConversation') : t('messages.muteConversation')}</span>
+            <iconify-icon icon="${userSettings.muted ? 'material-symbols:notifications-off' : 'material-symbols:notifications-active'}" width="18" class="${userSettings.muted ? 'text-slate-400' : 'text-emerald-600'}"></iconify-icon>
+          </button>
+          <button class="info-action" onclick="togglePin('${activeConversationId}')">
+            <iconify-icon icon="material-symbols:push-pin" width="20"></iconify-icon>
+            <span class="flex-1">${userSettings.pinned ? t('messages.unpinConversation') : t('messages.pinConversation')}</span>
+            <iconify-icon icon="${userSettings.pinned ? 'material-symbols:push-pin' : 'material-symbols:push-pin-outline'}" width="18" class="${userSettings.pinned ? 'text-emerald-600' : 'text-slate-400'}"></iconify-icon>
+          </button>
+          <button class="info-action" onclick="markConversationUnread('${activeConversationId}')">
+            <iconify-icon icon="material-symbols:mark-email-unread" width="20"></iconify-icon>
+            <span class="flex-1">${t('messages.markUnread')}</span>
+          </button>
+        </div>
+
+        <div class="info-section" style="background:transparent;padding:0">
+          <div class="info-tabs">
+            <button class="${convInfoTab === 'media' ? 'active' : ''}" onclick="setConvInfoTab('media')">${t('messages.media')} (${media.length})</button>
+            <button class="${convInfoTab === 'docs' ? 'active' : ''}" onclick="setConvInfoTab('docs')">${t('messages.docs')} (${files.length})</button>
+            <button class="${convInfoTab === 'starred' ? 'active' : ''}" onclick="setConvInfoTab('starred')">${t('messages.starred')} (${starred.length})</button>
+          </div>
+          <div>${contentHtml}</div>
+          ${convInfoTab === 'media' && media.length > 6 ? `<button class="info-action mt-2" onclick="viewAllSharedMedia()"><iconify-icon icon="material-symbols:photo-library" width="20"></iconify-icon><span class="flex-1">${t('common.viewAll')} (${media.length})</span></button>` : ''}
+          ${convInfoTab === 'docs' && files.length > 3 ? `<button class="info-action mt-2" onclick="viewAllSharedFiles()"><iconify-icon icon="material-symbols:folder" width="20"></iconify-icon><span class="flex-1">${t('common.viewAll')} (${files.length})</span></button>` : ''}
+        </div>
+      </div>`;
+  }
+  window.renderConversationInfo = renderConversationInfo;
 
   function updateMessagesBadge() {
     if (!currentUser) return;
