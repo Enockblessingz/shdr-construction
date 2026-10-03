@@ -170,6 +170,11 @@ tbody tr:hover{background:#f1f5f9}
 .composer-toolbar button:hover{background:#f1f5f9;color:#059669}
 .composer-toolbar button.active{background:#ecfdf5;color:#059669}
 
+/* Send button – explicit disabled styling */
+#message-send-btn{transition:opacity .15s ease, background-color .15s ease}
+#message-send-btn:disabled{opacity:.5;cursor:not-allowed;background-color:#94a3b8}
+#message-send-btn:disabled:hover{background-color:#94a3b8}
+
 .emoji-picker{position:absolute;bottom:60px;left:12px;right:12px;max-width:340px;background:#fff;border:1px solid #e5e7eb;border-radius:14px;box-shadow:0 12px 32px rgba(0,0,0,.12);padding:10px;z-index:20;display:none}
 .emoji-picker.open{display:block}
 .emoji-picker .emoji-grid{display:grid;grid-template-columns:repeat(8,1fr);gap:2px;max-height:220px;overflow-y:auto}
@@ -3294,6 +3299,7 @@ tbody tr:hover{background:#f1f5f9}
   let searchPanelOpen     = false;
   let currentSearchQuery  = '';
   let _lastRenderedCid    = null;
+  let _sendingInProgress  = false;
 
   function buildConversationId(ownerId, managerId) {
     return `owner_${ownerId}_manager_${managerId}`;
@@ -3339,6 +3345,23 @@ tbody tr:hover{background:#f1f5f9}
   function initialsOf(name) { return String(name || '?').trim().charAt(0).toUpperCase() || '?'; }
   function getDraft(cid) { try { return localStorage.getItem(`shdr_draft_${cid}`) || ''; } catch { return ''; } }
   function setDraft(cid, text) { try { if (text && text.trim()) localStorage.setItem(`shdr_draft_${cid}`, text); else localStorage.removeItem(`shdr_draft_${cid}`); } catch {} }
+
+  /* ============ SEND BUTTON STATE MANAGEMENT ============ */
+  // Central source of truth for the Send button enabled/disabled state.
+  // Called from: textarea oninput, emoji insert, attachment pick/clear,
+  // shared-record pick/clear, conversation open, and sendMessage finally.
+  function updateSendButtonState() {
+    const btn = document.getElementById('message-send-btn');
+    const input = document.getElementById('message-input');
+    if (!btn) return;
+    if (_sendingInProgress) { btn.disabled = true; return; }
+    const hasText = !!(input && (input.value || '').trim().length > 0);
+    const hasAttachment = !!pendingAttachment;
+    const hasShared = !!window._pendingSharedRecord;
+    const canSend = (hasText || hasAttachment || hasShared) && !!activeConversationId && !!activeManagerId;
+    btn.disabled = !canSend;
+  }
+  window.updateSendButtonState = updateSendButtonState;
 
   function initPresence() {
     if (!currentUser) return;
@@ -3481,7 +3504,10 @@ tbody tr:hover{background:#f1f5f9}
       renderMessagesDirectory();
       await markConversationRead(cid);
       await markConversationDelivered(cid);
-      setTimeout(() => document.getElementById('message-input')?.focus(), 100);
+      setTimeout(() => {
+        document.getElementById('message-input')?.focus();
+        updateSendButtonState();
+      }, 100);
     } catch (err) {
       console.error(err);
       showToast(err.message || t('alerts.somethingWentWrong'), 'error');
@@ -3501,6 +3527,7 @@ tbody tr:hover{background:#f1f5f9}
     currentSearchQuery = '';
     searchPanelOpen = false;
     _lastRenderedCid = null;
+    _sendingInProgress = false;
     document.querySelector('.messages-shell')?.classList.remove('thread-open');
     renderMessagesThread();
     renderMessagesDirectory();
@@ -3524,6 +3551,7 @@ tbody tr:hover{background:#f1f5f9}
     if (!text && !hasAttachment && !hasShared) return;
     if (text.length > 4000) { showToast(t('alerts.invalidValue'), 'error'); return; }
     const btn = document.getElementById('message-send-btn');
+    _sendingInProgress = true;
     if (btn) btn.disabled = true;
     const now = new Date().toISOString();
     const msgRef = doc(collection(db, CONVERSATIONS, activeConversationId, 'messages'));
@@ -3562,8 +3590,8 @@ tbody tr:hover{background:#f1f5f9}
         [`unread.${activeManagerId}`]: increment(1)
       });
       await batch.commit();
-      clearPendingAttachment();
       window._pendingSharedRecord = null;
+      clearPendingAttachment();
       renderComposerAttachment();
     } catch (err) {
       console.error(err);
@@ -3571,7 +3599,11 @@ tbody tr:hover{background:#f1f5f9}
       replyingTo = reply;
       renderComposerReplyPreview();
       showToast(err.message || t('alerts.somethingWentWrong'), 'error');
-    } finally { if (btn) btn.disabled = false; }
+    } finally {
+      _sendingInProgress = false;
+      // Recompute the correct state based on the current composer contents
+      updateSendButtonState();
+    }
   };
 
   window.handleMessageKeydown = (event) => {
@@ -3592,7 +3624,10 @@ tbody tr:hover{background:#f1f5f9}
     };
     inp.click();
   };
-  function clearPendingAttachment() { pendingAttachment = null; renderComposerAttachment(); }
+  function clearPendingAttachment() {
+    pendingAttachment = null;
+    renderComposerAttachment();
+  }
   window.clearPendingAttachment = clearPendingAttachment;
 
   window.toggleEmojiPicker = () => { emojiPickerOpen = !emojiPickerOpen; renderEmojiPicker(); };
@@ -3605,6 +3640,8 @@ tbody tr:hover{background:#f1f5f9}
     inp.selectionStart = inp.selectionEnd = start + emoji.length;
     inp.focus();
     onComposerInput();
+    saveDraftSoon();
+    updateSendButtonState();
   };
 
   window.startReply = (mid) => {
@@ -3976,16 +4013,22 @@ tbody tr:hover{background:#f1f5f9}
         <div id="emoji-picker" class="emoji-picker"></div>
         <div class="flex items-end gap-2">
           <div class="composer-toolbar">
-            <button type="button" onclick="toggleEmojiPicker()" title="${t('messages.emoji')}" class="${emojiPickerOpen ? 'active' : ''}"><iconify-icon icon="material-symbols:emoji-emotions-outline" width="22"></iconify-icon></button>
-            <button type="button" onclick="pickAttachment()" title="${t('messages.attach')}"><iconify-icon icon="material-symbols:attach-file" width="22"></iconify-icon></button>
-            <button type="button" onclick="openSharePicker()" title="${t('messages.share')}"><iconify-icon icon="material-symbols:add-link" width="22"></iconify-icon></button>
+            <button type="button" onclick="toggleEmojiPicker()" title="${t('messages.emoji')}" class="${emojiPickerOpen ? 'active' : ''}" aria-label="${t('messages.emoji')}"><iconify-icon icon="material-symbols:emoji-emotions-outline" width="22"></iconify-icon></button>
+            <button type="button" onclick="pickAttachment()" title="${t('messages.attach')}" aria-label="${t('messages.attach')}"><iconify-icon icon="material-symbols:attach-file" width="22"></iconify-icon></button>
+            <button type="button" onclick="openSharePicker()" title="${t('messages.share')}" aria-label="${t('messages.share')}"><iconify-icon icon="material-symbols:add-link" width="22"></iconify-icon></button>
           </div>
-          <textarea id="message-input" rows="1" onkeydown="handleMessageKeydown(event)" oninput="onComposerInput();saveDraftSoon();" placeholder="${t('messages.inputPlaceholder')}" class="flex-1 resize-none border rounded-xl px-3 py-2 text-sm max-h-32 focus:outline-none focus:border-emerald-600"></textarea>
-          <button id="message-send-btn" type="button" onclick="sendMessage()" class="bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl px-4 py-2.5 flex items-center gap-1 disabled:opacity-60"><iconify-icon icon="material-symbols:send" width="18"></iconify-icon><span class="hidden sm:inline text-sm">${t('messages.send')}</span></button>
+          <textarea id="message-input" rows="1" onkeydown="handleMessageKeydown(event)" oninput="onComposerInput();saveDraftSoon();updateSendButtonState();" placeholder="${t('messages.inputPlaceholder')}" class="flex-1 resize-none border rounded-xl px-3 py-2 text-sm max-h-32 focus:outline-none focus:border-emerald-600"></textarea>
+          <button id="message-send-btn" type="button" onclick="sendMessage()" disabled class="bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl px-4 py-2.5 flex items-center gap-1 disabled:opacity-60">
+            <iconify-icon icon="material-symbols:send" width="18"></iconify-icon>
+            <span class="hidden sm:inline text-sm">${t('messages.send')}</span>
+          </button>
         </div>
       </div>`;
     const inp = document.getElementById('message-input');
-    if (inp) { inp.value = prevInput || getDraft(activeConversationId) || ''; if (wasFocused || (isFirstRender && !searchWasFocused)) inp.focus(); }
+    if (inp) {
+      inp.value = prevInput || getDraft(activeConversationId) || '';
+      if (wasFocused || (isFirstRender && !searchWasFocused)) inp.focus();
+    }
     const sInp = document.getElementById('msg-search-input');
     if (sInp) { sInp.value = currentSearchQuery || prevSearch; if (searchWasFocused) { sInp.focus(); sInp.setSelectionRange(sInp.value.length, sInp.value.length); } }
     renderComposerReplyPreview();
@@ -3993,6 +4036,8 @@ tbody tr:hover{background:#f1f5f9}
     renderEmojiPicker();
     renderTypingIndicator();
     renderSearchPanel();
+    // Ensure send button state is accurate after every render
+    updateSendButtonState();
     const scroller = document.getElementById('message-scroll');
     if (scroller && wasAtBottom) scroller.scrollTop = scroller.scrollHeight;
   }
@@ -4016,17 +4061,23 @@ tbody tr:hover{background:#f1f5f9}
   }
   function renderComposerAttachment() {
     const el = document.getElementById('composer-attachment');
-    if (!el) return;
-    const hasShared = !!window._pendingSharedRecord;
-    if (!pendingAttachment && !hasShared) { el.classList.add('hidden'); el.innerHTML = ''; return; }
-    el.classList.remove('hidden');
-    if (pendingAttachment) {
-      const f = pendingAttachment;
-      el.innerHTML = `<div class="composer-attachment"><iconify-icon icon="material-symbols:attach-file" width="16" class="text-emerald-600"></iconify-icon><span class="truncate">${escapeHTML(f.name)}</span><span class="text-slate-400">${formatBytes(f.size)}</span><button type="button" class="ml-auto text-slate-500" onclick="clearPendingAttachment()"><iconify-icon icon="material-symbols:close" width="16"></iconify-icon></button></div>`;
-      return;
+    if (el) {
+      const hasShared = !!window._pendingSharedRecord;
+      if (!pendingAttachment && !hasShared) {
+        el.classList.add('hidden');
+        el.innerHTML = '';
+      } else {
+        el.classList.remove('hidden');
+        if (pendingAttachment) {
+          const f = pendingAttachment;
+          el.innerHTML = `<div class="composer-attachment"><iconify-icon icon="material-symbols:attach-file" width="16" class="text-emerald-600"></iconify-icon><span class="truncate">${escapeHTML(f.name)}</span><span class="text-slate-400">${formatBytes(f.size)}</span><button type="button" class="ml-auto text-slate-500" onclick="clearPendingAttachment()"><iconify-icon icon="material-symbols:close" width="16"></iconify-icon></button></div>`;
+        } else {
+          const s = window._pendingSharedRecord;
+          el.innerHTML = `<div class="composer-attachment"><iconify-icon icon="material-symbols:add-link" width="16" class="text-emerald-600"></iconify-icon><span class="truncate">${escapeHTML(s.title)} — ${escapeHTML(s.subtitle)}</span><button type="button" class="ml-auto text-slate-500" onclick="window._pendingSharedRecord=null;renderComposerAttachment();"><iconify-icon icon="material-symbols:close" width="16"></iconify-icon></button></div>`;
+        }
+      }
     }
-    const s = window._pendingSharedRecord;
-    el.innerHTML = `<div class="composer-attachment"><iconify-icon icon="material-symbols:add-link" width="16" class="text-emerald-600"></iconify-icon><span class="truncate">${escapeHTML(s.title)} — ${escapeHTML(s.subtitle)}</span><button type="button" class="ml-auto text-slate-500" onclick="window._pendingSharedRecord=null;renderComposerAttachment();"><iconify-icon icon="material-symbols:close" width="16"></iconify-icon></button></div>`;
+    updateSendButtonState();
   }
   window.renderComposerAttachment = renderComposerAttachment;
 
@@ -4035,9 +4086,11 @@ tbody tr:hover{background:#f1f5f9}
     if (!el) return;
     el.classList.toggle('open', emojiPickerOpen);
     if (!emojiPickerOpen) return;
-    if (el.dataset.rendered === '1') return;
-    el.dataset.rendered = '1';
-    el.innerHTML = `<div class="emoji-grid">${EMOJI_SET.map(e => `<button type="button" onclick="insertEmoji('${e}')">${e}</button>`).join('')}</div>`;
+    // Re-render if the grid is missing (e.g., element was recreated by innerHTML update)
+    const grid = el.querySelector('.emoji-grid');
+    if (!grid) {
+      el.innerHTML = `<div class="emoji-grid">${EMOJI_SET.map(e => `<button type="button" onclick="insertEmoji('${e}')">${e}</button>`).join('')}</div>`;
+    }
   }
 
   function renderMessageBubble(m) {
