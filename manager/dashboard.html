@@ -335,7 +335,7 @@ body{background:#f8fafc}
   <div class="p-4 border-t border-slate-100">
     <div class="flex items-center gap-3 px-4 py-3 rounded-lg bg-slate-50">
       <div class="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-700 font-semibold text-sm overflow-hidden" id="user-avatar">
-        <img id="sidebar-user-avatar-img" src="" alt="" class="w-full h-full object-cover" style="display:none;">
+        <img id="sidebar-user-avatar-img" src="" alt="" class="w-full h-full object-cover" style="display:none;" onerror="this.style.display='none'; var t=document.getElementById('user-avatar-text'); if(t) t.style.display='flex';">
         <span id="user-avatar-text">M</span>
       </div>
       <div class="flex-1 min-w-0">
@@ -1873,7 +1873,7 @@ function renderWorkersRecord(){
   let h=`<div class="space-y-6"><div class="bg-white rounded-2xl border p-4 shadow-sm"><div class="flex justify-between items-center flex-wrap gap-2"><h3 class="text-sm font-semibold flex items-center gap-2"><iconify-icon icon="material-symbols:edit-calendar" class="text-emerald-600" width="18"></iconify-icon>${t('workers.recordAttendance')}</h3><div class="flex items-center gap-2"><button onclick="changeAttendanceDate(-1)" class="p-2 rounded-lg border"><iconify-icon icon="material-symbols:chevron-left"></iconify-icon></button><input type="date" id="attendance-date" value="${today}" class="border rounded-lg px-3 py-2 text-sm w-40" onchange="updateAttendanceSummary()"><button onclick="changeAttendanceDate(0)" class="px-3 py-2 bg-emerald-50 text-emerald-700 rounded-lg text-sm">${t('common.today')}</button><button onclick="changeAttendanceDate(1)" class="p-2 rounded-lg border"><iconify-icon icon="material-symbols:chevron-right"></iconify-icon></button></div></div></div><div class="bg-white rounded-2xl border p-4 shadow-sm"><div class="flex justify-between items-center mb-4"><h4 class="text-sm font-medium">${t('workers.view')} (${siteWorkersData.length})</h4><button onclick="toggleSelectAllWorkers()" class="text-xs text-emerald-600 flex items-center gap-1"><iconify-icon icon="material-symbols:check-box" width="14"></iconify-icon>${t('common.selectAll')}</button></div><div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">`;
   siteWorkersData.forEach(w=>{
     const initial=(w.name||'W').charAt(0).toUpperCase();
-    const avatar=w.image?`<img src="${w.image}" class="w-full h-full object-cover">`:`<span class="font-bold text-emerald-700">${initial}</span>`;
+    const avatar=w.image?`<img src="${w.image}" class="w-full h-full object-cover" onerror="this.style.display='none';this.parentElement.innerHTML='<span class=\\'font-bold text-emerald-700\\'>${initial}</span>';">`:`<span class="font-bold text-emerald-700">${initial}</span>`;
     h+=`<div class="worker-card relative bg-slate-50 border-2 border-transparent rounded-xl p-3 cursor-pointer" data-worker-id="${w.id}" onclick="toggleWorkerSelection('${w.id}')"><input type="checkbox" id="worker-chk-${w.id}" value="${w.id}" class="hidden worker-checkbox-input"><div class="flex items-center gap-3"><div class="w-10 h-10 rounded-full overflow-hidden flex-shrink-0 bg-emerald-100 flex items-center justify-center">${avatar}</div><div><p class="text-sm font-medium">${w.name}</p><p class="text-xs text-slate-500">${w.role||''}</p></div></div></div>`;
   });
   h+=`</div></div><div id="attendance-summary" class="bg-white rounded-2xl border p-4 shadow-sm hidden"><div class="flex justify-between items-center"><div class="flex gap-6"><div><p class="text-xs text-slate-500">${t('workers.view')}</p><p class="text-2xl font-bold"><span id="selected-count">0</span> / ${siteWorkersData.length}</p></div><div><p class="text-xs text-slate-500">${t('reports.totalPayroll')}</p><p class="text-2xl font-bold text-emerald-600"><span id="total-cost">0</span> RWF</p></div></div><button onclick="submitAttendance(this)" class="px-6 py-2 bg-emerald-600 text-white rounded-xl text-sm font-semibold flex items-center gap-2"><iconify-icon icon="material-symbols:save"></iconify-icon> ${t('common.save')}</button></div></div>`;
@@ -1987,7 +1987,7 @@ function renderSettings(container){
   populateSettingsForms();attachSettingsChangeListeners();
   if (settingsTab === 'security') bindPasswordToggles();
 }
-function renderProfileSection(){const p=managerProfile||{};const photo=p.profile_picture||PLACEHOLDER_IMG;return `<div class="settings-card"><h3><iconify-icon icon="material-symbols:person-outline" class="text-emerald-600"></iconify-icon> ${t('settings.profileInfo')}</h3><form id="profile-form" onsubmit="handleProfileSave(event)"><div class="field-group text-center"><div class="profile-avatar-wrapper"><img id="settings-profile-photo-img" src="${photo}"><label class="change-photo-btn"><iconify-icon icon="material-symbols:photo-camera" width="20"></iconify-icon><input type="file" id="settings-profile-photo-input" accept="image/*" style="display:none;" onchange="previewProfilePhoto(event)"></label></div><button type="button" id="settings-remove-photo-btn" class="remove-photo-btn mt-2" onclick="removeProfilePhoto()">${t('settings.removePhoto')}</button></div><div class="field-group"><label>${t('settings.fullName')}</label><input type="text" id="settings-full-name" value="${p.full_name||''}"></div><div class="field-group"><label>${t('settings.phone')}</label><input type="tel" id="settings-phone" value="${p.phone||''}"></div><div class="field-group"><label>${t('settings.email')}</label><input type="email" id="settings-email" value="${p.email||''}"></div><button type="submit" class="save-btn">${t('settings.saveProfile')}</button></form></div>`}
+function renderProfileSection(){const p=managerProfile||{};const photo=p.profile_picture||PLACEHOLDER_IMG;return `<div class="settings-card"><h3><iconify-icon icon="material-symbols:person-outline" class="text-emerald-600"></iconify-icon> ${t('settings.profileInfo')}</h3><form id="profile-form" onsubmit="handleProfileSave(event)"><div class="field-group text-center"><div class="profile-avatar-wrapper"><img id="settings-profile-photo-img" src="${photo}" onerror="this.src='${PLACEHOLDER_IMG}'"><label class="change-photo-btn"><iconify-icon icon="material-symbols:photo-camera" width="20"></iconify-icon><input type="file" id="settings-profile-photo-input" accept="image/*" style="display:none;" onchange="previewProfilePhoto(event)"></label></div><button type="button" id="settings-remove-photo-btn" class="remove-photo-btn mt-2" onclick="removeProfilePhoto()">${t('settings.removePhoto')}</button></div><div class="field-group"><label>${t('settings.fullName')}</label><input type="text" id="settings-full-name" value="${p.full_name||''}"></div><div class="field-group"><label>${t('settings.phone')}</label><input type="tel" id="settings-phone" value="${p.phone||''}"></div><div class="field-group"><label>${t('settings.email')}</label><input type="email" id="settings-email" value="${p.email||''}"></div><button type="submit" class="save-btn">${t('settings.saveProfile')}</button></form></div>`}
 function renderAccountSection(){const p=managerProfile||{};return `<div class="settings-card"><h3><iconify-icon icon="material-symbols:account-box-outline" class="text-emerald-600"></iconify-icon> ${t('settings.accountInfo')}</h3><div class="field-group"><label>${t('settings.accountName')}</label><div class="readonly-field">${p.full_name||'N/A'}</div></div><div class="field-group"><label>${t('settings.role')}</label><div class="readonly-field">${p.role||'Manager'}</div></div><div class="field-group"><label>${t('settings.email')}</label><div class="readonly-field">${p.email||'N/A'}</div></div><div class="field-group"><label>${t('settings.phone')}</label><div class="readonly-field">${p.phone||'N/A'}</div></div><div class="field-group"><label>${t('settings.memberSince')}</label><div class="readonly-field">${formatDate(p.created_at)}</div></div></div>`}
 
 /* ============ SECURITY SECTION — Passcode Show/Hide toggles with placeholders ============ */
@@ -2899,6 +2899,8 @@ function renderMessagesSidebar() {
   const isActive = !!activeConversationId;
   const isPinned = conv?.user_settings?.[currentUser.uid]?.pinned;
   const isMuted = conv?.user_settings?.[currentUser.uid]?.muted;
+  // Initials fallback for owner avatar
+  const initials = escapeHTML(initialsOf(name));
   el.innerHTML = `
     <div class="p-3 border-b bg-white">
       <button type="button" onclick="toggleSearchPanel()"
@@ -2911,7 +2913,9 @@ function renderMessagesSidebar() {
     <button type="button" onclick="openOwnerConversation()"
       class="msg-row ${isActive ? 'active' : ''} w-full text-left px-3 py-3 border-b border-slate-100 flex gap-3 items-start">
       <div class="relative flex-shrink-0">
-        ${photo ? `<img src="${escapeHTML(photo)}" class="w-11 h-11 rounded-full object-cover" alt="">` : `<div class="w-11 h-11 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold">${escapeHTML(initialsOf(name))}</div>`}
+        <div class="w-11 h-11 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold overflow-hidden">
+          ${photo ? `<img src="${escapeHTML(photo)}" class="w-11 h-11 rounded-full object-cover" alt="" onerror="this.style.display='none';this.parentElement.innerHTML='${initials}';">` : initials}
+        </div>
         <span class="presence-dot ${online ? 'presence-online' : 'presence-offline'}"></span>
       </div>
       <div class="flex-1 min-w-0">
@@ -2956,6 +2960,7 @@ function renderMessagesThread() {
   const pinnedMsgs = visibleMessages.filter(m => Array.isArray(m.pinned_by) && m.pinned_by.includes(currentUser.uid));
   const bubbles = visibleMessages.map(m => renderMessageBubble(m)).join('');
   const pinnedBanner = pinnedMsgs.length ? `<div class="px-3 py-2 bg-amber-50 border-b border-amber-200 flex items-center gap-2 text-xs text-amber-800"><iconify-icon icon="material-symbols:push-pin" width="14"></iconify-icon><span class="font-semibold">${pinnedMsgs.length} pinned</span><button onclick="scrollToMessage('${pinnedMsgs[pinnedMsgs.length-1].id}')" class="ml-auto text-amber-700 hover:underline">${t('common.view')}</button></div>` : '';
+  const initials = escapeHTML(initialsOf(name));
 
   el.innerHTML = `
     <div class="flex items-center gap-3 p-3 border-b bg-white">
@@ -2965,7 +2970,9 @@ function renderMessagesThread() {
       </button>
       <button type="button" onclick="openConversationInfo()" class="flex items-center gap-3 flex-1 min-w-0 text-left hover:bg-slate-50 rounded-lg p-1 -m-1" title="${t('messages.conversationInfo')}">
         <div class="relative flex-shrink-0">
-          ${photo ? `<img src="${escapeHTML(photo)}" class="w-10 h-10 rounded-full object-cover" alt="">` : `<div class="w-10 h-10 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold">${escapeHTML(initialsOf(name))}</div>`}
+          <div class="w-10 h-10 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold overflow-hidden">
+            ${photo ? `<img src="${escapeHTML(photo)}" class="w-10 h-10 rounded-full object-cover" alt="" onerror="this.style.display='none';this.parentElement.innerHTML='${initials}';">` : initials}
+          </div>
           <span class="presence-dot ${online ? 'presence-online' : 'presence-offline'}"></span>
         </div>
         <div class="min-w-0 flex-1">
@@ -3196,6 +3203,7 @@ function renderConversationInfo() {
   const presenceLabel = online ? t('messages.online') : (lastSeenTs ? `${t('messages.lastSeen')} ${formatChatTime(lastSeenTs)}` : t('messages.offline'));
   const previewMedia = media.slice(-6).reverse();
   const previewFiles = files.slice(-3).reverse();
+  const initials = escapeHTML(initialsOf(name));
 
   let contentHtml = '';
   if (convInfoTab === 'media') {
@@ -3224,7 +3232,9 @@ function renderConversationInfo() {
     </div>
     <div class="info-scroll">
       <div class="info-hero">
-        <div class="avatar">${photo ? `<img src="${escapeHTML(photo)}" alt="${escapeHTML(name)}">` : escapeHTML(initialsOf(name))}</div>
+        <div class="avatar">
+          ${photo ? `<img src="${escapeHTML(photo)}" alt="${escapeHTML(name)}" onerror="this.style.display='none';this.parentElement.innerHTML='${initials}';">` : initials}
+        </div>
         <div class="name">${escapeHTML(name)}</div>
         ${op.email ? `<div class="email">${escapeHTML(op.email)}</div>` : ''}
         <div class="org">${escapeHTML(orgName)}</div>
