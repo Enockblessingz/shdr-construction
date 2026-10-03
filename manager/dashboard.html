@@ -9,7 +9,6 @@
 <link rel="apple-touch-icon" sizes="180x180" href="shdr_logo%20Background%20Removed.png">
 <script src="https://cdn.tailwindcss.com/3.4.17"></script>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-<!-- Added Material Symbols Font for reliable emoji icon rendering -->
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,300..700,0..1,-50..200&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/iconify-icon@2.3.0/dist/iconify-icon.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -97,9 +96,12 @@ body{background:#f8fafc}
 @media (max-width:640px){.usage-material-grid{grid-template-columns:repeat(auto-fill,minmax(100px,1fr))}.usage-material-grid .mat-card{padding:8px 4px;min-height:70px}}
 
 /* ===== MESSAGING ===== */
-.messages-shell{display:grid;grid-template-columns:320px 1fr;height:calc(100vh - 240px);min-height:440px}
+.messages-shell{display:grid;grid-template-columns:320px 1fr;height:calc(100vh - 240px);min-height:440px;position:relative;overflow:hidden}
+.messages-shell.info-open{grid-template-columns:320px 1fr 360px}
 .messages-directory{border-right:1px solid #e5e7eb;display:flex;flex-direction:column;min-height:0}
 .messages-thread{display:flex;flex-direction:column;min-height:0;background:#f8fafc}
+.messages-info-panel{border-left:1px solid #e5e7eb;background:#fff;display:flex;flex-direction:column;min-height:0;overflow:hidden}
+.messages-info-panel.hidden{display:none}
 .msg-row{transition:background .15s;cursor:pointer}
 .msg-row:hover{background:#f1f5f9}
 .msg-row.active{background:#ecfdf5;border-left:3px solid #059669}
@@ -107,10 +109,13 @@ body{background:#f8fafc}
 .presence-online{background:#22c55e}
 .presence-offline{background:#cbd5e1}
 #messages-nav-badge{background:#ef4444;color:#fff;font-size:10px;font-weight:700;padding:1px 6px;border-radius:999px;margin-left:auto}
-@media (max-width:767px){
+@media (max-width:1023px){
   .messages-shell{grid-template-columns:1fr;height:calc(100vh - 200px)}
+  .messages-shell.info-open{grid-template-columns:1fr}
   .messages-shell.thread-open .messages-directory{display:none}
   .messages-shell:not(.thread-open) .messages-thread{display:none}
+  .messages-shell:not(.thread-open) .messages-info-panel{display:none}
+  .messages-info-panel{position:fixed;inset:0;z-index:60;border-left:none}
 }
 
 .msg-tick{font-size:11px;letter-spacing:-2px;display:inline-block;line-height:1}
@@ -135,13 +140,16 @@ body{background:#f8fafc}
 .msg-menu-btn:hover,.msg-menu-btn:active{background:#ecfdf5;color:#059669;border-color:#059669}
 .msg-menu-btn iconify-icon{font-size:20px}
 
+.msg-star-badge{position:absolute;top:4px;right:4px;color:#f59e0b;font-size:14px}
+.msg-pin-badge{position:absolute;top:4px;left:4px;color:#059669;font-size:14px}
+
 .msg-action-menu{
   position:fixed;
   background:#fff;border:1px solid #e5e7eb;border-radius:12px;
   box-shadow:0 12px 32px rgba(0,0,0,.18);
   padding:4px;z-index:9000;
   display:flex;flex-direction:column;
-  min-width:170px;
+  min-width:210px;max-height:70vh;overflow-y:auto;
 }
 .msg-action-menu button{
   display:flex;align-items:center;gap:10px;
@@ -171,6 +179,7 @@ body{background:#f8fafc}
 .msg-reply-quote{border-left:3px solid #059669;background:rgba(5,150,105,.08);border-radius:6px;padding:4px 8px;margin-bottom:5px;font-size:11px;color:#334155;cursor:pointer}
 .msg-reply-quote .rq-name{font-weight:600;color:#059669}
 .msg-reply-quote .rq-text{opacity:.85;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:220px;display:block}
+.msg-forwarded-label{font-size:10px;font-style:italic;opacity:.85;margin-bottom:3px;display:flex;align-items:center;gap:4px}
 
 .msg-reactions{display:flex;gap:3px;flex-wrap:wrap;margin-top:5px}
 .msg-reactions .react-pill{background:#fff;border:1px solid #e5e7eb;border-radius:999px;padding:2px 8px;font-size:12px;display:inline-flex;gap:3px;align-items:center;cursor:pointer;line-height:1.4;transition:all .15s}
@@ -187,6 +196,10 @@ body{background:#f8fafc}
 .composer-toolbar button:hover{background:#f1f5f9;color:#059669}
 .composer-toolbar button.active{background:#ecfdf5;color:#059669}
 
+#message-send-btn{transition:opacity .15s ease, background-color .15s ease}
+#message-send-btn:disabled{opacity:.5;cursor:not-allowed;background-color:#94a3b8}
+#message-send-btn:disabled:hover{background-color:#94a3b8}
+
 .emoji-picker{position:absolute;bottom:60px;left:12px;right:12px;max-width:340px;background:#fff;border:1px solid #e5e7eb;border-radius:14px;box-shadow:0 12px 32px rgba(0,0,0,.12);padding:10px;z-index:20;display:none}
 .emoji-picker.open{display:block}
 .emoji-picker .emoji-grid{display:grid;grid-template-columns:repeat(8,1fr);gap:2px;max-height:220px;overflow-y:auto}
@@ -200,7 +213,7 @@ body{background:#f8fafc}
 
 .msg-search-panel{background:#fff;border-bottom:1px solid #e5e7eb;padding:8px 12px;display:none}
 .msg-search-panel.open{display:block}
-.msg-search-result{padding:6px 10px;border-radius:8px;cursor:pointer;font-size:12px}
+.msg-search-result{padding:6px 10px;border-radius:8px;cursor:pointer;font-size:12px;border-bottom:1px solid #f1f5f9}
 .msg-search-result:hover{background:#f1f5f9}
 
 .shared-card{background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:10px;font-size:12px;max-width:280px}
@@ -211,7 +224,42 @@ body{background:#f8fafc}
 .attach-preview img{display:block;width:100%;max-height:200px;object-fit:cover;cursor:pointer}
 .attach-file{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.15);border-radius:8px;padding:6px 8px;margin-bottom:4px;font-size:12px;color:inherit;text-decoration:none}
 
-/* Material Symbols font fallback styling */
+/* Conversation Info Panel */
+.info-header{padding:14px 16px;border-bottom:1px solid #e5e7eb;display:flex;align-items:center;gap:10px;background:#fff;flex-shrink:0}
+.info-header h3{font-weight:700;font-size:15px;flex:1}
+.info-header button{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:transparent;border:none;cursor:pointer;color:#64748b}
+.info-header button:hover{background:#f1f5f9;color:#059669}
+.info-scroll{flex:1;overflow-y:auto;padding:16px}
+.info-hero{text-align:center;padding:12px 0 20px}
+.info-hero .avatar{width:96px;height:96px;border-radius:50%;margin:0 auto 12px;overflow:hidden;background:#ecfdf5;color:#059669;display:flex;align-items:center;justify-content:center;font-size:36px;font-weight:800;position:relative}
+.info-hero .avatar img{width:100%;height:100%;object-fit:cover}
+.info-hero .name{font-weight:700;font-size:18px;color:#0f172a}
+.info-hero .email{font-size:12px;color:#64748b;margin-top:2px}
+.info-hero .org{font-size:12px;color:#059669;font-weight:600;margin-top:4px}
+.info-hero .presence{font-size:12px;margin-top:6px}
+.info-section{background:#f8fafc;border-radius:12px;padding:12px;margin-bottom:12px}
+.info-section h4{font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}
+.info-row{display:flex;justify-content:space-between;padding:6px 0;font-size:13px;gap:10px}
+.info-row .label{color:#64748b}
+.info-row .value{color:#0f172a;font-weight:500;text-align:right;word-break:break-word;max-width:60%}
+.info-action{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:10px;background:#fff;border:1px solid #e5e7eb;cursor:pointer;font-size:13px;font-weight:500;color:#334155;width:100%;text-align:left;margin-bottom:6px}
+.info-action:hover{background:#f8fafc}
+.info-action iconify-icon{color:#059669}
+.info-tabs{display:flex;gap:4px;background:#f1f5f9;border-radius:10px;padding:4px;margin-bottom:12px}
+.info-tabs button{flex:1;padding:7px 8px;border-radius:8px;font-size:12px;font-weight:600;color:#64748b;background:transparent;border:none;cursor:pointer}
+.info-tabs button.active{background:#059669;color:#fff}
+.media-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin-bottom:8px}
+.media-grid .media-cell{aspect-ratio:1;border-radius:8px;overflow:hidden;background:#f1f5f9;cursor:pointer}
+.media-grid .media-cell img{width:100%;height:100%;object-fit:cover;display:block}
+.file-row{display:flex;align-items:center;gap:10px;padding:8px 10px;background:#fff;border:1px solid #e5e7eb;border-radius:10px;margin-bottom:6px;font-size:12px}
+.file-row .file-icon{width:36px;height:36px;border-radius:8px;background:#ecfdf5;color:#059669;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.file-row .file-info{flex:1;min-width:0}
+.file-row .file-name{font-weight:600;color:#0f172a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.file-row .file-size{color:#64748b;font-size:11px}
+.file-row a{color:#059669;text-decoration:none;font-weight:600}
+.info-empty{text-align:center;color:#94a3b8;font-size:12px;padding:20px 8px}
+
+/* Material Symbols */
 .material-symbols-outlined {
   font-family: 'Material Symbols Outlined' !important;
   font-weight: normal;
@@ -324,18 +372,23 @@ body{background:#f8fafc}
 // ============================================================
 const translations={
 en:{navigation:{managerPanel:"Manager's Panel",dashboard:"Dashboard",materials:"Materials",stock:"Stock",workers:"Workers",progress:"Progress",reports:"Reports",messages:"Messages",gallery:"Gallery",settings:"Settings",logout:"Sign Out"},
-common:{save:"Save",cancel:"Cancel",close:"Close",add:"Add",edit:"Edit",delete:"Delete",view:"View",upload:"Upload",search:"Search",loading:"Loading...",areYouSure:"Are you sure?",cannotUndo:"This action cannot be undone",savedSuccessfully:"Saved successfully",updatedSuccessfully:"Updated successfully",deletedSuccessfully:"Deleted successfully",somethingWentWrong:"Something went wrong",noDataAvailable:"No data available",requiredField:"Required field",invalidValue:"Invalid value",selectAll:"Select All",today:"Today",remove:"Remove",print:"Print",download:"Download",export:"Export",filter:"Filter",clear:"Clear",accessDenied:"Access denied"},
+common:{save:"Save",cancel:"Cancel",close:"Close",add:"Add",edit:"Edit",delete:"Delete",view:"View",upload:"Upload",search:"Search",loading:"Loading...",areYouSure:"Are you sure?",cannotUndo:"This action cannot be undone",savedSuccessfully:"Saved successfully",updatedSuccessfully:"Updated successfully",deletedSuccessfully:"Deleted successfully",somethingWentWrong:"Something went wrong",noDataAvailable:"No data available",requiredField:"Required field",invalidValue:"Invalid value",selectAll:"Select All",today:"Today",remove:"Remove",print:"Print",download:"Download",export:"Export",filter:"Filter",clear:"Clear",accessDenied:"Access denied",done:"Done",viewAll:"View all",unknown:"Unknown"},
 messages:{title:"Messages",emptyThread:"No messages yet. Say hello 👋",inputPlaceholder:"Type a message...",send:"Send",online:"Online",offline:"Offline",lastSeen:"Last seen",you:"You",yesterday:"Yesterday",notAuthorized:"You are not authorized to view this conversation.",noOwner:"No owner is associated with your account yet.",loading:"Loading conversation...",selectConversation:"Select a conversation to start chatting",sendFailed:"Failed to send message.",back:"Back",ownerRole:"Owner / Admin",
 attach:"Attach image",emoji:"Emoji",share:"Share SHDR record",shareMaterial:"Share Material",shareWorker:"Share Worker",shareReport:"Share Report",sendFile:"Send file",cancelReply:"Cancel reply",replyingTo:"Replying to {name}",
-reply:"Reply",react:"React",copy:"Copy",deleteForMe:"Delete for me",deleteForEveryone:"Delete for everyone",edited:"edited",deleted:"This message was deleted",copySuccess:"Message copied",
+reply:"Reply",react:"React",copy:"Copy",deleteForMe:"Delete for me",deleteForEveryone:"Delete for everyone",edited:"edited",deleted:"This message was deleted",copySuccess:"Message copied",copyFailed:"Could not copy",
 statusSent:"Sent",statusDelivered:"Delivered",statusRead:"Read",
 isTyping:"{name} is typing...",severalTyping:"several people are typing...",
 searchInConversation:"Search in conversation",searchResults:"{n} results",noSearchResults:"No messages match your search",closeSearch:"Close search",
-pinConversation:"Pin",unpinConversation:"Unpin",muteConversation:"Mute",unmuteConversation:"Unmute",archiveConversation:"Archive",unarchiveConversation:"Unarchive",pinnedSection:"Pinned",archivedSection:"Archived",noConversations:"No conversations",
+pinConversation:"Pin conversation",unpinConversation:"Unpin conversation",muteConversation:"Mute notifications",unmuteConversation:"Unmute notifications",archiveConversation:"Archive",unarchiveConversation:"Unarchive",
+markUnread:"Mark as unread",markRead:"Mark as read",
+star:"Star message",unstar:"Unstar message",pinMessage:"Pin message",unpinMessage:"Unpin message",forward:"Forward message",forwardTo:"Forward to...",forwarded:"Forwarded",forwardedFrom:"Forwarded from {name}",noForwardTargets:"No other conversations to forward to.",
+starredToast:"Message starred",unstarredToast:"Message unstarred",pinnedMessageToast:"Message pinned",unpinnedMessageToast:"Message unpinned",forwardSuccess:"Message forwarded",forwardFailed:"Could not forward message",
+conversationInfo:"Conversation Info",contact:"Contact",email:"Email",phone:"Phone",role:"Role",organization:"Organization",assignedSite:"Assigned site",
+conversationDetails:"Conversation",started:"Started",messagesCount:"Messages",mediaCount:"Media",filesCount:"Files",
+settings:"Settings",notifications:"Notifications",pin:"Pin",sharedMedia:"Shared Media",sharedFiles:"Shared Files",docs:"Docs",starred:"Starred",media:"Media",
 uploading:"Uploading {name}...",fileTooLarge:"File is too large (max 10 MB)",fileTypeNotAllowed:"Only images can be sent right now (JPG, PNG, GIF, WEBP)",downloadAttachment:"Download",
 newMessageFrom:"New message from {name}",
-edit:"Edit Message",delete:"Delete Message",
-editMessage:"Edit message",saveEdit:"Save changes",editWindowExpired:"You can only edit within 15 minutes",deleteWindowExpired:"Delete for everyone is only available for 15 minutes"},
+edit:"Edit Message",delete:"Delete Message",editMessage:"Edit message",saveEdit:"Save changes",editWindowExpired:"You can only edit within 15 minutes",deleteWindowExpired:"Delete for everyone is only available for 15 minutes",more:"More"},
 dashboard:{siteStatus:"Status",siteManager:"Manager",workersOnSite:"Workers On Site",progress:"Progress",recentMaterials:"Recent Materials",pendingTasks:"Pending Tasks"},
 materials:{title:"Materials Used",recordUsage:"Record Usage",editMaterial:"Edit Material",materialName:"Material Name",quantityUsed:"Qty Used",unitCost:"Unit Cost",totalAmount:"Total Amount",noMaterials:"No materials recorded yet.",requisitions:"Requisitions",newRequisition:"+ New Requisition",requested:"Requested",supplied:"Supplied",remaining:"Remaining",reqNumber:"Req. ID",site:"Site",requestedBy:"Requested By",requestDate:"Date Requested",requiredDate:"Required Date",priority:"Priority",status:"Status",actions:"Actions",pending:"Pending",urgent:"Urgent",approved:"Approved",partiallySupplied:"Partially Supplied",suppliedStatus:"Supplied",normal:"Normal",createRequisition:"New Material Requisition",submitRequisition:"Submit Requisition",notes:"Notes",material:"Material",available:"Available",requestedQty:"Requested Qty",unit:"Unit",noRequisitions:"No requisitions found.",batchMaterialUsage:"Batch Material Usage",dateUsed:"Date *",selectMaterials:"Select Materials to Add",selectMaterialsHint:"Click to select / deselect materials",batchTotal:"Total Usage Amount",saveUsageBatch:"Save Usage Batch",selectAtLeastOneMaterial:"Please select at least one material with quantity > 0.",quantityMustBePositive:"Quantity must be > 0",unitCostCannotBeNegative:"Unit cost cannot be negative",insufficientStock:"Insufficient stock",stockNotFound:"Stock item not found",batchSaved:"Usage batch saved successfully!",currentStock:"Current Stock",materialItems:"Material Items",materials:"materials",usagePhoto:"Material Usage Photo (Optional)",usagePhotoHint:"Take or select a photo of the materials used at the site",search:"Search requisitions...",allPriorities:"All Priorities",allStatuses:"All Statuses",clearFilters:"Clear Filters"},
 stock:{title:"Stock Management",receiveStock:"Receive Stock",editStock:"Edit Stock",stockHistory:"Stock History",quantity:"Quantity",minimumStock:"Minimum Stock",stockValue:"Stock Value",lastUpdated:"Last Updated",notes:"Notes",normal:"Normal",lowStock:"Low Stock",outOfStock:"Out of Stock",unit:"Unit",unitCost:"Unit Cost",currentStock:"Current Stock"},
@@ -345,16 +398,20 @@ reports:{title:"Generate Reports",general:"General",workerPayroll:"Worker Payrol
 gallery:{title:"Site Gallery",uploadImage:"Upload New Image",description:"Description",upload:"Upload",noImages:"No images uploaded yet.",close:"Close"},
 settings:{title:"Settings",profile:"Profile",account:"Account",security:"Security",preferences:"Preferences",profileInfo:"Profile Information",fullName:"Full Name",phone:"Phone Number",email:"Email Address",changePhoto:"Change Photo",removePhoto:"Remove Photo",saveProfile:"Save Profile Changes",accountInfo:"Account Information",accountName:"Account Name",role:"Role",accountStatus:"Account Status",active:"Active",memberSince:"Member Since",changePassword:"Change Password",currentPassword:"Current Password",newPassword:"New Password",confirmPassword:"Confirm New Password",changePassBtn:"Change Password",prefs:"Preferences",language:"Language",currency:"Currency",dateFormat:"Date Format",notifications:"Enable Notifications",browserNotifications:"Enable browser notifications",savePrefs:"Save Preferences"}},
 rw:{navigation:{managerPanel:"Ipaneli y'umuyobozi",dashboard:"Imbonerahamwe",materials:"Ibikoresho",stock:"Imbuganyuro",workers:"Abakozi",progress:"Ibitekerezo",reports:"Raporo",messages:"Ubutumwa",gallery:"Amafoto",settings:"Igenamiterere",logout:"Sohoka"},
-common:{save:"Bika",cancel:"Hagarika",close:"Funga",add:"Ongeraho",edit:"Hindura",delete:"Siba",view:"Reba",upload:"Ohereza",search:"Shakisha",loading:"Birimo...",areYouSure:"Urabyemeza?",cannotUndo:"Ntibishobora guhindurwa",savedSuccessfully:"Byabitswe",updatedSuccessfully:"Byavuguruwe",deletedSuccessfully:"Byasibwe",somethingWentWrong:"Hari ikitagenze neza",noDataAvailable:"Nta makuru",requiredField:"Birakenewe",invalidValue:"Agaciro katariyo",selectAll:"Hitamo Byose",today:"Uyu Munsi",remove:"Kuraho",print:"Capa",download:"Kuramo",export:"Sohora",filter:"Shungura",clear:"Siba",accessDenied:"Ntabwo wemerewe"},
+common:{save:"Bika",cancel:"Hagarika",close:"Funga",add:"Ongeraho",edit:"Hindura",delete:"Siba",view:"Reba",upload:"Ohereza",search:"Shakisha",loading:"Birimo...",areYouSure:"Urabyemeza?",cannotUndo:"Ntibishobora guhindurwa",savedSuccessfully:"Byabitswe",updatedSuccessfully:"Byavuguruwe",deletedSuccessfully:"Byasibwe",somethingWentWrong:"Hari ikitagenze neza",noDataAvailable:"Nta makuru",requiredField:"Birakenewe",invalidValue:"Agaciro katariyo",selectAll:"Hitamo Byose",today:"Uyu Munsi",remove:"Kuraho",print:"Capa",download:"Kuramo",export:"Sohora",filter:"Shungura",clear:"Siba",accessDenied:"Ntabwo wemerewe",done:"Byarangiye",viewAll:"Reba byose",unknown:"Ntibizwi"},
 messages:{title:"Ubutumwa",emptyThread:"Nta butumwa burahari. Vuga muraho 👋",inputPlaceholder:"Andika ubutumwa...",send:"Ohereza",online:"Kuri interineti",offline:"Nta murongo",lastSeen:"Byagarutse",you:"Wowe",yesterday:"Ejo hashize",notAuthorized:"Ntabwo ureherewe kureba iki kiganiro.",noOwner:"Nta nyir'ubwite uhujwe na konti yawe.",loading:"Turimo gutegura ikiganiro...",selectConversation:"Hitamo ikiganiro",sendFailed:"Kohereza byanze.",back:"Subira",ownerRole:"Nyir'ubwite / Umuyobozi",
 attach:"Ohereza ifoto",emoji:"Emoji",share:"Sangiza inyandiko",shareMaterial:"Sangiza Ibikoresho",shareWorker:"Sangiza Umukozi",shareReport:"Sangiza Raporo",cancelReply:"Hagarika gusubiza",replyingTo:"Gusubiza {name}",
-reply:"Subiza",react:"Tangiza",deleteForMe:"Siba kuri njye",deleteForEveryone:"Siba kuri bose",edited:"byahinduwe",deleted:"Ubu butumwa bwasibwe",
+reply:"Subiza",react:"Tangiza",copy:"Koporora",deleteForMe:"Siba kuri njye",deleteForEveryone:"Siba kuri bose",edited:"byahinduwe",deleted:"Ubu butumwa bwasibwe",copySuccess:"Byakoporowe",copyFailed:"Ntibyakoporowe",
 searchInConversation:"Shakisha mu kiganiro",noSearchResults:"Nta butumwa buhuye",
 pinConversation:"Shyira hejuru",unpinConversation:"Kura hejuru",muteConversation:"Nyereza",unmuteConversation:"Kumurura",archiveConversation:"Bika",unarchiveConversation:"Kuraho",
+markUnread:"Menyekanisha nk'itabisomwe",markRead:"Menyekanisha nk'ibisomwe",
+star:"Shyiraho inyenyeri",unstar:"Kuraho inyenyeri",pinMessage:"Shyira ubutumwa hejuru",unpinMessage:"Kura ubutumwa hejuru",forward:"Ohereza ubutumwa",forwardTo:"Ohereza kuri...",forwarded:"Byoherejwe",forwardedFrom:"Byoherejwe na {name}",noForwardTargets:"Nta bindi biganiro.",
+conversationInfo:"Amakuru y'Ikiganiro",contact:"Ihuza",email:"Email",phone:"Telefone",role:"Uruhare",organization:"Umuryango",assignedSite:"Igibanza",
+conversationDetails:"Ikiganiro",started:"Byatangiye",messagesCount:"Ubutumwa",mediaCount:"Amafoto",filesCount:"Dosiye",
+settings:"Igenamiterere",notifications:"Imenyesha",pin:"Shyira hejuru",sharedMedia:"Amafoto asangiwe",sharedFiles:"Dosiye zisangiwe",docs:"Dosiye",starred:"Inyenyeri",media:"Amafoto",
 uploading:"Turaohereza {name}...",fileTooLarge:"Dosiye ni nini cyane (max 10 MB)",fileTypeNotAllowed:"Ifoto gusa (JPG, PNG, GIF, WEBP)",
 newMessageFrom:"Ubutumwa bushya buturutse {name}",
-edit:"Hindura Ubutumwa",delete:"Siba Ubutumwa",
-editMessage:"Hindura ubutumwa",saveEdit:"Bika",editWindowExpired:"Ushobora guhindura gusa mu minota 15",deleteWindowExpired:"Gusiba kuri bose bishoboka gusa mu minota 15"},
+edit:"Hindura Ubutumwa",delete:"Siba Ubutumwa",editMessage:"Hindura ubutumwa",saveEdit:"Bika",editWindowExpired:"Ushobora guhindura gusa mu minota 15",deleteWindowExpired:"Gusiba kuri bose bishoboka gusa mu minota 15",more:"Byinshi"},
 dashboard:{siteStatus:"Imiterere",siteManager:"Umuyobozi",workersOnSite:"Abakozi",progress:"Ibitekerezo",recentMaterials:"Ibikoresho bishya",pendingTasks:"Imirimo itegereje"},
 materials:{title:"Ibikoresho Byakoreshejwe",recordUsage:"Andika Gukoresha",editMaterial:"Hindura",materialName:"Izina",quantityUsed:"Umubare",unitCost:"Igiciro",totalAmount:"Amafaranga",noMaterials:"Nta bikoresho.",requisitions:"Ubusabe",newRequisition:"+ Ubusabe Bushya",requested:"Basabwe",supplied:"Byatanzwe",remaining:"Bisigaye",reqNumber:"Nomero",site:"Ukibanza",requestedBy:"Wasabye",requestDate:"Itariki yo Gusaba",requiredDate:"Itariki Ikenewe",priority:"Ubwihutirwa",status:"Imiterere",actions:"Ibikorwa",pending:"Bitegereje",urgent:"Byihutirwa",approved:"Byemewe",partiallySupplied:"Igice",suppliedStatus:"Byatanzwe",normal:"Bisanzwe",createRequisition:"Ubusabe Bushya",submitRequisition:"Ohereza",notes:"Ibisobanuro",material:"Ibikoresho",available:"Biboneka",requestedQty:"Umubare",unit:"Igice",noRequisitions:"Nta busabe.",batchMaterialUsage:"Gukoresha Ibikoresho",dateUsed:"Itariki *",selectMaterials:"Hitamo Ibikoresho",selectMaterialsHint:"Kanda guhitamo",batchTotal:"Igiteranyo",saveUsageBatch:"Bika",selectAtLeastOneMaterial:"Hitamo byibura kimwe",quantityMustBePositive:"Umubare > 0",unitCostCannotBeNegative:"Igiciro ntigishobora kuba nini",insufficientStock:"Imbuganyuro ntihagije",stockNotFound:"Ntiboneka",batchSaved:"Byabitswe!",currentStock:"Ziriho",materialItems:"Ibikoresho",materials:"ibikoresho",usagePhoto:"Ifoto (Bidahatirwa)",usagePhotoHint:"Fata cyangwa hitamo ifoto",search:"Shakisha...",allPriorities:"Ubwihutirwa bwose",allStatuses:"Imiterere yose",clearFilters:"Siba amashungura"},
 stock:{title:"Imbuganyuro",receiveStock:"Akira",editStock:"Hindura",stockHistory:"Amateka",quantity:"Umubare",minimumStock:"Ntarengwa",stockValue:"Agaciro",lastUpdated:"Byavuguruwe",notes:"Ibisobanuro",normal:"Bisanzwe",lowStock:"Nke",outOfStock:"Yashaje",unit:"Igice",unitCost:"Igiciro",currentStock:"Ziriho"},
@@ -364,16 +421,21 @@ reports:{title:"Raporo",general:"Rusange",workerPayroll:"Umushahara",materials:"
 gallery:{title:"Amafoto",uploadImage:"Ohereza Ifoto",description:"Ibisobanuro",upload:"Ohereza",noImages:"Nta mafoto.",close:"Funga"},
 settings:{title:"Igenamiterere",profile:"Umwirondoro",account:"Kontu",security:"Umutekano",preferences:"Amahitamo",profileInfo:"Amakuru bwite",fullName:"Amazina",phone:"Telefoni",email:"Email",changePhoto:"Hindura ifoto",removePhoto:"Kuraho",saveProfile:"Bika",accountInfo:"Kontu",accountName:"Izina",role:"Umwanya",accountStatus:"Imiterere",active:"Bikora",memberSince:"Kuva",changePassword:"Hindura Ijambobanga",currentPassword:"Risanzwe",newPassword:"Rishya",confirmPassword:"Emeza",changePassBtn:"Hindura",prefs:"Amahitamo",language:"Ururimi",currency:"Ifaranga",dateFormat:"Itariki",notifications:"Imenyesha",browserNotifications:"Emeza imenyesha ya mushakisha",savePrefs:"Bika"}},
 fr:{navigation:{managerPanel:"Panneau du gestionnaire",dashboard:"Tableau de bord",materials:"Matériaux",stock:"Stock",workers:"Ouvriers",progress:"Progrès",reports:"Rapports",messages:"Messages",gallery:"Galerie",settings:"Paramètres",logout:"Déconnexion"},
-common:{save:"Enregistrer",cancel:"Annuler",close:"Fermer",add:"Ajouter",edit:"Modifier",delete:"Supprimer",view:"Voir",upload:"Télécharger",search:"Rechercher",loading:"Chargement...",areYouSure:"Êtes-vous sûr ?",cannotUndo:"Action irréversible",savedSuccessfully:"Enregistré",updatedSuccessfully:"Mis à jour",deletedSuccessfully:"Supprimé",somethingWentWrong:"Une erreur s'est produite",noDataAvailable:"Aucune donnée",requiredField:"Champ requis",invalidValue:"Valeur invalide",selectAll:"Tout Sélectionner",today:"Aujourd'hui",remove:"Retirer",print:"Imprimer",download:"Télécharger",export:"Exporter",filter:"Filtrer",clear:"Effacer",accessDenied:"Accès refusé"},
+common:{save:"Enregistrer",cancel:"Annuler",close:"Fermer",add:"Ajouter",edit:"Modifier",delete:"Supprimer",view:"Voir",upload:"Télécharger",search:"Rechercher",loading:"Chargement...",areYouSure:"Êtes-vous sûr ?",cannotUndo:"Action irréversible",savedSuccessfully:"Enregistré",updatedSuccessfully:"Mis à jour",deletedSuccessfully:"Supprimé",somethingWentWrong:"Une erreur s'est produite",noDataAvailable:"Aucune donnée",requiredField:"Champ requis",invalidValue:"Valeur invalide",selectAll:"Tout Sélectionner",today:"Aujourd'hui",remove:"Retirer",print:"Imprimer",download:"Télécharger",export:"Exporter",filter:"Filtrer",clear:"Effacer",accessDenied:"Accès refusé",done:"Terminé",viewAll:"Voir tout",unknown:"Inconnu"},
 messages:{title:"Messages",emptyThread:"Aucun message. Dites bonjour 👋",inputPlaceholder:"Tapez un message...",send:"Envoyer",online:"En ligne",offline:"Hors ligne",lastSeen:"Vu pour la dernière fois",you:"Vous",yesterday:"Hier",notAuthorized:"Vous n'êtes pas autorisé à voir cette conversation.",noOwner:"Aucun propriétaire n'est associé à votre compte.",loading:"Chargement de la conversation...",selectConversation:"Sélectionnez une conversation",sendFailed:"Échec de l'envoi.",back:"Retour",ownerRole:"Propriétaire / Admin",
 attach:"Joindre une image",emoji:"Emoji",share:"Partager un enregistrement",shareMaterial:"Partager Matériau",shareWorker:"Partager Ouvrier",shareReport:"Partager Rapport",cancelReply:"Annuler la réponse",replyingTo:"Réponse à {name}",
-reply:"Répondre",react:"Réagir",deleteForMe:"Supprimer pour moi",deleteForEveryone:"Supprimer pour tout le monde",edited:"modifié",deleted:"Ce message a été supprimé",
+reply:"Répondre",react:"Réagir",copy:"Copier",deleteForMe:"Supprimer pour moi",deleteForEveryone:"Supprimer pour tout le monde",edited:"modifié",deleted:"Ce message a été supprimé",copySuccess:"Copié",copyFailed:"Impossible de copier",
 searchInConversation:"Rechercher dans la conversation",noSearchResults:"Aucun message ne correspond",
 pinConversation:"Épingler",unpinConversation:"Désépingler",muteConversation:"Mettre en sourdine",unmuteConversation:"Réactiver",archiveConversation:"Archiver",unarchiveConversation:"Désarchiver",
+markUnread:"Marquer comme non lu",markRead:"Marquer comme lu",
+star:"Étoile",unstar:"Retirer l'étoile",pinMessage:"Épingler le message",unpinMessage:"Désépingler le message",forward:"Transférer",forwardTo:"Transférer vers...",forwarded:"Transféré",forwardedFrom:"Transféré de {name}",noForwardTargets:"Aucune autre conversation.",
+starredToast:"Message étoilé",unstarredToast:"Étoile retirée",pinnedMessageToast:"Message épinglé",unpinnedMessageToast:"Message désépinglé",forwardSuccess:"Message transféré",forwardFailed:"Échec du transfert",
+conversationInfo:"Infos de conversation",contact:"Contact",email:"E-mail",phone:"Téléphone",role:"Rôle",organization:"Organisation",assignedSite:"Site assigné",
+conversationDetails:"Conversation",started:"Démarrée",messagesCount:"Messages",mediaCount:"Médias",filesCount:"Fichiers",
+settings:"Paramètres",notifications:"Notifications",pin:"Épingler",sharedMedia:"Médias partagés",sharedFiles:"Fichiers partagés",docs:"Docs",starred:"Étoilés",media:"Médias",
 uploading:"Envoi de {name}...",fileTooLarge:"Fichier trop volumineux (max 10 Mo)",fileTypeNotAllowed:"Images uniquement (JPG, PNG, GIF, WEBP)",
 newMessageFrom:"Nouveau message de {name}",
-edit:"Modifier le message",delete:"Supprimer le message",
-editMessage:"Modifier le message",saveEdit:"Enregistrer",editWindowExpired:"Modifiable uniquement dans les 15 minutes",deleteWindowExpired:"Suppression pour tous uniquement dans les 15 minutes"},
+edit:"Modifier le message",delete:"Supprimer le message",editMessage:"Modifier le message",saveEdit:"Enregistrer",editWindowExpired:"Modifiable uniquement dans les 15 minutes",deleteWindowExpired:"Suppression pour tous uniquement dans les 15 minutes",more:"Plus"},
 dashboard:{siteStatus:"Statut",siteManager:"Gestionnaire",workersOnSite:"Ouvriers",progress:"Progrès",recentMaterials:"Matériaux récents",pendingTasks:"Tâches en attente"},
 materials:{title:"Matériaux utilisés",recordUsage:"Enregistrer",editMaterial:"Modifier",materialName:"Nom",quantityUsed:"Qté",unitCost:"Coût",totalAmount:"Total",noMaterials:"Aucun matériau.",requisitions:"Réquisitions",newRequisition:"+ Nouvelle",requested:"Demandé",supplied:"Fourni",remaining:"Restant",reqNumber:"N°",site:"Chantier",requestedBy:"Demandé par",requestDate:"Date demande",requiredDate:"Date requise",priority:"Priorité",status:"Statut",actions:"Actions",pending:"En attente",urgent:"Urgent",approved:"Approuvé",partiallySupplied:"Partiel",suppliedStatus:"Fourni",normal:"Normal",createRequisition:"Nouvelle Réquisition",submitRequisition:"Soumettre",notes:"Notes",material:"Matériau",available:"Disponible",requestedQty:"Qté demandée",unit:"Unité",noRequisitions:"Aucune réquisition.",batchMaterialUsage:"Utilisation par lot",dateUsed:"Date *",selectMaterials:"Sélectionner",selectMaterialsHint:"Cliquez pour sélectionner",batchTotal:"Montant total",saveUsageBatch:"Enregistrer",selectAtLeastOneMaterial:"Sélectionnez au moins un matériau",quantityMustBePositive:"Quantité > 0",unitCostCannotBeNegative:"Coût non négatif",insufficientStock:"Stock insuffisant",stockNotFound:"Introuvable",batchSaved:"Lot enregistré!",currentStock:"Stock actuel",materialItems:"Articles",materials:"matériaux",usagePhoto:"Photo (facultatif)",usagePhotoHint:"Prenez ou sélectionnez une photo",search:"Rechercher...",allPriorities:"Toutes priorités",allStatuses:"Tous statuts",clearFilters:"Effacer filtres"},
 stock:{title:"Gestion du stock",receiveStock:"Recevoir",editStock:"Modifier",stockHistory:"Historique",quantity:"Quantité",minimumStock:"Stock min",stockValue:"Valeur",lastUpdated:"Mis à jour",notes:"Notes",normal:"Normal",lowStock:"Faible",outOfStock:"Épuisé",unit:"Unité",unitCost:"Coût unitaire",currentStock:"Stock actuel"},
@@ -1967,6 +2029,7 @@ window.handlePreferencesSave=async function(e){
 // ============================================================
 window.showSection=function(section){
   if(currentSection==='settings'&&hasUnsavedChanges){if(!confirm(t('common.areYouSure')))return;hasUnsavedChanges=false}
+  if(currentSection==='messages' && section!=='messages'){convInfoOpen=false;}
   currentSection=section;clearError();
   document.getElementById('page-title').textContent=t(`navigation.${section}`)||section;
   document.querySelectorAll('.sidebar-link').forEach(l=>l.classList.remove('active'));
@@ -2027,7 +2090,7 @@ function attachListeners(){
   unsubscribeSnapshots.push(onSnapshot(query(collection(db,'requisition_history'),where('site_id','==',sid),orderBy('timestamp','desc')),s=>{requisitionHistoryData=s.docs.map(d=>({id:d.id,...d.data()}));refreshCurrentSection()}));
 }
 function refreshCurrentSection(){
-  if(currentSection==='messages'){renderMessagesThread();renderMessagesSidebar();updateMessagesBadge();return;}
+  if(currentSection==='messages'){renderMessagesThread();renderMessagesSidebar();if(convInfoOpen)renderConversationInfo();updateMessagesBadge();return;}
   if(window._refreshing)return;window._refreshing=true;
   requestAnimationFrame(()=>{
     if(currentUser&&currentSiteId){
@@ -2057,7 +2120,7 @@ function refreshCurrentSection(){
 window.switchSite=function(id){currentSiteId=id;attachListeners();showSection(currentSection)};
 
 // =================================================================
-// ============== MESSAGING ENGINE v3 ==============================
+// ============== MESSAGING ENGINE v4 (Manager Side) ===============
 // =================================================================
 const CONVERSATIONS = 'conversations';
 const EDIT_WINDOW_MS   = 15 * 60 * 1000;
@@ -2082,6 +2145,10 @@ let emojiPickerOpen       = false;
 let searchPanelOpen       = false;
 let currentSearchQuery    = '';
 let _lastRenderedCid      = null;
+let _sendingInProgress    = false;
+let convInfoOpen          = false;
+let convInfoTab           = 'media';
+let _convInfoBoundCid     = null;
 
 function buildConversationId(ownerId, managerId) { return `owner_${ownerId}_manager_${managerId}`; }
 function getManagerOwnerId() {
@@ -2111,6 +2178,23 @@ function formatBytes(bytes) {
 }
 function getDraft(cid) { try { return localStorage.getItem(`shdr_draft_${cid}`) || ''; } catch { return ''; } }
 function setDraft(cid, text) { try { if (text && text.trim()) localStorage.setItem(`shdr_draft_${cid}`, text); else localStorage.removeItem(`shdr_draft_${cid}`); } catch {} }
+function isSafeAttachmentUrl(url) {
+  if (!url || typeof url !== 'string') return false;
+  try { const u = new URL(url); return u.protocol === 'https:'; } catch { return false; }
+}
+
+function updateSendButtonState() {
+  const btn = document.getElementById('message-send-btn');
+  const input = document.getElementById('message-input');
+  if (!btn) return;
+  if (_sendingInProgress) { btn.disabled = true; return; }
+  const hasText = !!(input && (input.value || '').trim().length > 0);
+  const hasAttachment = !!pendingAttachment;
+  const hasShared = !!window._pendingSharedRecord;
+  const canSend = (hasText || hasAttachment || hasShared) && !!activeConversationId && !!activeOwnerId;
+  btn.disabled = !canSend;
+}
+window.updateSendButtonState = updateSendButtonState;
 
 function initPresence() {
   if (!currentUser) return;
@@ -2127,7 +2211,7 @@ function initPresence() {
   chatUnsubs.push(connectedUnsub);
   chatUnsubs.push(rtdbOnValue(rtdbRef(rtdb, 'presence'), (snap) => {
     presenceMap = snap.val() || {};
-    if (currentSection === 'messages') renderMessagesThread();
+    if (currentSection === 'messages') { renderMessagesThread(); renderMessagesSidebar(); if (convInfoOpen) renderConversationInfo(); }
   }, err => console.warn('presence listener:', err)));
 }
 
@@ -2139,7 +2223,18 @@ function onComposerInput() {
   startTyping(activeConversationId);
   clearTimeout(_typingTimer);
   _typingTimer = setTimeout(() => stopTyping(activeConversationId), 3000);
+  updateSendButtonState();
 }
+window.onComposerInput = onComposerInput;
+
+function saveDraftSoon() {
+  if (!activeConversationId) return;
+  const inp = document.getElementById('message-input');
+  if (!inp) return;
+  setDraft(activeConversationId, inp.value);
+}
+window.saveDraftSoon = saveDraftSoon;
+
 function subscribeToTyping(cid) {
   if (typingUnsub) { try { typingUnsub(); } catch (_) {} typingUnsub = null; }
   typingMap = {};
@@ -2165,6 +2260,7 @@ function attachMessagingListeners() {
       if (activeConversationId && !conversationsData.some(c => c.id === activeConversationId)) resetActiveConversation();
       renderMessagesSidebar();
       renderMessagesThread();
+      if (convInfoOpen) renderConversationInfo();
     }
   }, err => console.error('[conversations] snapshot error:', err)));
   initPresence();
@@ -2177,6 +2273,7 @@ function subscribeToMessages(cid) {
   messagesUnsub = onSnapshot(msgQ, (snap) => {
     messagesCache = snap.docs.map(d => ({ id: d.id, ...d.data() }));
     renderMessagesThread();
+    if (convInfoOpen) renderConversationInfo();
     markConversationRead(cid);
     markConversationDelivered(cid);
   }, err => {
@@ -2228,6 +2325,7 @@ function resetActiveConversation() {
   activeOwnerId = null; activeOwnerProfile = null; activeConversationId = null; messagesCache = [];
   replyingTo = null; pendingAttachment = null; typingMap = {};
   currentSearchQuery = ''; searchPanelOpen = false; _lastRenderedCid = null;
+  convInfoOpen = false; _convInfoBoundCid = null;
   closeMsgMenu(); closeReactionPicker();
 }
 
@@ -2240,6 +2338,7 @@ window.sendOwnerMessage = async () => {
   if (!text && !hasAttachment && !hasShared) return;
   if (text.length > 4000) { showToast(t('common.invalidValue'), 'error'); return; }
   const btn = document.getElementById('message-send-btn');
+  _sendingInProgress = true;
   if (btn) btn.disabled = true;
   const now = new Date().toISOString();
   const msgRef = doc(collection(db, CONVERSATIONS, activeConversationId, 'messages'));
@@ -2260,8 +2359,8 @@ window.sendOwnerMessage = async () => {
       const url = await uploadFileToImgbb(f);
       attachment = { url, name: f.name, size: f.size, mime: f.type };
     }
-    const msgPayload = { sender_id: currentUser.uid, sender_role: 'manager', text: text || '', type: attachment ? 'attachment' : (shared ? 'shared_record' : 'text'), attachment: attachment, shared_record: shared, reply_to: reply?.id || null, reply_preview: reply ? { sender_name: reply.sender_name, text: reply.text } : null, reactions: {}, edited_at: null, deleted_for_all: false, deleted_for: [], created_at: now, sent_at: now, delivered_at: null, read_at: null };
-    const previewText = attachment ? `📎 ${attachment.name}` : shared ? ` ${shared.title}` : text.slice(0, 200);
+    const msgPayload = { sender_id: currentUser.uid, sender_role: 'manager', text: text || '', type: attachment ? 'attachment' : (shared ? 'shared_record' : 'text'), attachment: attachment, shared_record: shared, reply_to: reply?.id || null, reply_preview: reply ? { sender_name: reply.sender_name, text: reply.text } : null, reactions: {}, edited_at: null, deleted_for_all: false, deleted_for: [], starred_by: [], pinned_by: [], created_at: now, sent_at: now, delivered_at: null, read_at: null };
+    const previewText = attachment ? `📎 ${attachment.name}` : shared ? `📋 ${shared.title}` : text.slice(0, 200);
     const batch = writeBatch(db);
     batch.set(msgRef, msgPayload);
     batch.update(doc(db, CONVERSATIONS, activeConversationId), { last_message: { text: previewText, sender_id: currentUser.uid, created_at: now }, updated_at: now, [`unread.${activeOwnerId}`]: increment(1) });
@@ -2276,7 +2375,8 @@ window.sendOwnerMessage = async () => {
     renderComposerReplyPreview();
     showToast(err.message || t('messages.sendFailed'), 'error');
   } finally {
-    if (btn) btn.disabled = false;
+    _sendingInProgress = false;
+    updateSendButtonState();
   }
 };
 
@@ -2317,13 +2417,15 @@ window.insertEmoji = (emoji) => {
   inp.selectionStart = inp.selectionEnd = start + emoji.length;
   inp.focus();
   onComposerInput();
+  saveDraftSoon();
+  updateSendButtonState();
 };
 
 window.startReply = (mid) => {
   const m = messagesCache.find(x => x.id === mid);
   if (!m || m.deleted_for_all) return;
   const senderName = m.sender_id === currentUser.uid ? (managerProfile?.full_name || 'You') : (activeOwnerProfile?.full_name || 'Owner');
-  const body = m.type === 'attachment' ? `📎 ${m.attachment?.name || 'file'}` : m.type === 'shared_record' ? ` ${m.shared_record?.title || 'record'}` : (m.text || '');
+  const body = m.type === 'attachment' ? `📎 ${m.attachment?.name || 'file'}` : m.type === 'shared_record' ? `📋 ${m.shared_record?.title || 'record'}` : (m.text || '');
   replyingTo = { id: mid, sender_name: senderName, text: body.slice(0, 120) };
   renderComposerReplyPreview();
   document.getElementById('message-input')?.focus();
@@ -2344,51 +2446,75 @@ window.toggleReaction = async (mid, emoji) => {
   catch (err) { showToast(t('common.somethingWentWrong'), 'error'); }
 };
 
-/* ============ NEW: floating action menu ============ */
+window.copyMessage = async (mid) => {
+  const m = messagesCache.find(x => x.id === mid);
+  if (!m) return;
+  const text = m.text || '';
+  if (!text) { showToast(t('messages.copyFailed'), 'error'); return; }
+  try {
+    if (navigator.clipboard && window.isSecureContext) await navigator.clipboard.writeText(text);
+    else { const ta = document.createElement('textarea'); ta.value = text; ta.style.position='fixed'; ta.style.opacity='0'; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove(); }
+    showToast(t('messages.copySuccess'), 'success');
+  } catch (e) { showToast(t('messages.copyFailed'), 'error'); }
+};
+
+window.starMessage = async (mid, nextVal) => {
+  if (!activeConversationId) return;
+  const m = messagesCache.find(x => x.id === mid);
+  if (!m) return;
+  try {
+    const current = Array.isArray(m.starred_by) ? m.starred_by : [];
+    const next = nextVal ? Array.from(new Set([...current, currentUser.uid])) : current.filter(u => u !== currentUser.uid);
+    await updateDoc(doc(db, CONVERSATIONS, activeConversationId, 'messages', mid), { starred_by: next });
+    showToast(nextVal ? t('messages.starredToast') : t('messages.unstarredToast'), 'success');
+  } catch (err) { showToast(t('common.somethingWentWrong'), 'error'); }
+};
+
+window.pinMessage = async (mid, nextVal) => {
+  if (!activeConversationId) return;
+  const m = messagesCache.find(x => x.id === mid);
+  if (!m) return;
+  try {
+    const current = Array.isArray(m.pinned_by) ? m.pinned_by : [];
+    const next = nextVal ? Array.from(new Set([...current, currentUser.uid])) : current.filter(u => u !== currentUser.uid);
+    await updateDoc(doc(db, CONVERSATIONS, activeConversationId, 'messages', mid), { pinned_by: next });
+    showToast(nextVal ? t('messages.pinnedMessageToast') : t('messages.unpinnedMessageToast'), 'success');
+  } catch (err) { showToast(t('common.somethingWentWrong'), 'error'); }
+};
+
 window.openMsgMenu = function (ev, mid) {
   if (ev && ev.stopPropagation) ev.stopPropagation();
   closeReactionPicker();
   closeMsgMenu();
-
   const m = messagesCache.find(x => x.id === mid);
   if (!m) return;
-
   const mine = m.sender_id === currentUser.uid;
   const isDeleted = m.deleted_for_all;
   if (isDeleted) return;
-
   const age = Date.now() - new Date(m.created_at).getTime();
   const canEdit = mine && m.type === 'text' && age <= EDIT_WINDOW_MS;
   const canDeleteAll = mine && age <= EDIT_WINDOW_MS;
-
+  const isStarred = Array.isArray(m.starred_by) && m.starred_by.includes(currentUser.uid);
+  const isPinned = Array.isArray(m.pinned_by) && m.pinned_by.includes(currentUser.uid);
   const items = [
     { key: 'react', icon: 'material-symbols:sentiment-satisfied-outline', label: t('messages.react'), cls: '' },
     { key: 'reply', icon: 'material-symbols:reply', label: t('messages.reply'), cls: '' }
   ];
+  if (m.type === 'text' && m.text) items.push({ key: 'copy', icon: 'material-symbols:content-copy-outline', label: t('messages.copy'), cls: '' });
+  items.push({ key: 'star', icon: isStarred ? 'material-symbols:star' : 'material-symbols:star-outline', label: isStarred ? t('messages.unstar') : t('messages.star'), cls: '' });
+  items.push({ key: 'pinmsg', icon: isPinned ? 'material-symbols:push-pin' : 'material-symbols:push-pin-outline', label: isPinned ? t('messages.unpinMessage') : t('messages.pinMessage'), cls: '' });
   if (canEdit) items.push({ key: 'edit', icon: 'material-symbols:edit', label: t('messages.edit'), cls: '' });
   items.push({ key: 'delete', icon: 'material-symbols:delete-outline', label: t('messages.delete'), cls: 'danger' });
-
   const menu = document.createElement('div');
   menu.className = 'msg-action-menu';
   menu.id = 'msg-action-menu';
   menu.addEventListener('click', (e) => e.stopPropagation());
-  menu.innerHTML = items.map(it =>
-    `<button type="button" data-action="${it.key}" data-mid="${mid}" class="${it.cls}">
-      <span class="menu-icon"><iconify-icon icon="${it.icon}" width="18"></iconify-icon></span>
-      <span>${it.label}</span>
-    </button>`
-  ).join('');
+  menu.innerHTML = items.map(it => `<button type="button" data-action="${it.key}" data-mid="${mid}" class="${it.cls}"><span class="menu-icon"><iconify-icon icon="${it.icon}" width="18"></iconify-icon></span><span>${it.label}</span></button>`).join('');
   document.body.appendChild(menu);
-
   const anchor = ev?.currentTarget || ev?.target;
   let rect;
-  if (anchor && anchor.getBoundingClientRect) {
-    rect = anchor.getBoundingClientRect();
-  } else {
-    const msgEl = document.getElementById('msg-' + mid);
-    rect = msgEl ? msgEl.getBoundingClientRect() : { left: 40, right: 240, top: 200, bottom: 240 };
-  }
-
+  if (anchor && anchor.getBoundingClientRect) rect = anchor.getBoundingClientRect();
+  else { const msgEl = document.getElementById('msg-' + mid); rect = msgEl ? msgEl.getBoundingClientRect() : { left: 40, right: 240, top: 200, bottom: 240 }; }
   const mw = menu.offsetWidth, mh = menu.offsetHeight;
   let left = mine ? (rect.right - mw) : rect.left;
   let top = rect.bottom + 6;
@@ -2398,42 +2524,33 @@ window.openMsgMenu = function (ev, mid) {
   if (top < 8) top = 8;
   menu.style.left = left + 'px';
   menu.style.top = top + 'px';
-
   menu.querySelectorAll('button[data-action]').forEach(btn => {
     btn.addEventListener('click', () => {
       const action = btn.dataset.action;
       const msgId = btn.dataset.mid;
       closeMsgMenu();
-      if (action === 'react') {
-        openReactionPickerFixed(msgId);
-      } else if (action === 'reply') {
-        startReply(msgId);
-      } else if (action === 'edit') {
-        startEdit(msgId);
-      } else if (action === 'delete') {
-        openDeleteMenu(msgId, { stopPropagation: () => {} });
-      }
+      if (action === 'react') openReactionPickerFixed(msgId);
+      else if (action === 'reply') startReply(msgId);
+      else if (action === 'copy') copyMessage(msgId);
+      else if (action === 'star') starMessage(msgId, !isStarred);
+      else if (action === 'pinmsg') pinMessage(msgId, !isPinned);
+      else if (action === 'edit') startEdit(msgId);
+      else if (action === 'delete') openDeleteMenu(msgId, { stopPropagation: () => {} });
     });
   });
 };
-window.closeMsgMenu = function () {
-  const el = document.getElementById('msg-action-menu');
-  if (el) el.remove();
-};
+window.closeMsgMenu = function () { document.getElementById('msg-action-menu')?.remove(); };
 
 window.openReactionPickerFixed = function (mid) {
   closeReactionPicker();
   const msgEl = document.getElementById('msg-' + mid);
   const rect = msgEl ? msgEl.getBoundingClientRect() : { left: 40, right: 240, top: 200, bottom: 240 };
-
   const picker = document.createElement('div');
   picker.className = 'reaction-picker-floating';
   picker.id = 'reaction-picker-floating';
   picker.addEventListener('click', (e) => e.stopPropagation());
-  picker.innerHTML = ['👍','❤️','😂','😮','😢','🙏']
-    .map(e => `<button type="button" data-emoji="${e}">${e}</button>`).join('');
+  picker.innerHTML = ['👍','❤️','😂','😮','😢','🙏'].map(e => `<button type="button" data-emoji="${e}">${e}</button>`).join('');
   document.body.appendChild(picker);
-
   const pw = picker.offsetWidth, ph = picker.offsetHeight;
   let left = rect.left + (rect.width / 2) - (pw / 2);
   let top = rect.top - ph - 6;
@@ -2442,37 +2559,23 @@ window.openReactionPickerFixed = function (mid) {
   if (left + pw > window.innerWidth - 8) left = window.innerWidth - pw - 8;
   picker.style.left = left + 'px';
   picker.style.top = top + 'px';
-
   picker.querySelectorAll('button[data-emoji]').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const emoji = btn.dataset.emoji;
-      toggleReaction(mid, emoji);
-      closeReactionPicker();
-    });
+    btn.addEventListener('click', () => { toggleReaction(mid, btn.dataset.emoji); closeReactionPicker(); });
   });
 };
-window.closeReactionPicker = function () {
-  const el = document.getElementById('reaction-picker-floating');
-  if (el) el.remove();
-};
+window.closeReactionPicker = function () { document.getElementById('reaction-picker-floating')?.remove(); };
 
-/* ============ FIXED: Edit modal with real Material Symbol icon ============ */
 window.startEdit = (mid) => {
   const m = messagesCache.find(x => x.id === mid);
   if (!m || m.sender_id !== currentUser.uid || m.deleted_for_all) return;
   if (m.type !== 'text') { showToast(t('messages.editWindowExpired'), 'error'); return; }
   const age = Date.now() - new Date(m.created_at).getTime();
   if (age > EDIT_WINDOW_MS) { showToast(t('messages.editWindowExpired'), 'error'); return; }
-
-  openModal(t('messages.edit'), `
-    <form onsubmit="submitEdit(event, '${mid}')" class="space-y-4">
-      <div class="flex items-center gap-2 text-emerald-700 mb-2">
-        <iconify-icon icon="material-symbols:edit" width="24"></iconify-icon>
-        <span class="font-bold text-lg">${t('messages.edit')}</span>
-      </div>
-      <textarea id="edit-input" rows="4" class="w-full border rounded-lg p-3 text-sm">${escapeHTML(m.text || '')}</textarea>
-      <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-xl font-semibold">${t('messages.saveEdit')}</button>
-    </form>`);
+  openModal(t('messages.edit'), `<form onsubmit="submitEdit(event, '${mid}')" class="space-y-4">
+    <div class="flex items-center gap-2 text-emerald-700 mb-2"><iconify-icon icon="material-symbols:edit" width="24"></iconify-icon><span class="font-bold text-lg">${t('messages.edit')}</span></div>
+    <textarea id="edit-input" rows="4" class="w-full border rounded-lg p-3 text-sm">${escapeHTML(m.text || '')}</textarea>
+    <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-xl font-semibold">${t('messages.saveEdit')}</button>
+  </form>`);
   setTimeout(() => { const inp = document.getElementById('edit-input'); if (inp) { inp.focus(); inp.selectionStart = inp.selectionEnd = inp.value.length; } }, 80);
 };
 window.submitEdit = async (e, mid) => {
@@ -2488,7 +2591,6 @@ window.submitEdit = async (e, mid) => {
   finally { setButtonLoading(btn, false); }
 };
 
-/* ============ FIXED: Delete modal with real Material Symbol icon ============ */
 window.openDeleteMenu = (mid, ev) => {
   ev?.stopPropagation?.();
   const m = messagesCache.find(x => x.id === mid);
@@ -2496,23 +2598,11 @@ window.openDeleteMenu = (mid, ev) => {
   const mine = m.sender_id === currentUser.uid;
   const age = Date.now() - new Date(m.created_at).getTime();
   const canDeleteAll = mine && age <= EDIT_WINDOW_MS;
-
-  openModal(t('messages.delete'), `
-    <div class="space-y-3">
-      <div class="flex items-center gap-2 text-red-600 mb-4">
-        <iconify-icon icon="material-symbols:delete-outline" width="24"></iconify-icon>
-        <span class="font-bold text-lg">${t('messages.delete')}</span>
-      </div>
-      <button onclick="deleteMessage('${mid}','me')" class="w-full text-left px-4 py-3 rounded-xl border hover:bg-slate-50 flex items-center gap-3">
-        <iconify-icon icon="material-symbols:visibility-off-outline" width="20" class="text-slate-500"></iconify-icon>
-        <span class="font-medium">${t('messages.deleteForMe')}</span>
-      </button>
-      ${canDeleteAll ? `
-      <button onclick="deleteMessage('${mid}','all')" class="w-full text-left px-4 py-3 rounded-xl border hover:bg-red-50 flex items-center gap-3">
-        <iconify-icon icon="material-symbols:delete-outline" width="20" class="text-red-500"></iconify-icon>
-        <span class="font-medium text-red-600">${t('messages.deleteForEveryone')}</span>
-      </button>` : `<p class="text-xs text-slate-400 px-1">${t('messages.deleteWindowExpired')}</p>`}
-    </div>`);
+  openModal(t('messages.delete'), `<div class="space-y-3">
+    <div class="flex items-center gap-2 text-red-600 mb-4"><iconify-icon icon="material-symbols:delete-outline" width="24"></iconify-icon><span class="font-bold text-lg">${t('messages.delete')}</span></div>
+    <button onclick="deleteMessage('${mid}','me')" class="w-full text-left px-4 py-3 rounded-xl border hover:bg-slate-50 flex items-center gap-3"><iconify-icon icon="material-symbols:visibility-off-outline" width="20" class="text-slate-500"></iconify-icon><span class="font-medium">${t('messages.deleteForMe')}</span></button>
+    ${canDeleteAll ? `<button onclick="deleteMessage('${mid}','all')" class="w-full text-left px-4 py-3 rounded-xl border hover:bg-red-50 flex items-center gap-3"><iconify-icon icon="material-symbols:delete-outline" width="20" class="text-red-500"></iconify-icon><span class="font-medium text-red-600">${t('messages.deleteForEveryone')}</span></button>` : `<p class="text-xs text-slate-400 px-1">${t('messages.deleteWindowExpired')}</p>`}
+  </div>`);
 };
 window.deleteMessage = async (mid, scope) => {
   closeModal();
@@ -2544,19 +2634,15 @@ window.toggleSearchPanel = () => {
   if (searchPanelOpen) setTimeout(() => document.getElementById('msg-search-input')?.focus(), 50);
 };
 window.onSearchInput = (e) => { currentSearchQuery = (e.target.value || '').trim(); renderSearchPanel(); };
-
 function getSearchResults() {
   if (!currentSearchQuery) return [];
   const q = currentSearchQuery.toLowerCase();
-  return messagesCache
-    .map((m, idx) => ({ m, idx }))
-    .filter(({ m }) => {
-      if (m.deleted_for_all) return false;
-      if (Array.isArray(m.deleted_for) && m.deleted_for.includes(currentUser.uid)) return false;
-      const hay = [m.text, m.attachment?.name, m.shared_record?.title].filter(Boolean).join(' ').toLowerCase();
-      return hay.includes(q);
-    })
-    .slice(-30);
+  return messagesCache.map((m, idx) => ({ m, idx })).filter(({ m }) => {
+    if (m.deleted_for_all) return false;
+    if (Array.isArray(m.deleted_for) && m.deleted_for.includes(currentUser.uid)) return false;
+    const hay = [m.text, m.attachment?.name, m.shared_record?.title].filter(Boolean).join(' ').toLowerCase();
+    return hay.includes(q);
+  }).slice(-30);
 }
 function renderSearchPanel() {
   const panel = document.getElementById('msg-search-panel');
@@ -2568,13 +2654,7 @@ function renderSearchPanel() {
   if (!resultsEl) return;
   if (!searchPanelOpen || !currentSearchQuery) { resultsEl.innerHTML = ''; return; }
   const results = getSearchResults();
-  resultsEl.innerHTML = results.length
-    ? results.map(r => `
-        <div class="msg-search-result" onclick="closeSearchAndScroll('${r.m.id}')">
-          <div class="text-slate-700 truncate">${escapeHTML((r.m.text || r.m.attachment?.name || r.m.shared_record?.title || '').slice(0, 120))}</div>
-          <div class="text-[10px] text-slate-400">${escapeHTML(formatChatTime(r.m.created_at))}</div>
-        </div>`).join('')
-    : `<p class="text-xs text-slate-400 p-2">${t('messages.noSearchResults')}</p>`;
+  resultsEl.innerHTML = results.length ? results.map(r => `<div class="msg-search-result" onclick="closeSearchAndScroll('${r.m.id}')"><div class="text-slate-700 truncate">${escapeHTML((r.m.text || r.m.attachment?.name || r.m.shared_record?.title || '').slice(0, 120))}</div><div class="text-[10px] text-slate-400">${escapeHTML(formatChatTime(r.m.created_at))}</div></div>`).join('') : `<p class="text-xs text-slate-400 p-2">${t('messages.noSearchResults')}</p>`;
 }
 window.closeSearchAndScroll = (mid) => {
   if (searchPanelOpen) { searchPanelOpen = false; renderSearchPanel(); }
@@ -2588,8 +2668,8 @@ async function updateUserSetting(cid, patch) {
     await updateDoc(doc(db, CONVERSATIONS, cid), data);
   } catch (err) { showToast(t('common.somethingWentWrong'), 'error'); }
 }
-window.togglePin = async (cid) => { const c = conversationsData.find(x => x.id === cid); const cur = c?.user_settings?.[currentUser.uid]?.pinned || false; await updateUserSetting(cid, { pinned: !cur }); };
-window.toggleMute = async (cid) => { const c = conversationsData.find(x => x.id === cid); const cur = c?.user_settings?.[currentUser.uid]?.muted || false; await updateUserSetting(cid, { muted: !cur }); };
+window.togglePin = async (cid) => { const c = conversationsData.find(x => x.id === cid); const cur = c?.user_settings?.[currentUser.uid]?.pinned || false; await updateUserSetting(cid, { pinned: !cur }); if (convInfoOpen) renderConversationInfo(); };
+window.toggleMute = async (cid) => { const c = conversationsData.find(x => x.id === cid); const cur = c?.user_settings?.[currentUser.uid]?.muted || false; await updateUserSetting(cid, { muted: !cur }); if (convInfoOpen) renderConversationInfo(); };
 window.toggleArchive = async (cid) => { const c = conversationsData.find(x => x.id === cid); const cur = c?.user_settings?.[currentUser.uid]?.archived || false; await updateUserSetting(cid, { archived: !cur }); };
 
 /* ============ SHDR shared records ============ */
@@ -2611,17 +2691,12 @@ window.pickShareMaterial = (sid) => {
   const s = stockData.find(x => x.id === sid); if (!s) return;
   const unit = s.unit || 'units'; const uc = toNumber(s.unit_cost); const qty = toNumber(s.quantity);
   const site = assignedSites.find(x => x.id === currentSiteId);
-  window._pendingSharedRecord = {
-    kind: 'material',
-    title: `🧱 ${t('messages.shareMaterial')}`,
-    subtitle: escapeHTML(s.material_name || ''),
-    lines: [
-      { label: t('materials.quantityUsed'), value: `${qty} ${unit}` },
-      { label: t('stock.unitCost'),        value: formatRWF(uc) },
-      { label: t('materials.totalAmount'), value: formatRWF(qty * uc) },
-      { label: t('materials.site'),        value: site?.name || '—' }
-    ]
-  };
+  window._pendingSharedRecord = { kind: 'material', title: `🧱 ${t('messages.shareMaterial')}`, subtitle: escapeHTML(s.material_name || ''), lines: [
+    { label: t('materials.quantityUsed'), value: `${qty} ${unit}` },
+    { label: t('stock.unitCost'), value: formatRWF(uc) },
+    { label: t('materials.totalAmount'), value: formatRWF(qty * uc) },
+    { label: t('materials.site'), value: site?.name || '—' }
+  ]};
   closeModal(); renderComposerAttachment(); document.getElementById('message-input')?.focus();
 };
 window.shareWorkerPicker = () => {
@@ -2634,16 +2709,11 @@ window.pickShareWorker = (wid) => {
   const w = siteWorkersData.find(x => x.id === wid); if (!w) return;
   const attendance = attendanceData.filter(a => a.worker_id === w.id);
   const days = attendance.length; const rate = toNumber(w.salary); const payable = days * rate;
-  window._pendingSharedRecord = {
-    kind: 'worker',
-    title: `👷 ${t('messages.shareWorker')}`,
-    subtitle: escapeHTML(w.name || ''),
-    lines: [
-      { label: t('workers.position'),       value: escapeHTML(w.role || '—') },
-      { label: t('workers.attendanceLogs'), value: `${days}` },
-      { label: t('reports.totalPayable'),   value: formatRWF(payable) }
-    ]
-  };
+  window._pendingSharedRecord = { kind: 'worker', title: `👷 ${t('messages.shareWorker')}`, subtitle: escapeHTML(w.name || ''), lines: [
+    { label: t('workers.position'), value: escapeHTML(w.role || '—') },
+    { label: t('workers.attendanceLogs'), value: `${days}` },
+    { label: t('reports.totalPayable'), value: formatRWF(payable) }
+  ]};
   closeModal(); renderComposerAttachment(); document.getElementById('message-input')?.focus();
 };
 window.shareReportPicker = () => {
@@ -2653,15 +2723,10 @@ window.shareReportPicker = () => {
   const pct = totalTasks ? Math.round((doneTasks / totalTasks) * 100) : 0;
   const monthName = new Date().toLocaleString('en', { month: 'long' });
   const yearNum = new Date().getFullYear();
-  window._pendingSharedRecord = {
-    kind: 'report',
-    title: `📄 ${t('messages.shareReport')}`,
-    subtitle: site?.name || '—',
-    lines: [
-      { label: t('reports.labels.period'), value: `${monthName} ${yearNum}` },
-      { label: t('dashboard.progress'),    value: `${pct}%` }
-    ]
-  };
+  window._pendingSharedRecord = { kind: 'report', title: `📄 ${t('messages.shareReport')}`, subtitle: site?.name || '—', lines: [
+    { label: t('reports.labels.period'), value: `${monthName} ${yearNum}` },
+    { label: t('dashboard.progress'), value: `${pct}%` }
+  ]};
   closeModal(); renderComposerAttachment(); document.getElementById('message-input')?.focus();
 };
 
@@ -2680,7 +2745,7 @@ window.openOwnerConversation = async () => {
     renderMessagesSidebar();
     await markConversationRead(cid);
     await markConversationDelivered(cid);
-    setTimeout(() => document.getElementById('message-input')?.focus(), 100);
+    setTimeout(() => { document.getElementById('message-input')?.focus(); updateSendButtonState(); }, 100);
   } catch (err) {
     console.error(err);
     showToast(err.message || t('alerts.somethingWentWrong'), 'error');
@@ -2691,6 +2756,7 @@ window.closeManagerConversation = () => {
   if (activeConversationId) stopTyping(activeConversationId);
   resetActiveConversation();
   document.querySelector('.messages-shell')?.classList.remove('thread-open');
+  document.querySelector('.messages-shell')?.classList.remove('info-open');
   renderMessagesSidebar();
   renderMessagesThread();
 };
@@ -2701,9 +2767,10 @@ window.renderMessages = async function (container) {
       <iconify-icon icon="material-symbols:forum" class="text-emerald-600"></iconify-icon>
       ${t('messages.title')}
     </h2>
-    <div class="bg-white rounded-2xl border shadow-sm overflow-hidden messages-shell">
+    <div class="bg-white rounded-2xl border shadow-sm overflow-hidden messages-shell ${convInfoOpen ? 'info-open' : ''}">
       <div id="messages-directory" class="messages-directory"></div>
       <div id="messages-thread" class="messages-thread"></div>
+      <div id="messages-info-panel" class="messages-info-panel ${convInfoOpen ? '' : 'hidden'}"></div>
     </div>`;
   renderMessagesSidebar();
   await window.openOwnerConversation();
@@ -2723,6 +2790,8 @@ function renderMessagesSidebar() {
   const lastAt = conv?.last_message?.created_at || conv?.updated_at || null;
   const lastText = conv?.last_message?.text || '';
   const isActive = !!activeConversationId;
+  const isPinned = conv?.user_settings?.[currentUser.uid]?.pinned;
+  const isMuted = conv?.user_settings?.[currentUser.uid]?.muted;
   el.innerHTML = `
     <div class="p-3 border-b bg-white">
       <button type="button" onclick="toggleSearchPanel()"
@@ -2740,7 +2809,7 @@ function renderMessagesSidebar() {
       </div>
       <div class="flex-1 min-w-0">
         <div class="flex items-center justify-between gap-2">
-          <p class="font-semibold text-sm text-slate-900 truncate">${escapeHTML(name)}</p>
+          <p class="font-semibold text-sm text-slate-900 truncate flex items-center gap-1">${isPinned ? '<iconify-icon icon="material-symbols:push-pin" width="12" class="text-emerald-600"></iconify-icon>' : ''}${isMuted ? '<iconify-icon icon="material-symbols:notifications-off" width="12" class="text-slate-400"></iconify-icon>' : ''}<span class="truncate">${escapeHTML(name)}</span></p>
           <span class="text-[10px] text-slate-400 flex-shrink-0">${lastAt ? escapeHTML(formatChatTime(lastAt)) : ''}</span>
         </div>
         <p class="text-[11px] text-emerald-700 truncate mt-0.5">
@@ -2764,21 +2833,22 @@ function renderMessagesThread() {
   }
   const isFirstRender = _lastRenderedCid !== activeConversationId;
   _lastRenderedCid = activeConversationId;
-
   const prevInput = document.getElementById('message-input')?.value || '';
   const wasFocused = document.activeElement?.id === 'message-input';
   const prevSearch = document.getElementById('msg-search-input')?.value || '';
   const searchWasFocused = document.activeElement?.id === 'msg-search-input';
   const scrollerBefore = document.getElementById('message-scroll');
   const wasAtBottom = scrollerBefore ? (scrollerBefore.scrollHeight - scrollerBefore.scrollTop - scrollerBefore.clientHeight) < 80 : true;
-
   const op = activeOwnerProfile || {};
   const name = op.full_name || 'Owner';
   const photo = op.profile_picture || '';
   const online = !!presenceMap[activeOwnerId]?.online;
   const lastSeenTs = presenceMap[activeOwnerId]?.last_changed;
   const presenceLabel = online ? t('messages.online') : (lastSeenTs ? `${t('messages.lastSeen')} ${new Date(lastSeenTs).toLocaleString()}` : t('messages.offline'));
-  const bubbles = messagesCache.filter(m => !(m.deleted_for && m.deleted_for.includes(currentUser.uid))).map(m => renderMessageBubble(m)).join('');
+  const visibleMessages = messagesCache.filter(m => !(m.deleted_for && m.deleted_for.includes(currentUser.uid)));
+  const pinnedMsgs = visibleMessages.filter(m => Array.isArray(m.pinned_by) && m.pinned_by.includes(currentUser.uid));
+  const bubbles = visibleMessages.map(m => renderMessageBubble(m)).join('');
+  const pinnedBanner = pinnedMsgs.length ? `<div class="px-3 py-2 bg-amber-50 border-b border-amber-200 flex items-center gap-2 text-xs text-amber-800"><iconify-icon icon="material-symbols:push-pin" width="14"></iconify-icon><span class="font-semibold">${pinnedMsgs.length} pinned</span><button onclick="scrollToMessage('${pinnedMsgs[pinnedMsgs.length-1].id}')" class="ml-auto text-amber-700 hover:underline">${t('common.view')}</button></div>` : '';
 
   el.innerHTML = `
     <div class="flex items-center gap-3 p-3 border-b bg-white">
@@ -2786,30 +2856,31 @@ function renderMessagesThread() {
         class="md:hidden text-slate-500 hover:text-slate-800 p-1" aria-label="${t('messages.back')}">
         <iconify-icon icon="material-symbols:arrow-back" width="22"></iconify-icon>
       </button>
-      <div class="relative flex-shrink-0">
-        ${photo ? `<img src="${escapeHTML(photo)}" class="w-10 h-10 rounded-full object-cover" alt="">` : `<div class="w-10 h-10 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold">${escapeHTML(initialsOf(name))}</div>`}
-        <span class="presence-dot ${online ? 'presence-online' : 'presence-offline'}"></span>
-      </div>
-      <div class="min-w-0 flex-1">
-        <p class="font-semibold text-sm text-slate-900 truncate">${escapeHTML(name)}</p>
-        <p class="text-[11px] text-slate-500 truncate">${escapeHTML(presenceLabel)}</p>
-      </div>
+      <button type="button" onclick="openConversationInfo()" class="flex items-center gap-3 flex-1 min-w-0 text-left hover:bg-slate-50 rounded-lg p-1 -m-1" title="${t('messages.conversationInfo')}">
+        <div class="relative flex-shrink-0">
+          ${photo ? `<img src="${escapeHTML(photo)}" class="w-10 h-10 rounded-full object-cover" alt="">` : `<div class="w-10 h-10 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold">${escapeHTML(initialsOf(name))}</div>`}
+          <span class="presence-dot ${online ? 'presence-online' : 'presence-offline'}"></span>
+        </div>
+        <div class="min-w-0 flex-1">
+          <p class="font-semibold text-sm text-slate-900 truncate">${escapeHTML(name)}</p>
+          <p class="text-[11px] text-slate-500 truncate">${escapeHTML(presenceLabel)}</p>
+        </div>
+      </button>
       <button type="button" onclick="toggleSearchPanel()" class="text-slate-500 hover:text-emerald-700 p-2 rounded-lg hover:bg-slate-100" title="${t('messages.searchInConversation')}">
         <iconify-icon icon="material-symbols:search" width="20"></iconify-icon>
+      </button>
+      <button type="button" onclick="openConversationInfo()" class="text-slate-500 hover:text-emerald-700 p-2 rounded-lg hover:bg-slate-100" title="${t('messages.conversationInfo')}">
+        <iconify-icon icon="material-symbols:info" width="20"></iconify-icon>
       </button>
       <button type="button" onclick="openChatMenu()" class="text-slate-500 hover:text-emerald-700 p-2 rounded-lg hover:bg-slate-100">
         <iconify-icon icon="material-symbols:more-vert" width="22"></iconify-icon>
       </button>
     </div>
+    ${pinnedBanner}
     <div id="msg-search-panel" class="msg-search-panel ${searchPanelOpen ? 'open' : ''}">
       <div class="flex items-center gap-2">
-        <input type="text" id="msg-search-input" value="${escapeHTML(currentSearchQuery)}"
-          oninput="onSearchInput(event)"
-          placeholder="${t('messages.searchInConversation')}"
-          class="flex-1 border rounded-lg py-2 px-3 text-sm">
-        <button type="button" onclick="toggleSearchPanel()" class="text-slate-500 p-2">
-          <iconify-icon icon="material-symbols:close" width="18"></iconify-icon>
-        </button>
+        <input type="text" id="msg-search-input" value="${escapeHTML(currentSearchQuery)}" oninput="onSearchInput(event)" placeholder="${t('messages.searchInConversation')}" class="flex-1 border rounded-lg py-2 px-3 text-sm">
+        <button type="button" onclick="toggleSearchPanel()" class="text-slate-500 p-2"><iconify-icon icon="material-symbols:close" width="18"></iconify-icon></button>
       </div>
       <div id="msg-search-results" class="mt-2 max-h-[240px] overflow-y-auto"></div>
     </div>
@@ -2823,15 +2894,16 @@ function renderMessagesThread() {
       <div id="emoji-picker" class="emoji-picker"></div>
       <div class="flex items-end gap-2">
         <div class="composer-toolbar">
-          <!-- FIXED: Using native Material Symbols font instead of Iconify CDN for emoji button to prevent missing icon -->
-          <button type="button" onclick="toggleEmojiPicker()" title="${t('messages.emoji')}" class="${emojiPickerOpen ? 'active' : ''}">
+          <button type="button" onclick="toggleEmojiPicker()" title="${t('messages.emoji')}" class="${emojiPickerOpen ? 'active' : ''}" aria-label="${t('messages.emoji')}">
             <span class="material-symbols-outlined" style="font-size:22px;">emoji_emotions</span>
           </button>
-          <button type="button" onclick="pickAttachment()" title="${t('messages.attach')}"><iconify-icon icon="material-symbols:attach-file" width="22"></iconify-icon></button>
-          <button type="button" onclick="openSharePicker()" title="${t('messages.share')}"><iconify-icon icon="material-symbols:add-link" width="22"></iconify-icon></button>
+          <button type="button" onclick="pickAttachment()" title="${t('messages.attach')}" aria-label="${t('messages.attach')}"><iconify-icon icon="material-symbols:attach-file" width="22"></iconify-icon></button>
+          <button type="button" onclick="openSharePicker()" title="${t('messages.share')}" aria-label="${t('messages.share')}"><iconify-icon icon="material-symbols:add-link" width="22"></iconify-icon></button>
         </div>
-        <textarea id="message-input" rows="1" onkeydown="handleOwnerMessageKeydown(event)" oninput="onComposerInput();saveDraftSoon();" placeholder="${t('messages.inputPlaceholder')}" class="flex-1 resize-none border rounded-xl px-3 py-2 text-sm max-h-32 focus:outline-none focus:border-emerald-600"></textarea>
-        <button id="message-send-btn" type="button" onclick="sendOwnerMessage()" class="bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl px-4 py-2.5 flex items-center gap-1 disabled:opacity-60"><iconify-icon icon="material-symbols:send" width="18"></iconify-icon><span class="hidden sm:inline text-sm">${t('messages.send')}</span></button>
+        <textarea id="message-input" rows="1" onkeydown="handleOwnerMessageKeydown(event)" oninput="onComposerInput();saveDraftSoon();updateSendButtonState();" placeholder="${t('messages.inputPlaceholder')}" class="flex-1 resize-none border rounded-xl px-3 py-2 text-sm max-h-32 focus:outline-none focus:border-emerald-600"></textarea>
+        <button id="message-send-btn" type="button" onclick="sendOwnerMessage()" disabled class="bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl px-4 py-2.5 flex items-center gap-1 disabled:opacity-60">
+          <iconify-icon icon="material-symbols:send" width="18"></iconify-icon><span class="hidden sm:inline text-sm">${t('messages.send')}</span>
+        </button>
       </div>
     </div>`;
 
@@ -2845,17 +2917,12 @@ function renderMessagesThread() {
   renderEmojiPicker();
   renderTypingIndicator();
   renderSearchPanel();
+  updateSendButtonState();
 
   const scroller = document.getElementById('message-scroll');
   if (scroller && wasAtBottom) scroller.scrollTop = scroller.scrollHeight;
 }
 
-function saveDraftSoon() {
-  if (!activeConversationId) return;
-  const inp = document.getElementById('message-input');
-  if (!inp) return;
-  setDraft(activeConversationId, inp.value);
-}
 function renderTypingIndicator() {
   const el = document.getElementById('typing-indicator');
   if (!el) return;
@@ -2874,26 +2941,28 @@ function renderComposerReplyPreview() {
 }
 function renderComposerAttachment() {
   const el = document.getElementById('composer-attachment');
-  if (!el) return;
+  if (!el) { updateSendButtonState(); return; }
   const hasShared = !!window._pendingSharedRecord;
-  if (!pendingAttachment && !hasShared) { el.classList.add('hidden'); el.innerHTML = ''; return; }
-  el.classList.remove('hidden');
-  if (pendingAttachment) {
-    const f = pendingAttachment;
-    el.innerHTML = `<div class="composer-attachment"><iconify-icon icon="material-symbols:attach-file" width="16" class="text-emerald-600"></iconify-icon><span class="truncate">${escapeHTML(f.name)}</span><span class="text-slate-400">${formatBytes(f.size)}</span><button type="button" class="ml-auto text-slate-500" onclick="clearPendingAttachment()"><iconify-icon icon="material-symbols:close" width="16"></iconify-icon></button></div>`;
-    return;
+  if (!pendingAttachment && !hasShared) { el.classList.add('hidden'); el.innerHTML = ''; }
+  else {
+    el.classList.remove('hidden');
+    if (pendingAttachment) {
+      const f = pendingAttachment;
+      el.innerHTML = `<div class="composer-attachment"><iconify-icon icon="material-symbols:attach-file" width="16" class="text-emerald-600"></iconify-icon><span class="truncate">${escapeHTML(f.name)}</span><span class="text-slate-400">${formatBytes(f.size)}</span><button type="button" class="ml-auto text-slate-500" onclick="clearPendingAttachment()"><iconify-icon icon="material-symbols:close" width="16"></iconify-icon></button></div>`;
+    } else {
+      const s = window._pendingSharedRecord;
+      el.innerHTML = `<div class="composer-attachment"><iconify-icon icon="material-symbols:add-link" width="16" class="text-emerald-600"></iconify-icon><span class="truncate">${escapeHTML(s.title)} — ${escapeHTML(s.subtitle)}</span><button type="button" class="ml-auto text-slate-500" onclick="window._pendingSharedRecord=null;renderComposerAttachment();"><iconify-icon icon="material-symbols:close" width="16"></iconify-icon></button></div>`;
+    }
   }
-  const s = window._pendingSharedRecord;
-  el.innerHTML = `<div class="composer-attachment"><iconify-icon icon="material-symbols:add-link" width="16" class="text-emerald-600"></iconify-icon><span class="truncate">${escapeHTML(s.title)} — ${escapeHTML(s.subtitle)}</span><button type="button" class="ml-auto text-slate-500" onclick="window._pendingSharedRecord=null;renderComposerAttachment();"><iconify-icon icon="material-symbols:close" width="16"></iconify-icon></button></div>`;
+  updateSendButtonState();
 }
 function renderEmojiPicker() {
   const el = document.getElementById('emoji-picker');
   if (!el) return;
   el.classList.toggle('open', emojiPickerOpen);
   if (!emojiPickerOpen) return;
-  if (el.dataset.rendered === '1') return;
-  el.dataset.rendered = '1';
-  el.innerHTML = `<div class="emoji-grid">${EMOJI_SET.map(e => `<button type="button" onclick="insertEmoji('${e}')">${e}</button>`).join('')}</div>`;
+  const grid = el.querySelector('.emoji-grid');
+  if (!grid) el.innerHTML = `<div class="emoji-grid">${EMOJI_SET.map(e => `<button type="button" onclick="insertEmoji('${e}')">${e}</button>`).join('')}</div>`;
 }
 
 function renderMessageBubble(m) {
@@ -2906,10 +2975,11 @@ function renderMessageBubble(m) {
     else tickHTML = `<span class="msg-tick sent">✓</span>`;
   }
   const reply = m.reply_preview ? `<div class="msg-reply-quote" onclick="scrollToMessage('${m.reply_to}')"><div class="rq-name">${escapeHTML(m.reply_preview.sender_name)}</div><span class="rq-text">${escapeHTML(m.reply_preview.text)}</span></div>` : '';
+  const fwd = m.forwarded_from ? `<div class="msg-forwarded-label"><iconify-icon icon="material-symbols:forward" width="12"></iconify-icon>${t('messages.forwardedFrom', { name: escapeHTML(m.forwarded_from.sender_name || '') })}</div>` : '';
   let bodyHTML = '';
   if (isDeleted) { bodyHTML = `<p class="msg-deleted">${t('messages.deleted')}</p>`; }
   else {
-    if (m.type === 'attachment' && m.attachment) {
+    if (m.type === 'attachment' && m.attachment && isSafeAttachmentUrl(m.attachment.url)) {
       const a = m.attachment;
       if (a.mime?.startsWith('image/')) { bodyHTML += `<div class="attach-preview"><img src="${escapeHTML(a.url)}" onclick="openAttachmentLightbox('${escapeHTML(a.url)}')" alt=""></div>`; }
       else { bodyHTML += `<a href="${escapeHTML(a.url)}" target="_blank" rel="noopener" class="attach-file"><iconify-icon icon="material-symbols:description" width="18"></iconify-icon><span class="truncate">${escapeHTML(a.name)}</span><iconify-icon icon="material-symbols:download" width="16" class="ml-auto"></iconify-icon></a>`; }
@@ -2929,29 +2999,16 @@ function renderMessageBubble(m) {
   const reactionKeys = Object.keys(reactions).filter(k => Array.isArray(reactions[k]) && reactions[k].length);
   const reactionsHTML = reactionKeys.length ? `<div class="msg-reactions">${reactionKeys.map(k => { const mineR = reactions[k].includes(currentUser.uid); return `<span class="react-pill ${mineR ? 'mine' : ''}" onclick="toggleReaction('${m.id}','${k}')">${k}<span class="count">${reactions[k].length}</span></span>`; }).join('')}</div>` : '';
   const editedHTML = m.edited_at && !isDeleted ? ` <span class="text-[10px] opacity-70">(${t('messages.edited')})</span>` : '';
-
   const menuBtn = isDeleted ? '' : `<button type="button" class="msg-menu-btn" onclick="openMsgMenu(event,'${m.id}')" aria-label="Message actions"><iconify-icon icon="material-symbols:more-vert" width="20"></iconify-icon></button>`;
-
-  return `
-    <div class="flex ${mine ? 'justify-end' : 'justify-start'} mb-3" id="msg-${m.id}">
-      <div class="msg-bubble-row ${mine ? 'mine' : ''}">
-        ${mine ? menuBtn : ''}
-        <div class="msg-bubble-col">
-          <div class="px-3.5 py-2 rounded-2xl text-sm break-words shadow-sm ${mine ? 'bg-emerald-600 text-white rounded-br-md' : 'bg-white border border-slate-200 text-slate-800 rounded-bl-md'}">
-            ${reply}
-            ${bodyHTML}
-            <div class="text-[10px] mt-1 ${mine ? 'text-emerald-100' : 'text-slate-400'} text-right flex items-center gap-1 justify-end">
-              ${editedHTML}<span>${escapeHTML(formatChatTime(m.created_at))}</span>${tickHTML}
-            </div>
-          </div>
-          ${reactionsHTML}
-        </div>
-        ${mine ? '' : menuBtn}
-      </div>
-    </div>`;
+  const isStarred = Array.isArray(m.starred_by) && m.starred_by.includes(currentUser.uid);
+  const isPinned = Array.isArray(m.pinned_by) && m.pinned_by.includes(currentUser.uid);
+  const starBadge = isStarred ? `<span class="msg-star-badge"><iconify-icon icon="material-symbols:star" class="filled" width="14"></iconify-icon></span>` : '';
+  const pinBadge = isPinned ? `<span class="msg-pin-badge"><iconify-icon icon="material-symbols:push-pin" width="14"></iconify-icon></span>` : '';
+  return `<div class="flex ${mine ? 'justify-end' : 'justify-start'} mb-3" id="msg-${m.id}"><div class="msg-bubble-row ${mine ? 'mine' : ''}">${mine ? menuBtn : ''}<div class="msg-bubble-col" style="position:relative">${starBadge}${pinBadge}<div class="px-3.5 py-2 rounded-2xl text-sm break-words shadow-sm ${mine ? 'bg-emerald-600 text-white rounded-br-md' : 'bg-white border border-slate-200 text-slate-800 rounded-bl-md'}">${fwd}${reply}${bodyHTML}<div class="text-[10px] mt-1 ${mine ? 'text-emerald-100' : 'text-slate-400'} text-right flex items-center gap-1 justify-end">${editedHTML}<span>${escapeHTML(formatChatTime(m.created_at))}</span>${tickHTML}</div></div>${reactionsHTML}</div>${mine ? '' : menuBtn}</div></div>`;
 }
 
 window.openAttachmentLightbox = function (url) {
+  if (!isSafeAttachmentUrl(url)) { showToast(t('common.invalidValue'), 'error'); return; }
   const v = document.createElement('div');
   v.className = 'fixed inset-0 z-[9999] bg-black/85 flex items-center justify-center p-4';
   v.onclick = () => v.remove();
@@ -2963,13 +3020,157 @@ window.openChatMenu = () => {
   if (!activeConversationId) return;
   const c = conversationsData.find(x => x.id === activeConversationId);
   const s = c?.user_settings?.[currentUser.uid] || {};
-  openModal('⚙️ ' + t('messages.title'), `
-    <div class="space-y-2">
-      <button onclick="togglePin('${activeConversationId}');closeModal();" class="w-full text-left px-4 py-3 rounded-xl border hover:bg-slate-50 flex items-center gap-3"><iconify-icon icon="material-symbols:push-pin" width="20" class="text-emerald-600"></iconify-icon><span class="font-medium">${s.pinned ? t('messages.unpinConversation') : t('messages.pinConversation')}</span></button>
-      <button onclick="toggleMute('${activeConversationId}');closeModal();" class="w-full text-left px-4 py-3 rounded-xl border hover:bg-slate-50 flex items-center gap-3"><iconify-icon icon="material-symbols:notifications-off-outline" width="20" class="text-blue-600"></iconify-icon><span class="font-medium">${s.muted ? t('messages.unmuteConversation') : t('messages.muteConversation')}</span></button>
-      <button onclick="toggleArchive('${activeConversationId}');closeModal();" class="w-full text-left px-4 py-3 rounded-xl border hover:bg-slate-50 flex items-center gap-3"><iconify-icon icon="material-symbols:archive-outline" width="20" class="text-amber-600"></iconify-icon><span class="font-medium">${s.archived ? t('messages.unarchiveConversation') : t('messages.archiveConversation')}</span></button>
-    </div>`);
+  openModal('⚙️ ' + t('messages.more'), `<div class="space-y-2">
+    <button onclick="closeModal();toggleSearchPanel();" class="w-full text-left px-4 py-3 rounded-xl border hover:bg-slate-50 flex items-center gap-3"><iconify-icon icon="material-symbols:search" width="20" class="text-slate-600"></iconify-icon><span class="font-medium">${t('messages.searchInConversation')}</span></button>
+    <button onclick="closeModal();openConversationInfo();" class="w-full text-left px-4 py-3 rounded-xl border hover:bg-slate-50 flex items-center gap-3"><iconify-icon icon="material-symbols:info" width="20" class="text-emerald-600"></iconify-icon><span class="font-medium">${t('messages.conversationInfo')}</span></button>
+    <button onclick="toggleMute('${activeConversationId}');closeModal();" class="w-full text-left px-4 py-3 rounded-xl border hover:bg-slate-50 flex items-center gap-3"><iconify-icon icon="material-symbols:notifications-off-outline" width="20" class="text-blue-600"></iconify-icon><span class="font-medium">${s.muted ? t('messages.unmuteConversation') : t('messages.muteConversation')}</span></button>
+    <button onclick="togglePin('${activeConversationId}');closeModal();" class="w-full text-left px-4 py-3 rounded-xl border hover:bg-slate-50 flex items-center gap-3"><iconify-icon icon="material-symbols:push-pin" width="20" class="text-emerald-600"></iconify-icon><span class="font-medium">${s.pinned ? t('messages.unpinConversation') : t('messages.pinConversation')}</span></button>
+    <button onclick="toggleArchive('${activeConversationId}');closeModal();" class="w-full text-left px-4 py-3 rounded-xl border hover:bg-slate-50 flex items-center gap-3"><iconify-icon icon="material-symbols:archive-outline" width="20" class="text-amber-600"></iconify-icon><span class="font-medium">${s.archived ? t('messages.unarchiveConversation') : t('messages.archiveConversation')}</span></button>
+    <button onclick="closeModal();markConversationUnread('${activeConversationId}');" class="w-full text-left px-4 py-3 rounded-xl border hover:bg-slate-50 flex items-center gap-3"><iconify-icon icon="material-symbols:mark-email-unread" width="20" class="text-indigo-600"></iconify-icon><span class="font-medium">${t('messages.markUnread')}</span></button>
+  </div>`);
 };
+
+window.markConversationUnread = async (cid) => {
+  if (!cid) return;
+  try {
+    await updateDoc(doc(db, CONVERSATIONS, cid), { [`unread.${currentUser.uid}`]: 1 });
+    showToast(t('messages.markUnread'), 'success');
+  } catch (err) { showToast(t('common.somethingWentWrong'), 'error'); }
+};
+
+/* ============ CONVERSATION INFO PANEL ============ */
+window.openConversationInfo = () => {
+  if (!activeConversationId || !activeOwnerId) return;
+  convInfoOpen = true;
+  convInfoTab = 'media';
+  document.querySelector('.messages-shell')?.classList.add('info-open');
+  const panel = document.getElementById('messages-info-panel');
+  if (panel) panel.classList.remove('hidden');
+  _convInfoBoundCid = activeConversationId;
+  renderConversationInfo();
+};
+
+window.closeConversationInfo = () => {
+  convInfoOpen = false;
+  _convInfoBoundCid = null;
+  document.querySelector('.messages-shell')?.classList.remove('info-open');
+  const panel = document.getElementById('messages-info-panel');
+  if (panel) panel.classList.add('hidden');
+};
+
+window.setConvInfoTab = (tab) => { convInfoTab = tab; renderConversationInfo(); };
+
+window.viewAllSharedMedia = () => { convInfoTab = 'media'; renderConversationInfo(); };
+window.viewAllSharedFiles = () => { convInfoTab = 'docs'; renderConversationInfo(); };
+
+function buildConversationInfoData() {
+  if (!activeOwnerId) return null;
+  const op = activeOwnerProfile || {};
+  const conv = conversationsData.find(c => c.id === activeConversationId);
+  const visible = messagesCache.filter(m => !(m.deleted_for && m.deleted_for.includes(currentUser.uid)));
+  const media = visible.filter(m => m.type === 'attachment' && m.attachment?.mime?.startsWith('image/') && isSafeAttachmentUrl(m.attachment.url));
+  const files = visible.filter(m => m.type === 'attachment' && m.attachment && !m.attachment.mime?.startsWith('image/') && isSafeAttachmentUrl(m.attachment.url));
+  const starred = visible.filter(m => Array.isArray(m.starred_by) && m.starred_by.includes(currentUser.uid));
+  const online = !!presenceMap[activeOwnerId]?.online;
+  const lastSeenTs = presenceMap[activeOwnerId]?.last_changed;
+  const userSettings = conv?.user_settings?.[currentUser.uid] || {};
+  const orgName = getCompanyDetails().name;
+  return { op, conv, visible, media, files, starred, online, lastSeenTs, userSettings, orgName };
+}
+
+function renderConversationInfo() {
+  const el = document.getElementById('messages-info-panel');
+  if (!el) return;
+  const data = buildConversationInfoData();
+  if (!data) { el.innerHTML = ''; return; }
+  const { op, conv, media, files, starred, online, lastSeenTs, userSettings, orgName } = data;
+  const name = op.full_name || 'Owner';
+  const photo = op.profile_picture || '';
+  const presenceLabel = online ? t('messages.online') : (lastSeenTs ? `${t('messages.lastSeen')} ${formatChatTime(lastSeenTs)}` : t('messages.offline'));
+  const previewMedia = media.slice(-6).reverse();
+  const previewFiles = files.slice(-3).reverse();
+
+  let contentHtml = '';
+  if (convInfoTab === 'media') {
+    if (!media.length) contentHtml = `<div class="info-empty">${t('common.noDataAvailable')}</div>`;
+    else contentHtml = `<div class="media-grid">${previewMedia.map(m => `<div class="media-cell" onclick="openAttachmentLightbox('${escapeHTML(m.attachment.url)}')"><img src="${escapeHTML(m.attachment.url)}" alt=""></div>`).join('')}</div>`;
+  } else if (convInfoTab === 'docs') {
+    if (!files.length) contentHtml = `<div class="info-empty">${t('common.noDataAvailable')}</div>`;
+    else contentHtml = previewFiles.map(m => {
+      const a = m.attachment;
+      const fileIcon = (a.mime && a.mime.includes('pdf')) ? 'picture_as_pdf' : (a.mime && (a.mime.includes('sheet') || a.mime.includes('excel'))) ? 'table_chart' : 'description';
+      return `<div class="file-row"><div class="file-icon"><iconify-icon icon="material-symbols:${fileIcon}" width="20"></iconify-icon></div><div class="file-info"><div class="file-name">${escapeHTML(a.name || 'file')}</div><div class="file-size">${formatBytes(a.size || 0)}</div></div><a href="${escapeHTML(a.url)}" target="_blank" rel="noopener" onclick="event.stopPropagation()"><iconify-icon icon="material-symbols:download" width="18"></iconify-icon></a></div>`;
+    }).join('');
+  } else if (convInfoTab === 'starred') {
+    if (!starred.length) contentHtml = `<div class="info-empty">${t('common.noDataAvailable')}</div>`;
+    else contentHtml = starred.slice(-6).reverse().map(m => `<div class="file-row" onclick="scrollToMessage('${m.id}');closeConversationInfo();" style="cursor:pointer"><div class="file-icon"><iconify-icon icon="material-symbols:star" class="filled" width="20"></iconify-icon></div><div class="file-info"><div class="file-name">${escapeHTML((m.text || (m.attachment && m.attachment.name) || m.shared_record?.title || '').slice(0, 60) || '—')}</div><div class="file-size">${escapeHTML(formatChatTime(m.created_at))}</div></div></div>`).join('');
+  }
+
+  const convStartedAt = conv?.created_at ? formatDate(conv.created_at) : '—';
+  const msgCount = messagesCache.filter(m => !(m.deleted_for && m.deleted_for.includes(currentUser.uid))).length;
+
+  el.innerHTML = `
+    <div class="info-header">
+      <button type="button" onclick="closeConversationInfo()" class="lg:hidden" aria-label="${t('messages.back')}"><iconify-icon icon="material-symbols:arrow-back" width="20"></iconify-icon></button>
+      <h3>${t('messages.conversationInfo')}</h3>
+      <button type="button" onclick="closeConversationInfo()" aria-label="${t('common.close')}"><iconify-icon icon="material-symbols:close" width="20"></iconify-icon></button>
+    </div>
+    <div class="info-scroll">
+      <div class="info-hero">
+        <div class="avatar">${photo ? `<img src="${escapeHTML(photo)}" alt="${escapeHTML(name)}">` : escapeHTML(initialsOf(name))}</div>
+        <div class="name">${escapeHTML(name)}</div>
+        ${op.email ? `<div class="email">${escapeHTML(op.email)}</div>` : ''}
+        <div class="org">${escapeHTML(orgName)}</div>
+        <div class="presence ${online ? 'text-green-600' : 'text-slate-500'}">${escapeHTML(presenceLabel)}</div>
+      </div>
+
+      <div class="info-section">
+        <h4>${t('messages.contact')}</h4>
+        <div class="info-row"><span class="label">${t('messages.email')}</span><span class="value">${escapeHTML(op.email || '—')}</span></div>
+        <div class="info-row"><span class="label">${t('messages.phone')}</span><span class="value">${escapeHTML(op.phone || '—')}</span></div>
+        <div class="info-row"><span class="label">${t('messages.role')}</span><span class="value">${escapeHTML(op.role || 'owner')}</span></div>
+        <div class="info-row"><span class="label">${t('messages.assignedSite')}</span><span class="value">${escapeHTML(assignedSites.map(s=>s.name).join(', ') || '—')}</span></div>
+      </div>
+
+      <div class="info-section">
+        <h4>${t('messages.conversationDetails')}</h4>
+        <div class="info-row"><span class="label">${t('messages.started')}</span><span class="value">${escapeHTML(convStartedAt)}</span></div>
+        <div class="info-row"><span class="label">${t('messages.messagesCount')}</span><span class="value">${msgCount}</span></div>
+        <div class="info-row"><span class="label">${t('messages.mediaCount')}</span><span class="value">${media.length}</span></div>
+        <div class="info-row"><span class="label">${t('messages.filesCount')}</span><span class="value">${files.length}</span></div>
+      </div>
+
+      <div class="info-section">
+        <h4>${t('messages.settings')}</h4>
+        <button class="info-action" onclick="toggleMute('${activeConversationId}')">
+          <iconify-icon icon="material-symbols:notifications-off-outline" width="20"></iconify-icon>
+          <span class="flex-1">${userSettings.muted ? t('messages.unmuteConversation') : t('messages.muteConversation')}</span>
+          <iconify-icon icon="${userSettings.muted ? 'material-symbols:notifications-off' : 'material-symbols:notifications-active'}" width="18" class="${userSettings.muted ? 'text-slate-400' : 'text-emerald-600'}"></iconify-icon>
+        </button>
+        <button class="info-action" onclick="togglePin('${activeConversationId}')">
+          <iconify-icon icon="material-symbols:push-pin" width="20"></iconify-icon>
+          <span class="flex-1">${userSettings.pinned ? t('messages.unpinConversation') : t('messages.pinConversation')}</span>
+          <iconify-icon icon="${userSettings.pinned ? 'material-symbols:push-pin' : 'material-symbols:push-pin-outline'}" width="18" class="${userSettings.pinned ? 'text-emerald-600' : 'text-slate-400'}"></iconify-icon>
+        </button>
+        <button class="info-action" onclick="markConversationUnread('${activeConversationId}')">
+          <iconify-icon icon="material-symbols:mark-email-unread" width="20"></iconify-icon>
+          <span class="flex-1">${t('messages.markUnread')}</span>
+        </button>
+      </div>
+
+      <div class="info-section" style="background:transparent;padding:0">
+        <div class="info-tabs">
+          <button class="${convInfoTab === 'media' ? 'active' : ''}" onclick="setConvInfoTab('media')">${t('messages.media')} (${media.length})</button>
+          <button class="${convInfoTab === 'docs' ? 'active' : ''}" onclick="setConvInfoTab('docs')">${t('messages.docs')} (${files.length})</button>
+          <button class="${convInfoTab === 'starred' ? 'active' : ''}" onclick="setConvInfoTab('starred')">${t('messages.starred')} (${starred.length})</button>
+        </div>
+        <div>${contentHtml}</div>
+        ${convInfoTab === 'media' && media.length > 6 ? `<button class="info-action mt-2" onclick="viewAllSharedMedia()"><iconify-icon icon="material-symbols:photo-library" width="20"></iconify-icon><span class="flex-1">${t('common.viewAll')} (${media.length})</span></button>` : ''}
+        ${convInfoTab === 'docs' && files.length > 3 ? `<button class="info-action mt-2" onclick="viewAllSharedFiles()"><iconify-icon icon="material-symbols:folder" width="20"></iconify-icon><span class="flex-1">${t('common.viewAll')} (${files.length})</span></button>` : ''}
+      </div>
+    </div>`;
+}
+window.renderConversationInfo = renderConversationInfo;
 
 function updateMessagesBadge() {
   if (!currentUser) return;
@@ -3005,7 +3206,7 @@ document.addEventListener('click', (ev) => {
   if (rp && !rp.contains(ev.target)) closeReactionPicker();
 });
 document.addEventListener('keydown', (ev) => {
-  if (ev.key === 'Escape') { closeMsgMenu(); closeReactionPicker(); }
+  if (ev.key === 'Escape') { closeMsgMenu(); closeReactionPicker(); if (convInfoOpen) closeConversationInfo(); }
 });
 
 // ============================================================
@@ -3046,7 +3247,7 @@ async function initApp(){
   });
 }
 if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',initApp)}else{initApp()}
-console.log('✅ SHDR Manager Dashboard — messaging v3 enabled');
+console.log('✅ SHDR Manager Dashboard — messaging v4 enabled');
 </script>
 </main>
 </body>
