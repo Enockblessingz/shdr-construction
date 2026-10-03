@@ -12,8 +12,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
-<script src="https://code.iconify.design/iconify-icon/2.3.0/iconify-icon.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,300..700,0..1,-50..200&display=swap" rel="stylesheet">
 <style>
 .language-switcher{display:flex;align-items:center;background-color:rgba(30,86,160,.1);border:1px solid rgba(30,86,160,.2);border-radius:50px;padding:4px;box-shadow:0 2px 4px rgba(0,0,0,.05)}
 .lang-btn{background:transparent;border:2px solid transparent;color:#64748b;font-size:14px;font-weight:700;padding:6px 16px;border-radius:50px;cursor:pointer;transition:all .3s ease;outline:none}
@@ -79,25 +78,6 @@ tbody tr:hover{background:#f1f5f9}
 .toast.error{border-left:4px solid #ef4444}
 .toast.info{border-left:4px solid #3b82f6}
 
-/* ── Material Symbols Rounded (font-based icons) ── */
-.material-symbols-rounded {
-    font-family: 'Material Symbols Rounded', sans-serif;
-    font-weight: normal;
-    font-style: normal;
-    font-size: 24px;
-    line-height: 1;
-    letter-spacing: normal;
-    text-transform: none;
-    display: inline-block;
-    white-space: nowrap;
-    word-wrap: normal;
-    direction: ltr;
-    -webkit-font-feature-settings: 'liga';
-    -webkit-font-smoothing: antialiased;
-    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-    user-select: none;
-}
-
 /* ===== MESSAGING v3 ===== */
 .messages-shell{display:grid;grid-template-columns:340px 1fr;height:calc(100vh - 240px);min-height:440px}
 .messages-directory{border-right:1px solid #e5e7eb;display:flex;flex-direction:column;min-height:0}
@@ -144,7 +124,7 @@ tbody tr:hover{background:#f1f5f9}
   box-shadow:0 12px 32px rgba(0,0,0,.18);
   padding:4px;z-index:9000;
   display:flex;flex-direction:column;
-  min-width:190px;
+  min-width:170px;
 }
 .msg-action-menu button{
   display:flex;align-items:center;gap:10px;
@@ -186,24 +166,9 @@ tbody tr:hover{background:#f1f5f9}
 .msg-deleted{font-style:italic;opacity:.7;font-size:12px}
 
 .composer-toolbar{display:flex;gap:2px;align-items:center}
-.composer-toolbar button{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#64748b;background:transparent;border:none;cursor:pointer;transition:background-color .15s ease, color .15s ease}
+.composer-toolbar button{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#64748b;background:transparent;border:none;cursor:pointer}
 .composer-toolbar button:hover{background:#f1f5f9;color:#059669}
 .composer-toolbar button.active{background:#ecfdf5;color:#059669}
-.composer-toolbar .material-symbols-rounded{font-size:22px;color:inherit}
-
-/* ── Send button — explicit enabled/disabled styling ── */
-#message-send-btn {
-    background: #059669;
-    color: #ffffff;
-    cursor: pointer;
-    transition: background-color 0.15s ease;
-}
-#message-send-btn:hover:not(:disabled) { background: #047857; }
-#message-send-btn:disabled {
-    background: #e2e8f0;
-    color: #94a3b8;
-    cursor: not-allowed;
-}
 
 .emoji-picker{position:absolute;bottom:60px;left:12px;right:12px;max-width:340px;background:#fff;border:1px solid #e5e7eb;border-radius:14px;box-shadow:0 12px 32px rgba(0,0,0,.12);padding:10px;z-index:20;display:none}
 .emoji-picker.open{display:block}
@@ -229,21 +194,42 @@ tbody tr:hover{background:#f1f5f9}
 .attach-preview img{display:block;width:100%;max-height:200px;object-fit:cover;cursor:pointer}
 .attach-file{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.15);border-radius:8px;padding:6px 8px;margin-bottom:4px;font-size:12px;color:inherit;text-decoration:none}
 
-.date-separator{display:flex;justify-content:center;margin:14px 0 10px}
-.date-separator span{background:rgba(255,255,255,.9);color:#64748b;font-size:10px;font-weight:700;letter-spacing:.08em;padding:5px 14px;border-radius:999px;box-shadow:0 1px 3px rgba(0,0,0,.06);text-transform:uppercase}
-
-.pinned-banner{background:#fffbeb;border-bottom:1px solid #fde68a;padding:8px 12px;display:flex;align-items:center;gap:8px;font-size:12px;cursor:pointer;transition:background .15s}
-.pinned-banner:hover{background:#fef3c7}
-.pinned-banner .pb-text{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#78350f;font-weight:500}
-.pinned-banner .pb-close{color:#b45309;padding:2px;border-radius:4px}
-.pinned-banner .pb-close:hover{background:rgba(180,83,9,.1)}
-
-.msg-star{position:absolute;top:-4px;right:-4px;width:18px;height:18px;background:#fbbf24;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;box-shadow:0 1px 3px rgba(0,0,0,.2)}
-.msg-bubble-row.mine .msg-star{left:-4px;right:auto}
-
-.load-older{display:flex;justify-content:center;padding:10px}
-.load-older .spinner{width:20px;height:20px;border-width:2px}
+.material-symbols-outlined{
+  font-family:'Material Symbols Outlined',sans-serif !important;
+  font-weight:normal;font-style:normal;font-size:20px;line-height:1;
+  letter-spacing:normal;text-transform:none;display:inline-flex;
+  align-items:center;justify-content:center;white-space:nowrap;
+  word-wrap:normal;direction:ltr;-webkit-font-feature-settings:'liga';
+  -webkit-font-smoothing:antialiased;
+  font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24;
+}
+.material-symbols-outlined.filled{font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24;}
 </style>
+
+<script>
+(function(){
+  class IconifyIconShim extends HTMLElement {
+    static get observedAttributes(){ return ['icon','width','height','class','style']; }
+    connectedCallback(){ this._render(); }
+    attributeChangedCallback(){ this._render(); }
+    _render(){
+      if (this._rendered) return;
+      this._rendered = true;
+      const raw = this.getAttribute('icon') || '';
+      let name = raw.replace(/^material-symbols:/, '');
+      name = name.replace(/-outline$/, '');
+      name = name.replace(/-/g, '_');
+      const w = parseInt(this.getAttribute('width') || '20', 10);
+      const h = parseInt(this.getAttribute('height') || String(w), 10);
+      const size = Math.max(w, h) || 20;
+      const extraClass = this.getAttribute('class') || '';
+      const extraStyle = this.getAttribute('style') || '';
+      this.innerHTML = `<span class="material-symbols-outlined ${extraClass}" style="font-size:${size}px;width:${w||size}px;height:${h||size}px;${extraStyle}">${name}</span>`;
+    }
+  }
+  if (!customElements.get('iconify-icon')) customElements.define('iconify-icon', IconifyIconShim);
+})();
+</script>
 </head>
 <body class="min-h-screen flex">
 
@@ -383,7 +369,7 @@ tbody tr:hover{background:#f1f5f9}
     en: {
       common:{comingSoon:"Coming Soon",save:"Save",cancel:"Cancel",add:"Add",delete:"Delete",edit:"Edit",close:"Close",export:"Export",loading:"Loading...",error:"Error",search:"Search",view:"View",copy:"Copy",areYouSure:"Are you sure?",cannotUndo:"This action cannot be undone",savedSuccessfully:"Saved successfully",updatedSuccessfully:"Updated successfully",deletedSuccessfully:"Deleted successfully",somethingWentWrong:"Something went wrong",requiredField:"Required field",invalidValue:"Invalid value",noDataAvailable:"No data available",noChange:"No change",accessDenied:"Access denied",subscriptionRequired:"Subscription required",sessionExpired:"Session expired",confirmDelete:"Confirm Delete"},
       navigation:{dashboard:"Dashboard",sites:"Sites",materials:"Materials",stock:"Stock",workers:"Workers",progress:"Progress",reports:"Reports",finances:"Finances",managers:"Managers",invitations:"Invitations",messages:"Messages",gallery:"Gallery",officeHub:"Office Hub",settings:"Settings",notifications:"Notifications",logout:"Sign Out",ownerPanel:"Owner's Panel"},
-      messages:{title:"Messages",searchPlaceholder:"Search managers...",noManagers:"No managers assigned to your sites yet.",noSearchResults:"No managers match your search.",selectConversation:"Select a manager to start a private conversation",emptyThread:"No messages yet. Say hello 👋",inputPlaceholder:"Type a message...",send:"Send",online:"Online",offline:"Offline",lastSeen:"Last seen",unread:"Unread",you:"You",site:"Site",back:"Back",yesterday:"Yesterday",today:"TODAY",notAuthorized:"You are not authorized to view this conversation.",sentTo:"Conversation with {name}",
+      messages:{title:"Messages",searchPlaceholder:"Search managers...",noManagers:"No managers assigned to your sites yet.",noSearchResults:"No managers match your search.",selectConversation:"Select a manager to start a private conversation",emptyThread:"No messages yet. Say hello 👋",inputPlaceholder:"Type a message...",send:"Send",online:"Online",offline:"Offline",lastSeen:"Last seen",unread:"Unread",you:"You",site:"Site",back:"Back",yesterday:"Yesterday",notAuthorized:"You are not authorized to view this conversation.",sentTo:"Conversation with {name}",
       attach:"Attach image",emoji:"Emoji",share:"Share SHDR record",shareMaterial:"Share Material",shareWorker:"Share Worker",shareReport:"Share Report",cancelReply:"Cancel reply",replyingTo:"Replying to {name}",
       reply:"Reply",react:"React",deleteForMe:"Delete for me",deleteForEveryone:"Delete for everyone",edited:"edited",deleted:"This message was deleted",
       statusSent:"Sent",statusDelivered:"Delivered",statusRead:"Read",
@@ -393,14 +379,7 @@ tbody tr:hover{background:#f1f5f9}
       uploading:"Uploading {name}...",fileTooLarge:"File is too large (max 10 MB)",fileTypeNotAllowed:"Only images can be sent right now (JPG, PNG, GIF, WEBP)",
       newMessageFrom:"New message from {name}",
       edit:"Edit Message", delete:"Delete Message",
-      editMessage:"Edit message",saveEdit:"Save changes",editWindowExpired:"You can only edit within 15 minutes",deleteWindowExpired:"Delete for everyone is only available for 15 minutes",
-      copy:"Copy",forward:"Forward",star:"Star",unstar:"Unstar",
-      pinMessage:"Pin message",unpinMessage:"Unpin message",pinnedMessage:"Pinned",
-      copied:"Message copied",markUnread:"Mark as unread",conversationInfo:"Conversation Info",
-      loadOlder:"Loading older messages...",noOlder:"No older messages",
-      conversationPinned:"Message pinned",conversationUnpinned:"Message unpinned",
-      forwardedBy:"Forwarded",unsupportedMessage:"Unsupported message type"
-      },
+      editMessage:"Edit message",saveEdit:"Save changes",editWindowExpired:"You can only edit within 15 minutes",deleteWindowExpired:"Delete for everyone is only available for 15 minutes"},
       dashboard:{title:"Dashboard",totalSites:"Total Sites",totalWorkers:"Total Workers",welcome:"Welcome back, {name}",goodMorning:"Good Morning, {name}",goodAfternoon:"Good Afternoon, {name}",goodEvening:"Good Evening, {name}",overview:"Here's your construction site overview",noSites:"No sites",noWorkers:"No workers assigned",noData:"No data",spentOnMaterials:"Spent on Materials",recentProgress:"Recent Progress",selectSite:"Select a site",endDate:"End"},
       sites:{title:"Your Sites",addSite:"Add Site",editSite:"Edit Site",siteName:"Site Name",location:"Location",client:"Client",startDate:"Start Date",endDate:"End Date",budget:"Budget",status:"Status",markFinished:"Mark Finished",noSites:"No sites yet",district:"District",sector:"Sector",saveSite:"Save Site",deleteSite:"Delete Site"},
       materials:{title:"Materials",requisitions:"Requisitions",reqNumber:"Req. ID",site:"Site",requestedBy:"Requested By",requestDate:"Date Requested",requiredDate:"Required Date",priority:"Priority",status:"Status",actions:"Actions",pending:"Pending",urgent:"Urgent",approved:"Approved",rejected:"Rejected",partiallySupplied:"Partially Supplied",suppliedStatus:"Supplied",normal:"Normal",view:"View",approve:"Approve",reject:"Reject",supply:"Supply",noRequisitions:"No requisitions found.",requested:"Requested",supplied:"Supplied",remaining:"Remaining",available:"Available",material:"Material",unit:"Unit",notes:"Notes",quantityUsed:"Qty Used",unitCost:"Unit Cost",totalAmount:"Total Amount",availableStock:"Available Stock",rejectionReason:"Rejection Reason",noMaterials:"No materials recorded for this site."},
@@ -410,25 +389,45 @@ tbody tr:hover{background:#f1f5f9}
       reports:{title:"Generate Reports",general:"General",payroll:"Worker Payroll",stockReport:"Stock",selectSite:"Select Site",allSites:"All Sites",department:"Department",allDepartments:"All Departments",startDate:"Start Date",endDate:"End Date",exportCSV:"Export CSV",printPDF:"Print / PDF",noAttendance:"No attendance records found.",info:"Please ensure managers have recorded attendance for the workers.",searchWorker:"Search worker...",position:"Position",allPositions:"All Positions",paymentStatus:"Payment Status",paid:"Paid",unpaid:"Unpaid",allPayments:"All (Unpaid)",totalWorkers:"Total Workers",workerDays:"Worker-Days",totalPayroll:"Total Payroll",avgDaily:"Avg. Daily Labor Cost",worker:"Worker",daysWorked:"Days Worked",dailyRate:"Daily Rate",totalPayable:"Total Payable",total:"Total",labels:{period:"Period"}},
       finances:{title:"Finances",info:"Site Info",overview:"Financial Overview",budget:"Budget",totalSpent:"Total Spent",materialsCost:"Materials Cost",workersCost:"Workers Cost",remaining:"Remaining",dailyAvg:"Daily average",monthlyAvg:"Monthly average",addBudget:"Add Budget",newBudget:"New Budget Amount",updateBudget:"Update Budget",exceeded:"Budget exceeded!",costControl:"Cost control needed."},
       managers:{
-        title:"Managers",subtitle:"Manage the people responsible for your assigned sites.",info:"Managers assigned to your sites. The list updates automatically.",
-        inviteManager:"Invite Manager",assignSite:"Assign to Site",reassign:"Reassign",email:"Email",password:"Password",invite:"Invite Manager",
-        noManagers:"No managers invited yet.",remove:"Remove",assignedSite:"Assigned site",
+        title:"Managers",
+        subtitle:"Manage the people responsible for your assigned sites.",
+        info:"Managers assigned to your sites. The list updates automatically.",
+        inviteManager:"Invite Manager",
+        assignSite:"Assign to Site",
+        reassign:"Reassign",
+        email:"Email",
+        password:"Password",
+        invite:"Invite Manager",
+        noManagers:"No managers invited yet.",
+        remove:"Remove",
+        assignedSite:"Assigned site",
         total:"Total Managers",active:"Active",pending:"Pending",pendingInvites:"Pending Invitations",unassigned:"Unassigned",
         filterAll:"All",
         colManager:"Manager",colContact:"Contact",colRole:"Role",colSites:"Assigned Sites",colStatus:"Status",colActions:"Actions",
         inviteIntro:"Invite a manager to access and manage selected sites.",
         personalMessage:"Personal message (optional)",
         inviteFootnote:"The manager will receive an invitation with instructions to create or access their account.",
-        sendInvite:"Send Invitation",inviteSent:"Invitation sent successfully.",inviteSentTitle:"Invitation Sent",
-        wasInvitedAs:"has been invited as a Site Manager.",expires:"Expires",
-        shareLink:"Share this secure link with the invited manager:",viewInvitations:"View Invitations",
-        invalidSite:"Invalid site.",alreadyMember:"This person is already a member.",
+        sendInvite:"Send Invitation",
+        inviteSent:"Invitation sent successfully.",
+        inviteSentTitle:"Invitation Sent",
+        wasInvitedAs:"has been invited as a Site Manager.",
+        expires:"Expires",
+        shareLink:"Share this secure link with the invited manager:",
+        viewInvitations:"View Invitations",
+        invalidSite:"Invalid site.",
+        alreadyMember:"This person is already a member.",
         duplicateInvite:"This manager already has a pending invitation.",
         otherOrg:"This user already belongs to another organization.",
-        details:"Manager Details",assignmentHistory:"Assignment History",present:"present",
-        invitationsTitle:"Manager Invitations",invitedOn:"Invited",invitedBy:"Invited by",
-        noInvitations:"No invitations yet.",invitationDetails:"Invitation Details",
-        resend:"Resend",revoke:"Revoke",
+        details:"Manager Details",
+        assignmentHistory:"Assignment History",
+        present:"present",
+        invitationsTitle:"Manager Invitations",
+        invitedOn:"Invited",
+        invitedBy:"Invited by",
+        noInvitations:"No invitations yet.",
+        invitationDetails:"Invitation Details",
+        resend:"Resend",
+        revoke:"Revoke",
         tab_all:"All",tab_pending:"Pending",tab_accepted:"Accepted",tab_expired:"Expired",tab_revoked:"Revoked"
       },
       gallery:{title:"Site Gallery",selectSite:"Select Site",allSites:"All Sites",viewImage:"View Image",noImages:"No gallery images",close:"Close",description:"Description"},
@@ -439,7 +438,7 @@ tbody tr:hover{background:#f1f5f9}
     rw: {
       common:{comingSoon:"Biraza",save:"Bika",cancel:"Hagarika",add:"Ongeraho",delete:"Siba",edit:"Hindura",close:"Funga",export:"Sohora",loading:"Birimo gutegura...",error:"Ikibazo",search:"Shakisha",view:"Reba",copy:"Koporora",areYouSure:"Urabyemeza?",cannotUndo:"Ibi ntibishobora guhindurwa",savedSuccessfully:"Byabitswe neza",updatedSuccessfully:"Byavuguruwe neza",deletedSuccessfully:"Byasibwe neza",somethingWentWrong:"Hari ikitagenze neza",requiredField:"Ibi birakenewe",invalidValue:"Agaciro katariyo",noDataAvailable:"Nta makuru aboneka",noChange:"Nta mpinduka",accessDenied:"Ntabwo ureherewe",confirmDelete:"Emeza gusiba"},
       navigation:{dashboard:"Imbonerahamwe",sites:"Ibibanza",materials:"Ibikoresho",stock:"Imbuganyuro",workers:"Abakozi",progress:"Ibitekerezo",reports:"Raporo",finances:"Imari",managers:"Abayobozi",invitations:"Ubutumire",messages:"Ubutumwa",gallery:"Amafoto",officeHub:"Office Hub",settings:"Igenamiterere",notifications:"Imenyesha",logout:"Sohoka",ownerPanel:"Ipaneli ya nyir'ubwite"},
-      messages:{title:"Ubutumwa",searchPlaceholder:"Shakisha abayobozi...",noManagers:"Nta bayobozi bagenwe ku bibanza byawe.",noSearchResults:"Nta muyobozi uhuza n'ubushakashatsi.",selectConversation:"Hitamo umuyobozi gutangira ikiganiro bwite",emptyThread:"Nta butumwa burahari. Vuga muraho 👋",inputPlaceholder:"Andika ubutumwa...",send:"Ohereza",online:"Kuri interineti",offline:"Nta murongo",lastSeen:"Byagarutse",unread:"Ntibisomwe",you:"Wowe",site:"Igibanza",back:"Subira",yesterday:"Ejo hashize",today:"UYU MUNSI",notAuthorized:"Ntabwo ureherewe kureba iki kiganiro.",sentTo:"Ikiganiro na {name}",
+      messages:{title:"Ubutumwa",searchPlaceholder:"Shakisha abayobozi...",noManagers:"Nta bayobozi bagenwe ku bibanza byawe.",noSearchResults:"Nta muyobozi uhuza n'ubushakashatsi.",selectConversation:"Hitamo umuyobozi gutangira ikiganiro bwite",emptyThread:"Nta butumwa burahari. Vuga muraho 👋",inputPlaceholder:"Andika ubutumwa...",send:"Ohereza",online:"Kuri interineti",offline:"Nta murongo",lastSeen:"Byagarutse",unread:"Ntibisomwe",you:"Wowe",site:"Igibanza",back:"Subira",yesterday:"Ejo hashize",notAuthorized:"Ntabwo ureherewe kureba iki kiganiro.",sentTo:"Ikiganiro na {name}",
       attach:"Ohereza ifoto",emoji:"Emoji",share:"Sangiza inyandiko",shareMaterial:"Sangiza Ibikoresho",shareWorker:"Sangiza Umukozi",shareReport:"Sangiza Raporo",cancelReply:"Hagarika gusubiza",replyingTo:"Gusubiza {name}",
       reply:"Subiza",react:"Tangiza",deleteForMe:"Siba kuri njye",deleteForEveryone:"Siba kuri bose",edited:"byahinduwe",deleted:"Ubu butumwa bwasibwe",
       statusSent:"Byoherejwe",statusDelivered:"Byageze",statusRead:"Byasomwe",
@@ -449,14 +448,7 @@ tbody tr:hover{background:#f1f5f9}
       uploading:"Turaohereza {name}...",fileTooLarge:"Dosiye ni nini cyane (max 10 MB)",fileTypeNotAllowed:"Ifoto gusa (JPG, PNG, GIF, WEBP)",
       newMessageFrom:"Ubutumwa bushya buturutse {name}",
       edit:"Hindura Ubutumwa", delete:"Siba Ubutumwa",
-      editMessage:"Hindura ubutumwa",saveEdit:"Bika",editWindowExpired:"Ushobora guhindura gusa mu minota 15",deleteWindowExpired:"Gusiba kuri bose bishoboka gusa mu minota 15",
-      copy:"Koporora",forward:"Ohereza",star:"Shyiraho itara",unstar:"Kuraho itara",
-      pinMessage:"Shyira ubutumwa hejuru",unpinMessage:"Kura ubutumwa hejuru",pinnedMessage:"Byashyizwe hejuru",
-      copied:"Ubutumwa bwakoporowe",markUnread:"Menyekanisha nk'utarasoma",conversationInfo:"Amakuru y'ikiganiro",
-      loadOlder:"Turashakisha ubutumwa bwa kera...",noOlder:"Nta butumwa bwa kera",
-      conversationPinned:"Ubutumwa bwashyizwe hejuru",conversationUnpinned:"Ubutumwa bwakuwe hejuru",
-      forwardedBy:"Byoherejwe",unsupportedMessage:"Ubwoko bw'ubutumwa butashyigikiwe"
-      },
+      editMessage:"Hindura ubutumwa",saveEdit:"Bika",editWindowExpired:"Ushobora guhindura gusa mu minota 15",deleteWindowExpired:"Gusiba kuri bose bishoboka gusa mu minota 15"},
       dashboard:{title:"Imbonerahamwe",totalSites:"Imibare y'ibibanza",totalWorkers:"Imibare y'abakozi",welcome:"Murakaza neza, {name}",goodMorning:"Mwaramutse, {name}",goodAfternoon:"Mwiriwe, {name}",goodEvening:"Mu mugoroba, {name}",overview:"Dore ikibazo cy'umurimo wawe",noSites:"Nta bibanza",noWorkers:"Nta bakozi bagenwe",noData:"Nta makuru",spentOnMaterials:"Amafaranga yakoreshejwe ku bikoresho",recentProgress:"Ibitekerezo bishya",selectSite:"Hitamo igibanza",endDate:"Iherezo"},
       sites:{title:"Ibibanza byawe",addSite:"Ongeraho igibanza",editSite:"Hindura igibanza",siteName:"Izina",location:"Aho biherereye",client:"Umukiriya",startDate:"Itariki yo gutangira",endDate:"Itariki yo kurangira",budget:"Ingengo y'imari",status:"Imiterere",markFinished:"Rangiza",noSites:"Nta bibanza birahari",district:"Akarere",sector:"Umurenge",saveSite:"Bika",deleteSite:"Siba"},
       materials:{title:"Ibikoresho",requisitions:"Ubusabe",reqNumber:"Nomero",site:"Igibanza",requestedBy:"Wasabye",requestDate:"Itariki yo Gusaba",requiredDate:"Itariki Ikenewe",priority:"Ubwihutirwa",status:"Imiterere",actions:"Ibikorwa",pending:"Bitegereje",urgent:"Byihutirwa",approved:"Byemewe",rejected:"Byanze",partiallySupplied:"Igice",suppliedStatus:"Byatanzwe",normal:"Bisanzwe",view:"Reba",approve:"Emeza",reject:"Anza",supply:"Tanga",noRequisitions:"Nta busabe.",requested:"Basabwe",supplied:"Byatanzwe",remaining:"Bisigaye",available:"Biboneka",material:"Ibikoresho",unit:"Igice",notes:"Ibisobanuro",quantityUsed:"Umubare",unitCost:"Igiciro",totalAmount:"Amafaranga",availableStock:"Biboneka",rejectionReason:"Impamvu",noMaterials:"Nta bikoresho."},
@@ -465,7 +457,48 @@ tbody tr:hover{background:#f1f5f9}
       progress:{title:"Imirimo",addTask:"Ongeraho umurimo",task:"Umurimo",start:"Tangira",end:"Rangira",status:"Imiterere",pending:"Bitegereje",completed:"Byarangiye",noTasks:"Nta mirimo.",addTaskModal:"Ongeraho umurimo",taskName:"Izina",selectSite:"Hitamo igibanza",periodNumber:"Umubare",days:"Iminsi",weeks:"Ibyumweru",saveTask:"Bika",editTask:"Hindura"},
       reports:{title:"Raporo",general:"Rusange",payroll:"Umushahara",stockReport:"Imbuganyuro",selectSite:"Hitamo Igibanza",allSites:"Ibibanza Byose",department:"Ishami",allDepartments:"Amashami Yose",startDate:"Itariki yo gutangira",endDate:"Itariki yo kurangira",exportCSV:"Sohora CSV",printPDF:"Capa / PDF",noAttendance:"Nta makuru.",info:"Nyamuneka menya neza.",searchWorker:"Shakisha umukozi...",position:"Umwanya",allPositions:"Imiryango Yose",paymentStatus:"Imiterere y'ubwishyu",paid:"Byishyuwe",unpaid:"Bitishyuwe",allPayments:"Byose",totalWorkers:"Abakozi Bose",workerDays:"Iminsi",totalPayroll:"Umushahara Wose",avgDaily:"Igiciro cy'umunsi",worker:"Umukozi",daysWorked:"Iminsi",dailyRate:"Umushahara",totalPayable:"Amafaranga",total:"Igiteranyo",labels:{period:"Igihe"}},
       finances:{title:"Imari",info:"Amakuru",overview:"Imbonerahamwe",budget:"Ingengo",totalSpent:"Yakoreshejwe",materialsCost:"Ibikoresho",workersCost:"Abakozi",remaining:"Isigazwa",dailyAvg:"Buri munsi",monthlyAvg:"Buri kwezi",addBudget:"Ongeraho",newBudget:"Nshya",updateBudget:"Vugurura",exceeded:"Yarengwe!",costControl:"Birakenewe."},
-      managers:{title:"Abayobozi",subtitle:"Genzura abantu bashinzwe ibibanza byawe.",info:"Abayobozi bagenzwe.",inviteManager:"Tumira umuyobozi",assignSite:"Mwize ku gibanza",reassign:"Ongera umwize",email:"Email",password:"Ijambobanga",invite:"Tumira",noManagers:"Nta bayobozi.",remove:"Kuraho",assignedSite:"Igibanza",total:"Abayobozi bose",active:"Bakora",pending:"Bategereje",pendingInvites:"Ubutumire butegereje",unassigned:"Nta gibanza",filterAll:"Byose",colManager:"Umuyobozi",colContact:"Ihuza",colRole:"Uruhare",colSites:"Ibibanza",colStatus:"Imiterere",colActions:"Ibikorwa",inviteIntro:"Tumira umuyobozi kugira ngo abashe gucunga ibibanza byatoranyijwe.",personalMessage:"Ubutumwa bwite (bidategetswe)",inviteFootnote:"Umuyobozi azabona ubutumire bufite amabwiriza yo gukora cyangwa kwinjira muri konti ye.",sendInvite:"Ohereza ubutumire",inviteSent:"Ubutumire bwoherejwe neza.",inviteSentTitle:"Ubutumire Bwoherejwe",wasInvitedAs:"yatumiwe nk'Umuyobozi w'Igibanza.",expires:"Birangira",shareLink:"Sangiza iyi link y'umutekano n'umuyobozi watumiwe:",viewInvitations:"Reba Ubutumire",invalidSite:"Igibanza kitarimo.",alreadyMember:"Uyu muntu asanzwe ari umunyamuryango.",duplicateInvite:"Uyu muyobozi asanzwe afite ubutumire butegereje.",otherOrg:"Uyu ukoresha asanzwe ari mu rundi rubuga.",details:"Ibisobanuro by'Umuyobozi",assignmentHistory:"Amateka y'Igenamiterere",present:"ubu",invitationsTitle:"Ubutumire bw'Abayobozi",invitedOn:"Yatumiwe",invitedBy:"Yatumiwe na",noInvitations:"Nta butumire.",invitationDetails:"Ibisobanuro by'Ubutumire",resend:"Ongera wohereze",revoke:"Hagarika",tab_all:"Byose",tab_pending:"Bitegereje",tab_accepted:"Byemejwe",tab_expired:"Byarangiye",tab_revoked:"Byahagaritswe"},
+      managers:{
+        title:"Abayobozi",
+        subtitle:"Genzura abantu bashinzwe ibibanza byawe.",
+        info:"Abayobozi bagenzwe.",
+        inviteManager:"Tumira umuyobozi",
+        assignSite:"Mwize ku gibanza",
+        reassign:"Ongera umwize",
+        email:"Email",
+        password:"Ijambobanga",
+        invite:"Tumira",
+        noManagers:"Nta bayobozi.",
+        remove:"Kuraho",
+        assignedSite:"Igibanza",
+        total:"Abayobozi bose",active:"Bakora",pending:"Bategereje",pendingInvites:"Ubutumire butegereje",unassigned:"Nta gibanza",
+        filterAll:"Byose",
+        colManager:"Umuyobozi",colContact:"Ihuza",colRole:"Uruhare",colSites:"Ibibanza",colStatus:"Imiterere",colActions:"Ibikorwa",
+        inviteIntro:"Tumira umuyobozi kugira ngo abashe gucunga ibibanza byatoranyijwe.",
+        personalMessage:"Ubutumwa bwite (bidategetswe)",
+        inviteFootnote:"Umuyobozi azabona ubutumire bufite amabwiriza yo gukora cyangwa kwinjira muri konti ye.",
+        sendInvite:"Ohereza ubutumire",
+        inviteSent:"Ubutumire bwoherejwe neza.",
+        inviteSentTitle:"Ubutumire Bwoherejwe",
+        wasInvitedAs:"yatumiwe nk'Umuyobozi w'Igibanza.",
+        expires:"Birangira",
+        shareLink:"Sangiza iyi link y'umutekano n'umuyobozi watumiwe:",
+        viewInvitations:"Reba Ubutumire",
+        invalidSite:"Igibanza kitarimo.",
+        alreadyMember:"Uyu muntu asanzwe ari umunyamuryango.",
+        duplicateInvite:"Uyu muyobozi asanzwe afite ubutumire butegereje.",
+        otherOrg:"Uyu ukoresha asanzwe ari mu rundi rubuga.",
+        details:"Ibisobanuro by'Umuyobozi",
+        assignmentHistory:"Amateka y'Igenamiterere",
+        present:"ubu",
+        invitationsTitle:"Ubutumire bw'Abayobozi",
+        invitedOn:"Yatumiwe",
+        invitedBy:"Yatumiwe na",
+        noInvitations:"Nta butumire.",
+        invitationDetails:"Ibisobanuro by'Ubutumire",
+        resend:"Ongera wohereze",
+        revoke:"Hagarika",
+        tab_all:"Byose",tab_pending:"Bitegereje",tab_accepted:"Byemejwe",tab_expired:"Byarangiye",tab_revoked:"Byahagaritswe"
+      },
       gallery:{title:"Amafoto",selectSite:"Hitamo Igibanza",allSites:"Byose",viewImage:"Reba",noImages:"Nta mafoto",close:"Funga",description:"Ibisobanuro"},
       settings:{title:"Igenamiterere",profile:"Umwirondoro",account:"Kontu",security:"Umutekano",preferences:"Amahitamo",profileInfo:"Amakuru bwite",fullName:"Amazina",phone:"Telefoni",email:"Email",saveChanges:"Bika",accountInfo:"Kontu",accountName:"Izina",role:"Umwanya",accountStatus:"Imiterere",active:"Bikora",memberSince:"Kuva",changePasscode:"Hindura passcode",currentPasscode:"Risanzwe",newPasscode:"Rishya",confirmPasscode:"Emeza",changePass:"Hindura",prefs:"Amahitamo",language:"Ururimi",currency:"Ifaranga",dateFormat:"Itariki",notifications:"Imenyesha",savePrefs:"Bika",changePhoto:"Hindura ifoto",removePhoto:"Kuraho"},
       alerts:{savedSuccessfully:"Byabitswe",updatedSuccessfully:"Byavuguruwe",deletedSuccessfully:"Byasibwe",somethingWentWrong:"Hari ikitagenze neza",areYouSure:"Urabyemeza?",cannotUndo:"Ntibishobora",requiredField:"Birakenewe",invalidValue:"Agaciro katariyo",noDataAvailable:"Nta makuru"},
@@ -474,7 +507,17 @@ tbody tr:hover{background:#f1f5f9}
     fr: {
       common:{comingSoon:"Bientôt disponible",save:"Enregistrer",cancel:"Annuler",add:"Ajouter",delete:"Supprimer",edit:"Modifier",close:"Fermer",export:"Exporter",loading:"Chargement...",error:"Erreur",search:"Rechercher",view:"Voir",copy:"Copier",areYouSure:"Êtes-vous sûr ?",cannotUndo:"Irréversible",savedSuccessfully:"Enregistré",updatedSuccessfully:"Mis à jour",deletedSuccessfully:"Supprimé",somethingWentWrong:"Erreur",requiredField:"Champ requis",invalidValue:"Valeur invalide",noDataAvailable:"Aucune donnée",noChange:"Aucun changement",accessDenied:"Refusé",confirmDelete:"Confirmer"},
       navigation:{dashboard:"Tableau de bord",sites:"Sites",materials:"Matériaux",stock:"Stock",workers:"Ouvriers",progress:"Progrès",reports:"Rapports",finances:"Finances",managers:"Gestionnaires",invitations:"Invitations",messages:"Messages",gallery:"Galerie",officeHub:"Bureau",settings:"Paramètres",notifications:"Notifications",logout:"Déconnexion",ownerPanel:"Panneau du propriétaire"},
-      messages:{title:"Messages",searchPlaceholder:"Rechercher...",noManagers:"Aucun gestionnaire.",noSearchResults:"Aucun résultat.",selectConversation:"Sélectionnez un gestionnaire",emptyThread:"Aucun message. Dites bonjour 👋",inputPlaceholder:"Tapez un message...",send:"Envoyer",online:"En ligne",offline:"Hors ligne",lastSeen:"Vu",unread:"Non lu",you:"Vous",site:"Site",back:"Retour",yesterday:"Hier",today:"AUJOURD'HUI",notAuthorized:"Non autorisé.",sentTo:"Conversation avec {name}",attach:"Joindre image",emoji:"Emoji",share:"Partager",shareMaterial:"Partager Matériau",shareWorker:"Partager Ouvrier",shareReport:"Partager Rapport",cancelReply:"Annuler réponse",replyingTo:"Réponse à {name}",reply:"Répondre",react:"Réagir",deleteForMe:"Supprimer pour moi",deleteForEveryone:"Supprimer pour tous",edited:"modifié",deleted:"Ce message a été supprimé",statusSent:"Envoyé",statusDelivered:"Livré",statusRead:"Lu",isTyping:"{name} écrit...",severalTyping:"plusieurs personnes écrivent...",searchInConversation:"Rechercher",noSearchResults:"Aucun résultat",pinConversation:"Épingler",unpinConversation:"Désépingler",muteConversation:"Sourdine",unmuteConversation:"Réactiver",archiveConversation:"Archiver",unarchiveConversation:"Désarchiver",uploading:"Envoi {name}...",fileTooLarge:"Trop volumineux (max 10 Mo)",fileTypeNotAllowed:"Images uniquement (JPG, PNG, GIF, WEBP)",newMessageFrom:"Nouveau message de {name}",edit:"Modifier le message", delete:"Supprimer le message",editMessage:"Modifier",saveEdit:"Enregistrer",editWindowExpired:"Modifiable dans les 15 minutes",deleteWindowExpired:"Suppression pour tous dans les 15 minutes",copy:"Copier",forward:"Transférer",star:"Marquer",unstar:"Démarquer",pinMessage:"Épingler le message",unpinMessage:"Désépingler le message",pinnedMessage:"Épinglé",copied:"Message copié",markUnread:"Marquer comme non lu",conversationInfo:"Informations",loadOlder:"Chargement des anciens messages...",noOlder:"Pas d'anciens messages",conversationPinned:"Message épinglé",conversationUnpinned:"Message désépinglé",forwardedBy:"Transféré",unsupportedMessage:"Type de message non pris en charge"},
+      messages:{title:"Messages",searchPlaceholder:"Rechercher...",noManagers:"Aucun gestionnaire.",noSearchResults:"Aucun résultat.",selectConversation:"Sélectionnez un gestionnaire",emptyThread:"Aucun message. Dites bonjour 👋",inputPlaceholder:"Tapez un message...",send:"Envoyer",online:"En ligne",offline:"Hors ligne",lastSeen:"Vu",unread:"Non lu",you:"Vous",site:"Site",back:"Retour",yesterday:"Hier",notAuthorized:"Non autorisé.",sentTo:"Conversation avec {name}",
+      attach:"Joindre image",emoji:"Emoji",share:"Partager",shareMaterial:"Partager Matériau",shareWorker:"Partager Ouvrier",shareReport:"Partager Rapport",cancelReply:"Annuler réponse",replyingTo:"Réponse à {name}",
+      reply:"Répondre",react:"Réagir",deleteForMe:"Supprimer pour moi",deleteForEveryone:"Supprimer pour tous",edited:"modifié",deleted:"Ce message a été supprimé",
+      statusSent:"Envoyé",statusDelivered:"Livré",statusRead:"Lu",
+      isTyping:"{name} écrit...",severalTyping:"plusieurs personnes écrivent...",
+      searchInConversation:"Rechercher",noSearchResults:"Aucun résultat",
+      pinConversation:"Épingler",unpinConversation:"Désépingler",muteConversation:"Sourdine",unmuteConversation:"Réactiver",archiveConversation:"Archiver",unarchiveConversation:"Désarchiver",
+      uploading:"Envoi {name}...",fileTooLarge:"Trop volumineux (max 10 Mo)",fileTypeNotAllowed:"Images uniquement (JPG, PNG, GIF, WEBP)",
+      newMessageFrom:"Nouveau message de {name}",
+      edit:"Modifier le message", delete:"Supprimer le message",
+      editMessage:"Modifier",saveEdit:"Enregistrer",editWindowExpired:"Modifiable dans les 15 minutes",deleteWindowExpired:"Suppression pour tous dans les 15 minutes"},
       dashboard:{title:"Tableau de bord",totalSites:"Sites",totalWorkers:"Ouvriers",welcome:"Bienvenue, {name}",goodMorning:"Bonjour, {name}",goodAfternoon:"Bon après-midi, {name}",goodEvening:"Bonsoir, {name}",overview:"Aperçu",noSites:"Aucun site",noWorkers:"Aucun ouvrier",noData:"Aucune donnée",spentOnMaterials:"Dépensé",recentProgress:"Progrès récents",selectSite:"Sélectionner",endDate:"Fin"},
       sites:{title:"Vos sites",addSite:"Ajouter",editSite:"Modifier",siteName:"Nom",location:"Emplacement",client:"Client",startDate:"Début",endDate:"Fin",budget:"Budget",status:"Statut",markFinished:"Marquer",noSites:"Aucun site",district:"District",sector:"Secteur",saveSite:"Enregistrer",deleteSite:"Supprimer"},
       materials:{title:"Matériaux",requisitions:"Réquisitions",reqNumber:"N°",site:"Site",requestedBy:"Demandé par",requestDate:"Date demande",requiredDate:"Date requise",priority:"Priorité",status:"Statut",actions:"Actions",pending:"En attente",urgent:"Urgent",approved:"Approuvé",rejected:"Rejeté",partiallySupplied:"Partiel",suppliedStatus:"Fourni",normal:"Normal",view:"Voir",approve:"Approuver",reject:"Rejeter",supply:"Fournir",noRequisitions:"Aucune réquisition.",requested:"Demandé",supplied:"Fourni",remaining:"Restant",available:"Disponible",material:"Matériau",unit:"Unité",notes:"Notes",quantityUsed:"Qté",unitCost:"Coût",totalAmount:"Total",availableStock:"Disponible",rejectionReason:"Motif",noMaterials:"Aucun matériau."},
@@ -483,7 +526,48 @@ tbody tr:hover{background:#f1f5f9}
       progress:{title:"Tâches",addTask:"Ajouter",task:"Tâche",start:"Début",end:"Fin",status:"Statut",pending:"En attente",completed:"Terminé",noTasks:"Aucune tâche.",addTaskModal:"Ajouter",taskName:"Nom",selectSite:"Site",periodNumber:"Période",days:"Jours",weeks:"Semaines",saveTask:"Enregistrer",editTask:"Modifier"},
       reports:{title:"Rapports",general:"Général",payroll:"Paie",stockReport:"Stock",selectSite:"Site",allSites:"Tous",department:"Département",allDepartments:"Tous",startDate:"Début",endDate:"Fin",exportCSV:"CSV",printPDF:"PDF",noAttendance:"Aucune présence.",info:"Vérifiez la présence.",searchWorker:"Rechercher...",position:"Poste",allPositions:"Tous",paymentStatus:"Paiement",paid:"Payé",unpaid:"Non payé",allPayments:"Tous",totalWorkers:"Ouvriers",workerDays:"Jours",totalPayroll:"Paie",avgDaily:"Moyenne",worker:"Ouvrier",daysWorked:"Jours",dailyRate:"Taux",totalPayable:"Total",total:"Total",labels:{period:"Période"}},
       finances:{title:"Finances",info:"Info",overview:"Aperçu",budget:"Budget",totalSpent:"Dépensé",materialsCost:"Matériaux",workersCost:"Ouvriers",remaining:"Restant",dailyAvg:"Moyenne jour",monthlyAvg:"Moyenne mois",addBudget:"Ajouter",newBudget:"Nouveau",updateBudget:"Mettre à jour",exceeded:"Dépassé!",costControl:"Contrôle requis."},
-      managers:{title:"Gestionnaires",subtitle:"Gérez les personnes responsables de vos sites assignés.",info:"Gestionnaires assignés.",inviteManager:"Inviter un gestionnaire",assignSite:"Assigner à un site",reassign:"Réassigner",email:"E-mail",password:"Mot de passe",invite:"Inviter",noManagers:"Aucun.",remove:"Retirer",assignedSite:"Site",total:"Total gestionnaires",active:"Actifs",pending:"En attente",pendingInvites:"Invitations en attente",unassigned:"Non assignés",filterAll:"Tous",colManager:"Gestionnaire",colContact:"Contact",colRole:"Rôle",colSites:"Sites assignés",colStatus:"Statut",colActions:"Actions",inviteIntro:"Invitez un gestionnaire à accéder et gérer les sites sélectionnés.",personalMessage:"Message personnel (facultatif)",inviteFootnote:"Le gestionnaire recevra une invitation avec des instructions pour créer ou accéder à son compte.",sendInvite:"Envoyer l'invitation",inviteSent:"Invitation envoyée.",inviteSentTitle:"Invitation Envoyée",wasInvitedAs:"a été invité en tant que gestionnaire de site.",expires:"Expire",shareLink:"Partagez ce lien sécurisé avec le gestionnaire invité :",viewInvitations:"Voir les invitations",invalidSite:"Site invalide.",alreadyMember:"Cette personne est déjà membre.",duplicateInvite:"Ce gestionnaire a déjà une invitation en attente.",otherOrg:"Cet utilisateur appartient déjà à une autre organisation.",details:"Détails du gestionnaire",assignmentHistory:"Historique des affectations",present:"actuel",invitationsTitle:"Invitations de gestionnaires",invitedOn:"Invité",invitedBy:"Invité par",noInvitations:"Aucune invitation.",invitationDetails:"Détails de l'invitation",resend:"Renvoyer",revoke:"Révoquer",tab_all:"Tout",tab_pending:"En attente",tab_accepted:"Accepté",tab_expired:"Expiré",tab_revoked:"Révoqué"},
+      managers:{
+        title:"Gestionnaires",
+        subtitle:"Gérez les personnes responsables de vos sites assignés.",
+        info:"Gestionnaires assignés.",
+        inviteManager:"Inviter un gestionnaire",
+        assignSite:"Assigner à un site",
+        reassign:"Réassigner",
+        email:"E-mail",
+        password:"Mot de passe",
+        invite:"Inviter",
+        noManagers:"Aucun.",
+        remove:"Retirer",
+        assignedSite:"Site",
+        total:"Total gestionnaires",active:"Actifs",pending:"En attente",pendingInvites:"Invitations en attente",unassigned:"Non assignés",
+        filterAll:"Tous",
+        colManager:"Gestionnaire",colContact:"Contact",colRole:"Rôle",colSites:"Sites assignés",colStatus:"Statut",colActions:"Actions",
+        inviteIntro:"Invitez un gestionnaire à accéder et gérer les sites sélectionnés.",
+        personalMessage:"Message personnel (facultatif)",
+        inviteFootnote:"Le gestionnaire recevra une invitation avec des instructions pour créer ou accéder à son compte.",
+        sendInvite:"Envoyer l'invitation",
+        inviteSent:"Invitation envoyée.",
+        inviteSentTitle:"Invitation Envoyée",
+        wasInvitedAs:"a été invité en tant que gestionnaire de site.",
+        expires:"Expire",
+        shareLink:"Partagez ce lien sécurisé avec le gestionnaire invité :",
+        viewInvitations:"Voir les invitations",
+        invalidSite:"Site invalide.",
+        alreadyMember:"Cette personne est déjà membre.",
+        duplicateInvite:"Ce gestionnaire a déjà une invitation en attente.",
+        otherOrg:"Cet utilisateur appartient déjà à une autre organisation.",
+        details:"Détails du gestionnaire",
+        assignmentHistory:"Historique des affectations",
+        present:"actuel",
+        invitationsTitle:"Invitations de gestionnaires",
+        invitedOn:"Invité",
+        invitedBy:"Invité par",
+        noInvitations:"Aucune invitation.",
+        invitationDetails:"Détails de l'invitation",
+        resend:"Renvoyer",
+        revoke:"Révoquer",
+        tab_all:"Tout",tab_pending:"En attente",tab_accepted:"Accepté",tab_expired:"Expiré",tab_revoked:"Révoqué"
+      },
       gallery:{title:"Galerie",selectSite:"Site",allSites:"Tous",viewImage:"Voir",noImages:"Aucune image",close:"Fermer",description:"Description"},
       settings:{title:"Paramètres",profile:"Profil",account:"Compte",security:"Sécurité",preferences:"Préférences",profileInfo:"Profil",fullName:"Nom",phone:"Téléphone",email:"E-mail",saveChanges:"Enregistrer",accountInfo:"Compte",accountName:"Nom",role:"Rôle",accountStatus:"Statut",active:"Actif",memberSince:"Depuis",changePasscode:"Changer code",currentPasscode:"Actuel",newPasscode:"Nouveau",confirmPasscode:"Confirmer",changePass:"Changer",prefs:"Préférences",language:"Langue",currency:"Devise",dateFormat:"Format",notifications:"Notifications",savePrefs:"Enregistrer",changePhoto:"Changer",removePhoto:"Supprimer"},
       alerts:{savedSuccessfully:"Enregistré",updatedSuccessfully:"Mis à jour",deletedSuccessfully:"Supprimé",somethingWentWrong:"Erreur",areYouSure:"Sûr ?",cannotUndo:"Irréversible",requiredField:"Requis",invalidValue:"Invalide",noDataAvailable:"Aucune donnée"},
@@ -530,7 +614,7 @@ tbody tr:hover{background:#f1f5f9}
   import {
     getFirestore, collection, query, where, onSnapshot, addDoc,
     updateDoc, deleteDoc, doc, getDoc, setDoc, getDocs, writeBatch, orderBy,
-    increment, limit, startAfter
+    increment, limit
   } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
   import {
     getDatabase, ref as rtdbRef, onValue as rtdbOnValue,
@@ -667,6 +751,7 @@ tbody tr:hover{background:#f1f5f9}
     toast._hideTimer = setTimeout(() => { toast.classList.remove('show'); }, 5000);
   }
 
+  // QA-001: Greeting auto-refresh while on dashboard
   setInterval(() => {
     if (currentSection !== 'dashboard') return;
     const el = document.getElementById('greeting-h1');
@@ -708,23 +793,31 @@ tbody tr:hover{background:#f1f5f9}
         let snap = await getDoc(profileRef);
         let profile = snap.exists() ? snap.data() : null;
 
+        // ── CASE 1: New user → create profile + organization
         if (!snap.exists()) {
           const orgRef = doc(collection(db, 'organizations'));
           const orgId = orgRef.id;
           await setDoc(orgRef, {
-            name: getCompanyDetails().name, owner_id: user.uid,
-            created_at: new Date().toISOString(), updated_at: new Date().toISOString(),
+            name: getCompanyDetails().name,
+            owner_id: user.uid,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
             settings: { default_role: 'manager' }
           });
           await setDoc(profileRef, {
-            email: user.email, full_name: user.displayName || 'Owner',
-            role: 'owner', phone: '', organization_id: orgId,
-            organization_status: 'active', created_at: new Date().toISOString()
+            email: user.email,
+            full_name: user.displayName || 'Owner',
+            role: 'owner',
+            phone: '',
+            organization_id: orgId,
+            organization_status: 'active',
+            created_at: new Date().toISOString()
           });
           snap = await getDoc(profileRef);
           profile = snap.data();
         }
 
+        // ── CASE 2: Existing profile but missing organization_id → bootstrap org + link
         if (snap.exists() && !profile.organization_id) {
           let orgId = null;
           try {
@@ -736,8 +829,10 @@ tbody tr:hover{background:#f1f5f9}
             const orgRef = doc(collection(db, 'organizations'));
             orgId = orgRef.id;
             await setDoc(orgRef, {
-              name: getCompanyDetails().name, owner_id: user.uid,
-              created_at: new Date().toISOString(), updated_at: new Date().toISOString(),
+              name: getCompanyDetails().name,
+              owner_id: user.uid,
+              created_at: new Date().toISOString(),
+              updated_at: new Date().toISOString(),
               settings: { default_role: 'manager' }
             });
           }
@@ -753,6 +848,7 @@ tbody tr:hover{background:#f1f5f9}
           showToast('Organization configured successfully.', 'success');
         }
 
+        // ── Safety guard
         if (!profile || !profile.organization_id) {
           showError('Organization is not configured for this account. Please contact support.');
           return;
@@ -762,6 +858,7 @@ tbody tr:hover{background:#f1f5f9}
         currentOrganizationId = profile.organization_id;
         updateProfileUI(ownerProfile);
 
+        // QA-005: Auto-migrate legacy data on first owner login
         await autoMigrateOrganization(currentOrganizationId);
 
         onSnapshot(profileRef, (s) => {
@@ -775,7 +872,7 @@ tbody tr:hover{background:#f1f5f9}
 
         attachListeners();
         attachInvitationsListener();
-        updateInvitationsBadge();
+        updateInvitationsBadge();   // QA-006
         attachMessagingListeners();
         showSection('dashboard');
       } catch (err) {
@@ -785,6 +882,7 @@ tbody tr:hover{background:#f1f5f9}
     });
   });
 
+  // QA-005: Idempotent migration of legacy sites/managers to the current organization
   async function autoMigrateOrganization(orgId) {
     if (!orgId || !currentUser) return;
     try {
@@ -823,7 +921,9 @@ tbody tr:hover{background:#f1f5f9}
       }
 
       if (taggedSites) console.info(`[migration] tagged ${taggedSites} sites`);
-    } catch (e) { console.warn('[migration] failed:', e); }
+    } catch (e) {
+      console.warn('[migration] failed:', e);
+    }
   }
 
   function updateProfileUI(profile) {
@@ -2430,23 +2530,32 @@ tbody tr:hover{background:#f1f5f9}
     orgManagers.forEach(m => {
       const sName = siteNameById(m.assigned_site);
       rows.push({
-        kind: 'manager', id: m.id, name: m.full_name || m.email || 'Manager',
-        email: m.email || '', role: m.role || 'manager',
+        kind: 'manager',
+        id: m.id,
+        name: m.full_name || m.email || 'Manager',
+        email: m.email || '',
+        role: m.role || 'manager',
         siteName: m.assigned_site ? (sName || 'Assignment needs review') : t('managers.unassigned'),
         siteId: m.assigned_site || null,
         status: (m.organization_status || m.status || 'active'),
-        invitation: null, photo: m.profile_picture || m.image || ''
+        invitation: null,
+        photo: m.profile_picture || ''
       });
     });
     pendingOnly.forEach(inv => {
       if (orgManagers.some(m => (m.email || '').toLowerCase() === (inv.email || '').toLowerCase())) return;
       const sName = siteNameById(inv.assigned_site_id);
       rows.push({
-        kind: 'invitation', id: inv.id, name: inv.full_name || inv.email,
-        email: inv.email, role: inv.role || 'manager',
+        kind: 'invitation',
+        id: inv.id,
+        name: inv.full_name || inv.email,
+        email: inv.email,
+        role: inv.role || 'manager',
         siteName: inv.assigned_site_id ? (sName || 'Assignment needs review') : t('managers.unassigned'),
         siteId: inv.assigned_site_id || null,
-        status: 'pending', invitation: inv, photo: ''
+        status: 'pending',
+        invitation: inv,
+        photo: ''
       });
     });
 
@@ -2606,6 +2715,7 @@ tbody tr:hover{background:#f1f5f9}
       const existingMember = managersData.find(m => (m.email || '').toLowerCase() === email);
       if (existingMember) { showToast(t('managers.alreadyMember'), 'error'); return; }
 
+      // QA-009: Transactional duplicate check (fresh read, not stale snapshot)
       const dupSnap = await getDocs(query(
         collection(db, 'manager_invitations'),
         where('organization_id', '==', currentOrganizationId),
@@ -2623,7 +2733,7 @@ tbody tr:hover{background:#f1f5f9}
             return;
           }
         }
-      } catch (_) {}
+      } catch (_) { /* rules may deny; fail open */ }
 
       const rawToken = _generateToken();
       const tokenHash = await _sha256Hex(rawToken);
@@ -2657,6 +2767,7 @@ tbody tr:hover{background:#f1f5f9}
       closeModal();
       showToast(t('managers.inviteSent'), 'success');
 
+      // QA-007: Cancel success modal if user navigated away
       const inviteSnapshot = { section: currentSection };
       setTimeout(() => {
         if (currentSection !== inviteSnapshot.section) return;
@@ -2680,6 +2791,7 @@ tbody tr:hover{background:#f1f5f9}
     finally { setButtonLoading(btn, false); }
   };
 
+  // =============== ASSIGNMENT + REMOVAL + DETAILS ===============
   window.openAssignSiteModal = (managerId) => {
     const mgr = managersData.find(m => m.id === managerId);
     if (!mgr) return;
@@ -2710,6 +2822,7 @@ tbody tr:hover{background:#f1f5f9}
       if (!newSite || newSite.organization_id !== currentOrganizationId) { showToast(t('common.accessDenied'), 'error'); return; }
 
       const prevSiteId = mgr.assigned_site || null;
+      // QA-008: same-site guard
       if (prevSiteId === newSiteId) {
         closeModal();
         showToast(t('common.noChange') || 'No change', 'info');
@@ -2759,13 +2872,12 @@ tbody tr:hover{background:#f1f5f9}
     if (!m) return;
     const sName = siteNameById(m.assigned_site) || t('managers.unassigned');
     const history = assignmentsData.filter(a => a.manager_id === id).sort((a,b) => new Date(b.assigned_at) - new Date(a.assigned_at));
-    const photo = m.profile_picture || m.image || '';
     openModal(t('managers.details'), `
       <div class="space-y-4">
         <div class="flex items-center gap-3">
-          ${photo
-            ? `<img src="${escapeHTML(photo)}" alt="${escapeHTML(m.full_name || '')}" class="w-14 h-14 rounded-full object-cover border-2 border-emerald-100 flex-shrink-0" onerror="this.outerHTML='<div class=&quot;w-14 h-14 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-lg flex-shrink-0&quot;>${escapeHTML((m.full_name || '?').charAt(0).toUpperCase())}</div>'">`
-            : `<div class="w-14 h-14 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-lg flex-shrink-0">${escapeHTML((m.full_name || '?').charAt(0).toUpperCase())}</div>`}
+          <div class="w-14 h-14 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-lg">
+            ${escapeHTML((m.full_name || '?').charAt(0).toUpperCase())}
+          </div>
           <div>
             <h3 class="font-bold text-lg">${escapeHTML(m.full_name || '—')}</h3>
             <p class="text-sm text-slate-500">${escapeHTML(m.email || '')}</p>
@@ -2814,6 +2926,7 @@ tbody tr:hover{background:#f1f5f9}
     } catch (err) { console.error(err); showToast(t('alerts.somethingWentWrong'), 'error'); }
   };
 
+  // =============== INVITATIONS DASHBOARD ===============
   function renderInvitations(container) {
     const orgInvites = invitationsData;
     const filtered = orgInvites.filter(i => _invTab === 'all' ? true : i.status === _invTab);
@@ -3172,7 +3285,9 @@ tbody tr:hover{background:#f1f5f9}
     const mySiteIds = new Set(sitesData.map(s => s.id));
     const withHistory = new Set(conversationsData.map(c => c.manager_id));
     return managersData.filter(m => {
-      if (m.status && m.status !== 'active') return false;
+      if (m.organization_id !== currentOrganizationId) return false;
+      const st = m.organization_status || m.status || 'active';
+      if (st !== 'active') return false;
       const assignedToMySite = m.assigned_site && mySiteIds.has(m.assigned_site);
       return assignedToMySite || withHistory.has(m.id);
     });
@@ -3286,7 +3401,7 @@ tbody tr:hover{background:#f1f5f9}
     let snap;
     try { snap = await getDoc(ref); } catch (e) { throw new Error(t('messages.notAuthorized')); }
     if (!snap.exists()) {
-      const payload = { type: 'owner_manager', owner_id: currentUser.uid, manager_id: managerId, participants: [currentUser.uid, managerId], created_at: new Date().toISOString(), updated_at: new Date().toISOString(), last_message: null, unread: { [currentUser.uid]: 0, [managerId]: 0 }, user_settings: { [currentUser.uid]: { pinned: false, muted: false, archived: false }, [managerId]: { pinned: false, muted: false, archived: false } } };
+      const payload = { type: 'owner_manager', owner_id: currentUser.uid, manager_id: managerId, organization_id: currentOrganizationId, participants: [currentUser.uid, managerId], created_at: new Date().toISOString(), updated_at: new Date().toISOString(), last_message: null, unread: { [currentUser.uid]: 0, [managerId]: 0 }, user_settings: { [currentUser.uid]: { pinned: false, muted: false, archived: false }, [managerId]: { pinned: false, muted: false, archived: false } } };
       try { await setDoc(ref, payload); }
       catch (err) { const again = await getDoc(ref); if (!again.exists()) throw err; }
     }
